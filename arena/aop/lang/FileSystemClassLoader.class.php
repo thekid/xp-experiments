@@ -110,9 +110,13 @@
         return substr(array_search($class, xp::$registry), 6);
       }
 
-      xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->path;
+      xp::$registry['classloader.'.$class]= 'lang.FileSystemClassLoader://'.$this->path;
       $package= NULL;
-      if (FALSE === include(sprintf(ClassLoader::$transform, $this->path.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT, $class))) {
+      if (FALSE === include(sprintf(
+        xp::$instrument, 
+        $this->path.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT,
+        $class
+      ))) {
         unset(xp::$registry['classloader.'.$class]);
         throw new ClassNotFoundException('Class "'.$class.'" not found');
       }

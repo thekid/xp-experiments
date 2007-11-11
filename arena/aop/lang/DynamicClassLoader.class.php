@@ -98,13 +98,13 @@
         return substr(array_search($class, xp::$registry), 6);
       }
 
-      xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->context;
+      xp::$registry['classloader.'.$class]= 'lang.DynamicClassLoader://'.$this->context;
       if (!isset(self::$bytes[$class])) {
         unset(xp::$registry['classloader.'.$class]);
         throw new ClassNotFoundException('Unknown class "'.$class.'"');
       }
       $package= NULL;
-      if (FALSE === include(sprintf(ClassLoader::$transform, 'dyn://'.$class, $class))) {
+      if (FALSE === include(sprintf(xp::$instrument, 'dyn://'.$class, $class))) {
         throw new FormatException('Cannot define class "'.$class.'"');
       }
 
@@ -217,7 +217,7 @@
     /**
      * Stream wrapper method stream_stat
      *
-     * @return  <string,string>
+     * @return  array<string, string>
      */
     public function stream_stat() {
       return array(
@@ -229,7 +229,7 @@
      * Stream wrapper method url_stat
      *
      * @param   string path
-     * @return  <string,string>
+     * @return  array<string, string>
      */
     public function url_stat($path) {
       list($name)= sscanf($path, 'dyn://%s');

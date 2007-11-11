@@ -2,8 +2,7 @@
   require('lang.base.php');
   xp::sapi('cli');
   uses(
-    'util.invoke.aop.Aspects',
-    'util.invoke.aop.Weaver',
+    'util.invoke.aop.Instrumentation',
     'util.profiling.Timer'
   );
   
@@ -11,7 +10,6 @@
   $p= new ParamString();
   if (!$p->exists('disable')) {
     XPClass::forName('aspects.PowerAspect');
-    ClassLoader::$transform= 'weave://%2$s|%1$s';
   }
   
   // Register fqcns.xar
