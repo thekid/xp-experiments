@@ -30,4 +30,5 @@
   
   // Profiling
   Console::writeLinef('%s && %s - took %.3f seconds', $bf->toString(), $bd->toString(), $t->elapsedTime());
+  var_dump(xp::registry('errors'));
 ?>
