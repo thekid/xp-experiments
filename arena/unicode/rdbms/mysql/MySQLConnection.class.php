@@ -1,14 +1,15 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: MySQLConnection.class.php 9451 2007-02-12 17:23:29Z friebe $ 
+ * $Id: MySQLConnection.class.php 10596 2007-06-11 15:14:20Z ruben $ 
  */
 
   uses(
     'rdbms.DBConnection',
     'rdbms.mysql.MySQLResultSet',
     'rdbms.Transaction',
-    'rdbms.StatementFormatter'
+    'rdbms.StatementFormatter',
+    'rdbms.mysql.MysqlDialect'
   );
 
   /**
@@ -38,17 +39,11 @@
     /**
      * Constructor
      *
-     * @param   &rdbms.DSN dsn
+     * @param   rdbms.DSN dsn
      */
     public function __construct($dsn) { 
       parent::__construct($dsn);
-      $this->formatter= new StatementFormatter();
-      $this->formatter->setEscape('"');
-      $this->formatter->setEscapeRules(array(
-        '"'   => '\"',
-        '\\'  => '\\\\'
-      ));
-      $this->formatter->setDateFormat('Y-m-d H:i:s');
+      $this->formatter= new StatementFormatter($this, new MysqlDialect());
     }
 
     /**
@@ -98,7 +93,7 @@
       // (\) as an escape character within strings. With this mode enabled, 
       // backslash becomes any ordinary character like any other. 
       // (Implemented in MySQL 5.0.1)
-      isset($modes['NO_BACKSLASH_ESCAPES']) && $this->formatter->setEscapeRules(array(
+      isset($modes['NO_BACKSLASH_ESCAPES']) && $this->formatter->dialect->setEscapeRules(array(
         '"'   => '""'
       ));
 
@@ -139,6 +134,7 @@
     /**
      * Prepare an SQL statement
      *
+     * @param   string fmt
      * @param   mixed* args
      * @return  string
      */
@@ -152,7 +148,7 @@
      *
      * @return  mixed identity value
      */
-    public function identity() { 
+    public function identity($field= NULL) {
       $i= mysql_insert_id($this->handle);
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
       return $i;
@@ -233,7 +229,7 @@
      * Execute any statement
      *
      * @param   mixed* args
-     * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
+     * @return  rdbms.mysql.MySQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
     public function query() { 
@@ -295,8 +291,8 @@
     /**
      * Begin a transaction
      *
-     * @param   &rdbms.Transaction transaction
-     * @return  &rdbms.Transaction
+     * @param   rdbms.Transaction transaction
+     * @return  rdbms.Transaction
      */
     public function begin($transaction) {
       if (!$this->query('begin')) return FALSE;
@@ -322,6 +318,15 @@
      */
     public function commit($name) { 
       return $this->query('commit');
+    }
+    
+    /**
+     * get SQL formatter
+     *
+     * @return  rdbms.StatemantFormatter
+     */
+    public function getFormatter() {
+      return $this->formatter;
     }
   }
 ?>
