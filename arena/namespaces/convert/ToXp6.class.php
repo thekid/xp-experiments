@@ -75,12 +75,13 @@
     
     // States
     const
-      ST_INITIAL      = 0x0001,
-      ST_DECL         = 0x0002,
-      ST_FUNC         = 0x0003,
-      ST_INTF         = 0x0004,
-      ST_CLASS        = 0x0005,
-      ST_USES         = 0x0006;
+      ST_INITIAL      = 'init',
+      ST_DECL         = 'decl',
+      ST_FUNC         = 'func',
+      ST_INTF         = 'intf',
+      ST_CLASS        = 'clss',
+      ST_USES         = 'uses',
+      ST_ANONYMOUS    = 'anon';
 
     /**
      * Set origin directory
@@ -166,28 +167,26 @@
     }
     
     /**
-     * Convert a file
+     * Convert sourcecode and return the computed version
      *
-     * @param   io.collections.FileElement e
+     * @param   string qname fully qualified name of class
+     * @param   array t tokens as returned by token_get_call
+     * @param   string initial default ST_INITIAL
+     * @return  string converted sourcecode
      */
-    protected function convert(FileElement $e) {
-      $qname= strtr(substr($e->getUri(), $this->baseUriLength, -10), '/\\', '..');
+    protected function convertSource($qname, array $t, $initial= self::ST_INITIAL) {
 
       // Calculate class and package name from qualified name
       $p= strrpos($qname, '.');
       $package= substr($qname, 0, $p);
       $namespace= str_replace('.', '::', $package);
       $class= substr($qname, $p+ 1);
-
-      $this->out->writeLine('- ', $class, ' @ ', $package ,' < ', $e);
-
+      
       // Tokenize file
-      $t= token_get_all(file_get_contents($e->getUri()));
-      $state= array(self::ST_INITIAL);
+      $state= array($initial);
       $out= '';
       for ($i= 0, $s= sizeof($t); $i < $s; $i++) {
         $token= $this->tokenOf($t[$i]);
-        
         switch ($state[0].$token[0]) {
         
           // Insert namespace declaration after "This class is part of..." file comment
@@ -260,6 +259,12 @@
             $next= $this->tokenOf($t[$i+ 1]);
             if (T_DOUBLE_COLON == $next[0]) {
               $out.= $this->mapName($token[1], $namespace);
+
+              // Swallow token after double coloin
+              // (fixes self::create() being rewritten to self::::create())
+              $member= $this->tokenOf($t[$i+ 2]);
+              $out.= '::'.$member[1];
+              $i+= 2;
             } else {
               $out.= $token[1];
             }
@@ -299,12 +304,29 @@
             break;
           }
           
+          // Anonymous class creation - newinstance('fully.qualified', array(...), '{ source }');
+          case self::ST_DECL.self::T_NEWINSTANCE:  {
+            $out.= '::newinstance('.$t[$i+ 2][1];
+            $i+= 2;
+            array_unshift($state, self::ST_ANONYMOUS);
+            break;
+          }
+          
+          case self::ST_ANONYMOUS.T_CONSTANT_ENCAPSED_STRING: {
+            $quote= $token[1]{0};
+            $converted= $this->convertSource('', token_get_all('<?php '.trim($token[1], $quote).' ?>'), self::ST_DECL);
+            $out.= $quote.substr($converted, 6, -3).$quote;
+            array_shift($state);
+            break;
+          }
+          
           // XP "keywords" - prefix with "::"
-          case self::ST_DECL.self::T_NEWINSTANCE: case self::ST_DECL.self::T_CREATE:
+          case self::ST_ANONYMOUS.self::T_CREATE:case self::ST_DECL.self::T_CREATE:
+          case self::ST_ANONYMOUS.self::T_REF: case self::ST_DECL.self::T_REF: 
+          case self::ST_ANONYMOUS.self::T_DEREF: case self::ST_DECL.self::T_DEREF:
           case self::ST_DECL.self::T_RAISE: case self::ST_DECL.self::T_FINALLY:
           case self::ST_DECL.self::T_DELETE: case self::ST_DECL.self::T_WITH: 
-          case self::ST_DECL.self::T_IS: 
-          case self::ST_DECL.self::T_REF: case self::ST_DECL.self::T_DEREF: {
+          case self::ST_DECL.self::T_IS: {
             $out.= '::'.$token[1];
             break;
           }
@@ -314,7 +336,22 @@
           }
         }
       }
-      
+
+      return $out;      
+    }
+    
+    /**
+     * Convert a file
+     *
+     * @param   io.collections.FileElement e
+     */
+    protected function convert(FileElement $e) {
+      $qname= strtr(substr($e->getUri(), $this->baseUriLength, -10), '/\\', '..');
+      $this->out->writeLine('- ', $qname ,' < ', $e);
+
+      // Convert sourcecode
+      $out= $this->convertSource($qname, token_get_all(file_get_contents($e->getUri())));
+
       // Write converted sourcecode to target directory
       $file= new File($this->target.strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php');
       $folder= new Folder(dirname($file->getUri()));
@@ -342,6 +379,7 @@
       }
       $this->nameMap['xp']= new String('::xp');
       $this->nameMap['null']= new String('::null');
+      $this->nameMap['xarloader']= new String('::xarloader');
       $this->out->writeLine($this->nameMap);
       
       // Iterate over origin directory, converting each
