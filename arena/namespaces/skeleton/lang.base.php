@@ -155,15 +155,14 @@
     //     Sets an SAPI
     static function sapi() {
       foreach ($a= func_get_args() as $name) {
-        foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
+        foreach (xp::$registry['classpath'] as $path) {
           $filename= 'sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php';
-          
-          if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
-            require_once($path.DIRECTORY_SEPARATOR.$filename);
-            continue(2);
-          } else if (is_file($path) && file_exists('xar://'.$path.'?'.$filename)) {
-            require_once('xar://'.$path.'?'.$filename);
-            continue(2);
+          if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.$filename)) {
+            require_once($f);
+            continue 2;
+          } else if (is_file($path) && file_exists($f= 'xar://'.$path.'?'.strtr($filename, DIRECTORY_SEPARATOR, '/'))) {
+            require_once($f);
+            continue 2;
           }
         }
         
@@ -243,8 +242,8 @@
   }
   // }}}
   // {{{ final class xploader
-  class XpXarLoader {
-    var
+  class xarloader {
+    public
       $position     = 0,
       $archive      = '',
       $filename     = '';
@@ -280,7 +279,7 @@
       $this->archive= $archive;
       $this->filename= $file;
       
-      $current= XpXarLoader::acquire($this->archive);
+      $current= self::acquire($this->archive);
       return isset($current['index'][$this->filename]);
     }
     // }}}
@@ -288,7 +287,7 @@
     // {{{ string stream_read(int count)
     //     Read $count bytes up-to-length of file
     function stream_read($count) {
-      $current= XpXarLoader::acquire($this->archive);
+      $current= self::acquire($this->archive);
       if (!isset($current['index'][$this->filename])) return FALSE;
       if ($current['index'][$this->filename][0] == $this->position || 0 == $count) return FALSE;
 
@@ -302,7 +301,7 @@
     // {{{ bool stream_eof()
     //     Returns whether stream is at end of file
     function stream_eof() {
-      $current= XpXarLoader::acquire($this->archive);
+      $current= self::acquire($this->archive);
       return $this->position >= $current['index'][$this->filename][0];
     }
     // }}}
@@ -310,7 +309,7 @@
     // {{{ <string,int> stream_stat()
     //     Retrieve status of stream
     public function stream_stat() {
-      $current= XpXarLoader::acquire($this->archive);
+      $current= self::acquire($this->archive);
       return array(
         'size'  => $current['index'][$this->filename][0]
       );
@@ -323,7 +322,7 @@
       list($archive, $file)= sscanf($path, 'xar://%[^?]?%[^$]');
       $this->archive= $archive;
       $this->filename= $file;
-      $current= XpXarLoader::acquire($this->archive);
+      $current= self::acquire($this->archive);
 
       if (!isset($current['index'][$this->filename])) return FALSE;
       return array(
@@ -539,7 +538,7 @@
   xp::$registry['classpath']= explode(PATH_SEPARATOR, get_include_path());
 
   // Register stream wrapper for .xar class loading
-  stream_wrapper_register('xar', 'XpXarLoader');
+  stream_wrapper_register('xar', 'xarloader');
 
   // Omnipresent classes
   uses(
