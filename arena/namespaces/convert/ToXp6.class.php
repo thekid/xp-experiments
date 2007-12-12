@@ -62,6 +62,7 @@
     protected
       $iterator      = NULL,
       $baseUriLength = 0,
+      $patchesDir    = '',
       $nameMap       = NULL;
 
     // XP tokens
@@ -86,6 +87,10 @@
       ST_CLASS        = 'clss',
       ST_USES         = 'uses',
       ST_ANONYMOUS    = 'anon';
+
+    public function __construct() {
+      $this->patchesDir= dirname(__FILE__).'/patches/';
+    }
 
     /**
      * Set origin directory
@@ -357,10 +362,22 @@
       $uri= $e->getURI();
       if (xp::CLASS_FILE_EXT === substr($uri, -strlen(xp::CLASS_FILE_EXT))) {
         $qname= strtr(substr($uri, $this->baseUriLength, -strlen(xp::CLASS_FILE_EXT)), '/\\', '..');
-        $this->out->writeLine('X ', $qname);
 
         // Convert sourcecode
         $out= $this->convertSource($qname, token_get_all(file_get_contents($e->getUri())));
+        
+        // See if there is a patch
+        if (file_exists($patch= $this->patchesDir.$qname.'.patch')) {
+          $this->out->writeLine('XP ', $qname);
+          
+          $converted= new File($this->patchesDir.$qname);
+          FileUtil::setContents($converted, $out);
+          $cmd= sprintf('patch -i %s %s', $patch, $converted->getURI());
+          $this->out->writeLine(`$cmd`);
+          $out= FileUtil::getContents($converted);
+        } else {
+          $this->out->writeLine('X  ', $qname);
+        }
 
         // Write converted sourcecode to target archive
         $urn= strtr($qname, '.', '/').xp::CLASS_FILE_EXT;
@@ -372,7 +389,7 @@
         );
       } else {
         $qname= strtr(substr($uri, $this->baseUriLength), DIRECTORY_SEPARATOR, '/');
-        $this->out->writeLine('C ', $qname);
+        $this->out->writeLine('A  ', $qname);
         $this->target->add(new File($uri), $qname);
       }
     }
