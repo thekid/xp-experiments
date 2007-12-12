@@ -6,9 +6,14 @@
 
   uses(
     'util.cmd.Command',
+    'lang.archive.Archive',
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator',
-    'io.collections.iterate.ExtensionEqualsFilter',
+    'io.collections.iterate.NegationOfFilter',
+    'io.collections.iterate.AllOfFilter',
+    'io.collections.iterate.CollectionFilter',
+    'io.collections.iterate.NegationOfFilter',
+    'io.collections.iterate.RegexFilter',
     'util.collections.HashTable',
     'io.File',
     'io.Folder',
@@ -29,26 +34,25 @@
    *
    * Examples
    * -----------
-   * Convert all classes in the unittest package:
+   * Convert all skeleton classes:
    * <pre>
    * $ xpcli convert.ToXp6 
    *   -b ../../../skeleton/ 
-   *   -o ../../../skeleton/unittest/ 
-   *   -t skeleton/
+   *   -o ../../../skeleton/
+   *   -t lib/xp-rt-6.0.0alpha.xar
    * </pre>
    *
-   * Convert all classes in the net.xp_framework.unittest package in ports:
+   * Convert all classes in the net.xp_framework package in ports:
    * <pre>
    * $ xpcli convert.ToXp6 
    *   -b ../../../ports/classes/ 
-   *   -o ../../../ports/classes/net/xp_framework/unittest/ 
-   *   -t ports/classes/
+   *   -o ../../../ports/classes/net/xp_framework/
+   *   -t lib/xp-net.xp_framework-6.0.0alpha.xar
    * </pre>
    *
    * Known issues
    * ------------
    * <ul>
-   *   <li>Code inside newinstance() is not transformed</li>
    *   <li>Manual touches in lang package is needed</li>
    * </ul>
    *
@@ -92,7 +96,10 @@
     public function setOrigin($origin) {
       $this->iterator= new FilteredIOCollectionIterator(
         new FileCollection($origin),
-        new ExtensionEqualsFilter('class.php'),
+        new AllOfFilter(array(
+          new NegationOfFilter(new RegexFilter('#'.preg_quote(DIRECTORY_SEPARATOR).'(CVS|\.svn)'.preg_quote(DIRECTORY_SEPARATOR).'#')),
+          new NegationOfFilter(new CollectionFilter())
+        )),
         TRUE
       );
       $this->out->writeLine($this->iterator);
@@ -115,7 +122,8 @@
      */
     #[@arg]
     public function setTarget($target) {
-      $this->target= create(new FileCollection($target))->getUri();
+      $this->target= new Archive(new File($target));
+      $this->target->open(ARCHIVE_CREATE);
     }
     
     /**
@@ -341,22 +349,32 @@
     }
     
     /**
-     * Convert a file
+     * Add a file
      *
      * @param   io.collections.FileElement e
      */
-    protected function convert(FileElement $e) {
-      $qname= strtr(substr($e->getUri(), $this->baseUriLength, -10), '/\\', '..');
-      $this->out->writeLine('- ', $qname ,' < ', $e);
+    protected function add(FileElement $e) {
+      $uri= $e->getURI();
+      if (xp::CLASS_FILE_EXT === substr($uri, -strlen(xp::CLASS_FILE_EXT))) {
+        $qname= strtr(substr($uri, $this->baseUriLength, -strlen(xp::CLASS_FILE_EXT)), '/\\', '..');
+        $this->out->writeLine('X ', $qname);
 
-      // Convert sourcecode
-      $out= $this->convertSource($qname, token_get_all(file_get_contents($e->getUri())));
+        // Convert sourcecode
+        $out= $this->convertSource($qname, token_get_all(file_get_contents($e->getUri())));
 
-      // Write converted sourcecode to target directory
-      $file= new File($this->target.strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php');
-      $folder= new Folder(dirname($file->getUri()));
-      $folder->exists() || $folder->create();
-      FileUtil::setContents($file, $out);
+        // Write converted sourcecode to target archive
+        $urn= strtr($qname, '.', '/').xp::CLASS_FILE_EXT;
+        $this->target->addFileBytes(
+          $urn,
+          dirname($urn),
+          basename($urn),
+          $out
+        );
+      } else {
+        $qname= strtr(substr($uri, $this->baseUriLength), DIRECTORY_SEPARATOR, '/');
+        $this->out->writeLine('C ', $qname);
+        $this->target->add(new File($uri), $qname);
+      }
     }
 
     /**
@@ -366,7 +384,7 @@
     public function run() {
     
       // Build name map
-      $this->nameMap= create('new HashTable<String, String>()');
+      $this->nameMap= create('new util.collections.HashTable<String, String>()');
       $this->nameMap['self']= new String('self');
       $this->nameMap['parent']= new String('parent');
       foreach (array_merge(get_declared_interfaces(), get_declared_classes()) as $name) {
@@ -380,12 +398,14 @@
       $this->nameMap['xp']= new String('::xp');
       $this->nameMap['null']= new String('::null');
       $this->nameMap['xarloader']= new String('::xarloader');
-      $this->out->writeLine($this->nameMap);
       
       // Iterate over origin directory, converting each
       while ($this->iterator->hasNext()) {
-        $this->convert($this->iterator->next());
+        $this->add($this->iterator->next());
       }
+      
+      // Finish off archive
+      $this->target->create();
     }
   }
 ?>
