@@ -420,7 +420,7 @@
         $out= new Archive(new File($this->patchesDir.md5($uri).'.xar'));
         $out->open(ARCHIVE_CREATE);
 
-        $base= 'xar://'.$uri.'?';
+        $base= 'xar://'.urlencode($uri).'?';
         $baseLen= strlen($base);
         while ($entry= $in->getEntry()) {
           $this->add($out, new FileElement($base.$entry), $baseLen);
