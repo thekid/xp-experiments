@@ -83,6 +83,7 @@
       ST_INITIAL      = 'init',
       ST_DECL         = 'decl',
       ST_FUNC         = 'func',
+      ST_FUNC_ARGS    = 'farg',
       ST_INTF         = 'intf',
       ST_CLASS        = 'clss',
       ST_USES         = 'uses',
@@ -288,17 +289,29 @@
           case self::ST_DECL.T_FUNCTION: {
             $out.= $token[1];
             array_unshift($state, self::ST_FUNC);
-            $brackets= 0;
             break;
           }
           
-          case self::ST_FUNC.'(': {
+          case self::ST_FUNC.T_STRING: {
+            $brackets= 0;
+            $out.= $token[1];
+            array_unshift($state, self::ST_FUNC_ARGS);
+            break;
+          }
+          
+          case self::ST_FUNC.'{': case self::ST_FUNC.';': {
+            $out.= $token[1];
+            array_shift($state);
+            break;
+          }
+          
+          case self::ST_FUNC_ARGS.'(': {
             $out.= $token[1];
             $brackets++;
             break;
           }
 
-          case self::ST_FUNC.')': {
+          case self::ST_FUNC_ARGS.')': {
             $out.= $token[1];
             $brackets--;
             if (0 == $brackets) {
@@ -307,10 +320,19 @@
             break;
           }
           
-          case self::ST_FUNC.T_STRING: {
+          case self::ST_FUNC_ARGS.T_STRING: {
+            $nonClassTypes= array('array');   // Type hints that are not classes
+
+            // Look ahead, decl(array $a, String $b, $c, $x= FALSE, $z= TRUE)
+            // * $a -> array (non-class-type, yield array)
+            // * $b -> String (map name)
+            // * $c -> no type
+            // * $x -> no type
+            // * $z -> no type
+            $ws= $this->tokenOf($t[$i+ 1]);
             $var= $this->tokenOf($t[$i+ 2]);
-            if ($brackets >= 1 && T_VARIABLE == $var[0]) {
-              $out.= ''; // Workaround for bug: Remove typehints! $this->mapName($token[1], $namespace);
+            if (T_WHITESPACE === $ws[0] && T_VARIABLE === $var[0]) {
+              $out.= in_array($token[1], $nonClassTypes) ? $token[1] : $this->mapName($token[1], $namespace);
             } else {
               $out.= $token[1];
             }
@@ -356,12 +378,14 @@
     /**
      * Add a file
      *
+     * @param   lang.archive.Archive target
      * @param   io.collections.FileElement e
+     * @param   int baseUriLength
      */
-    protected function add(FileElement $e) {
+    protected function add(Archive $target, FileElement $e, $baseUriLength) {
       $uri= $e->getURI();
       if (xp::CLASS_FILE_EXT === substr($uri, -strlen(xp::CLASS_FILE_EXT))) {
-        $qname= strtr(substr($uri, $this->baseUriLength, -strlen(xp::CLASS_FILE_EXT)), '/\\', '..');
+        $qname= strtr(substr($uri, $baseUriLength, -strlen(xp::CLASS_FILE_EXT)), '/\\', '..');
 
         // Convert sourcecode
         $out= $this->convertSource($qname, token_get_all(file_get_contents($e->getUri())));
@@ -374,6 +398,7 @@
           FileUtil::setContents($converted, $out);
           $cmd= sprintf('patch -i %s %s', $patch, $converted->getURI());
           $this->out->writeLine(`$cmd`);
+          clearstatcache();
           $out= FileUtil::getContents($converted);
         } else {
           $this->out->writeLine('X  ', $qname);
@@ -381,16 +406,38 @@
 
         // Write converted sourcecode to target archive
         $urn= strtr($qname, '.', '/').xp::CLASS_FILE_EXT;
-        $this->target->addFileBytes(
+        $target->addFileBytes(
           $urn,
           dirname($urn),
           basename($urn),
           $out
         );
+      } else if ('.xar' == substr($uri, -4)) {
+      
+        // Convert sourcecode inside
+        $in= new Archive(new File($uri));
+        $in->open(ARCHIVE_READ);
+        $out= new Archive(new File($this->patchesDir.md5($uri).'.xar'));
+        $out->open(ARCHIVE_CREATE);
+
+        $base= 'xar://'.$uri.'?';
+        $baseLen= strlen($base);
+        while ($entry= $in->getEntry()) {
+          $this->add($out, new FileElement($base.$entry), $baseLen);
+        }
+        
+        $in->close();
+        $out->create();
+        
+        $qname= strtr(substr($uri, $baseUriLength), DIRECTORY_SEPARATOR, '/');
+        $this->out->writeLine('XA ', $qname);
+        $target->add($out->file, $qname);
       } else {
-        $qname= strtr(substr($uri, $this->baseUriLength), DIRECTORY_SEPARATOR, '/');
+      
+        // Copy file directly
+        $qname= strtr(substr($uri, $baseUriLength), DIRECTORY_SEPARATOR, '/');
         $this->out->writeLine('A  ', $qname);
-        $this->target->add(new File($uri), $qname);
+        $target->add(new File($uri), $qname);
       }
     }
 
@@ -418,7 +465,7 @@
       
       // Iterate over origin directory, converting each
       while ($this->iterator->hasNext()) {
-        $this->add($this->iterator->next());
+        $this->add($this->target, $this->iterator->next(), $this->baseUriLength);
       }
       
       // Finish off archive
