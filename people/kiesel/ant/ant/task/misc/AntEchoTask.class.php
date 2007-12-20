@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: AntEchoTask.class.php 8846 2007-04-14 18:46:50Z kiesel $ 
  */
 
   uses('ant.task.AntTask');

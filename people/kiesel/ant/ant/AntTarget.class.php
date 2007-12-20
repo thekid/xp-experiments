@@ -65,7 +65,10 @@
         'mkdir'   => 'file',
         'copy'    => 'file',
         'touch'   => 'file',
-        'delete'  => 'file'
+        'delete'  => 'file',
+        'echo'    => 'misc',
+        'tstamp'  => 'misc',
+        'jar'     => 'archive'
       );
       
       switch ($name) {

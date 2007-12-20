@@ -33,7 +33,7 @@
      * @return  
      */
     public static function fromString($xml, $filename) {
-      $project= Unmarshaller::unmarshal($xml, xp::reflect(__CLASS__));
+      $project= Unmarshaller::unmarshal($xml, 'ant.AntProject');
       $project->filename= $filename;
       return $project;
     }

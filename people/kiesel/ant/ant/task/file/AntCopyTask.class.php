@@ -104,7 +104,7 @@
           $element= $iter->next();
         }
       } else if (NULL !== $this->file) {
-      
+        // TODO: Implement
       }
     }    
   }
