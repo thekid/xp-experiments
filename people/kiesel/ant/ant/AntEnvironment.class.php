@@ -75,6 +75,17 @@
       return $this->hashmap[$key];
     }
     
+    public function resetPointer() {
+      reset($this->hashmap);
+    }
+    
+    public function nextProperty() {
+      if (NULL === key($this->hashmap)) return NULL;
+      $retval= array(key($this->hashmap), current($this->hashmap));
+      next($this->hashmap);
+      return $retval;
+    }
+          
     /**
      * (Insert method's description here)
      *

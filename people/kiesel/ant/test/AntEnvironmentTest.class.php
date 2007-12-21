@@ -42,6 +42,17 @@
       $this->fixture->removeDefaultExclude('test.html');
       $this->assertEquals($size, sizeof($this->fixture->getDefaultExcludes()));
     }
+    
+    #[@test]
+    public function iterateProperties() {
+      $this->fixture->put('key1', 'value1');
+      $this->fixture->put('key2', 'value2');
+      
+      $this->fixture->resetPointer();
+      $this->assertEquals(array('key1', 'value1'), $this->fixture->nextProperty());
+      $this->assertEquals(array('key2', 'value2'), $this->fixture->nextProperty());
+      $this->assertEquals(NULL, $this->fixture->nextProperty());
+    }
 
   }
 ?>
