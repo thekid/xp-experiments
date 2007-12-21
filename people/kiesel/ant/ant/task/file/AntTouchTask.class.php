@@ -37,8 +37,8 @@
      */
     #[@xmlmapping(element= '@datetime')]
     public function setDatetime($time) {
-      $this->datetime= Date::fromString($time);
-    }    
+      $this->datetime= new Date($time);
+    }
     
     /**
      * (Insert method's description here)

@@ -62,13 +62,16 @@
     
     public function taskFromNode($name) {
       static $package= array(
-        'mkdir'   => 'file',
-        'copy'    => 'file',
-        'touch'   => 'file',
-        'delete'  => 'file',
-        'echo'    => 'misc',
-        'tstamp'  => 'misc',
-        'jar'     => 'archive'
+        'mkdir'           => 'file',
+        'copy'            => 'file',
+        'touch'           => 'file',
+        'delete'          => 'file',
+        'echo'            => 'misc',
+        'tstamp'          => 'misc',
+        'jar'             => 'archive',
+        'basename'        => 'property',
+        'dirname'         => 'property',
+        'echoproperties'  => 'property'
       );
       
       switch ($name) {
