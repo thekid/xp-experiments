@@ -14,8 +14,11 @@
    * @purpose  purpose
    */
   class AntEchoTask extends AntTask {
-    public
-      $content= '';
+    protected
+      $content  = NULL,
+      $file     = NULL,
+      $append   = FALSE,
+      $level    = 'warning';
 
     /**
      * (Insert method's description here)
@@ -28,6 +31,29 @@
       $this->content= trim($content);
     }
     
+    #[@xmlmapping(element= '@message')]
+    public function setMessage($message) {
+      $this->content= trim($message);
+    }
+    
+    #[@xmlmapping(element= '@file')]
+    public function setFile($f) {
+      $this->file= $f;
+    }
+    
+    #[@xmlmapping(element= '@append')]
+    public function setAppend($e) {
+      $this->append= ('true' === $e);
+    }
+    
+    #[@xmlmapping(element= '@level')]
+    public function setLevel($l) {
+      if (!in_array($l, array('error', 'warning', 'info', 'debug')))
+        throw new IllegalArgumentException('Invalid level: "'.$l.'"');
+        
+      $this->level= $l;
+    }
+    
     /**
      * (Insert method's description here)
      *
@@ -35,6 +61,15 @@
      * @return  
      */
     public function execute(AntEnvironment $env) {
+      // TODO: Use level
+      
+      if ($this->file) {
+        $f= new File($this->file, (TRUE === $this->append ? 'a' : 'w'));
+        $f->write($env->substitute($this->content));
+        $f->close();
+        return;
+      }
+      
       $env->out->writeLine($env->substitute($this->content));
     }    
   }

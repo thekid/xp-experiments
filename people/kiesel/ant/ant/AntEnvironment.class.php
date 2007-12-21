@@ -4,6 +4,10 @@
  * $Id$ 
  */
 
+  uses(
+    'ant.AntPattern'
+  );
+
   /**
    * (Insert class' description here)
    *
@@ -23,6 +27,10 @@
     public function __construct($out, $err) {
       $this->out= $out;
       $this->err= $err;
+      $this->initializeDefaultExcludes();
+    }
+    
+    public function initializeDefaultExcludes() {
       $this->defaultExcludes= array(
         '**/*~',
         '**/#*#',
@@ -120,6 +128,17 @@
         $patterns[]= new AntPattern($e);
       }
       return $patterns;
-    }    
+    }
+
+    public function addDefaultExclude($e) {
+      if (!in_array($e, $this->defaultExcludes)) {
+        $this->defaultExcludes[]= $e;
+      }
+    }
+    
+    public function removeDefaultExclude($e) {
+      $index= array_search($e, $this->defaultExcludes, TRUE);
+      if (FALSE !== $index) unset($this->defaultExcludes[$index]);
+    }
   }
 ?>
