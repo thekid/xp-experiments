@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntCopyTask extends DirectoryBasedTask {
+  class AntMoveTask extends DirectoryBasedTask {
     public
       $file                 = NULL,
       $toFile               = NULL,
@@ -35,7 +35,7 @@
     public function setFile($f) {
       $this->file= $f;
     }    
-     
+    
     /**
      * (Insert method's description here)
      *
@@ -46,7 +46,7 @@
     public function setToFile($f) {
       $this->toFile= $f;
     }    
-   
+    
     /**
      * (Insert method's description here)
      *
@@ -105,10 +105,11 @@
         $env->out->writeLine('===> Copy '.$s->getURI().' to '.$t->getURI());
       }
       
-      $s->copy($t->getURI());
+      $mtime= $s->lastModified();
+      $s->move($t->getURI());
       
       if (TRUE === $this->preserveLastmodified) {
-        $t->touch($s->lastModified());
+        $t->touch($mtime);
       }
     }
     

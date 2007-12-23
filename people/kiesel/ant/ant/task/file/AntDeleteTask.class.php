@@ -4,7 +4,7 @@
  * $Id$ 
  */
   
-  uses('ant.task.AntTask');
+  uses('ant.task.DirectoryBasedTask');
 
   /**
    * (Insert class' description here)
@@ -13,16 +13,14 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntDeleteTask extends AntTask {
+  class AntDeleteTask extends DirectoryBasedTask {
     public
       $file             = NULL, 
       $dir              = NULL, 
       $verbose          = FALSE,
       $quiet            = FALSE,
       $failOnError      = TRUE,
-      $includeEmptyDirs = FALSE,
-      $fileset          = NULL;
-      
+      $includeEmptyDirs = FALSE;
 
     /**
      * Set file
@@ -92,7 +90,7 @@
      */
     public function getFile(AntEnvironment $env) {
       return $env->localUri($env->substitute($this->file));
-    }    
+    }
     
     /**
      * (Insert method's description here)
@@ -104,6 +102,29 @@
       return $env->localUri($env->substitute($this->dir));
     }
     
+    protected function delete($env, $file) {
+      $this->verbose && $env->out->writeLine('Deleting '.$file);
+      
+      $f= new File($env->localUri($env->substitute($file)));
+      try {
+        $f->unlink();
+      } catch (IOException $e) {
+        if ($this->failOnError) throw $e;
+        $this->quiet || $env->err->writeLine('Could not delete file '.$f->getURI().': '.$e->getMessage());
+      }
+    }
+    
+    protected function deleteFolder($folder) {
+      $f= new Folder($env->localUri($env->substitute($this->dir)));
+      
+      try {
+        $f->unlink();
+      } catch (IOException $e) {
+        if ($this->failOnError) throw $e;
+        $this->quiet || $env->err->writeLine('Could not delete folder '.$f->getURI().': '.$e->getMessage());
+      }
+    }
+    
     /**
      * (Insert method's description here)
      *
@@ -112,15 +133,17 @@
      */
     protected function execute(AntEnvironment $env) {
       if (NULL !== $this->file) {
-        $f= new File($this->getFile($env));
-        if ($f->exists()) $f->unlink();
-        
+        $this->delete($env, $this->file);
         return;
-      } else if (NULL !== $this->dir) {
-        $folder= new Folder($this->getDir($env));
-        if ($folder->exists()) $folder->unlink();
-        
+      }
+      
+      if (NULL !== $this->dir) {
+        $this->deleteFolder($this->dir);
         return;
+      }
+      
+      if (NULL !== $this->fileset) {
+        
       }
     }
   }
