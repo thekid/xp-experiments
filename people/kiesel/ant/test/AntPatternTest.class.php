@@ -133,6 +133,7 @@
       $this->assertEquals('#^.*/CVS/.*$#', $this->asFilter('**/CVS/**'));
       $this->assertEquals('#^.*/\\.svn$#', $this->asFilter('**/.svn'));
       $this->assertEquals('#^.*/\\.svn/.*$#', $this->asFilter('**/.svn/**'));
+      $this->assertEquals('#^[^/]*\\.xml$#', $this->asFilter('*.xml'));
     }
 
     /**

@@ -140,9 +140,11 @@
      * @return  
      */
     public function iteratorFor(AntEnvironment $env) {
-      if (!($dir= $this->getDir($env))) throw new IllegalStateException('No directory given for fileset');
+      if (!($dir= $this->getDir($env))) {
+        $dir= getcwd();
+      }
       $realdir= realpath($dir);
-      if (!$realdir) throw new IllegalStateException('Direcotry "'.$dir.'" does not exist.');
+      if (!$realdir) throw new IllegalStateException('Directory "'.$dir.'" does not exist.');
       
       return new AntFileIterator(
         new FileCollection($realdir),

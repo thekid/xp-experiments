@@ -20,7 +20,7 @@
       $unless = NULL;
     
     protected
-      $directorySeparator=  DIRECTORY_SEPARATOR;
+      $directorySeparator= DIRECTORY_SEPARATOR;
       
     /**
      * (Insert method's description here)
@@ -114,7 +114,7 @@
       $regex= str_replace('.', '\\.', $regex);
 
       // Transform single * to [^/]* (may match anything but another directory)
-      $regex= preg_replace('#([^*])\\*([^*]|$)#', '$1[^'.preg_quote(preg_quote($this->directorySeparator)).']*$2', $regex);
+      $regex= preg_replace('#(^|([^*]))\\*([^*]|$)#', '$1[^'.preg_quote(preg_quote($this->directorySeparator)).']*$3', $regex);
       
       // Transform ** to .* (may match anything, any directory depth)
       $regex= str_replace('**', '.*', $regex);

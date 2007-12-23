@@ -124,7 +124,7 @@
       if (!sizeof($inc))
         throw new IllegalStateException('No positive filter has been given.');
       
-      $filter= array(new AllOfFilter($inc));
+      $filter= array(new AnyOfFilter($inc));
       if (sizeof($exc)) {
         $filter[]= new NegationOfFilter(new AnyOfFilter($exc));
       }

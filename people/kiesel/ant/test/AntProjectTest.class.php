@@ -63,11 +63,7 @@
             <delete dir="${dist}"/>
           </target>
         </project>
-      ');
-      
-      $writer= new StringWriter(($stream= new MemoryOutputStream()));
-      $project->run($writer, $writer, array('dist'));
-      Console::writeLine($stream->getBytes());
+      ', NULL);
     }
   }
 ?>

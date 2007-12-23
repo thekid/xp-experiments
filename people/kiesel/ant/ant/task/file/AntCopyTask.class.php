@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ant.task.AntTask');
+  uses('ant.task.DirectoryBasedTask');
 
   /**
    * (Insert class' description here)
@@ -13,18 +13,18 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntCopyTask extends AntTask {
+  class AntCopyTask extends DirectoryBasedTask {
     public
-      $file             = NULL,
-      $toFile           = NULL,
-      $toDir            = NULL,
-      $overwrite        = FALSE,
-      $flatten          = FALSE,
-      $includeEmptyDirs = FALSE,
-      $failOnError      = TRUE,
-      $verbose          = FALSE,
-      $resources        = NULL;
-    
+      $file                 = NULL,
+      $toFile               = NULL,
+      $toDir                = NULL,
+      $overwrite            = FALSE,
+      $flatten              = FALSE,
+      $includeEmptyDirs     = FALSE,
+      $failOnError          = TRUE,
+      $verbose              = FALSE,
+      $preserveLastmodified = FALSE;
+          
     /**
      * (Insert method's description here)
      *
@@ -80,15 +80,36 @@
       $this->flatten= ($f == 'true');
     }
     
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    #[@xmlmapping(element= 'fileset', class= 'ant.AntFileset')]
-    public function setFileSet($fileset) {
-      $this->resource= $fileset;
+    #[@xmlmapping(element= '@preservelastmodified')]
+    public function setPreserveLastmodified($m) {
+      $this->preserveLastmodified= ('true' == $m);
+    }
+    
+    protected function copy(AntEnvironment $env, $source, $target= NULL) {
+      $s= new File($env->substitute($source));
+      
+      if (NULL === $target) {
+        $target= $env->localUri($env->substitute($this->toDir.'/'.($this->flatten ? basename($source) : $source)));
+      }
+      $t= new File($target);
+      
+      // Only perform if target does not exist, or is outdated compared to
+      // original, or overwrite mode is enabled.
+      if (
+        $t->exists() && 
+        $t->lastModified()- $s->lastModified() < 2 &&
+        !$this->overwrite
+      ) return;
+
+      if ($this->verbose) {
+        $env->out->writeLine('===> Copy '.$s->getURI().' to '.$t->getURI());
+      }
+      
+      $s->copy($t->getURI());
+      
+      if ($this->preserveLastmodified) {
+        $t->touch($s->lastModified());
+      }
     }
     
     /**
@@ -98,13 +119,18 @@
      * @return  
      */
     protected function execute(AntEnvironment $env) {
-      if (NULL !== $this->resource) {
-        $iter= $this->resource->iteratorFor($env);
-        while ($iter->hasNext()) {
-          $element= $iter->next();
-        }
-      } else if (NULL !== $this->file) {
-        // TODO: Implement
+      if (NULL !== $this->file) {
+        if (NULL === $this->toFile) throw new IllegalArgumentException('file given, but toFile is missing.');
+
+        $this->copy($env, $this->file, $env->localUri($env->substitute($this->toFile)));
+        return;
+      }
+
+      $iter= $this->fileset->iteratorFor($env);
+      while ($iter->hasNext()) {
+        $element= $iter->next();
+        
+        $this->copy($env, $element->relativePart());
       }
     }    
   }

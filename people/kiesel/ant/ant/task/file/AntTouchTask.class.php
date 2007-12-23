@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ant.task.AntTask');
+  uses('ant.task.DirectoryBasedTask');
 
   /**
    * (Insert class' description here)
@@ -13,10 +13,12 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntTouchTask extends AntTask {
+  class AntTouchTask extends DirectoryBasedTask {
     public
       $file     = NULL,
-      $datetime = NULL;
+      $datetime = NULL,
+      $mkdirs   = FALSE,
+      $verbose  = TRUE;
       
     /**
      * (Insert method's description here)
@@ -58,12 +60,21 @@
      * @return  
      */
     protected function execute(AntEnvironment $env) {
-      if (!$this->datetime) {
-        $this->datetime= Date::now();
+      if (!$this->datetime) $this->datetime= Date::now();
+
+      if (NULL !== $this->file) {
+        $f= new File($this->file);
+        $f->touch($this->datetime->getTime());
+        
+        return;
       }
       
-      $f= new File($this->file);
-      $f->touch($this->datetime->getTime());
+      $iterator= $this->iteratorForFileset($env);
+      while ($iterator->hasNext()) {
+        $entry= $iterator->next();
+        
+        // TODO: Implement FileSet touching
+      }
     }
   }
 ?>

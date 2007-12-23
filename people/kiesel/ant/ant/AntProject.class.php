@@ -24,7 +24,8 @@
       $description  = NULL,
       $default      = NULL,
       $properties   = array(),
-      $targets      = array();
+      $targets      = array(),
+      $imports      = array();
     
     /**
      * (Insert method's description here)
