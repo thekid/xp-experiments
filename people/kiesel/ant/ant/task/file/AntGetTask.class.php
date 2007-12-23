@@ -89,7 +89,7 @@
         case HTTP_OK: {
           $dest->open(FILE_MODE_WRITE);
           
-          while (FALSE !== ($buf= $response->readData())) {
+          while (FALSE !== ($buf= $response->readData(8192, TRUE))) {
             $dest->write($buf);
           }
           
