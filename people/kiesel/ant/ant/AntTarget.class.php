@@ -66,6 +66,8 @@
         'copy'            => 'file',
         'touch'           => 'file',
         'delete'          => 'file',
+        'tempfile'        => 'file',
+        'move'            => 'file',
         'echo'            => 'misc',
         'tstamp'          => 'misc',
         'jar'             => 'archive',

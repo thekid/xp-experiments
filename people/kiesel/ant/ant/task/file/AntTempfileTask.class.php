@@ -6,7 +6,7 @@
 
   uses(
     'ant.task.AntTask',
-    'io.Folder'
+    'lang.System'
   );
 
   /**
@@ -55,7 +55,7 @@
      * @return  
      */
     protected function execute(AntEnvironment $env) {
-      $tempfile= tempname($this->getDestDir($env), $this->prefix.uniqid((double)microtime()));
+      $tempfile= tempnam($this->getDestDir($env), $this->prefix.uniqid((double)microtime()));
       $env->put($this->property, $tempfile);
     }
   }

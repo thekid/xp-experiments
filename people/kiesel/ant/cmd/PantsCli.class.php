@@ -34,15 +34,10 @@
     #[@arg(short= 'f')]
     public function setBuildfile($file= NULL) {
       if (NULL === $file) $file= 'build.xml';
-      try {
       $this->project= AntProject::fromString(
         FileUtil::getContents(new File($file)),
         realpath($file)
       );
-      } catch (Throwable $e) {
-        $e->printStackTrace();
-        throw $e;
-      }
     }
     
     /**
@@ -71,7 +66,6 @@
      * @return  
      */
     public function run() {
-      
       if ($this->dump) {
         $this->out->writeLine($this->project->toString());
         return 0;
