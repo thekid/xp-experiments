@@ -36,6 +36,18 @@
     <tempfile prefix="xp." property="mytempfile"/>
     <echo>Created temporary file ${mytempfile}</echo>
   </target>
+  
+  <target name="get">
+    <property name="get.url" value="http://xp-framework.net/downloads/releases/5.6.3/lib/xp-rt-5.6.3.xar"/>
+    <basename property="get.local" file="${get.url}"/>
+    <echo>===> Downloading to ${get.local}</echo>
+    <get 
+     src="${get.url}"
+     dest="${get.local}"
+     verbose="true"
+     useTimetamp="true"
+    />
+  </target>
 
   <target name="fileops" depends="touch,copy,delete"/>
 </project>

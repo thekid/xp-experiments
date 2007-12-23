@@ -68,9 +68,11 @@
         'delete'          => 'file',
         'tempfile'        => 'file',
         'move'            => 'file',
+        'get'             => 'file',
         'echo'            => 'misc',
         'tstamp'          => 'misc',
         'jar'             => 'archive',
+        'property'        => 'property',
         'basename'        => 'property',
         'dirname'         => 'property',
         'echoproperties'  => 'property'

@@ -59,7 +59,7 @@
       if (!$this->property || !$this->file)
         throw new IllegalArgumentException('basename must have property and file attribute');
       
-      $env->put($this->property, basename($this->file, $this->suffix));
+      $env->put($this->property, basename($env->substitute($this->file), $env->substitute($this->suffix)));
     }
   }
 ?>

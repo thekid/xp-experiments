@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntProperty extends AntTask {
+  class AntPropertyTask extends AntTask {
     public
       $name     = '',
       $value    = '';

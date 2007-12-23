@@ -35,7 +35,7 @@
      * @return  
      */
     public function execute(AntEnvironment $env) {
-      $env->out->writeLine('Unknown task ['.$this->type.'] invoked.');
+      raise('lang.MethodNotImplementedException', 'Unknown task "'.$this->type.'" invoked.');
     }    
   }
 ?>
