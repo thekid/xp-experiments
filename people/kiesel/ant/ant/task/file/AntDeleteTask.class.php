@@ -103,9 +103,10 @@
     }
     
     protected function delete($env, $file) {
-      $this->verbose && $env->out->writeLine('Deleting '.$file);
-      
       $f= new File($env->localUri($env->substitute($file)));
+      $this->verbose && $env->out->writeLine('Deleting '.$file);
+      if (!$f->exists()) return;
+
       try {
         $f->unlink();
       } catch (IOException $e) {
@@ -114,9 +115,11 @@
       }
     }
     
-    protected function deleteFolder($folder) {
+    protected function deleteFolder($env, $folder) {
+      $this->verbose && $env->out->writeLine('Deleting folder '.$folder);
       $f= new Folder($env->localUri($env->substitute($this->dir)));
-      
+      if ($f->exists()) return;
+
       try {
         $f->unlink();
       } catch (IOException $e) {
@@ -138,12 +141,17 @@
       }
       
       if (NULL !== $this->dir) {
-        $this->deleteFolder($this->dir);
+        $this->deleteFolder($env, $this->dir);
         return;
       }
       
       if (NULL !== $this->fileset) {
-        
+        $iter= $this->fileset->iteratorFor($env);
+        while ($iter->hasNext()) {
+          $element= $iter->next();
+
+          $this->delete($env, $element->relativePart());
+        }
       }
     }
   }
