@@ -1,0 +1,3 @@
+#!/bin/sh
+
+xpcli net.xp_framework.quantum.cmd.Quantum "$@"
