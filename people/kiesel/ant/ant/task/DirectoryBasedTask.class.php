@@ -37,7 +37,7 @@
      * @return  
      */
     #[@xmlmapping(element= 'include', class= 'ant.AntPattern')]
-    public function addIncludeRule($include) {
+    public function addIncludePattern($include) {
       $this->fileset->addIncludePattern($include);
     }
     

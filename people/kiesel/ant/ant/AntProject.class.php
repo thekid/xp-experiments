@@ -78,7 +78,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'property', class='ant.AntProperty')]
+    #[@xmlmapping(element= 'property', class='ant.task.property.AntPropertyTask')]
     public function addProperty($property) {
       $this->properties[]= $property;
     }

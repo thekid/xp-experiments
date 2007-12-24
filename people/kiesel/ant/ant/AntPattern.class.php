@@ -102,6 +102,8 @@
      * @return  
      */
     public function nameToRegex() {
+      $ds= $this->directorySeparator;
+      $qds= preg_quote($this->directorySeparator, '#');
       
       // From the ant manual:
       // if a pattern ends with / or \, then ** is appended. 
@@ -110,17 +112,23 @@
       $regex= preg_replace('#([/\\\\])$#', '$1**', $this->name);
       
       // Transform name element to regex filter
-      $regex= str_replace('/', preg_quote($this->directorySeparator), $regex);
+      $regex= str_replace('/', $qds, $regex);
       $regex= str_replace('.', '\\.', $regex);
 
       // Transform single * to [^/]* (may match anything but another directory)
-      $regex= preg_replace('#(^|([^*]))\\*([^*]|$)#', '$1[^'.preg_quote(preg_quote($this->directorySeparator)).']*$3', $regex);
+      $regex= preg_replace('#(^|([^*]))\\*([^*]|$)#', '$1[^'.preg_quote($qds).']*$3', $regex);
       
       // Transform ** to .* (may match anything, any directory depth)
+      $regex= str_replace('**/', '.*', $regex);
       $regex= str_replace('**', '.*', $regex);
+      
+      // Transform trailing ** to .*$, and .*$ is equivalent to just omit it
+      // if ('**' == substr($regex, -2)) $regex= substr($regex, -2);
+      // $regex= str_replace('**', '.*', $regex);
 
       // Add delimiter and escape delimiter if already contained
       $regex= '#^'.str_replace('#', '\\#', $regex).'$#';
+      
       
       return $regex;
     }

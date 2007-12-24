@@ -69,6 +69,15 @@
     abstract protected function execute(AntEnvironment $env);
     
     /**
+     * Perform pre-execution checks
+     *
+     */
+    public function setup() {
+      // This is the place to check for proper configuration. If
+      // there is something mis-configured throw an Exception
+    }
+    
+    /**
      * (Insert method's description here)
      *
      * @param   

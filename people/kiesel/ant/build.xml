@@ -48,6 +48,14 @@
      useTimetamp="true"
     />
   </target>
+  
+  <target name="zip">
+    <zip
+     dest="ant.zip"
+     basedir="ant"
+     comment="This archive has been created by Quantum."
+    />
+  </target>
 
   <target name="fileops" depends="touch,copy,delete"/>
 </project>

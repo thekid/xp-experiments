@@ -72,6 +72,7 @@
         'echo'            => 'misc',
         'tstamp'          => 'misc',
         'jar'             => 'archive',
+        'zip'             => 'archive',
         'property'        => 'property',
         'basename'        => 'property',
         'dirname'         => 'property',
@@ -125,6 +126,11 @@
       // Check dependencies
       foreach ($this->depends as $target) {
         $project->runTarget($target);
+      }
+      
+      // Let task allow to do pre-execution checks
+      foreach ($this->tasks as $task) {
+        $task->setUp();
       }
     
       $env->out->writeLine('===> Running '.$this->name);

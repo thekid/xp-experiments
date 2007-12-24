@@ -17,16 +17,19 @@
    */
   class AntEnvironment extends Object {
     public
+      $in   = NULL,
       $out  = NULL,
       $err  = NULL;
       
     protected
-      $hashmap          = array(),
-      $defaultExcludes  = array();
+      $hashmap            = array(),
+      $defaultExcludes    = array(),
+      $directorySeparator = DIRECTORY_SEPARATOR;
 
-    public function __construct($out, $err) {
+    public function __construct($out, $err, $ds= DIRECTORY_SEPARATOR) {
       $this->out= $out;
       $this->err= $err;
+      $this->directorySeparator= $ds;
       $this->initializeDefaultExcludes();
     }
     
@@ -47,6 +50,15 @@
         '**/.svn/**',
         '**/.DS_Store'
       );
+    }
+    
+    /**
+     * Retrieve current directory separator
+     *
+     * @return  string
+     */
+    public function directorySeparator() {
+      return $this->directorySeparator;
     }
     
     /**
@@ -123,8 +135,19 @@
      * @return  
      */
     public function localUri($uri) {
-      if ('/' == DIRECTORY_SEPARATOR) return $uri;
-      return strtr($uri, '/', DIRECTORY_SEPARATOR);
+      if ('/' == $this->directorySeparator) return $uri;
+      return strtr($uri, '/', $this->directorySeparator);
+    }
+    
+    /**
+     * Create unixoid uri representation, namely use / as directory
+     * separator
+     *
+     * @param   string $uri
+     * @return  string
+     */
+    public function unixUri($uri) {
+      return strtr($uri, '\\', $this->directorySeparator);
     }
     
     /**
@@ -136,7 +159,7 @@
     public function getDefaultExcludes() {
       $patterns= array();
       foreach ($this->defaultExcludes as $e) {
-        $patterns[]= new AntPattern($e);
+        $patterns[]= new AntPattern($e, $this->directorySeparator());
       }
       return $patterns;
     }

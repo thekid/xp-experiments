@@ -31,23 +31,24 @@
      */
     protected function mockCollection($base, $elements) {
       $c= newinstance('io.collections.IOCollection', array($base), '{
-        public $base  = "";
+        public $base = NULL;
         protected $list= array();
         
-        public function __constructur($name) { $this->base= $name; }
-        public function setList($l) { $this->list= $l; }
+        public function __construct($name) { $this->base= $name; }
+        public function setList($l) { $this->list= $l; reset($this->list); }
         public function open() { return TRUE; }
         public function rewind() { reset($this->list); }
-        public function next() { 
-          $e= current($this->list); 
+        public function next() {
+          $e= current($this->list);
           next($this->list); 
+
           if (!$e) return NULL;
           return newinstance("io.collections.IOElement", array($e), \'{
-            public $name  = "";
+            public $name  = NULL;
             public function __construct($name) {
               $this->name= $name;
             }
-            public function getURI() { return $this->base; }
+            public function getURI() { return $this->name; }
             public function getSize() { return 0; }
             public function createdAt() { return Date::now(); }
             public function lastAccessed() { return Date::now(); }
@@ -55,7 +56,7 @@
           }\');
         }
         public function close() { return TRUE; }
-        public function getURI() { return $this->name; }
+        public function getURI() { return $this->base; }
         public function getSize() { return 0; }
         public function createdAt() { return Date::now(); }
         public function lastAccessed() { return Date::now(); }
@@ -73,9 +74,9 @@
      * @return  
      */
     protected function asArray($iterator) {
-      while ($iterator->hasNext()) {
-        // var_dump($iterator->next());
-      }
+      $list= array();
+      while ($iterator->hasNext()) { $list[]= $iterator->next()->getURI(); }
+      return $list;
     }
     
     /**
@@ -84,29 +85,47 @@
      * @param   
      * @return  
      */
-    protected function newPatternSet($inc, $exc) {
+    protected function newPatternSet(AntEnvironment $env, $inc, $exc= NULL) {
       $p= new AntPatternSet();
-      foreach ($inc as $i) $p->addIncludePattern(new AntPattern($i));
-      foreach ($exc as $e) $p->addIncludePattern(new AntPattern($e));
+      foreach ($inc as $i) $p->addIncludePattern(new AntPattern($i, $env->directorySeparator()));
+      
+      if (is_array($exc)) {
+        foreach ($exc as $e) $p->addIncludePattern(new AntPattern($e, $env->directorySeparator()));
+      } else {
+        // Otherwise use default excludes
+        foreach ($env->getDefaultExcludes() as $exclude) $p->addExcludePattern($exclude);
+      }
+      
       return $p;
-    }    
+    }
     
     /**
-     * Test
-     *
-     */
-    #[@test, @ignore]
-    public function testStar() {
-      $env= new AntEnvironment(new StringWriter(new MemoryOutputStream()), new StringWriter(new MemoryOutputStream()));
-      $list= $this->asArray(new FilteredIOCollectionIterator(
-        $this->mockCollection('', array('entry/foo')),
-        $this->newPatternSet(
-          array('**/*'),
-          array('**/CVS/*')
-        )->createFilter($env, ''),
-        TRUE
-      ));
-      var_dump($list);
+     * Create filter
+     * 
+     **/
+    protected function iteratorFor($ds, IOCollection $collection, array $inc, array $exc= NULL) {
+      $env= new AntEnvironment(new StringWriter(new MemoryOutputStream()), new StringWriter(new MemoryOutputStream()), $ds);
+      return new AntFileIterator($collection, $this->newPatternSet(
+        $env, $inc, $exc
+      )->createFilter($env, $collection->getURI()), TRUE, '');
+    }
+    
+    /**
+     * Retrieve filtered file list
+     * 
+     **/
+    protected function filteredArray($ds, $base, $files, $includeFilters) {
+      return $this->asArray($this->iteratorFor($ds, $this->mockCollection($base, $files), $includeFilters, NULL));
+    }
+    
+    #[@test]
+    public function simpleFilterUnix() {
+      $this->assertEquals(array('base/entry/foo'), $this->filteredArray('/', 'base', array('base/entry/foo'), array('**/*')));
+    }
+    
+    #[@test]
+    public function simpleFilterWin32() {
+      $this->assertEquals(array('base\\entry\\foo'), $this->filteredArray('\\', 'base', array('base\\entry\\foo'), array('**/*')));
     }
     
     /**
@@ -115,9 +134,9 @@
      * @param   
      * @return  
      */
-    protected function asFilter($f) {
+    protected function asFilter($f, $ds= '/') {
       $p= new AntPattern($f);
-      $p->setDirectorySeparator('/');
+      $p->setDirectorySeparator($ds);
       return $p->nameToRegex();
     }
     
@@ -127,15 +146,15 @@
      */
     #[@test]
     public function toFilter() {
-      $this->assertEquals('#^.*/[^/]*~$#', $this->asFilter('**/*~'));
-      $this->assertEquals('#^.*/\\#[^/]*\\#$#', $this->asFilter('**/#*#'));
-      $this->assertEquals('#^.*/CVS$#', $this->asFilter('**/CVS'));
-      $this->assertEquals('#^.*/CVS/.*$#', $this->asFilter('**/CVS/**'));
-      $this->assertEquals('#^.*/\\.svn$#', $this->asFilter('**/.svn'));
-      $this->assertEquals('#^.*/\\.svn/.*$#', $this->asFilter('**/.svn/**'));
+      $this->assertEquals('#^.*[^/]*~$#', $this->asFilter('**/*~'));
+      $this->assertEquals('#^.*\\#[^/]*\\#$#', $this->asFilter('**/#*#'));
+      $this->assertEquals('#^.*CVS$#', $this->asFilter('**/CVS'));
+      $this->assertEquals('#^.*CVS/.*$#', $this->asFilter('**/CVS/**'));
+      $this->assertEquals('#^.*\\.svn$#', $this->asFilter('**/.svn'));
+      $this->assertEquals('#^.*\\.svn/.*$#', $this->asFilter('**/.svn/**'));
       $this->assertEquals('#^[^/]*\\.xml$#', $this->asFilter('*.xml'));
     }
-
+    
     /**
      * Test
      *
