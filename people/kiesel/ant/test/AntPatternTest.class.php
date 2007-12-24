@@ -127,7 +127,76 @@
     public function simpleFilterWin32() {
       $this->assertEquals(array('base\\entry\\foo'), $this->filteredArray('\\', 'base', array('base\\entry\\foo'), array('**/*')));
     }
+
+    #[@test]
+    public function filterSvnUnix() {
+      $this->assertEmpty($this->filteredArray('/', 'base', array('base/.svn/text-entries', 'base/.svn', 'base/.svn/'), array('**/*')));
+    }
     
+    #[@test]
+    public function filterSvnWin32() {
+      $this->assertEmpty($this->filteredArray('\\', 'base', array('base\\.svn\\text-entries', 'base\\.svn', 'base\\.svn\\'), array('**/*')));
+    }
+    
+    #[@test]
+    public function filterTextUnix() {
+      $expect= array('base/my.txt');
+      $input= array(
+        'base/some',
+        'base/some.file',
+        'base/my.txt',
+        'base/my.txt~',
+        'base/other/my.txt',
+        'base/one/two/my.txt.bak',
+        'base/one/two/my.txt'
+      );
+      $filters= array('my.txt');
+      $this->assertEquals($expect, $this->filteredArray('/', 'base', $input, $filters));
+    }
+    
+    #[@test]
+    public function filterAnyDepthUnix() {
+      $expect= array(
+        'base/my.txt',
+        'base/other/my.txt',
+        'base/one/two/my.txt'
+      );
+      $input= array(
+        'base/some',
+        'base/some.file',
+        'base/my.txt',
+        'base/my.txt~',
+        'base/other/my.txt',
+        'base/one/two/my.txt.bak',
+        'base/one/two/my.txt'
+      );
+      $filters= array(
+        'my.txt',
+        '**/my.txt'
+      );
+      $this->assertEquals($expect, $this->filteredArray('/', 'base', $input, $filters));
+    }
+    
+    #[@test]
+    public function filterParticularDepthUnix() {
+      $expect= array(
+        'base/one/two/my.txt'
+      );
+      $input= array(
+        'base/some',
+        'base/some.file',
+        'base/my.txt',
+        'base/my.txt~',
+        'base/other/my.txt',
+        'base/one/two/my.txt.bak',
+        'base/one/two/my.txt'
+      );
+      $filters= array(
+        '*/*/my.txt'
+      );
+      $this->assertEquals($expect, $this->filteredArray('/', 'base', $input, $filters));
+    }
+        
     /**
      * (Insert method's description here)
      *

@@ -105,26 +105,29 @@
       $ds= $this->directorySeparator;
       $qds= preg_quote($this->directorySeparator, '#');
       
+      // Normalize pattern - replace \ with /
+      $regex= str_replace('\\', '/', $this->name);
+      
       // From the ant manual:
       // if a pattern ends with / or \, then ** is appended. 
       // For example, mypackage/test/ is interpreted as if it 
       // were mypackage/test/**.
-      $regex= preg_replace('#([/\\\\])$#', '$1**', $this->name);
+      $regex= preg_replace('#([/\\\\])$#', '$1**', $regex);
       
-      // Transform name element to regex filter
-      $regex= str_replace('/', $qds, $regex);
+      // Escape dots
       $regex= str_replace('.', '\\.', $regex);
 
       // Transform single * to [^/]* (may match anything but another directory)
-      $regex= preg_replace('#(^|([^*]))\\*([^*]|$)#', '$1[^'.preg_quote($qds).']*$3', $regex);
+      $regex= preg_replace('#(^|([^*]))\\*([^*]|$)#', '$1[^/]*$3', $regex);
       
       // Transform ** to .* (may match anything, any directory depth)
+      // If ** is followed by a /, remove it, because it ** should match any depth, also
+      // depth 0 - but then there is no / at the start of the path
       $regex= str_replace('**/', '.*', $regex);
       $regex= str_replace('**', '.*', $regex);
       
-      // Transform trailing ** to .*$, and .*$ is equivalent to just omit it
-      // if ('**' == substr($regex, -2)) $regex= substr($regex, -2);
-      // $regex= str_replace('**', '.*', $regex);
+      // Convert directory-separator, if needed
+      $regex= str_replace('/', $qds, $regex);
 
       // Add delimiter and escape delimiter if already contained
       $regex= '#^'.str_replace('#', '\\#', $regex).'$#';
