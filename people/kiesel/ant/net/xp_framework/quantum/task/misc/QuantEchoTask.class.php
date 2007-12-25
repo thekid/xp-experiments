@@ -1,10 +1,10 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: AntEchoTask.class.php 8846 2007-04-14 18:46:50Z kiesel $ 
+ * $Id: QuantEchoTask.class.php 8846 2007-04-14 18:46:50Z kiesel $ 
  */
 
-  uses('ant.task.AntTask');
+  uses('net.xp_framework.quantum.task.QuantTask');
 
   /**
    * (Insert class' description here)
@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntEchoTask extends AntTask {
+  class QuantEchoTask extends QuantTask {
     protected
       $content  = NULL,
       $file     = NULL,
@@ -60,7 +60,7 @@
      * @param   
      * @return  
      */
-    public function execute(AntEnvironment $env) {
+    public function execute(QuantEnvironment $env) {
       // TODO: Use level
       
       if ($this->file) {

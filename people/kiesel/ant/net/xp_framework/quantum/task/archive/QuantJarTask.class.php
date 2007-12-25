@@ -1,10 +1,10 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: AntJarTask.class.php 8846 2007-04-14 18:46:50Z kiesel $ 
+ * $Id: QuantJarTask.class.php 8846 2007-04-14 18:46:50Z kiesel $ 
  */
 
-  uses('ant.task.AntTask');
+  uses('net.xp_framework.quantum.task.QuantTask');
 
   /**
    * (Insert class' description here)
@@ -13,14 +13,14 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntJarTask extends AntTask {
+  class QuantJarTask extends QuantTask {
     /**
      * (Insert method's description here)
      *
      * @param   
      * @return  
      */
-    protected function execute(AntEnvironment $env) {
+    protected function execute(QuantEnvironment $env) {
     
     }    
   }

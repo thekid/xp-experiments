@@ -4,7 +4,7 @@
  * $Id$ 
  */
   
-  uses('ant.task.DirectoryBasedTask');
+  uses('net.xp_framework.quantum.task.DirectoryBasedTask');
 
   /**
    * (Insert class' description here)
@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntDeleteTask extends DirectoryBasedTask {
+  class QuantDeleteTask extends DirectoryBasedTask {
     public
       $file             = NULL, 
       $dir              = NULL, 
@@ -88,7 +88,7 @@
      * @param   
      * @return  
      */
-    public function getFile(AntEnvironment $env) {
+    public function getFile(QuantEnvironment $env) {
       return $env->localUri($env->substitute($this->file));
     }
     
@@ -98,7 +98,7 @@
      * @param   
      * @return  
      */
-    public function getDir(AntEnvironment $env) {
+    public function getDir(QuantEnvironment $env) {
       return $env->localUri($env->substitute($this->dir));
     }
     
@@ -134,7 +134,7 @@
      * @param   
      * @return  
      */
-    protected function execute(AntEnvironment $env) {
+    protected function execute(QuantEnvironment $env) {
       if (NULL !== $this->file) {
         $this->delete($env, $this->file);
         return;

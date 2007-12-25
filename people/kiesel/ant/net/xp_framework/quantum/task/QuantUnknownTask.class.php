@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ant.task.AntTask');
+  uses('net.xp_framework.quantum.task.QuantTask');
 
   /**
    * (Insert class' description here)
@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntUnknownTask extends AntTask {
+  class QuantUnknownTask extends QuantTask {
     public
       $type     = '';
 
@@ -34,7 +34,7 @@
      * @param   
      * @return  
      */
-    public function execute(AntEnvironment $env) {
+    public function execute(QuantEnvironment $env) {
       raise('lang.MethodNotImplementedException', 'Unknown task "'.$this->type.'" invoked.');
     }    
   }

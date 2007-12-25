@@ -1,10 +1,10 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: AntEchoTask.class.php 8846 2007-04-14 18:46:50Z kiesel $ 
+ * $Id: QuantEchoTask.class.php 8846 2007-04-14 18:46:50Z kiesel $ 
  */
 
-  uses('ant.task.AntTask');
+  uses('net.xp_framework.quantum.task.QuantTask');
 
   /**
    * (Insert class' description here)
@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntDefaultexcludesTask extends AntTask {
+  class QuantDefaultexcludesTask extends QuantTask {
     protected
       $echo     = NULL,
       $default  = NULL,
@@ -46,7 +46,7 @@
      * @param   
      * @return  
      */
-    public function execute(AntEnvironment $env) {
+    public function execute(QuantEnvironment $env) {
       if (TRUE === $this->echo) {
         $env->out->writeLine(implode(PHP_EOL, $env->getDefaultExcludes()));
         return;

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ant.task.DirectoryBasedTask');
+  uses('net.xp_framework.quantum.task.DirectoryBasedTask');
 
   /**
    * (Insert class' description here)
@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntTouchTask extends DirectoryBasedTask {
+  class QuantTouchTask extends DirectoryBasedTask {
     public
       $file     = NULL,
       $datetime = NULL,
@@ -59,7 +59,7 @@
      * @param   
      * @return  
      */
-    protected function execute(AntEnvironment $env) {
+    protected function execute(QuantEnvironment $env) {
       if (!$this->datetime) $this->datetime= Date::now();
 
       if (NULL !== $this->file) {

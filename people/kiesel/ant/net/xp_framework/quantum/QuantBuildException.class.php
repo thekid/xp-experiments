@@ -9,7 +9,7 @@
     *
     * @purpose  Indicate build failure
     */
-   class AntBuildException extends XPException {
+   class QuantBuildException extends XPException {
      protected
       $statusCode = NULL;
       

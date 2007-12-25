@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ant.task.AntTask');
+  uses('ant.task.QuantTask');
 
   /**
    * (Insert class' description here)
@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntEchopropertiesTask extends AntTask {
+  class QuantEchopropertiesTask extends QuantTask {
     protected
       $destfile     = NULL,
       $prefix       = NULL,
@@ -49,7 +49,7 @@
       $this->format= $f;
     }
     
-    protected function execute(AntEnvironment $env) {
+    protected function execute(QuantEnvironment $env) {
       // TODO: Implement writing to file +failonerror handling
       // TODO: Implement XML output
       

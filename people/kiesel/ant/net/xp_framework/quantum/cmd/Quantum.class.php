@@ -8,7 +8,7 @@
     'io.File',
     'io.FileUtil',
     'util.cmd.Command',
-    'ant.AntProject'
+    'net.xp_framework.quantum.QuantProject'
   );
 
   /**
@@ -18,7 +18,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class PantsCli extends Command {
+  class Quantum extends Command {
     public
       $project  = NULL;
     
@@ -34,7 +34,7 @@
     #[@arg(short= 'f')]
     public function setBuildfile($file= NULL) {
       if (NULL === $file) $file= 'build.xml';
-      $this->project= AntProject::fromString(
+      $this->project= QuantProject::fromString(
         FileUtil::getContents(new File($file)),
         realpath($file)
       );

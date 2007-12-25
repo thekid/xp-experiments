@@ -5,7 +5,7 @@
  */
 
   uses(
-    'ant.task.AntTask',
+    'net.xp_framework.quantum.task.QuantTask',
     'lang.System'
   );
 
@@ -16,7 +16,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntTempfileTask extends AntTask {
+  class QuantTempfileTask extends QuantTask {
     public
       $property = NULL,
       $destdir  = NULL,
@@ -54,7 +54,7 @@
      * @param   
      * @return  
      */
-    protected function execute(AntEnvironment $env) {
+    protected function execute(QuantEnvironment $env) {
       $tempfile= tempnam($this->getDestDir($env), $this->prefix.uniqid((double)microtime()));
       $env->put($this->property, $tempfile);
     }

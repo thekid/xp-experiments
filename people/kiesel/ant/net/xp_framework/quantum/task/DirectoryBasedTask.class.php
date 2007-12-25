@@ -5,8 +5,8 @@
  */
 
   uses(
-    'ant.task.AntTask',
-    'ant.AntFileset'
+    'net.xp_framework.quantum.task.QuantTask',
+    'net.xp_framework.quantum.QuantFileset'
   );
 
   /**
@@ -16,7 +16,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  abstract class DirectoryBasedTask extends AntTask {
+  abstract class DirectoryBasedTask extends QuantTask {
     public
       $fileset  = NULL;
     
@@ -27,7 +27,7 @@
      * @return  
      */
     public function __construct() {
-      $this->fileset= new AntFileset();
+      $this->fileset= new QuantFileset();
     }
     
     /**
@@ -36,7 +36,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'include', class= 'ant.AntPattern')]
+    #[@xmlmapping(element= 'include', class= 'net.xp_framework.quantum.QuantPattern')]
     public function addIncludePattern($include) {
       $this->fileset->addIncludePattern($include);
     }
@@ -58,7 +58,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'exclude', class= 'ant.AntPattern')]
+    #[@xmlmapping(element= 'exclude', class= 'net.xp_framework.quantum.QuantPattern')]
     public function addExcludePattern($exclude) {
       $this->fileset->addExcludePattern($exclude);
     }
@@ -80,7 +80,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'fileset', class= 'ant.AntFileset')]
+    #[@xmlmapping(element= 'fileset', class= 'net.xp_framework.quantum.QuantFileset')]
     public function setFileset($set) {
       $this->fileset= $set;
     }
@@ -102,7 +102,7 @@
      * @param   
      * @return  
      */
-    protected function iteratorForFileset(AntEnvironment $env) {
+    protected function iteratorForFileset(QuantEnvironment $env) {
       return $this->fileset->iteratorFor($env);
     }
   }

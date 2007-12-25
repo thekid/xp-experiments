@@ -6,7 +6,7 @@
 
   uses(
     'io.collections.iterate.FilteredIOCollectionIterator',
-    'ant.AntFile'
+    'net.xp_framework.quantum.QuantFile'
   );
 
   /**
@@ -16,7 +16,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntFileIterator extends FilteredIOCollectionIterator {
+  class QuantFileIterator extends FilteredIOCollectionIterator {
     public
       $basedir  = '';
 
@@ -40,7 +40,7 @@
     public function next() {
       $next= parent::next();
       
-      return new AntFile($next, $this->basedir);
+      return new QuantFile($next, $this->basedir);
     }
   }
 ?>

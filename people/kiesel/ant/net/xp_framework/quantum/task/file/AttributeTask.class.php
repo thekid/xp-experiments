@@ -5,7 +5,7 @@
  */
 
   uses(
-    'ant.task.DirectoryBasedTask'
+    'net.xp_framework.quantum.task.DirectoryBasedTask'
   );
 
   /**
@@ -69,7 +69,7 @@
      * @param   
      * @return  
      */
-    protected function execute(AntEnvironment $env) {
+    protected function execute(QuantEnvironment $env) {
       if (NULL !== $this->file) {
         $this->_perform($env, $this->file);
       } else {

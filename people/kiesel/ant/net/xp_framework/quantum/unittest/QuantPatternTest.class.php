@@ -6,9 +6,9 @@
 
   uses(
     'unittest.TestCase',
-    'ant.AntPatternSet',
-    'ant.AntPattern',
-    'ant.AntEnvironment',
+    'net.xp_framework.quantum.QuantPatternSet',
+    'net.xp_framework.quantum.QuantPattern',
+    'net.xp_framework.quantum.QuantEnvironment',
     'io.collections.iterate.FilteredIOCollectionIterator',
     'io.collections.IOCollection',
     'io.collections.IOElement',
@@ -21,7 +21,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntPatternTest extends TestCase {
+  class QuantPatternTest extends TestCase {
   
     /**
      * (Insert method's description here)
@@ -85,12 +85,12 @@
      * @param   
      * @return  
      */
-    protected function newPatternSet(AntEnvironment $env, $inc, $exc= NULL) {
-      $p= new AntPatternSet();
-      foreach ($inc as $i) $p->addIncludePattern(new AntPattern($i, $env->directorySeparator()));
+    protected function newPatternSet(QuantEnvironment $env, $inc, $exc= NULL) {
+      $p= new QuantPatternSet();
+      foreach ($inc as $i) $p->addIncludePattern(new QuantPattern($i, $env->directorySeparator()));
       
       if (is_array($exc)) {
-        foreach ($exc as $e) $p->addIncludePattern(new AntPattern($e, $env->directorySeparator()));
+        foreach ($exc as $e) $p->addIncludePattern(new QuantPattern($e, $env->directorySeparator()));
       } else {
         // Otherwise use default excludes
         foreach ($env->getDefaultExcludes() as $exclude) $p->addExcludePattern($exclude);
@@ -104,8 +104,8 @@
      * 
      **/
     protected function iteratorFor($ds, IOCollection $collection, array $inc, array $exc= NULL) {
-      $env= new AntEnvironment(new StringWriter(new MemoryOutputStream()), new StringWriter(new MemoryOutputStream()), $ds);
-      return new AntFileIterator($collection, $this->newPatternSet(
+      $env= new QuantEnvironment(new StringWriter(new MemoryOutputStream()), new StringWriter(new MemoryOutputStream()), $ds);
+      return new QuantFileIterator($collection, $this->newPatternSet(
         $env, $inc, $exc
       )->createFilter($env, $collection->getURI()), TRUE, '');
     }
@@ -204,7 +204,7 @@
      * @return  
      */
     protected function asFilter($f, $ds= '/') {
-      $p= new AntPattern($f);
+      $p= new QuantPattern($f);
       $p->setDirectorySeparator($ds);
       return $p->nameToRegex();
     }

@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'ant.AntEnvironment',
+    'net.xp_framework.quantum.QuantEnvironment',
     'io.streams.MemoryOutputStream'
   );
 
@@ -16,10 +16,10 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntEnvironmentTest extends TestCase {
+  class QuantEnvironmentTest extends TestCase {
 
     public function setUp() {
-      $this->fixture= new AntEnvironment(
+      $this->fixture= new QuantEnvironment(
         new StringWriter(new MemoryOutputStream()),
         new StringWriter(new MemoryOutputStream())
       );

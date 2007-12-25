@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'ant.AntFileset',
+    'net.xp_framework.quantum.QuantFileset',
     'xml.meta.Unmarshaller'
   );
 
@@ -16,7 +16,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntFilesetTest extends TestCase {
+  class QuantFilesetTest extends TestCase {
 
     /**
      * Test
@@ -31,7 +31,7 @@
             <exclude name="**/*Test*"/>
           </patternset>
         </fileset>',
-        'ant.AntFileset'
+        'net.xp_framework.quantum.QuantFileset'
       ));
     }
 
@@ -46,7 +46,7 @@
           <include name="**/*.java"/>
           <exclude name="**/*Test*"/>
         </fileset>',
-        'ant.AntFileset'
+        'net.xp_framework.quantum.QuantFileset'
       ));      
     }
     
@@ -61,7 +61,7 @@
           includes="**/*.java"
           excludes="**/*Test*"
         />',
-        'ant.AntFileset'
+        'net.xp_framework.quantum.QuantFileset'
       ));
     }
 
@@ -72,12 +72,12 @@
      * @return  
      */
     protected function assertStructure($u) {
-      $this->assertClass($u, 'ant.AntFileset');
-      $this->assertClass($u->patternset, 'ant.AntPatternSet');
+      $this->assertClass($u, 'net.xp_framework.quantum.QuantFileset');
+      $this->assertClass($u->patternset, 'net.xp_framework.quantum.QuantPatternSet');
       $this->assertEquals(1, sizeof($u->patternset->includes));
-      $this->assertClass($u->patternset->includes[0], 'ant.AntPattern');
+      $this->assertClass($u->patternset->includes[0], 'net.xp_framework.quantum.QuantPattern');
       $this->assertEquals(1, sizeof($u->patternset->excludes));
-      $this->assertClass($u->patternset->excludes[0], 'ant.AntPattern');      
+      $this->assertClass($u->patternset->excludes[0], 'net.xp_framework.quantum.QuantPattern');      
     }
     
   }

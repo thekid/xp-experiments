@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ant.task.AntTask');
+  uses('net.xp_framework.quantum.task.QuantTask');
 
   /**
    * (Insert class' description here)
@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntDirnameTask extends AntTask {
+  class QuantDirnameTask extends QuantTask {
     public
       $file     = NULL,
       $property = NULL;
@@ -44,7 +44,7 @@
      * @param   
      * @return  
      */
-    protected function execute(AntEnvironment $env) {
+    protected function execute(QuantEnvironment $env) {
       if (!$this->property || !$this->file)
         throw new IllegalArgumentException('Dirname must have property and file attribute');
       

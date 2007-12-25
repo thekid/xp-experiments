@@ -5,7 +5,7 @@
  */
 
   uses(
-    'ant.AntPattern'
+    'net.xp_framework.quantum.QuantPattern'
   );
 
   /**
@@ -15,7 +15,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntEnvironment extends Object {
+  class QuantEnvironment extends Object {
     public
       $in   = NULL,
       $out  = NULL,
@@ -159,7 +159,7 @@
     public function getDefaultExcludes() {
       $patterns= array();
       foreach ($this->defaultExcludes as $e) {
-        $patterns[]= new AntPattern($e, $this->directorySeparator());
+        $patterns[]= new QuantPattern($e, $this->directorySeparator());
       }
       return $patterns;
     }

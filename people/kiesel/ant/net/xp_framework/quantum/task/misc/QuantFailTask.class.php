@@ -5,8 +5,8 @@
  */
 
   uses(
-    'ant.task.AntTask',
-    'ant.AntBuildException'
+    'net.xp_framework.quantum.task.QuantTask',
+    'net.xp_framework.quantum.QuantBuildException'
   );
 
   /**
@@ -16,7 +16,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntFailTask extends AntTask {
+  class QuantFailTask extends QuantTask {
     protected
       $message  = NULL,
       $if       = NULL,
@@ -54,11 +54,11 @@
      * @param   
      * @return  
      */
-    protected function execute(AntEnvironment $env) {
+    protected function execute(QuantEnvironment $env) {
       if (NULL !== $this->if && !$env->exists($this->if)) return;
       if (NULL !== $this->unless && $env->exists($this->unless)) return;
       
-      throw new AntBuildException($this->substitute($this->message), $this->status);
+      throw new QuantBuildException($this->substitute($this->message), $this->status);
     }
   }
 ?>

@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'ant.AntProject',
+    'net.xp_framework.quantum.QuantProject',
     'io.streams.MemoryOutputStream'
   );
 
@@ -16,7 +16,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntProjectTest extends TestCase {
+  class QuantProjectTest extends TestCase {
   
     /**
      * Test
@@ -24,7 +24,7 @@
      */
     #[@test]
     public function parseBuildXml() {
-      $project= AntProject::fromString('
+      $project= QuantProject::fromString('
         <project name="MyProject" default="dist" basedir=".">
             <description>
                 simple example build file

@@ -5,7 +5,7 @@
  */
 
   uses(
-    'ant.AntEnvironment',
+    'net.xp_framework.quantum.QuantEnvironment',
     'xml.meta.Unmarshaller'
   );
 
@@ -16,7 +16,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntProject extends Object {
+  class QuantProject extends Object {
     public
       $filename     = NULL,
       $name         = NULL,
@@ -34,7 +34,7 @@
      * @return  
      */
     public static function fromString($xml, $filename) {
-      $project= Unmarshaller::unmarshal($xml, 'ant.AntProject');
+      $project= Unmarshaller::unmarshal($xml, 'net.xp_framework.quantum.QuantProject');
       $project->filename= $filename;
       return $project;
     }
@@ -78,7 +78,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'property', class='ant.task.property.AntPropertyTask')]
+    #[@xmlmapping(element= 'property', class='net.xp_framework.quantum.task.property.QuantPropertyTask')]
     public function addProperty($property) {
       $this->properties[]= $property;
     }
@@ -89,7 +89,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'target', class='ant.AntTarget')]
+    #[@xmlmapping(element= 'target', class='net.xp_framework.quantum.QuantTarget')]
     public function addTarget($target) {
       if (isset($this->targets[$target->getName()])) {
         throw new IllegalArgumentException('Target "'.$target->getName().'" is duplicate.');
@@ -104,7 +104,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'import', class= 'ant.AntImport')]
+    #[@xmlmapping(element= 'import', class= 'net.xp_framework.quantum.QuantImport')]
     public function importBuildfile($import) {
       $this->imports[]= $import;
     }
@@ -166,7 +166,7 @@
       }
       
       // Setup environment
-      $this->environment= new AntEnvironment($out, $err);
+      $this->environment= new QuantEnvironment($out, $err);
       foreach ($this->properties as $p) { $p->run($this->environment); }      
       
       $this->runTarget($target);

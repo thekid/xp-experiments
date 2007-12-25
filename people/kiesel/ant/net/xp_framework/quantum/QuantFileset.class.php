@@ -5,9 +5,9 @@
  */
 
   uses(
-    'ant.AntPattern',
-    'ant.AntPatternSet',
-    'ant.AntFileIterator',
+    'net.xp_framework.quantum.QuantPattern',
+    'net.xp_framework.quantum.QuantPatternSet',
+    'net.xp_framework.quantum.QuantFileIterator',
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator'
   );
@@ -19,7 +19,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntFileset extends Object {
+  class QuantFileset extends Object {
     public
       $dir        = NULL,
       $file       = NULL,
@@ -32,7 +32,7 @@
      * @return  
      */
     public function __construct() {
-      $this->patternset= new AntPatternSet();
+      $this->patternset= new QuantPatternSet();
     }
     
     /**
@@ -74,7 +74,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'include', class= 'ant.AntPattern')]
+    #[@xmlmapping(element= 'include', class= 'net.xp_framework.quantum.QuantPattern')]
     public function addIncludePattern($include) {
       $this->patternset->addIncludePattern($include);
     }
@@ -96,7 +96,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'exclude', class= 'ant.AntPattern')]
+    #[@xmlmapping(element= 'exclude', class= 'net.xp_framework.quantum.QuantPattern')]
     public function addExcludePattern($exclude) {
       $this->patternset->addExcludePattern($exclude);
     }
@@ -118,7 +118,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'patternset', class= 'ant.AntPatternSet')]
+    #[@xmlmapping(element= 'patternset', class= 'net.xp_framework.quantum.QuantPatternSet')]
     public function setPatternSet($set) {
       $this->patternset= $set;
     }
@@ -129,7 +129,7 @@
      * @param   
      * @return  
      */
-    public function getDir(AntEnvironment $env) {
+    public function getDir(QuantEnvironment $env) {
       return $env->localUri($env->substitute($this->dir));
     }    
     
@@ -139,14 +139,14 @@
      * @param   
      * @return  
      */
-    public function iteratorFor(AntEnvironment $env) {
+    public function iteratorFor(QuantEnvironment $env) {
       if (!($dir= $this->getDir($env))) {
         $dir= getcwd();
       }
       $realdir= realpath($dir);
       if (!$realdir) throw new IllegalStateException('Directory "'.$dir.'" does not exist.');
       
-      return new AntFileIterator(
+      return new QuantFileIterator(
         new FileCollection($realdir),
         $this->patternset->createFilter($env, $realdir),
         TRUE,

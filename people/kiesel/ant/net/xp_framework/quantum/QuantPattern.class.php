@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ant.TopURIMatchesFilter');
+  uses('net.xp_framework.quantum.TopURIMatchesFilter');
 
   /**
    * (Insert class' description here)
@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntPattern extends Object {
+  class QuantPattern extends Object {
     public
       $name   = NULL,
       $if     = NULL,
@@ -82,7 +82,7 @@
      * @param   
      * @return  
      */
-    public function applies(AntEnvironment $env) {
+    public function applies(QuantEnvironment $env) {
       if (NULL !== $this->if) {
         return $env->exists($this->if);
       }

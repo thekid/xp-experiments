@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ant.task.AntTask');
+  uses('net.xp_framework.quantum.task.QuantTask');
 
   /**
    * (Insert class' description here)
@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntJavaTask extends AntTask {
+  class QuantJavaTask extends QuantTask {
 
     /**
      * (Insert method's description here)
@@ -21,7 +21,7 @@
      * @param   
      * @return  
      */
-    public function execute(AntEnvironment $env) {
+    public function execute(QuantEnvironment $env) {
     }    
   }
 ?>

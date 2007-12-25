@@ -5,7 +5,7 @@
  */
 
   uses(
-    'ant.task.AntTask',
+    'net.xp_framework.quantum.task.QuantTask',
     'peer.http.HttpConnection'
   );
 
@@ -16,7 +16,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntGetTask extends AntTask {
+  class QuantGetTask extends QuantTask {
     protected
       $src          = NULL,
       $dest         = NULL,
@@ -61,7 +61,7 @@
       $this->password= $p;
     }
     
-    public function execute(AntEnvironment $env) {
+    public function execute(QuantEnvironment $env) {
       if (!$this->dest) throw new IllegalArgumentException('Destination must be given in <get>');
       $url= $env->substitute($this->src);
       $c= new HttpConnection($url);

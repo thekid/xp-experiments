@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ant.task.file.AttributeTask');
+  uses('net.xp_framework.quantum.task.file.AttributeTask');
 
   /**
    * (Insert class' description here)
@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntChownTask extends AttributeTask {
+  class QuantChownTask extends AttributeTask {
     protected
       $owner    = NULL;
       

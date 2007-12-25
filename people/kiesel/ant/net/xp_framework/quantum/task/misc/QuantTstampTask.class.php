@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ant.task.AntTask');
+  uses('net.xp_framework.quantum.task.QuantTask');
 
   /**
    * (Insert class' description here)
@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntTstampTask extends AntTask {
+  class QuantTstampTask extends QuantTask {
   
     /**
      * (Insert method's description here)
@@ -21,7 +21,7 @@
      * @param   
      * @return  
      */
-    protected function execute(AntEnvironment $env) {
+    protected function execute(QuantEnvironment $env) {
       $env->put('DSTAMP', Date::now()->toString('Ymd'));
       $env->put('TSTAMP', Date::now()->toString('hi'));
       $env->put('TODAY', Date::now()->toString('M d Y'));

@@ -11,7 +11,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntTarget extends Object {
+  class QuantTarget extends Object {
     public
       $name     = '',
       $depends  = array(),
@@ -87,7 +87,7 @@
         }
       }
       
-      $classname= sprintf('ant.task.%sAnt%sTask', 
+      $classname= sprintf('net.xp_framework.quantum.task.%sQuant%sTask', 
         (isset($package[$name]) ? $package[$name].'.' : ''),
         ucfirst($name)
       );
@@ -96,7 +96,7 @@
       try {
         XPClass::forName($classname);
       } catch (ClassNotFoundException $e) {
-        $classname= 'ant.task.AntUnknownTask';
+        $classname= 'net.xp_framework.quantum.task.QuantUnknownTask';
       }
       
       return $classname;
@@ -119,7 +119,7 @@
      * @param   
      * @return  
      */
-    public function run(AntProject $project, AntEnvironment $env) {
+    public function run(QuantProject $project, QuantEnvironment $env) {
     
       if (!$this->needsToRun()) return;
     

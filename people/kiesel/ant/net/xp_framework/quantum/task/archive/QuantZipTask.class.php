@@ -1,10 +1,10 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: AntJarTask.class.php 8846 2007-04-14 18:46:50Z kiesel $ 
+ * $Id: QuantJarTask.class.php 8846 2007-04-14 18:46:50Z kiesel $ 
  */
 
-  uses('ant.task.DirectoryBasedTask');
+  uses('net.xp_framework.quantum.task.DirectoryBasedTask');
 
   /**
    * (Insert class' description here)
@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntZipTask extends DirectoryBasedTask {
+  class QuantZipTask extends DirectoryBasedTask {
     protected
       $dest       = NULL,
       $basedir    = NULL,
@@ -100,9 +100,9 @@
      * @param   
      * @return  
      */
-    protected function execute(AntEnvironment $env) {
+    protected function execute(QuantEnvironment $env) {
       if (NULL !== $this->basedir) {
-        $this->setFileset(new AntFileset());
+        $this->setFileset(new QuantFileset());
         $this->fileset->setDir($this->basedir);
         $this->fileset->addIncludePatternString('**/*');
       }

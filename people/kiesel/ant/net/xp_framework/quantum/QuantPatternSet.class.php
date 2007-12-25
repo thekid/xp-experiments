@@ -17,7 +17,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntPatternSet extends Object {
+  class QuantPatternSet extends Object {
     public
       $id               = NULL,
       $includes         = array(),
@@ -63,14 +63,14 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'include', class= 'ant.AntPattern')]
+    #[@xmlmapping(element= 'include', class= 'net.xp_framework.quantum.QuantPattern')]
     public function addIncludePattern($pattern) {
       if (is_string($pattern)) {
-        $pattern= new AntPattern($pattern);
+        $pattern= new QuantPattern($pattern);
       }
       
-      if (!$pattern instanceof AntPattern) 
-        throw new IllegalArgumentException('Expecting AntPattern or string');
+      if (!$pattern instanceof QuantPattern) 
+        throw new IllegalArgumentException('Expecting QuantPattern or string');
       
       $this->includes[]= $pattern;
     }
@@ -81,14 +81,14 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'exclude', class= 'ant.AntPattern')]
+    #[@xmlmapping(element= 'exclude', class= 'net.xp_framework.quantum.QuantPattern')]
     public function addExcludePattern($pattern) {
       if (is_string($pattern)) {
-        $pattern= new AntPattern($pattern);
+        $pattern= new QuantPattern($pattern);
       }
       
-      if (!$pattern instanceof AntPattern) {
-        throw new IllegalArgumentException('Expecting AntPattern or string');
+      if (!$pattern instanceof QuantPattern) {
+        throw new IllegalArgumentException('Expecting QuantPattern or string');
       }
       
       $this->excludes[]= $pattern;
@@ -100,7 +100,7 @@
      * @param   
      * @return  
      */
-    public function createFilter(AntEnvironment $env, $basedir) {
+    public function createFilter(QuantEnvironment $env, $basedir) {
       
       $inc= $exc= array();
       foreach ($this->includes as $include) {

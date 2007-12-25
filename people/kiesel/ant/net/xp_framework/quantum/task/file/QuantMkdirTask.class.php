@@ -5,7 +5,7 @@
  */
 
   uses(
-    'ant.task.AntTask',
+    'net.xp_framework.quantum.task.QuantTask',
     'io.Folder'
   );
 
@@ -16,7 +16,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntMkdirTask extends AntTask {
+  class QuantMkdirTask extends QuantTask {
     public
       $dir    = NULL;
       
@@ -47,7 +47,7 @@
      * @param   
      * @return  
      */
-    protected function execute(AntEnvironment $env) {
+    protected function execute(QuantEnvironment $env) {
       $folder= new Folder($this->getDir($env));
       if (!$folder->exists()) $folder->create();
     }

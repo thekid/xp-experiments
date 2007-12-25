@@ -11,7 +11,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  abstract class AntTask extends Object {
+  abstract class QuantTask extends Object {
     public
       $id       = NULL,
       $taskname = NULL,
@@ -66,7 +66,7 @@
      * @param   
      * @return  
      */
-    abstract protected function execute(AntEnvironment $env);
+    abstract protected function execute(QuantEnvironment $env);
     
     /**
      * Perform pre-execution checks
@@ -83,7 +83,7 @@
      * @param   
      * @return  
      */
-    final public function run(AntEnvironment $env) {
+    final public function run(QuantEnvironment $env) {
       if ($this->needsToRun($env)) {
         $env->out->writeLine('['.$this->getClassName().'] called.');
         

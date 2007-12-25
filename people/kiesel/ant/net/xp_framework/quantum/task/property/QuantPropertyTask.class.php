@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('ant.task.AntTask');
+  uses('net.xp_framework.quantum.task.QuantTask');
 
   /**
    * (Insert class' description here)
@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntPropertyTask extends AntTask {
+  class QuantPropertyTask extends QuantTask {
     public
       $name     = '',
       $value    = '';
@@ -46,7 +46,7 @@
      * @param   
      * @return  
      */
-    protected function execute(AntEnvironment $env) {
+    protected function execute(QuantEnvironment $env) {
       // Properties may be declared twice, first occurrence wins
       if ($env->exists($this->name)) return;
       $env->put($this->name, $env->substitute($this->value));

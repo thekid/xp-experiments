@@ -15,7 +15,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntFile extends Object implements IOElement {
+  class QuantFile extends Object implements IOElement {
     public
       $file     = NULL,
       $basedir  = NULL;

@@ -7,7 +7,7 @@
   uses(
     'io.File',
     'io.TempFile',
-    'ant.task.DirectoryBasedTask',
+    'net.xp_framework.quantum.task.DirectoryBasedTask',
     'lang.Process'
   );
 
@@ -18,7 +18,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntJavacTask extends DirectoryBasedTask {
+  class QuantJavacTask extends DirectoryBasedTask {
     public
       $destdir= NULL,
       $classpath= NULL,
@@ -37,7 +37,7 @@
       $target= NULL,
       $verbose= FALSE,
       $depend= NULL,
-      $includeAntRuntime= TRUE,
+      $includeQuantRuntime= TRUE,
       $includeJavaRuntime= FALSE,
       $fork= TRUE,
       $executable= 'javac',
@@ -76,7 +76,7 @@
      * @access  public
      * @return  lang.Object
      */
-    function getSrcdir(AntEnvironment $env) {
+    function getSrcdir(QuantEnvironment $env) {
       return $env->localUri($env->substitute($this->srcdir));
     }
 
@@ -97,7 +97,7 @@
      * @access  public
      * @return  lang.Object
      */
-    function getDestdir(AntEnvironment $env) {
+    function getDestdir(QuantEnvironment $env) {
       return $env->localUri($env->substitute($this->destdir));
     }
 
@@ -118,7 +118,7 @@
      * @access  public
      * @return  lang.Object
      */
-    function getClasspath(AntEnvironment $env) {
+    function getClasspath(QuantEnvironment $env) {
       if ($this->classpathref) {
         return $env->getPath($this->classpathref);
       }
@@ -143,7 +143,7 @@
      * @access  public
      * @return  lang.Object
      */
-    function getSourcepath(AntEnvironment $env) {
+    function getSourcepath(QuantEnvironment $env) {
       if ($this->sourcepathref) {
         return $env->getPath($this->sourcepathref);
       }
@@ -301,13 +301,13 @@
     }
 
     /**
-     * Set IncludeAntRuntime
+     * Set IncludeQuantRuntime
      *
      * @access  public
-     * @param   lang.Object includeAntRuntime
+     * @param   lang.Object includeQuantRuntime
      */
-    #[@xmlmapping(element= '@includeAntRuntime')]
-    function setIncludeAntRuntime($includeAntRuntime) {
+    #[@xmlmapping(element= '@includeQuantRuntime')]
+    function setIncludeQuantRuntime($includeQuantRuntime) {
       throw new MethodNotImplementedException(__FUNCTION__.' not implemented');
     }
 
@@ -440,7 +440,7 @@
      * @param   
      * @return  
      */
-    protected function execute(AntEnvironment $env) {
+    protected function execute(QuantEnvironment $env) {
       $cmdline= array();
       $cmdline[]= $this->getExecutable();
       if ($this->classpath || $this->classpathref) $cmdline[]= '-classpath '.$this->getClasspath($env);
