@@ -150,7 +150,7 @@
         while ($iter->hasNext()) {
           $element= $iter->next();
 
-          $this->delete($env, $element->relativePart());
+          $this->delete($env, $element->relativePath());
         }
       }
     }

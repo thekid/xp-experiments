@@ -40,7 +40,15 @@
     public function next() {
       $next= parent::next();
       
-      return new QuantFile($next, $this->basedir);
+      if ($next instanceof IOCollection) {
+        return new QuantCollection($next, $this->basedir);
+      }
+      
+      if ($next instanceof IOelement) {
+        return new QuantFile($next, $this->basedir);
+      }
+
+      throw new IllegalStateException('Retrieved unexpected element: '.xp::stringOf($next));
     }
   }
 ?>

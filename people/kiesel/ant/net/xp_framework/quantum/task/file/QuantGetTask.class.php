@@ -6,7 +6,8 @@
 
   uses(
     'net.xp_framework.quantum.task.QuantTask',
-    'peer.http.HttpConnection'
+    'peer.http.HttpConnection',
+    'util.profiling.Timer'
   );
 
   /**
@@ -79,7 +80,10 @@
         $headers['If-Modified-Since']= create(new Date($dest->lastModified()))->toString(DATE_COOKIE);
       }
       
+      $timer= new Timer();
+      $timer->start();
       $this->verbose && $env->out->writeLine('Fetching '.$url.' ...');
+      
       $response= $c->get(NULL, $headers);
       switch ($response->getStatusCode()) {
         case HTTP_NOT_MODIFIED: {
@@ -91,10 +95,16 @@
           
           while (FALSE !== ($buf= $response->readData(8192, TRUE))) {
             $dest->write($buf);
+            unset($buf);
           }
           
           $dest->close();
-          $this->verbose && $env->out->writeLine('Fetched '.$url.' successfully.');
+          $timer->stop();
+          $this->verbose && $env->out->writeLinef('Successfully fetched %s - retrieved %dkb in %0.2f sec.',
+            $url,
+            intval($dest->size() / 1024),
+            $timer->elapsedTime()
+          );
           return;
         }
         

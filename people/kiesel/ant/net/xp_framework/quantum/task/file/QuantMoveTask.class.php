@@ -131,7 +131,7 @@
       while ($iter->hasNext()) {
         $element= $iter->next();
         
-        $this->copy($env, $element->relativePart());
+        $this->copy($env, $element->relativePath());
       }
     }    
   }

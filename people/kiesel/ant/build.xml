@@ -52,7 +52,7 @@
   <target name="zip">
     <zip
      dest="ant.zip"
-     basedir="ant"
+     basedir="net"
      comment="This archive has been created by Quantum."
     />
   </target>

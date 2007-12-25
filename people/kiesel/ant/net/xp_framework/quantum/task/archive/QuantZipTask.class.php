@@ -75,18 +75,18 @@
     }
     
     protected function addElement($env, $zip, $element) {
-      $env->out->writeLine('Adding '.$element->relativePart());
+      $env->out->writeLine('Adding '.$element->relativePath());
       
       if ($element->file instanceof FileCollection) {
         return;
-        if (TRUE !== $zip->addEmptyDir(rtrim($element->relativePart(), $env->directorySeparator()))) {
+        if (TRUE !== $zip->addEmptyDir(rtrim($element->relativePath(), $env->directorySeparator()))) {
           var_dump(xp::registry('errors'));
-          throw new IOException('Could not add directory '.$element->relativePart().' to zipfile');;
+          throw new IOException('Could not add directory '.$element->relativePath().' to zipfile');;
         }
       }
       
-      if (TRUE !== $zip->addFile($element->getURI(), $env->unixUri($element->relativePart())))
-        throw new IOException('Could not add "'.$element->relativePart().'" to zipfile');
+      if (TRUE !== $zip->addFile($element->getURI(), $env->unixUri($element->relativePath())))
+        throw new IOException('Could not add "'.$element->relativePath().'" to zipfile');
     }
     
     protected function setArchiveComment($env, $zip) {

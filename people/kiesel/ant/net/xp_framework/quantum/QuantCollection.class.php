@@ -15,10 +15,10 @@
    * @see      reference
    * @purpose  purpose
    */
-  class QuantFile extends Object implements IOElement {
+  class QuantCollection extends Object implements IOCollection {
     public
-      $file     = NULL,
-      $base     = NULL;
+      $collection = NULL,
+      $base       = NULL;
     
     /**
      * (Insert method's description here)
@@ -26,8 +26,11 @@
      * @param   
      * @return  
      */
-    public function __construct(FileElement $element, $base) {
-      $this->file= $element;
+    public function __construct(FileCollection $element, $base) {
+      if (0 !== strncmp($base, $element, strlen($base)))
+        throw new IllegalArgumentException('Element '.$element->getURI().' does not belong to base '.$base);
+        
+      $this->collection= $element;
       $this->base= $base;
     }
     
@@ -38,7 +41,7 @@
      * @return  
      */
     public function relativePath() {
-      return substr($this->file->getURI(), strlen($this->base)+ 1);
+      return substr($this->collection->getURI(), strlen($this->base)+ 1);
     }
     
     /**
@@ -48,7 +51,7 @@
      * @return  
      */
     public function getURI() {
-      return $this->file->getURI();
+      return $this->collection->getURI();
     }
     
     /**
@@ -68,7 +71,7 @@
      * @return  
      */
     public function getSize() {
-      return $this->file->getSize();
+      return $this->collection->getSize();
     }
     
     /**
@@ -78,7 +81,7 @@
      * @return  
      */
     public function createdAt() {
-      return $this->file->createdAt();
+      return $this->collection->createdAt();
     }
     
     /**
@@ -88,7 +91,7 @@
      * @return  
      */
     public function lastAccessed() {
-      return $this->file->lastAccessed();
+      return $this->collection->lastAccessed();
     }
     
     /**
@@ -98,7 +101,23 @@
      * @return  
      */
     public function lastModified() {
-      return $this->file->lastModified();
-    }    
+      return $this->collection->lastModified();
+    }
+    
+    public function open() {
+      return $this->collection->open();
+    }
+    
+    public function rewind() {
+      return $this->collection->rewind();
+    }
+    
+    public function next() {
+      return $this->collection->next();
+    }
+    
+    public function close() {
+      return $this->collection->close();
+    }
   }
 ?>
