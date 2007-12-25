@@ -6,7 +6,8 @@
 
   uses(
     'io.collections.iterate.FilteredIOCollectionIterator',
-    'net.xp_framework.quantum.QuantFile'
+    'net.xp_framework.quantum.QuantFile',
+    'net.xp_framework.quantum.QuantCollection'
   );
 
   /**

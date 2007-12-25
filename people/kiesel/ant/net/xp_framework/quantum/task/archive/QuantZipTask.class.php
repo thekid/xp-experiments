@@ -113,6 +113,7 @@
       while ($iterator->hasNext()) {
         $element= $iterator->next();
         
+        if ($element instanceof QuantCollection) continue;
         $this->addElement($env, $zip, $element);
       }
       

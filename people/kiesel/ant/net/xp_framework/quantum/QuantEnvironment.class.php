@@ -147,7 +147,7 @@
      * @return  string
      */
     public function unixUri($uri) {
-      return strtr($uri, '\\', $this->directorySeparator);
+      return strtr($uri, '\\', '/');
     }
     
     /**

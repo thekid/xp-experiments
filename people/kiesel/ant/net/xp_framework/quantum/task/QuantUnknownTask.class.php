@@ -35,7 +35,7 @@
      * @return  
      */
     public function execute(QuantEnvironment $env) {
-      raise('lang.MethodNotImplementedException', 'Unknown task "'.$this->type.'" invoked.');
+      raise('lang.MethodNotImplementedException', 'Unknown task invoked.', $this->type);
     }    
   }
 ?>

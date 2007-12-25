@@ -27,7 +27,7 @@
      * @return  
      */
     public function __construct(FileCollection $element, $base) {
-      if (0 !== strncmp($base, $element, strlen($base)))
+      if (0 !== strncmp($base, $element->getURI(), strlen($base)))
         throw new IllegalArgumentException('Element '.$element->getURI().' does not belong to base '.$base);
         
       $this->collection= $element;

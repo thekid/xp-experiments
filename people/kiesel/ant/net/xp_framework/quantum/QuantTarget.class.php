@@ -73,6 +73,7 @@
         'tstamp'          => 'misc',
         'jar'             => 'archive',
         'zip'             => 'archive',
+        'xar'             => 'archive',
         'property'        => 'property',
         'basename'        => 'property',
         'dirname'         => 'property',
