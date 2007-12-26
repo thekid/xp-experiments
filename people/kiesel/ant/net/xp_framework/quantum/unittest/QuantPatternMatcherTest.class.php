@@ -117,5 +117,17 @@
       $this->assertTrue($pattern->matches('dir/some/file'));
       $this->assertFalse($pattern->matches('some/dir/some/file'));
     }
+    
+    #[@test]
+    public function directoryMatch() {
+      $this->assertTrue($this->patternFor('directory/')->matches('directory/file'));
+      $this->assertTrue($this->patternFor('directory/')->matches('directory/file/bar'));
+    }
+    
+    #[@test]
+    public function staticMatchEnclosedWithWildcards() {
+      $this->assertTrue($this->patternFor('**/directory/**')->matches('some/directory/file'));
+      $this->assertFalse($this->patternFor('**/directory/**')->matches('nothing'));
+    }
   }
 ?>
