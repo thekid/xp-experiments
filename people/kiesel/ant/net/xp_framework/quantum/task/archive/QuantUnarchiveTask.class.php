@@ -20,6 +20,7 @@
       $overwrite    = TRUE,
       $compression  = NULL,
       $encoding     = NULL,
+      $verbose      = FALSE,
       $patternset   = NULL;
     
     #[@xmlmapping(element= '@src')]
@@ -37,6 +38,11 @@
       $this->overwrite= ('true' === $o);
     }
     
+    #[@xmlmapping(element= '@verbose')]
+    public function setVerbose($v) {
+      $this->verbose= ('true' === $v);
+    }
+    
     #[@xmlmapping(element= 'patternset', class= 'net.xp_framework.quantum.QuantPatternSet')]
     public function setPatternSet($p) {
       $this->patternset= $p;
@@ -52,15 +58,16 @@
       
       while ($element= $this->nextElement($env, $arc)) {
         
-        // TBI: Implement filtering logic
-        $data= $this->extract($env, $arc, $element);
-       
         // Prepare target name
         $elementName= $this->elementName($env, $arc, $element);
+        
+        if ($this->patternset && !$this->patternset->evaluatePatternOn($env, $elementName)) continue;
+        $data= $this->extract($env, $arc, $element);
+       
         $f= new File($this->targetFilename($env, $elementName));
         if ($f->exists() && !$this->overwrite) return;
         
-        $env->out->writeLine('Extracting '.$elementName.' to '.$f->getURI());
+        $this->verbose && $env->out->writeLine('Extracting '.$elementName.' to '.$f->getURI());
         continue;
         
         $f->open(FILE_MODE_WRITE);

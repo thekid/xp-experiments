@@ -131,5 +131,48 @@
       
       return new AllOfFilter($filter);
     }
+    
+    public function evaluatePatternOn(QuantEnvironment $env, $name) {
+      $positive= FALSE;
+      foreach ($this->includes as $include) {
+        if ($include->applies($env)) {
+          if ($include->getMatcher()->matches($name)) {
+            $positive= TRUE;
+            break;
+          }
+        }
+      }
+      
+      if (!$positive) return FALSE;
+      
+      foreach ($this->excludes as $exclude) {
+        if ($exclude->applies($env)) {
+          if ($exclude->getMatcher()->matches($name)) {
+            return FALSE;
+          }
+        }
+      }
+      
+      return TRUE;
+    }
+    
+    /**
+     * Retrieve string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      $s= $this->getClassName().'@('.$this->hashCode().") {\n";
+      $s.= "  includes= {\n    ";
+      foreach ($this->includes as $i) {
+        $s.= implode("\n    ", explode("\n", $i->toString()))."\n";
+      }
+      $s.= "  }\n  excludes= {\n    ";
+      foreach ($this->excludes as $e) {
+        $s.= implode("\n    ", explode("\n", $e->toString()))."\n";
+      }
+      
+      return $s.'  }';
+    }
   }
 ?>

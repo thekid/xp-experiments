@@ -61,7 +61,12 @@
     <unzip
      src="ant.zip"
      dest="build"
-    />
+    >
+      <patternset>
+        <include name="**/*"/>
+        <exclude name="**/*Task.class.php"/>
+      </patternset>
+    </unzip>
   </target>
 
   <target name="xar">

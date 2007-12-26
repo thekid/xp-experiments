@@ -106,5 +106,22 @@
     public function toFilter($base) {
       return new QuantPatternFilter($this->name, $base);
     }
+    
+    public function getMatcher() {
+      return new QuantPatternMatcher($this->name);
+    }
+    
+    /**
+     * Create string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      $s= $this->getClassName().'@('.$this->hashCode().") {\n";
+      $s.= '  pattern= "'.$this->name.'"'."\n";
+      if ($this->if) $s.= '  if= ${'.$this->if."}\n";
+      if ($this->unless) $s.= '  unless= ${'.$this->unless."}\n";
+      return $s. '}';  
+    }
   }
 ?>
