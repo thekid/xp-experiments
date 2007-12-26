@@ -116,7 +116,7 @@
         $this->translateToFile(
           $style, 
           $element->relativePath(), 
-          $this->uriOf($this->destdir).'/'.$element->relativePath())
+          $this->uriOf($this->destdir.'/'.$element->relativePath())
         );
       }
     }

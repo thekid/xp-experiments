@@ -104,8 +104,8 @@
     final public function run(QuantEnvironment $env) {
       $this->env= $env;
       
-      if ($this->needsToRun()) {
-        $this->execute($env);
+      if ($this->needsToRun($env)) {
+        $this->execute();
       }
       
       $this->env= NULL;

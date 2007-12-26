@@ -96,4 +96,9 @@
      style="style.xsl"
     />
   </target>
+  
+  <target name="prop">
+    <property environment="env"/>
+    <echoproperties/>
+  </target>
 </project>

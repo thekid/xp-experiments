@@ -81,6 +81,17 @@
       // TBI
     }
     
+    protected function readProperties($prop) {
+      $prefix= $prefix ? rtrim($this->valueOf($prefix), '.').'.' : '';
+      $section= $prop->getFirstSection();
+      while ($section) {
+        foreach ($prop->readSection($section) as $name => $value) {
+          $this->env()->put($prefix.$section.'.'.$name, $this->valueOf($value));
+        }
+        $section= $prop->getNextSection();
+      }
+    }
+    
     /**
      * (Insert method's description here)
      *
@@ -103,6 +114,16 @@
         return;
       } else if (NULL !== $this->file) {
         $prop= new Properties($this->uriOf($this->file));
+        $this->readProperties($prop);
+      } else if (NULL !== $this->url) {
+        $data= Properties::fromString(HttpUtil::get(new HttpConnection(new URL($this->valueOf($this->url)))));
+        return $this->readProperties($prop);
+      } else if (NULL !== $this->environment) {
+        foreach ($_SERVER as $name => $value) {
+          $this->env()->put($this->environment.'.'.strtolower($name), $value);
+        }
+      } else {
+        throw new IllegalArgumentException('<property> task misconfigured');
       }
     }
     
