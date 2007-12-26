@@ -21,10 +21,10 @@
      * @param   
      * @return  
      */
-    protected function execute(QuantEnvironment $env) {
-      $env->put('DSTAMP', Date::now()->toString('Ymd'));
-      $env->put('TSTAMP', Date::now()->toString('hi'));
-      $env->put('TODAY', Date::now()->toString('M d Y'));
+    protected function execute() {
+      $this->env()->put('DSTAMP', Date::now()->toString('Ymd'));
+      $this->env()->put('TSTAMP', Date::now()->toString('hi'));
+      $this->env()->put('TODAY', Date::now()->toString('M d Y'));
     }
   }
 ?>

@@ -17,25 +17,25 @@
    */
   class QuantUnxarTask extends QuantUnarchiveTask {
     
-    protected function open($env) {
-      $arc= new Archive(new File($env->localUri($env->substitute($this->src))));
+    protected function open() {
+      $arc= new Archive(new File($this->uriOf($this->src)));
       $arc->open(ARCHIVE_READ);
       return $arc;
     }
     
-    protected function nextElement($env, $arc) {
+    protected function nextElement($arc) {
       return $arc->getEntry();
     }
     
-    protected function elementName($env, $arc, $element) {
+    protected function elementName($arc, $element) {
       return $element;
     }
     
-    protected function extract($env, $arc, $element) {
+    protected function extract($arc, $element) {
       return $arc->extract($element);
     }
     
-    protected function close($env, $arc) {
+    protected function close($arc) {
       $arc->close();
     }
   }

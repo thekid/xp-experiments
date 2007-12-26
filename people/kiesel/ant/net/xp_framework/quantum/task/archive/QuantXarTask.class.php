@@ -53,21 +53,21 @@
         throw new IllegalArgumentException('Either basedir or a nested fileset must be given.');
     }
     
-    protected function open($env) {
-      $arc= new Archive(new File($env->localUri($env->substitute($this->dest))));
+    protected function open() {
+      $arc= new Archive(new File($this->uriOf($this->dest)));
       $arc->open(ARCHIVE_CREATE);
       return $arc;
     }
     
-    protected function close($env, $arc) {
+    protected function close($arc) {
       $arc->create();
       if ($arc->isOpen()) $arc->close();
     }
     
-    protected function addElement($env, Archive $arc, QuantFile $element) {
-      $this->verbose && $env->out->writeLine('Adding '.$element->relativePath());
+    protected function addElement(Archive $arc, QuantFile $element) {
+      $this->verbose && $this->env()->out->writeLine('Adding '.$element->relativePath());
       
-      $arc->add(new File($element->getURI()), $env->unixUri($element->relativePath()));
+      $arc->add(new File($element->getURI()), $this->env()->unixUri($element->relativePath()));
     }
     
     /**
@@ -76,17 +76,17 @@
      * @param   
      * @return  
      */
-    protected function execute(QuantEnvironment $env) {
+    protected function execute() {
       if (NULL !== $this->basedir) {
         $this->setFileset(new QuantFileset());
         $this->fileset->setDir($this->basedir);
         $this->fileset->addIncludePatternString('**/*');
       }
       
-      $arc= NULL; $dest= $env->localUri($env->substitute($this->dest)); 
-      $arc= $this->open($env);
+      $arc= NULL; $dest= $this->uriOf($this->dest); 
+      $arc= $this->open();
       
-      $iterator= $this->fileset->iteratorFor($env);
+      $iterator= $this->fileset->iteratorFor($this->env());
       $cnt= 0;
       while ($iterator->hasNext()) {
         $element= $iterator->next();
@@ -95,7 +95,7 @@
         if ($element instanceof QuantCollection) continue;
         
         $cnt++;
-        $this->addElement($env, $arc, $element);
+        $this->addElement($arc, $element);
       }
       
       if (0 === $cnt) {

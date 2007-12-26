@@ -20,7 +20,7 @@
      * @param   
      * @return  
      */
-    protected function execute(QuantEnvironment $env) {
+    protected function execute() {
     
     }    
   }

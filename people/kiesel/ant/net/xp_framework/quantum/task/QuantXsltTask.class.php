@@ -69,7 +69,7 @@
         throw new IllegalArgumentException('Both in and out must be specified together or omitted');
     }
     
-    protected function translateToFile($env, $style, $in, $out) {
+    protected function translateToFile($style, $in, $out) {
       if (NULL === $this->processor) {
         $this->processor= new DomXSLProcessor();
       }
@@ -90,14 +90,22 @@
       }
     }
     
-    protected function execute(QuantEnvironment $env) {
-      $style= $env->localUri($env->substitute($this->style));
+    protected function replaceExtension($out) {
+      // Remove file extension and add target extension
+      return (FALSE !== strpos(basename($out))
+        ? substr($out, 0, strrpos('.'))
+        : $out
+      ).'.'.$this->extension;
+    }
+    
+    protected function execute() {
+      $style= $this->uriOf($this->style);
       
       if ($this->in) {
-        $in= $env->localUri($env->substitute($this->in));
-        $out= $env->localUri($env->substitute($this->out));
+        $in= $this->uriOf($this->in);
+        $out= $this->replaceExtension($this->uriOf($this->out));
         
-        $this->translateToFile($env, $style, $in, $out);
+        $this->translateToFile($style, $in, $out);
         return;
       }
       
@@ -106,10 +114,9 @@
         $element= $iterator->next();
         
         $this->translateToFile(
-          $env, 
           $style, 
           $element->relativePath(), 
-          $env->localUri($env->substitute($this->destdir).'/'.$element->relativePath())
+          $this->uriOf($this->destdir).'/'.$element->relativePath())
         );
       }
     }

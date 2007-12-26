@@ -85,11 +85,11 @@
       $this->preserveLastmodified= ('true' == $m);
     }
     
-    protected function copy(QuantEnvironment $env, $source, $target= NULL) {
-      $s= new File($env->substitute($source));
+    protected function copy($source, $target= NULL) {
+      $s= new File($this->uriOf($source));
       
       if (NULL === $target) {
-        $target= $env->localUri($env->substitute($this->toDir.'/'.($this->flatten ? basename($source) : $source)));
+        $target= $this->uriOf($this->toDir.'/'.($this->flatten ? basename($source) : $source));
       }
       $t= new File($target);
       
@@ -101,9 +101,7 @@
         !$this->overwrite
       ) return;
 
-      if ($this->verbose) {
-        $env->out->writeLine('===> Copy '.$s->getURI().' to '.$t->getURI());
-      }
+      $this->verbose && $this->env()->out->writeLine('===> Copy '.$s->getURI().' to '.$t->getURI());
       
       $mtime= $s->lastModified();
       $s->move($t->getURI());
@@ -119,11 +117,11 @@
      * @param   
      * @return  
      */
-    protected function execute(QuantEnvironment $env) {
+    protected function execute() {
       if (NULL !== $this->file) {
         if (NULL === $this->toFile) throw new IllegalArgumentException('file given, but toFile is missing.');
 
-        $this->copy($env, $this->file, $env->localUri($env->substitute($this->toFile)));
+        $this->copy($this->file, $this->uriOf($this->toFile));
         return;
       }
 
@@ -131,7 +129,7 @@
       while ($iter->hasNext()) {
         $element= $iter->next();
         
-        $this->copy($env, $element->relativePath());
+        $this->copy($element->relativePath());
       }
     }    
   }

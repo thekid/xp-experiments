@@ -82,49 +82,29 @@
       $this->includeEmptyDirs= $includeEmptyDirs;
     }
     
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public function getFile(QuantEnvironment $env) {
-      return $env->localUri($env->substitute($this->file));
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public function getDir(QuantEnvironment $env) {
-      return $env->localUri($env->substitute($this->dir));
-    }
-    
-    protected function delete($env, $file) {
-      $f= new File($env->localUri($env->substitute($file)));
-      $this->verbose && $env->out->writeLine('Deleting '.$file);
+    protected function delete($file) {
+      $f= new File($this->uriOf($file));
+      $this->verbose && $this->env()->out->writeLine('Deleting '.$file);
       if (!$f->exists()) return;
 
       try {
         $f->unlink();
       } catch (IOException $e) {
         if ($this->failOnError) throw $e;
-        $this->quiet || $env->err->writeLine('Could not delete file '.$f->getURI().': '.$e->getMessage());
+        $this->quiet || $this->env()->err->writeLine('Could not delete file '.$f->getURI().': '.$e->getMessage());
       }
     }
     
-    protected function deleteFolder($env, $folder) {
-      $this->verbose && $env->out->writeLine('Deleting folder '.$folder);
-      $f= new Folder($env->localUri($env->substitute($this->dir)));
+    protected function deleteFolder($folder) {
+      $this->verbose && $this->env()->out->writeLine('Deleting folder '.$folder);
+      $f= new Folder($this->valueOf($this->dir));
       if ($f->exists()) return;
 
       try {
         $f->unlink();
       } catch (IOException $e) {
         if ($this->failOnError) throw $e;
-        $this->quiet || $env->err->writeLine('Could not delete folder '.$f->getURI().': '.$e->getMessage());
+        $this->quiet || $this->env()->err->writeLine('Could not delete folder '.$f->getURI().': '.$e->getMessage());
       }
     }
     
@@ -134,14 +114,14 @@
      * @param   
      * @return  
      */
-    protected function execute(QuantEnvironment $env) {
+    protected function execute() {
       if (NULL !== $this->file) {
-        $this->delete($env, $this->file);
+        $this->delete($this->file);
         return;
       }
       
       if (NULL !== $this->dir) {
-        $this->deleteFolder($env, $this->dir);
+        $this->deleteFolder($this->dir);
         return;
       }
       
@@ -150,7 +130,7 @@
         while ($iter->hasNext()) {
           $element= $iter->next();
 
-          $this->delete($env, $element->relativePath());
+          $this->delete($element->relativePath());
         }
       }
     }

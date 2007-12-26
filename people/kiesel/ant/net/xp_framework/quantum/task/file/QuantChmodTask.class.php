@@ -23,13 +23,13 @@
       $this->perm= $p;
     }
     
-    protected function perform($env, $uri) {
-      if (FALSE === chmod(parent::perform($env, $uri), octdec($this->perm)))
+    protected function perform($uri) {
+      if (FALSE === chmod(parent::perform($uri), octdec($this->perm)))
         throw new IOException('Could not change owner to "'.$this->group.'" for '.$name);
     }
     
-    protected function writeStats($env) {
-      $this->verbose && $env->out->writeLinef('Changed mode of %d files and %d directories to %s',
+    protected function writeStats() {
+      $this->env()->out->writeLinef('Changed mode of %d files and %d directories to %s',
         $this->stats['file'],
         $this->stats['dir'],
         $this->perm

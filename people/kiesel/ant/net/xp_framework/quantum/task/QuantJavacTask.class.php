@@ -440,7 +440,8 @@
      * @param   
      * @return  
      */
-    protected function execute(QuantEnvironment $env) {
+    protected function execute() {
+      $env= $this->env();
       $cmdline= array();
       $cmdline[]= $this->getExecutable();
       if ($this->classpath || $this->classpathref) $cmdline[]= '-classpath '.$this->getClasspath($env);

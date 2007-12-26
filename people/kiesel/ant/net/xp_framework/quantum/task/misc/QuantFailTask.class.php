@@ -24,7 +24,7 @@
       $status   = NULL;
 
     #[@xmlmapping(element= '@message')]
-    public setMessage($m) {
+    public function setMessage($m) {
       $this->message= $m;
     }
     
@@ -54,11 +54,11 @@
      * @param   
      * @return  
      */
-    protected function execute(QuantEnvironment $env) {
-      if (NULL !== $this->if && !$env->exists($this->if)) return;
-      if (NULL !== $this->unless && $env->exists($this->unless)) return;
+    protected function execute() {
+      if (NULL !== $this->if && !$this->env()->exists($this->if)) return;
+      if (NULL !== $this->unless && $this->env()->exists($this->unless)) return;
       
-      throw new QuantBuildException($this->substitute($this->message), $this->status);
+      throw new QuantBuildException($this->valueOf($this->message), $this->status);
     }
   }
 ?>

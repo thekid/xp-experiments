@@ -102,7 +102,7 @@
      * @param   
      * @return  
      */
-    protected function iteratorForFileset(QuantEnvironment $env) {
+    protected function iteratorForFileset() {
       return $this->fileset->iteratorFor($env);
     }
   }

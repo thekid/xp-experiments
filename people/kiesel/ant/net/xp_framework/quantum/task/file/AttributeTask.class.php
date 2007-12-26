@@ -41,8 +41,8 @@
       $this->t= $t;
     }
     
-    protected function perform($env, $uri) {
-      $name= $env->localUri($env->substitute($uri));
+    protected function perform($uri) {
+      $name= $this->uriOf($uri);
 
       // TODO: Refactor, so we can select dirs and files by fileset already
       if (is_file($name)) {
@@ -69,20 +69,20 @@
      * @param   
      * @return  
      */
-    protected function execute(QuantEnvironment $env) {
+    protected function execute() {
       if (NULL !== $this->file) {
-        $this->_perform($env, $this->file);
+        $this->_perform($this->file);
       } else {
-        $iter= $this->fileset->iteratorFor($env);
+        $iter= $this->fileset->iteratorFor($this->env());
 
         while ($iter->hasNext()) {
           $element= $iter->next();
           
-          $this->_perform($env, $element->getURI());
+          $this->_perform($element->getURI());
         }
       }
       
-      $this->verbose && $this->writeStats($env);
+      $this->verbose && $this->writeStats();
     }
   }
 ?>

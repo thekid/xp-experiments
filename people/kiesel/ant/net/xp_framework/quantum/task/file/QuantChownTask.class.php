@@ -22,13 +22,13 @@
       $this->owner= $o;
     }
     
-    protected function perform($env, $uri) {
-      if (FALSE === chown(parent::perform($env, $uri), $this->owner))
+    protected function perform($uri) {
+      if (FALSE === chown(parent::perform($uri), $this->owner))
         throw new IOException('Could not change owner to "'.$this->group.'" for '.$name);
     }
     
-    protected function writeStats($env) {
-      $this->verbose && $env->out->writeLinef('Changed owner of %d files and %d directories to user "%s"',
+    protected function writeStats() {
+      $this->env()->out->writeLinef('Changed owner of %d files and %d directories to user "%s"',
         $this->stats['file'],
         $this->stats['dir'],
         $this->owner

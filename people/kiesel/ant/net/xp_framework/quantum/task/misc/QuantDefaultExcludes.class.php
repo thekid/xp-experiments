@@ -46,24 +46,24 @@
      * @param   
      * @return  
      */
-    public function execute(QuantEnvironment $env) {
+    public function execute() {
       if (TRUE === $this->echo) {
-        $env->out->writeLine(implode(PHP_EOL, $env->getDefaultExcludes()));
+        $env->out->writeLine(implode(PHP_EOL, $this->env()->getDefaultExcludes()));
         return;
       }
       
       if (TRUE === $this->default) {
-        $env->initializeDefaultExcludes();
+        $this->env()->initializeDefaultExcludes();
         return;
       }
       
       if (NULL !== $this->add) {
-        $env->addDefaultExclude($this->add);
+        $this->env()->addDefaultExclude($this->add);
         return;
       }
       
       if (NULL !== $this->remove) {
-        $env->removeDefaultExclude($this->remove);
+        $this->env()->removeDefaultExclude($this->remove);
         return;
       }
     }

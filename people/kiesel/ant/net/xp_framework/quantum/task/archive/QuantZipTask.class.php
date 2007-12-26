@@ -61,36 +61,28 @@
         throw new IllegalArgumentException('Either basedir or a nested fileset must be given.');
     }
     
-    protected function openZip($env) {
+    protected function openZip() {
       $zip= new ZipArchive();
-      if (TRUE !== ($zip->open($env->localUri($env->substitute($this->dest)), ZIPARCHIVE::CREATE)))
+      if (TRUE !== ($zip->open($this->uriOf($this->dest), ZIPARCHIVE::CREATE)))
         throw new IOException('Could not open zipfile.');
       
       return $zip;
     }
     
-    protected function closeZip($env, $zip) {
+    protected function closeZip($zip) {
       if (TRUE !== $zip->close())
         throw new IOException('Could not close zipfile.');
     }
     
-    protected function addElement($env, $zip, $element) {
-      $env->out->writeLine('Adding '.$element->relativePath());
+    protected function addElement($zip, $element) {
+      $this->env()->out->writeLine('Adding '.$element->relativePath());
       
-      if ($element->file instanceof FileCollection) {
-        return;
-        if (TRUE !== $zip->addEmptyDir(rtrim($element->relativePath(), $env->directorySeparator()))) {
-          var_dump(xp::registry('errors'));
-          throw new IOException('Could not add directory '.$element->relativePath().' to zipfile');;
-        }
-      }
-      
-      if (TRUE !== $zip->addFile($element->getURI(), $env->unixUri($element->relativePath())))
+      if (TRUE !== $zip->addFile($element->getURI(), $this->env()->unixUri($element->relativePath())))
         throw new IOException('Could not add "'.$element->relativePath().'" to zipfile');
     }
     
-    protected function setArchiveComment($env, $zip) {
-      if (TRUE !== $zip->setArchiveComment($env->substitute($this->comment)))
+    protected function setArchiveComment($zip) {
+      if (TRUE !== $zip->setArchiveComment($this->valueOf($this->comment)))
         throw new IOException('Could not set archive comment in zipfile');
     }
     
@@ -100,24 +92,24 @@
      * @param   
      * @return  
      */
-    protected function execute(QuantEnvironment $env) {
+    protected function execute() {
       if (NULL !== $this->basedir) {
         $this->setFileset(new QuantFileset());
         $this->fileset->setDir($this->basedir);
         $this->fileset->addIncludePatternString('**/*');
       }
       
-      $zip= $this->openZip($env);
-      $iterator= $this->fileset->iteratorFor($env);
+      $zip= $this->openZip();
+      $iterator= $this->fileset->iteratorFor($this->env());
 
       while ($iterator->hasNext()) {
         $element= $iterator->next();
         
         if ($element instanceof QuantCollection) continue;
-        $this->addElement($env, $zip, $element);
+        $this->addElement($zip, $element);
       }
       
-      $this->closeZip($env, $zip);
-    }    
+      $this->closeZip($zip);
+    }
   }
 ?>

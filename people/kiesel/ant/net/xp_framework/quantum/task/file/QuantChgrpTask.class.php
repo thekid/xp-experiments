@@ -22,13 +22,13 @@
       $this->group= $g;
     }
     
-    protected function perform($env, $uri) {
-      if (FALSE === chgrp(parent::perform($env, $uri), $this->group))
+    protected function perform($uri) {
+      if (FALSE === chgrp(parent::perform($uri), $this->group))
         throw new IOException('Could not change group to "'.$this->group.'" for '.$name);
     }
     
-    protected function writeStats($env) {
-      $env->out->writeLinef('Changed group of %d files and %d directories to group %s',
+    protected function writeStats() {
+      $this->env()->out->writeLinef('Changed group of %d files and %d directories to group %s',
         $this->stats['file'],
         $this->stats['dir'],
         $this->group

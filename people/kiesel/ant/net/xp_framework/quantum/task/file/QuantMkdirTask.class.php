@@ -37,18 +37,8 @@
      * @param   
      * @return  
      */
-    public function getDir($env) {
-      return $env->localUri($env->substitute($this->dir));
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    protected function execute(QuantEnvironment $env) {
-      $folder= new Folder($this->getDir($env));
+    protected function execute() {
+      $folder= new Folder($this->uriOf($this->dir));
       if (!$folder->exists()) $folder->create();
     }
   }

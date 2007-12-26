@@ -46,17 +46,17 @@
      * @param   
      * @return  
      */
-    public function execute(QuantEnvironment $env) {
+    public function execute() {
       while (TRUE) {
-        $env->out->writeLine($env->substitute($this->message));
-        $input= trim($env->in->readLine());
+        $this->env()->out->writeLine($this->valueOf($this->message));
+        $input= trim($this->env()->in->readLine());
       
         if (!is_array($this->validArgs)) break;
         if (in_array($input, $this->validArgs)) break;
       }
       
       if (NULL !== $this->addProperty) {
-        $env->put($this->addProperty, $input ? $input : $this->defaultValue);
+        $this->env()->put($this->addProperty, $input ? $input : $this->defaultValue);
       }
     }    
   }

@@ -15,9 +15,9 @@
    */
   class QuantUnzipTask extends QuantUnarchiveTask {
     
-    protected function open($env) {
+    protected function open() {
       $arc= new ZipArchive();
-      if (FALSE === $arc->open($env->localUri($env->substitute($this->src))))
+      if (FALSE === $arc->open($this->uriOf($this->src)))
         throw new IOException('Could not open archive '.$uri);
       
       $this->ptr= 0;
@@ -25,17 +25,17 @@
       return $arc;
     }
     
-    protected function nextElement($env, $arc) {
+    protected function nextElement($arc) {
       if ($this->ptr == $arc->numFiles) return NULL;
       
       return $arc->statIndex($this->ptr++);
     }
     
-    protected function elementName($env, $arc, $element) {
+    protected function elementName($arc, $element) {
       return $element['name'];
     }
     
-    protected function extract($env, $arc, $element) {
+    protected function extract($arc, $element) {
       $data= $arc->getFromIndex($element['index']);
       if (FALSE === $data)
         throw new IOException('Could not read entry '.$element['name']);
@@ -43,7 +43,7 @@
       return $data;
     }
     
-    protected function close($env, $arc) {
+    protected function close($arc) {
       $arc->close();
     }
   }

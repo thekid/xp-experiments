@@ -44,11 +44,11 @@
      * @param   
      * @return  
      */
-    protected function execute(QuantEnvironment $env) {
+    protected function execute() {
       if (!$this->property || !$this->file)
         throw new IllegalArgumentException('Dirname must have property and file attribute');
       
-      $env->put($this->property, dirname($this->file));
+      $env->put($this->property, dirname($this->valueOf($this->file)));
     }
   }
 ?>

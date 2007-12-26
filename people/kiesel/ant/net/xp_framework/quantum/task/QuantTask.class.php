@@ -12,10 +12,13 @@
    * @purpose  purpose
    */
   abstract class QuantTask extends Object {
-    public
+    protected
       $id       = NULL,
       $taskname = NULL,
       $desc     = NULL;
+    
+    private
+      $env      = NULL;
     
     /**
      * (Insert method's description here)
@@ -50,6 +53,21 @@
       $this->desc= $desc;
     }
     
+    protected function env() {
+      if (!$this->env instanceof QuantEnvironment)
+        throw new IllegalStateException('No environment access possible at this stage');
+      
+      return $this->env;
+    }
+    
+    protected function valueOf($value) {
+      return $this->env()->substitute($value);
+    }
+    
+    protected function uriOf($value) {
+      return $this->env()->localUri($this->env()->substitute($value));
+    }
+    
     /**
      * (Insert method's description here)
      *
@@ -66,7 +84,7 @@
      * @param   
      * @return  
      */
-    abstract protected function execute(QuantEnvironment $env);
+    abstract protected function execute();
     
     /**
      * Perform pre-execution checks
@@ -84,11 +102,13 @@
      * @return  
      */
     final public function run(QuantEnvironment $env) {
-      if ($this->needsToRun($env)) {
-        $env->out->writeLine('['.$this->getClassName().'] called.');
-        
+      $this->env= $env;
+      
+      if ($this->needsToRun()) {
         $this->execute($env);
       }
+      
+      $this->env= NULL;
     }
   }
 ?>

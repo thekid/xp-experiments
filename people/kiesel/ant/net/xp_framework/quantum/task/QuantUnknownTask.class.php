@@ -34,7 +34,7 @@
      * @param   
      * @return  
      */
-    public function execute(QuantEnvironment $env) {
+    public function execute() {
       raise('lang.MethodNotImplementedException', 'Unknown task invoked.', $this->type);
     }    
   }

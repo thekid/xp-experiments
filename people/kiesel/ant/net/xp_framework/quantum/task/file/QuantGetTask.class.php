@@ -62,9 +62,9 @@
       $this->password= $p;
     }
     
-    public function execute(QuantEnvironment $env) {
+    public function execute() {
       if (!$this->dest) throw new IllegalArgumentException('Destination must be given in <get>');
-      $url= $env->substitute($this->src);
+      $url= $this->valueOf($this->src);
       $c= new HttpConnection($url);
       
       $headers= array();
@@ -72,7 +72,7 @@
         $headers[]= new BasicAuthentication($this->username, $this->password);
       }
       
-      $dest= new File($env->localUri($env->substitute($this->dest)));
+      $dest= new File($uriOf($this->dest));
       if (
         TRUE === $this->useTimestamp &&
         $dest->exists()
@@ -82,12 +82,12 @@
       
       $timer= new Timer();
       $timer->start();
-      $this->verbose && $env->out->writeLine('Fetching '.$url.' ...');
+      $this->verbose && $this->env()->out->writeLine('Fetching '.$url.' ...');
       
       $response= $c->get(NULL, $headers);
       switch ($response->getStatusCode()) {
         case HTTP_NOT_MODIFIED: {
-          $this->verbose && $env->out->writeLine('Local copy of '.$url.' still up-to-date.');
+          $this->verbose && $this->env()->out->writeLine('Local copy of '.$url.' still up-to-date.');
           return;
         }
         case HTTP_OK: {
@@ -100,7 +100,7 @@
           
           $dest->close();
           $timer->stop();
-          $this->verbose && $env->out->writeLinef('Successfully fetched %s - retrieved %dkb in %0.2f sec.',
+          $this->verbose && $this->env()->out->writeLinef('Successfully fetched %s - retrieved %dkb in %0.2f sec.',
             $url,
             intval($dest->size() / 1024),
             $timer->elapsedTime()
@@ -109,7 +109,7 @@
         }
         
         default: {
-          $env->err->writeLine('Could not fetch URL '.$url.', HTTP response code: '.$response->getStatusCode());
+          $this->env()->err->writeLine('Could not fetch URL '.$url.', HTTP response code: '.$response->getStatusCode());
           if (TRUE === $this->ignoreErrors) return; 
 
           throw new IllegalStateException('Could not download from '.$url.', HTTP response code: '.$response->getStatusCode());

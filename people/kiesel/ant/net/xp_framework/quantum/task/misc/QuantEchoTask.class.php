@@ -60,17 +60,17 @@
      * @param   
      * @return  
      */
-    public function execute(QuantEnvironment $env) {
+    public function execute() {
       // TODO: Use level
       
       if ($this->file) {
         $f= new File($this->file, (TRUE === $this->append ? 'a' : 'w'));
-        $f->write($env->substitute($this->content));
+        $f->write($this->valueOf($this->content));
         $f->close();
         return;
       }
       
-      $env->out->writeLine($env->substitute($this->content));
+      $env->out->writeLine($this->valueOf($this->content));
     }    
   }
 ?>

@@ -49,12 +49,12 @@
       $this->format= $f;
     }
     
-    protected function execute(QuantEnvironment $env) {
+    protected function execute() {
       // TODO: Implement writing to file +failonerror handling
       // TODO: Implement XML output
       
       $env->resetPointer();
-      while (NULL !== ($value= $env->nextProperty())) {
+      while (NULL !== ($value= $this->env()->nextProperty())) {
         list ($key, $value)= $value;
         
         if ($this->prefix && 0 !== strncmp($key, $this->prefix, strlen($this->prefix))) continue;
@@ -62,7 +62,7 @@
         
         switch ($this->format) {
           case 'text': {
-            $env->out->writeLine($key.': '.$value);
+            $this->env()->out->writeLine($key.': '.$value);
             break;
           }
         }

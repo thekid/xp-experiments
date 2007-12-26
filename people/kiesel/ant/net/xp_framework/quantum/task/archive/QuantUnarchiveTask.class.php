@@ -48,26 +48,26 @@
       $this->patternset= $p;
     }
     
-    protected function targetFilename($env, $name) {
+    protected function targetFilename($name) {
       // TBI: Implement mapper logic
-      return $env->localUri(($this->dest ? $this->dest.'/' : '').$name);
+      return $this->uriOf(($this->dest ? $this->dest.'/' : '')).$name;
     }
     
-    protected function execute(QuantEnvironment $env) {
-      $arc= $this->open($env);
+    protected function execute() {
+      $arc= $this->open();
       
-      while ($element= $this->nextElement($env, $arc)) {
+      while ($element= $this->nextElement($arc)) {
         
         // Prepare target name
-        $elementName= $this->elementName($env, $arc, $element);
+        $elementName= $this->elementName($arc, $element);
         
-        if ($this->patternset && !$this->patternset->evaluatePatternOn($env, $elementName)) continue;
-        $data= $this->extract($env, $arc, $element);
+        if ($this->patternset && !$this->patternset->evaluatePatternOn($elementName)) continue;
+        $data= $this->extract($arc, $element);
        
-        $f= new File($this->targetFilename($env, $elementName));
+        $f= new File($this->targetFilename($elementName));
         if ($f->exists() && !$this->overwrite) return;
         
-        $this->verbose && $env->out->writeLine('Extracting '.$elementName.' to '.$f->getURI());
+        $this->verbose && $this->env()->out->writeLine('Extracting '.$elementName.' to '.$f->getURI());
         continue;
         
         $f->open(FILE_MODE_WRITE);
@@ -75,13 +75,13 @@
         $f->close();
       }
       
-      $this->close($env, $arc);
+      $this->close($arc);
     }
 
-    protected abstract function open($env);
-    protected abstract function nextElement($env, $arc);
-    protected abstract function elementName($env, $arc, $element);
-    protected abstract function extract($env, $arc, $element);
-    protected abstract function close($env, $arc);
+    protected abstract function open();
+    protected abstract function nextElement($arc);
+    protected abstract function elementName($arc, $element);
+    protected abstract function extract($arc, $element);
+    protected abstract function close($arc);
   }
 ?>

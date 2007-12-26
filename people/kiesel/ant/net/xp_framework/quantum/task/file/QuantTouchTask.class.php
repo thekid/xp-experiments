@@ -59,21 +59,22 @@
      * @param   
      * @return  
      */
-    protected function execute(QuantEnvironment $env) {
+    protected function execute() {
       if (!$this->datetime) $this->datetime= Date::now();
 
       if (NULL !== $this->file) {
-        $f= new File($this->file);
+        $f= new File($this->uriOf($this->file));
         $f->touch($this->datetime->getTime());
         
         return;
       }
       
-      $iterator= $this->iteratorForFileset($env);
+      $iterator= $this->iteratorForFileset($this->env());
       while ($iterator->hasNext()) {
         $entry= $iterator->next();
+        if ($entry instanceof QuantCollection) continue;
         
-        // TODO: Implement FileSet touching
+        create(new File($entry->getURI()))->touch();
       }
     }
   }

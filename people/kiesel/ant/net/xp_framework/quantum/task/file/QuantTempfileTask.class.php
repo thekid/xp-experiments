@@ -43,9 +43,9 @@
       $this->suffix= $s;
     }
     
-    protected function getDestDir($env) {
+    protected function getDestDir() {
       if (NULL === $this->destdir) return System::tempDir();
-      return $env->localUri($env->substitute($this->destdir));
+      return $this->uriOf($this->destdir);
     }
     
     /**
@@ -54,9 +54,9 @@
      * @param   
      * @return  
      */
-    protected function execute(QuantEnvironment $env) {
-      $tempfile= tempnam($this->getDestDir($env), $this->prefix.uniqid((double)microtime()));
-      $env->put($this->property, $tempfile);
+    protected function execute() {
+      $tempfile= tempnam($this->getDestDir(), $this->prefix.uniqid((double)microtime()));
+      $this->env()->put($this->property, $tempfile);
     }
   }
 ?>

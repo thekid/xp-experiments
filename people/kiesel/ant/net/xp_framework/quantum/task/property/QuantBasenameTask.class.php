@@ -55,11 +55,11 @@
      * @param   
      * @return  
      */
-    protected function execute(QuantEnvironment $env) {
+    protected function execute() {
       if (!$this->property || !$this->file)
         throw new IllegalArgumentException('basename must have property and file attribute');
       
-      $env->put($this->property, basename($env->substitute($this->file), $env->substitute($this->suffix)));
+      $env->put($this->property, basename($this->valueOf($this->file), $this->valueOf($this->suffix)));
     }
   }
 ?>
