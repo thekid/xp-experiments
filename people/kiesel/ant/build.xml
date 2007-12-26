@@ -56,6 +56,13 @@
      comment="This archive has been created by Quantum."
     />
   </target>
+  
+  <target name="unzip">
+    <unzip
+     src="ant.zip"
+     dest="build"
+    />
+  </target>
 
   <target name="xar">
     <xar
@@ -69,6 +76,14 @@
       </fileset>
     </xar>
   </target>
+  
+  <target name="unxar">
+    <unxar
+     src="ant.xar"
+     dest="build"
+    />
+  </target>
+
 
   <target name="fileops" depends="touch,copy,delete"/>
 </project>

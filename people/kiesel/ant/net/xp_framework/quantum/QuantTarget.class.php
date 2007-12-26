@@ -74,6 +74,8 @@
         'jar'             => 'archive',
         'zip'             => 'archive',
         'xar'             => 'archive',
+        'unzip'           => 'archive',
+        'unxar'           => 'archive',
         'property'        => 'property',
         'basename'        => 'property',
         'dirname'         => 'property',
@@ -81,7 +83,6 @@
       );
       
       switch ($name) {
-        case 'mkdir':
         case 'ear': {
           $node= 'jar';
           break;
