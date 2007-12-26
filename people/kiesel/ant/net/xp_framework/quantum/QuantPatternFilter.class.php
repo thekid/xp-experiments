@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('io.collections.iterate.IterationFilter');
+  uses(
+    'io.collections.iterate.IterationFilter',
+    'net.xp_framework.quantum.QuantPatternMatcher'
+  );
 
   /**
    * (Insert class' description here)
@@ -13,7 +16,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class TopURIMatchesFilter extends Object implements IterationFilter {
+  class QuantPatternFilter extends Object implements IterationFilter {
     public
       $pattern= '',
       $basedir= '';
@@ -25,7 +28,7 @@
      * @return  
      */
     public function __construct($pattern, $basedir) {
-      $this->pattern= $pattern;
+      $this->pattern= new QuantPatternMatcher($pattern);
       $this->basedir= $basedir;
     }
     
@@ -36,14 +39,23 @@
      * @return  
      */
     public function accept($element) {
-      if (substr($element->getURI(), 0, strlen($this->basedir)) != $this->basedir) {
+      $ds= DIRECTORY_SEPARATOR; // FIXME: Get from environment
+      if (0 !== strncmp($element->getURI(), $this->basedir, strlen($this->basedir))) {
         throw new IllegalStateException('Element from wrong base: '.$element->getURI().' vs. '.$this->basedir);
       }
       
       // Strip "basedir" from path and remove trailing directory separators
-      $topdir= rtrim(substr($element->getURI(), strlen($this->basedir)+ 1), DIRECTORY_SEPARATOR);
-
-      return (bool)preg_match($this->pattern, $topdir);
+      $relativeURI= $element->getURI();
+      if (strlen($this->basedir)) {
+        $relativeURI= rtrim(substr($relativeURI, strlen($this->basedir)+ 1), $ds);
+      }
+      
+      // Convert URI into unix-notation
+      if ('/' != $ds) {
+        $relativeURI= strtr($relativeURI, $ds, '/');
+      }
+      $result= $this->pattern->matches($relativeURI);
+      return $this->pattern->matches($relativeURI);
     }
   }
 ?>

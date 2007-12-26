@@ -61,9 +61,13 @@
     <xar
      dest="ant.xar"
      verbose="true"
-     basedir="net"
      comment="This archive has been created by Quantum."
-    />
+    >
+      <fileset>
+        <include name="net/**/*.class.php"/>
+        <exclude name="**/*Task.class.php"/>
+      </fileset>
+    </xar>
   </target>
 
   <target name="fileops" depends="touch,copy,delete"/>
