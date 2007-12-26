@@ -17,6 +17,27 @@
       $depends  = array(),
       $tasks    = array();
     
+    public static $packageMap= array(
+      'mkdir'           => 'file',
+      'copy'            => 'file',
+      'touch'           => 'file',
+      'delete'          => 'file',
+      'tempfile'        => 'file',
+      'move'            => 'file',
+      'get'             => 'file',
+      'echo'            => 'misc',
+      'tstamp'          => 'misc',
+      'jar'             => 'archive',
+      'zip'             => 'archive',
+      'xar'             => 'archive',
+      'unzip'           => 'archive',
+      'unxar'           => 'archive',
+      'property'        => 'property',
+      'basename'        => 'property',
+      'dirname'         => 'property',
+      'echoproperties'  => 'property'
+    );
+    
     /**
      * (Insert method's description here)
      *
@@ -61,47 +82,17 @@
     }    
     
     public function taskFromNode($name) {
-      static $package= array(
-        'mkdir'           => 'file',
-        'copy'            => 'file',
-        'touch'           => 'file',
-        'delete'          => 'file',
-        'tempfile'        => 'file',
-        'move'            => 'file',
-        'get'             => 'file',
-        'echo'            => 'misc',
-        'tstamp'          => 'misc',
-        'jar'             => 'archive',
-        'zip'             => 'archive',
-        'xar'             => 'archive',
-        'unzip'           => 'archive',
-        'unxar'           => 'archive',
-        'property'        => 'property',
-        'basename'        => 'property',
-        'dirname'         => 'property',
-        'echoproperties'  => 'property'
-      );
-      
-      switch ($name) {
-        case 'ear': {
-          $node= 'jar';
-          break;
-        }
-      }
-      
       $classname= sprintf('net.xp_framework.quantum.task.%sQuant%sTask', 
-        (isset($package[$name]) ? $package[$name].'.' : ''),
+        (isset(self::$packageMap[$name]) ? self::$packageMap[$name].'.' : ''),
         ucfirst($name)
       );
       
       // HACK: if a tasks class does not exist, use the default
       try {
-        XPClass::forName($classname);
+        return XPClass::forName($classname)->getName();
       } catch (ClassNotFoundException $e) {
-        $classname= 'net.xp_framework.quantum.task.QuantUnknownTask';
+        return 'net.xp_framework.quantum.task.QuantUnknownTask';
       }
-      
-      return $classname;
     }
     
     /**

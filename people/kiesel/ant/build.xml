@@ -88,7 +88,12 @@
      dest="build"
     />
   </target>
-
-
-  <target name="fileops" depends="touch,copy,delete"/>
+  
+  <target name="xslt">
+    <xslt
+     in="build.xml"
+     out="php://stdout"
+     style="style.xsl"
+    />
+  </target>
 </project>
