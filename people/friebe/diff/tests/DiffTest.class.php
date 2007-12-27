@@ -96,6 +96,24 @@
      *
      */
     #[@test]
+    public function changedAEnd() {
+      $this->assertEquals(
+        array(
+          new Copy('Hello'),
+          new Change('World', 'Master')
+        ), 
+        Difference::between(
+          array('Hello', 'World'),
+          array('Hello', 'Master')
+        )
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function deletedAtEnd() {
       $this->assertEquals(
         array(
