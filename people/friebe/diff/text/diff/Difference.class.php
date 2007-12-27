@@ -71,7 +71,9 @@
             break;
           }
 
-          // Look ahead in both <from> and <to>.
+          // Look ahead in both <from> and <to> sequentially. We might
+          // miss common elements this way, but they're handled later on
+          // and will not record as change anyway.
           for ($i= 0; $i < min($st- $t, $sf- $f); $i++) {
             if ($from[$f+ $i] !== $to[$t+ $i]) {
               $changed[]= new Change($from[$f+ $i], $to[$t+ $i]);
@@ -83,12 +85,16 @@
             break;
           }
           
+          
           // Could not find common elements.
           // 1) Check if we're at the end and the last two elements differ
           //    in this case we have a change at the end of the document
           //    (and not a deletion and then an insertion)
           //
-          // 2) Break to leftover elements
+          // 2) Look ahead in both <from> and <to> by using a double loop
+          //    which is slow but will definitely find common elements.
+          //
+          // 3) Break to leftover elements
           //    In case there are any, there are the possibilities that
           //    they were either added or deleted (no changes - there are no
           //    more common elements!)
@@ -96,6 +102,29 @@
             if ($f == $sf- 1 && $t == $st- 1 && $from[$f] !== $to[$t]) {
               $r[]= new Change($from[$f], $to[$t]);
               $f++; $t++;
+              break 2;
+            }
+
+            // Look ahead in both <from> and <to> 
+            for ($i= $f; $i < $sf; $i++) {
+              for ($j= $t; $j < $st; $j++) {
+                if ($from[$i] === $to[$j]) {
+                  Console::$err->writeLinef(
+                    'Next match (f= %d/%d t= %d/%d)'
+                    $f, $sf, 
+                    $t, $st
+                  );
+                  
+                  while ($f < $i) {
+                    $r[]= new Deletion($from[$f++]);
+                  }
+                  while ($t < $j) {
+                    $r[]= new Insertion($to[$t++]);
+                  }
+                  $f--; $t--;
+                  continue 4;
+                }
+              }
             }
 
             $trace && Console::$err->writeLinef(
