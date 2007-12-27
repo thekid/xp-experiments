@@ -60,7 +60,7 @@
         }
         
         // Look ahead in both <from> and <to>.
-        for ($common= FALSE, $i= 0; $i < min($s- $t, $s- $f) && !$common; $i++) {
+        for ($i= 0; $i < min($s- $t, $s- $f); $i++) {
           if ($from[$f+ $i] !== $to[$t+ $i]) {
             $r[]= new Change($from[$f+ $i], $to[$t+ $i]);
             continue;
