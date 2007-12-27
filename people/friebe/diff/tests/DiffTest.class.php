@@ -12,8 +12,8 @@
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://text.diff.Difference
+   * @purpose  Unittest
    */
   class DiffTest extends TestCase {
   
@@ -105,6 +105,25 @@
         Difference::between(
           array('Hello', 'World'),
           array('Hello', 'Master')
+        )
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function changedInbetween() {
+      $this->assertEquals(
+        array(
+          new Copy('Hello'),
+          new Change('World', 'Master'),
+          new Copy('how are you?')
+        ), 
+        Difference::between(
+          array('Hello', 'World', 'how are you?'),
+          array('Hello', 'Master', 'how are you?')
         )
       );
     }
