@@ -12,18 +12,18 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Difference
    *
-   * @purpose  purpose
+   * @purpose  Algorithm
    */
   class Difference extends Object {
     
     /**
-     * (Insert method's description here)
+     * Computes the difference between to string arrays
      *
      * @param   string[] from
      * @param   string[] to
-     * @return  
+     * @return  text.diff.AbstractOperation[]
      */
     public static function between(array $from, array $to) {
       $r= array();
