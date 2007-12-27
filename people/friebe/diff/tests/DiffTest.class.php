@@ -64,6 +64,28 @@
      *
      */
     #[@test]
+    public function completelyDifferentInput() {
+      $this->assertEquals(
+        array(
+          new Deletion('A'),
+          new Deletion('B'),
+          new Deletion('C'),
+          new Insertion('X'),
+          new Insertion('Y'),
+          new Insertion('Z'),
+        ), 
+        $this->differenceBetween(
+          array('A', 'B', 'C'),
+          array('X', 'Y', 'Z')
+        )
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function insertedInMiddle() {
       $this->assertEquals(
         array(
