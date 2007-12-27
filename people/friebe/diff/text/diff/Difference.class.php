@@ -83,11 +83,21 @@
             break;
           }
           
-          // Could not find common elements, record last element as change
-          // and break to leftover elements
+          // Could not find common elements.
+          // 1) Check if we're at the end and the last two elements differ
+          //    in this case we have a change at the end of the document
+          //    (and not a deletion and then an insertion)
+          //
+          // 2) Break to leftover elements
+          //    In case there are any, there are the possibilities that
+          //    they were either added or deleted (no changes - there are no
+          //    more common elements!)
           if (!$offsets) {
-            $r[]= new Change($from[$f], $to[$t]);
-            $t++; $f++;
+            if ($f == $sf- 1 && $t == $st- 1 && $from[$f] !== $to[$t]) {
+              $r[]= new Change($from[$f], $to[$t]);
+              $f++; $t++;
+            }
+
             $trace && Console::$err->writeLinef(
               'No more common elements found (f= %d/%d t= %d/%d)', 
               $f, $sf, 
@@ -118,11 +128,11 @@
         $f, $sf, 
         $t, $st
       );
-      for ($i= $t; $i < $st; $i++) {
-        $r[]= new Insertion($to[$i]);
-      }
       for ($i= $f; $i < $sf; $i++) {
         $r[]= new Deletion($from[$i]);
+      }
+      for ($i= $t; $i < $st; $i++) {
+        $r[]= new Insertion($to[$i]);
       }
       
       $trace && Console::$err->writeLine($r);
