@@ -86,6 +86,32 @@
      *
      */
     #[@test]
+    public function unevenDeletesAndInserts() {
+      $this->assertEquals(
+        array(
+          new Deletion('sscanf'),
+          new Deletion('acquire'),
+          new Deletion('isset'),
+          new Insertion('list'),
+          new Insertion('$this'),
+          new Insertion('$this'),
+          new Insertion('if'),
+          new Insertion('return'),
+          new Copy('}'),
+          new Copy('function'),
+        ), 
+        $this->differenceBetween(
+          array('sscanf', 'acquire', 'isset', '}', 'function'),
+          array('list', '$this', '$this', 'if', 'return', '}', 'function')
+        )
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function insertedInMiddle() {
       $this->assertEquals(
         array(
