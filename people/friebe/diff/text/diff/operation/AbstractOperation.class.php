@@ -19,6 +19,15 @@
       $this->text= $text;
     }
 
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'{"'.$this->text.'"}';
+    }
+
     public function equals($cmp) {
       return $cmp instanceof self && $cmp->text === $this->text;
     }

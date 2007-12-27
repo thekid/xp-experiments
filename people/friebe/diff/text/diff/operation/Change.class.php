@@ -21,6 +21,15 @@
       $this->newText= $newText;
     }
 
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'{"'.$this->text.'" -> "'.$this->nextText.'"}';
+    }
+
     public function equals($cmp) {
       return 
         $cmp instanceof self && 
