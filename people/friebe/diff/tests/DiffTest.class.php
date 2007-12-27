@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'text.diff.Diff'
+    'text.diff.Difference'
   );
 
   /**
@@ -28,7 +28,7 @@
           new Copy('Hello'),
           new Copy('World')
         ), 
-        Diff::between(
+        Difference::between(
           array('Hello', 'World'),
           array('Hello', 'World')
         )
@@ -47,7 +47,7 @@
           new Insertion('cruel'),
           new Copy('World')
         ), 
-        Diff::between(
+        Difference::between(
           array('Hello', 'World'),
           array('Hello', 'cruel', 'World')
         )
@@ -66,7 +66,7 @@
           new Copy('World'),
           new Insertion('!')
         ), 
-        Diff::between(
+        Difference::between(
           array('Hello', 'World'),
           array('Hello', 'World', '!')
         )
@@ -84,7 +84,7 @@
           new Change('Hello', 'Hi'),
           new Copy('World')
         ), 
-        Diff::between(
+        Difference::between(
           array('Hello', 'World'),
           array('Hi', 'World')
         )
@@ -102,7 +102,7 @@
           new Copy('Hello'),
           new Deletion('World')
         ), 
-        Diff::between(
+        Difference::between(
           array('Hello', 'World'),
           array('Hello')
         )

@@ -16,7 +16,7 @@
    *
    * @purpose  purpose
    */
-  class Diff extends Object {
+  class Difference extends Object {
     
     /**
      * (Insert method's description here)
