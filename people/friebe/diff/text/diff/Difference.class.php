@@ -26,10 +26,12 @@
      * @return  text.diff.AbstractOperation[]
      */
     public static function between(array $from, array $to, $trace= FALSE) {
+      $trace && Console::$err->writeLine("\n-------------------------");
+
       $r= array();
       $sf= sizeof($from);
       $st= sizeof($to);
-      for ($f= 0, $t= 0, $s= min($sf, $st); $t < $s && $f < $s; $f++, $t++) {
+      for ($f= 0, $t= 0, $s= min($sf, $st); ($t < $st) && ($f < $sf); $t++, $f++) {
         $trace && Console::$err->writeLinef(
           '%d: "%s" =? %d: "%s"',
           $f, addcslashes($from[$f], "\0..\17"),
@@ -42,6 +44,7 @@
         
         $inserted= $deleted= $changed= $offsets= $advance= array();
         do {
+
           // Look ahead in <to> until we find common elements again.
           // Everything inbetween has been inserted in <to>
           for ($i= $t; $i < $st; $i++) {
@@ -50,7 +53,7 @@
               continue;
             }
             $offsets['inserted']= $i- $t;
-            $advance['inserted']['t']= $i- $t- 1;
+            $advance['inserted']['t']= $i- $t;
             $advance['inserted']['f']= 0;
             break;
           }
@@ -64,7 +67,7 @@
             }
             $offsets['deleted']= $i- $f;
             $advance['deleted']['t']= 0;
-            $advance['deleted']['f']= $i- $f- 1;
+            $advance['deleted']['f']= $i- $f;
             break;
           }
 
@@ -75,8 +78,8 @@
               continue;
             }
             $offsets['changed']= $i;
-            $advance['changed']['t']= $i- 1;
-            $advance['changed']['f']= $i- 1;
+            $advance['changed']['t']= $i;
+            $advance['changed']['f']= $i;
             break;
           }
           
@@ -97,24 +100,33 @@
         // Figure out which look-ahead produced the nearest result
         asort($offsets);
         $best= key($offsets);
-        $trace && Console::$err->writeLine($best, '@', $offsets);
+        $trace && Console::$err->writeLinef(
+          '%s (t+= %d, f+= %d) @ %s',
+          $best,
+          $advance[$best]['t'], 
+          $advance[$best]['f'], 
+          xp::stringOf($offsets)
+        );
         $r= array_merge($r, ${$best});
-        $t+= $advance[$best]['t'];
-        $f+= $advance[$best]['f'];
+        $t+= $advance[$best]['t']- 1;
+        $f+= $advance[$best]['f']- 1;
       }
       
       // Check leftover elements at end in both <from> and <to>
-      if ($st > $s) {
-        for ($i= $t; $i < $st; $i++) {
-          $r[]= new Insertion($to[$i]);
-        }
-      } 
-      if ($sf > $s) {
-        for ($i= $f; $i < $sf; $i++) {
-          $r[]= new Deletion($from[$i]);
-        }
+      $trace && ($f < $sf || $t < $st) && Console::$err->writeLinef(
+        'Leftovers (f= %d/%d t= %d/%d)', 
+        $f, $sf, 
+        $t, $st
+      );
+      for ($i= $t; $i < $st; $i++) {
+        $r[]= new Insertion($to[$i]);
+      }
+      for ($i= $f; $i < $sf; $i++) {
+        $r[]= new Deletion($from[$i]);
       }
       
+      $trace && Console::$err->writeLine($r);
+      $trace && Console::$err->writeLine("\n-------------------------");
       return $r;
     }
   }
