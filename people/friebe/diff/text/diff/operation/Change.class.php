@@ -7,15 +7,21 @@
   uses('text.diff.operation.AbstractOperation');
 
   /**
-   * (Insert class' description here)
+   * Indicates a change
    *
    * @see      xp://text.diff.operation.AbstractOperation
-   * @purpose  purpose
+   * @purpose  Value object
    */
   class Change extends AbstractOperation {
     public
       $newText= NULL;
     
+    /**
+     * Constructor
+     *
+     * @param   string text
+     * @param   string newText
+     */
     public function __construct($oldText, $newText) {
       parent::__construct($oldText);
       $this->newText= $newText;
@@ -30,6 +36,12 @@
       return $this->getClassName().'{"'.$this->text.'" -> "'.$this->newText.'"}';
     }
 
+    /**
+     * Returns whether another object is equal to this object
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
     public function equals($cmp) {
       return 
         $cmp instanceof self && 
