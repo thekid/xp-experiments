@@ -5,7 +5,7 @@
  */
 
   /**
-   * Operation
+   * Edit operation
    *
    * @purpose  Abstract base class
    */

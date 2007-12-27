@@ -7,10 +7,10 @@
   uses('text.diff.operation.AbstractOperation');
 
   /**
-   * (Insert class' description here)
+   * Indicates a text was deleted
    *
    * @see      xp://text.diff.operation.AbstractOperation
-   * @purpose  purpose
+   * @purpose  Value object
    */
   class Deletion extends AbstractOperation {
     

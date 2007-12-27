@@ -7,10 +7,10 @@
   uses('text.diff.operation.AbstractOperation');
 
   /**
-   * (Insert class' description here)
+   * Indicates a text was inserted
    *
    * @see      xp://text.diff.operation.AbstractOperation
-   * @purpose  purpose
+   * @purpose  Value object
    */
   class Insertion extends AbstractOperation {
     

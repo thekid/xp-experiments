@@ -7,7 +7,8 @@
   uses('text.diff.operation.AbstractOperation');
 
   /**
-   * Indicates a change
+   * Indicates a change (basically, a deletion and an insertion right
+   * thereafter)
    *
    * @see      xp://text.diff.operation.AbstractOperation
    * @purpose  Value object
