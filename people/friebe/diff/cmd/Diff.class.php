@@ -16,7 +16,7 @@
     protected
       $from    = NULL,
       $to      = NULL,
-      $verbose = FALSE;
+      $emitter = NULL;
     
     /**
      * Set from filename
@@ -49,10 +49,11 @@
     /**
      * Set whether to be verbose
      *
+     * @param   string name default "Verbose"
      */
     #[@arg]
-    public function setVerbose() {
-      $this->verbose= TRUE;
+    public function setEmitter($name= 'Verbose') {
+      $this->emitter= Package::forName('text.diff.emit')->loadClass($name)->newInstance($this->out);
     }
     
     /**
@@ -63,18 +64,7 @@
       $this->out->writeLine('- ', $this->from->getURI());
       $this->out->writeLine('+ ', $this->to->getURI());
       
-      foreach (Difference::between(file($this->from->getURI()), file($this->to->getURI()), $this->verbose) as $op) {
-        if ($op instanceof Copy) {
-          $this->out->write(' ', $op->text);
-        } else if ($op instanceof Change) {
-          $this->out->write('-', $op->text);
-          $this->out->write('+', $op->newText);
-        } else if ($op instanceof Deletion) {
-          $this->out->write('<', $op->text);
-        } else if ($op instanceof Insertion) {
-          $this->out->write('>', $op->text);
-        }
-      }
+      $this->emitter->emit(Difference::between(file($this->from->getURI()), file($this->to->getURI())));
     }
   }
 ?>
