@@ -110,7 +110,7 @@
               for ($j= $t; $j < $st; $j++) {
                 if ($from[$i] === $to[$j]) {
                   Console::$err->writeLinef(
-                    'Next match (f= %d/%d t= %d/%d)'
+                    'Next match (f= %d/%d t= %d/%d)',
                     $f, $sf, 
                     $t, $st
                   );
