@@ -27,7 +27,9 @@
      */
     public static function between(array $from, array $to) {
       $r= array();
-      for ($f= 0, $t= 0, $s= min(sizeof($from), sizeof($to)); $t < $s && $f < $s; $f++, $t++) {
+      $sf= sizeof($from);
+      $st= sizeof($to);
+      for ($f= 0, $t= 0, $s= min($sf, $st); $t < $s && $f < $s; $f++, $t++) {
         if ($from[$f] === $to[$t]) {
           $r[]= new Copy($from[$f]);
           continue;
@@ -37,7 +39,7 @@
         
         // Look ahead in <to> until we find common elements again.
         // Everything inbetween has been inserted in <to>
-        for ($i= $t; $i < sizeof($to); $i++) {
+        for ($i= $t; $i < $st; $i++) {
           if ($from[$f] !== $to[$i]) {
             $changes[]= new Insertion($to[$i]);
             continue;
@@ -49,7 +51,7 @@
           
         // Look ahead in <from> until we find common elements again.
         // Everything inbetween has been deleted in <to>
-        for ($i= $f; $i < sizeof($from); $i++) {
+        for ($i= $f; $i < $sf; $i++) {
           if ($to[$t] !== $from[$i]) {
             $changes[]= new Deletion($from[$i]);
             continue;
@@ -73,11 +75,11 @@
       
       // Check leftover elements at end in both <from> and <to>
       if (sizeof($to) > $s) {
-        for ($i= $t; $i < sizeof($to); $i++) {
+        for ($i= $t; $i < $st; $i++) {
           $r[]= new Insertion($to[$i]);
         }
       } else if (sizeof($from) > $s) {
-        for ($i= $f; $i < sizeof($from); $i++) {
+        for ($i= $f; $i < $sf; $i++) {
           $r[]= new Deletion($from[$i]);
         }
       }
