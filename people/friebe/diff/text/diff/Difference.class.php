@@ -62,7 +62,7 @@
         // Look ahead in both <from> and <to>.
         for ($common= FALSE, $i= 0; $i < min($s- $t, $s- $f) && !$common; $i++) {
           if ($from[$f+ $i] !== $to[$t+ $i]) {
-            $r[]= new Change($from[$f+ $i], $to[$i]);
+            $r[]= new Change($from[$f+ $i], $to[$t+ $i]);
             continue;
           }
           $f+= $i- 1;       // Advance offset in <from>
