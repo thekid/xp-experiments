@@ -27,7 +27,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'{"'.$this->text.'" -> "'.$this->nextText.'"}';
+      return $this->getClassName().'{"'.$this->text.'" -> "'.$this->newText.'"}';
     }
 
     public function equals($cmp) {
