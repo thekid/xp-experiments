@@ -64,7 +64,10 @@
       $this->out->writeLine('- ', $this->from->getURI());
       $this->out->writeLine('+ ', $this->to->getURI());
       
-      $this->emitter->emit(Difference::between(file($this->from->getURI()), file($this->to->getURI())));
+      $this->emitter->emit(Difference::between(
+        file($this->from->getURI(), FILE_IGNORE_NEW_LINES), 
+        file($this->to->getURI(), FILE_IGNORE_NEW_LINES)
+      ));
     }
   }
 ?>
