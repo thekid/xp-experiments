@@ -20,11 +20,11 @@
     /**
      * Emit the difference
      *
-     * @param   text.diff.AbstractOperation[] diff
+     * @param   text.diff.Difference diff
      * @throws  lang.IllegalStateException in case the diff array contains an unknown element
      */
-    public function emit(array $diff) {
-      foreach ($diff as $op) {
+    public function emit(Difference $diff) {
+      foreach ($diff->operations() as $op) {
         if ($op instanceof Copy) {
           $this->out->writeLine(' ', $op->text);
         } else if ($op instanceof Change) {

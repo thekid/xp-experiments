@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.streams.StringWriter');
+  uses('io.streams.StringWriter', 'text.diff.Difference');
 
   /**
    * Emits a diff
@@ -25,9 +25,9 @@
     /**
      * Emit the difference
      *
-     * @param   text.diff.AbstractOperation[] diff
+     * @param   text.diff.Difference diff
      */
-    public abstract function emit(array $diff);
+    public abstract function emit(Difference $diff);
     
   }
 ?>

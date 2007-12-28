@@ -38,7 +38,7 @@
      * @return  text.diff.operation.AbstractOperation[]
      */
     protected function differenceBetween($from, $to) {
-      return Difference::between($from, $to, $this->verbose);
+      return Difference::between($from, $to, $this->verbose)->operations();
     }
   
     /**

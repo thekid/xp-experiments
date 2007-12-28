@@ -17,18 +17,36 @@
    * @purpose  Algorithm
    */
   class Difference extends Object {
+    protected
+      $op = array();
+        
+    /**
+     * Constructor
+     *
+     */
+    protected function __construct() {
+    }
     
+    /**
+     * Retrieve edit operations
+     *
+     * @return  text.diff.AbstractOperation[]
+     */
+    public function operations() {
+      return $this->op;
+    }
+        
     /**
      * Computes the difference between to string arrays
      *
      * @param   string[] from
      * @param   string[] to
-     * @return  text.diff.AbstractOperation[]
+     * @return  text.diff.Difference
      */
     public static function between(array $from, array $to, $trace= FALSE) {
       $trace && Console::$err->writeLine("\n-------------------------");
 
-      $r= array();
+      $op= array();
       $sf= sizeof($from);
       $st= sizeof($to);
       for ($f= 0, $t= 0, $s= min($sf, $st); ($t < $st) && ($f < $sf); $t++, $f++) {
@@ -38,7 +56,7 @@
           $t, addcslashes($to[$t], "\0..\17")
         );
         if ($from[$f] === $to[$t]) {
-          $r[]= new Copy($from[$f]);
+          $op[]= new Copy($from[$f]);
           continue;
         }
         
@@ -100,7 +118,7 @@
           //    more common elements!)
           if (!$offsets) {
             if ($f == $sf- 1 && $t == $st- 1 && $from[$f] !== $to[$t]) {
-              $r[]= new Change($from[$f], $to[$t]);
+              $op[]= new Change($from[$f], $to[$t]);
               $f++; $t++;
               break 2;
             }
@@ -116,10 +134,10 @@
                   );
                   
                   while ($f < $i) {
-                    $r[]= new Deletion($from[$f++]);
+                    $op[]= new Deletion($from[$f++]);
                   }
                   while ($t < $j) {
-                    $r[]= new Insertion($to[$t++]);
+                    $op[]= new Insertion($to[$t++]);
                   }
                   $f--; $t--;
                   continue 4;
@@ -146,7 +164,7 @@
           $advance[$best]['f'], 
           xp::stringOf($offsets)
         );
-        $r= array_merge($r, ${$best});
+        $op= array_merge($op, ${$best});
         $t+= $advance[$best]['t']- 1;
         $f+= $advance[$best]['f']- 1;
       }
@@ -158,15 +176,18 @@
         $t, $st
       );
       for ($i= $f; $i < $sf; $i++) {
-        $r[]= new Deletion($from[$i]);
+        $op[]= new Deletion($from[$i]);
       }
       for ($i= $t; $i < $st; $i++) {
-        $r[]= new Insertion($to[$i]);
+        $op[]= new Insertion($to[$i]);
       }
       
-      $trace && Console::$err->writeLine($r);
+      $trace && Console::$err->writeLine($op);
       $trace && Console::$err->writeLine("\n-------------------------");
-      return $r;
+      
+      $diff= new self();
+      $diff->op= $op;
+      return $diff;
     }
   }
 ?>
