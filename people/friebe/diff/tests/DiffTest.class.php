@@ -16,19 +16,6 @@
    * @purpose  Unittest
    */
   class DiffTest extends TestCase {
-    protected
-      $verbose= FALSE;
-
-    /**
-     * Constructor
-     *
-     * @param   string name
-     * @param   bool verbose default FALSE
-     */
-    public function __construct($name, $verbose= FALSE) {
-      parent::__construct($name);
-      $this->verbose= $verbose;
-    }
     
     /**
      * Helper method
@@ -38,7 +25,7 @@
      * @return  text.diff.operation.AbstractOperation[]
      */
     protected function differenceBetween($from, $to) {
-      return Difference::between($from, $to, $this->verbose)->operations();
+      return Difference::between($from, $to)->operations();
     }
   
     /**

@@ -43,18 +43,18 @@
      * @param   string[] to
      * @return  text.diff.Difference
      */
-    public static function between(array $from, array $to, $trace= FALSE) {
-      $trace && Console::$err->writeLine("\n-------------------------");
+    public static function between(array $from, array $to) {
+      // Console::$err->writeLine("\n-------------------------");
 
-      $op= array();
       $sf= sizeof($from);
       $st= sizeof($to);
+      $op= array();
       for ($f= 0, $t= 0, $s= min($sf, $st); ($t < $st) && ($f < $sf); $t++, $f++) {
-        $trace && Console::$err->writeLinef(
-          '%d: "%s" =? %d: "%s"',
-          $f, addcslashes($from[$f], "\0..\17"),
-          $t, addcslashes($to[$t], "\0..\17")
-        );
+        // Console::$err->writeLinef(
+        //   '%d: "%s" =? %d: "%s"',
+        //   $f, addcslashes($from[$f], "\0..\17"),
+        //   $t, addcslashes($to[$t], "\0..\17")
+        // );
         if ($from[$f] === $to[$t]) {
           $op[]= new Copy($from[$f]);
           continue;
@@ -127,11 +127,11 @@
             for ($i= $f; $i < $sf; $i++) {
               for ($j= $t; $j < $st; $j++) {
                 if ($from[$i] === $to[$j]) {
-                  $trace && Console::$err->writeLinef(
-                    'Next match (f= %d/%d t= %d/%d)',
-                    $f, $sf, 
-                    $t, $st
-                  );
+                  // Console::$err->writeLinef(
+                  //   'Next match (f= %d/%d t= %d/%d)',
+                  //   $f, $sf, 
+                  //   $t, $st
+                  // );
                   
                   while ($f < $i) {
                     $op[]= new Deletion($from[$f++]);
@@ -145,11 +145,11 @@
               }
             }
 
-            $trace && Console::$err->writeLinef(
-              'No more common elements found (f= %d/%d t= %d/%d)', 
-              $f, $sf, 
-              $t, $st
-            );
+            // Console::$err->writeLinef(
+            //   'No more common elements found (f= %d/%d t= %d/%d)', 
+            //   $f, $sf, 
+            //   $t, $st
+            // );
             break 2;
           }
         } while (0);
@@ -157,24 +157,24 @@
         // Figure out which look-ahead produced the nearest result
         asort($offsets);
         $best= key($offsets);
-        $trace && Console::$err->writeLinef(
-          '%s (t+= %d, f+= %d) @ %s',
-          $best,
-          $advance[$best]['t'], 
-          $advance[$best]['f'], 
-          xp::stringOf($offsets)
-        );
+        // Console::$err->writeLinef(
+        //   '%s (t+= %d, f+= %d) @ %s',
+        //   $best,
+        //   $advance[$best]['t'], 
+        //   $advance[$best]['f'], 
+        //   xp::stringOf($offsets)
+        // );
         $op= array_merge($op, ${$best});
         $t+= $advance[$best]['t']- 1;
         $f+= $advance[$best]['f']- 1;
       }
       
       // Check leftover elements at end in both <from> and <to>
-      $trace && ($f < $sf || $t < $st) && Console::$err->writeLinef(
-        'Leftovers (f= %d/%d t= %d/%d)', 
-        $f, $sf, 
-        $t, $st
-      );
+      // ($f < $sf || $t < $st) && Console::$err->writeLinef(
+      //   'Leftovers (f= %d/%d t= %d/%d)', 
+      //   $f, $sf, 
+      //   $t, $st
+      // );
       for ($i= $f; $i < $sf; $i++) {
         $op[]= new Deletion($from[$i]);
       }
@@ -182,8 +182,8 @@
         $op[]= new Insertion($to[$i]);
       }
       
-      $trace && Console::$err->writeLine($op);
-      $trace && Console::$err->writeLine("\n-------------------------");
+      // Console::$err->writeLine($op);
+      // Console::$err->writeLine("\n-------------------------");
       
       $diff= new self();
       $diff->op= $op;
