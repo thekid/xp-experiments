@@ -4,7 +4,12 @@
  * $Id$ 
  */
 
-  uses('util.cmd.Command', 'io.File', 'text.diff.Difference');
+  uses(
+    'util.cmd.Command', 
+    'io.File', 
+    'text.diff.Difference', 
+    'text.diff.source.BufferedFileSource'
+  );
 
   /**
    * Computes the difference between two files
@@ -22,28 +27,20 @@
      * Set from filename
      *
      * @param   string to
-     * @throws  io.FileNotFoundException
      */
     #[@arg(position= 0)]
     public function setFrom($from) {
-      $this->from= new File($from);
-      if (!$this->from->exists()) {
-        throw new FileNotFoundException('File '.$from.' does not exist');
-      }
+      $this->from= new BufferedFileSource(new File($from));
     }
 
     /**
      * Set to filename
      *
      * @param   string to
-     * @throws  io.FileNotFoundException
      */
     #[@arg(position= 1)]
     public function setTo($to) {
-      $this->to= new File($to);
-      if (!$this->to->exists()) {
-        throw new FileNotFoundException('File '.$to.' does not exist');
-      }
+      $this->to= new BufferedFileSource(new File($to));
     }
     
     /**
@@ -61,13 +58,7 @@
      *
      */
     public function run() {
-      $this->out->writeLine('- ', $this->from->getURI());
-      $this->out->writeLine('+ ', $this->to->getURI());
-      
-      $this->emitter->emit(Difference::between(
-        file($this->from->getURI(), FILE_IGNORE_NEW_LINES), 
-        file($this->to->getURI(), FILE_IGNORE_NEW_LINES)
-      ));
+      $this->emitter->emit(Difference::between($this->from, $this->to));
     }
   }
 ?>

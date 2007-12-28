@@ -24,6 +24,9 @@
      * @throws  lang.IllegalStateException in case the diff array contains an unknown element
      */
     public function emit(Difference $diff) {
+      $this->out->writeLine('- ', $diff->from());
+      $this->out->writeLine('+ ', $diff->to());
+
       foreach ($diff->operations() as $op) {
         if ($op instanceof Copy) {
           $this->out->writeLine(' ', $op->text);

@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'text.diff.Difference'
+    'text.diff.Difference',
+    'text.diff.source.ArraySource'
   );
 
   /**
@@ -25,7 +26,7 @@
      * @return  text.diff.operation.AbstractOperation[]
      */
     protected function differenceBetween($from, $to) {
-      return Difference::between($from, $to)->operations();
+      return Difference::between(new ArraySource($from), new ArraySource($to))->operations();
     }
   
     /**

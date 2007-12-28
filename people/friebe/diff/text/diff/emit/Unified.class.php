@@ -23,6 +23,9 @@
      * @throws  lang.IllegalStateException in case the diff array contains an unknown element
      */
     public function emit(Difference $diff) {
+      $this->out->writeLine('--- ', $diff->from()->name(), "\tfrom");
+      $this->out->writeLine('+++ ', $diff->to()->name(), "\tto");
+
       $context= 6;
       $ch= floor($context / 2);
 
