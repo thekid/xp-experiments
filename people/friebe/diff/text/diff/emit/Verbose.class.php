@@ -9,7 +9,8 @@
   uses('text.diff.AbstractDiffEmitter');
 
   /**
-   * Verbose emitter
+   * Verbose emitter. Shows all content, using "-" and "+" for changes,
+   * ">" for insertions and "<" for deletions.
    *
    * @see      xp://text.diff.AbstractDiffEmitter
    * @purpose  Emitter implementation
@@ -25,14 +26,14 @@
     public function emit(array $diff) {
       foreach ($diff as $op) {
         if ($op instanceof Copy) {
-          $this->out->write(' ', $op->text);
+          $this->out->writeLine(' ', $op->text);
         } else if ($op instanceof Change) {
-          $this->out->write('-', $op->text);
-          $this->out->write('+', $op->newText);
+          $this->out->writeLine('-', $op->text);
+          $this->out->writeLine('+', $op->newText);
         } else if ($op instanceof Deletion) {
-          $this->out->write('<', $op->text);
+          $this->out->writeLine('<', $op->text);
         } else if ($op instanceof Insertion) {
-          $this->out->write('>', $op->text);
+          $this->out->writeLine('>', $op->text);
         } else {
           throw new IllegalStateException('Unknown operation '.xp::typeOf($op));
         }
