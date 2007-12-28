@@ -42,7 +42,7 @@
     }
   
     /**
-     * Test
+     * Test equal input in copy-operations for every input item.
      *
      */
     #[@test]
@@ -60,7 +60,8 @@
     }
 
     /**
-     * Test
+     * Test completely different input results in deletion of every
+     * item and insertion of every new item.
      *
      */
     #[@test]
@@ -82,7 +83,7 @@
     }
 
     /**
-     * Test
+     * Test a more complex scenario (derived from a lang.base.php patch)
      *
      */
     #[@test]
@@ -108,7 +109,7 @@
     }
 
     /**
-     * Test
+     * Test insertion of input in the middle.
      *
      */
     #[@test]
@@ -127,7 +128,26 @@
     }
 
     /**
-     * Test
+     * Test insertion of a word in the beginning.
+     *
+     */
+    #[@test]
+    public function insertedAtBeginning() {
+      $this->assertEquals(
+        array(
+          new Insertion('Well'),
+          new Copy('Hello'),
+          new Copy('World')
+        ), 
+        $this->differenceBetween(
+          array('Hello', 'World'),
+          array('Well', 'Hello', 'World')
+        )
+      );
+    }
+
+    /**
+     * Test insertion of a word at the end.
      *
      */
     #[@test]
@@ -146,7 +166,7 @@
     }
 
     /**
-     * Test
+     * Test change at the beginning of input.
      *
      */
     #[@test]
@@ -164,7 +184,7 @@
     }
 
     /**
-     * Test
+     * Test change at the end of input.
      *
      */
     #[@test]
@@ -182,7 +202,7 @@
     }
 
     /**
-     * Test
+     * Test change in the middle of input
      *
      */
     #[@test]
@@ -201,7 +221,7 @@
     }
 
     /**
-     * Test
+     * Test deletion at the end of input
      *
      */
     #[@test]
@@ -219,7 +239,8 @@
     }
  
     /**
-     * Test
+     * Test deletion in the middle of input. Also tests that common
+     * elements found later on are not considered
      *
      */
     #[@test]
@@ -237,5 +258,45 @@
         )
       );
     }
- }
+
+    /**
+     * Test deletion at the beginning of input. Basically reverse 
+     * situation as in insertedAtBeginning test.
+     *
+     */
+    #[@test]
+    public function deletedAtBeginning() {
+      $this->assertEquals(
+        array(
+          new Deletion('Well'),
+          new Copy('Hello'),
+          new Copy('World')
+        ), 
+        $this->differenceBetween(
+          array('Well', 'Hello', 'World'),
+          array('Hello', 'World')
+        )
+      );
+    }
+
+    /**
+     * Tests multiple changes at the beginning.
+     *
+     */
+    #[@test]
+    public function multipleChangesAtBeginning() {
+      $this->assertEquals(
+        array(
+          new Deletion('Well'),
+          new Deletion('Hi'),
+          new Insertion('Hello'),
+          new Copy('World')
+        ), 
+        $this->differenceBetween(
+          array('Well', 'Hi', 'World'),
+          array('Hello', 'World')
+        )
+      );
+    }
+  }
 ?>
