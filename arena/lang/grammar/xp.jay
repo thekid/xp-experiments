@@ -29,7 +29,7 @@
 
 %left ',' '=' '+' '-' '*' '/' '%' '?' ':' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL
 %right '[' '!' 
-%nonassoc '<' '>' T_SE T_GE
+%nonassoc '<' '>' T_SE T_GE T_OBJECT_OPERATOR
 
 %token T_WORD 260
 %token T_STRING 261
@@ -341,14 +341,18 @@ expression:
     T_WORD { /* XXX Constant */ }
   | T_NUMBER { /* XXX Number */ }
   | T_STRING { /* XXX String */ }
-  | T_VARIABLE { $$= $yyLex->create(new VariableNode()); $$->name= $1; }
-  | T_NEW { $1= $yyLex->create(new InstanceCreationNode()); } typename '(' expressionlist_opt ')' classbody_opt { 
+  | T_VARIABLE { $1= $yyLex->create(new VariableNode(array('name' => $1))); } chain_opt {
+      $3 && $1->chained= $3;
+    }
+  | T_NEW { $1= $yyLex->create(new InstanceCreationNode()); } typename '(' expressionlist_opt ')' classbody_opt chain_opt { 
       $1->type= $3;
       $1->parameters= $5;
+      $8 && $1->chained= $8;
     }
-  | T_WORD '(' { $2= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' { 
+  | T_WORD '(' { $2= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' chain_opt { 
       $2->name= $1;
       $2->parameters= $4;
+      $6 && $2->chained= $6;
       $$= $2;
     }
   | '(' expression ')' { $$= $2; }
@@ -370,21 +374,26 @@ expression:
   | expression T_INC { /* XXX Post-Increment */ }
   | expression T_DEC { /* XXX Post-Decrement */ }
   | expression '?' expression ':' expression { /* XXX Ternary */ }
-  | expression chain { $1->chained= $2; }
+;
+
+chain_opt:
+      /* empty */ { $$= NULL; }
+    | chain
 ;
 
 chain:
     '[' { $1= $yyLex->create(new ArrayAccessNode()); } expression ']' { 
       $1->offset= $3;
     }
-  | T_OBJECT_OPERATOR T_WORD { 
-      $1= $yyLex->create(new VariableNode()); 
-      $1->name= $2; 
+  | T_OBJECT_OPERATOR T_WORD {
+      $$= $yyLex->create(new VariableNode()); 
+      $$->name= $2; 
     }
   | T_OBJECT_OPERATOR T_WORD '(' { $1= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' { 
       $1->name= $2;
       $1->parameters= $5;
     }
+  | chain chain { $1->chained= $2; }
 ;
 
 expressionlist_opt:

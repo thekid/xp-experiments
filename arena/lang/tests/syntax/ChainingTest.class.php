@@ -110,12 +110,16 @@
           'name'           => 'elements',
           'parameters'     => NULL,
           'chained'          => new ArrayAccessNode(array(
-            'position'       => array(4, 27), 
-            'offset'         => '0'
+            'position'       => array(4, 25), 
+            'offset'         => '0',
+            'chained'        => new VariableNode(array(
+              'position'       => array(4, 34), 
+              'name'           => 'name'            
+            ))
           ))
         ))
       ))), $this->parse('
-        $l->elements()[0];
+        $l->elements()[0]->name;
       '));
     }
   }
