@@ -49,8 +49,8 @@
             if (!$a1[$k]->equals($a2[$k])) return FALSE;
             break;
 
-          case $a1[$k] !== $a2[$k]:
-            return '__id' === $k;
+          case $a1[$k] !== $a2[$k] && '__id' !== $k:
+            return FALSE;
         }
       }
       return TRUE;
