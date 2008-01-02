@@ -136,9 +136,12 @@
           'get'        => array(new ReturnNode(array(
             'position'   => array(3, 39),
             'expression' => new VariableNode(array(
-              'position'    => array(3, 51), 
+              'position'    => array(3, 46), 
               'name'        => '$this',
-              'chained'     => '_name',     // XXX should be property
+              'chained'     => new VariableNode(array(
+                'position'    => array(3, 58), 
+                'name'        => '_name'
+              ))
             ))
           ))),
           'set'        => NULL,

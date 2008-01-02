@@ -37,13 +37,13 @@
     #[@test]
     public function methodCall() {
       $this->assertEquals(array(new VariableNode(array(
-        'position'       => array(4, 13), 
+        'position'       => array(4, 11), 
         'name'           => '$m',
         'chained'        => new InvocationNode(array(
           'position'       => array(4, 21), 
           'name'           => 'invoke',
           'parameters'     => array(new VariableNode(array(
-            'position'       => array(4, 27), 
+            'position'       => array(4, 22), 
             'name'           => '$args',
           )))
         ))
@@ -59,7 +59,7 @@
     #[@test]
     public function chainedMethodCalls() {
       $this->assertEquals(array(new VariableNode(array(
-        'position'       => array(4, 13), 
+        'position'       => array(4, 11), 
         'name'           => '$l',
         'chained'        => new InvocationNode(array(
           'position'       => array(4, 27), 
@@ -81,9 +81,29 @@
      *
      */
     #[@test]
+    public function chainedAfterNew() {
+      $this->assertEquals(array(new InstanceCreationNode(array(
+        'position'       => array(4, 11), 
+        'type'           => new TypeName('Date'),
+        'parameters'     => NULL,
+        'chained'        => new InvocationNode(array(
+          'position'       => array(4, 31), 
+          'name'           => 'toString',
+          'parameters'     => NULL,
+        ))
+      ))), $this->parse('
+        new Date()->toString();
+      '));
+    }
+
+    /**
+     * Test chained method calls
+     *
+     */
+    #[@test]
     public function arrayOffsetOnMethod() {
       $this->assertEquals(array(new VariableNode(array(
-        'position'       => array(4, 13), 
+        'position'       => array(4, 11), 
         'name'           => '$l',
         'chained'        => new InvocationNode(array(
           'position'       => array(4, 23), 

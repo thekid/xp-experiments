@@ -40,11 +40,11 @@
         'position'       => array(4, 11),
         'initialization' => array(new AssignmentNode(array(
           'position'       => array(4, 21),
-          'variable'       => '$i',
+          'variable'       => new VariableNode(array('position' => array(4, 16), 'name' => '$i')),
           'expression'     => '0'
         ))),
-        'condition'      => array(new VariableNode(array('position' => array(4, 26), 'name' => '$i'))),
-        'loop'           => array(new VariableNode(array('position' => array(4, 36), 'name' => '$i'))),
+        'condition'      => array(new VariableNode(array('position' => array(4, 23), 'name' => '$i'))),
+        'loop'           => array(new VariableNode(array('position' => array(4, 34), 'name' => '$i'))),
         'statements'     => NULL, 
       ))), $this->parse('
         for ($i= 0; $i < 1000; $i++) { }
@@ -59,7 +59,7 @@
     public function foreachLoop() {
       $this->assertEquals(array(new ForeachNode(array(
         'position'      => array(4, 11),
-        'expression'    => new VariableNode(array('position' => array(4, 26), 'name' => '$list')),
+        'expression'    => new VariableNode(array('position' => array(4, 20), 'name' => '$list')),
         'statements'    => NULL, 
       ))), $this->parse('
         foreach ($list as $key => $value) { }
@@ -74,7 +74,7 @@
     public function whileLoop() {
       $this->assertEquals(array(new WhileNode(array(
         'position'      => array(4, 11),
-        'expression'    => new VariableNode(array('position' => array(4, 20), 'name' => '$i')),
+        'expression'    => new VariableNode(array('position' => array(4, 18), 'name' => '$i')),
         'statements'    => NULL, 
       ))), $this->parse('
         while ($i++ < 10000) { }
@@ -89,7 +89,7 @@
     public function doLoop() {
       $this->assertEquals(array(new DoNode(array(
         'position'      => array(4, 11),
-        'expression'    => new VariableNode(array('position' => array(4, 27), 'name' => '$i')),
+        'expression'    => new VariableNode(array('position' => array(4, 25), 'name' => '$i')),
         'statements'    => NULL, 
       ))), $this->parse('
         do { } while ($i++ < 10000)

@@ -38,7 +38,7 @@
     public function ifStatement() {
       $this->assertEquals(array(new IfNode(array(
         'position'       => array(4, 11),
-        'condition'      => new VariableNode(array('position' => array(4, 17), 'name' => '$i')),
+        'condition'      => new VariableNode(array('position' => array(4, 15), 'name' => '$i')),
         'statements'     => NULL,
         'otherwise'      => NULL, 
       ))), $this->parse('
@@ -54,7 +54,7 @@
     public function ifElseStatement() {
       $this->assertEquals(array(new IfNode(array(
         'position'       => array(4, 11),
-        'condition'      => new VariableNode(array('position' => array(4, 17), 'name' => '$i')),
+        'condition'      => new VariableNode(array('position' => array(4, 15), 'name' => '$i')),
         'statements'     => NULL, 
         'otherwise'      => new ElseNode(array(
           'position'       => array(4, 23),
@@ -70,16 +70,16 @@
      *
      */
     #[@test]
-    public function elseIfCascades() {
+    public function ifElseCascades() {
       $this->assertEquals(array(new IfNode(array(
         'position'       => array(4, 11),
-        'condition'      => new VariableNode(array('position' => array(4, 18), 'name' => '$i')),
+        'condition'      => new VariableNode(array('position' => array(4, 15), 'name' => '$i')),
         'statements'     => NULL, 
         'otherwise'      => new ElseNode(array(
           'position'       => array(4, 27),
           'statements'     => array(new IfNode(array(
             'position'       => array(4, 32),
-            'condition'      => new VariableNode(array('position' => array(4, 39), 'name' => '$i')),
+            'condition'      => new VariableNode(array('position' => array(4, 36), 'name' => '$i')),
             'statements'     => NULL, 
             'otherwise'      => new ElseNode(array(
               'position'       => array(4, 48),

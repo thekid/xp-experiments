@@ -96,6 +96,7 @@
      */
     public function create($n) {
       $n->position= $this->position;
+      $n->__id= microtime();
       return $n;
     }
   

@@ -9,6 +9,7 @@
     'xp.compiler.ast.MethodNode',
     'xp.compiler.ast.OperatorNode',
     'xp.compiler.ast.ReturnNode',
+    'xp.compiler.ast.InstanceCreationNode',
     'xp.compiler.ast.VariableNode',
     'xp.compiler.ast.ArrayAccessNode',
     'xp.compiler.ast.TryNode',
@@ -341,18 +342,22 @@ expression:
   | T_NUMBER { /* XXX Number */ }
   | T_STRING { /* XXX String */ }
   | T_VARIABLE { $$= $yyLex->create(new VariableNode()); $$->name= $1; }
-  | T_VARIABLE '=' expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
-  | T_VARIABLE T_ADD_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
-  | T_VARIABLE T_SUB_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
-  | T_VARIABLE T_MUL_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
-  | T_VARIABLE T_DIV_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
-  | T_VARIABLE T_MOD_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
-  | T_NEW typename '(' expressionlist_opt ')' classbody_opt { /* XXX Instance creation */ }
+  | T_NEW { $1= $yyLex->create(new InstanceCreationNode()); } typename '(' expressionlist_opt ')' classbody_opt { 
+      $1->type= $3;
+      $1->parameters= $5;
+    }
   | T_WORD '(' { $2= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' { 
       $2->name= $1;
       $2->parameters= $4;
       $$= $2;
     }
+  | '(' expression ')' { $$= $2; }
+  | expression '=' expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
+  | expression T_ADD_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
+  | expression T_SUB_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
+  | expression T_MUL_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
+  | expression T_DIV_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
+  | expression T_MOD_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
   | expression '<' expression { /* XXX SmallerThan */ }
   | expression '>' expression { /* XXX GreaterThan */ }
   | expression T_SE expression { /* XXX S|E */ }
@@ -362,12 +367,24 @@ expression:
   | expression '*' expression { /* XXX Multiply */ }
   | expression '/' expression { /* XXX Divide */ }
   | expression '%' expression { /* XXX Modulo */ }
-  | expression '?' expression ':' expression { /* XXX Ternary */ }
-  | expression '[' expression ']' { $2= $yyLex->create(new ArrayAccessNode()); $2->offset= $3; $1->chained= $2;}
-  | expression T_OBJECT_OPERATOR expression { $1->chained= $3; }
-  | '(' expression ')' { $$= $2; }
   | expression T_INC { /* XXX Post-Increment */ }
   | expression T_DEC { /* XXX Post-Decrement */ }
+  | expression '?' expression ':' expression { /* XXX Ternary */ }
+  | expression chain { $1->chained= $2; }
+;
+
+chain:
+    '[' { $1= $yyLex->create(new ArrayAccessNode()); } expression ']' { 
+      $1->offset= $3;
+    }
+  | T_OBJECT_OPERATOR T_WORD { 
+      $1= $yyLex->create(new VariableNode()); 
+      $1->name= $2; 
+    }
+  | T_OBJECT_OPERATOR T_WORD '(' { $1= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' { 
+      $1->name= $2;
+      $1->parameters= $5;
+    }
 ;
 
 expressionlist_opt:
