@@ -1,0 +1,210 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  uses(
+    'unittest.TestCase',
+    'xp.compiler.Lexer',
+    'xp.compiler.Parser'
+  );
+
+  /**
+   * TestCase
+   *
+   */
+  class MethodDeclarationTest extends TestCase {
+  
+    /**
+     * Parse method source and return statements inside this method.
+     *
+     * @param   string src
+     * @return  xp.compiler.Node[]
+     */
+    protected function parse($src) {
+      return create(new Parser())->parse(new xp·compiler·Lexer($src, '<string:'.$this->name.'>'))->body['methods'];
+    }
+
+    /**
+     * Test method declaration
+     *
+     */
+    #[@test]
+    public function toStringMethod() {
+      $this->assertEquals(array(new MethodNode(array(
+        'position'   => array(2, 33),
+        'modifiers'  => MODIFIER_PUBLIC,
+        'name'       => 'toString',
+        'returns'    => new TypeName('string'),
+        'arguments'  => NULL,
+        'throws'     => NULL,
+        'body'       => NULL
+      ))), $this->parse('class Null { 
+        public string toString() { }
+      }'));
+    }
+
+    /**
+     * Test method declaration
+     *
+     */
+    #[@test]
+    public function equalsMethod() {
+      $this->assertEquals(array(new MethodNode(array(
+        'position'   => array(2, 29),
+        'modifiers'  => MODIFIER_PUBLIC,
+        'name'       => 'equals',
+        'returns'    => new TypeName('bool'),
+        'arguments'  => array(array(
+          'name' => '$cmp',
+          'type' => new TypeName('Object')
+        )),
+        'throws'     => NULL,
+        'body'       => NULL
+      ))), $this->parse('class Null { 
+        public bool equals(Object $cmp) { }
+      }'));
+    }
+
+    /**
+     * Test method declaration
+     *
+     */
+    #[@test]
+    public function abstractMethod() {
+      $this->assertEquals(array(new MethodNode(array(
+        'position'   => array(2, 40),
+        'modifiers'  => MODIFIER_PUBLIC | MODIFIER_ABSTRACT,
+        'name'       => 'setTrace',
+        'returns'    => new TypeName('void'),
+        'arguments'  => array(array(
+          'name' => '$cat',
+          'type' => new TypeName('util.log.LogCategory')
+        )),
+        'throws'     => NULL,
+        'body'       => NULL
+      ))), $this->parse('class Null { 
+        public abstract void setTrace(util.log.LogCategory $cat);
+      }'));
+    }
+
+    /**
+     * Test method declaration
+     *
+     */
+    #[@test]
+    public function interfaceMethod() {
+      $this->assertEquals(array(new MethodNode(array(
+        'position'   => array(2, 31),
+        'modifiers'  => MODIFIER_PUBLIC,
+        'name'       => 'compareTo',
+        'returns'    => new TypeName('int'),
+        'arguments'  => array(array(
+          'name' => '$other',
+          'type' => new TypeName('Object')
+        )),
+        'throws'     => NULL,
+        'body'       => NULL
+      ))), $this->parse('interface Comparable { 
+        public int compareTo(Object $other) { }
+      }'));
+    }
+
+    /**
+     * Test method declaration
+     *
+     */
+    #[@test]
+    public function staticMethod() {
+      $this->assertEquals(array(new MethodNode(array(
+        'position'   => array(2, 43),
+        'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
+        'name'       => 'loadClass',
+        'returns'    => new TypeName('Class', array(new TypeName('T'))),
+        'arguments'  => array(array(
+          'name' => '$name',
+          'type' => new TypeName('string')
+        )),
+        'throws'     => array(new TypeName('ClassNotFoundException'), new TypeName('SecurityException')),
+        'body'       => NULL
+      ))), $this->parse('class Class<T> { 
+        public static Class<T> loadClass(string $name) throws ClassNotFoundException, SecurityException { }
+      }'));
+    }
+
+    /**
+     * Test method declaration
+     *
+     */
+    #[@test]
+    public function printfMethod() {
+      $this->assertEquals(array(new MethodNode(array(
+        'position'   => array(2, 38),
+        'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
+        'name'       => 'printf',
+        'returns'    => new TypeName('string'),
+        'arguments'  => array(array(
+          'name'   => '$format',
+          'type'   => new TypeName('string')
+        ), array(
+          'name'   => '$args',
+          'type'   => new TypeName('string'),
+          'vararg' => TRUE
+        )), 
+        'throws'     => NULL,
+        'body'       => NULL
+      ))), $this->parse('class Format { 
+        public static string printf(string $format, string* $args) {
+        
+        }
+      }'));
+    }
+
+    /**
+     * Test method declaration
+     *
+     */
+    #[@test]
+    public function addAllMethod() {
+      $this->assertEquals(array(new MethodNode(array(
+        'position'   => array(2, 29),
+        'modifiers'  => MODIFIER_PUBLIC,
+        'name'       => 'addAll',
+        'returns'    => new TypeName('void'),
+        'arguments'  => array(array(
+          'name'   => '$elements',
+          'type'   => new TypeName('T[]')      // XXX FIXME this is probably not a good representation
+        )), 
+        'throws'     => NULL,
+        'body'       => NULL
+      ))), $this->parse('class List { 
+        public void addAll(T[] $elements) { }
+      }'));
+    }
+
+    /**
+     * Test operator declaration
+     *
+     */
+    #[@test]
+    public function plusOperator() {
+      $this->assertEquals(array(new OperatorNode(array(
+        'position'   => array(2, 36),
+        'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
+        'symbol'     => '+',
+        'arguments'  => array(array(
+          'name' => '$a',
+          'type' => new TypeName('Integer')
+        ), array(
+          'name' => '$b',
+          'type' => new TypeName('Integer')
+        )),
+        'throws'     => NULL,
+        'body'       => NULL
+      ))), $this->parse('class Integer { 
+        public static operator + (Integer $a, Integer $b) { }
+      }'));
+    }
+  }
+?>

@@ -1,0 +1,423 @@
+%{
+  uses(
+    'xp.compiler.types.TypeName',
+    'xp.compiler.ast.ClassNode',
+    'xp.compiler.ast.EnumNode',
+    'xp.compiler.ast.InterfaceNode',
+    'xp.compiler.ast.FieldNode',
+    'xp.compiler.ast.PropertyNode',
+    'xp.compiler.ast.MethodNode',
+    'xp.compiler.ast.OperatorNode',
+    'xp.compiler.ast.ReturnNode',
+    'xp.compiler.ast.VariableNode',
+    'xp.compiler.ast.ArrayAccessNode',
+    'xp.compiler.ast.TryNode',
+    'xp.compiler.ast.CatchNode',
+    'xp.compiler.ast.ThrowNode',
+    'xp.compiler.ast.FinallyNode',
+    'xp.compiler.ast.ForNode',
+    'xp.compiler.ast.ForeachNode',
+    'xp.compiler.ast.DoNode',
+    'xp.compiler.ast.WhileNode',
+    'xp.compiler.ast.AssignmentNode',
+    'xp.compiler.ast.InvocationNode',
+    'xp.compiler.ast.IfNode',
+    'xp.compiler.ast.ElseNode'
+  );
+%}
+
+%left ',' '=' '+' '-' '*' '/' '%' '?' ':' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL
+%right '[' '!' 
+%nonassoc '<' '>' T_SE T_GE
+
+%token T_WORD 260
+%token T_STRING 261
+%token T_NUMBER 262
+
+%token T_PUBLIC 280
+%token T_PRIVATE 281
+%token T_PROTECTED 282
+%token T_STATIC 283
+%token T_FINAL 284
+%token T_ABSTRACT 285
+%token T_NATIVE 286
+
+%token T_CLASS 300
+%token T_INTERFACE 301
+%token T_ENUM 302
+
+%token T_EXTENDS 310
+%token T_IMPLEMENTS 311
+
+%token T_OPERATOR 320
+%token T_THROWS 321
+
+%token T_PROPERTY 330
+
+%token T_VARIABLE 340
+%token T_RETURN 341
+%token T_TRY 342
+%token T_THROW 343
+%token T_CATCH 344
+%token T_FINALLY 345
+%token T_NEW 346
+
+%token T_FOR 360
+%token T_WHILE 361
+%token T_DO 362
+%token T_FOREACH 363
+%token T_AS 364
+%token T_BREAK 365
+%token T_CONTINUE 366
+
+%token T_IF 370
+%token T_ELSE 371
+%token T_SWITCH 372
+%token T_CASE 373
+%token T_DEFAULT 374
+
+%token T_GE 400
+%token T_SE 401
+%token T_INC 402
+%token T_DEC 403
+%token T_ADD_EQUAL 404
+%token T_SUB_EQUAL 405
+%token T_MUL_EQUAL 406
+%token T_DIV_EQUAL 407
+%token T_MOD_EQUAL 408
+%token T_OBJECT_OPERATOR 409
+
+%%
+
+start:
+      declaration
+;
+
+// {{{ Class, enum and interface declarations
+declaration:
+      modifiers_opt classtype typename classparents_opt implements_opt '{' classbody '}' {
+        $2->modifiers= $1;
+        $2->name= $3;
+        $2->parent= $4;
+        $2->implements= $5;
+        $2->body= $7;
+        $$= $2;
+      }
+    | modifiers_opt T_INTERFACE { $2= $yyLex->create(new InterfaceNode()); } typename interfaceparents_opt '{' classbody '}' {
+        $2->modifiers= $1;
+        $2->name= $4;
+        $2->parents= $5;
+        $2->body= $7;
+        $$= $2;
+      }
+;
+
+classtype:
+      T_CLASS { $$= $yyLex->create(new ClassNode()); }
+    | T_ENUM { $$= $yyLex->create(new EnumNode()); }
+;
+
+classparents_opt:
+      /* empty */    { $$= NULL; }
+    | T_EXTENDS typename { $$= $2; }
+;
+
+implements_opt:
+      /* empty */ { $$= array(); }
+    | T_IMPLEMENTS name_list { $$= $2; }
+;
+
+interfaceparents_opt:
+      /* empty */    { $$= NULL; }
+    | T_EXTENDS name_list { $$= $2; }
+;
+
+classbody_opt:
+      /* empty */       { $$= NULL; }
+    | '{' classbody '}' { $$= $2; }
+;
+
+classbody:
+      /* empty */ { $$= NULL; }
+    | fields  { $$['fields']= $1; }
+    | methods { $$['methods']= $1; }
+;
+// }}}
+
+// {{{ Fields and properties
+fields:
+      field { $$= array($1); }
+    | field fields { $$= array_merge(array($1), $2); }
+;
+
+field:
+      modifiers_opt typename T_VARIABLE initialization_opt ';' { $$= $yyLex->create(new FieldNode());
+        $$->modifiers= $1;
+        $$->type= $2;
+        $$->name= $3;
+        $$->initialization= $4;
+      }
+    | modifiers_opt T_PROPERTY T_VARIABLE getset getset_opt ';' { $$= $yyLex->create(new PropertyNode());
+        $$->modifiers= $1;
+        $$->name= $3;
+        $gs= array_merge(array('get' => NULL, 'set' => NULL), $4, $5);
+        $$->get= $gs['get'];
+        $$->set= $gs['set'];
+      }
+;
+
+getset_opt:
+      /* empty */    { $$= array(); }
+    | getset
+;
+
+getset:
+	  T_WORD T_VARIABLE { $$= array($1 => $2); }
+    | T_WORD T_WORD '(' ')' { $$= array($1 => $2); }
+    | T_WORD '{' statements '}' { $$= array($1 => $3); }
+;
+
+initialization_opt:
+      /* empty */    { $$= NULL; }
+    | '=' expression { $$= $2; }
+;
+// }}}
+
+// {{{ Methods and operators
+methods:
+      method  { $$= array($1); }
+    | method methods { $$= array_merge(array($1), $2); }
+;
+
+method:
+      modifiers_opt typename T_WORD '(' { $4= $yyLex->create(new MethodNode()); } arguments_opt ')' throws_opt methodbody {
+        $4->modifiers= $1;
+        $4->returns= $2;
+        $4->name= $3;
+        $4->arguments= $6;
+        $4->throws= $8;
+        $4->body= $9;
+        $$= $4;
+      }
+    | modifiers_opt T_OPERATOR operator '(' { $4= $yyLex->create(new OperatorNode()); } arguments_opt ')' throws_opt methodbody {
+        $4->modifiers= $1;
+        $4->symbol= $3;
+        $4->arguments= $6;
+        $4->throws= $8;
+        $4->body= $9;
+        $$= $4;
+    }
+;
+
+methodbody:
+      ';' { $$= NULL; }
+    | '{' statements_opt '}' { $$= $2; }
+;
+
+arguments_opt:
+      /* empty */ { $$= NULL; }
+    | arguments   { $$= $1; }
+;
+
+arguments:
+      argument  { $$= array($1); }
+    | argument ',' arguments { $$= array_merge(array($1), $3); }
+;
+
+argument:
+	  typename T_VARIABLE { $$= array('name' => $2, 'type' => $1); }
+	| typename '*' T_VARIABLE { $$= array('name' => $3, 'type' => $1, 'vararg' => TRUE); }
+;
+
+throws_opt:
+      /* empty */ { $$= NULL; }
+    | T_THROWS name_list   { $$= $2; }
+;
+// }}}
+
+// {{{ Overloadable operators
+operator:
+	'+'
+  | '-'
+  | '*'
+  | '/'
+  | '%'
+;
+// }}}
+
+// {{{ Statements
+statements_opt:
+      /* empty */ { $$= NULL; }
+    | statements
+;
+
+statements:
+      statement { $$= array($1); }
+    | statement statements { $$= array_merge(array($1), $2); }
+;
+
+statement:
+      T_RETURN { $1= $yyLex->create(new ReturnNode()); } expression ';' { 
+        $$->expression= $3;
+      }
+    | T_IF { $1= $yyLex->create(new IfNode()); } '(' expression ')' block else_opt {
+        $1->condition= $4;
+        $1->statements= $6;
+        $1->otherwise= $7;
+      }
+    | T_FOR { $1= $yyLex->create(new ForNode()); } '(' expressionlist_opt ';' expressionlist_opt ';' expressionlist_opt ')' block {
+        $1->initialization= $4;
+        $1->condition= $6;
+        $1->loop= $8;
+        $1->statements= $10;
+      }
+    | T_FOREACH { $1= $yyLex->create(new ForeachNode()); } '(' expression T_AS T_VARIABLE '=' '>' T_VARIABLE ')' block {
+        $1->expression= $4;
+        $1->statements= $11;
+      }
+    | T_WHILE { $1= $yyLex->create(new WhileNode()); } '(' expression ')' block {
+        $1->expression= $4;
+        $1->statements= $6;
+      }
+    | T_DO { $1= $yyLex->create(new DoNode()); } block T_WHILE '(' expression ')' {
+        $1->expression= $6;
+        $1->statements= $3;
+      }
+    | T_TRY '{' { $2= $yyLex->create(new TryNode()); } statements_opt '}' handleexception { 
+        $2->statements= NULL; // XXX $4;
+        $2->handling= $6;
+        $$= $2; 
+      }
+    | T_THROW { $1= $yyLex->create(new ThrowNode()); } expression ';' { /* Throw statement */ 
+        $1->expression= NULL; /// XXX $3;
+      }
+    | expression ';'
+;
+
+block:
+      statement { $$= array($1); }
+    | '{' statements_opt '}' { $$= $2; }
+;
+   
+else_opt:
+      /* empty */ { $$= NULL; }
+    | T_ELSE { $1= $yyLex->create(new ElseNode()); } block { $1->statements= $3; }
+;
+
+    
+handleexception:
+      catches finally_opt { $2 === NULL || $$= array_merge($1, array($2)); }
+    | finally { $$= array($1); }
+;
+
+catches:
+      catch { $$= array($1); }
+    | catch catches { $$= array_merge(array($1), $2); }
+;
+
+catch:
+      T_CATCH { $1= $yyLex->create(new CatchNode()); } '(' typename T_VARIABLE ')' '{' statements_opt '}' {
+        $1->type= $4;
+        $1->variable= $5;
+        $1->statements= NULL; // XXX $8;
+      }
+;
+
+finally_opt:
+      /* empty */ { $$= NULL; }
+    | finally
+;
+    
+finally:
+      T_FINALLY  { $1= $yyLex->create(new FinallyNode()); } '{' statements_opt '}' {
+        $1->statements= NULL; // XXX $4;
+      }
+;
+// }}}
+
+// {{{ Expressions
+expression:
+    T_WORD { /* XXX Constant */ }
+  | T_NUMBER { /* XXX Number */ }
+  | T_STRING { /* XXX String */ }
+  | T_VARIABLE { $$= $yyLex->create(new VariableNode()); $$->name= $1; }
+  | T_VARIABLE '=' expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
+  | T_VARIABLE T_ADD_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
+  | T_VARIABLE T_SUB_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
+  | T_VARIABLE T_MUL_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
+  | T_VARIABLE T_DIV_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
+  | T_VARIABLE T_MOD_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
+  | T_NEW typename '(' expressionlist_opt ')' classbody_opt { /* XXX Instance creation */ }
+  | T_WORD '(' { $2= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' { 
+      $2->name= $1;
+      $2->parameters= $4;
+      $$= $2;
+    }
+  | expression '<' expression { /* XXX SmallerThan */ }
+  | expression '>' expression { /* XXX GreaterThan */ }
+  | expression T_SE expression { /* XXX S|E */ }
+  | expression T_GE expression { /* XXX G|E */ }
+  | expression '+' expression { /* XXX Add */ }
+  | expression '-' expression { /* XXX Subtract */ }
+  | expression '*' expression { /* XXX Multiply */ }
+  | expression '/' expression { /* XXX Divide */ }
+  | expression '%' expression { /* XXX Modulo */ }
+  | expression '?' expression ':' expression { /* XXX Ternary */ }
+  | expression '[' expression ']' { $2= $yyLex->create(new ArrayAccessNode()); $2->offset= $3; $1->chained= $2;}
+  | expression T_OBJECT_OPERATOR expression { $1->chained= $3; }
+  | '(' expression ')' { $$= $2; }
+  | expression T_INC { /* XXX Post-Increment */ }
+  | expression T_DEC { /* XXX Post-Decrement */ }
+;
+
+expressionlist_opt:
+      /* empty */ { $$= NULL; }
+    | expressionlist
+;
+expressionlist:
+      expression { $$= array($1); }
+    | expression ',' expressionlist { $$= array_merge(array($1), $3); }
+;
+// }}}
+
+// {{{ Type name and generics
+typename:
+      qualifiedname { $$= new TypeName($1); }
+    | qualifiedname '<' name_list '>' { $$= new TypeName($1, $3); }
+    | qualifiedname '[' ']' { $$= new TypeName($1.'[]'); }
+;
+
+qualifiedname:
+      T_WORD { $$= $1; }
+    | T_WORD '.' qualifiedname  { $$= $1.'.'.$3; }
+;
+
+name_list:
+      typename { $$= array($1); }
+    | typename ',' name_list { $$= array_merge(array($1), $3); }
+;
+// }}}
+
+// {{{ Modifiers
+modifiers_opt:
+      /* empty */ { $$= 0; }
+    | modifiers   { $$= $1; }
+;
+
+modifiers:
+      modifier { $$= $1; }
+    | modifier modifiers { $$= $1 | $2; }
+;
+
+modifier:
+	  T_PUBLIC    { $$= MODIFIER_PUBLIC; }
+	| T_PROTECTED { $$= MODIFIER_PROTECTED; }
+	| T_PRIVATE   { $$= MODIFIER_PRIVATE; }
+	| T_STATIC    { $$= MODIFIER_STATIC; }
+	| T_ABSTRACT  { $$= MODIFIER_ABSTRACT; }
+	| T_FINAL     { $$= MODIFIER_FINAL; }
+	| T_NATIVE    { $$= MODIFIER_NATIVE; }
+;
+// }}}
+
+%%
