@@ -391,78 +391,54 @@ expression:
       $$= $2;
     }
   | '(' expression ')' { $$= $2; }
-  | expression assignment expression { 
-      $$= $yyLex->create(new AssignmentNode()); 
-      $$->variable= $1; 
-      $$->expression= $3; 
-      $$->op= $2;
-    }
-  | expression comparison expression { 
-      $$= $yyLex->create(new ComparisonNode()); 
-      $$->lhs= $1; 
-      $$->rhs= $3; 
-      $$->op= $2; 
-    }
-  | expression binary_operator expression { 
-      $$= $yyLex->create(new BinaryOpNode()); 
-      $$->lhs= $1; 
-      $$->rhs= $3; 
-      $$->op= $2; 
-    }
-  | unary_prefix_operator expression {
-      $$= $yyLex->create(new UnaryOpNode()); 
-      $$->expression= $2;
-      $$->op= $1; 
-    }
-  | expression T_INC {
-      $$= $yyLex->create(new UnaryOpNode()); 
-      $$->expression= $1;
-      $$->op= $2; 
-      $$->postfix= TRUE;
-    }
-  | expression T_DEC {
-      $$= $yyLex->create(new UnaryOpNode()); 
-      $$->expression= $1;
-      $$->op= $2; 
-      $$->postfix= TRUE;
-    }
+  | assignment { $$= $yyLex->create(new AssignmentNode($1)); }
+  | comparison { $$= $yyLex->create(new ComparisonNode($1)); }
+  | binary_operation { $$= $yyLex->create(new BinaryOpNode($1)); }
+  | unary_prefix_operation { $$= $yyLex->create(new UnaryOpNode($1)); }
+  | unary_postfix_operation { $$= $yyLex->create(new UnaryOpNode($1)); $$->postfix= TRUE; }
   | expression '?' expression ':' expression { /* XXX Ternary */ }
 ;
 
 assignment:
-    '='
-  | T_ADD_EQUAL   /* += */
-  | T_SUB_EQUAL   /* -= */
-  | T_MUL_EQUAL   /* *= */
-  | T_DIV_EQUAL   /* /= */
-  | T_MOD_EQUAL   /* %= */
+    expression '=' expression          /* =  */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_ADD_EQUAL expression  /* += */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_SUB_EQUAL expression  /* -= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_MUL_EQUAL expression  /* *= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_DIV_EQUAL expression  /* /= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_MOD_EQUAL expression  /* %= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
 ;
 
 comparison:
-	'<'
-  | '>'
-  | T_SE          /* <= */
-  | T_GE          /* >= */
-  | T_EQUALS      /* == */
-  | T_NOT_EQUALS  /* != */
+	expression '<' expression          /* >  */ { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression '>' expression          /* <  */ { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression T_SE expression         /* <= */ { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression T_GE expression         /* >= */ { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression T_EQUALS expression     /* == */ { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression T_NOT_EQUALS expression /* != */ { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
 ;
 
-binary_operator:
-	'+'
-  | '-'
-  | '*'
-  | '/'
-  | '%'
+binary_operation: 
+	expression '+' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression '-' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression '*' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression '/' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression '%' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
 ;
 
-unary_prefix_operator:
-    '!'
-  | '~'
-  | '+'
-  | '-'
-  | T_INC
-  | T_DEC
+unary_prefix_operation:
+    '!' expression    { $$= array('expression' => $2, 'op' => $1); }
+  | '~' expression    { $$= array('expression' => $2, 'op' => $1); }
+  | '+' expression    { $$= array('expression' => $2, 'op' => $1); }
+  | '-' expression    { $$= array('expression' => $2, 'op' => $1); }
+  | T_INC expression  { $$= array('expression' => $2, 'op' => $1); }
+  | T_DEC expression  { $$= array('expression' => $2, 'op' => $1); }
 ;
+
+unary_postfix_operation:
+    expression T_INC { $$= array('expression' => $1, 'op' => $2); }
+  | expression T_DEC { $$= array('expression' => $1, 'op' => $2); }
+;
+
 
 chain_opt:
       /* empty */ { $$= NULL; }
