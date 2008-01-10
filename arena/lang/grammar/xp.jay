@@ -358,12 +358,12 @@ expression:
       $1->parameters= $5;
       $8 && $1->chained= $8;
     }
-  | typename T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode()); $2->class= $1; } T_VARIABLE chain_opt {
+  | qualifiedname T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode()); $2->class= new TypeName($1); } T_VARIABLE chain_opt {
       $2->member= $yyLex->create(new VariableNode(array('name' => $4)));
       $5 && $2->member->chained= $5;
       $$= $2;
     } 
-  | typename T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode()); $2->class= $1; } T_WORD '(' expressionlist_opt ')' chain_opt {
+  | qualifiedname T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode()); $2->class= new TypeName($1); } T_WORD '(' expressionlist_opt ')' chain_opt {
       $2->member= $yyLex->create(new InvocationNode(array('name' => $4)));
       $2->member->parameters= $6;
       $8 && $2->member->chained= $8;
