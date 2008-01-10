@@ -47,6 +47,52 @@
     }
 
     /**
+     * Test assigning to a variable with array offset
+     *
+     */
+    #[@test]
+    public function toArrayOffset() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'position'      => array(4, 19),
+        'variable'      => new VariableNode(array(
+          'position'      => array(4, 11), 
+          'name'          => '$i',
+          'chained'       => new ArrayAccessNode(array(
+            'position'      => array(4, 13), 
+            'offset'        => new NumberNode(array('position' => array(4, 14), 'value' => '0')),
+          ))
+        )),
+        'expression'    => new NumberNode(array('position' => array(4, 18), 'value' => '0')),
+        'op'            => '='
+      ))), $this->parse('
+        $i[0]= 0;
+      '));
+    }
+
+    /**
+     * Test assigning to a variable with array offset
+     *
+     */
+    #[@test]
+    public function appendToArray() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'position'      => array(4, 18),
+        'variable'      => new VariableNode(array(
+          'position'      => array(4, 11), 
+          'name'          => '$i',
+          'chained'       => new ArrayAccessNode(array(
+            'position'      => array(4, 13), 
+            'offset'        => NULL,
+          ))
+        )),
+        'expression'    => new NumberNode(array('position' => array(4, 17), 'value' => '0')),
+        'op'            => '='
+      ))), $this->parse('
+        $i[]= 0;
+      '));
+    }
+
+    /**
      * Test assigning to an instance member
      *
      */

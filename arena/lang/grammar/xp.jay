@@ -24,6 +24,7 @@
     'xp.compiler.ast.InvocationNode',
     'xp.compiler.ast.NumberNode',
     'xp.compiler.ast.StringNode',
+    'xp.compiler.ast.ArrayNode',
     'xp.compiler.ast.ClassMemberNode',
     'xp.compiler.ast.ComparisonNode',
     'xp.compiler.ast.BinaryOpNode',
@@ -346,8 +347,22 @@ finally:
 // }}}
 
 // {{{ Expressions
+expression_opt:
+      /* empty */ { $$= NULL; }
+    | expression
+;
+
 expression:
     T_WORD { /* XXX Constant */ }
+  | '[' { $1= $yyLex->create(new ArrayNode()); } expressionlist_opt ']' {
+      $1->values= $3;
+      $1->type= NULL;   // XXX anytype?
+    }
+  | qualifiedname '[' { $2= $yyLex->create(new ArrayNode()); } expressionlist_opt ']' {
+      $2->values= $4;
+      $2->type= new TypeName($1);
+      $$= $2;
+    }
   | T_NUMBER { $$= $yyLex->create(new NumberNode()); $$->value= $1; }
   | T_STRING { $$= $yyLex->create(new StringNode()); $$->value= $1; }
   | T_VARIABLE { $1= $yyLex->create(new VariableNode(array('name' => $1))); } chain_opt {
@@ -455,7 +470,7 @@ chain_opt:
 ;
 
 chain:
-    '[' { $1= $yyLex->create(new ArrayAccessNode()); } expression ']' { 
+    '[' { $1= $yyLex->create(new ArrayAccessNode()); } expression_opt ']' { 
       $1->offset= $3;
     }
   | T_OBJECT_OPERATOR T_WORD {
@@ -473,6 +488,7 @@ expressionlist_opt:
       /* empty */ { $$= NULL; }
     | expressionlist
 ;
+
 expressionlist:
       expression { $$= array($1); }
     | expression ',' expressionlist { $$= array_merge(array($1), $3); }
