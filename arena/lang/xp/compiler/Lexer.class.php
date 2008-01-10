@@ -62,11 +62,13 @@
       $lookahead= array(
         '-' => array('->' => TOKEN_T_OBJECT_OPERATOR, '-=' => TOKEN_T_SUB_EQUAL, '--' => TOKEN_T_DEC),
         '>' => array('>=' => TOKEN_T_GE),
-        '<' => array('>=' => TOKEN_T_SE),
+        '<' => array('<=' => TOKEN_T_SE),
         '+' => array('+=' => TOKEN_T_ADD_EQUAL, '++' => TOKEN_T_INC),
         '*' => array('*=' => TOKEN_T_MUL_EQUAL),
         '/' => array('/=' => TOKEN_T_DIV_EQUAL),
         '%' => array('%=' => TOKEN_T_MOD_EQUAL),
+        '=' => array('==' => TOKEN_T_EQUALS),
+        '!' => array('!=' => TOKEN_T_NOT_EQUALS),
       );
 
     const 

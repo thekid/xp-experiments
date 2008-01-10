@@ -73,13 +73,23 @@
     public function ifElseCascades() {
       $this->assertEquals(array(new IfNode(array(
         'position'       => array(4, 11),
-        'condition'      => new VariableNode(array('position' => array(4, 15), 'name' => '$i')),
+        'condition'      => new BinaryOpNode(array(
+          'position'       => array(4, 21),
+          'lhs'            => new VariableNode(array('position' => array(4, 15), 'name' => '$i')),
+          'rhs'            => new NumberNode(array('position' => array(4, 20), 'value' => '3')),
+          'op'             => '%'
+        )),
         'statements'     => NULL, 
         'otherwise'      => new ElseNode(array(
           'position'       => array(4, 27),
           'statements'     => array(new IfNode(array(
             'position'       => array(4, 32),
-            'condition'      => new VariableNode(array('position' => array(4, 36), 'name' => '$i')),
+            'condition'      => new BinaryOpNode(array(
+              'position'       => array(4, 42),
+              'lhs'            => new VariableNode(array('position' => array(4, 36), 'name' => '$i')),
+              'rhs'            => new NumberNode(array('position' => array(4, 41), 'value' => '2')),
+              'op'             => '%'
+            )),
             'statements'     => NULL, 
             'otherwise'      => new ElseNode(array(
               'position'       => array(4, 48),

@@ -111,7 +111,7 @@
           'parameters'     => NULL,
           'chained'          => new ArrayAccessNode(array(
             'position'       => array(4, 25), 
-            'offset'         => '0',
+            'offset'         => new NumberNode(array('position' => array(4, 26), 'value' => '0')),
             'chained'        => new VariableNode(array(
               'position'       => array(4, 34), 
               'name'           => 'name'            

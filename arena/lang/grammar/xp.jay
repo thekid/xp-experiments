@@ -22,14 +22,18 @@
     'xp.compiler.ast.WhileNode',
     'xp.compiler.ast.AssignmentNode',
     'xp.compiler.ast.InvocationNode',
+    'xp.compiler.ast.NumberNode',
+    'xp.compiler.ast.StringNode',
+    'xp.compiler.ast.ComparisonNode',
+    'xp.compiler.ast.BinaryOpNode',
     'xp.compiler.ast.IfNode',
     'xp.compiler.ast.ElseNode'
   );
 %}
 
 %left ',' '=' '+' '-' '*' '/' '%' '?' ':' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL
-%right '[' '!' 
-%nonassoc '<' '>' T_SE T_GE T_OBJECT_OPERATOR
+%right '[' '!'
+%nonassoc '<' '>' T_SE T_GE T_OBJECT_OPERATOR T_EQUALS T_NOT_EQUALS
 
 %token T_WORD 260
 %token T_STRING 261
@@ -87,6 +91,8 @@
 %token T_DIV_EQUAL 407
 %token T_MOD_EQUAL 408
 %token T_OBJECT_OPERATOR 409
+%token T_EQUALS 410
+%token T_NOT_EQUALS 411
 
 %%
 
@@ -339,8 +345,8 @@ finally:
 // {{{ Expressions
 expression:
     T_WORD { /* XXX Constant */ }
-  | T_NUMBER { /* XXX Number */ }
-  | T_STRING { /* XXX String */ }
+  | T_NUMBER { $$= $yyLex->create(new NumberNode()); $$->value= $1; }
+  | T_STRING { $$= $yyLex->create(new StringNode()); $$->value= $1; }
   | T_VARIABLE { $1= $yyLex->create(new VariableNode(array('name' => $1))); } chain_opt {
       $3 && $1->chained= $3;
     }
@@ -356,24 +362,53 @@ expression:
       $$= $2;
     }
   | '(' expression ')' { $$= $2; }
-  | expression '=' expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
-  | expression T_ADD_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
-  | expression T_SUB_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
-  | expression T_MUL_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
-  | expression T_DIV_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
-  | expression T_MOD_EQUAL expression { $$= $yyLex->create(new AssignmentNode()); $$->variable= $1; $$->expression= $3; }
-  | expression '<' expression { /* XXX SmallerThan */ }
-  | expression '>' expression { /* XXX GreaterThan */ }
-  | expression T_SE expression { /* XXX S|E */ }
-  | expression T_GE expression { /* XXX G|E */ }
-  | expression '+' expression { /* XXX Add */ }
-  | expression '-' expression { /* XXX Subtract */ }
-  | expression '*' expression { /* XXX Multiply */ }
-  | expression '/' expression { /* XXX Divide */ }
-  | expression '%' expression { /* XXX Modulo */ }
+  | expression assignment expression { 
+      $$= $yyLex->create(new AssignmentNode()); 
+      $$->variable= $1; 
+      $$->expression= $3; 
+      $$->op= $2;
+    }
+  | expression comparison expression { 
+      $$= $yyLex->create(new ComparisonNode()); 
+      $$->lhs= $1; 
+      $$->rhs= $3; 
+      $$->op= $2; 
+    }
+  | expression binaryop expression { 
+      $$= $yyLex->create(new BinaryOpNode()); 
+      $$->lhs= $1; 
+      $$->rhs= $3; 
+      $$->op= $2; 
+    }
   | expression T_INC { /* XXX Post-Increment */ }
   | expression T_DEC { /* XXX Post-Decrement */ }
   | expression '?' expression ':' expression { /* XXX Ternary */ }
+;
+
+assignment:
+    '='
+  | T_ADD_EQUAL   /* += */
+  | T_SUB_EQUAL   /* -= */
+  | T_MUL_EQUAL   /* *= */
+  | T_DIV_EQUAL   /* /= */
+  | T_MOD_EQUAL   /* %= */
+;
+
+comparison:
+	'<'
+  | '>'
+  | T_SE
+  | T_GE
+  | T_EQUALS
+  | T_NOT_EQUALS
+;
+
+binaryop:
+	'+'
+  | '-'
+  | '*'
+  | '/'
+  | '%'
 ;
 
 chain_opt:
