@@ -122,5 +122,31 @@
         $l->elements()[0]->name;
       '));
     }
+
+    /**
+     * Test chained method calls
+     *
+     */
+    #[@test]
+    public function chainedAfterStaticMethod() {
+      $this->assertEquals(array(new ClassMemberNode(array(
+        'position'       => array(4, 19), 
+        'class'          => new TypeName('Logger'),
+        'member'         => new InvocationNode(array(
+          'position'       => array(4, 48), 
+          'name'           => 'getInstance',
+          'parameters'     => NULL,
+          'chained'          => new InvocationNode(array(
+            'position'       => array(4, 43), 
+            'name'           => 'configure',
+            'parameters'     => array(
+              new StringNode(array('position' => array(4, 44), 'value' => 'etc'))
+            ),
+          ))
+        ))
+      ))), $this->parse('
+        Logger::getInstance()->configure("etc");
+      '));
+    }
   }
 ?>

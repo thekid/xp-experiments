@@ -24,6 +24,7 @@
     'xp.compiler.ast.InvocationNode',
     'xp.compiler.ast.NumberNode',
     'xp.compiler.ast.StringNode',
+    'xp.compiler.ast.ClassMemberNode',
     'xp.compiler.ast.ComparisonNode',
     'xp.compiler.ast.BinaryOpNode',
     'xp.compiler.ast.UnaryOpNode',
@@ -92,8 +93,9 @@
 %token T_DIV_EQUAL 407
 %token T_MOD_EQUAL 408
 %token T_OBJECT_OPERATOR 409
-%token T_EQUALS 410
-%token T_NOT_EQUALS 411
+%token T_DOUBLE_COLON 410
+%token T_EQUALS 411
+%token T_NOT_EQUALS 412
 
 %%
 
@@ -356,6 +358,17 @@ expression:
       $1->parameters= $5;
       $8 && $1->chained= $8;
     }
+  | typename T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode()); $2->class= $1; } T_VARIABLE chain_opt {
+      $2->member= $yyLex->create(new VariableNode(array('name' => $4)));
+      $5 && $2->member->chained= $5;
+      $$= $2;
+    } 
+  | typename T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode()); $2->class= $1; } T_WORD '(' expressionlist_opt ')' chain_opt {
+      $2->member= $yyLex->create(new InvocationNode(array('name' => $4)));
+      $2->member->parameters= $6;
+      $8 && $2->member->chained= $8;
+      $$= $2;
+    } 
   | T_WORD '(' { $2= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' chain_opt { 
       $2->name= $1;
       $2->parameters= $4;
@@ -413,10 +426,10 @@ assignment:
 comparison:
 	'<'
   | '>'
-  | T_SE
-  | T_GE
-  | T_EQUALS
-  | T_NOT_EQUALS
+  | T_SE          /* <= */
+  | T_GE          /* >= */
+  | T_EQUALS      /* == */
+  | T_NOT_EQUALS  /* != */
 ;
 
 binary_operator:

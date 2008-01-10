@@ -69,6 +69,7 @@
         '%' => array('%=' => TOKEN_T_MOD_EQUAL),
         '=' => array('==' => TOKEN_T_EQUALS),
         '!' => array('!=' => TOKEN_T_NOT_EQUALS),
+        ':' => array('::' => TOKEN_T_DOUBLE_COLON),
       );
 
     const 
