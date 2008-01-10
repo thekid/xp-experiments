@@ -94,6 +94,7 @@
       '));
 
     }
+
     /**
      * Test modulo operator
      *

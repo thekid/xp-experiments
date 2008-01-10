@@ -26,13 +26,14 @@
     'xp.compiler.ast.StringNode',
     'xp.compiler.ast.ComparisonNode',
     'xp.compiler.ast.BinaryOpNode',
+    'xp.compiler.ast.UnaryOpNode',
     'xp.compiler.ast.IfNode',
     'xp.compiler.ast.ElseNode'
   );
 %}
 
 %left ',' '=' '+' '-' '*' '/' '%' '?' ':' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL
-%right '[' '!'
+%right '[' '!' '~' T_INC T_DEC
 %nonassoc '<' '>' T_SE T_GE T_OBJECT_OPERATOR T_EQUALS T_NOT_EQUALS
 
 %token T_WORD 260
@@ -374,14 +375,29 @@ expression:
       $$->rhs= $3; 
       $$->op= $2; 
     }
-  | expression binaryop expression { 
+  | expression binary_operator expression { 
       $$= $yyLex->create(new BinaryOpNode()); 
       $$->lhs= $1; 
       $$->rhs= $3; 
       $$->op= $2; 
     }
-  | expression T_INC { /* XXX Post-Increment */ }
-  | expression T_DEC { /* XXX Post-Decrement */ }
+  | unary_prefix_operator expression {
+      $$= $yyLex->create(new UnaryOpNode()); 
+      $$->expression= $2;
+      $$->op= $1; 
+    }
+  | expression T_INC {
+      $$= $yyLex->create(new UnaryOpNode()); 
+      $$->expression= $1;
+      $$->op= $2; 
+      $$->postfix= TRUE;
+    }
+  | expression T_DEC {
+      $$= $yyLex->create(new UnaryOpNode()); 
+      $$->expression= $1;
+      $$->op= $2; 
+      $$->postfix= TRUE;
+    }
   | expression '?' expression ':' expression { /* XXX Ternary */ }
 ;
 
@@ -403,12 +419,21 @@ comparison:
   | T_NOT_EQUALS
 ;
 
-binaryop:
+binary_operator:
 	'+'
   | '-'
   | '*'
   | '/'
   | '%'
+;
+
+unary_prefix_operator:
+    '!'
+  | '~'
+  | '+'
+  | '-'
+  | T_INC
+  | T_DEC
 ;
 
 chain_opt:

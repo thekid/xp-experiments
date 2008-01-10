@@ -50,7 +50,12 @@
           'rhs'           => new NumberNode(array('position' => array(4, 28), 'value' => '1000')),
           'op'            => '<'
         ))),
-        'loop'           => array(new VariableNode(array('position' => array(4, 34), 'name' => '$i'))),
+        'loop'           => array(new UnaryOpNode(array(
+          'position'      => array(4, 36),
+          'expression'    => new VariableNode(array('position' => array(4, 34), 'name' => '$i')),
+          'op'            => '++',
+          'postfix'       => TRUE
+        ))),
         'statements'     => NULL, 
       ))), $this->parse('
         for ($i= 0; $i < 1000; $i++) { }
@@ -82,7 +87,12 @@
         'position'      => array(4, 11),
         'expression'    => new ComparisonNode(array(
           'position'      => array(4, 30),
-          'lhs'           => new VariableNode(array('position' => array(4, 18), 'name' => '$i')),
+          'lhs'           => new UnaryOpNode(array(
+            'position'      => array(4, 20),
+            'expression'    => new VariableNode(array('position' => array(4, 18), 'name' => '$i')),
+            'op'            => '++',
+            'postfix'       => TRUE
+          )),
           'rhs'           => new NumberNode(array('position' => array(4, 25), 'value' => '10000')),
           'op'            => '<'
         )),
@@ -102,7 +112,11 @@
         'position'      => array(4, 11),
         'expression'    => new ComparisonNode(array(
           'position'      => array(4, 37),
-          'lhs'           => new VariableNode(array('position' => array(4, 25), 'name' => '$i')),
+          'lhs'           => new UnaryOpNode(array(
+            'position'      => array(4, 27),
+            'expression'    => new VariableNode(array('position' => array(4, 25), 'name' => '$i')),'op'            => '++',
+            'postfix'       => TRUE
+          )),
           'rhs'           => new NumberNode(array('position' => array(4, 32), 'value' => '10000')),
           'op'            => '<'
         )),
