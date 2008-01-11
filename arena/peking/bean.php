@@ -115,7 +115,7 @@ __
     $a->add($meta, 'META-INF/bean.properties');
     
     // Add additional files
-    foreach (explode(PATH_SEPARATOR, $p->value('add', 'a', '')) as $filename) {
+    foreach (array_filter(explode(PATH_SEPARATOR, $p->value('add', 'a', ''))) as $filename) {
       Console::writeLine('---> ', $filename);
 
       $f= new File($filename);
@@ -123,7 +123,7 @@ __
     }
     
     // Add: Bean class, remote interface, and home interface
-    addClass($a, new File($cl->findClass($class->getName())), $class->getName());
+    $a->addFileBytes(strtr($classname, '.', '/'). '.class.php', '', '', $class->getClassLoader()->loadClassBytes($classname));
     addClass($a, $rstr, $package.$interface);
     addClass($a, $istr, $package.$implementation);
 
