@@ -78,7 +78,7 @@ __
       $rstr->write('    public function '.$method->getName(TRUE).'(');
       $args= '';
       foreach ($method->getArguments() as $argument) {
-        $args.= '$'.$argument->getName().', ';
+        $args.= xp::reflect($argument->getType(TRUE)).' $'.$argument->getName().', ';
       }
       $rstr->write(rtrim($args, ', ').");\n");
     }
