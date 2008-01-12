@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('unittest.TestSuite');
+  uses('lang.types.Integer');
 
   /**
    * Unittest Runner
@@ -24,6 +24,18 @@
     #[@remote]
     public function add($a, $b) {
       return $a + $b;
+    }
+
+    /**
+     * Adds two lang.types.Integers and returns the result
+     *
+     * @param   lang.types.Integer a
+     * @param   lang.types.Integer b
+     * @return  lang.types.Integer
+     */ 
+    #[@remote]
+    public function addIntegers(Integer $a, Integer $b) {
+      return new Integer($a->value + $b->value);
     }
   }
 ?>
