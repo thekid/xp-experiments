@@ -64,7 +64,18 @@ __
     $rstr->open(STREAM_MODE_WRITE);
     $interface= basename($name);
     $rstr->write("<?php\n");
-    $rstr->write("  uses('remote.beans.BeanInterface');\n");
+
+    // Add classes used in type hints to uses()
+    $uses= array('remote.beans.BeanInterface' => TRUE);
+    foreach ($class->getMethods() as $method) {
+      foreach ($method->getArguments() as $argument) {
+        $uses[$argument->getType(TRUE)]= TRUE;
+      }
+    }
+    unset($uses['array']);
+    unset($uses[NULL]);
+    $rstr->write("  uses('".implode("', '", array_keys($uses))."');\n");
+
     $rstr->write('  interface '.$interface." extends BeanInterface {\n");
     foreach ($class->getMethods() as $method) {
       if (!$method->hasAnnotation('remote')) continue;
