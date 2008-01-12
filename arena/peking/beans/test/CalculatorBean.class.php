@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('lang.types.Integer');
+  uses('lang.types.Integer', 'beans.test.Complex');
 
   /**
    * Unittest Runner
@@ -36,6 +36,18 @@
     #[@remote]
     public function addIntegers(Integer $a, Integer $b) {
       return new Integer($a->value + $b->value);
+    }
+
+    /**
+     * Adds two Complex numbers and returns the result
+     *
+     * @param   beans.test.Complex a
+     * @param   beans.test.Complex b
+     * @return  beans.test.Complex
+     */ 
+    #[@remote]
+    public function addComplexNumbers(Complex $a, Complex $b) {
+      return new Complex($a->real + $b->real, $a->imag + $b->imag);
     }
   }
 ?>
