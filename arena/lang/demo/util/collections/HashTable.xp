@@ -1,0 +1,18 @@
+package util.collections;
+
+import lang.NoSuchElementException;
+
+public class HashTable<K, V> extends lang.Object implements Map<K, V> {
+
+  public void put(K $key, V $value) {
+    $this->elements[$key->hashCode()]= $value;
+  }
+  
+  public V get(K $key) throws NoSuchElementException {
+    $k= $key->hashCode();
+    if (!isset($this->elements[$k])) {
+      throw new NoSuchElementException('No such element ' ~ $k);
+    }
+    return $this->elements[$k];
+  }
+}
