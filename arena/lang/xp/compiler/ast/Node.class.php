@@ -16,7 +16,7 @@
       $position= array();
 
     /**
-     * (Insert method's description here)
+     * Constructor
      *
      * @param   array<string, *> members default array()
      */
@@ -71,8 +71,7 @@
     /**
      * Creates a string representation of this node.
      *
-     * @param   lang.Generic cmp
-     * @return  bool
+     * @return  string
      */
     public function toString() {
       $s= $this->getClassName().'(line '.$this->position[0].', offset '.$this->position[1].")@{\n";
@@ -80,7 +79,7 @@
         '__id' !== $name && 'position' !== $name && $s.= sprintf(
           "  [%-20s] %s\n", 
           $name, 
-          xp::stringOf($value)
+          str_replace("\n", "\n  ", xp::stringOf($value))
         );
       }
       return $s.'}';
