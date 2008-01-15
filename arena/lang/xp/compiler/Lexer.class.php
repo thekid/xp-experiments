@@ -24,6 +24,8 @@
         'final'         => TOKEN_T_FINAL,
         'abstract'      => TOKEN_T_ABSTRACT,
         
+        'package'       => TOKEN_T_PACKAGE,
+        'import'        => TOKEN_T_IMPORT,
         'class'         => TOKEN_T_CLASS,
         'interface'     => TOKEN_T_INTERFACE,
         'enum'          => TOKEN_T_ENUM,

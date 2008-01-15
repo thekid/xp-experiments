@@ -27,7 +27,7 @@
         public void method() {
           '.$src.'
         }
-      }', '<string:'.$this->name.'>'))->body['methods'][0]->body;
+      }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->body;
     }
 
     /**

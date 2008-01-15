@@ -23,7 +23,7 @@
      * @return  xp.compiler.Node
      */
     protected function parse($src) {
-      return create(new Parser())->parse(new xp·compiler·Lexer($src, '<string:'.$this->name.'>'));
+      return create(new Parser())->parse(new xp·compiler·Lexer($src, '<string:'.$this->name.'>'))->declaration;
     }
 
     /**

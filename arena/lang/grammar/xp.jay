@@ -1,6 +1,9 @@
 %{
   uses(
     'xp.compiler.types.TypeName',
+    'xp.compiler.ast.ParseTree',
+    'xp.compiler.ast.PackageNode',
+    'xp.compiler.ast.ImportNode',
     'xp.compiler.ast.ClassNode',
     'xp.compiler.ast.EnumNode',
     'xp.compiler.ast.InterfaceNode',
@@ -53,6 +56,8 @@
 %token T_CLASS 300
 %token T_INTERFACE 301
 %token T_ENUM 302
+%token T_PACKAGE 303
+%token T_IMPORT 304
 
 %token T_EXTENDS 310
 %token T_IMPLEMENTS 311
@@ -101,8 +106,43 @@
 %%
 
 start:
-      declaration
+      package_opt imports_opt declaration {
+        $$= new ParseTree();
+        $$->package= $1;
+        $$->imports= $2;
+        $$->declaration= $3;
+      }
 ;
+
+// {{{ Packages, imports
+package_opt:
+    /* empty */
+  | T_PACKAGE { $1= $yyLex->create(new PackageNode()); } qualifiedname ';' {
+    $1->name= $3;
+  }
+;
+
+imports_opt:
+    /* empty */
+  | imports
+;
+
+imports:
+    import { $$= array($1); }
+  | import imports { $$= array_merge(array($1), $2); }
+;
+
+import:
+    T_IMPORT { $1= $yyLex->create(new ImportNode()); } qualifiedname ';' {
+      $1->name= $3;
+    }
+;
+
+qualifiedname:
+    T_WORD
+  | T_WORD '.' qualifiedname { $$= $1.'.'.$3; }
+;
+// }}}
 
 // {{{ Class, enum and interface declarations
 declaration:
@@ -253,6 +293,7 @@ operator:
   | '*'
   | '/'
   | '%'
+  | '~'
 ;
 // }}}
 
@@ -423,6 +464,7 @@ binary_operation:
   | expression '*' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
   | expression '/' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
   | expression '%' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression '~' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
 ;
 
 unary_prefix_operation:
@@ -476,11 +518,6 @@ typename:
       qualifiedname { $$= new TypeName($1); }
     | qualifiedname '<' name_list '>' { $$= new TypeName($1, $3); }
     | qualifiedname '[' ']' { $$= new TypeName($1.'[]'); }
-;
-
-qualifiedname:
-      T_WORD { $$= $1; }
-    | T_WORD '.' qualifiedname  { $$= $1.'.'.$3; }
 ;
 
 name_list:
