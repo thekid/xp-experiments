@@ -145,6 +145,20 @@
         } else if (isset(self::$keywords[$token])) {
           $this->token= self::$keywords[$token];
           $this->value= $token;
+        } else if ('/' === $token{0}) {
+          $ahead= $this->tokenizer->nextToken(self::DELIMITERS);
+          if ('/' === $ahead) {           // Single-line comment
+            $this->tokenizer->nextToken("\n");
+            continue;
+          } else if ('*' === $ahead) {    // Multi-line comment
+            do { $t= $this->tokenizer->nextToken('/'); } while ('*' !== $t{strlen($t)- 1});
+            $this->tokenizer->nextToken('/');
+            continue;
+          } else {
+            $this->token= ord($token);
+            $this->value= $token;
+            $this->ahead= $ahead;
+          }
         } else if (isset(self::$lookahead[$token])) {
           $ahead= $this->tokenizer->nextToken(self::DELIMITERS);
           $combined= $token.$ahead;
