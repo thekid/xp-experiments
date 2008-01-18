@@ -3,6 +3,7 @@ package util.collections;
 import lang.NoSuchElementException;
 
 public class HashTable<K, V> extends lang.Object implements Map<K, V> {
+  protected array $elements;
 
   /**
    * Put an element into this hashtable
