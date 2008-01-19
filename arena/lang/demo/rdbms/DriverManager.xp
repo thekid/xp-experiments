@@ -1,0 +1,66 @@
+package rdbms;
+
+public class DriverManager {
+  protected static self $instance;
+  protected array<string, string> $builtin;
+  protected array<string, XPClass> $drivers;
+
+  static {
+    self::$instance= new self();
+    self::$builtin['sybase']= 'rdbms.sybase.SybaseConnection';
+    self::$builtin['mysql']= 'rdbms.mysql.MySQLConnection';
+  }
+  
+  /**
+   * Private constructor to ensure this class cannot be instantiated
+   * by means of "new".
+   *
+   */
+  private final __construct() { 
+    // Intentionally empty
+  }
+  
+  /**
+   * Retrieve driver manager instance
+   *
+   */
+  public static self getInstance() {
+    return self::$instance;
+  }
+
+  /**
+   * Register a driver
+   *
+   * Usage:
+   * <code>
+   *   DriverManager::register('mydb', XPClass::forName('my.db.Connection'));
+   *   // [...]
+   *   $conn= DriverManager::getConnection('mydb://...');
+   * </code>
+   */
+  public static void register(string $name, XPClass<? extends DBConnection> $class) {
+    self::$instance->drivers[$name]= $class;
+  }
+
+  /**
+   * Get a connection by a DSN string
+   *
+   */
+  public static DBConnection getConnection(string $str) throws DriverNotSupportedException {
+    $dsn= new DSN($str);
+    $id= $dsn->getDriver();
+
+    // Lookup driver by identifier.
+    if (!isset(self::$instance->drivers[$id])) {
+      try {
+        self::$instance->drivers[$id]= XPClass::forName(self::$builtin[$id]);
+      } catch (ClassNotFoundException $e) {
+        throw new DriverNotSupportedException(
+          'No driver registered for ' ~ $id ~ ': ' ~ $e->getMessage()
+        );
+      }
+    }
+
+    return self::$instance->drivers[$id]->newInstance($dsn);
+  }
+}
