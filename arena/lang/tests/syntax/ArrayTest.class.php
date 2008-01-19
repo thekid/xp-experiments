@@ -49,7 +49,7 @@
      * Test an empty typed array
      *
      */
-    #[@test]
+    #[@test, @ignore('Syntax yet to be defined')]
     public function emptyTypedArray() {
       $this->assertEquals(array(new ArrayNode(array(
         'position'      => array(4, 14),
@@ -83,7 +83,7 @@
      * Test a non-empty typed array
      *
      */
-    #[@test]
+    #[@test, @ignore('Syntax yet to be defined')]
     public function typedArray() {
       $this->assertEquals(array(new ArrayNode(array(
         'position'      => array(4, 14),
