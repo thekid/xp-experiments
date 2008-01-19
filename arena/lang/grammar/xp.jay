@@ -548,8 +548,18 @@ expressionlist:
 // {{{ Type name and generics
 typename:
       qualifiedname { $$= new TypeName($1); }
-    | qualifiedname '<' name_list '>' { $$= new TypeName($1, $3); }
+    | qualifiedname '<' typeparameters '>' { $$= new TypeName($1, $3); }
     | qualifiedname '[' ']' { $$= new TypeName($1.'[]'); }
+;
+
+typeparameters:
+      typeparameter { $$= array($1); }
+    | typeparameter ',' typeparameters { $$= array_merge(array($1), $3); }
+;
+
+typeparameter:
+      typename
+    | '?' T_EXTENDS qualifiedname { $$= new TypeName($3.'+'); }
 ;
 
 name_list:
