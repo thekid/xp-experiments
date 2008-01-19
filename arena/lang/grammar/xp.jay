@@ -135,9 +135,15 @@ imports:
 ;
 
 import:
-    T_IMPORT { $1= $yyLex->create(new ImportNode()); } qualifiedname ';' {
-      $1->name= $3;
+    T_IMPORT { $1= $yyLex->create(new ImportNode()); } T_WORD '.' importname ';' {
+      $1->name= $3.'.'.$5;
     }
+;
+
+importname:
+    T_WORD
+  | '*'
+  | T_WORD '.' importname { $$= $1.'.'.$3; }
 ;
 
 qualifiedname:
