@@ -75,7 +75,7 @@
       );
 
     const 
-      DELIMITERS = " ?!.:;,%~=<>(){}[]#+-*/\"'\r\n\t";
+      DELIMITERS = " ?!.:;,@%~=<>(){}[]#+-*/\"'\r\n\t";
     
           
     private

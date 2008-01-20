@@ -35,6 +35,7 @@
       $this->assertEquals(array(new FieldNode(array(
         'position'   => array(2, 30),
         'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
         'name'       => '$name',
         'type'       => new TypeName('string'),
         'initialization' => NULL,
@@ -52,6 +53,7 @@
       $this->assertEquals(array(new FieldNode(array(
         'position'   => array(2, 46),
         'modifiers'  => MODIFIER_PRIVATE | MODIFIER_STATIC,
+        'annotations'=> NULL,
         'name'       => '$instance',
         'type'       => new TypeName('self'),
         'initialization' => 'NULL',
@@ -70,6 +72,7 @@
         new FieldNode(array(
           'position'   => array(2, 32),
           'modifiers'  => MODIFIER_PRIVATE,
+          'annotations'=> NULL,
           'name'       => '$_name',
           'type'       => new TypeName('string'),
           'initialization' => NULL,
@@ -77,6 +80,7 @@
         new PropertyNode(array(
           'position'   => array(3, 43),
           'modifiers'  => MODIFIER_PUBLIC,
+          'annotations'=> NULL,
           'name'       => '$name',
           'get'        => '$_name',
           'set'        => NULL,
@@ -98,6 +102,7 @@
         new FieldNode(array(
           'position'   => array(2, 32),
           'modifiers'  => MODIFIER_PRIVATE,
+          'annotations'=> NULL,
           'name'       => '$_name',
           'type'       => new TypeName('string'),
           'initialization' => NULL,
@@ -105,6 +110,7 @@
         new PropertyNode(array(
           'position'   => array(3, 57),
           'modifiers'  => MODIFIER_PUBLIC,
+          'annotations'=> NULL,
           'name'       => '$name',
           'get'        => '$_name',
           'set'        => 'setName',
@@ -126,6 +132,7 @@
           'position'   => array(2, 32),
           'modifiers'  => MODIFIER_PRIVATE,
           'name'       => '$_name',
+          'annotations'=> NULL,
           'type'       => new TypeName('string'),
           'initialization' => NULL,
         )),
@@ -133,6 +140,7 @@
           'position'   => array(3, 61),
           'modifiers'  => MODIFIER_PUBLIC,
           'name'       => '$name',
+          'annotations'=> NULL,
           'get'        => array(new ReturnNode(array(
             'position'   => array(3, 39),
             'expression' => new VariableNode(array(

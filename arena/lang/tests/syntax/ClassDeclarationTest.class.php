@@ -35,6 +35,7 @@
       $this->assertEquals(new ClassNode(array(
         'position'   => array(1, 1),
         'modifiers'  => 0,
+        'annotations'=> NULL,
         'name'       => new TypeName('Empty'),
         'parent'     => NULL,
         'implements' => array(),
@@ -47,10 +48,31 @@
      *
      */
     #[@test]
+    public function annotatedClass() {
+      $this->assertEquals(new ClassNode(array(
+        'position'   => array(1, 15),
+        'modifiers'  => 0,
+        'annotations'=> array(new AnnotationNode(array(
+          'position'   => array(1, 13),
+          'type'       => 'Deprecated'
+        ))),
+        'name'       => new TypeName('Empty'),
+        'parent'     => NULL,
+        'implements' => array(),
+        'body'       => NULL
+      )), $this->parse('[@Deprecated] class Empty { }'));
+    }
+
+    /**
+     * Test class declaration
+     *
+     */
+    #[@test]
     public function classWithParentClass() {
       $this->assertEquals(new ClassNode(array(
         'position'   => array(1, 1),
         'modifiers'  => 0,
+        'annotations'=> NULL,
         'name'       => new TypeName('Class'),
         'parent'     => new TypeName('lang.Object'),
         'implements' => array(),
@@ -67,6 +89,7 @@
       $this->assertEquals(new ClassNode(array(
         'position'   => array(1, 1),
         'modifiers'  => 0,
+        'annotations'=> NULL,
         'name'       => new TypeName('HttpConnection'),
         'parent'     => NULL,
         'implements' => array(new TypeName('Traceable')),
@@ -83,6 +106,7 @@
       $this->assertEquals(new ClassNode(array(
         'position'   => array(1, 1),
         'modifiers'  => 0,
+        'annotations'=> NULL,
         'name'       => new TypeName('Math'),
         'parent'     => NULL,
         'implements' => array(new TypeName('util.Observer'), new TypeName('Traceable')),
@@ -99,6 +123,7 @@
       $this->assertEquals(new ClassNode(array(
         'position'   => array(1, 1),
         'modifiers'  => 0,
+        'annotations'=> NULL,
         'name'       => new TypeName('Integer'),
         'parent'     => new TypeName('Number'),
         'implements' => array(new TypeName('Observer')),
@@ -115,6 +140,7 @@
       $this->assertEquals(new ClassNode(array(
         'position'   => array(1, 8),
         'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
         'name'       => new TypeName('Class'),
         'parent'     => NULL,
         'implements' => array(),
@@ -131,6 +157,7 @@
       $this->assertEquals(new ClassNode(array(
         'position'   => array(1, 17),
         'modifiers'  => MODIFIER_PUBLIC | MODIFIER_ABSTRACT,
+        'annotations'=> NULL,
         'name'       => new TypeName('Base'),
         'parent'     => NULL,
         'implements' => array(),
@@ -147,6 +174,7 @@
       $this->assertEquals(new ClassNode(array(
         'position'   => array(1, 1),
         'modifiers'  => 0,
+        'annotations'=> NULL,
         'name'       => new TypeName('Class', array(new TypeName('T'))),
         'parent'     => NULL,
         'implements' => array(),
@@ -163,6 +191,7 @@
       $this->assertEquals(new ClassNode(array(
         'position'   => array(1, 1),
         'modifiers'  => 0,
+        'annotations'=> NULL,
         'name'       => new TypeName('HashTable', array(new TypeName('K'), new TypeName('V'))),
         'parent'     => NULL,
         'implements' => array(new TypeName('Map', array(new TypeName('K'), new TypeName('V')))),
@@ -179,6 +208,7 @@
       $this->assertEquals(new InterfaceNode(array(
         'position'   => array(1, 1),
         'modifiers'  => 0,
+        'annotations'=> NULL,
         'name'       => new TypeName('Empty'),
         'parents'    => array(),
         'body'       => NULL
@@ -194,6 +224,7 @@
       $this->assertEquals(new InterfaceNode(array(
         'position'   => array(1, 1),
         'modifiers'  => 0,
+        'annotations'=> NULL,
         'name'       => new TypeName('Filter', array(new TypeName('T'))),
         'parents'    => array(),
         'body'       => NULL
@@ -209,6 +240,7 @@
       $this->assertEquals(new InterfaceNode(array(
         'position'   => array(1, 1),
         'modifiers'  => 0,
+        'annotations'=> NULL,
         'name'       => new TypeName('Map', array(new TypeName('K'), new TypeName('V'))),
         'parents'    => array(),
         'body'       => NULL
@@ -224,6 +256,7 @@
       $this->assertEquals(new InterfaceNode(array(
         'position'   => array(1, 1),
         'modifiers'  => 0,
+        'annotations'=> NULL,
         'name'       => new TypeName('Debuggable'),
         'parents'    => array(new TypeName('util.log.Traceable')),
         'body'       => NULL
@@ -239,6 +272,7 @@
       $this->assertEquals(new InterfaceNode(array(
         'position'   => array(1, 1),
         'modifiers'  => 0,
+        'annotations'=> NULL,
         'name'       => new TypeName('Debuggable'),
         'parents'    => array(new TypeName('Traceable'), new TypeName('Observer', array(new TypeName('T')))),
         'body'       => NULL
@@ -254,6 +288,7 @@
       $this->assertEquals(new EnumNode(array(
         'position'   => array(1, 1),
         'modifiers'  => 0,
+        'annotations'=> NULL,
         'name'       => new TypeName('Days'),
         'parent'     => NULL,
         'implements' => array(),
@@ -270,6 +305,7 @@
       $this->assertEquals(new EnumNode(array(
         'position'   => array(1, 10),
         'modifiers'  => MODIFIER_ABSTRACT,
+        'annotations'=> NULL,
         'name'       => new TypeName('Days'),
         'parent'     => NULL,
         'implements' => array(),

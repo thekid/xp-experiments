@@ -35,6 +35,7 @@
       $this->assertEquals(array(new MethodNode(array(
         'position'   => array(2, 33),
         'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
         'name'       => 'toString',
         'returns'    => new TypeName('string'),
         'arguments'  => NULL,
@@ -54,6 +55,7 @@
       $this->assertEquals(array(new MethodNode(array(
         'position'   => array(2, 29),
         'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
         'name'       => 'equals',
         'returns'    => new TypeName('bool'),
         'arguments'  => array(array(
@@ -76,6 +78,7 @@
       $this->assertEquals(array(new MethodNode(array(
         'position'   => array(2, 40),
         'modifiers'  => MODIFIER_PUBLIC | MODIFIER_ABSTRACT,
+        'annotations'=> NULL,
         'name'       => 'setTrace',
         'returns'    => new TypeName('void'),
         'arguments'  => array(array(
@@ -98,6 +101,7 @@
       $this->assertEquals(array(new MethodNode(array(
         'position'   => array(2, 31),
         'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
         'name'       => 'compareTo',
         'returns'    => new TypeName('int'),
         'arguments'  => array(array(
@@ -120,6 +124,7 @@
       $this->assertEquals(array(new MethodNode(array(
         'position'   => array(2, 43),
         'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
+        'annotations'=> NULL,
         'name'       => 'loadClass',
         'returns'    => new TypeName('Class', array(new TypeName('T'))),
         'arguments'  => array(array(
@@ -142,6 +147,7 @@
       $this->assertEquals(array(new MethodNode(array(
         'position'   => array(2, 38),
         'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
+        'annotations'=> NULL,
         'name'       => 'printf',
         'returns'    => new TypeName('string'),
         'arguments'  => array(array(
@@ -170,6 +176,7 @@
       $this->assertEquals(array(new MethodNode(array(
         'position'   => array(2, 29),
         'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
         'name'       => 'addAll',
         'returns'    => new TypeName('void'),
         'arguments'  => array(array(
@@ -192,6 +199,7 @@
       $this->assertEquals(array(new OperatorNode(array(
         'position'   => array(2, 36),
         'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
+        'annotations'=> NULL,
         'symbol'     => '+',
         'arguments'  => array(array(
           'name' => '$a',
