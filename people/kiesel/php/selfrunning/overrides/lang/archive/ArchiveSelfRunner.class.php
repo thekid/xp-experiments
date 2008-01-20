@@ -7,38 +7,26 @@
   uses('util.Properties');
 
   /**
-   * (Insert class' description here)
+   * ArchiveRunner contains bootstrap code for self-running XARs.
+   * It determines which class to run, loads and invokes it.
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Self-running bootstrapping
    */
   class ArchiveSelfRunner extends Object {
     public static
       $manifest   = NULL;
-      
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public static function newInstance() {
-      return new self();
-    }
     
     /**
-     * (Insert method's description here)
+     * Load the manifest file
      *
-     * @param   
-     * @return  
+     * @return  util.Properties
      */
     protected function manifest() {
       if (NULL === self::$manifest) {
         self::$manifest= Properties::fromString(
           $this->getClass()
           ->getClassLoader()
-          ->getResource('META-INF/runner.ini')
+          ->getResource('META-INF/manifest.ini')
         );
       }
       
@@ -46,36 +34,50 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Run program.
      *
-     * @param   
-     * @return  
+     * This method determines the sapi and passes execution to a sapi
+     * handler if the sapi is supported.
+     *
+     * @return  int exitcode
      */
-    protected function classToRun(&$argv) {
-      if (sizeof($argv) >= 2 && '-class' == $argv[0]) {
-        $className= $argv[1];
-        array_shift($argv);
-        array_shift($argv);
-        return $className;
+    public function run() {
+    
+      // Determine the current SAPI and apply the corresponding
+      // bootstrapping
+      $sapi= NULL;
+      switch (PHP_SAPI) {
+        default:
+        case 'cli': $sapi= 'cli'; break;
       }
       
-      return $this->manifest()->readString('main', 'class');
+      return call_user_func_array(array($this, 'run'.ucfirst($sapi)));
     }
-
+    
     /**
-     * (Insert method's description here)
+     * Run program in CLI mode
      *
-     * @param   
-     * @return  
+     * @return  int exitcode
      */
-    public function run($argv) {
+    protected function runCli() {
+    
+      // Little hackish, but needed, because $argv cannot be passed from the
+      // calling method, because that method is SAPI independent and therefore
+      // should not know about $argv.
+      $argv= $GLOBALS['argv'];
       
       // The first argument is the name of the .xar, so remove it
       array_shift($argv);
       
-      $className= $this->classToRun($argv);
-      var_dump($className, $argv, array_merge(array($className), (array)$argv));
+      if (sizeof($argv) >= 2 && '-class' == $argv[0]) {
+        $className= $argv[1];
+        array_shift($argv);
+        array_shift($argv);
+      } else {
+        $className= $this->manifest()->readString('runnable', 'main-class');
+      }
       
+      // Run the class with xpcli / util.cmd.Runner
       return $this->getClass()
         ->getClassLoader()
         ->loadClass('util.cmd.Runner')
