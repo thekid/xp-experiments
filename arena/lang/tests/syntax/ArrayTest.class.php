@@ -49,14 +49,14 @@
      * Test an empty typed array
      *
      */
-    #[@test, @ignore('Syntax yet to be defined')]
+    #[@test]
     public function emptyTypedArray() {
       $this->assertEquals(array(new ArrayNode(array(
-        'position'      => array(4, 14),
+        'position'      => array(4, 11),
         'values'        => NULL,
         'type'          => new TypeName('int'),
       ))), $this->parse('
-        int[];
+        new int[] {};
       '));
     }
 
@@ -83,18 +83,18 @@
      * Test a non-empty typed array
      *
      */
-    #[@test, @ignore('Syntax yet to be defined')]
+    #[@test]
     public function typedArray() {
       $this->assertEquals(array(new ArrayNode(array(
-        'position'      => array(4, 14),
+        'position'      => array(4, 11),
         'values'        => array(
-          new NumberNode(array('position' => array(4, 15), 'value' => '1')),
-          new NumberNode(array('position' => array(4, 18), 'value' => '2')),
-          new NumberNode(array('position' => array(4, 21), 'value' => '3')),
+          new NumberNode(array('position' => array(4, 22), 'value' => '1')),
+          new NumberNode(array('position' => array(4, 25), 'value' => '2')),
+          new NumberNode(array('position' => array(4, 28), 'value' => '3')),
         ),
         'type'          => new TypeName('int'),
       ))), $this->parse('
-        int[1, 2, 3];
+        new int[] {1, 2, 3};
       '));
     }
   }

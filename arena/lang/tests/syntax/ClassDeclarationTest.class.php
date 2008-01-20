@@ -276,5 +276,32 @@
         'body'       => NULL
       )), $this->parse('abstract enum Days { }'));
     }
+
+    /**
+     * Test array type cannot be used as class name
+     *
+     */
+    #[@test, @expect('text.parser.generic.ParseException')]
+    public function noArrayTypeAsClassName() {
+      $this->parse('class int[] { }');
+    }
+
+    /**
+     * Test array type cannot be used as enum name
+     *
+     */
+    #[@test, @expect('text.parser.generic.ParseException')]
+    public function noArrayTypeAsEnumName() {
+      $this->parse('enum int[] { }');
+    }
+
+    /**
+     * Test array type cannot be used as interface name
+     *
+     */
+    #[@test, @expect('text.parser.generic.ParseException')]
+    public function noArrayTypeAsInterfaceName() {
+      $this->parse('interface int[] { }');
+    }
   }
 ?>
