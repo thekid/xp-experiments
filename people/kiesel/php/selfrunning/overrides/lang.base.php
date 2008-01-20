@@ -262,7 +262,7 @@
         // When archive is self-running, seek over contents that reside
         // in front of the XAR header
         if ($archive == __FILE__) {
-          $current['offset']= __COMPILER_HALT_OFFSET__;
+          $current['offset']= __COMPILER_HALT_OFFSET__+ 4; // __halt_compiler(); + \n + ? > + \n
           fseek($current['handle'], $current['offset']);
         }
         $header= unpack('a3id/c1version/i1indexsize/a*reserved', fread($current['handle'], 0x0100));
@@ -533,7 +533,7 @@
   // Put archive into include_path when self-running
   if ('lang.base.php' !== substr(__FILE__, -13)) {
     xp::$registry['self-contained']= array(__FILE__, __COMPILER_HALT_OFFSET__);
-    xp::$registry['classpath'][]= realpath(__FILE__);
+    array_unshift(xp::$registry['classpath'], realpath(__FILE__));
   }
 
   // Register stream wrapper for .xar class loading
