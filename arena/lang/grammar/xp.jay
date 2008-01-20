@@ -388,6 +388,7 @@ statement:
       $1->expression= NULL; /// XXX $3;
     }
   | expression ';'
+  | ';'
 ;
 
 foreachassignment:
@@ -437,6 +438,16 @@ finally:
 // }}}
 
 // {{{ Expressions
+expressionlist_opt:
+    /* empty */ { $$= NULL; }
+  | expressionlist
+;
+
+expressionlist:
+    expression { $$= array($1); }
+  | expression ',' expressionlist { $$= array_merge(array($1), $3); }
+;
+
 expression_opt:
     /* empty */ { $$= NULL; }
   | expression
@@ -484,9 +495,10 @@ literal:
       $1->values= $3;
       $1->type= NULL;   // XXX anytype?
     }
-  | '{' { $1= $yyLex->create(new MapNode()); } mapliteral_opt '}' {
-      $1->elements= $3;
-      $1->type= NULL;   // XXX anytype?
+  | '{' mapliteral_opt '}' {
+      $$= $yyLex->create(new MapNode());
+      $$->elements= $2;
+      $$->type= NULL;   // XXX anytype?
     }
   | T_NUMBER { $$= $yyLex->create(new NumberNode()); $$->value= $1; }
   | T_HEX { $$= $yyLex->create(new HexNode()); $$->value= $1; }
@@ -568,16 +580,6 @@ chain:
       $1->parameters= $5;
     }
   | chain chain { $1->chained= $2; }
-;
-
-expressionlist_opt:
-    /* empty */ { $$= NULL; }
-  | expressionlist
-;
-
-expressionlist:
-    expression { $$= array($1); }
-  | expression ',' expressionlist { $$= array_merge(array($1), $3); }
 ;
 // }}}
 

@@ -66,15 +66,6 @@
     }
 
     /**
-     * Test if statement without curly braces
-     *
-     */
-    #[@test]
-    public function noLiteralsInBlock() {
-      $this->parse('if ($i) "1";');
-    }
-
-    /**
      * Test if statement with else
      *
      */
