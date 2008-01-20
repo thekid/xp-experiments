@@ -2,7 +2,7 @@ package rdbms;
 
 public class DriverManager {
   protected static self $instance;
-  protected array<string, string> $builtin;
+  protected static array<string, string> $builtin;
   protected array<string, XPClass> $drivers;
 
   static {

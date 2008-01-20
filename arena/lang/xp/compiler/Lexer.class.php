@@ -69,7 +69,7 @@
         '*' => array('*=' => TOKEN_T_MUL_EQUAL),
         '/' => array('/=' => TOKEN_T_DIV_EQUAL),
         '%' => array('%=' => TOKEN_T_MOD_EQUAL),
-        '=' => array('==' => TOKEN_T_EQUALS),
+        '=' => array('==' => TOKEN_T_EQUALS, '=>' => TOKEN_T_DOUBLE_ARROW),
         '!' => array('!=' => TOKEN_T_NOT_EQUALS),
         ':' => array('::' => TOKEN_T_DOUBLE_COLON),
       );
@@ -173,7 +173,24 @@
         } else if (FALSE !== strpos(self::DELIMITERS, $token) && 1 == strlen($token)) {
           $this->token= ord($token);
           $this->value= $token;
-        } else if (preg_match('/^[0-9]+$/', $token)) {
+        } else if (ctype_digit($token)) {
+          $ahead= $this->tokenizer->nextToken(self::DELIMITERS);
+          if ('.' === $ahead{0}) {
+            $decimal= $this->tokenizer->nextToken(self::DELIMITERS);
+            if (!ctype_digit($decimal)) {
+              throw new FormatException('Illegal decimal number "'.$token.$ahead.$decimal.'"');
+            }
+            $this->token= TOKEN_T_DECIMAL;
+            $this->value= $token.$ahead.$decimal;
+          } else {
+            $this->token= TOKEN_T_NUMBER;
+            $this->value= $token;
+            $this->ahead= $ahead;
+          }
+        } else if ('0' === $token{0} && 'x' === @$token{1}) {
+          if (!ctype_xdigit(substr($token, 2))) {
+            throw new FormatException('Illegal hex number "'.$token.'"');
+          }
           $this->token= TOKEN_T_NUMBER;
           $this->value= $token;
         } else {
