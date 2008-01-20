@@ -257,13 +257,21 @@
         $archives[$archive]= array();
         $current= &$archives[$archive];
         $current['handle']= fopen($archive, 'rb');
+        $current['offset']= 0;
+        
+        // When archive is self-running, seek over contents that reside
+        // in front of the XAR header
+        if ($archive == __FILE__) {
+          $current['offset']= __COMPILER_HALT_OFFSET__;
+          fseek($current['handle'], $current['offset']);
+        }
         $header= unpack('a3id/c1version/i1indexsize/a*reserved', fread($current['handle'], 0x0100));
         for ($current['index']= array(), $i= 0; $i < $header['indexsize']; $i++) {
           $entry= unpack(
             'a80id/a80filename/a80path/i1size/i1offset/a*reserved', 
             fread($current['handle'], 0x0100)
           );
-          $current['index'][$entry['id']]= array($entry['size'], $entry['offset']);
+          $current['index'][$entry['id']]= array($entry['size'], $entry['offset']+ $current['offset']);
         }
       }
 
@@ -516,11 +524,17 @@
 
   // Hooks
   set_error_handler('__error');
-  
+    
   // Registry initialization
   xp::$registry['null']= new null();
   xp::$registry['loader']= new xp();
   xp::$registry['classpath']= array_filter(array_map('realpath', explode(PATH_SEPARATOR, get_include_path())));
+
+  // Put archive into include_path when self-running
+  if ('lang.base.php' !== substr(__FILE__, -13)) {
+    xp::$registry['self-contained']= array(__FILE__, __COMPILER_HALT_OFFSET);
+    xp::$registry['classpath'][]= realpath(__FILE__);
+  }
 
   // Register stream wrapper for .xar class loading
   stream_wrapper_register('xar', 'xarloader');
@@ -538,5 +552,12 @@
     'lang.FormatException',
     'lang.ClassLoader'
   );
+  
+  if (isset(xp::$registry['self-contained'])) {
+    uses('lang.archive.ArchiveRunner');
+    exit(create(new ArchiveRunner())->run());
+  }
   // }}}
+
+  __halt_compiler();
 ?>
