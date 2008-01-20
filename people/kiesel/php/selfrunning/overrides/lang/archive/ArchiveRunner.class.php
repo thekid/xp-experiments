@@ -12,7 +12,7 @@
    *
    * @purpose  Self-running bootstrapping
    */
-  class ArchiveSelfRunner extends Object {
+  class ArchiveRunner extends Object {
     public static
       $manifest   = NULL;
     

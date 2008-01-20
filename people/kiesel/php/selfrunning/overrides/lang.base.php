@@ -532,7 +532,7 @@
 
   // Put archive into include_path when self-running
   if ('lang.base.php' !== substr(__FILE__, -13)) {
-    xp::$registry['self-contained']= array(__FILE__, __COMPILER_HALT_OFFSET);
+    xp::$registry['self-contained']= array(__FILE__, __COMPILER_HALT_OFFSET__);
     xp::$registry['classpath'][]= realpath(__FILE__);
   }
 
