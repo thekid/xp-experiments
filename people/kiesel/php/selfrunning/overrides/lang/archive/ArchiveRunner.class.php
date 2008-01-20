@@ -45,17 +45,27 @@
 
       // Determine the current SAPI and apply the corresponding
       // bootstrapping
-      $sapi= NULL;
       switch (PHP_SAPI) {
         default:
-        case 'cli': $sapi= 'cli'; break;
+        case 'cli': {
+          $sapi= 'cli'; 
+          break;
+        }
+        
+        case 'cgi':
+        case 'cgi-fcgi':
+        case 'apache':
+        case 'apache2handler': {
+          $sapi= 'web';
+          break;
+        }
       }
 
       return call_user_func(array($this, 'run'.ucfirst($sapi)));
     }
     
     /**
-     * Run program in CLI mode
+     * Run program in "cli" sapi
      *
      * @return  int exitcode
      */
@@ -78,13 +88,25 @@
       }
       
       // Run the class with xpcli / util.cmd.Runner
-      return ClassLoader::getDefault()
-        ->loadClass('util.cmd.Runner')
-        ->getMethod('main')
-        ->invoke(
-          NULL,
-          array(array_merge(array(__FILE__, $className), (array)$argv))
-      );
+      try {
+        return ClassLoader::getDefault()
+          ->loadClass('util.cmd.Runner')
+          ->getMethod('main')
+          ->invoke(NULL, array(array_merge(array(__FILE__, $className), (array)$argv)))
+        ;
+      } catch (Throwable $e) {
+        $e->printStackTrace();
+        return 0x3d;  // Error code for failure from lang.base.php
+      }
     }
+    
+    /**
+     * Run program in "web" sapi
+     *
+     * @return  int exitcode
+     */
+    protected function runWeb() {
+      raise('lang.MethodNotImplementedException', 'Running "web" sapi is not yet supported.');
+    }    
   }
 ?>
