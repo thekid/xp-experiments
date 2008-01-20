@@ -47,6 +47,34 @@
     }
 
     /**
+     * Test if statement without curly braces
+     *
+     */
+    #[@test]
+    public function ifStatementWithOutCurlies() {
+      $this->assertEquals(array(new IfNode(array(
+        'position'       => array(4, 11),
+        'condition'      => new VariableNode(array('position' => array(4, 15), 'name' => '$i')),
+        'statements'     => array(new ReturnNode(array(
+          'position'       => array(4, 19),
+          'expression'     => 'TRUE'
+        ))),
+        'otherwise'      => NULL, 
+      ))), $this->parse('
+        if ($i) return TRUE;
+      '));
+    }
+
+    /**
+     * Test if statement without curly braces
+     *
+     */
+    #[@test]
+    public function noLiteralsInBlock() {
+      $this->parse('if ($i) "1";');
+    }
+
+    /**
      * Test if statement with else
      *
      */
