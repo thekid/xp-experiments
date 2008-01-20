@@ -42,7 +42,7 @@
      * @return  int exitcode
      */
     public function run() {
-    
+
       // Determine the current SAPI and apply the corresponding
       // bootstrapping
       $sapi= NULL;
@@ -50,8 +50,8 @@
         default:
         case 'cli': $sapi= 'cli'; break;
       }
-      
-      return call_user_func_array(array($this, 'run'.ucfirst($sapi)));
+
+      return call_user_func(array($this, 'run'.ucfirst($sapi)));
     }
     
     /**
@@ -78,8 +78,7 @@
       }
       
       // Run the class with xpcli / util.cmd.Runner
-      return $this->getClass()
-        ->getClassLoader()
+      return ClassLoader::getDefault()
         ->loadClass('util.cmd.Runner')
         ->getMethod('main')
         ->invoke(
