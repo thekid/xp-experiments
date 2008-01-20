@@ -1,19 +1,15 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: ArchiveReader.class.php 10285 2007-05-08 15:24:18Z friebe $ 
+ * $Id: ArchiveReader.class.php 11445 2007-12-11 15:06:08Z friebe $ 
  */
-
-  define('ARCHIVE_READ',             0x0000);
-  define('ARCHIVE_CREATE',           0x0001);
-  define('ARCHIVE_HEADER_SIZE',      0x0100);
-  define('ARCHIVE_INDEX_ENTRY_SIZE', 0x0100);
 
   /**
    * Simple lightweight archive reader. This is a reading-only
    * archive class which can be used to minimize class
    * dependencies.
    * 
+   * @deprecated use lang.archive.Archive instead
    * @see      xp://lang.archive.ArchiveClassLoader
    * @purpose  Lightweight archive reader
    */
@@ -24,8 +20,7 @@
     
     public
       $_hdl     = NULL,
-      $_index   = array(),
-      $offset   = 0;
+      $_index   = array();
 
     /**
      * Constructor.
@@ -126,9 +121,11 @@
       // Load the class only at runtime to keep hardcoded dependencies to
       // external (ie. != "lang.") classes at a minimum to not affect
       // core startup time.
+      $class= XPClass::forName('io.EncapsedStream');
       $file= XPClass::forName('io.File')->newInstance($this->file);
       $file->open(FILE_MODE_READ);
-      return XPClass::forName('io.EncapsedStream')->newInstance($file, $pos, $this->_index[$id][2]);
+      $s= $class->newInstance($file, $pos, $this->_index[$id][2]);
+      return $s;
     }
     
     /**
@@ -144,15 +141,6 @@
       switch ($mode) {
         case ARCHIVE_READ:      // Load
           $this->_hdl= fopen($this->file, 'rb');
-          
-          if (
-            isset(xp::$registry['self-contained']) &&
-            $this->file == xp::$registry['self-contained'][0]
-          ) {
-            $this->offset= xp::$registry['self-contained'][1];
-            fseek($this->_hdl, $this->offset);
-          }
-          
           $header= fread($this->_hdl, ARCHIVE_HEADER_SIZE);
           $data= unpack('a3id/c1version/i1indexsize/a*reserved', $header);
             
@@ -175,7 +163,7 @@
               $entry['filename'],
               $entry['path'],
               $entry['size'],
-              $entry['offset']+ $this->offset,
+              $entry['offset'],
               NULL              // Will not be read, use extract()
             );
           }

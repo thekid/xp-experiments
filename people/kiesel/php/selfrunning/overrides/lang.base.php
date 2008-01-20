@@ -1,7 +1,7 @@
 <?php
 /* This file provides the core for the XP framework
  * 
- * $Id: lang.base.php 10940 2007-08-24 10:45:43Z friebe $
+ * $Id: lang.base.php 11658 2007-12-29 20:00:07Z friebe $
  */
 
   // {{{ final class xp
@@ -155,15 +155,14 @@
     //     Sets an SAPI
     static function sapi() {
       foreach ($a= func_get_args() as $name) {
-        foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
+        foreach (xp::$registry['classpath'] as $path) {
           $filename= 'sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php';
-          
-          if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
-            require_once($path.DIRECTORY_SEPARATOR.$filename);
-            continue(2);
-          } else if (is_file($path) && file_exists('xar://'.$path.'?'.$filename)) {
-            require_once('xar://'.$path.'?'.$filename);
-            continue(2);
+          if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.$filename)) {
+            require_once($f);
+            continue 2;
+          } else if (is_file($path) && file_exists($f= 'xar://'.$path.'?'.strtr($filename, DIRECTORY_SEPARATOR, '/'))) {
+            require_once($f);
+            continue 2;
           }
         }
         
@@ -243,37 +242,28 @@
   }
   // }}}
   // {{{ final class xploader
-  class XpXarLoader {
-    var
+  class xarloader {
+    public
       $position     = 0,
       $archive      = '',
       $filename     = '';
       
     // {{{ static mixed[] acquire(string archive)
     //     Archive instance handling pool function, opens an archive and reads header only once
-    public static function acquire($archive) {
+    static function acquire($archive) {
       static $archives= array();
+      
       if (!isset($archives[$archive])) {
         $archives[$archive]= array();
         $current= &$archives[$archive];
-
-        // Bootstrap loading, only to be used for core classes.
         $current['handle']= fopen($archive, 'rb');
-        $current['offset']= 0;
-        
-        // In self-running mode, seek over the contents of lang.base.php to the position
-        // where the index information begins
-        if ($archive == __FILE__) {
-          $current['offset']= __COMPILER_HALT_OFFSET__;
-          fseek($current['handle'], $current['offset']);
-        }
         $header= unpack('a3id/c1version/i1indexsize/a*reserved', fread($current['handle'], 0x0100));
         for ($current['index']= array(), $i= 0; $i < $header['indexsize']; $i++) {
           $entry= unpack(
             'a80id/a80filename/a80path/i1size/i1offset/a*reserved', 
             fread($current['handle'], 0x0100)
           );
-          $current['index'][$entry['id']]= array($entry['size'], $entry['offset']+ $current['offset']);
+          $current['index'][$entry['id']]= array($entry['size'], $entry['offset']);
         }
       }
 
@@ -284,11 +274,11 @@
     // {{{ function bool stream_open(string path, string mode, int options, string opened_path)
     //     Open the given stream and check if file exists
     function stream_open($path, $mode, $options, $opened_path) {
-      list($archive, $file)= sscanf($path, 'xar://%[^?]?%[^$]');
-      $this->archive= $archive;
+      sscanf($path, 'xar://%[^?]?%[^$]', $archive, $file);
+      $this->archive= urldecode($archive);
       $this->filename= $file;
       
-      $current= XpXarLoader::acquire($this->archive);
+      $current= self::acquire($this->archive);
       return isset($current['index'][$this->filename]);
     }
     // }}}
@@ -296,7 +286,7 @@
     // {{{ string stream_read(int count)
     //     Read $count bytes up-to-length of file
     function stream_read($count) {
-      $current= XpXarLoader::acquire($this->archive);
+      $current= self::acquire($this->archive);
       if (!isset($current['index'][$this->filename])) return FALSE;
       if ($current['index'][$this->filename][0] == $this->position || 0 == $count) return FALSE;
 
@@ -310,33 +300,53 @@
     // {{{ bool stream_eof()
     //     Returns whether stream is at end of file
     function stream_eof() {
-      $current= XpXarLoader::acquire($this->archive);
+      $current= self::acquire($this->archive);
       return $this->position >= $current['index'][$this->filename][0];
     }
     // }}}
     
     // {{{ <string,int> stream_stat()
     //     Retrieve status of stream
-    public function stream_stat() {
-      $current= XpXarLoader::acquire($this->archive);
+    function stream_stat() {
+      $current= self::acquire($this->archive);
       return array(
         'size'  => $current['index'][$this->filename][0]
       );
+    }
+    // }}}
+
+    // {{{ bool stream_seek(int offset, int whence)
+    //     Callback for fseek
+    function stream_seek($offset, $whence) {
+      switch ($whence) {
+        case SEEK_SET: $this->position= $offset; break;
+        case SEEK_CUR: $this->position+= $offset; break;
+        case SEEK_END: 
+          $current= self::acquire($this->archive);
+          $this->position= $current['index'][$this->filename][0] + $offset; 
+          break;
+      }
+      return TRUE;
+    }
+    // }}}
+    
+    // {{{ int stream_tell
+    //     Callback for ftell
+    function stream_tell() {
+      return $this->position;
     }
     // }}}
     
     // {{{ <string,int> url_stat(string path)
     //     Retrieve status of url
     function url_stat($path) {
-      list($archive, $file)= sscanf($path, 'xar://%[^?]?%[^$]');
-      $this->archive= $archive;
-      $this->filename= $file;
-      $current= XpXarLoader::acquire($this->archive);
+      sscanf($path, 'xar://%[^?]?%[^$]', $archive, $file);
+      $current= self::acquire(urldecode($archive));
 
-      if (!isset($current['index'][$this->filename])) return FALSE;
-      return array(
-        'size'  => $current['index'][$this->filename][0]
-      );
+      return isset($current['index'][$file]) 
+        ? array('size' => $current['index'][$file][0])
+        : FALSE
+      ;
     }
     // }}}
   }
@@ -362,16 +372,17 @@
   }
   // }}}
   
-  // {{{ null raise (string classname, string message)
+  // {{{ void raise (string classname, mixed* args)
   //     throws an exception by a given class name
-  function raise($classname, $message) {
+  function raise($classname) {
     try {
       $class= XPClass::forName($classname);
     } catch (ClassNotFoundException $e) {
       xp::error($e->getMessage());
     }
     
-    throw $class->newInstance($message);
+    $a= func_get_args();
+    throw call_user_func_array(array($class, 'newInstance'), array_slice($a, 1));
   }
   // }}}
 
@@ -381,53 +392,23 @@
   }
   // }}}
 
-  // {{{ mixed cast (mixed var, mixed type default NULL)
-  //     Casts. If var === NULL, it won't be touched
-  function cast($var, $type= NULL) {
-    if (NULL === $var) return NULL;
-
-    switch ($type) {
-      case NULL: 
-        break;
-
-      case 'int':
-      case 'integer':
-      case 'float':
-      case 'double':
-      case 'string':
-      case 'bool':
-      case 'null':
-        if ($var instanceof Object) $var= $var->toString();
-        settype($var, $type);
-        break;
-
-      case 'array':
-      case 'object':
-        settype($var, $type);
-        break;
-
-      default:
-        // Cast to an object of "$type"
-        $o= new $type;
-        if (is_object($var) || is_array($var)) {
-          foreach ($var as $k => $v) {
-            $o->$k= $v;
-          }
-        } else {
-          $o->scalar= $var;
-        }
-        return $o;
-        break;
+  // {{{ Generic cast (Generic expression, string type)
+  //     Casts an expression.
+  function cast(Generic $expression= NULL, $type) {
+    if (NULL === $expression) {
+      return xp::null();
+    } else if (XPClass::forName($type)->isInstance($expression)) {
+      return $expression;
     }
-    return $var;
-  }
-  // }}}
+
+    raise('lang.ClassCastException', 'Cannot cast '.xp::typeOf($expression).' to '.$type);
+   }
 
   // {{{ proto bool is(string class, lang.Object object)
   //     Checks whether a given object is of the class, a subclass or implements an interface
   function is($class, $object) {
-    $p= get_class($object);
-    if (is_null($class)) $class= 'null';
+    if (NULL === $class) return $object instanceof null;
+
     $class= xp::reflect($class);
     return $object instanceof $class;
   }
@@ -530,30 +511,19 @@
   ini_set('magic_quotes_runtime', FALSE);
   
   // Constants
-  defined('PATH_SEPARATOR') || define('PATH_SEPARATOR',  0 == strncasecmp('WIN', PHP_OS, 3) ? ';' : ':');
-  define('SKELETON_PATH', (getenv('SKELETON_PATH')
-    ? getenv('SKELETON_PATH')
-    : dirname(__FILE__).DIRECTORY_SEPARATOR
-  ));
   define('LONG_MAX', is_int(2147483648) ? 9223372036854775807 : 2147483647);
   define('LONG_MIN', -LONG_MAX - 1);
 
   // Hooks
   set_error_handler('__error');
   
-  // In self-running mode, put containing xar into include_path
-  if (defined('__COMPILER_HALT_OFFSET__')) {
-    ini_set('include_path', __FILE__.PATH_SEPARATOR.get_include_path());
-    xp::$registry['self-contained']= array(__FILE__, __COMPILER_HALT_OFFSET__);
-  }
-  
   // Registry initialization
   xp::$registry['null']= new null();
   xp::$registry['loader']= new xp();
-  xp::$registry['classpath']= explode(PATH_SEPARATOR, get_include_path());
+  xp::$registry['classpath']= array_filter(array_map('realpath', explode(PATH_SEPARATOR, get_include_path())));
 
   // Register stream wrapper for .xar class loading
-  stream_wrapper_register('xar', 'XpXarLoader');
+  stream_wrapper_register('xar', 'xarloader');
 
   // Omnipresent classes
   uses(
@@ -569,12 +539,4 @@
     'lang.ClassLoader'
   );
   // }}}
-  
-  // {{{ Self-runnning xar executor
-  if (isset(xp::$registry['self-contained'])) {
-    uses('lang.archive.ArchiveSelfRunner');
-    exit(ArchiveSelfRunner::newInstance()->run($argv));
-  }
-  // }}}
-  
 ?>
