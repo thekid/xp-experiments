@@ -43,7 +43,7 @@
   );
 %}
 
-%left ',' '=' '+' '-' '*' '/' '%' '?' ':' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL
+%left ',' '=' '+' '-' '*' '/' '%' '?' ':' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_BOOLEAN_OR T_BOOLEAN_AND
 %right '[' '!' '~' T_INC T_DEC
 %nonassoc '<' '>' T_SE T_GE T_OBJECT_OPERATOR T_EQUALS T_NOT_EQUALS
 
@@ -111,6 +111,8 @@
 %token T_EQUALS 411
 %token T_NOT_EQUALS 412
 %token T_DOUBLE_ARROW 413
+%token T_BOOLEAN_OR 414
+%token T_BOOLEAN_AND 415
 
 %%
 
@@ -537,6 +539,8 @@ expression:
   | unary_prefix_operation { $$= $yyLex->create(new UnaryOpNode($1)); }
   | unary_postfix_operation { $$= $yyLex->create(new UnaryOpNode($1)); $$->postfix= TRUE; }
   | expression '?' expression ':' expression { /* XXX Ternary */ }
+  | expression T_BOOLEAN_OR expression
+  | expression T_BOOLEAN_AND expression
 ;
 
 literal:

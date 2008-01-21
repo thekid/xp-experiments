@@ -72,10 +72,12 @@
         '=' => array('==' => TOKEN_T_EQUALS, '=>' => TOKEN_T_DOUBLE_ARROW),
         '!' => array('!=' => TOKEN_T_NOT_EQUALS),
         ':' => array('::' => TOKEN_T_DOUBLE_COLON),
+        '|' => array('||' => TOKEN_T_BOOLEAN_OR),
+        '&' => array('&&' => TOKEN_T_BOOLEAN_OR),
       );
 
     const 
-      DELIMITERS = " ?!.:;,@%~=<>(){}[]#+-*/\"'\r\n\t";
+      DELIMITERS = " |&?!.:;,@%~=<>(){}[]#+-*/\"'\r\n\t";
     
           
     private
