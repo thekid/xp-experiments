@@ -301,14 +301,15 @@ method:
       $3->body= $8;
       $$= $3;
     }
-  | decorations T_OPERATOR operator '(' { $4= $yyLex->create(new OperatorNode()); } arguments_opt ')' throws_opt methodbody {
-      $4->modifiers= $1[0];
-      $4->annotations= $1[1];
-      $4->symbol= $3;
-      $4->arguments= $6;
-      $4->throws= $8;
-      $4->body= $9;
-      $$= $4;
+  | decorations typeref T_OPERATOR operator '(' { $5= $yyLex->create(new OperatorNode()); } arguments_opt ')' throws_opt methodbody {
+      $5->modifiers= $1[0];
+      $5->annotations= $1[1];
+      $5->returns= $2;
+      $5->symbol= $4;
+      $5->arguments= $7;
+      $5->throws= $9;
+      $5->body= $10;
+      $$= $5;
   }
 ;
 
@@ -373,6 +374,7 @@ operator:
   | '/'
   | '%'
   | '~'
+  | '[' ']' { $$= '[]'; }
 ;
 // }}}
 

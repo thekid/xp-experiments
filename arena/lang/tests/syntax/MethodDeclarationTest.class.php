@@ -197,21 +197,22 @@
     #[@test]
     public function plusOperator() {
       $this->assertEquals(array(new OperatorNode(array(
-        'position'   => array(2, 36),
+        'position'   => array(2, 41),
         'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
         'annotations'=> NULL,
         'symbol'     => '+',
+        'returns'    => new TypeName('self'),
         'arguments'  => array(array(
           'name' => '$a',
-          'type' => new TypeName('Integer')
+          'type' => new TypeName('self')
         ), array(
           'name' => '$b',
-          'type' => new TypeName('Integer')
+          'type' => new TypeName('self')
         )),
         'throws'     => NULL,
         'body'       => NULL
       ))), $this->parse('class Integer { 
-        public static operator + (Integer $a, Integer $b) { }
+        public static self operator + (self $a, self $b) { }
       }'));
     }
   }
