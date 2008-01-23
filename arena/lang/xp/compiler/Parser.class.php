@@ -44,11 +44,12 @@
     'xp.compiler.ast.ClassMemberNode',
     'xp.compiler.ast.ComparisonNode',
     'xp.compiler.ast.BinaryOpNode',
+    'xp.compiler.ast.BooleanOpNode',
     'xp.compiler.ast.UnaryOpNode',
     'xp.compiler.ast.IfNode',
     'xp.compiler.ast.ElseNode'
   );
-#line 52 "-"
+#line 53 "-"
   define('TOKEN_T_ADD_EQUAL',  404);
   define('TOKEN_T_SUB_EQUAL',  405);
   define('TOKEN_T_MUL_EQUAL',  406);
@@ -1127,7 +1128,7 @@
             // Actions
             switch ($yyN) {
 
-    case 1:  #line 120 "grammar/xp.jay"
+    case 1:  #line 121 "grammar/xp.jay"
     {
       $yyVal= new ParseTree();
       $yyVal->package= $yyVals[-2+$yyTop];
@@ -1135,38 +1136,38 @@
       $yyVal->declaration= $yyVals[0+$yyTop];
     } break;
 
-    case 3:  #line 131 "grammar/xp.jay"
+    case 3:  #line 132 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new PackageNode()); } break;
 
-    case 4:  #line 131 "grammar/xp.jay"
+    case 4:  #line 132 "grammar/xp.jay"
     {
     $yyVals[-3+$yyTop]->name= $yyVals[-1+$yyTop];
   } break;
 
-    case 7:  #line 142 "grammar/xp.jay"
+    case 7:  #line 143 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 8:  #line 143 "grammar/xp.jay"
+    case 8:  #line 144 "grammar/xp.jay"
     { $yyVal= array_merge(array($yyVals[-1+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 9:  #line 147 "grammar/xp.jay"
+    case 9:  #line 148 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ImportNode()); } break;
 
-    case 10:  #line 147 "grammar/xp.jay"
+    case 10:  #line 148 "grammar/xp.jay"
     {
       $yyVals[-5+$yyTop]->name= $yyVals[-3+$yyTop].'.'.$yyVals[-1+$yyTop];
     } break;
 
-    case 13:  #line 155 "grammar/xp.jay"
+    case 13:  #line 156 "grammar/xp.jay"
     { $yyVal= $yyVals[-2+$yyTop].'.'.$yyVals[0+$yyTop]; } break;
 
-    case 15:  #line 160 "grammar/xp.jay"
+    case 15:  #line 161 "grammar/xp.jay"
     { $yyVal= $yyVals[-2+$yyTop].'.'.$yyVals[0+$yyTop]; } break;
 
-    case 16:  #line 166 "grammar/xp.jay"
+    case 16:  #line 167 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ClassNode()); } break;
 
-    case 17:  #line 166 "grammar/xp.jay"
+    case 17:  #line 167 "grammar/xp.jay"
     {
       $yyVals[-7+$yyTop]->modifiers= $yyVals[-8+$yyTop][0];
       $yyVals[-7+$yyTop]->annotations= $yyVals[-8+$yyTop][1];
@@ -1177,10 +1178,10 @@
       $yyVal= $yyVals[-7+$yyTop];
     } break;
 
-    case 18:  #line 175 "grammar/xp.jay"
+    case 18:  #line 176 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new EnumNode()); } break;
 
-    case 19:  #line 175 "grammar/xp.jay"
+    case 19:  #line 176 "grammar/xp.jay"
     {
       $yyVals[-7+$yyTop]->modifiers= $yyVals[-8+$yyTop][0];
       $yyVals[-7+$yyTop]->annotations= $yyVals[-8+$yyTop][1];
@@ -1191,10 +1192,10 @@
       $yyVal= $yyVals[-7+$yyTop];
     } break;
 
-    case 20:  #line 184 "grammar/xp.jay"
+    case 20:  #line 185 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new InterfaceNode()); } break;
 
-    case 21:  #line 184 "grammar/xp.jay"
+    case 21:  #line 185 "grammar/xp.jay"
     {
       $yyVals[-6+$yyTop]->modifiers= $yyVals[-7+$yyTop][0];
       $yyVals[-6+$yyTop]->annotations= $yyVals[-7+$yyTop][1];
@@ -1204,78 +1205,78 @@
       $yyVal= $yyVals[-6+$yyTop];
     } break;
 
-    case 22:  #line 195 "grammar/xp.jay"
+    case 22:  #line 196 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 23:  #line 196 "grammar/xp.jay"
+    case 23:  #line 197 "grammar/xp.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 24:  #line 200 "grammar/xp.jay"
+    case 24:  #line 201 "grammar/xp.jay"
     { $yyVal= array(); } break;
 
-    case 25:  #line 201 "grammar/xp.jay"
+    case 25:  #line 202 "grammar/xp.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 26:  #line 205 "grammar/xp.jay"
+    case 26:  #line 206 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 27:  #line 206 "grammar/xp.jay"
+    case 27:  #line 207 "grammar/xp.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 28:  #line 210 "grammar/xp.jay"
+    case 28:  #line 211 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 29:  #line 211 "grammar/xp.jay"
+    case 29:  #line 212 "grammar/xp.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 30:  #line 215 "grammar/xp.jay"
+    case 30:  #line 216 "grammar/xp.jay"
     { $k= key($yyVals[0+$yyTop]); $yyVal[$k][]= $yyVals[0+$yyTop][$k]; } break;
 
-    case 31:  #line 216 "grammar/xp.jay"
+    case 31:  #line 217 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 32:  #line 220 "grammar/xp.jay"
+    case 32:  #line 221 "grammar/xp.jay"
     { $yyVal= array('fields' => $yyVals[0+$yyTop]); } break;
 
-    case 33:  #line 221 "grammar/xp.jay"
+    case 33:  #line 222 "grammar/xp.jay"
     { $yyVal= array('methods' => $yyVals[0+$yyTop]); } break;
 
-    case 34:  #line 222 "grammar/xp.jay"
+    case 34:  #line 223 "grammar/xp.jay"
     { $yyVal= array('static' => $yyVals[-1+$yyTop]); } break;
 
-    case 35:  #line 226 "grammar/xp.jay"
+    case 35:  #line 227 "grammar/xp.jay"
     { $yyVals[0+$yyTop]['members']= $yyVals[-2+$yyTop]; $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 36:  #line 227 "grammar/xp.jay"
+    case 36:  #line 228 "grammar/xp.jay"
     { $yyVal= array('members' => $yyVals[0+$yyTop]); } break;
 
-    case 37:  #line 228 "grammar/xp.jay"
+    case 37:  #line 229 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 38:  #line 232 "grammar/xp.jay"
+    case 38:  #line 233 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 39:  #line 233 "grammar/xp.jay"
+    case 39:  #line 234 "grammar/xp.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 40:  #line 237 "grammar/xp.jay"
+    case 40:  #line 238 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new EnumMemberNode(array('name' => $yyVals[0+$yyTop]))); } break;
 
-    case 41:  #line 237 "grammar/xp.jay"
+    case 41:  #line 238 "grammar/xp.jay"
     {
       $yyVals[-2+$yyTop]->body= $yyVals[0+$yyTop];
     } break;
 
-    case 42:  #line 240 "grammar/xp.jay"
+    case 42:  #line 241 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new EnumMemberNode(array('name' => $yyVals[0+$yyTop]))); } break;
 
-    case 43:  #line 240 "grammar/xp.jay"
+    case 43:  #line 241 "grammar/xp.jay"
     {
       $yyVals[-5+$yyTop]->value= $yyVals[-2+$yyTop];
       $yyVals[-5+$yyTop]->body= $yyVals[0+$yyTop];
     } break;
 
-    case 44:  #line 250 "grammar/xp.jay"
+    case 44:  #line 251 "grammar/xp.jay"
     { $yyVal= $yyLex->create(new FieldNode());
       $yyVal->modifiers= $yyVals[-4+$yyTop][0];
       $yyVal->annotations= $yyVals[-4+$yyTop][1];
@@ -1284,7 +1285,7 @@
       $yyVal->initialization= $yyVals[-1+$yyTop];
     } break;
 
-    case 45:  #line 257 "grammar/xp.jay"
+    case 45:  #line 258 "grammar/xp.jay"
     { $yyVal= $yyLex->create(new PropertyNode());
       $yyVal->modifiers= $yyVals[-5+$yyTop][0];
       $yyVal->annotations= $yyVals[-5+$yyTop][1];
@@ -1294,28 +1295,28 @@
       $yyVal->set= $gs['set'];
     } break;
 
-    case 46:  #line 268 "grammar/xp.jay"
+    case 46:  #line 269 "grammar/xp.jay"
     { $yyVal= array(); } break;
 
-    case 48:  #line 273 "grammar/xp.jay"
+    case 48:  #line 274 "grammar/xp.jay"
     { $yyVal= array($yyVals[-1+$yyTop] => $yyVals[0+$yyTop]); } break;
 
-    case 49:  #line 274 "grammar/xp.jay"
+    case 49:  #line 275 "grammar/xp.jay"
     { $yyVal= array($yyVals[-3+$yyTop] => $yyVals[-2+$yyTop]); } break;
 
-    case 50:  #line 275 "grammar/xp.jay"
+    case 50:  #line 276 "grammar/xp.jay"
     { $yyVal= array($yyVals[-3+$yyTop] => $yyVals[-1+$yyTop]); } break;
 
-    case 51:  #line 279 "grammar/xp.jay"
+    case 51:  #line 280 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 52:  #line 280 "grammar/xp.jay"
+    case 52:  #line 281 "grammar/xp.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 53:  #line 286 "grammar/xp.jay"
+    case 53:  #line 287 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new MethodNode()); } break;
 
-    case 54:  #line 286 "grammar/xp.jay"
+    case 54:  #line 287 "grammar/xp.jay"
     {
       $yyVals[-5+$yyTop]->modifiers= $yyVals[-8+$yyTop][0];
       $yyVals[-5+$yyTop]->annotations= $yyVals[-8+$yyTop][1];
@@ -1327,10 +1328,10 @@
       $yyVal= $yyVals[-5+$yyTop];
     } break;
 
-    case 55:  #line 296 "grammar/xp.jay"
+    case 55:  #line 297 "grammar/xp.jay"
     { if ('__construct' == $yyVals[-1+$yyTop]) $yyVals[0+$yyTop]= $yyLex->create(new ConstructorNode()); } break;
 
-    case 56:  #line 296 "grammar/xp.jay"
+    case 56:  #line 297 "grammar/xp.jay"
     {
       $yyVals[-5+$yyTop]->modifiers= $yyVals[-7+$yyTop][0];
       $yyVals[-5+$yyTop]->annotations= $yyVals[-7+$yyTop][1];
@@ -1340,10 +1341,10 @@
       $yyVal= $yyVals[-5+$yyTop];
     } break;
 
-    case 57:  #line 304 "grammar/xp.jay"
+    case 57:  #line 305 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new OperatorNode()); } break;
 
-    case 58:  #line 304 "grammar/xp.jay"
+    case 58:  #line 305 "grammar/xp.jay"
     {
       $yyVals[-5+$yyTop]->modifiers= $yyVals[-9+$yyTop][0];
       $yyVals[-5+$yyTop]->annotations= $yyVals[-9+$yyTop][1];
@@ -1355,99 +1356,102 @@
       $yyVal= $yyVals[-5+$yyTop];
   } break;
 
-    case 59:  #line 317 "grammar/xp.jay"
+    case 59:  #line 318 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop], $yyVals[-2+$yyTop]); } break;
 
-    case 60:  #line 318 "grammar/xp.jay"
+    case 60:  #line 319 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop], NULL); } break;
 
-    case 61:  #line 322 "grammar/xp.jay"
+    case 61:  #line 323 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 62:  #line 323 "grammar/xp.jay"
+    case 62:  #line 324 "grammar/xp.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 63:  #line 327 "grammar/xp.jay"
+    case 63:  #line 328 "grammar/xp.jay"
     { 
       $yyVal= $yyLex->create(new AnnotationNode()); 
       $yyVal->type= $yyVals[0+$yyTop]; 
     } break;
 
-    case 64:  #line 331 "grammar/xp.jay"
+    case 64:  #line 332 "grammar/xp.jay"
     { 
       $yyVal= $yyLex->create(new AnnotationNode()); 
       $yyVal->type= $yyVals[-3+$yyTop]; 
       $yyVal->parameters= array('default' => $yyVals[-2+$yyTop]);
     } break;
 
-    case 65:  #line 336 "grammar/xp.jay"
+    case 65:  #line 337 "grammar/xp.jay"
     { 
       $yyVal= $yyLex->create(new AnnotationNode()); 
       $yyVal->type= $yyVals[-3+$yyTop]; 
       $yyVal->parameters= $yyVals[-2+$yyTop];
     } break;
 
-    case 66:  #line 344 "grammar/xp.jay"
+    case 66:  #line 345 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 67:  #line 345 "grammar/xp.jay"
+    case 67:  #line 346 "grammar/xp.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 68:  #line 349 "grammar/xp.jay"
+    case 68:  #line 350 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 69:  #line 350 "grammar/xp.jay"
+    case 69:  #line 351 "grammar/xp.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 70:  #line 354 "grammar/xp.jay"
+    case 70:  #line 355 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 71:  #line 355 "grammar/xp.jay"
+    case 71:  #line 356 "grammar/xp.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 72:  #line 359 "grammar/xp.jay"
+    case 72:  #line 360 "grammar/xp.jay"
     { $yyVal= array('name' => $yyVals[-1+$yyTop], 'type' => $yyVals[-2+$yyTop]); $yyVals[0+$yyTop] && $yyVal['default']= $yyVals[0+$yyTop]; } break;
 
-    case 73:  #line 360 "grammar/xp.jay"
+    case 73:  #line 361 "grammar/xp.jay"
     { $yyVal= array('name' => $yyVals[0+$yyTop], 'type' => $yyVals[-2+$yyTop], 'vararg' => TRUE); } break;
 
-    case 74:  #line 364 "grammar/xp.jay"
+    case 74:  #line 365 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 75:  #line 365 "grammar/xp.jay"
+    case 75:  #line 366 "grammar/xp.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 83:  #line 385 "grammar/xp.jay"
+    case 82:  #line 378 "grammar/xp.jay"
+    { $yyVal= '[]'; } break;
+
+    case 83:  #line 386 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 85:  #line 390 "grammar/xp.jay"
+    case 85:  #line 391 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 86:  #line 391 "grammar/xp.jay"
+    case 86:  #line 392 "grammar/xp.jay"
     { $yyVal= array_merge(array($yyVals[-1+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 87:  #line 395 "grammar/xp.jay"
+    case 87:  #line 396 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ReturnNode()); } break;
 
-    case 88:  #line 395 "grammar/xp.jay"
+    case 88:  #line 396 "grammar/xp.jay"
     { 
       $yyVal->expression= $yyVals[-1+$yyTop];
     } break;
 
-    case 89:  #line 398 "grammar/xp.jay"
+    case 89:  #line 399 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new IfNode()); } break;
 
-    case 90:  #line 398 "grammar/xp.jay"
+    case 90:  #line 399 "grammar/xp.jay"
     {
       $yyVals[-6+$yyTop]->condition= $yyVals[-3+$yyTop];
       $yyVals[-6+$yyTop]->statements= $yyVals[-1+$yyTop];
       $yyVals[-6+$yyTop]->otherwise= $yyVals[0+$yyTop];
     } break;
 
-    case 91:  #line 403 "grammar/xp.jay"
+    case 91:  #line 404 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ForNode()); } break;
 
-    case 92:  #line 403 "grammar/xp.jay"
+    case 92:  #line 404 "grammar/xp.jay"
     {
       $yyVals[-9+$yyTop]->initialization= $yyVals[-6+$yyTop];
       $yyVals[-9+$yyTop]->condition= $yyVals[-4+$yyTop];
@@ -1455,119 +1459,119 @@
       $yyVals[-9+$yyTop]->statements= $yyVals[0+$yyTop];
     } break;
 
-    case 93:  #line 409 "grammar/xp.jay"
+    case 93:  #line 410 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ForeachNode()); } break;
 
-    case 94:  #line 409 "grammar/xp.jay"
+    case 94:  #line 410 "grammar/xp.jay"
     {
       $yyVals[-7+$yyTop]->expression= $yyVals[-4+$yyTop];
       /* $1->assignment= $6; XX FIXME XX*/
       $yyVals[-7+$yyTop]->statements= $yyVals[0+$yyTop];
     } break;
 
-    case 95:  #line 414 "grammar/xp.jay"
+    case 95:  #line 415 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new WhileNode()); } break;
 
-    case 96:  #line 414 "grammar/xp.jay"
+    case 96:  #line 415 "grammar/xp.jay"
     {
       $yyVals[-5+$yyTop]->expression= $yyVals[-2+$yyTop];
       $yyVals[-5+$yyTop]->statements= $yyVals[0+$yyTop];
     } break;
 
-    case 97:  #line 418 "grammar/xp.jay"
+    case 97:  #line 419 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new DoNode()); } break;
 
-    case 98:  #line 418 "grammar/xp.jay"
+    case 98:  #line 419 "grammar/xp.jay"
     {
       $yyVals[-6+$yyTop]->expression= $yyVals[-1+$yyTop];
       $yyVals[-6+$yyTop]->statements= $yyVals[-4+$yyTop];
     } break;
 
-    case 99:  #line 422 "grammar/xp.jay"
+    case 99:  #line 423 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new TryNode()); } break;
 
-    case 100:  #line 422 "grammar/xp.jay"
+    case 100:  #line 423 "grammar/xp.jay"
     { 
       $yyVals[-4+$yyTop]->statements= NULL; /* XXX $4;*/
       $yyVals[-4+$yyTop]->handling= $yyVals[0+$yyTop];
       $yyVal= $yyVals[-4+$yyTop]; 
     } break;
 
-    case 101:  #line 427 "grammar/xp.jay"
+    case 101:  #line 428 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ThrowNode()); } break;
 
-    case 102:  #line 427 "grammar/xp.jay"
+    case 102:  #line 428 "grammar/xp.jay"
     {
       $yyVals[-3+$yyTop]->expression= NULL; /*/ XXX $3;*/
     } break;
 
-    case 105:  #line 435 "grammar/xp.jay"
+    case 105:  #line 436 "grammar/xp.jay"
     { $yyVal= array($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 106:  #line 436 "grammar/xp.jay"
+    case 106:  #line 437 "grammar/xp.jay"
     { $yyVal= array(NULL, $yyVals[0+$yyTop]); } break;
 
-    case 107:  #line 440 "grammar/xp.jay"
+    case 107:  #line 441 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 108:  #line 441 "grammar/xp.jay"
+    case 108:  #line 442 "grammar/xp.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 109:  #line 445 "grammar/xp.jay"
+    case 109:  #line 446 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 110:  #line 446 "grammar/xp.jay"
+    case 110:  #line 447 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ElseNode()); } break;
 
-    case 111:  #line 446 "grammar/xp.jay"
+    case 111:  #line 447 "grammar/xp.jay"
     { $yyVals[-2+$yyTop]->statements= $yyVals[0+$yyTop]; } break;
 
-    case 112:  #line 451 "grammar/xp.jay"
+    case 112:  #line 452 "grammar/xp.jay"
     { $yyVals[0+$yyTop] === NULL || $yyVal= array_merge($yyVals[-1+$yyTop], array($yyVals[0+$yyTop])); } break;
 
-    case 113:  #line 452 "grammar/xp.jay"
+    case 113:  #line 453 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 114:  #line 456 "grammar/xp.jay"
+    case 114:  #line 457 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 115:  #line 457 "grammar/xp.jay"
+    case 115:  #line 458 "grammar/xp.jay"
     { $yyVal= array_merge(array($yyVals[-1+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 116:  #line 461 "grammar/xp.jay"
+    case 116:  #line 462 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new CatchNode()); } break;
 
-    case 117:  #line 461 "grammar/xp.jay"
+    case 117:  #line 462 "grammar/xp.jay"
     {
     $yyVals[-8+$yyTop]->type= $yyVals[-5+$yyTop];
     $yyVals[-8+$yyTop]->variable= $yyVals[-4+$yyTop];
     $yyVals[-8+$yyTop]->statements= NULL; /* XXX $8;*/
   } break;
 
-    case 118:  #line 469 "grammar/xp.jay"
+    case 118:  #line 470 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 120:  #line 474 "grammar/xp.jay"
+    case 120:  #line 475 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new FinallyNode()); } break;
 
-    case 121:  #line 474 "grammar/xp.jay"
+    case 121:  #line 475 "grammar/xp.jay"
     {
     $yyVals[-4+$yyTop]->statements= NULL; /* XXX $4;*/
   } break;
 
-    case 122:  #line 482 "grammar/xp.jay"
+    case 122:  #line 483 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 124:  #line 487 "grammar/xp.jay"
+    case 124:  #line 488 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 125:  #line 488 "grammar/xp.jay"
+    case 125:  #line 489 "grammar/xp.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 126:  #line 492 "grammar/xp.jay"
+    case 126:  #line 493 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 128:  #line 497 "grammar/xp.jay"
+    case 128:  #line 498 "grammar/xp.jay"
     {
       $yyVal= new InstanceCreationNode();
       $yyVal->type= $yyVals[-4+$yyTop];
@@ -1575,45 +1579,45 @@
       $yyVals[0+$yyTop] && $yyVal->body= $yyVals[0+$yyTop];
     } break;
 
-    case 129:  #line 503 "grammar/xp.jay"
+    case 129:  #line 504 "grammar/xp.jay"
     {
       $yyVal= new ArrayNode();
       $yyVal->type= new TypeName($yyVals[-5+$yyTop]);
       $yyVal->values= $yyVals[-1+$yyTop];
   } break;
 
-    case 131:  #line 512 "grammar/xp.jay"
+    case 131:  #line 513 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new VariableNode(array('name' => $yyVals[0+$yyTop]))); } break;
 
-    case 132:  #line 512 "grammar/xp.jay"
+    case 132:  #line 513 "grammar/xp.jay"
     {
       $yyVals[0+$yyTop] && $yyVals[-2+$yyTop]->chained= $yyVals[0+$yyTop];
     } break;
 
-    case 133:  #line 515 "grammar/xp.jay"
+    case 133:  #line 516 "grammar/xp.jay"
     { $p= $yyLex->position; } break;
 
-    case 134:  #line 515 "grammar/xp.jay"
+    case 134:  #line 516 "grammar/xp.jay"
     { 
       $yyVals[-1+$yyTop]->position= $p;
       $yyVals[0+$yyTop] && $yyVals[-1+$yyTop]->chained= $yyVals[0+$yyTop];
       $yyVal= $yyVals[-1+$yyTop];
     } break;
 
-    case 135:  #line 520 "grammar/xp.jay"
+    case 135:  #line 521 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ClassMemberNode()); $yyVals[0+$yyTop]->class= new TypeName($yyVals[-1+$yyTop]); } break;
 
-    case 136:  #line 520 "grammar/xp.jay"
+    case 136:  #line 521 "grammar/xp.jay"
     {
       $yyVals[-3+$yyTop]->member= $yyLex->create(new VariableNode(array('name' => $yyVals[-1+$yyTop])));
       $yyVals[0+$yyTop] && $yyVals[-3+$yyTop]->member->chained= $yyVals[0+$yyTop];
       $yyVal= $yyVals[-3+$yyTop];
     } break;
 
-    case 137:  #line 525 "grammar/xp.jay"
+    case 137:  #line 526 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ClassMemberNode()); $yyVals[0+$yyTop]->class= new TypeName($yyVals[-1+$yyTop]); } break;
 
-    case 138:  #line 525 "grammar/xp.jay"
+    case 138:  #line 526 "grammar/xp.jay"
     {
       $yyVals[-6+$yyTop]->member= $yyLex->create(new InvocationNode(array('name' => $yyVals[-4+$yyTop])));
       $yyVals[-6+$yyTop]->member->parameters= $yyVals[-2+$yyTop];
@@ -1621,10 +1625,10 @@
       $yyVal= $yyVals[-6+$yyTop];
     } break;
 
-    case 139:  #line 531 "grammar/xp.jay"
+    case 139:  #line 532 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new InvocationNode()); } break;
 
-    case 140:  #line 531 "grammar/xp.jay"
+    case 140:  #line 532 "grammar/xp.jay"
     { 
       $yyVals[-4+$yyTop]->name= $yyVals[-5+$yyTop];
       $yyVals[-4+$yyTop]->parameters= $yyVals[-2+$yyTop];
@@ -1632,234 +1636,240 @@
       $yyVal= $yyVals[-4+$yyTop];
     } break;
 
-    case 141:  #line 537 "grammar/xp.jay"
+    case 141:  #line 538 "grammar/xp.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 142:  #line 538 "grammar/xp.jay"
+    case 142:  #line 539 "grammar/xp.jay"
     { $yyVal= $yyLex->create(new AssignmentNode($yyVals[0+$yyTop])); } break;
 
-    case 143:  #line 539 "grammar/xp.jay"
+    case 143:  #line 540 "grammar/xp.jay"
     { $yyVal= $yyLex->create(new ComparisonNode($yyVals[0+$yyTop])); } break;
 
-    case 144:  #line 540 "grammar/xp.jay"
+    case 144:  #line 541 "grammar/xp.jay"
     { $yyVal= $yyLex->create(new BinaryOpNode($yyVals[0+$yyTop])); } break;
 
-    case 145:  #line 541 "grammar/xp.jay"
+    case 145:  #line 542 "grammar/xp.jay"
     { $yyVal= $yyLex->create(new UnaryOpNode($yyVals[0+$yyTop])); } break;
 
-    case 146:  #line 542 "grammar/xp.jay"
+    case 146:  #line 543 "grammar/xp.jay"
     { $yyVal= $yyLex->create(new UnaryOpNode($yyVals[0+$yyTop])); $yyVal->postfix= TRUE; } break;
 
-    case 147:  #line 543 "grammar/xp.jay"
+    case 147:  #line 544 "grammar/xp.jay"
     { /* XXX Ternary */ } break;
 
-    case 150:  #line 549 "grammar/xp.jay"
+    case 148:  #line 545 "grammar/xp.jay"
+    { $yyVal= $yyLex->create(new BinaryOpNode()); $yyVal->lhs= $yyVals[-2+$yyTop]; $yyVal->rhs= $yyVals[0+$yyTop]; $yyVal->op= '||'; } break;
+
+    case 149:  #line 546 "grammar/xp.jay"
+    { $yyVal= $yyLex->create(new BinaryOpNode()); $yyVal->lhs= $yyVals[-2+$yyTop]; $yyVal->rhs= $yyVals[0+$yyTop]; $yyVal->op= '&&'; } break;
+
+    case 150:  #line 550 "grammar/xp.jay"
     { /* XXX Constant, e.g. NULL, FALSE, TRUE */ } break;
 
-    case 151:  #line 550 "grammar/xp.jay"
+    case 151:  #line 551 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ArrayNode()); } break;
 
-    case 152:  #line 550 "grammar/xp.jay"
+    case 152:  #line 551 "grammar/xp.jay"
     {
       $yyVals[-3+$yyTop]->values= $yyVals[-1+$yyTop];
       $yyVals[-3+$yyTop]->type= NULL;   /* XXX anytype?*/
     } break;
 
-    case 153:  #line 554 "grammar/xp.jay"
+    case 153:  #line 555 "grammar/xp.jay"
     {
       $yyVal= $yyLex->create(new MapNode());
       $yyVal->elements= $yyVals[-1+$yyTop];
       $yyVal->type= NULL;   /* XXX anytype?*/
     } break;
 
-    case 154:  #line 559 "grammar/xp.jay"
+    case 154:  #line 560 "grammar/xp.jay"
     { $yyVal= $yyLex->create(new NumberNode()); $yyVal->value= $yyVals[0+$yyTop]; } break;
 
-    case 155:  #line 560 "grammar/xp.jay"
+    case 155:  #line 561 "grammar/xp.jay"
     { $yyVal= $yyLex->create(new HexNode()); $yyVal->value= $yyVals[0+$yyTop]; } break;
 
-    case 156:  #line 561 "grammar/xp.jay"
+    case 156:  #line 562 "grammar/xp.jay"
     { $yyVal= $yyLex->create(new DecimalNode()); $yyVal->value= $yyVals[0+$yyTop]; } break;
 
-    case 157:  #line 562 "grammar/xp.jay"
+    case 157:  #line 563 "grammar/xp.jay"
     { $yyVal= $yyLex->create(new StringNode()); $yyVal->value= $yyVals[0+$yyTop]; } break;
 
-    case 158:  #line 566 "grammar/xp.jay"
+    case 158:  #line 567 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 160:  #line 571 "grammar/xp.jay"
+    case 160:  #line 572 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 161:  #line 572 "grammar/xp.jay"
+    case 161:  #line 573 "grammar/xp.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 162:  #line 576 "grammar/xp.jay"
+    case 162:  #line 577 "grammar/xp.jay"
     { $yyVal= array($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 163:  #line 580 "grammar/xp.jay"
+    case 163:  #line 581 "grammar/xp.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 164:  #line 581 "grammar/xp.jay"
+    case 164:  #line 582 "grammar/xp.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 165:  #line 582 "grammar/xp.jay"
+    case 165:  #line 583 "grammar/xp.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 166:  #line 583 "grammar/xp.jay"
+    case 166:  #line 584 "grammar/xp.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 167:  #line 584 "grammar/xp.jay"
+    case 167:  #line 585 "grammar/xp.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 168:  #line 585 "grammar/xp.jay"
+    case 168:  #line 586 "grammar/xp.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 169:  #line 589 "grammar/xp.jay"
+    case 169:  #line 590 "grammar/xp.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 170:  #line 590 "grammar/xp.jay"
+    case 170:  #line 591 "grammar/xp.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 171:  #line 591 "grammar/xp.jay"
+    case 171:  #line 592 "grammar/xp.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 172:  #line 592 "grammar/xp.jay"
+    case 172:  #line 593 "grammar/xp.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 173:  #line 593 "grammar/xp.jay"
+    case 173:  #line 594 "grammar/xp.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 174:  #line 594 "grammar/xp.jay"
+    case 174:  #line 595 "grammar/xp.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 175:  #line 598 "grammar/xp.jay"
+    case 175:  #line 599 "grammar/xp.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 176:  #line 599 "grammar/xp.jay"
+    case 176:  #line 600 "grammar/xp.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 177:  #line 600 "grammar/xp.jay"
+    case 177:  #line 601 "grammar/xp.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 178:  #line 601 "grammar/xp.jay"
+    case 178:  #line 602 "grammar/xp.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 179:  #line 602 "grammar/xp.jay"
+    case 179:  #line 603 "grammar/xp.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 180:  #line 603 "grammar/xp.jay"
+    case 180:  #line 604 "grammar/xp.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 181:  #line 607 "grammar/xp.jay"
+    case 181:  #line 608 "grammar/xp.jay"
     { $yyVal= array('expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 182:  #line 608 "grammar/xp.jay"
+    case 182:  #line 609 "grammar/xp.jay"
     { $yyVal= array('expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 183:  #line 609 "grammar/xp.jay"
+    case 183:  #line 610 "grammar/xp.jay"
     { $yyVal= array('expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 184:  #line 610 "grammar/xp.jay"
+    case 184:  #line 611 "grammar/xp.jay"
     { $yyVal= array('expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 185:  #line 611 "grammar/xp.jay"
+    case 185:  #line 612 "grammar/xp.jay"
     { $yyVal= array('expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 186:  #line 612 "grammar/xp.jay"
+    case 186:  #line 613 "grammar/xp.jay"
     { $yyVal= array('expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 187:  #line 616 "grammar/xp.jay"
+    case 187:  #line 617 "grammar/xp.jay"
     { $yyVal= array('expression' => $yyVals[-1+$yyTop], 'op' => $yyVals[0+$yyTop]); } break;
 
-    case 188:  #line 617 "grammar/xp.jay"
+    case 188:  #line 618 "grammar/xp.jay"
     { $yyVal= array('expression' => $yyVals[-1+$yyTop], 'op' => $yyVals[0+$yyTop]); } break;
 
-    case 189:  #line 622 "grammar/xp.jay"
+    case 189:  #line 623 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
-    case 191:  #line 627 "grammar/xp.jay"
+    case 191:  #line 628 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ArrayAccessNode()); } break;
 
-    case 192:  #line 627 "grammar/xp.jay"
+    case 192:  #line 628 "grammar/xp.jay"
     { 
       $yyVals[-3+$yyTop]->offset= $yyVals[-1+$yyTop];
     } break;
 
-    case 193:  #line 630 "grammar/xp.jay"
+    case 193:  #line 631 "grammar/xp.jay"
     {
       $yyVal= $yyLex->create(new VariableNode()); 
       $yyVal->name= $yyVals[0+$yyTop]; 
     } break;
 
-    case 194:  #line 634 "grammar/xp.jay"
+    case 194:  #line 635 "grammar/xp.jay"
     { $yyVals[-2+$yyTop]= $yyLex->create(new InvocationNode()); } break;
 
-    case 195:  #line 634 "grammar/xp.jay"
+    case 195:  #line 635 "grammar/xp.jay"
     { 
       $yyVals[-5+$yyTop]->name= $yyVals[-4+$yyTop];
       $yyVals[-5+$yyTop]->parameters= $yyVals[-1+$yyTop];
     } break;
 
-    case 196:  #line 638 "grammar/xp.jay"
+    case 196:  #line 639 "grammar/xp.jay"
     { $yyVals[-1+$yyTop]->chained= $yyVals[0+$yyTop]; } break;
 
-    case 199:  #line 649 "grammar/xp.jay"
+    case 199:  #line 650 "grammar/xp.jay"
     { $yyVal= new TypeName($yyVals[0+$yyTop]); } break;
 
-    case 200:  #line 650 "grammar/xp.jay"
+    case 200:  #line 651 "grammar/xp.jay"
     { $yyVal= new TypeName($yyVals[-3+$yyTop], $yyVals[-1+$yyTop]); } break;
 
-    case 201:  #line 654 "grammar/xp.jay"
+    case 201:  #line 655 "grammar/xp.jay"
     { $yyVal= new TypeName($yyVals[-2+$yyTop].'[]'); } break;
 
-    case 202:  #line 658 "grammar/xp.jay"
+    case 202:  #line 659 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 203:  #line 659 "grammar/xp.jay"
+    case 203:  #line 660 "grammar/xp.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 205:  #line 664 "grammar/xp.jay"
+    case 205:  #line 665 "grammar/xp.jay"
     { $yyVal= new TypeName($yyVals[0+$yyTop].'+'); } break;
 
-    case 206:  #line 668 "grammar/xp.jay"
+    case 206:  #line 669 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 207:  #line 669 "grammar/xp.jay"
+    case 207:  #line 670 "grammar/xp.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 208:  #line 675 "grammar/xp.jay"
+    case 208:  #line 676 "grammar/xp.jay"
     { $yyVal= 0; } break;
 
-    case 209:  #line 676 "grammar/xp.jay"
+    case 209:  #line 677 "grammar/xp.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 210:  #line 680 "grammar/xp.jay"
+    case 210:  #line 681 "grammar/xp.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 211:  #line 681 "grammar/xp.jay"
+    case 211:  #line 682 "grammar/xp.jay"
     { $yyVal= $yyVals[-1+$yyTop] | $yyVals[0+$yyTop]; } break;
 
-    case 212:  #line 685 "grammar/xp.jay"
+    case 212:  #line 686 "grammar/xp.jay"
     { $yyVal= MODIFIER_PUBLIC; } break;
 
-    case 213:  #line 686 "grammar/xp.jay"
+    case 213:  #line 687 "grammar/xp.jay"
     { $yyVal= MODIFIER_PROTECTED; } break;
 
-    case 214:  #line 687 "grammar/xp.jay"
+    case 214:  #line 688 "grammar/xp.jay"
     { $yyVal= MODIFIER_PRIVATE; } break;
 
-    case 215:  #line 688 "grammar/xp.jay"
+    case 215:  #line 689 "grammar/xp.jay"
     { $yyVal= MODIFIER_STATIC; } break;
 
-    case 216:  #line 689 "grammar/xp.jay"
+    case 216:  #line 690 "grammar/xp.jay"
     { $yyVal= MODIFIER_ABSTRACT; } break;
 
-    case 217:  #line 690 "grammar/xp.jay"
+    case 217:  #line 691 "grammar/xp.jay"
     { $yyVal= MODIFIER_FINAL; } break;
 
-    case 218:  #line 691 "grammar/xp.jay"
+    case 218:  #line 692 "grammar/xp.jay"
     { $yyVal= MODIFIER_NATIVE; } break;
-#line 1863 "-"
+#line 1873 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

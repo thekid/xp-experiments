@@ -73,7 +73,7 @@
         '!' => array('!=' => TOKEN_T_NOT_EQUALS),
         ':' => array('::' => TOKEN_T_DOUBLE_COLON),
         '|' => array('||' => TOKEN_T_BOOLEAN_OR),
-        '&' => array('&&' => TOKEN_T_BOOLEAN_OR),
+        '&' => array('&&' => TOKEN_T_BOOLEAN_AND),
       );
 
     const 
