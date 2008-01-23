@@ -39,6 +39,7 @@
     'xp.compiler.ast.BinaryOpNode',
     'xp.compiler.ast.BooleanOpNode',
     'xp.compiler.ast.UnaryOpNode',
+    'xp.compiler.ast.TernaryNode',
     'xp.compiler.ast.IfNode',
     'xp.compiler.ast.ElseNode'
   );
@@ -536,12 +537,28 @@ expression:
       $$= $2;
     }
   | '(' expression ')' { $$= $2; }
-  | assignment { $$= $yyLex->create(new AssignmentNode($1)); }
-  | comparison { $$= $yyLex->create(new ComparisonNode($1)); }
-  | binary_operation { $$= $yyLex->create(new BinaryOpNode($1)); }
-  | unary_prefix_operation { $$= $yyLex->create(new UnaryOpNode($1)); }
-  | unary_postfix_operation { $$= $yyLex->create(new UnaryOpNode($1)); $$->postfix= TRUE; }
-  | expression '?' expression ':' expression { /* XXX Ternary */ }
+  | assignment { 
+      $$= $yyLex->create(new AssignmentNode($1)); 
+    }
+  | comparison { 
+      $$= $yyLex->create(new ComparisonNode($1)); 
+    }
+  | binary_operation { 
+      $$= $yyLex->create(new BinaryOpNode($1)); 
+    }
+  | unary_prefix_operation { 
+      $$= $yyLex->create(new UnaryOpNode($1)); 
+    }
+  | unary_postfix_operation { 
+      $$= $yyLex->create(new UnaryOpNode($1)); 
+      $$->postfix= TRUE; 
+    }
+  | expression '?' expression_opt ':' expression { 
+      $$= $yyLex->create(new TernaryNode());
+      $$->condition= $1;
+      $$->expression= $3;
+      $$->conditional= $5;
+    }
   | expression T_BOOLEAN_OR expression { $$= $yyLex->create(new BinaryOpNode()); $$->lhs= $1; $$->rhs= $3; $$->op= '||'; }
   | expression T_BOOLEAN_AND expression  { $$= $yyLex->create(new BinaryOpNode()); $$->lhs= $1; $$->rhs= $3; $$->op= '&&'; }
 ;
