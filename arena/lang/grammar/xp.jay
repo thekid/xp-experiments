@@ -559,8 +559,18 @@ expression:
       $$->expression= $3;
       $$->conditional= $5;
     }
-  | expression T_BOOLEAN_OR expression { $$= $yyLex->create(new BinaryOpNode()); $$->lhs= $1; $$->rhs= $3; $$->op= '||'; }
-  | expression T_BOOLEAN_AND expression  { $$= $yyLex->create(new BinaryOpNode()); $$->lhs= $1; $$->rhs= $3; $$->op= '&&'; }
+  | expression T_BOOLEAN_OR expression { 
+      $$= $yyLex->create(new BinaryOpNode()); 
+      $$->lhs= $1; 
+      $$->rhs= $3; 
+      $$->op= '||'; 
+    }
+  | expression T_BOOLEAN_AND expression  { 
+      $$= $yyLex->create(new BinaryOpNode()); 
+      $$->lhs= $1; 
+      $$->rhs= $3; 
+      $$->op= '&&'; 
+    }
 ;
 
 literal:
