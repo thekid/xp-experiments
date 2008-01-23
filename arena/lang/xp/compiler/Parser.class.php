@@ -1375,14 +1375,14 @@
     { 
       $yyVal= $yyLex->create(new AnnotationNode()); 
       $yyVal->type= $yyVals[-3+$yyTop]; 
-      $yyVal->parameters= array('default' => $yyVals[-2+$yyTop]);
+      $yyVals[-1+$yyTop] && $yyVal->parameters= array('default' => $yyVals[-1+$yyTop]);
     } break;
 
     case 65:  #line 338 "grammar/xp.jay"
     { 
       $yyVal= $yyLex->create(new AnnotationNode()); 
       $yyVal->type= $yyVals[-3+$yyTop]; 
-      $yyVal->parameters= $yyVals[-2+$yyTop];
+      $yyVal->parameters= $yyVals[-1+$yyTop];
     } break;
 
     case 66:  #line 346 "grammar/xp.jay"

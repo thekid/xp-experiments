@@ -333,12 +333,12 @@ annotation:
   | '@' qualifiedname '(' expression_opt ')' { 
       $$= $yyLex->create(new AnnotationNode()); 
       $$->type= $2; 
-      $$->parameters= array('default' => $3);
+      $4 && $$->parameters= array('default' => $4);
     }
   | '@' qualifiedname '(' mapliteral ')' { 
       $$= $yyLex->create(new AnnotationNode()); 
       $$->type= $2; 
-      $$->parameters= $3;
+      $$->parameters= $4;
     }
 ;
 
