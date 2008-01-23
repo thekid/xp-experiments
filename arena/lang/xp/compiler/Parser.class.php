@@ -1542,7 +1542,7 @@
     {
     $yyVals[-8+$yyTop]->type= $yyVals[-5+$yyTop];
     $yyVals[-8+$yyTop]->variable= $yyVals[-4+$yyTop];
-    $yyVals[-8+$yyTop]->statements= NULL; /* XXX $8;*/
+    $yyVals[-8+$yyTop]->statements= $yyVals[-1+$yyTop];
   } break;
 
     case 118:  #line 471 "grammar/xp.jay"
@@ -1553,7 +1553,7 @@
 
     case 121:  #line 476 "grammar/xp.jay"
     {
-    $yyVals[-4+$yyTop]->statements= NULL; /* XXX $4;*/
+    $yyVals[-4+$yyTop]->statements= $yyVals[-1+$yyTop];
   } break;
 
     case 122:  #line 484 "grammar/xp.jay"

@@ -44,14 +44,22 @@
             'position'   => array(6, 13),
             'type'       => new TypeName('IllegalArgumentException'),
             'variable'   => '$e',
-            'statements' => NULL, 
+            'statements' => array(new VariableNode(array(
+              'position'   => array(7, 13),
+              'name'       => '$this',
+              'chained'    => new InvocationNode(array(
+                'position'   => array(7, 28),
+                'name'       => 'finalize',
+                'parameters' => NULL
+              ))
+            ))), 
           ))
         )
       ))), $this->parse('
         try {
           $method->call();
         } catch (IllegalArgumentException $e) {
-          $this->out->writeLine("*** ", $e->getMessage());
+          $this->finalize();
         }
       '));
     }
@@ -82,14 +90,22 @@
         'handling'   => array(
           new FinallyNode(array(
             'position'   => array(6, 13),
-            'statements' => NULL, 
+            'statements' => array(new VariableNode(array(
+              'position'   => array(7, 13),
+              'name'       => '$this',
+              'chained'    => new InvocationNode(array(
+                'position'   => array(7, 28),
+                'name'       => 'finalize',
+                'parameters' => NULL
+              ))
+            ))), 
           ))
         )
       ))), $this->parse('
         try {
           throw new ChainedException("Hello", new IOException($message));
         } finally {
-          $this->out->writeLine("Done");
+          $this->finalize();
         }
       '));
     }
@@ -114,7 +130,10 @@
             'position'   => array(7, 13),
             'type'       => new TypeName('SecurityException'),
             'variable'   => '$e',
-            'statements' => NULL, 
+            'statements' => array(new ThrowNode(array(
+              'position'   => array(8, 13),
+              'expression' => NULL
+            ))), 
           )),
           new CatchNode(array(
             'position'   => array(9, 13),
