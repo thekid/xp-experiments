@@ -40,6 +40,18 @@
      *
      */
     public function run() {
+      static $core= array(
+        'uses'         => TRUE,
+        'create'       => TRUE,
+        'newinstance'  => TRUE,
+        'raise'        => TRUE,
+        'delete'       => TRUE,
+        'is'           => TRUE,
+        'with'         => TRUE,
+        'finally'      => TRUE,
+        'cast'         => TRUE,
+      );
+
       $functions= array();
       $total= 0;
       $this->out->write('[');
@@ -56,7 +68,8 @@
             '(' === $t[$i+ 3]{0}
           ) {
             // $this->out->writeLine($t[$i+ 2]{1}, '() @ ', $l, ' of ', $element);
-            $functions[$t[$i+ 2]{1}]++;
+            $f= $t[$i+ 2]{1};
+            isset($core[$f]) || $functions[$f]++;
             $total++;
           } 
         }
