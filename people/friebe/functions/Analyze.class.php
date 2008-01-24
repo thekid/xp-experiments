@@ -69,8 +69,10 @@
           ) {
             // $this->out->writeLine($t[$i+ 2]{1}, '() @ ', $l, ' of ', $element);
             $f= $t[$i+ 2]{1};
-            isset($core[$f]) || $functions[$f]++;
-            $total++;
+            if (!isset($core[$f])) {
+              $functions[$f]++;
+              $total++;
+            }
           } 
         }
         $this->out->write('.');
