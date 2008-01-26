@@ -24,4 +24,20 @@ public class HashTable<K, V> extends lang.Object implements Map<K, V> {
     }
     return $this->elements[$k];
   }
+
+  /**
+   * [offset]= overloading
+   *
+   */  
+  public void operator[K $key] (V $v) {
+    $this->put($key, $v);
+  }
+
+  /**
+   * =[offset] overloading
+   *
+   */  
+  public E operator[K $key] () {
+    return $this->get($key);
+  }
 }

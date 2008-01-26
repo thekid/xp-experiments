@@ -34,7 +34,7 @@ public class Vector<E> implements IList {
    * [offset]= overloading
    *
    */  
-  public void operator[] (int $offset, E $element) {
+  public void operator[int $offset] (E $element) {
     if ($offset < 0 || $offset >= $this->size) {
       throw new IndexOutOfBoundsException('Offset ' ~ $index ~ ' out of bounds');
     }
@@ -45,7 +45,7 @@ public class Vector<E> implements IList {
    * =[offset] overloading
    *
    */  
-  public E operator[] (int $offset) {
+  public E operator[int $offset] () {
     if ($offset < 0 || $offset >= $this->size) {
       throw new IndexOutOfBoundsException('Offset ' ~ $index ~ ' out of bounds');
     }
