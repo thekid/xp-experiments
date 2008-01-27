@@ -67,6 +67,7 @@
 %token T_FINAL 284
 %token T_ABSTRACT 285
 %token T_NATIVE 286
+%token T_INLINE 287
 
 %token T_CLASS 300
 %token T_INTERFACE 301
@@ -749,6 +750,7 @@ modifier:
   | T_ABSTRACT  { $$= MODIFIER_ABSTRACT; }
   | T_FINAL     { $$= MODIFIER_FINAL; }
   | T_NATIVE    { $$= MODIFIER_NATIVE; }
+  | T_INLINE    { $$= MODIFIER_INLINE; }
 ;
 // }}}
 

@@ -23,6 +23,7 @@
         'static'        => TOKEN_T_STATIC,
         'final'         => TOKEN_T_FINAL,
         'abstract'      => TOKEN_T_ABSTRACT,
+        'inline'        => TOKEN_T_INLINE,
         
         'package'       => TOKEN_T_PACKAGE,
         'import'        => TOKEN_T_IMPORT,
@@ -155,9 +156,16 @@
           $ahead= $this->tokenizer->nextToken(self::DELIMITERS);
           if ('/' === $ahead) {           // Single-line comment
             $this->tokenizer->nextToken("\n");
+            $this->position[1]= 1;
+            $this->position[0]++;
             continue;
           } else if ('*' === $ahead) {    // Multi-line comment
-            do { $t= $this->tokenizer->nextToken('/'); } while ('*' !== $t{strlen($t)- 1});
+            do { 
+              $t= $this->tokenizer->nextToken('/'); 
+              $l= substr_count($t, "\n");
+              $this->position[1]= strlen($t) + ($l ? 1 : $this->position[1]);
+              $this->position[0]+= $l;
+            } while ('*' !== $t{strlen($t)- 1});
             $this->tokenizer->nextToken('/');
             continue;
           } else {
