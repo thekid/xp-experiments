@@ -460,7 +460,7 @@
       $destdir= $this->getDestdir($env);
       while ($iterator->hasNext()) {
         $sourceElement= $iterator->next();
-        $targetfile= new File($destdir.DIRECTORY_SEPARATOR.str_replace('.java', '.class', $sourceElement->relativePart()));
+        $targetfile= new File($destdir.DIRECTORY_SEPARATOR.str_replace('.java', '.class', $sourceElement->relativePath()));
         
         // Rebuild when target does not exist or is out of date
         if (
@@ -477,7 +477,7 @@
       $lfile= new TempFile();
       $lfile->open(FILE_MODE_WRITE);
       foreach ($compileable as $compile) {
-        if ($this->listfiles) $env->out->writeLine('Compiling '.$compile->relativePart());
+        if ($this->listfiles) $env->out->writeLine('Compiling '.$compile->relativePath());
         $lfile->writeLine($compile->getURI());
       }
       $lfile->close();
