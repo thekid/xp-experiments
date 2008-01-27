@@ -83,11 +83,11 @@ public class String {
    * =[offset] overloading
    *
    */
-  public void operator[int $offset] () throws IndexOutOfBoundsException {
+  public Character operator[int $offset] () throws IndexOutOfBoundsException {
     if ($offset >= $this->length || $offset < 0) {
       throw new IndexOutOfBoundsException('Offset ' ~ $offset ~ ' out of bounds');
     }
-    return $this->intern[$offset];
+    return new Character(iconv_substr($this->intern, $offset, 1, 'utf-8'));
   }
 
   /**
