@@ -1,0 +1,141 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+package lang.types;
+
+import lang.IndexOutOfBoundsException;
+import lang.IllegalArgumentException;
+
+/**
+ * String class
+ *
+ */
+public class String {
+  protected string $intern;
+  protected int $length;
+
+  /**
+   * No-arg Constructor
+   *
+   */
+  public __construct() {
+    $this->intern= '';
+    $this->length= 0;
+  }
+
+  /**
+   * Constructor
+   *
+   * @param intial the initial value
+   */
+  public __construct(string $initial) {
+    $this->intern= $initial;
+    $this->length= iconv_strlen($this->buffer, 'utf-8');
+  }
+  
+  /**
+   * Helper method for [offset]= overloading
+   *
+   */
+  protected inline void setChar(int $offset, string $c) throws IndexOutOfBoundsException, IllegalArgumentException {
+    if ($offset >= $this->length || $offset < 0) {
+      throw new IndexOutOfBoundsException('Offset ' ~ $offset ~ ' out of bounds');
+    }
+
+    if (1 != iconv_strlen($c, 'utf-8')) {
+      throw new IllegalArgumentException('Set only allows to set one character!');
+    }
+
+    $this->intern= (
+      iconv_substr($this->intern, 0, $offset, 'utf-8') 
+      ~ $c ~ 
+      iconv_substr($this->intern, $offset+ 1, $this->length, 'utf-8')
+    );
+  }
+  
+  /**
+   * [offset]= overloading
+   *
+   */
+  public void operator[int $offset] (string $c) {
+    $this->setChar($offset, $c);
+  }
+
+  /**
+   * [offset]= overloading
+   *
+   */
+  public void operator[int $offset] (self $s) {
+    $this->setChar($offset, $s->intern);
+  }
+
+  /**
+   * [offset]= overloading
+   *
+   */
+  public void operator[int $offset] (Character $c) {
+    $this->setChar($offset, $c->intern);
+  }
+
+  /**
+   * =[offset] overloading
+   *
+   */
+  public void operator[int $offset] () throws IndexOutOfBoundsException {
+    if ($offset >= $this->length || $offset < 0) {
+      throw new IndexOutOfBoundsException('Offset ' ~ $offset ~ ' out of bounds');
+    }
+    return $this->intern[$offset];
+  }
+
+  /**
+   * printf operator
+   *
+   * Usage:
+   * <code>
+   *   new String('Hello %s') % 'World' = new String('Hello World')
+   * </code>
+   */
+  public static self operator % (self $self, any* $args) {
+    return new self(vsprintf($self->intern, $args));
+  }
+
+  /**
+   * Concatenation operator
+   *
+   */
+  public static self operator ~ (self $self, self $other) {
+    return new self($self->intern ~ $other->intern);
+  }
+
+  /**
+   * Returns the string's length (the number of characters in this
+   * string, not the number of bytes)
+   *
+   */
+  public int length() {
+    return $this->length;
+  }
+
+  /**
+   * Returns the index within this string of the first occurrence of 
+   * the specified substring.
+   *
+   */
+  public int indexOf(string $arg, int $start= 0) {
+    $r= iconv_strpos($this->intern, $arg, $start, 'utf-8');
+    return false != $r ?: -1;
+  }
+
+  /**
+   * Returns the index within this string of the first occurrence of 
+   * the specified substring.
+   *
+   */
+  public int indexOf(self $arg, int $start= 0) {
+    $r= iconv_strpos($this->intern, $arg->intern, $start, 'utf-8');
+    return false != $r ?: -1;
+  }
+}
