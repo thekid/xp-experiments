@@ -31,6 +31,18 @@
     }
 
     /**
+     * Test empty strings
+     *
+     */
+    #[@test]
+    public function emptyStrings() {
+      $this->assertEquals(array(
+        new StringNode(array('position' => array(3, 13), 'value' => '')),
+        new StringNode(array('position' => array(3, 15), 'value' => '')),
+      ), $this->parse('""; \'\';'));
+    }
+
+    /**
      * Test double-quoted string
      *
      */

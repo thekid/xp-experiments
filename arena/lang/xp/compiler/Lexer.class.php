@@ -133,14 +133,18 @@
           $this->token= TOKEN_T_STRING;
           $this->value= '';
           do {
-            $this->value.= $this->tokenizer->nextToken($token{0});
+            if ($token{0} === ($t= $this->tokenizer->nextToken($token{0}))) {
+              // Empty string, e.g. "" or ''
+              break;
+            }
+            $this->value.= $t;
             if ('\\' === $this->value{strlen($this->value)- 1}) {
               $this->value= substr($this->value, 0, -1).$this->tokenizer->nextToken($token{0});
               continue;
             } 
+            $this->tokenizer->nextToken($token{0});
             break;
           } while ($this->tokenizer->hasMoreTokens());
-          $this->tokenizer->nextToken($token{0});
         } else if ('$' === $token{0}) {
           $this->token= TOKEN_T_VARIABLE;
           $this->value= $token;
