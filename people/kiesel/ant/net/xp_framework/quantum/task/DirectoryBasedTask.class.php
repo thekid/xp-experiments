@@ -102,7 +102,7 @@
      * @param   
      * @return  
      */
-    protected function iteratorForFileset() {
+    protected function iteratorForFileset($env) {
       return $this->fileset->iteratorFor($env);
     }
   }
