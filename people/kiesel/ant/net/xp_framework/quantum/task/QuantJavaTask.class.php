@@ -21,7 +21,7 @@
      * @param   
      * @return  
      */
-    public function execute(QuantEnvironment $env) {
+    public function execute() {
     }    
   }
 ?>
