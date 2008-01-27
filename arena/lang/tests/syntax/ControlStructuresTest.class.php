@@ -120,5 +120,68 @@
         if ($i % 3) { } else if ($i % 2) { } else { }
       '));
     }
+
+    /**
+     * Test switch statement
+     *
+     */
+    #[@test]
+    public function emptySwitchStatement() {
+      $this->assertEquals(array(new SwitchNode(array(
+        'position'       => array(4, 11),
+        'expression'     => new VariableNode(array('position' => array(4, 19), 'name' => '$i')),
+        'cases'          => NULL,
+      ))), $this->parse('
+        switch ($i) { }
+      '));
+    }
+
+    /**
+     * Test switch statement
+     *
+     */
+    #[@test]
+    public function switchStatement() {
+      $this->assertEquals(array(new SwitchNode(array(
+        'position'       => array(4, 11),
+        'expression'     => new VariableNode(array('position' => array(4, 19), 'name' => '$i')),
+        'cases'          => array(
+          new CaseNode(array(
+            'position'       => array(5, 13),
+            'expression'     => new NumberNode(array('position' => array(5, 18), 'value' => '0')),
+            'statements'     => array(
+              new StringNode(array('position' => array(5, 21), 'value' => 'no entries')),
+              'break'
+            )
+          )),
+          new CaseNode(array(
+            'position'       => array(6, 13),
+            'expression'     => new NumberNode(array('position' => array(6, 18), 'value' => '1')),
+            'statements'     => array(
+              new StringNode(array('position' => array(6, 21), 'value' => 'one entry')),
+              'break'
+            )
+         )),
+          new DefaultNode(array(
+            'position'       => array(7, 13),
+            'statements'     => array(
+              new BinaryOpNode(array(
+                'position'   => array(7, 35),
+                'lhs'        => new VariableNode(array('position' => array(7, 22), 'name' => '$i')),
+                'rhs'        => new StringNode(array('position' => array(7, 27), 'value' => ' entries')),
+                'op'         => '~'
+              )),
+              'break'
+            )
+          ))
+        ),
+      ))), $this->parse('
+        switch ($i) { 
+          case 0: "no entries"; break;
+          case 1: "one entry"; break;
+          default: $i ~ " entries"; break;
+        }
+      '));
+    }
   }
 ?>
