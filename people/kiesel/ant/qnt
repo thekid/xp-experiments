@@ -1,3 +1,8 @@
 #!/bin/sh
 
-xpcli net.xp_framework.quantum.cmd.Quantum "$@"
+DIRNAME=`dirname $0` 
+if [ "$OS" == "Windows_NT" ]; then
+	DIRNAME=`cygpath -w "$DIRNAME"`
+fi
+
+xpcli -cp "$DIRNAME" net.xp_framework.quantum.cmd.Quantum "$@"
