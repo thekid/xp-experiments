@@ -127,7 +127,7 @@
      * @return  
      */
     public function runTarget($name) {
-      if (isset($this->targets[$name])) {
+      if (!isset($this->targets[$name])) {
         throw new IllegalArgumentException('Target "'.$name.'" does not exist.');
       }
       $this->targets[$name]->run($this, $this->environment);
@@ -146,7 +146,7 @@
       if (sizeof($this->imports)) {
         $properties= $this->properties;
         $this->properties= array();
-        
+
         foreach ($this->imports as $import) {
           $project= $import->resolve(dirname($this->filename));
           if ($project instanceof self) {
