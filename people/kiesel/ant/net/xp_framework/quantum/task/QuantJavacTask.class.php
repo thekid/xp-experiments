@@ -443,7 +443,6 @@
     protected function execute() {
       $env= $this->env();
       $cmdline= array();
-      $cmdline[]= $this->getExecutable();
       if ($this->classpath || $this->classpathref) $cmdline[]= '-classpath '.$this->getClasspath($env);
       if ($this->destdir) $cmdline[]= '-d '.$this->getDestdir($env);
       if ($this->encoding) $cmdline[]= '-encoding '.$this->encoding;
@@ -482,16 +481,16 @@
       }
       $lfile->close();
       
-      $cmdline[]= '@'.$lfile->getURI();
+      $cmdline[]= '@'.escapeshellarg($lfile->getURI());
       try {
-        $p= new Process(implode(' ', $cmdline));
+        $p= new Process($this->getExecutable(), $cmdline);
+        $env->out->writeLine('---> Executing '.$p->getCommandLine());
         $p->getInputStream()->close();
         
         while (($out= $p->getOutputStream()->readLine()) || ($err= $p->getErrorStream()->readLine())) {
           if ($out) $env->out->writeLine('[STDOUT:javac] '.$out); 
           if ($err) $env->err->writeLine('[STDERR:javac] '.$err);
         }
-        
         $p->close();
         return;
       } catch (IOException $e) {
