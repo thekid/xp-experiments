@@ -151,7 +151,7 @@
             'expression'     => new NumberNode(array('position' => array(5, 18), 'value' => '0')),
             'statements'     => array(
               new StringNode(array('position' => array(5, 21), 'value' => 'no entries')),
-              'break'
+              new BreakNode(array('position' => array(5, 33)))
             )
           )),
           new CaseNode(array(
@@ -159,7 +159,7 @@
             'expression'     => new NumberNode(array('position' => array(6, 18), 'value' => '1')),
             'statements'     => array(
               new StringNode(array('position' => array(6, 21), 'value' => 'one entry')),
-              'break'
+              new BreakNode(array('position' => array(6, 32)))
             )
          )),
           new DefaultNode(array(
@@ -171,7 +171,7 @@
                 'rhs'        => new StringNode(array('position' => array(7, 27), 'value' => ' entries')),
                 'op'         => '~'
               )),
-              'break'
+              new BreakNode(array('position' => array(7, 37)))
             )
           ))
         ),

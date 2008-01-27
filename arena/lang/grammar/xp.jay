@@ -43,6 +43,8 @@
     'xp.compiler.ast.SwitchNode',
     'xp.compiler.ast.CaseNode',
     'xp.compiler.ast.DefaultNode',
+    'xp.compiler.ast.BreakNode',
+    'xp.compiler.ast.ContinueNode',
     'xp.compiler.ast.IfNode',
     'xp.compiler.ast.ElseNode'
   );
@@ -434,7 +436,8 @@ statement:
       $2->handling= $6;
       $$= $2; 
     }
-  | T_BREAK ';' { }
+  | T_BREAK { $1= $yyLex->create(new BreakNode()); } ';'
+  | T_CONTINUE { $1= $yyLex->create(new ContinueNode()); } ';'
   | T_THROW { $1= $yyLex->create(new ThrowNode()); } expression ';' {
       $1->expression= NULL; /// XXX $3;
     }
