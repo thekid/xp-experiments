@@ -439,7 +439,7 @@ statement:
   | T_BREAK { $1= $yyLex->create(new BreakNode()); } ';'
   | T_CONTINUE { $1= $yyLex->create(new ContinueNode()); } ';'
   | T_THROW { $1= $yyLex->create(new ThrowNode()); } expression ';' {
-      $1->expression= NULL; /// XXX $3;
+      $1->expression= $3;
     }
   | expression ';'
   | ';'

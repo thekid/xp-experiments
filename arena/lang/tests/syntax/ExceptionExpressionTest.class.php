@@ -72,7 +72,11 @@
     public function singleThrow() {
       $this->assertEquals(array(new ThrowNode(array(
         'position'   => array(4, 11),
-        'expression' => NULL
+        'expression' => new InstanceCreationNode(array(
+          'position'   => array(4, 17),
+          'type'       => new TypeName('IllegalStateException'),
+          'parameters' => NULL
+        ))
       ))), $this->parse('
         throw new IllegalStateException();
       '));
@@ -132,7 +136,19 @@
             'variable'   => '$e',
             'statements' => array(new ThrowNode(array(
               'position'   => array(8, 13),
-              'expression' => NULL
+              'expression' => new VariableNode(array(
+                'position'   => array(8, 19),
+                'name'       => '$e',
+                'chained'    => new InvocationNode(array(
+                  'position'   => array(8, 32),
+                  'name'       => 'getCauses',
+                  'parameters' => NULL,
+                  'chained'    => new ArrayAccessNode(array(
+                    'position'   => array(8, 34),
+                    'offset'     => new NumberNode(array('position' => array(8, 35), 'value' => '0')),
+                  ))
+                ))
+              ))
             ))), 
           )),
           new CatchNode(array(

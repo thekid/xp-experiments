@@ -1517,7 +1517,7 @@
 
     case 109:  #line 441 "grammar/xp.jay"
     {
-      $yyVals[-3+$yyTop]->expression= NULL; /*/ XXX $3;*/
+      $yyVals[-3+$yyTop]->expression= $yyVals[-1+$yyTop];
     } break;
 
     case 112:  #line 449 "grammar/xp.jay"
