@@ -70,7 +70,7 @@
         return;
       }
       
-      $env->out->writeLine($this->valueOf($this->content));
+      $this->env()->out->writeLine($this->valueOf($this->content));
     }    
   }
 ?>
