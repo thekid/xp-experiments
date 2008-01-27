@@ -432,7 +432,7 @@ statement:
       $1->cases= $7;
     }
   | T_TRY '{' { $2= $yyLex->create(new TryNode()); } statements_opt '}' handleexception { 
-      $2->statements= NULL; // XXX $4;
+      $2->statements= $4;
       $2->handling= $6;
       $$= $2; 
     }

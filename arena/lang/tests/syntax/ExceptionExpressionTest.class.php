@@ -38,7 +38,17 @@
     public function singleCatch() {
       $this->assertEquals(array(new TryNode(array(
         'position'   => array(4, 15),
-        'statements' => NULL, 
+        'statements' => array(
+          new VariableNode(array(
+            'position'   => array(5, 13),
+            'name'       => '$method',
+            'chained'    => new InvocationNode(array(
+              'position'   => array(5, 26),
+              'name'       => 'call',
+              'parameters' => NULL
+            ))
+          ))
+        ), 
         'handling'   => array(
           new CatchNode(array(
             'position'   => array(6, 13),
@@ -90,7 +100,19 @@
     public function singleFinally() {
       $this->assertEquals(array(new TryNode(array(
         'position'   => array(4, 15),
-        'statements' => NULL, 
+        'statements' => array(
+          new ThrowNode(array(
+            'position'   => array(5, 13),
+            'expression' => new InstanceCreationNode(array(
+              'position'   => array(5, 19),
+              'type'       => new TypeName('ChainedException'),
+              'parameters' => array(
+                new StringNode(array('position' => array(5, 40), 'value' => 'Hello')),
+                new VariableNode(array('position' => array(5, 47), 'name' => '$e')),
+              )
+            ))
+          ))
+        ), 
         'handling'   => array(
           new FinallyNode(array(
             'position'   => array(6, 13),
@@ -107,7 +129,7 @@
         )
       ))), $this->parse('
         try {
-          throw new ChainedException("Hello", new IOException($message));
+          throw new ChainedException("Hello", $e);
         } finally {
           $this->finalize();
         }
@@ -122,7 +144,19 @@
     public function multipleCatches() {
       $this->assertEquals(array(new TryNode(array(
         'position'   => array(4, 15),
-        'statements' => NULL, 
+        'statements' => array(
+          new ReturnNode(array(
+            'position'   => array(5, 13),
+            'expression' => new InstanceCreationNode(array(
+              'position'   => array(5, 20),
+              'type'       => new TypeName('util.collections.HashTable', array(
+                new TypeName('lang.types.String'), 
+                new TypeName('Object')
+              )),
+              'parameters' => NULL
+            ))
+          ))
+        ), 
         'handling'   => array(
           new CatchNode(array(
             'position'   => array(6, 13),

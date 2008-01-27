@@ -1501,7 +1501,7 @@
 
     case 103:  #line 434 "grammar/xp.jay"
     { 
-      $yyVals[-4+$yyTop]->statements= NULL; /* XXX $4;*/
+      $yyVals[-4+$yyTop]->statements= $yyVals[-2+$yyTop];
       $yyVals[-4+$yyTop]->handling= $yyVals[0+$yyTop];
       $yyVal= $yyVals[-4+$yyTop]; 
     } break;
