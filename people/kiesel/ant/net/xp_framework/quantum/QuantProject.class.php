@@ -127,6 +127,9 @@
      * @return  
      */
     public function runTarget($name) {
+      if (isset($this->targets[$name])) {
+        throw new IllegalArgumentException('Target "'.$name.'" does not exist.');
+      }
       $this->targets[$name]->run($this, $this->environment);
     }
     
