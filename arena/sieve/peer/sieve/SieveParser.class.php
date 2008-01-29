@@ -360,7 +360,7 @@
 
     case 20:  #line 83 "grammar/sieve.jay"
     {
-    
+      $yyVals[-4+$yyTop]->args= $yyVals[-1+$yyTop];
     } break;
 
     case 21:  #line 86 "grammar/sieve.jay"
@@ -374,6 +374,9 @@
     case 23:  #line 93 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
+    case 24:  #line 97 "grammar/sieve.jay"
+    { $yyVal= array($yyVals[-3+$yyTop] => array($yyVals[-1+$yyTop], $yyVals[0+$yyTop])); } break;
+
     case 25:  #line 101 "grammar/sieve.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
@@ -385,7 +388,7 @@
 
     case 30:  #line 116 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
-#line 389 "-"
+#line 392 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

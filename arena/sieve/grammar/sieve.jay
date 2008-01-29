@@ -81,7 +81,7 @@ statement:
 //     E.g. allof (address :regex ["From"] "bug[\-\+](.*)?@laudi\.de")
 condition:
     T_ALLOF { $1= $yyLex->create(new AllOfCondition()); } '(' allofargs ')' {
-    
+      $1->args= $4;
     }
   | T_NOT condition {
   
@@ -94,7 +94,7 @@ allofargs:
 ;
 
 allofarg:
-    T_WORD ':' T_WORD args
+    T_WORD ':' T_WORD args { $$= array($1 => array($3, $4)); }
 ;
 
 args:
