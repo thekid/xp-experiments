@@ -1,0 +1,111 @@
+%{
+  uses(
+    'peer.sieve.RuleSet',
+    'peer.sieve.Rule',
+    'peer.sieve.AllOfCondition'
+  );
+%}
+
+%token T_WORD 260
+%token T_STRING 261
+
+%token T_REQUIRE 270
+%token T_NOT 271
+
+%token T_IF 280
+%token T_ELSEIF 281
+
+%token T_ALLOF 282
+
+%%
+
+start:
+    requires_opt rules_opt {
+      $$= new peer新ieve愛uleSet();
+      $$->required= $1;
+      $$->rules= $2;
+    }
+;
+
+// {{{ Required items
+requires_opt:
+    /* empty */ { $$= NULL; }
+  | requires 
+;
+
+requires:
+    require { $$= $1; }
+  | require requires { $$= array_merge(array($1), $2); }
+;
+
+require:
+    T_REQUIRE '[' stringlist ']' ';' { $$= $3; }
+;
+// }}}
+
+// {{{ Rules
+rules_opt:
+    /* empty */ { $$= NULL; }
+  | rules 
+;
+
+rules:
+    rule { $$= array($1); }
+  | rule rules { $$= array_merge(array($1), $2); }
+;
+
+rule:
+    T_IF { $1= new peer新ieve愛ule(); } condition '{' statements '}' else_opt {
+      $$->condition= $3;
+      $$->statements= $5;
+    }
+;
+
+else_opt:
+    /* empty */ { $$= NULL; }
+  | T_ELSEIF condition '{' statements '}' else_opt
+;
+// }}}
+
+statements:
+    statement { $$= array($1); }
+  | statement statements { $$= array_merge(array($1), $2); }
+;
+
+statement:
+    T_WORD ';'
+  | T_WORD T_STRING ';'
+;
+
+// {{{ Conditions
+//     E.g. allof (address :regex ["From"] "bug[\-\+](.*)?@laudi\.de")
+condition:
+    T_ALLOF { $1= $yyLex->create(new AllOfCondition()); } '(' T_WORD ':' T_WORD args ')' {
+    
+    }
+  | T_NOT condition {
+  
+    }
+;
+
+args:
+    arg { $$= array($1); }
+  | arg args { $$= array_merge(array($1), $2); }
+;
+
+arg:
+    T_STRING
+  | '[' stringlist ']'
+;
+
+// }}}
+
+
+// {{{ List of strings
+stringlist:
+    T_STRING { $$= array($1); }
+  | T_STRING ',' stringlist  { $$= array_merge(array($1), $3); }
+;
+
+// }}}
+%%
