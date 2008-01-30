@@ -21,6 +21,7 @@
         'if'            => TOKEN_T_IF,
         'elsif'         => TOKEN_T_ELSEIF,
         'allof'         => TOKEN_T_ALLOF,
+        'anyof'         => TOKEN_T_ANYOF,
         'elsif'         => TOKEN_T_ELSEIF,
       );
 

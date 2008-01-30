@@ -10,12 +10,13 @@
 %token T_STRING 261
 
 %token T_REQUIRE 270
-%token T_NOT 271
 
 %token T_IF 280
 %token T_ELSEIF 281
 
-%token T_ALLOF 282
+%token T_ALLOF 290
+%token T_ANYOF 291
+%token T_NOT 272
 
 %%
 
