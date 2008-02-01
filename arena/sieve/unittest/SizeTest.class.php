@@ -9,8 +9,8 @@
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.sieve.SizeCondition
+   * @purpose  Unittest
    */
   class SizeTest extends SieveParserTestCase {
 

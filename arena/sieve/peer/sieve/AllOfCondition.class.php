@@ -1,16 +1,16 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
-  uses('peer.sieve.Condition');
+  uses('peer.sieve.ConditionComposite');
 
   /**
    * (Insert class' description here)
    *
    * @purpose  Base class for all rules
    */
-  class AllOfCondition extends peer·sieve·Condition {
+  class AllOfCondition extends peer·sieve·ConditionComposite {
   }
 ?>

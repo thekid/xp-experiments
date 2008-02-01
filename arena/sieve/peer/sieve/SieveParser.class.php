@@ -410,7 +410,7 @@
 
     case 21:  #line 107 "grammar/sieve.jay"
     {
-      $yyVals[-4+$yyTop]->expressions= $yyVals[-1+$yyTop];
+      $yyVals[-4+$yyTop]->conditions= $yyVals[-1+$yyTop];
     } break;
 
     case 22:  #line 110 "grammar/sieve.jay"
@@ -418,7 +418,7 @@
 
     case 23:  #line 110 "grammar/sieve.jay"
     {
-      $yyVals[-4+$yyTop]->expressions= $yyVals[-1+$yyTop];
+      $yyVals[-4+$yyTop]->conditions= $yyVals[-1+$yyTop];
     } break;
 
     case 24:  #line 113 "grammar/sieve.jay"

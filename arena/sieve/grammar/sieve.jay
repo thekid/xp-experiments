@@ -105,10 +105,10 @@ action:
 //     E.g. allof (address :regex ["From"] "bug[\-\+](.*)?@laudi\.de")
 test:
     T_ALLOF { $1= $yyLex->create(new AllOfCondition()); } '(' testlist ')' {
-      $1->expressions= $4;
+      $1->conditions= $4;
     }
   | T_ANYOF { $1= $yyLex->create(new AnyOfCondition()); } '(' testlist ')' {
-      $1->expressions= $4;
+      $1->conditions= $4;
     }
   | T_NOT { $1= $yyLex->create(new NegationOfCondition()); } test {
       $1->condition= $2;
