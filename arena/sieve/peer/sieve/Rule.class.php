@@ -12,5 +12,7 @@
    * @purpose  Base class for all rules
    */
   class peer·sieve·Rule extends Object {
+    public $condition= NULL;
+    public $actions= NULL;
   }
 ?>

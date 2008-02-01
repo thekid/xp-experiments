@@ -6,6 +6,8 @@
 
   $package= 'peer.sieve';
 
+  uses('lang.IndexOutOfBoundsException');
+
   /**
    * (Insert class' description here)
    *
@@ -17,5 +19,16 @@
     public
       $required = array(),
       $rules    = array();
+      
+    public function isEmpty() {
+      return 0 === sizeof($this->rules);
+    }
+
+    public function ruleAt($offset) {
+      if (!isset($this->rules[$offset])) {
+        throw new IndexOutOfBoundsException('Offset '.$offset.' out of bounds');
+      }
+      return $this->rules[$offset];
+    }
   }
 ?>

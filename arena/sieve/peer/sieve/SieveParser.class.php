@@ -444,75 +444,76 @@
         $yyVals[-2+$yyTop]= $yyLex->create(SizeCondition::forName($yyVals[0+$yyTop])); 
       } catch (IllegalArgumentException $e) { 
         $this->error(E_ERROR, $e->getMessage().' at '.$yyLex->fileName.', line '.$yyLex->position[0]); 
+        $yyVals[-2+$yyTop]= NULL;
       }
     } break;
 
-    case 29:  #line 126 "grammar/sieve.jay"
+    case 29:  #line 127 "grammar/sieve.jay"
     {
-      $yyVal->value= $yyVals[-1+$yyTop];
+      $yyVals[-4+$yyTop] && $yyVals[-4+$yyTop]->value= intval($yyVals[0+$yyTop]);
     } break;
 
-    case 30:  #line 129 "grammar/sieve.jay"
+    case 30:  #line 130 "grammar/sieve.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new AddressCondition()); } break;
 
-    case 31:  #line 129 "grammar/sieve.jay"
+    case 31:  #line 130 "grammar/sieve.jay"
     {
       $yyVals[-3+$yyTop]->tags= $yyVals[-1+$yyTop];
       $yyVals[-3+$yyTop]->arguments= $yyVals[0+$yyTop];
     } break;
 
-    case 32:  #line 133 "grammar/sieve.jay"
+    case 32:  #line 134 "grammar/sieve.jay"
     { 
       $yyVal= $yyLex->create(new BooleanCondition(TRUE));
     } break;
 
-    case 33:  #line 136 "grammar/sieve.jay"
+    case 33:  #line 137 "grammar/sieve.jay"
     { 
       $yyVal= $yyLex->create(new BooleanCondition(FALSE));
     } break;
 
-    case 34:  #line 142 "grammar/sieve.jay"
+    case 34:  #line 143 "grammar/sieve.jay"
     { $yyVal= NULL; } break;
 
-    case 36:  #line 147 "grammar/sieve.jay"
+    case 36:  #line 148 "grammar/sieve.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 37:  #line 148 "grammar/sieve.jay"
+    case 37:  #line 149 "grammar/sieve.jay"
     { $yyVal= array_merge($yyVals[-1+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 38:  #line 152 "grammar/sieve.jay"
+    case 38:  #line 153 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-1+$yyTop] => NULL), $yyVals[0+$yyTop]); } break;
 
-    case 39:  #line 153 "grammar/sieve.jay"
+    case 39:  #line 154 "grammar/sieve.jay"
     { $yyVal= array($yyVals[-1+$yyTop] => $yyVals[0+$yyTop]); } break;
 
-    case 40:  #line 154 "grammar/sieve.jay"
+    case 40:  #line 155 "grammar/sieve.jay"
     { $yyVal= array($yyVals[-1+$yyTop] => $yyVals[0+$yyTop]); } break;
 
-    case 41:  #line 158 "grammar/sieve.jay"
+    case 41:  #line 159 "grammar/sieve.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 42:  #line 159 "grammar/sieve.jay"
+    case 42:  #line 160 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 43:  #line 163 "grammar/sieve.jay"
+    case 43:  #line 164 "grammar/sieve.jay"
     { $yyVal= NULL; } break;
 
-    case 45:  #line 168 "grammar/sieve.jay"
+    case 45:  #line 169 "grammar/sieve.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 46:  #line 169 "grammar/sieve.jay"
+    case 46:  #line 170 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-1+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 49:  #line 175 "grammar/sieve.jay"
+    case 49:  #line 176 "grammar/sieve.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 50:  #line 183 "grammar/sieve.jay"
+    case 50:  #line 184 "grammar/sieve.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 51:  #line 184 "grammar/sieve.jay"
+    case 51:  #line 185 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
-#line 516 "-"
+#line 517 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];
