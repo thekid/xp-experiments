@@ -27,6 +27,8 @@
         'header'        => TOKEN_T_HEADER,
         'size'          => TOKEN_T_SIZE,
         'address'       => TOKEN_T_ADDRESS,
+        'true'          => TOKEN_T_TRUE,
+        'false'         => TOKEN_T_FALSE,
       );
 
     protected static

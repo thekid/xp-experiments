@@ -4,7 +4,8 @@
     'peer.sieve.Rule',
     'peer.sieve.AllOfCondition',
     'peer.sieve.NegationOfCondition',
-    'peer.sieve.AnyOfCondition'
+    'peer.sieve.AnyOfCondition',
+    'peer.sieve.BooleanCondition'
   );
 %}
 
@@ -23,6 +24,8 @@
 %token T_HEADER 300
 %token T_SIZE 301
 %token T_ADDRESS 302
+%token T_TRUE 303
+%token T_FALSE 304
 
 %%
 
@@ -104,6 +107,12 @@ test:
     }
   | T_ADDRESS ':' T_WORD arguments {
       $$= array($1 => array($3, $4)); 
+    }
+  | T_TRUE { 
+      $$= $yyLex->create(new BooleanCondition(TRUE));
+    }
+  | T_FALSE { 
+      $$= $yyLex->create(new BooleanCondition(FALSE));
     }
 ;
 
