@@ -49,5 +49,14 @@
         $this->parse('require ["fileinto","reject","vacation","imapflags", "notify"];')->required
       );
     }
+
+    /**
+     * Test uncodition rule
+     *
+     */
+    #[@test]
+    public function uncoditionalRule() {
+      $this->assertNull($this->parseRuleSetFrom('redirect "tom@example.com";')->ruleAt(0)->condition);
+    }
   }
 ?>
