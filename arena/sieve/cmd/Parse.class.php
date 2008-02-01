@@ -34,7 +34,13 @@
      *
      */
     public function run() {
-      $this->out->writeLine(create(new SieveParser())->parse(new peer·sieve·Lexer(FileUtil::getContents($this->f), $this->f->getURI())));
+      try {
+        $this->out->writeLine(create(new SieveParser())->parse(new peer·sieve·Lexer(FileUtil::getContents($this->f), $this->f->getURI())));
+      } catch (ParseException $e) {
+        $e->getCause()->printStackTrace();
+        return 1;
+      }
+      return 0;
     }
   }
 ?>

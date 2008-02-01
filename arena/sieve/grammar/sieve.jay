@@ -2,6 +2,7 @@
   uses(
     'peer.sieve.RuleSet',
     'peer.sieve.Rule',
+    'peer.sieve.ActionFactory',
     'peer.sieve.AllOfCondition',
     'peer.sieve.NegationOfCondition',
     'peer.sieve.AnyOfCondition',
@@ -11,6 +12,7 @@
 
 %token T_WORD 260
 %token T_STRING 261
+%token T_NUMBER 263
 
 %token T_REQUIRE 270
 
@@ -26,6 +28,7 @@
 %token T_ADDRESS 302
 %token T_TRUE 303
 %token T_FALSE 304
+%token T_COMPARATOR 305
 
 %%
 
@@ -65,26 +68,34 @@ rules:
 ;
 
 rule:
-    T_IF { $1= new peer新ieve愛ule(); } test '{' statements '}' else_opt {
-      $$->condition= $3;
-      $$->statements= $5;
+    T_IF { $1= $yyLex->create(new peer新ieve愛ule()); } test '{' actions '}' else_opt {
+      $1->condition= $3;
+      $1->actions= $5;
     }
+  | actions { 
+      $$= $yyLex->create(new peer新ieve愛ule());
+      $$->condition= NULL;
+      $$->actions= $1;
+    }
+      
 ;
 
 else_opt:
     /* empty */ { $$= NULL; }
-  | T_ELSEIF test '{' statements '}' else_opt
+  | T_ELSEIF test '{' actions '}' else_opt
 ;
 // }}}
 
-statements:
-    statement { $$= array($1); }
-  | statement statements { $$= array_merge(array($1), $2); }
+actions:
+    action { $$= array($1); }
+  | action actions { $$= array_merge(array($1), $2); }
 ;
 
-statement:
-    T_WORD ';'
-  | T_WORD T_STRING ';'
+action:
+    T_WORD { $1= $yyLex->create(ActionFactory::newAction($1)); } taglist_opt arguments_opt ';' {
+      $1->tags= $3;
+      $1->arguments= $4;
+    }
 ;
 
 // {{{ Tests
@@ -99,14 +110,14 @@ test:
   | T_NOT { $1= $yyLex->create(new NegationOfCondition()); } test {
       $1->condition= $2;
     }
-  | T_HEADER ':' T_WORD arguments { 
-      $$= array($1 => array($3, $4)); 
+  | T_HEADER taglist arguments { 
+      $$= array($1 => array($2, $3)); 
     }
-  | T_SIZE ':' T_WORD arguments {
-      $$= array($1 => array($3, $4)); 
+  | T_SIZE taglist {
+      $$= array($1 => $2); 
     }
-  | T_ADDRESS ':' T_WORD arguments {
-      $$= array($1 => array($3, $4)); 
+  | T_ADDRESS taglist arguments {
+      $$= array($1 => array($2, $3)); 
     }
   | T_TRUE { 
       $$= $yyLex->create(new BooleanCondition(TRUE));
@@ -116,9 +127,30 @@ test:
     }
 ;
 
+taglist_opt:
+    /* Empty */ { $$= NULL; }
+  | taglist
+;
+
+taglist:
+    tag { $$= array($1); }
+  | tag taglist { $$= array_merge(array($1), $2); }
+;
+
+tag:
+    ':' T_WORD argument { $$= array($2 => $3); }
+  | ':' T_COMPARATOR argument { $$= array($2 => $3); }
+  | ':' T_WORD ':' T_COMPARATOR T_STRING argument { $$= array($2 => $3); }
+;
+
 testlist:
     test { $$= array($1); }
   | test ',' testlist { $$= array_merge(array($1), $3); }
+;
+
+arguments_opt:
+    /* Empty */ { $$= NULL; }
+  | arguments
 ;
 
 arguments:
@@ -128,8 +160,8 @@ arguments:
 
 argument:
     T_STRING
-//  | T_NUMBER
-  | '[' stringlist ']'
+  | T_NUMBER
+  | '[' stringlist ']' { $$= $2; }
 ;
 
 // }}}
