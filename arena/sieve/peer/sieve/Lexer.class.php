@@ -23,6 +23,10 @@
         'allof'         => TOKEN_T_ALLOF,
         'anyof'         => TOKEN_T_ANYOF,
         'elsif'         => TOKEN_T_ELSEIF,
+        'not'           => TOKEN_T_NOT,
+        'header'        => TOKEN_T_HEADER,
+        'size'          => TOKEN_T_SIZE,
+        'address'       => TOKEN_T_ADDRESS,
       );
 
     protected static
@@ -151,7 +155,7 @@
         break;
       } while (1);
       
-      fprintf(STDERR, "@ %d,%d: %d `%s`\n", $this->position[0], $this->position[1], $this->token, $this->value);
+      // fprintf(STDERR, "@ %d,%d: %d `%s`\n", $this->position[0], $this->position[1], $this->token, $this->value);
       return $this->tokenizer->hasMoreTokens();
     }
   }

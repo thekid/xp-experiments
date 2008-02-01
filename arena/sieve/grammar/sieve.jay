@@ -3,6 +3,7 @@
     'peer.sieve.RuleSet',
     'peer.sieve.Rule',
     'peer.sieve.AllOfCondition',
+    'peer.sieve.NegationOfCondition',
     'peer.sieve.AnyOfCondition'
   );
 %}
@@ -17,7 +18,11 @@
 
 %token T_ALLOF 290
 %token T_ANYOF 291
-%token T_NOT 272
+%token T_NOT 292
+
+%token T_HEADER 300
+%token T_SIZE 301
+%token T_ADDRESS 302
 
 %%
 
@@ -57,7 +62,7 @@ rules:
 ;
 
 rule:
-    T_IF { $1= new peer新ieve愛ule(); } condition '{' statements '}' else_opt {
+    T_IF { $1= new peer新ieve愛ule(); } test '{' statements '}' else_opt {
       $$->condition= $3;
       $$->statements= $5;
     }
@@ -65,7 +70,7 @@ rule:
 
 else_opt:
     /* empty */ { $$= NULL; }
-  | T_ELSEIF condition '{' statements '}' else_opt
+  | T_ELSEIF test '{' statements '}' else_opt
 ;
 // }}}
 
@@ -79,37 +84,42 @@ statement:
   | T_WORD T_STRING ';'
 ;
 
-// {{{ Conditions
+// {{{ Tests
 //     E.g. allof (address :regex ["From"] "bug[\-\+](.*)?@laudi\.de")
-condition:
-    T_ALLOF { $1= $yyLex->create(new AllOfCondition()); } '(' expressionlist ')' {
-      $1->args= $4;
+test:
+    T_ALLOF { $1= $yyLex->create(new AllOfCondition()); } '(' testlist ')' {
+      $1->expressions= $4;
     }
-  | T_ANYOF { $1= $yyLex->create(new AnyOfCondition()); } '(' expressionlist ')' {
-      $1->args= $4;
+  | T_ANYOF { $1= $yyLex->create(new AnyOfCondition()); } '(' testlist ')' {
+      $1->expressions= $4;
     }
-  | T_NOT condition {
-  
+  | T_NOT { $1= $yyLex->create(new NegationOfCondition()); } test {
+      $1->condition= $2;
     }
-  | expression
+  | T_HEADER ':' T_WORD arguments { 
+      $$= array($1 => array($3, $4)); 
+    }
+  | T_SIZE ':' T_WORD arguments {
+      $$= array($1 => array($3, $4)); 
+    }
+  | T_ADDRESS ':' T_WORD arguments {
+      $$= array($1 => array($3, $4)); 
+    }
 ;
 
-expressionlist:
-    expression { $$= array($1); }
-  | expression ',' expression { $$= array_merge(array($1), $3); }
+testlist:
+    test { $$= array($1); }
+  | test ',' testlist { $$= array_merge(array($1), $3); }
 ;
 
-expression:
-    T_WORD ':' T_WORD args { $$= array($1 => array($3, $4)); }
+arguments:
+    argument { $$= array($1); }
+  | argument arguments { $$= array_merge(array($1), $2); }
 ;
 
-args:
-    arg { $$= array($1); }
-  | arg args { $$= array_merge(array($1), $2); }
-;
-
-arg:
+argument:
     T_STRING
+//  | T_NUMBER
   | '[' stringlist ']'
 ;
 

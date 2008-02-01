@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  uses('peer.sieve.Condition');
+  $package= 'peer.sieve';
 
   /**
    * (Insert class' description here)
    *
-   * @purpose  Base class for all rules
+   * @purpose  Base class for all conditions
    */
-  class AllOfCondition extends peer·sieve·Condition {
+  class peer·sieve·Condition extends Object {
   }
 ?>

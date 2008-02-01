@@ -11,6 +11,6 @@
    *
    * @purpose  Base class for all rules
    */
-  class AllOfCondition extends peer·sieve·Condition {
+  class NegationOfCondition extends peer·sieve·Condition {
   }
 ?>

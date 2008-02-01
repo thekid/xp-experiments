@@ -10,9 +10,10 @@
     'peer.sieve.RuleSet',
     'peer.sieve.Rule',
     'peer.sieve.AllOfCondition',
+    'peer.sieve.NegationOfCondition',
     'peer.sieve.AnyOfCondition'
   );
-#line 16 "-"
+#line 17 "-"
   define('TOKEN_T_WORD',  260);
   define('TOKEN_T_STRING',  261);
   define('TOKEN_T_REQUIRE',  270);
@@ -20,7 +21,10 @@
   define('TOKEN_T_ELSEIF',  281);
   define('TOKEN_T_ALLOF',  290);
   define('TOKEN_T_ANYOF',  291);
-  define('TOKEN_T_NOT',  272);
+  define('TOKEN_T_NOT',  292);
+  define('TOKEN_T_HEADER',  300);
+  define('TOKEN_T_SIZE',  301);
+  define('TOKEN_T_ADDRESS',  302);
   define('TOKEN_YY_ERRORCODE', 256);
 
   /**
@@ -32,72 +36,72 @@
     protected static $yyLhs= array(-1,
           0,     1,     1,     3,     3,     4,     2,     2,     6,     6, 
           9,     7,    11,    11,    10,    10,    12,    12,    13,     8, 
-         15,     8,     8,     8,    14,    14,    16,    17,    17,    18, 
-         18,     5,     5, 
+         15,     8,    16,     8,     8,     8,     8,    14,    14,    17, 
+         17,    18,    18,     5,     5, 
     );
     protected static $yyLen= array(2,
           2,     0,     1,     1,     2,     5,     0,     1,     1,     2, 
           0,     7,     0,     6,     1,     2,     2,     3,     0,     5, 
-          0,     5,     2,     1,     1,     3,     4,     1,     2,     1, 
-          3,     1,     3, 
+          0,     5,     0,     3,     4,     4,     4,     1,     3,     1, 
+          2,     1,     3,     1,     3, 
     );
     protected static $yyDefRed= array(0,
           0,     0,     0,     3,     0,     0,    11,     1,     8,     0, 
-          5,     0,     0,     0,    10,     0,     0,     0,    19,    21, 
-          0,     0,    24,    33,     6,     0,     0,     0,    23,     0, 
-          0,     0,     0,     0,     0,     0,    30,     0,    27,     0, 
-          0,     0,     0,     0,    17,     0,    16,     0,    29,    20, 
-          0,    22,    18,     0,    12,    31,    26,     0,     0,     0, 
-          0,    14, 
+          5,     0,     0,     0,    10,     0,     0,    19,    21,    23, 
+          0,     0,     0,     0,    35,     6,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,    24,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,    32,     0,    25,     0,    26, 
+         27,     0,    17,     0,    16,     0,    20,    22,     0,    31, 
+         18,     0,    12,    29,    33,     0,     0,     0,     0,    14, 
     );
     protected static $yyDgoto= array(2,
-          3,     8,     4,     5,    13,     9,    10,    22,    14,    35, 
-         55,    36,    27,    41,    28,    23,    39,    40, 
+          3,     8,     4,     5,    13,     9,    10,    43,    14,    41, 
+         63,    42,    27,    44,    28,    29,    48,    49, 
     );
-    protected static $yySindex = array(         -260,
-        -77,     0,  -265,     0,  -260,  -245,     0,     0,     0,  -265, 
-          0,   -26,   -76,  -253,     0,  -245,   -39,   -37,     0,     0, 
-       -253,  -101,     0,     0,     0,  -237,   -16,   -14,     0,  -235, 
-        -87,  -233,  -233,   -59,   -97,  -235,     0,  -245,     0,   -87, 
-        -12,   -10,   -11,   -24,     0,  -241,     0,   -57,     0,     0, 
-       -233,     0,     0,  -253,     0,     0,     0,   -82,  -235,   -83, 
-       -241,     0, 
+    protected static $yySindex = array(         -259,
+        -74,     0,  -262,     0,  -259,  -242,     0,     0,     0,  -262, 
+          0,   -24,   -68,  -278,     0,  -242,   -32,     0,     0,     0, 
+        -30,   -29,   -28,   -91,     0,     0,    -7,    -5,  -278,  -224, 
+       -223,  -221,  -220,  -278,  -278,     0,   -87,   -87,   -87,   -59, 
+        -84,  -220,    -2,     4,     5,     0,  -242,     0,   -87,     0, 
+          0,   -16,     0,  -237,     0,  -278,     0,     0,   -46,     0, 
+          0,  -278,     0,     0,     0,   -75,  -220,   -76,  -237,     0, 
     );
     protected static $yyRindex= array(            1,
-          0,     0,    43,     0,     2,     0,     0,     0,     0,    44, 
-          0,   -48,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,    50,     0,     2,     0,     0,     0,     0,    51, 
+          0,   -41,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,   -79,     0,     0,     0,   -36, 
-          0,     6,     0,     0,     0,     3,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          3,     0, 
+          0,   -72,    14,     0,     0,     0,     0,     0,   -36,     0, 
+          0,     0,     0,     3,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     3,     0, 
     );
     protected static $yyGindex= array(0,
-          0,     0,    45,     0,    -5,    38,     0,   -15,     0,   -27, 
-         -9,     0,     0,    16,     0,   -20,    11,     0, 
+          0,     0,    52,     0,    -9,    46,     0,    -8,     0,   -33, 
+        -11,     0,     0,   -25,     0,     0,   -23,     0, 
     );
-    protected static $yyTable = array(45,
-          2,     4,    13,    38,    28,    29,    18,    28,    47,     1, 
-         24,    42,    42,     6,     7,    12,    17,    16,    21,    25, 
-         26,    30,    31,    32,    34,    33,    18,    46,    50,    52, 
-         57,    60,    48,    51,    53,    56,    19,    20,    58,    54, 
-         59,    61,     7,     9,    32,    15,    25,    15,    43,    11, 
-         49,    62,     0,     0,     0,     0,     0,     0,     0,     0, 
+    protected static $yyTable = array(53,
+          2,     4,    13,    47,    30,    24,    25,    30,    55,    45, 
+          1,    18,    19,    20,    50,    51,     6,     7,    12,    16, 
+         36,    21,    22,    23,    17,    60,    26,    30,    31,    32, 
+         64,    33,    34,    68,    35,    37,    38,    59,    39,    40, 
+         54,    56,    61,    62,    57,    58,    65,    67,    69,     7, 
+          9,    34,    15,    66,    28,    15,    11,    70,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,    28,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,    30,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,    37,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,    44,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,    46,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,    52,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
@@ -108,12 +112,12 @@
           2,     4,    13, 
     );
     protected static $yyCheck = array(59,
-          0,     0,     0,    91,    41,    21,   260,    44,    36,   270, 
-         16,    32,    33,    91,   280,   261,    93,    44,   272,    59, 
-         58,   123,   260,    40,   260,    40,   260,   125,    41,    41, 
-         51,    59,    38,    44,    59,    93,   290,   291,    54,   281, 
-        123,   125,     0,     0,    93,   125,    41,    10,    33,     5, 
-         40,    61,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+          0,     0,     0,    91,    41,    14,    16,    44,    42,    35, 
+        270,   290,   291,   292,    38,    39,    91,   280,   261,    44, 
+         29,   300,   301,   302,    93,    49,    59,    58,    58,    58, 
+         56,   123,    40,    67,    40,   260,   260,    47,   260,   260, 
+        125,    44,    59,   281,    41,    41,    93,   123,   125,     0, 
+          0,    93,   125,    62,    41,    10,     5,    69,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,   123,    -1,    -1,    -1, 
@@ -160,9 +164,10 @@
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, 'T_WORD', 'T_STRING', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
-      'T_REQUIRE', NULL, 'T_NOT', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T_IF', 
+      'T_REQUIRE', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T_IF', 
       'T_ELSEIF', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T_ALLOF', 
-      'T_ANYOF', 
+      'T_ANYOF', 'T_NOT', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T_HEADER', 
+      'T_SIZE', 'T_ADDRESS', 
     );
 
     protected static $yyTableCount= 0, $yyNameCount= 0;
@@ -317,94 +322,109 @@
             // Actions
             switch ($yyN) {
 
-    case 1:  #line 25 "grammar/sieve.jay"
+    case 1:  #line 30 "grammar/sieve.jay"
     {
       $yyVal= new peer新ieve愛uleSet();
       $yyVal->required= $yyVals[-1+$yyTop];
       $yyVal->rules= $yyVals[0+$yyTop];
     } break;
 
-    case 2:  #line 34 "grammar/sieve.jay"
+    case 2:  #line 39 "grammar/sieve.jay"
     { $yyVal= NULL; } break;
 
-    case 4:  #line 39 "grammar/sieve.jay"
+    case 4:  #line 44 "grammar/sieve.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 5:  #line 40 "grammar/sieve.jay"
+    case 5:  #line 45 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-1+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 6:  #line 44 "grammar/sieve.jay"
+    case 6:  #line 49 "grammar/sieve.jay"
     { $yyVal= $yyVals[-2+$yyTop]; } break;
 
-    case 7:  #line 50 "grammar/sieve.jay"
+    case 7:  #line 55 "grammar/sieve.jay"
     { $yyVal= NULL; } break;
 
-    case 9:  #line 55 "grammar/sieve.jay"
+    case 9:  #line 60 "grammar/sieve.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 10:  #line 56 "grammar/sieve.jay"
+    case 10:  #line 61 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-1+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 11:  #line 60 "grammar/sieve.jay"
+    case 11:  #line 65 "grammar/sieve.jay"
     { $yyVals[0+$yyTop]= new peer新ieve愛ule(); } break;
 
-    case 12:  #line 60 "grammar/sieve.jay"
+    case 12:  #line 65 "grammar/sieve.jay"
     {
       $yyVal->condition= $yyVals[-4+$yyTop];
       $yyVal->statements= $yyVals[-2+$yyTop];
     } break;
 
-    case 13:  #line 67 "grammar/sieve.jay"
+    case 13:  #line 72 "grammar/sieve.jay"
     { $yyVal= NULL; } break;
 
-    case 15:  #line 73 "grammar/sieve.jay"
+    case 15:  #line 78 "grammar/sieve.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 16:  #line 74 "grammar/sieve.jay"
+    case 16:  #line 79 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-1+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 19:  #line 85 "grammar/sieve.jay"
+    case 19:  #line 90 "grammar/sieve.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new AllOfCondition()); } break;
 
-    case 20:  #line 85 "grammar/sieve.jay"
+    case 20:  #line 90 "grammar/sieve.jay"
     {
-      $yyVals[-4+$yyTop]->args= $yyVals[-1+$yyTop];
+      $yyVals[-4+$yyTop]->expressions= $yyVals[-1+$yyTop];
     } break;
 
-    case 21:  #line 88 "grammar/sieve.jay"
+    case 21:  #line 93 "grammar/sieve.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new AnyOfCondition()); } break;
 
-    case 22:  #line 88 "grammar/sieve.jay"
+    case 22:  #line 93 "grammar/sieve.jay"
     {
-      $yyVals[-4+$yyTop]->args= $yyVals[-1+$yyTop];
+      $yyVals[-4+$yyTop]->expressions= $yyVals[-1+$yyTop];
     } break;
 
-    case 23:  #line 91 "grammar/sieve.jay"
+    case 23:  #line 96 "grammar/sieve.jay"
+    { $yyVals[0+$yyTop]= $yyLex->create(new NegationOfCondition()); } break;
+
+    case 24:  #line 96 "grammar/sieve.jay"
     {
-  
+      $yyVals[-2+$yyTop]->condition= $yyVals[-1+$yyTop];
     } break;
 
-    case 25:  #line 98 "grammar/sieve.jay"
+    case 25:  #line 99 "grammar/sieve.jay"
+    { 
+      $yyVal= array($yyVals[-3+$yyTop] => array($yyVals[-1+$yyTop], $yyVals[0+$yyTop])); 
+    } break;
+
+    case 26:  #line 102 "grammar/sieve.jay"
+    {
+      $yyVal= array($yyVals[-3+$yyTop] => array($yyVals[-1+$yyTop], $yyVals[0+$yyTop])); 
+    } break;
+
+    case 27:  #line 105 "grammar/sieve.jay"
+    {
+      $yyVal= array($yyVals[-3+$yyTop] => array($yyVals[-1+$yyTop], $yyVals[0+$yyTop])); 
+    } break;
+
+    case 28:  #line 111 "grammar/sieve.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 26:  #line 99 "grammar/sieve.jay"
+    case 29:  #line 112 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 27:  #line 103 "grammar/sieve.jay"
-    { $yyVal= array($yyVals[-3+$yyTop] => array($yyVals[-1+$yyTop], $yyVals[0+$yyTop])); } break;
-
-    case 28:  #line 107 "grammar/sieve.jay"
+    case 30:  #line 116 "grammar/sieve.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 29:  #line 108 "grammar/sieve.jay"
+    case 31:  #line 117 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-1+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 32:  #line 121 "grammar/sieve.jay"
+    case 34:  #line 131 "grammar/sieve.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 33:  #line 122 "grammar/sieve.jay"
+    case 35:  #line 132 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
-#line 408 "-"
+#line 428 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];
