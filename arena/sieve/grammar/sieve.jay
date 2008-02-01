@@ -114,13 +114,16 @@ actions:
 
 action:
     T_WORD { $1= $yyLex->create(ActionFactory::newAction($1)); } taglist_opt arguments_opt ';' {
-      $1->tags= $3;
-      $1->arguments= $4;
+      try {
+        $1->pass($3, $4);
+      } catch (IllegalArgumentException $e) { 
+        $this->error(E_ERROR, $e->getMessage().' at '.$yyLex->fileName.', line '.$yyLex->position[0]); 
+        $1= NULL;
+      }
     }
 ;
 
 // {{{ Tests
-//     E.g. allof (address :regex ["From"] "bug[\-\+](.*)?@laudi\.de")
 test:
     // allof <tests: test-list>
     T_ALLOF { $1= $yyLex->create(new AllOfCondition()); } '(' testlist ')' {
@@ -197,8 +200,6 @@ tag:
     ':' matchtype { $$= array('matchtype' => $2); }
   | ':' addresspart { $$= array('addresspart' => $2); }
   | ':' T_COMPARATOR T_STRING { $$= array('comparator' => $3); }
-  | ':' T_WORD tag { $$= array_merge(array($2 => NULL), $3); }
-  | ':' T_WORD argument { $$= array($2 => $3); }
 ;
 
 testlist:

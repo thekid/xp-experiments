@@ -59,125 +59,125 @@
           6,     9,     7,     7,    11,    11,    11,    10,    10,    14, 
          12,    16,     8,    18,     8,    19,     8,    20,     8,    22, 
           8,    23,     8,    24,     8,    25,     8,     8,     8,    13, 
-         13,    26,    26,    27,    27,    27,    27,    27,    17,    17, 
-         15,    15,    30,    30,    21,    21,    21,    29,    29,    29, 
-         28,    28,    28,     5,     5, 
+         13,    26,    26,    27,    27,    27,    17,    17,    15,    15, 
+         30,    30,    21,    21,    21,    29,    29,    29,    28,    28, 
+         28,     5,     5, 
     );
     protected static $yyLen= array(2,
           2,     0,     1,     1,     2,     3,     5,     0,     1,     1, 
           2,     0,     7,     1,     0,     4,     6,     1,     2,     0, 
           5,     0,     5,     0,     5,     0,     3,     0,     5,     0, 
           3,     0,     5,     0,     5,     0,     5,     1,     1,     0, 
-          1,     1,     2,     2,     2,     3,     3,     3,     1,     3, 
-          0,     1,     1,     2,     1,     1,     3,     1,     1,     1, 
-          1,     1,     1,     1,     3, 
+          1,     1,     2,     2,     2,     3,     1,     3,     0,     1, 
+          1,     2,     1,     1,     3,     1,     1,     1,     1,     1, 
+          1,     1,     3, 
     );
     protected static $yyDefRed= array(0,
           0,     0,     0,     3,     0,     0,     0,    20,    12,     1, 
           9,     0,    14,     0,     5,     6,     0,     0,     0,     0, 
          11,    19,     0,     0,     0,     0,    41,     0,    22,    24, 
-         26,    28,     0,    36,    38,    39,    34,    30,     0,    65, 
-          7,     0,     0,    61,    62,    63,    58,    59,    60,    44, 
-         45,    55,    56,     0,     0,     0,    52,    43,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,    48,    47,    46, 
-          0,    21,    54,     0,     0,    27,     0,    32,     0,     0, 
-         31,     0,    57,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,    23,    25,    29,    33,    37,    35,     0,     0, 
-         13,    50,     0,     0,     0,     0,    16,     0,     0,    17, 
+         26,    28,     0,    36,    38,    39,    34,    30,     0,    63, 
+          7,     0,    59,    60,    61,    56,    57,    58,    44,    45, 
+         53,    54,     0,     0,     0,    50,    43,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,    46,     0,    21,    52, 
+          0,     0,    27,     0,    32,     0,     0,    31,     0,    55, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,    23, 
+         25,    29,    33,    37,    35,     0,     0,    13,    48,     0, 
+          0,     0,     0,    16,     0,     0,    17, 
     );
     protected static $yyDgoto= array(2,
-          3,    10,     4,     5,    18,    11,    12,    84,    20,    13, 
-        101,    14,    26,    19,    55,    59,    85,    60,    61,    62, 
-         56,    66,    88,    65,    64,    27,    28,    50,    51,    57, 
+          3,    10,     4,     5,    18,    11,    12,    81,    20,    13, 
+         98,    14,    26,    19,    54,    58,    82,    59,    60,    61, 
+         55,    65,    85,    64,    63,    27,    28,    49,    50,    56, 
     );
-    protected static $yySindex = array(         -249,
-        -79,     0,  -246,     0,  -249,   -35,  -231,     0,     0,     0, 
-          0,  -246,     0,  -227,     0,     0,    -4,   -47,   -17,  -275, 
-          0,     0,  -231,   -12,  -260,   -85,     0,   -17,     0,     0, 
-          0,     0,    -8,     0,     0,     0,     0,     0,   -75,     0, 
-          0,   -53,  -212,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,  -231,    -1,   -85,     0,     0,    11,    13, 
-       -275,   -17,  -205,   -17,   -17,   -85,  -227,     0,     0,     0, 
-        -34,     0,     0,  -275,  -275,     0,   -85,     0,   -85,   -85, 
-          0,   -65,     0,    18,    22,    24,   -85,  -195,   -85,   -85, 
-       -245,  -275,     0,     0,     0,     0,     0,     0,   -54,  -275, 
-          0,     0,  -227,   -51,   -55,  -227,     0,   -50,  -245,     0, 
+    protected static $yySindex = array(         -252,
+        -81,     0,  -244,     0,  -252,   -34,  -235,     0,     0,     0, 
+          0,  -244,     0,  -233,     0,     0,   -16,   -64,   -28,  -248, 
+          0,     0,  -235,   -24,  -290,   -85,     0,   -28,     0,     0, 
+          0,     0,   -20,     0,     0,     0,     0,     0,   -83,     0, 
+          0,  -216,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,  -235,   -13,   -85,     0,     0,     7,     8,  -248, 
+        -28,  -210,   -28,   -28,   -85,  -233,     0,   -42,     0,     0, 
+       -248,  -248,     0,   -85,     0,   -85,   -85,     0,   -68,     0, 
+         17,    21,    22,   -85,  -199,   -85,   -85,  -268,  -248,     0, 
+          0,     0,     0,     0,     0,   -58,  -248,     0,     0,  -233, 
+        -57,   -56,  -233,     0,   -55,  -268,     0, 
     );
     protected static $yyRindex= array(            1,
-          0,     0,    71,     0,     2,     0,     0,     0,     0,     0, 
-          0,    73,     0,     3,     0,     0,   -19,     0,   -52,     0, 
-          0,     0,     0,     0,     0,    17,     0,   -49,     0,     0, 
+          0,     0,    67,     0,     2,     0,     0,     0,     0,     0, 
+          0,    68,     0,     3,     0,     0,   -22,     0,   -59,     0, 
+          0,     0,     0,     0,     0,    13,     0,   -54,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,    19,     0,     0,     0,     0, 
-          0,   -82,     0,   -82,   -82,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,    14,     0,     0,     0,     0,     0, 
+        -84,     0,   -84,   -84,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,    36,     0,     0,     0,     0,     0,     0, 
-          4,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     4,     0, 
+         33,     0,     0,     0,     0,     0,     0,     4,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     4,     0, 
     );
     protected static $yyGindex= array(0,
-          0,     0,    74,     0,   -10,    68,     0,    -9,     0,    -6, 
-        -28,     0,   -42,     0,     0,     0,   -57,     0,     0,     0, 
-        -23,     0,     0,     0,     0,    54,    41,     0,     0,    28, 
+          0,     0,    70,     0,   -12,    64,     0,   -11,     0,    -6, 
+        -29,     0,   -44,     0,     0,     0,   -50,     0,     0,     0, 
+        -53,     0,     0,     0,     0,    50,     0,     0,     0,    24, 
     );
-    protected static $yyTable = array(42,
-          2,     4,    18,    15,    25,    54,    40,    22,    40,    42, 
-         39,     7,    40,     8,    29,    30,    31,    86,    68,    77, 
-          1,    79,    80,    16,    32,    33,    34,    35,    36,    17, 
-         37,    38,     8,     9,   102,    99,   100,    54,    40,    23, 
-         25,    42,    81,    71,    43,    24,    41,    67,    70,    63, 
-         74,    76,    75,    87,    78,    89,    90,    72,    83,    91, 
-         82,    92,    93,    95,    94,    97,    98,    96,   103,   107, 
-          8,   106,    10,    64,   109,    51,    49,    53,    15,    21, 
-        110,    58,    69,    73,     0,     0,     0,     0,     0,     0, 
-        104,     0,     0,     0,     0,     0,   105,     0,     0,   108, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+    protected static $yyTable = array(40,
+          2,     4,    18,    15,    42,    53,    40,    22,    39,     7, 
+         40,    78,    96,    97,    42,     8,    74,     1,    76,    77, 
+         84,    83,    86,    87,    16,    17,     8,    23,    24,    25, 
+         92,    40,    94,    95,    41,     9,    42,    62,    99,    66, 
+         68,    29,    30,    31,    67,    69,    71,    72,    73,    75, 
+         80,    32,    33,    34,    35,    36,    88,    37,    38,    79, 
+         89,    90,    91,    93,   100,   103,     8,    10,   104,   106, 
+         62,    49,    51,    47,    15,    21,   107,    57,    70,     0, 
+          0,     0,     0,     0,     0,   101,     0,     0,     0,     0, 
+          0,     0,     0,   102,     0,     0,   105,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,    43, 
+         44,    45,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,    18,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,    44, 
-         45,    46,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,    52,     0,    53,    40,     0, 
-         40,     6,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,    52,    40,    53, 
-         40,    42,     0,    42,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,    47, 
-         48,    49,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,    51,    40,    52,    40,     6, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,    40,     0,    40,     0,     0,    42,     0,    42,    46, 
+         47,    48,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           2,     4,     0,    15,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           2,     4,    18,    15, 
     );
-    protected static $yyCheck = array(260,
-          0,     0,     0,     0,    58,    91,    59,    14,    91,    59, 
-         20,    91,    23,   260,   290,   291,   292,    75,    42,    62, 
-        270,    64,    65,    59,   300,   301,   302,   303,   304,   261, 
-        306,   307,   260,   280,    92,   281,   282,    91,    91,    44, 
-         58,    91,    66,    54,   305,    93,    59,   123,   261,    58, 
-         40,    61,    40,    77,   260,    79,    80,    59,    93,   125, 
-         67,    44,    41,    87,    41,    89,    90,   263,   123,   125, 
-          0,   123,     0,    93,   125,    59,    41,    59,     5,    12, 
-        109,    28,    42,    56,    -1,    -1,    -1,    -1,    -1,    -1, 
-        100,    -1,    -1,    -1,    -1,    -1,   103,    -1,    -1,   106, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,   125,    -1,    -1, 
+    protected static $yyCheck = array(59,
+          0,     0,     0,     0,    59,    91,    91,    14,    20,    91, 
+         23,    65,   281,   282,   305,   260,    61,   270,    63,    64, 
+         74,    72,    76,    77,    59,   261,   260,    44,    93,    58, 
+         84,    91,    86,    87,    59,   280,    91,    58,    89,   123, 
+         53,   290,   291,   292,   261,    59,    40,    40,    60,   260, 
+         93,   300,   301,   302,   303,   304,   125,   306,   307,    66, 
+         44,    41,    41,   263,   123,   123,     0,     0,   125,   125, 
+         93,    59,    59,    41,     5,    12,   106,    28,    55,    -1, 
+         -1,    -1,    -1,    -1,    -1,    97,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,   100,    -1,    -1,   103,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   400, 
         401,   402,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,   125,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,   261,    -1,   263,   261,    -1, 
-        263,   261,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,   261,   261,   263, 
-        263,   261,    -1,   263,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   500, 
+         -1,    -1,    -1,    -1,    -1,   261,   261,   263,   263,   261, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         -1,   261,    -1,   263,    -1,    -1,   261,    -1,   263,   500, 
         501,   502,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
         260,   260,    -1,   260,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
@@ -440,38 +440,42 @@
 
     case 21:  #line 116 "grammar/sieve.jay"
     {
-      $yyVals[-4+$yyTop]->tags= $yyVals[-2+$yyTop];
-      $yyVals[-4+$yyTop]->arguments= $yyVals[-1+$yyTop];
+      try {
+        $yyVals[-4+$yyTop]->pass($yyVals[-2+$yyTop], $yyVals[-1+$yyTop]);
+      } catch (IllegalArgumentException $e) { 
+        $this->error(E_ERROR, $e->getMessage().' at '.$yyLex->fileName.', line '.$yyLex->position[0]); 
+        $yyVals[-4+$yyTop]= NULL;
+      }
     } break;
 
-    case 22:  #line 126 "grammar/sieve.jay"
+    case 22:  #line 129 "grammar/sieve.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new AllOfCondition()); } break;
 
-    case 23:  #line 126 "grammar/sieve.jay"
+    case 23:  #line 129 "grammar/sieve.jay"
     {
       $yyVals[-4+$yyTop]->conditions= $yyVals[-1+$yyTop];
     } break;
 
-    case 24:  #line 130 "grammar/sieve.jay"
+    case 24:  #line 133 "grammar/sieve.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new AnyOfCondition()); } break;
 
-    case 25:  #line 130 "grammar/sieve.jay"
+    case 25:  #line 133 "grammar/sieve.jay"
     {
       $yyVals[-4+$yyTop]->conditions= $yyVals[-1+$yyTop];
     } break;
 
-    case 26:  #line 134 "grammar/sieve.jay"
+    case 26:  #line 137 "grammar/sieve.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new NegationOfCondition()); } break;
 
-    case 27:  #line 134 "grammar/sieve.jay"
+    case 27:  #line 137 "grammar/sieve.jay"
     {
       $yyVals[-2+$yyTop]->negated= $yyVals[-1+$yyTop];
     } break;
 
-    case 28:  #line 138 "grammar/sieve.jay"
+    case 28:  #line 141 "grammar/sieve.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new HeaderCondition()); } break;
 
-    case 29:  #line 138 "grammar/sieve.jay"
+    case 29:  #line 141 "grammar/sieve.jay"
     { 
       isset($yyVals[-2+$yyTop]['comparator']) && $yyVals[-4+$yyTop]->comparator= $yyVals[-2+$yyTop]['comparator'];
       isset($yyVals[-2+$yyTop]['matchtype']) && $yyVals[-4+$yyTop]->matchtype= $yyVals[-2+$yyTop]['matchtype'];
@@ -479,15 +483,15 @@
       $yyVals[-4+$yyTop]->keys= (array)$yyVals[0+$yyTop];
     } break;
 
-    case 30:  #line 145 "grammar/sieve.jay"
+    case 30:  #line 148 "grammar/sieve.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ExistsCondition()); } break;
 
-    case 31:  #line 145 "grammar/sieve.jay"
+    case 31:  #line 148 "grammar/sieve.jay"
     {
       $yyVals[-2+$yyTop]->names= (array)$yyVals[0+$yyTop];
     } break;
 
-    case 32:  #line 149 "grammar/sieve.jay"
+    case 32:  #line 152 "grammar/sieve.jay"
     { 
       try { 
         $yyVals[-2+$yyTop]= $yyLex->create(SizeCondition::forName($yyVals[0+$yyTop])); 
@@ -497,15 +501,15 @@
       }
     } break;
 
-    case 33:  #line 156 "grammar/sieve.jay"
+    case 33:  #line 159 "grammar/sieve.jay"
     {
       $yyVals[-4+$yyTop] && $yyVals[-4+$yyTop]->value= intval($yyVals[0+$yyTop]);
     } break;
 
-    case 34:  #line 160 "grammar/sieve.jay"
+    case 34:  #line 163 "grammar/sieve.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new EnvelopeCondition()); } break;
 
-    case 35:  #line 160 "grammar/sieve.jay"
+    case 35:  #line 163 "grammar/sieve.jay"
     {
       isset($yyVals[-2+$yyTop]['addresspart']) && $yyVals[-4+$yyTop]->addresspart= $yyVals[-2+$yyTop]['addresspart'];
       isset($yyVals[-2+$yyTop]['comparator']) && $yyVals[-4+$yyTop]->comparator= $yyVals[-2+$yyTop]['comparator'];
@@ -514,10 +518,10 @@
       $yyVals[-4+$yyTop]->keys= (array)$yyVals[0+$yyTop];
     } break;
 
-    case 36:  #line 168 "grammar/sieve.jay"
+    case 36:  #line 171 "grammar/sieve.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new AddressCondition()); } break;
 
-    case 37:  #line 168 "grammar/sieve.jay"
+    case 37:  #line 171 "grammar/sieve.jay"
     {
       isset($yyVals[-2+$yyTop]['addresspart']) && $yyVals[-4+$yyTop]->addresspart= $yyVals[-2+$yyTop]['addresspart'];
       isset($yyVals[-2+$yyTop]['comparator']) && $yyVals[-4+$yyTop]->comparator= $yyVals[-2+$yyTop]['comparator'];
@@ -526,64 +530,58 @@
       $yyVals[-4+$yyTop]->keys= (array)$yyVals[0+$yyTop];
     } break;
 
-    case 38:  #line 176 "grammar/sieve.jay"
+    case 38:  #line 179 "grammar/sieve.jay"
     { 
       $yyVal= $yyLex->create(new BooleanCondition(TRUE));
     } break;
 
-    case 39:  #line 180 "grammar/sieve.jay"
+    case 39:  #line 183 "grammar/sieve.jay"
     { 
       $yyVal= $yyLex->create(new BooleanCondition(FALSE));
     } break;
 
-    case 40:  #line 187 "grammar/sieve.jay"
+    case 40:  #line 190 "grammar/sieve.jay"
     { $yyVal= NULL; } break;
 
-    case 42:  #line 192 "grammar/sieve.jay"
+    case 42:  #line 195 "grammar/sieve.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 43:  #line 193 "grammar/sieve.jay"
+    case 43:  #line 196 "grammar/sieve.jay"
     { $yyVal= array_merge($yyVals[-1+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 44:  #line 197 "grammar/sieve.jay"
+    case 44:  #line 200 "grammar/sieve.jay"
     { $yyVal= array('matchtype' => $yyVals[0+$yyTop]); } break;
 
-    case 45:  #line 198 "grammar/sieve.jay"
+    case 45:  #line 201 "grammar/sieve.jay"
     { $yyVal= array('addresspart' => $yyVals[0+$yyTop]); } break;
 
-    case 46:  #line 199 "grammar/sieve.jay"
+    case 46:  #line 202 "grammar/sieve.jay"
     { $yyVal= array('comparator' => $yyVals[0+$yyTop]); } break;
 
-    case 47:  #line 200 "grammar/sieve.jay"
-    { $yyVal= array_merge(array($yyVals[-1+$yyTop] => NULL), $yyVals[0+$yyTop]); } break;
-
-    case 48:  #line 201 "grammar/sieve.jay"
-    { $yyVal= array($yyVals[-1+$yyTop] => $yyVals[0+$yyTop]); } break;
-
-    case 49:  #line 205 "grammar/sieve.jay"
+    case 47:  #line 206 "grammar/sieve.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 50:  #line 206 "grammar/sieve.jay"
+    case 48:  #line 207 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 51:  #line 210 "grammar/sieve.jay"
+    case 49:  #line 211 "grammar/sieve.jay"
     { $yyVal= NULL; } break;
 
-    case 53:  #line 215 "grammar/sieve.jay"
+    case 51:  #line 216 "grammar/sieve.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 54:  #line 216 "grammar/sieve.jay"
+    case 52:  #line 217 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-1+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 57:  #line 222 "grammar/sieve.jay"
+    case 55:  #line 223 "grammar/sieve.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 64:  #line 242 "grammar/sieve.jay"
+    case 62:  #line 243 "grammar/sieve.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 65:  #line 243 "grammar/sieve.jay"
+    case 63:  #line 244 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
-#line 587 "-"
+#line 585 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

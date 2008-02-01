@@ -13,7 +13,14 @@
    * @see      reference
    * @purpose  purpose
    */
-  class peer·sieve·Action extends Object {
-    
+  abstract class peer·sieve·Action extends Object {
+
+    /**
+     * Pass tags and arguments
+     *
+     * @param   array<string, *> tags
+     * @param   *[] arguments
+     */
+    public abstract function pass($tags, $arguments);
   }
 ?>

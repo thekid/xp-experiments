@@ -28,6 +28,13 @@
       self::$actions['notify']= XPClass::forName('peer.sieve.NotifyAction');
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @param   string name
+     * @return  peer.sieve.Action
+     * @throws  lang.IllegalArgumentException in case an unknown action is encountered
+     */
     public static function newAction($name) {
       if (!isset(self::$actions[$name])) {
         throw new IllegalArgumentException('Unsupported action "'.$name.'"');
