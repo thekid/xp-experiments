@@ -2,7 +2,8 @@
   uses(
     'peer.sieve.RuleSet',
     'peer.sieve.Rule',
-    'peer.sieve.AllOfCondition'
+    'peer.sieve.AllOfCondition',
+    'peer.sieve.AnyOfCondition'
   );
 %}
 
@@ -81,20 +82,24 @@ statement:
 // {{{ Conditions
 //     E.g. allof (address :regex ["From"] "bug[\-\+](.*)?@laudi\.de")
 condition:
-    T_ALLOF { $1= $yyLex->create(new AllOfCondition()); } '(' allofargs ')' {
+    T_ALLOF { $1= $yyLex->create(new AllOfCondition()); } '(' expressionlist ')' {
+      $1->args= $4;
+    }
+  | T_ANYOF { $1= $yyLex->create(new AnyOfCondition()); } '(' expressionlist ')' {
       $1->args= $4;
     }
   | T_NOT condition {
   
     }
+  | expression
 ;
 
-allofargs:
-    allofarg { $$= array($1); }
-  | allofarg ',' allofargs { $$= array_merge(array($1), $3); }
+expressionlist:
+    expression { $$= array($1); }
+  | expression ',' expression { $$= array_merge(array($1), $3); }
 ;
 
-allofarg:
+expression:
     T_WORD ':' T_WORD args { $$= array($1 => array($3, $4)); }
 ;
 
