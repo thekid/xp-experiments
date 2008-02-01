@@ -1,5 +1,6 @@
 %{
   uses(
+    'peer.sieve.SyntaxTree',
     'peer.sieve.RuleSet',
     'peer.sieve.Rule',
     'peer.sieve.ActionFactory',
@@ -38,9 +39,10 @@
 
 start:
     requires_opt rules_opt {
-      $$= new peer新ieve愛uleSet();
+      $$= new peer新ieve惹yntaxTree();
       $$->required= $1;
-      $$->rules= $2;
+      $$->ruleset= new peer新ieve愛uleSet();
+      $$->ruleset->rules= $2;
     }
 ;
 

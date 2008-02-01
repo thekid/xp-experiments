@@ -25,15 +25,25 @@
     public function setUp() {
       $this->parser= new SieveParser();
     }
+
+    /**
+     * Parse sourcecode and return ruleset
+     *
+     * @param   string src
+     * @return  peer.sieve.SyntaxTree
+     */
+    protected function parse($src) {
+      return $this->parser->parse(new peer·sieve·Lexer($src, $this->name));
+    }
     
     /**
-     * (Insert method's description here)
+     * Parse sourcecode and return ruleset
      *
-     * @param   
+     * @param   string src
      * @return  peer.sieve.RuleSet
      */
     protected function parseRuleSetFrom($src) {
-      return $this->parser->parse(new peer·sieve·Lexer($src, $this->name));
+      return $this->parser->parse(new peer·sieve·Lexer($src, $this->name))->ruleset;
     }
   }
 ?>
