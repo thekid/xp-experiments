@@ -24,6 +24,20 @@
     }
 
     /**
+     * Test
+     *
+     */
+    #[@test]
+    public function scriptWithOnlyComments() {
+      $this->assertTrue($this->parseRuleSetFrom('
+        # Nothing to be seen here
+        ## Comments
+        ### Over ####
+        #### Comments
+      ')->isEmpty());
+    }
+
+    /**
      * Test string list
      *
      */
