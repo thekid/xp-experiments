@@ -6,6 +6,9 @@
     'peer.sieve.AllOfCondition',
     'peer.sieve.NegationOfCondition',
     'peer.sieve.AnyOfCondition',
+    'peer.sieve.HeaderCondition',
+    'peer.sieve.SizeCondition',
+    'peer.sieve.AddressCondition',
     'peer.sieve.BooleanCondition'
   );
 %}
@@ -110,14 +113,22 @@ test:
   | T_NOT { $1= $yyLex->create(new NegationOfCondition()); } test {
       $1->condition= $2;
     }
-  | T_HEADER taglist arguments { 
-      $$= array($1 => array($2, $3)); 
+  | T_HEADER { $1= $yyLex->create(new HeaderCondition()); } taglist arguments { 
+      $1->tags= $3;
+      $1->arguments= $4;
     }
-  | T_SIZE taglist {
-      $$= array($1 => $2); 
+  | T_SIZE ':' T_WORD { 
+      try { 
+        $1= $yyLex->create(SizeCondition::forName($3)); 
+      } catch (IllegalArgumentException $e) { 
+        $this->error(E_ERROR, $e->getMessage().' at '.$yyLex->fileName.', line '.$yyLex->position[0]); 
+      }
+    } T_NUMBER {
+      $$->value= $4;
     }
-  | T_ADDRESS taglist arguments {
-      $$= array($1 => array($2, $3)); 
+  | T_ADDRESS { $1= $yyLex->create(new AddressCondition()); } taglist arguments {
+      $1->tags= $3;
+      $1->arguments= $4;
     }
   | T_TRUE { 
       $$= $yyLex->create(new BooleanCondition(TRUE));
@@ -133,14 +144,14 @@ taglist_opt:
 ;
 
 taglist:
-    tag { $$= array($1); }
-  | tag taglist { $$= array_merge(array($1), $2); }
+    tag { $$= $1; }
+  | tag taglist { $$= array_merge($1, $2); }
 ;
 
 tag:
-    ':' T_WORD argument { $$= array($2 => $3); }
-  | ':' T_COMPARATOR argument { $$= array($2 => $3); }
-  | ':' T_WORD ':' T_COMPARATOR T_STRING argument { $$= array($2 => $3); }
+    ':' T_WORD tag { $$= array_merge(array($2 => NULL), $3); }
+  | ':' T_WORD argument { $$= array($2 => $3); }
+  | ':' T_COMPARATOR T_STRING { $$= array($2 => $3); }
 ;
 
 testlist:
