@@ -65,21 +65,6 @@
     }
 
     /**
-     * Test string list
-     *
-     */
-    #[@test]
-    public function stringList() {
-      $this->assertEquals(
-        array('From', 'To'), 
-        $this->parseRuleSetFrom('if address :DOMAIN :is ["From", "To"] "example.com" { reject; }')
-          ->ruleAt(0)
-          ->condition
-          ->tags['is']
-      );
-    }
-
-    /**
      * Test requires
      *
      */

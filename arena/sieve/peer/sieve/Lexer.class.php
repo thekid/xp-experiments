@@ -31,6 +31,13 @@
         'true'          => TOKEN_T_TRUE,
         'false'         => TOKEN_T_FALSE,
         'comparator'    => TOKEN_T_COMPARATOR,
+        'envelope'      => TOKEN_T_ENVELOPE,
+        'is'            => TOKEN_T_IS,
+        'contains'      => TOKEN_T_CONTAINS,
+        'matches'       => TOKEN_T_MATCHES,
+        'all'           => TOKEN_T_ALL,
+        'domain'        => TOKEN_T_DOMAIN,
+        'localpart'     => TOKEN_T_LOCALPART,
       );
 
     const 

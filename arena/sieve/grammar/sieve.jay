@@ -8,8 +8,10 @@
     'peer.sieve.NegationOfCondition',
     'peer.sieve.AnyOfCondition',
     'peer.sieve.HeaderCondition',
+    'peer.sieve.ExistsCondition',
     'peer.sieve.SizeCondition',
     'peer.sieve.AddressCondition',
+    'peer.sieve.EnvelopeCondition',
     'peer.sieve.BooleanCondition'
   );
 %}
@@ -34,6 +36,17 @@
 %token T_TRUE 303
 %token T_FALSE 304
 %token T_COMPARATOR 305
+%token T_ENVELOPE 306
+%token T_EXISTS 307
+
+%token T_IS 400
+%token T_CONTAINS 401
+%token T_MATCHES 402
+
+%token T_ALL 500
+%token T_DOMAIN 501
+%token T_LOCALPART 502
+
 
 %%
 
@@ -58,7 +71,8 @@ requires:
 ;
 
 require:
-    T_REQUIRE '[' stringlist ']' ';' { $$= $3; }
+    T_REQUIRE T_STRING ';' { $$= array($2); }
+  | T_REQUIRE '[' stringlist ']' ';' { $$= $3; }
 ;
 // }}}
 
@@ -108,19 +122,30 @@ action:
 // {{{ Tests
 //     E.g. allof (address :regex ["From"] "bug[\-\+](.*)?@laudi\.de")
 test:
+    // allof <tests: test-list>
     T_ALLOF { $1= $yyLex->create(new AllOfCondition()); } '(' testlist ')' {
       $1->conditions= $4;
     }
+    // anyof <tests: test-list>
   | T_ANYOF { $1= $yyLex->create(new AnyOfCondition()); } '(' testlist ')' {
       $1->conditions= $4;
     }
+    // not <test1: test>
   | T_NOT { $1= $yyLex->create(new NegationOfCondition()); } test {
-      $1->condition= $2;
+      $1->negated= $2;
     }
-  | T_HEADER { $1= $yyLex->create(new HeaderCondition()); } taglist arguments { 
-      $1->tags= $3;
-      $1->arguments= $4;
+    // header [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>
+  | T_HEADER { $1= $yyLex->create(new HeaderCondition()); } taglist_opt argument argument { 
+      isset($3['comparator']) && $1->comparator= $3['comparator'];
+      isset($3['matchtype']) && $1->matchtype= $3['matchtype'];
+      $1->names= (array)$4;
+      $1->keys= (array)$5;
     }
+    // exists <header-names: string-list>
+  | T_EXISTS { $1= $yyLex->create(new ExistsCondition()); } argument {
+      $1->names= (array)$3;
+    }
+    // size <":over" / ":under"> <limit: number>
   | T_SIZE ':' T_WORD { 
       try { 
         $1= $yyLex->create(SizeCondition::forName($3)); 
@@ -131,17 +156,32 @@ test:
     } T_NUMBER {
       $1 && $1->value= intval($5);
     }
-  | T_ADDRESS { $1= $yyLex->create(new AddressCondition()); } taglist arguments {
-      $1->tags= $3;
-      $1->arguments= $4;
+    // envelope [COMPARATOR] [ADDRESS-PART] [MATCH-TYPE] <envelope-part: string-list> <key-list: string-list>
+  | T_ENVELOPE { $1= $yyLex->create(new EnvelopeCondition()); } taglist_opt argument argument {
+      isset($3['addresspart']) && $1->addresspart= $3['addresspart'];
+      isset($3['comparator']) && $1->comparator= $3['comparator'];
+      isset($3['matchtype']) && $1->matchtype= $3['matchtype'];
+      $1->headers= (array)$4;
+      $1->keys= (array)$5;
     }
+    // address [COMPARATOR] [ADDRESS-PART] [MATCH-TYPE] <header-list: string-list> <key-list: string-list>
+  | T_ADDRESS { $1= $yyLex->create(new AddressCondition()); } taglist_opt argument argument {
+      isset($3['addresspart']) && $1->addresspart= $3['addresspart'];
+      isset($3['comparator']) && $1->comparator= $3['comparator'];
+      isset($3['matchtype']) && $1->matchtype= $3['matchtype'];
+      $1->headers= (array)$4;
+      $1->keys= (array)$5;
+    }
+    // true
   | T_TRUE { 
       $$= $yyLex->create(new BooleanCondition(TRUE));
     }
+    // false
   | T_FALSE { 
       $$= $yyLex->create(new BooleanCondition(FALSE));
     }
 ;
+// }}}
 
 taglist_opt:
     /* Empty */ { $$= NULL; }
@@ -154,9 +194,11 @@ taglist:
 ;
 
 tag:
-    ':' T_WORD tag { $$= array_merge(array($2 => NULL), $3); }
+    ':' matchtype { $$= array('matchtype' => $2); }
+  | ':' addresspart { $$= array('addresspart' => $2); }
+  | ':' T_COMPARATOR T_STRING { $$= array('comparator' => $3); }
+  | ':' T_WORD tag { $$= array_merge(array($2 => NULL), $3); }
   | ':' T_WORD argument { $$= array($2 => $3); }
-  | ':' T_COMPARATOR T_STRING { $$= array($2 => $3); }
 ;
 
 testlist:
@@ -183,7 +225,19 @@ argument:
 // }}}
 
 
-// {{{ List of strings
+// {{{ Reusable
+addresspart:
+    T_ALL
+  | T_DOMAIN
+  | T_LOCALPART
+;
+
+matchtype:
+    T_IS 
+  | T_CONTAINS 
+  | T_MATCHES
+;
+
 stringlist:
     T_STRING { $$= array($1); }
   | T_STRING ',' stringlist  { $$= array_merge(array($1), $3); }
