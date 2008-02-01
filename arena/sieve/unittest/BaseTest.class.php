@@ -65,7 +65,7 @@
     }
 
     /**
-     * Test uncodition rule
+     * Test uncoditional rule
      *
      */
     #[@test]

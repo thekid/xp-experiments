@@ -78,5 +78,38 @@
       $this->assertEquals(1, $ruleset->size());
     }
 
+    /**
+     * Test else may not be followed by elseif
+     *
+     */
+    #[@test, @expect('text.parser.generic.ParseException')]
+    public function elseMayNotFollowElseIf() {
+      $this->parseRuleSetFrom('
+        if header :contains "from" "coyote" {
+           discard;
+        } else {
+           fileinto "INBOX";
+        } elsif header :contains ["subject"] ["$$$"] {
+           discard;
+        }
+      ');
+    }
+
+    /**
+     * Test else may not be followed by else
+     *
+     */
+    #[@test, @expect('text.parser.generic.ParseException')]
+    public function elseMayNotFollowElse() {
+      $this->parseRuleSetFrom('
+        if header :contains "from" "coyote" {
+           discard;
+        } else {
+           fileinto "INBOX";
+        } else {
+           discard;
+        }
+      ');
+    }
   }
 ?>
