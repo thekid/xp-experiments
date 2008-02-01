@@ -28,6 +28,33 @@
      *
      */
     #[@test]
+    public function oneLineComment() {
+      $this->assertEquals(1, $this->parseRuleSetFrom('
+        if size :over 100k { # this is a comment
+          discard;
+        }
+      ')->size());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function multilineComments() {
+      $this->assertEquals(1, $this->parseRuleSetFrom('
+        if size :over 100K { /* this is a comment
+           this is still a comment */ discard /* this is a comment
+           */ ;
+        }
+      ')->size());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function scriptWithOnlyComments() {
       $this->assertTrue($this->parseRuleSetFrom('
         # Nothing to be seen here

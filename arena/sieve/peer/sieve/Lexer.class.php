@@ -108,6 +108,22 @@
             $this->tokenizer->nextToken($token{0});
             break;
           } while ($this->tokenizer->hasMoreTokens());
+        } else if ('/' === $token{0}) {
+          $ahead= $this->tokenizer->nextToken(self::DELIMITERS);
+          if ('*' === $ahead) {    // Multi-line comment
+            do { 
+              $t= $this->tokenizer->nextToken('/'); 
+              $l= substr_count($t, "\n");
+              $this->position[1]= strlen($t) + ($l ? 1 : $this->position[1]);
+              $this->position[0]+= $l;
+            } while ('*' !== $t{strlen($t)- 1});
+            $this->tokenizer->nextToken('/');
+            continue;
+          } else {
+            $this->token= ord($token);
+            $this->value= $token;
+            $this->ahead= $ahead;
+          } 
         } else if ('text' === $token) {
           $ahead= $this->tokenizer->nextToken(self::DELIMITERS);
           if (':' !== $ahead{0}) {
