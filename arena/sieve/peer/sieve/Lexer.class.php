@@ -140,10 +140,10 @@
           $this->token= TOKEN_T_NUMBER;
           $this->value= $token;
         } else if (ctype_digit($n= substr($token, 0, -1))) {
-          $quantifier= $token{strlen($token)- 1};
+          $quantifier= strtoupper($token{strlen($token)- 1});
           if (!isset($quantifiers[$quantifier])) {
             throw new FormatException(sprintf(
-              'Unknown quantifier "%s", expected on of %s',
+              'Unknown quantifier "%s", expected one of %s',
               $quantifier,
               implode(', ', array_keys($quantifiers))
             ));

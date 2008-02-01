@@ -37,12 +37,57 @@
     }
 
     /**
+     * Test "K" quantifier
+     *
+     */
+    #[@test]
+    public function kilobyteQuantifier() {
+      $this->assertEquals(
+        102400,
+        $this->parseRuleSetFrom('if size :over 100k { discard; }')->ruleAt(0)->condition->value
+      );
+    }
+
+    /**
+     * Test "M" quantifier
+     *
+     */
+    #[@test]
+    public function megabyteQuantifier() {
+      $this->assertEquals(
+        2097152,
+        $this->parseRuleSetFrom('if size :over 2M { discard; }')->ruleAt(0)->condition->value
+      );
+    }
+
+    /**
+     * Test "G" quantifier
+     *
+     */
+    #[@test]
+    public function gigabyteQuantifier() {
+      $this->assertEquals(
+        1073741824,
+        $this->parseRuleSetFrom('if size :over 1G { discard; }')->ruleAt(0)->condition->value
+      );
+    }
+
+    /**
+     * Test illegal quantifier
+     *
+     */
+    #[@test, @expect('text.parser.generic.ParseException')]
+    public function illegalQuantifier() {
+      $this->parse('if size :over 1X { discard; }');
+    }
+
+    /**
      * Test :exceeds is not a valid argument
      *
      */
     #[@test, @expect('text.parser.generic.ParseException')]
     public function invalidArgument() {
-      $this->parseRuleSetFrom('if size :exceeds 1000 { discard; }');
+      $this->parse('if size :exceeds 1000 { discard; }');
     }
   }
 ?>
