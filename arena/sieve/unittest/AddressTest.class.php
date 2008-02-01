@@ -48,5 +48,22 @@
       $this->assertEquals(array('To', 'TO', 'Cc', 'CC'), $condition->headers);
       $this->assertEquals(array('tsk@example.com'), $condition->keys);
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function matches() {
+      $condition= $this->parseRuleSetFrom('
+        if address :matches ["To", "Cc"] ["coyote@**.com", "wile@**.com"] {
+           fileinto "INBOX.business.${2}"; stop;
+        }
+      ')->ruleAt(0)->condition;
+      $this->assertClass($condition, 'peer.sieve.AddressCondition');
+      $this->assertEquals('matches', $condition->matchtype);
+      $this->assertEquals(array('To', 'Cc'), $condition->headers);
+      $this->assertEquals(array('coyote@**.com', 'wile@**.com'), $condition->keys);
+    }
   }
 ?>
