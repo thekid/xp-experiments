@@ -19,6 +19,7 @@
       $keywords  = array(
         'require'       => TOKEN_T_REQUIRE,
         'if'            => TOKEN_T_IF,
+        'else'          => TOKEN_T_ELSE,
         'elsif'         => TOKEN_T_ELSEIF,
         'allof'         => TOKEN_T_ALLOF,
         'anyof'         => TOKEN_T_ANYOF,

@@ -20,7 +20,8 @@
 %token T_REQUIRE 270
 
 %token T_IF 280
-%token T_ELSEIF 281
+%token T_ELSE 281
+%token T_ELSEIF 282
 
 %token T_ALLOF 290
 %token T_ANYOF 291
@@ -85,6 +86,7 @@ rule:
 
 else_opt:
     /* empty */ { $$= NULL; }
+  | T_ELSE '{' actions '}'
   | T_ELSEIF test '{' actions '}' else_opt
 ;
 // }}}
