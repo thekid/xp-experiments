@@ -150,7 +150,7 @@ test:
     }
     // not <test1: test>
   | T_NOT { $1= $yyLex->create(new NegationOfCondition()); } test {
-      $1->negated= $2;
+      $1->negated= $3;
     }
     // header [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>
   | T_HEADER { $1= $yyLex->create(new HeaderCondition()); } taglist_opt argument argument { 

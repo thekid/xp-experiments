@@ -7,10 +7,20 @@
   uses('peer.sieve.Condition');
 
   /**
-   * (Insert class' description here)
+   * The "not" condition
    *
-   * @purpose  Base class for all rules
+   * @purpose  Condition implementation
    */
   class NegationOfCondition extends peer·sieve·Condition {
+    public $negated= NULL;
+
+    /**
+     * Creates a string representation of this header condition
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'('.xp::stringOf($this->negated).')';
+    }
   }
 ?>

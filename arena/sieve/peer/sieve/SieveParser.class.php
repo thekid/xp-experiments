@@ -499,7 +499,7 @@
 
     case 27:  #line 152 "grammar/sieve.jay"
     {
-      $yyVals[-2+$yyTop]->negated= $yyVals[-1+$yyTop];
+      $yyVals[-2+$yyTop]->negated= $yyVals[0+$yyTop];
     } break;
 
     case 28:  #line 156 "grammar/sieve.jay"
