@@ -42,9 +42,9 @@
 %token T_IS 400
 %token T_CONTAINS 401
 %token T_MATCHES 402
-%token T_REGEX 402
-%token T_VALUE 402
-%token T_COUNT 402
+%token T_REGEX 403
+%token T_VALUE 404
+%token T_COUNT 405
 
 %token T_ALL 500
 %token T_DOMAIN 501
@@ -246,7 +246,7 @@ matchtype:
   | T_CONTAINS 
   | T_MATCHES
   | T_VALUE T_STRING { $$= array($1, $2); }
-  | T_REGEX T_STRING { $$= array($1, $2); }
+  | T_REGEX
   | T_COUNT T_STRING { $$= array($1, $2); }
 ;
 
