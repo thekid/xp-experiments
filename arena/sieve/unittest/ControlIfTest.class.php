@@ -20,12 +20,14 @@
      */
     #[@test]
     public function ifWithoutElse() {
-      $ruleset= $this->parseRuleSetFrom('
+      $rule= $this->parseRuleSetFrom('
         if header :contains "from" "coyote" {
            discard;
         }
-      ');
-      $this->assertEquals(1, $ruleset->size());
+      ')->ruleAt(0);
+      $this->assertClass($rule, 'peer.sieve.Rule');
+      $this->assertClass($rule->condition, 'peer.sieve.HeaderCondition');
+      $this->assertNull($rule->otherwise);
     }
 
     /**
@@ -34,14 +36,18 @@
      */
     #[@test]
     public function ifWithElse() {
-      $ruleset= $this->parseRuleSetFrom('
+      $rule= $this->parseRuleSetFrom('
         if header :contains "from" "coyote" {
            discard;
         } else {
            fileinto "INBOX";
         }
-      ');
-      $this->assertEquals(1, $ruleset->size());
+      ')->ruleAt(0);
+      $this->assertClass($rule, 'peer.sieve.Rule');
+      $this->assertClass($rule->condition, 'peer.sieve.HeaderCondition');
+      $this->assertClass($rule->otherwise, 'peer.sieve.Rule');
+      $this->assertClass($rule->otherwise->condition, 'peer.sieve.NegationOfCondition');
+      $this->assertEquals($rule->otherwise->condition->negated, $rule->condition);
     }
 
     /**
@@ -50,14 +56,17 @@
      */
     #[@test]
     public function ifWithElseIf() {
-      $ruleset= $this->parseRuleSetFrom('
+      $rule= $this->parseRuleSetFrom('
         if header :contains "from" "coyote" {
            discard;
         } elsif header :contains ["subject"] ["$$$"] {
            discard;
         }
-      ');
-      $this->assertEquals(1, $ruleset->size());
+      ')->ruleAt(0);
+      $this->assertClass($rule, 'peer.sieve.Rule');
+      $this->assertClass($rule->condition, 'peer.sieve.HeaderCondition');
+      $this->assertClass($rule->otherwise, 'peer.sieve.Rule');
+      $this->assertClass($rule->otherwise->condition, 'peer.sieve.HeaderCondition');
     }
 
     /**
@@ -66,7 +75,7 @@
      */
     #[@test]
     public function ifWithElseIfAndElse() {
-      $ruleset= $this->parseRuleSetFrom('
+      $rule= $this->parseRuleSetFrom('
         if header :contains "from" "coyote" {
            discard;
         } elsif header :contains ["subject"] ["$$$"] {
@@ -74,8 +83,14 @@
         } else {
            fileinto "INBOX";
         }
-      ');
-      $this->assertEquals(1, $ruleset->size());
+      ')->ruleAt(0);
+      $this->assertClass($rule, 'peer.sieve.Rule');
+      $this->assertClass($rule->condition, 'peer.sieve.HeaderCondition');
+      $this->assertClass($rule->otherwise, 'peer.sieve.Rule');
+      $this->assertClass($rule->otherwise->condition, 'peer.sieve.HeaderCondition');
+      $this->assertClass($rule->otherwise->otherwise, 'peer.sieve.Rule');
+      $this->assertClass($rule->otherwise->otherwise->condition, 'peer.sieve.NegationOfCondition');
+      $this->assertEquals($rule->otherwise->otherwise->condition->negated, $rule->otherwise->condition);
     }
 
     /**
@@ -84,7 +99,7 @@
      */
     #[@test, @expect('text.parser.generic.ParseException')]
     public function elseMayNotFollowElseIf() {
-      $this->parseRuleSetFrom('
+      $this->parse('
         if header :contains "from" "coyote" {
            discard;
         } else {
@@ -101,7 +116,7 @@
      */
     #[@test, @expect('text.parser.generic.ParseException')]
     public function elseMayNotFollowElse() {
-      $this->parseRuleSetFrom('
+      $this->parse('
         if header :contains "from" "coyote" {
            discard;
         } else {

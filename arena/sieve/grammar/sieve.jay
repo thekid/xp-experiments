@@ -94,6 +94,11 @@ rule:
     T_IF { $1= $yyLex->create(new peer新ieve愛ule()); } test '{' actions '}' else_opt {
       $1->condition= $3;
       $1->actions= $5;
+      $1->otherwise= $7;
+      if ($7 && !$7->condition) {    // dangling else
+        $7->condition= new NegationOfCondition();
+        $7->condition->negated= $3;
+      }
     }
   | actions { 
       $$= $yyLex->create(new peer新ieve愛ule());
@@ -105,8 +110,19 @@ rule:
 
 else_opt:
     /* empty */ { $$= NULL; }
-  | T_ELSE '{' actions '}'
-  | T_ELSEIF test '{' actions '}' else_opt
+  | T_ELSE { $1= $yyLex->create(new peer新ieve愛ule()); } '{' actions '}' {
+      $1->condition= NULL;
+      $1->actions= $4;
+    }
+  | T_ELSEIF { $1= $yyLex->create(new peer新ieve愛ule()); } test '{' actions '}' else_opt {
+      $1->condition= $3;
+      $1->actions= $5;
+      $1->otherwise= $7;
+      if ($7 && !$7->condition) {    // dangling else
+        $7->condition= new NegationOfCondition();
+        $7->condition->negated= $3;
+      }
+    }
 ;
 // }}}
 
