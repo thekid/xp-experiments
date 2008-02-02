@@ -108,7 +108,7 @@
         if size :over 1M { redirect "bart@example.com"; }
       ')->commandAt(0)->commands[0];
       $this->assertClass($action, 'peer.sieve.RedirectAction');
-      $this->assertEquals('bart@example.com', $action->target);
+      $this->assertEquals('bart@example.com', $action->getTarget());
     }
 
     /**
