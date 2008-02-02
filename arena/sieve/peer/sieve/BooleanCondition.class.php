@@ -7,16 +7,30 @@
   uses('peer.sieve.Condition');
 
   /**
-   * (Insert class' description here)
+   * The "true" and "false" conditions
    *
-   * @purpose  Base class for all rules
+   * @purpose  Condition implementation
    */
   class BooleanCondition extends peer·sieve·Condition {
     public
       $value= NULL;
 
+    /**
+     * Constructor
+     *
+     * @param   bool
+     */
     public function __construct($value) {
       $this->value= $value;
+    }
+
+    /**
+     * Creates a string representation of this header condition
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'('.xp::stringOf($this->value).')';
     }
   }
 ?>
