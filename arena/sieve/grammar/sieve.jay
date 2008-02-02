@@ -53,7 +53,8 @@
 %token T_ALL 500
 %token T_DOMAIN 501
 %token T_LOCALPART 502
-
+%token T_USER 503
+%token T_DETAIL 504
 
 %%
 
@@ -259,6 +260,8 @@ addresspart:
     T_ALL { $$= AddressPart::$all; }
   | T_DOMAIN { $$= AddressPart::$domain; }
   | T_LOCALPART { $$= AddressPart::$localpart; }
+  | T_USER { $$= AddressPart::$user; }
+  | T_DETAIL { $$= AddressPart::$detail; }
 ;
 
 matchtype:

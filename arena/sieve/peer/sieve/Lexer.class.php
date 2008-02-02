@@ -41,6 +41,8 @@
         'all'           => TOKEN_T_ALL,
         'domain'        => TOKEN_T_DOMAIN,
         'localpart'     => TOKEN_T_LOCALPART,
+        'user'          => TOKEN_T_USER,
+        'detail'        => TOKEN_T_DETAIL,
       );
 
     const 

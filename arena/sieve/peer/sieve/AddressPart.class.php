@@ -13,12 +13,14 @@
    * @purpose  purpose
    */
   class AddressPart extends Enum {
-    public static $all, $domain, $localpart;
+    public static $all, $domain, $localpart, $user, $detail;
     
     static function __static() {
       self::$all= new self(0, 'all');
       self::$domain= new self(1, 'domain');
       self::$localpart= new self(2, 'localpart');
+      self::$user= new self(3, 'user');
+      self::$detail= new self(4, 'detail');
     }
     
     /**

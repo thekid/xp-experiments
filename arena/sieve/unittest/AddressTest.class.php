@@ -15,21 +15,28 @@
   class AddressTest extends SieveParserTestCase {
 
     /**
+     * Helper method
+     *
+     * @param   peer.sieve.AddressPart
+     * @throws  unittest.AssertionFailedError  
+     */
+    protected function isFrom(AddressPart $ap, $src) {
+      with ($condition= $this->parseRuleSetFrom($src)->ruleAt(0)->condition); {
+        $this->assertClass($condition, 'peer.sieve.AddressCondition');
+        $this->assertEquals(MatchType::is(), $condition->matchtype);
+        $this->assertEquals($ap, $condition->addresspart);
+        $this->assertEquals(array('from'), $condition->headers);
+        $this->assertEquals(array('key'), $condition->keys);
+      }
+    }
+
+    /**
      * Test
      *
      */
     #[@test]
     public function isAllFrom() {
-      $condition= $this->parseRuleSetFrom('
-        if address :is :all "from" "tim@example.com" {
-           discard;
-        }
-      ')->ruleAt(0)->condition;
-      $this->assertClass($condition, 'peer.sieve.AddressCondition');
-      $this->assertEquals(MatchType::is(), $condition->matchtype);
-      $this->assertEquals(AddressPart::$all, $condition->addresspart);
-      $this->assertEquals(array('from'), $condition->headers);
-      $this->assertEquals(array('tim@example.com'), $condition->keys);
+      $this->isFrom(AddressPart::$all, 'if address :is :all "from" "key" { discard; }');
     }
 
     /**
@@ -38,17 +45,9 @@
      */
     #[@test]
     public function isDomainFrom() {
-      $condition= $this->parseRuleSetFrom('
-        if address :is :domain "from" "example.com" {
-           discard;
-        }
-      ')->ruleAt(0)->condition;
-      $this->assertClass($condition, 'peer.sieve.AddressCondition');
-      $this->assertEquals(MatchType::is(), $condition->matchtype);
-      $this->assertEquals(AddressPart::$domain, $condition->addresspart);
-      $this->assertEquals(array('from'), $condition->headers);
-      $this->assertEquals(array('example.com'), $condition->keys);
+      $this->isFrom(AddressPart::$domain, 'if address :is :domain "from" "key" { discard; }');
     }
+
 
     /**
      * Test
@@ -56,16 +55,27 @@
      */
     #[@test]
     public function isLocalpartFrom() {
-      $condition= $this->parseRuleSetFrom('
-        if address :is :localpart "from" "tim" {
-           discard;
-        }
-      ')->ruleAt(0)->condition;
-      $this->assertClass($condition, 'peer.sieve.AddressCondition');
-      $this->assertEquals(MatchType::is(), $condition->matchtype);
-      $this->assertEquals(AddressPart::$localpart, $condition->addresspart);
-      $this->assertEquals(array('from'), $condition->headers);
-      $this->assertEquals(array('tim'), $condition->keys);
+      $this->isFrom(AddressPart::$localpart, 'if address :is :localpart "from" "key" { discard; }');
+    }
+
+    /**
+     * Test
+     *
+     * @see   rfc://5233
+     */
+    #[@test]
+    public function isUserFrom() {
+      $this->isFrom(AddressPart::$user, 'if address :is :user "from" "key" { discard; }');
+    }
+
+    /**
+     * Test
+     *
+     * @see   rfc://5233
+     */
+    #[@test]
+    public function isDetailFrom() {
+      $this->isFrom(AddressPart::$detail, 'if address :is :detail "from" "key" { discard; }');
     }
     
     /**
