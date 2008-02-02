@@ -7,7 +7,7 @@
   uses('peer.sieve.Action', 'peer.mail.InternetAddress');
 
   /**
-   * The "redirect" implementation
+   * The "redirect" action
    *
    * @see      xp://peer.sieve.Action
    * @purpose  Action implementation

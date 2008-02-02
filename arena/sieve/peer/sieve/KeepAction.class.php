@@ -7,11 +7,10 @@
   uses('peer.sieve.Action');
 
   /**
-   * (Insert class' description here)
+   * The "keep" action
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.sieve.Action
+   * @purpose  Action implementation
    */
   class KeepAction extends peer·sieve·Action {
     
@@ -25,6 +24,15 @@
       if (!empty($tags) || !empty($arguments)) {
         throw new IllegalArgumentException('Reject takes no arguments');
       }
+    }
+
+    /**
+     * Creates a string representation of this action.
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName();
     }
   }
 ?>
