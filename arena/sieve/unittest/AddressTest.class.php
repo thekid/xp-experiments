@@ -27,9 +27,45 @@
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.AddressCondition');
       $this->assertEquals('is', $condition->matchtype);
-      $this->assertEquals('all', $condition->addresspart);
+      $this->assertEquals(AddressPart::$all, $condition->addresspart);
       $this->assertEquals(array('from'), $condition->headers);
       $this->assertEquals(array('tim@example.com'), $condition->keys);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function isDomainFrom() {
+      $condition= $this->parseRuleSetFrom('
+        if address :is :domain "from" "example.com" {
+           discard;
+        }
+      ')->ruleAt(0)->condition;
+      $this->assertClass($condition, 'peer.sieve.AddressCondition');
+      $this->assertEquals('is', $condition->matchtype);
+      $this->assertEquals(AddressPart::$domain, $condition->addresspart);
+      $this->assertEquals(array('from'), $condition->headers);
+      $this->assertEquals(array('example.com'), $condition->keys);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function isLocalpartFrom() {
+      $condition= $this->parseRuleSetFrom('
+        if address :is :localpart "from" "tim" {
+           discard;
+        }
+      ')->ruleAt(0)->condition;
+      $this->assertClass($condition, 'peer.sieve.AddressCondition');
+      $this->assertEquals('is', $condition->matchtype);
+      $this->assertEquals(AddressPart::$localpart, $condition->addresspart);
+      $this->assertEquals(array('from'), $condition->headers);
+      $this->assertEquals(array('tim'), $condition->keys);
     }
     
     /**

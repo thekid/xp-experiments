@@ -28,7 +28,7 @@
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.EnvelopeCondition');
       $this->assertEquals('is', $condition->matchtype);
-      $this->assertEquals('all', $condition->addresspart);
+      $this->assertEquals(AddressPart::$all, $condition->addresspart);
       $this->assertEquals(array('from'), $condition->headers);
       $this->assertEquals(array('tim@example.com'), $condition->keys);
     }

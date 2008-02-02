@@ -3,6 +3,7 @@
     'peer.sieve.SyntaxTree',
     'peer.sieve.RuleSet',
     'peer.sieve.Rule',
+    'peer.sieve.AddressPart',
     'peer.sieve.ActionFactory',
     'peer.sieve.AllOfCondition',
     'peer.sieve.NegationOfCondition',
@@ -252,9 +253,9 @@ comparator:
 ;
 
 addresspart:
-    T_ALL
-  | T_DOMAIN
-  | T_LOCALPART
+    T_ALL { $$= AddressPart::$all; }
+  | T_DOMAIN { $$= AddressPart::$domain; }
+  | T_LOCALPART { $$= AddressPart::$localpart; }
 ;
 
 matchtype:
