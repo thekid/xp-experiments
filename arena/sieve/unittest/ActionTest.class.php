@@ -91,19 +91,10 @@
     #[@test]
     public function reject() {
       $action= $this->parseRuleSetFrom('
-        if size :over 1M { reject; }
+        if size :over 1M { reject "Your message is too big"; }
       ')->ruleAt(0)->actions[0];
       $this->assertClass($action, 'peer.sieve.RejectAction');
-    }
-
-    /**
-     * Test "reject" takes no arguments
-     *
-     * @see      xp://peer.sieve.RejectAction
-     */
-    #[@test, @expect('text.parser.generic.ParseException')]
-    public function rejectWithArgument() {
-      $this->parse('reject "puke";');
+      $this->assertEquals('Your message is too big', $action->reason);
     }
 
     /**
