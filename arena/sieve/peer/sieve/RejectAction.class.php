@@ -28,5 +28,14 @@
       }
       $this->reason= $arguments[0];
     }
+
+    /**
+     * Creates a string representation of this action.
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'("'.addcslashes($this->reason, "\0..\17").'")';
+    }
   }
 ?>

@@ -9,9 +9,9 @@
   uses('peer.sieve.Condition', 'lang.IndexOutOfBoundsException');
 
   /**
-   * (Insert class' description here)
+   * For condition composites anyof and allof
    *
-   * @purpose  Base class for all rules
+   * @purpose  Base class
    */
   class peer·sieve·ConditionComposite extends peer·sieve·Condition {
     public $conditions= array();
@@ -37,6 +37,19 @@
         throw new IndexOutOfBoundsException('Offset '.$offset.' out of bounds');
       }
       return $this->conditions[$offset];
+    }
+
+    /**
+     * Creates a string representation of this condition.
+     *
+     * @return  string
+     */
+    public function toString() {
+      $s= $this->getClassName().'('.sizeof($this->conditions).")@{\n";
+      foreach ($this->conditions as $condition) {
+        $s.= '  '.str_replace("\n", "\n  ", $condition->toString())."\n";
+      }
+      return $s.'}';
     }
   }
 ?>

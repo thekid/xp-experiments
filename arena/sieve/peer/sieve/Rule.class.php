@@ -27,7 +27,7 @@
       return sprintf(
         "%s@{\n  condition= %s\n  commands= %s\n}",
         $this->getClassName(),
-        xp::stringOf($this->condition),
+        str_replace("\n", "\n  ", xp::stringOf($this->condition)),
         str_replace("\n", "\n  ", xp::stringOf($this->commands))
       );
     }

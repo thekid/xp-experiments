@@ -7,11 +7,10 @@
   uses('peer.sieve.Action');
 
   /**
-   * (Insert class' description here)
+   * The "stop" implementation
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.sieve.Action
+   * @purpose  Action implementation
    */
   class StopAction extends peer·sieve·Action {
 
@@ -27,5 +26,13 @@
       }
     }
     
+    /**
+     * Creates a string representation of this action.
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName();
+    }
   }
 ?>
