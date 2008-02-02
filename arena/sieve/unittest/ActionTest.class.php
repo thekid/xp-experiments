@@ -112,6 +112,20 @@
     }
 
     /**
+     * Test "forward"
+     *
+     * @see      xp://peer.sieve.forwardAction
+     */
+    #[@test]
+    public function forward() {
+      $action= $this->parseCommandSetFrom('
+        if size :over 1M { forward "bort@example.com"; }
+      ')->commandAt(0)->commands[0];
+      $this->assertClass($action, 'peer.sieve.ForwardAction');
+      $this->assertEquals('bort@example.com', $action->getTarget());
+    }
+
+    /**
      * Test "fileinto"
      *
      * @see      xp://peer.sieve.FileIntoAction
