@@ -26,7 +26,7 @@
         }
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.HeaderCondition');
-      $this->assertEquals(array('value', 'eq'), $condition->matchtype);   // Should be ValueMatchType...
+      $this->assertEquals(new ValueMatch('eq'), $condition->matchtype);
     }
 
     /**
@@ -43,7 +43,7 @@
         }
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.AddressCondition');
-      $this->assertEquals(array('count', 'gt'), $condition->matchtype);   // Should be ValueMatchType...
+      $this->assertEquals(new CountMatch('gt'), $condition->matchtype);   // Should be ValueMatchType...
     }
   }
 ?>

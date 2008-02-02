@@ -26,7 +26,7 @@
         }
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.AddressCondition');
-      $this->assertEquals('is', $condition->matchtype);
+      $this->assertEquals(MatchType::is(), $condition->matchtype);
       $this->assertEquals(AddressPart::$all, $condition->addresspart);
       $this->assertEquals(array('from'), $condition->headers);
       $this->assertEquals(array('tim@example.com'), $condition->keys);
@@ -44,7 +44,7 @@
         }
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.AddressCondition');
-      $this->assertEquals('is', $condition->matchtype);
+      $this->assertEquals(MatchType::is(), $condition->matchtype);
       $this->assertEquals(AddressPart::$domain, $condition->addresspart);
       $this->assertEquals(array('from'), $condition->headers);
       $this->assertEquals(array('example.com'), $condition->keys);
@@ -62,7 +62,7 @@
         }
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.AddressCondition');
-      $this->assertEquals('is', $condition->matchtype);
+      $this->assertEquals(MatchType::is(), $condition->matchtype);
       $this->assertEquals(AddressPart::$localpart, $condition->addresspart);
       $this->assertEquals(array('from'), $condition->headers);
       $this->assertEquals(array('tim'), $condition->keys);
@@ -80,7 +80,7 @@
         }
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.AddressCondition');
-      $this->assertEquals('contains', $condition->matchtype);
+      $this->assertEquals(MatchType::contains(), $condition->matchtype);
       $this->assertEquals(array('To', 'TO', 'Cc', 'CC'), $condition->headers);
       $this->assertEquals(array('tsk@example.com'), $condition->keys);
     }
@@ -97,7 +97,7 @@
         }
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.AddressCondition');
-      $this->assertEquals('matches', $condition->matchtype);
+      $this->assertEquals(MatchType::matches(), $condition->matchtype);
       $this->assertEquals(array('To', 'Cc'), $condition->headers);
       $this->assertEquals(array('coyote@**.com', 'wile@**.com'), $condition->keys);
     }

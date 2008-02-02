@@ -26,7 +26,7 @@
         }
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.HeaderCondition');
-      $this->assertEquals('is', $condition->matchtype);
+      $this->assertEquals(MatchType::is(), $condition->matchtype);
       $this->assertEquals(array('X-Caffeine'), $condition->names);
       $this->assertEquals(array(''), $condition->keys);
     }
@@ -43,7 +43,7 @@
         }
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.HeaderCondition');
-      $this->assertEquals('contains', $condition->matchtype);
+      $this->assertEquals(MatchType::contains(), $condition->matchtype);
       $this->assertEquals(array('X-Caffeine'), $condition->names);
       $this->assertEquals(array(''), $condition->keys);
     }
@@ -60,7 +60,7 @@
         }
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.HeaderCondition');
-      $this->assertEquals('matches', $condition->matchtype);
+      $this->assertEquals(MatchType::matches(), $condition->matchtype);
       $this->assertEquals(array('Cc'), $condition->names);
       $this->assertEquals(array('?*'), $condition->keys);
     }

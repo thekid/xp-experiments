@@ -13,7 +13,10 @@
     'peer.sieve.SizeCondition',
     'peer.sieve.AddressCondition',
     'peer.sieve.EnvelopeCondition',
-    'peer.sieve.BooleanCondition'
+    'peer.sieve.BooleanCondition',
+    'peer.sieve.MatchType',
+    'peer.sieve.ValueMatch',
+    'peer.sieve.CountMatch'
   );
 %}
 
@@ -101,10 +104,10 @@ rule:
         $7->condition->negated= $3;
       }
     }
-  | actions { 
+  | action { 
       $$= $yyLex->create(new peer·sieve·Rule());
       $$->condition= NULL;
-      $$->actions= $1;
+      $$->actions= array($1);
     }
       
 ;
@@ -259,12 +262,12 @@ addresspart:
 ;
 
 matchtype:
-    T_IS 
-  | T_CONTAINS 
-  | T_MATCHES
-  | T_VALUE T_STRING { $$= array($1, $2); }
-  | T_REGEX
-  | T_COUNT T_STRING { $$= array($1, $2); }
+    T_IS { $$= MatchType::is(); }
+  | T_CONTAINS { $$= MatchType::contains(); }
+  | T_MATCHES { $$= MatchType::matches(); }
+  | T_REGEX { $$= MatchType::regex(); }
+  | T_VALUE T_STRING { $$= new ValueMatch($2); }
+  | T_COUNT T_STRING { $$= new CountMatch($2); }
 ;
 
 stringlist:

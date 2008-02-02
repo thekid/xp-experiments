@@ -27,7 +27,7 @@
         }
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.HeaderCondition');
-      $this->assertEquals('regex', $condition->matchtype);   // Should be RegexMatchtype...
+      $this->assertEquals(MatchType::regex(), $condition->matchtype);
       $this->assertEquals(array('^[^[:lower:]]+$'), $condition->keys);
     }
 
@@ -44,7 +44,7 @@
         }
       ')->ruleAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.HeaderCondition');
-      $this->assertEquals('regex', $condition->matchtype);   // Should be RegexMatchtype...
+      $this->assertEquals(MatchType::regex(), $condition->matchtype);
       $this->assertEquals('i;ascii-casemap', $condition->comparator);
       $this->assertEquals(array('\[Bug [0-9]+\]'), $condition->keys);
     }
