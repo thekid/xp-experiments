@@ -20,11 +20,11 @@
      */
     #[@test]
     public function reasonOnly() {
-      $action= $this->parseRuleSetFrom('
+      $action= $this->parseCommandSetFrom('
         if true { 
           vacation "Out of office";
         }
-      ')->ruleAt(0)->actions[0];
+      ')->commandAt(0)->commands[0];
       $this->assertClass($action, 'peer.sieve.VacationAction');
       $this->assertEquals('Out of office', $action->reason);
     }
@@ -35,11 +35,11 @@
      */
     #[@test]
     public function withDays() {
-      $action= $this->parseRuleSetFrom('
+      $action= $this->parseCommandSetFrom('
         if true { 
           vacation :days 7 "Out of office";
         }
-      ')->ruleAt(0)->actions[0];
+      ')->commandAt(0)->commands[0];
       $this->assertClass($action, 'peer.sieve.VacationAction');
       $this->assertEquals(7, $action->days);
       $this->assertEquals('Out of office', $action->reason);
@@ -51,11 +51,11 @@
      */
     #[@test]
     public function withSubject() {
-      $action= $this->parseRuleSetFrom('
+      $action= $this->parseCommandSetFrom('
         if true { 
           vacation :subject "Out of office" "I\'ll be back";
         }
-      ')->ruleAt(0)->actions[0];
+      ')->commandAt(0)->commands[0];
       $this->assertClass($action, 'peer.sieve.VacationAction');
       $this->assertEquals('Out of office', $action->subject);
       $this->assertEquals('I\'ll be back', $action->reason);
@@ -67,11 +67,11 @@
      */
     #[@test]
     public function withFrom() {
-      $action= $this->parseRuleSetFrom('
+      $action= $this->parseCommandSetFrom('
         if true { 
           vacation :from "oo@example.com" "I\'ll be back";
         }
-      ')->ruleAt(0)->actions[0];
+      ')->commandAt(0)->commands[0];
       $this->assertClass($action, 'peer.sieve.VacationAction');
       $this->assertEquals('oo@example.com', $action->from);
       $this->assertEquals('I\'ll be back', $action->reason);
@@ -83,11 +83,11 @@
      */
     #[@test, @ignore('Out of office assigned to :mime tag due to parser')]
     public function withMime() {
-      $action= $this->parseRuleSetFrom('
+      $action= $this->parseCommandSetFrom('
         if true { 
           vacation :mime "Out of office";
         }
-      ')->ruleAt(0)->actions[0];
+      ')->commandAt(0)->commands[0];
       $this->assertClass($action, 'peer.sieve.VacationAction');
       $this->assertTrue($action->mime);
       $this->assertEquals('Out of office', $action->reason);
@@ -99,11 +99,11 @@
      */
     #[@test]
     public function withAddresses() {
-      $action= $this->parseRuleSetFrom('
+      $action= $this->parseCommandSetFrom('
         if true { 
           vacation :addresses ["me@example.com", "you@example.com"] "Out of office";
         }
-      ')->ruleAt(0)->actions[0];
+      ')->commandAt(0)->commands[0];
       $this->assertClass($action, 'peer.sieve.VacationAction');
       $this->assertEquals(array('me@example.com', 'you@example.com'), $action->addresses);
     }
@@ -114,7 +114,7 @@
      */
     #[@test]
     public function withHandle() {
-      $action= $this->parseRuleSetFrom('
+      $action= $this->parseCommandSetFrom('
         require "vacation";
 
         if header :contains "subject" "lunch" {
@@ -122,7 +122,7 @@
         } else {
             vacation :handle "ran-away" "I\'m out";
         }
-      ')->ruleAt(0)->actions[0];
+      ')->commandAt(0)->commands[0];
       $this->assertClass($action, 'peer.sieve.VacationAction');
       $this->assertEquals('ran-away', $action->handle);
     }

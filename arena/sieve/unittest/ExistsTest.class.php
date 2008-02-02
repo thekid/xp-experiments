@@ -20,11 +20,11 @@
      */
     #[@test]
     public function fromAndDateDoNotExist() {
-      $condition= $this->parseRuleSetFrom('
+      $condition= $this->parseCommandSetFrom('
         if not exists ["From","Date"] {
            discard;
         }
-      ')->ruleAt(0)->condition->negated;
+      ')->commandAt(0)->condition->negated;
       $this->assertClass($condition, 'peer.sieve.ExistsCondition');
       $this->assertEquals(array('From', 'Date'), $condition->names);
     }

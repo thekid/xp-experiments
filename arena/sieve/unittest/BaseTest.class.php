@@ -20,7 +20,7 @@
      */
     #[@test]
     public function emptyScript() {
-      $this->assertTrue($this->parseRuleSetFrom('')->isEmpty());
+      $this->assertTrue($this->parseCommandSetFrom('')->isEmpty());
     }
 
     /**
@@ -29,7 +29,7 @@
      */
     #[@test]
     public function oneLineComment() {
-      $this->assertEquals(1, $this->parseRuleSetFrom('
+      $this->assertEquals(1, $this->parseCommandSetFrom('
         if size :over 100k { # this is a comment
           discard;
         }
@@ -42,7 +42,7 @@
      */
     #[@test]
     public function multilineComments() {
-      $this->assertEquals(1, $this->parseRuleSetFrom('
+      $this->assertEquals(1, $this->parseCommandSetFrom('
         if size :over 100K { /* this is a comment
            this is still a comment */ discard /* this is a comment
            */ ;
@@ -56,7 +56,7 @@
      */
     #[@test]
     public function scriptWithOnlyComments() {
-      $this->assertTrue($this->parseRuleSetFrom('
+      $this->assertTrue($this->parseCommandSetFrom('
         # Nothing to be seen here
         ## Comments
         ### Over ####
@@ -77,12 +77,27 @@
     }
 
     /**
-     * Test uncoditional rule
+     * Test top-level action
      *
      */
     #[@test]
     public function uncoditionalRule() {
-      $this->assertNull($this->parseRuleSetFrom('redirect "tom@example.com";')->ruleAt(0)->condition);
+      $this->assertClass(
+        $this->parseCommandSetFrom('redirect "tom@example.com";')->commandAt(0),
+        'peer.sieve.RedirectAction'
+      );
+    }
+
+    /**
+     * Test top-level action
+     *
+     */
+    #[@test]
+    public function nestedRules() {
+      $rule= $this->parseCommandSetFrom('if true { if false { }}')->commandAt(0);
+      $this->assertClass($rule, 'peer.sieve.Rule');
+      $this->assertClass($rule->commands[0], 'peer.sieve.Rule');
+      $this->assertEquals(NULL, $rule->commands[0]->commands);
     }
   }
 ?>

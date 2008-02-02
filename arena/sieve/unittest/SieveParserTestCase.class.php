@@ -42,8 +42,8 @@
      * @param   string src
      * @return  peer.sieve.RuleSet
      */
-    protected function parseRuleSetFrom($src) {
-      return $this->parser->parse(new peer·sieve·Lexer($src, $this->name))->ruleset;
+    protected function parseCommandSetFrom($src) {
+      return $this->parser->parse(new peer·sieve·Lexer($src, $this->name))->commandset;
     }
   }
 ?>

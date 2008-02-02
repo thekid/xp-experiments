@@ -21,7 +21,7 @@
      * @throws  unittest.AssertionFailedError  
      */
     protected function isFrom(AddressPart $ap, $src) {
-      with ($condition= $this->parseRuleSetFrom($src)->ruleAt(0)->condition); {
+      with ($condition= $this->parseCommandSetFrom($src)->commandAt(0)->condition); {
         $this->assertClass($condition, 'peer.sieve.AddressCondition');
         $this->assertEquals(MatchType::is(), $condition->matchtype);
         $this->assertEquals($ap, $condition->addresspart);
@@ -84,11 +84,11 @@
      */
     #[@test]
     public function contains() {
-      $condition= $this->parseRuleSetFrom('
+      $condition= $this->parseCommandSetFrom('
         if address :contains ["To","TO","Cc","CC"] "tsk@example.com" {
            discard;
         }
-      ')->ruleAt(0)->condition;
+      ')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.AddressCondition');
       $this->assertEquals(MatchType::contains(), $condition->matchtype);
       $this->assertEquals(array('To', 'TO', 'Cc', 'CC'), $condition->headers);
@@ -101,11 +101,11 @@
      */
     #[@test]
     public function matches() {
-      $condition= $this->parseRuleSetFrom('
+      $condition= $this->parseCommandSetFrom('
         if address :matches ["To", "Cc"] ["coyote@**.com", "wile@**.com"] {
            fileinto "INBOX.business.${2}"; stop;
         }
-      ')->ruleAt(0)->condition;
+      ')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.AddressCondition');
       $this->assertEquals(MatchType::matches(), $condition->matchtype);
       $this->assertEquals(array('To', 'Cc'), $condition->headers);

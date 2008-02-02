@@ -1,7 +1,7 @@
 %{
   uses(
     'peer.sieve.SyntaxTree',
-    'peer.sieve.RuleSet',
+    'peer.sieve.CommandSet',
     'peer.sieve.Rule',
     'peer.sieve.AddressPart',
     'peer.sieve.ActionFactory',
@@ -59,11 +59,11 @@
 %%
 
 start:
-    requires_opt rules_opt {
+    requires_opt commands_opt {
       $$= new peer新ieve惹yntaxTree();
       $$->required= $1;
-      $$->ruleset= new peer新ieve愛uleSet();
-      $$->ruleset->rules= $2;
+      $$->commandset= new peer新ieve嵩ommandSet();
+      $$->commandset->list= $2;
     }
 ;
 
@@ -85,43 +85,39 @@ require:
 // }}}
 
 // {{{ Rules
-rules_opt:
+commands_opt:
     /* empty */ { $$= NULL; }
-  | rules 
+  | commands 
 ;
 
-rules:
-    rule { $$= array($1); }
-  | rule rules { $$= array_merge(array($1), $2); }
+commands:
+    command { $$= array($1); }
+  | command commands { $$= array_merge(array($1), $2); }
 ;
 
-rule:
-    T_IF { $1= $yyLex->create(new peer新ieve愛ule()); } test '{' actions '}' else_opt {
+command:
+    T_IF { $1= $yyLex->create(new peer新ieve愛ule()); } test '{' commands_opt '}' else_opt {
       $1->condition= $3;
-      $1->actions= $5;
+      $1->commands= $5;
       $1->otherwise= $7;
       if ($7 && !$7->condition) {    // dangling else
         $7->condition= new NegationOfCondition();
         $7->condition->negated= $3;
       }
     }
-  | action { 
-      $$= $yyLex->create(new peer新ieve愛ule());
-      $$->condition= NULL;
-      $$->actions= array($1);
-    }
+  | action
       
 ;
 
 else_opt:
     /* empty */ { $$= NULL; }
-  | T_ELSE { $1= $yyLex->create(new peer新ieve愛ule()); } '{' actions '}' {
+  | T_ELSE { $1= $yyLex->create(new peer新ieve愛ule()); } '{' commands_opt '}' {
       $1->condition= NULL;
       $1->actions= $4;
     }
-  | T_ELSEIF { $1= $yyLex->create(new peer新ieve愛ule()); } test '{' actions '}' else_opt {
+  | T_ELSEIF { $1= $yyLex->create(new peer新ieve愛ule()); } test '{' commands_opt '}' else_opt {
       $1->condition= $3;
-      $1->actions= $5;
+      $1->commands= $5;
       $1->otherwise= $7;
       if ($7 && !$7->condition) {    // dangling else
         $7->condition= new NegationOfCondition();
@@ -130,11 +126,6 @@ else_opt:
     }
 ;
 // }}}
-
-actions:
-    action { $$= array($1); }
-  | action actions { $$= array_merge(array($1), $2); }
-;
 
 action:
     T_WORD { $1= $yyLex->create(ActionFactory::newAction($1)); } taglist_opt arguments_opt ';' {

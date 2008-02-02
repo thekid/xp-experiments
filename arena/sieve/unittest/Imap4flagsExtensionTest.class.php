@@ -20,11 +20,11 @@
      */
     #[@test]
     public function deleteFlag() {
-      $action= $this->parseRuleSetFrom('
+      $action= $this->parseCommandSetFrom('
         if size :over 500K {
           addflag "\\Deleted";
         }
-      ')->ruleAt(0)->actions[0];
+      ')->commandAt(0)->commands[0];
       $this->assertClass($action, 'peer.sieve.AddFlagAction');
       $this->assertEquals(array('\Deleted'), $action->flags);
     }

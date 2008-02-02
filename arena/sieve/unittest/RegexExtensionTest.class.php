@@ -20,12 +20,12 @@
      */
     #[@test]
     public function regex() {
-      $condition= $this->parseRuleSetFrom('
+      $condition= $this->parseCommandSetFrom('
         # if the subject is all uppercase (no lowercase)
         if header :regex "subject" "^[^[:lower:]]+$" {
            discard;      # junk it
         }
-      ')->ruleAt(0)->condition;
+      ')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.HeaderCondition');
       $this->assertEquals(MatchType::regex(), $condition->matchtype);
       $this->assertEquals(array('^[^[:lower:]]+$'), $condition->keys);
@@ -37,12 +37,12 @@
      */
     #[@test]
     public function withComparator() {
-      $condition= $this->parseRuleSetFrom('
+      $condition= $this->parseCommandSetFrom('
         # if the subject is all uppercase (no lowercase)
         if header :regex :comparator "i;ascii-casemap" "Subject" "\\[Bug [0-9]+\\]" {
            fileinto "INBOX.bugs";
         }
-      ')->ruleAt(0)->condition;
+      ')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.HeaderCondition');
       $this->assertEquals(MatchType::regex(), $condition->matchtype);
       $this->assertEquals('i;ascii-casemap', $condition->comparator);

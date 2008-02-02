@@ -20,12 +20,12 @@
      */
     #[@test]
     public function allIsFrom() {
-      $condition= $this->parseRuleSetFrom('
+      $condition= $this->parseCommandSetFrom('
         require "envelope";
         if envelope :all :is "from" "tim@example.com" {
            discard;
         }
-      ')->ruleAt(0)->condition;
+      ')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.EnvelopeCondition');
       $this->assertEquals(MatchType::is(), $condition->matchtype);
       $this->assertEquals(AddressPart::$all, $condition->addresspart);

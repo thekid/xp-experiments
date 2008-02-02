@@ -20,7 +20,7 @@
      */
     #[@test]
     public function oneCondition() {
-      $condition= $this->parseRuleSetFrom('if allof (false) { discard; }')->ruleAt(0)->condition;
+      $condition= $this->parseCommandSetFrom('if allof (false) { discard; }')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.AllOfCondition');
       $this->assertEquals(1, $condition->numConditions());
       $this->assertClass($condition->conditionAt(0), 'peer.sieve.BooleanCondition');
@@ -32,7 +32,7 @@
      */
     #[@test]
     public function twoConditions() {
-      $condition= $this->parseRuleSetFrom('if allof (size :over 1000, false) { discard; }')->ruleAt(0)->condition;
+      $condition= $this->parseCommandSetFrom('if allof (size :over 1000, false) { discard; }')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.AllOfCondition');
       $this->assertEquals(2, $condition->numConditions());
       $this->assertClass($condition->conditionAt(0), 'peer.sieve.LargerThanCondition');
@@ -45,13 +45,13 @@
      */
     #[@test]
     public function threeConditions() {
-      $condition= $this->parseRuleSetFrom('if allof (
+      $condition= $this->parseCommandSetFrom('if allof (
         header :contains ["to", "cc"] "admin",
         header :contains "From" "admin.example.com",
         header :is "X-Admin" "yes"
       ) { 
         fileinto "admin"; stop; 
-      }')->ruleAt(0)->condition;
+      }')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.AllOfCondition');
       $this->assertEquals(3, $condition->numConditions());
       $this->assertClass($condition->conditionAt(0), 'peer.sieve.HeaderCondition');

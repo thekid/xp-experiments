@@ -20,7 +20,7 @@
      */
     #[@test]
     public function largerThanCondition() {
-      $condition= $this->parseRuleSetFrom('if size :over 1000 { discard; }')->ruleAt(0)->condition;
+      $condition= $this->parseCommandSetFrom('if size :over 1000 { discard; }')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.LargerThanCondition');
       $this->assertEquals(1000, $condition->value);
     }
@@ -31,7 +31,7 @@
      */
     #[@test]
     public function smallerThanCondition() {
-      $condition= $this->parseRuleSetFrom('if size :under 1000 { discard; }')->ruleAt(0)->condition;
+      $condition= $this->parseCommandSetFrom('if size :under 1000 { discard; }')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.SmallerThanCondition');
       $this->assertEquals(1000, $condition->value);
     }
@@ -44,7 +44,7 @@
     public function kilobyteQuantifier() {
       $this->assertEquals(
         102400,
-        $this->parseRuleSetFrom('if size :over 100k { discard; }')->ruleAt(0)->condition->value
+        $this->parseCommandSetFrom('if size :over 100k { discard; }')->commandAt(0)->condition->value
       );
     }
 
@@ -56,7 +56,7 @@
     public function megabyteQuantifier() {
       $this->assertEquals(
         2097152,
-        $this->parseRuleSetFrom('if size :over 2M { discard; }')->ruleAt(0)->condition->value
+        $this->parseCommandSetFrom('if size :over 2M { discard; }')->commandAt(0)->condition->value
       );
     }
 
@@ -68,7 +68,7 @@
     public function gigabyteQuantifier() {
       $this->assertEquals(
         1073741824,
-        $this->parseRuleSetFrom('if size :over 1G { discard; }')->ruleAt(0)->condition->value
+        $this->parseCommandSetFrom('if size :over 1G { discard; }')->commandAt(0)->condition->value
       );
     }
 

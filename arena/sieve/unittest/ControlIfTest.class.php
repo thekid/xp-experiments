@@ -20,11 +20,11 @@
      */
     #[@test]
     public function ifWithoutElse() {
-      $rule= $this->parseRuleSetFrom('
+      $rule= $this->parseCommandSetFrom('
         if header :contains "from" "coyote" {
            discard;
         }
-      ')->ruleAt(0);
+      ')->commandAt(0);
       $this->assertClass($rule, 'peer.sieve.Rule');
       $this->assertClass($rule->condition, 'peer.sieve.HeaderCondition');
       $this->assertNull($rule->otherwise);
@@ -36,13 +36,13 @@
      */
     #[@test]
     public function ifWithElse() {
-      $rule= $this->parseRuleSetFrom('
+      $rule= $this->parseCommandSetFrom('
         if header :contains "from" "coyote" {
            discard;
         } else {
            fileinto "INBOX";
         }
-      ')->ruleAt(0);
+      ')->commandAt(0);
       $this->assertClass($rule, 'peer.sieve.Rule');
       $this->assertClass($rule->condition, 'peer.sieve.HeaderCondition');
       $this->assertClass($rule->otherwise, 'peer.sieve.Rule');
@@ -56,13 +56,13 @@
      */
     #[@test]
     public function ifWithElseIf() {
-      $rule= $this->parseRuleSetFrom('
+      $rule= $this->parseCommandSetFrom('
         if header :contains "from" "coyote" {
            discard;
         } elsif header :contains ["subject"] ["$$$"] {
            discard;
         }
-      ')->ruleAt(0);
+      ')->commandAt(0);
       $this->assertClass($rule, 'peer.sieve.Rule');
       $this->assertClass($rule->condition, 'peer.sieve.HeaderCondition');
       $this->assertClass($rule->otherwise, 'peer.sieve.Rule');
@@ -75,7 +75,7 @@
      */
     #[@test]
     public function ifWithElseIfAndElse() {
-      $rule= $this->parseRuleSetFrom('
+      $rule= $this->parseCommandSetFrom('
         if header :contains "from" "coyote" {
            discard;
         } elsif header :contains ["subject"] ["$$$"] {
@@ -83,7 +83,7 @@
         } else {
            fileinto "INBOX";
         }
-      ')->ruleAt(0);
+      ')->commandAt(0);
       $this->assertClass($rule, 'peer.sieve.Rule');
       $this->assertClass($rule->condition, 'peer.sieve.HeaderCondition');
       $this->assertClass($rule->otherwise, 'peer.sieve.Rule');

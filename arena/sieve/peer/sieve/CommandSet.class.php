@@ -6,47 +6,46 @@
 
   $package= 'peer.sieve';
 
-  uses('lang.IndexOutOfBoundsException');
+  uses('lang.IndexOutOfBoundsException', 'peer.sieve.Command');
 
   /**
    * (Insert class' description here)
    *
    * @purpose  Value object
    */
-  class peer·sieve·RuleSet extends Object {
-    public
-      $rules    = array();
+  class peer·sieve·CommandSet extends Object {
+    public $list= array();
       
     /**
-     * Returns whether this ruleset is empty
+     * Returns whether this listet is empty
      *
      * @return  bool
      */
     public function isEmpty() {
-      return 0 === sizeof($this->rules);
+      return 0 === sizeof($this->list);
     }
 
     /**
-     * Returns size of this ruleset
+     * Returns size of this listet
      *
      * @return  int
      */
     public function size() {
-      return sizeof($this->rules);
+      return sizeof($this->list);
     }
 
     /**
-     * Retrieve a rile at a given offset
+     * Retrieve a list at a given offset
      *
      * @param   int offset
-     * @return  peer.sieve.Condition
+     * @return  peer.sieve.list
      * @throws  lang.IndexOutOfBoundsException
      */
-    public function ruleAt($offset) {
-      if (!isset($this->rules[$offset])) {
+    public function commandAt($offset) {
+      if (!isset($this->list[$offset])) {
         throw new IndexOutOfBoundsException('Offset '.$offset.' out of bounds');
       }
-      return $this->rules[$offset];
+      return $this->list[$offset];
     }
   }
 ?>

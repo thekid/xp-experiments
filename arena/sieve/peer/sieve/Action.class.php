@@ -5,15 +5,16 @@
  */
 
   $package= 'peer.sieve';
+  
+  uses('peer.sieve.Command');
 
   /**
-   * (Insert class' description here)
+   * A sieve action
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.sieve.Command
+   * @purpose  Command implementation
    */
-  abstract class peer·sieve·Action extends Object {
+  abstract class peer·sieve·Action extends peer·sieve·Command {
 
     /**
      * Pass tags and arguments

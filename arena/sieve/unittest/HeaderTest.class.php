@@ -20,11 +20,11 @@
      */
     #[@test]
     public function xCaffeineIsEmpty() {
-      $condition= $this->parseRuleSetFrom('
+      $condition= $this->parseCommandSetFrom('
         if header :is ["X-Caffeine"] [""] {
            keep;
         }
-      ')->ruleAt(0)->condition;
+      ')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.HeaderCondition');
       $this->assertEquals(MatchType::is(), $condition->matchtype);
       $this->assertEquals(array('X-Caffeine'), $condition->names);
@@ -37,11 +37,11 @@
      */
     #[@test]
     public function xCaffeineContainsEmpty() {
-      $condition= $this->parseRuleSetFrom('
+      $condition= $this->parseCommandSetFrom('
         if header :contains ["X-Caffeine"] [""] {
            keep;
         }
-      ')->ruleAt(0)->condition;
+      ')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.HeaderCondition');
       $this->assertEquals(MatchType::contains(), $condition->matchtype);
       $this->assertEquals(array('X-Caffeine'), $condition->names);
@@ -54,11 +54,11 @@
      */
     #[@test]
     public function ccMatches() {
-      $condition= $this->parseRuleSetFrom('
+      $condition= $this->parseCommandSetFrom('
         if header :matches "Cc" "?*" {
            keep;
         }
-      ')->ruleAt(0)->condition;
+      ')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.HeaderCondition');
       $this->assertEquals(MatchType::matches(), $condition->matchtype);
       $this->assertEquals(array('Cc'), $condition->names);
