@@ -24,7 +24,7 @@
      * @param   
      * @return  
      */
-    public function __construct($args) {
+    public function __construct($args= NULL) {
       if (is_array($args)) $this->parse($args);
     }
     
@@ -95,6 +95,19 @@
         if (!$arg->isNamed()) $this->unboundMap[]= $index;
       }
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function slice($start, $end) {
+      $slice= new self();
+      $slice->arguments= array_slice($this->arguments, $start, $end);
+      $slice->registerUnbounds();
+      return $slice;
+    }    
     
     /**
      * (Insert method's description here)

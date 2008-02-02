@@ -191,12 +191,14 @@
     #[@test]
     public function slicing() {
       $slice= $this->fixture->slice(0, $this->fixture->at(0)->position());
+      $this->assertEquals(
+        array(
+          new CommandLineArgument('config', NULL, './etc'),
+          new CommandLineArgument(NULL, 'cp', '.:skeleton/'),
+          new CommandLineArgument(NULL, 'V', TRUE)
+        ),
+        $slice->arguments()
+      );
     }
-    
-    
-    
-    
-    
-    
   }
 ?>
