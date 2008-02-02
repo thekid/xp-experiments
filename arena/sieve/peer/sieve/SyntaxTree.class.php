@@ -7,11 +7,10 @@
   $package= 'peer.sieve';
 
   /**
-   * (Insert class' description here)
+   * Represents a sieve script's syntax tree
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.sieve.SieveParser#parse
+   * @purpose  Value object
    */
   class peer·sieve·SyntaxTree extends Object {
     public $required= array();
@@ -24,9 +23,9 @@
      */
     public function toString() {
       return sprintf(
-        "%s@{\n  required= %s\n  commandset= %s\n}",
+        "%s@{\n  required   : [%s]\n  commandset : %s\n}",
         $this->getClassName(),
-        str_replace("\n", "\n  ", xp::stringOf($this->required)),
+        implode(', ', $this->required),
         str_replace("\n", "\n  ", xp::stringOf($this->commandset))
       );
     }
