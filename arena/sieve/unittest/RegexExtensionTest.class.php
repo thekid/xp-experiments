@@ -30,5 +30,23 @@
       $this->assertEquals('regex', $condition->matchtype);   // Should be RegexMatchtype...
       $this->assertEquals(array('^[^[:lower:]]+$'), $condition->keys);
     }
+
+    /**
+     * Test regex with comparator
+     *
+     */
+    #[@test]
+    public function withComparator() {
+      $condition= $this->parseRuleSetFrom('
+        # if the subject is all uppercase (no lowercase)
+        if header :regex :comparator "i;ascii-casemap" "Subject" "\\[Bug [0-9]+\\]" {
+           fileinto "INBOX.bugs";
+        }
+      ')->ruleAt(0)->condition;
+      $this->assertClass($condition, 'peer.sieve.HeaderCondition');
+      $this->assertEquals('regex', $condition->matchtype);   // Should be RegexMatchtype...
+      $this->assertEquals('i;ascii-casemap', $condition->comparator);
+      $this->assertEquals(array('\[Bug [0-9]+\]'), $condition->keys);
+    }
   }
 ?>
