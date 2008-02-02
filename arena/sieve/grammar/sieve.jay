@@ -199,6 +199,7 @@ taglist:
 tag:
     ':' matchtype { $$= array('matchtype' => $2); }
   | ':' addresspart { $$= array('addresspart' => $2); }
+  | ':' T_WORD argument { $$= array($2 => $3); }
   | ':' T_COMPARATOR T_STRING { $$= array('comparator' => $3); }
 ;
 

@@ -9,14 +9,6 @@
   /**
    * TestCase for vacation extension
    *
-   * Syntax:
-   * <pre>
-   *   vacation [":days" number] [":subject" string]
-   *    [":from" string] [":addresses" string-list]
-   *    [":mime"] [":handle" string] <reason: string>
-   * </pre>
-   *
-   * @see      rfc://5230
    * @see      xp://peer.sieve.VacationAction
    * @purpose  Unittest
    */

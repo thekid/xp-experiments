@@ -7,13 +7,37 @@
   uses('peer.sieve.Action');
 
   /**
-   * (Insert class' description here)
+   * The notify extension
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * Syntax:
+   * <pre>
+   *   notify [":from" string]
+   *     [":importance" <"1" / "2" / "3">]
+   *     [":options" string-list]
+   *     [":message" string]
+   *     <method: string>
+   * </pre>
+   *
+   * Old syntax:
+   * <pre>
+   *   notify [":method" string]
+   *     [":id" string]
+   *     [":options" 1*(string-list / number)]
+   *     [<":low" / ":normal" / ":high">]
+   *     ["message:" string]
+   * </pre>
+   *
+   * @test     xp://unittest.NotifyExtensionTest
+   * @see      http://ietfreport.isoc.org/idref/draft-ietf-sieve-notify/
+   * @purpose  Action
    */
   class NotifyAction extends peer·sieve·Action {
+    public 
+      $method     = NULL,
+      $from       = NULL,
+      $importance = -1,
+      $options    = array(),
+      $message    = NULL;
     
     /**
      * Pass tags and arguments
@@ -22,7 +46,11 @@
      * @param   *[] arguments
      */
     public function pass($tags, $arguments) {
-      // XXX
+      $this->method= $arguments[0];
+      $this->from= isset($tags['from']) ? $tags['from'] : NULL;
+      $this->message= isset($tags['message']) ? $tags['message'] : NULL;
+      $this->options= isset($tags['options']) ? $tags['options'] : array();
+      $this->importance= isset($tags['importance']) ? intval($tags['importance']) : -1;
     }
   }
 ?>

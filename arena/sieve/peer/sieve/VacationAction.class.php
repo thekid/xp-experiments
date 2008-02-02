@@ -7,13 +7,28 @@
   uses('peer.sieve.Action');
 
   /**
-   * (Insert class' description here)
+   * The vacation extension
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * Syntax:
+   * <pre>
+   *   vacation [":days" number] [":subject" string]
+   *    [":from" string] [":addresses" string-list]
+   *    [":mime"] [":handle" string] <reason: string>
+   * </pre>
+   *
+   * @test     xp://unittest.VacationExtensionTest
+   * @see      rfc://5230
+   * @purpose  Action
    */
   class VacationAction extends peer·sieve·Action {
+    public 
+      $reason    = NULL, 
+      $days      = -1, 
+      $subject   = NULL, 
+      $from      = NULL, 
+      $mime      = FALSE, 
+      $handle    = NULL, 
+      $addresses = array();
 
     /**
      * Pass tags and arguments
@@ -22,7 +37,13 @@
      * @param   *[] arguments
      */
     public function pass($tags, $arguments) {
-      // XXX
+      $this->reason= $arguments[0];
+      $this->days= isset($tags['days']) ? intval($tags['days']) : -1;
+      $this->subject= isset($tags['subject']) ? $tags['subject'] : NULL;
+      $this->from= isset($tags['from']) ? $tags['from'] : NULL;
+      $this->mime= isset($tags['mime']) ? $tags['mime'] : FALSE;
+      $this->handle= isset($tags['handle']) ? $tags['handle'] : NULL;
+      $this->addresses= isset($tags['addresses']) ? $tags['addresses'] : array();
     }
     
   }
