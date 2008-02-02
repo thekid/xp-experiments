@@ -42,6 +42,9 @@
 %token T_IS 400
 %token T_CONTAINS 401
 %token T_MATCHES 402
+%token T_REGEX 402
+%token T_VALUE 402
+%token T_COUNT 402
 
 %token T_ALL 500
 %token T_DOMAIN 501
@@ -200,7 +203,7 @@ tag:
     ':' matchtype { $$= array('matchtype' => $2); }
   | ':' addresspart { $$= array('addresspart' => $2); }
   | ':' T_WORD argument { $$= array($2 => $3); }
-  | ':' T_COMPARATOR T_STRING { $$= array('comparator' => $3); }
+  | ':' comparator { $$= array('comparator' => $2); }
 ;
 
 testlist:
@@ -228,6 +231,10 @@ argument:
 
 
 // {{{ Reusable
+comparator:
+    T_COMPARATOR T_STRING { $$= $2; }
+;
+
 addresspart:
     T_ALL
   | T_DOMAIN
@@ -238,6 +245,9 @@ matchtype:
     T_IS 
   | T_CONTAINS 
   | T_MATCHES
+  | T_VALUE T_STRING { $$= array($1, $2); }
+  | T_REGEX T_STRING { $$= array($1, $2); }
+  | T_COUNT T_STRING { $$= array($1, $2); }
 ;
 
 stringlist:

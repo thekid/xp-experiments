@@ -12,5 +12,7 @@
    * @purpose  Base class for all rules
    */
   class HeaderCondition extends peer·sieve·Condition {
+    public
+      $matchtype= NULL;
   }
 ?>
