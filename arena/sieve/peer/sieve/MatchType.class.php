@@ -75,5 +75,14 @@
       if (!isset(self::$regex)) self::$regex= new RegexMatch();
       return self::$regex;
     }
+
+    /**
+     * Creates a string representation of this match type.
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName();
+    }
   }
 ?>

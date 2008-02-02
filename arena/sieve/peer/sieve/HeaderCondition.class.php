@@ -7,12 +7,29 @@
   uses('peer.sieve.Condition');
 
   /**
-   * (Insert class' description here)
+   * The "header" condition
    *
-   * @purpose  Base class for all rules
+   * @purpose  Condition implementation
    */
   class HeaderCondition extends peer·sieve·Condition {
     public
-      $matchtype= NULL;
+      $matchtype = NULL,
+      $names     = array(),
+      $keys      = array();
+
+    /**
+     * Creates a string representation of this header condition
+     *
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        '%s(%s [%s] ["%s"])',
+        $this->getClassName(),
+        xp::stringOf($this->matchtype),
+        implode(', ', $this->names),
+        implode('", "', $this->keys)
+      );
+    }
   }
 ?>

@@ -47,5 +47,18 @@
       }
       return $this->list[$offset];
     }
+
+    /**
+     * Creates a string representation of this action.
+     *
+     * @return  string
+     */
+    public function toString() {
+      $s= $this->getClassName().'('.sizeof($this->list).")@{\n";
+      foreach ($this->list as $command) {
+        $s.= '  '.str_replace("\n", "\n  ", $command->toString())."\n";
+      }
+      return $s.'}';
+    }
   }
 ?>

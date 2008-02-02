@@ -15,15 +15,15 @@
    */
   abstract class RelationalMatchType extends MatchType {
     public 
-      $relational= NULL;
+      $op= NULL;
     
     /**
      * Constructor
      *
-     * @param   string relational
+     * @param   string $op
      */
-    public function __construct($relational) {
-      $this->relational= $relational;
+    public function __construct($op) {
+      $this->op= $op;
     }
 
     /**
@@ -33,7 +33,16 @@
      * @return  bool
      */
     public function equals($cmp) {
-      return $cmp instanceof self && $this->relational === $cmp->relational;
+      return $cmp instanceof self && $this->op === $cmp->op;
+    }
+
+    /**
+     * Creates a string representation of this relational match type.
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->op.')';
     }
   }
 ?>
