@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('text.StringTokenizer', 'text.parser.generic.AbstractLexer');
+  uses('text.Tokenizer', 'text.parser.generic.AbstractLexer');
   
   $package= 'peer.sieve';
 
@@ -55,11 +55,13 @@
     /**
      * Constructor
      *
-     * @param   string input
+     * @param   text.Tokenizer tokenizer
      * @param   string source
      */
-    public function __construct($input, $source) {
-      $this->tokenizer= new StringTokenizer($input."\0", self::DELIMITERS, TRUE);
+    public function __construct(Tokenizer $tokenizer, $source) {
+      $this->tokenizer= $tokenizer;
+      $this->tokenizer->delimiters= self::DELIMITERS;
+      $this->tokenizer->returnDelims= TRUE;
       $this->fileName= $source;
       $this->position= array(1, 1);   // Y, X
     }

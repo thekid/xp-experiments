@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'text.StringTokenizer',
     'peer.sieve.SieveParser',
     'peer.sieve.Lexer'
   );
@@ -33,7 +34,7 @@
      * @return  peer.sieve.SyntaxTree
      */
     protected function parse($src) {
-      return $this->parser->parse(new peer新ieve微exer($src, $this->name));
+      return $this->parser->parse(new peer新ieve微exer(new StringTokenizer($src."\0"), $this->name));
     }
     
     /**
@@ -43,7 +44,7 @@
      * @return  peer.sieve.RuleSet
      */
     protected function parseCommandSetFrom($src) {
-      return $this->parser->parse(new peer新ieve微exer($src, $this->name))->commandset;
+      return $this->parser->parse(new peer新ieve微exer(new StringTokenizer($src."\0"), $this->name))->commandset;
     }
   }
 ?>
