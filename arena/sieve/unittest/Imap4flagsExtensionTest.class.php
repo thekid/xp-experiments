@@ -25,7 +25,7 @@
           addflag "\\Deleted";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.AddFlagAction');
+      $this->assertClass($action, 'peer.sieve.action.AddFlagAction');
       $this->assertEquals(array('\Deleted'), $action->flags);
     }
   }

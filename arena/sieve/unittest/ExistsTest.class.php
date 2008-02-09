@@ -25,7 +25,7 @@
            discard;
         }
       ')->commandAt(0)->condition->negated;
-      $this->assertClass($condition, 'peer.sieve.ExistsCondition');
+      $this->assertClass($condition, 'peer.sieve.condition.ExistsCondition');
       $this->assertEquals(array('From', 'Date'), $condition->names);
     }
   }

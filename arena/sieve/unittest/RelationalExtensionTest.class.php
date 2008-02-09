@@ -25,7 +25,7 @@
           discard;
         }
       ')->commandAt(0)->condition;
-      $this->assertClass($condition, 'peer.sieve.HeaderCondition');
+      $this->assertClass($condition, 'peer.sieve.condition.HeaderCondition');
       $this->assertEquals(new ValueMatch('eq'), $condition->matchtype);
     }
 
@@ -42,7 +42,7 @@
            fileinto "SPAM";
         }
       ')->commandAt(0)->condition;
-      $this->assertClass($condition, 'peer.sieve.AddressCondition');
+      $this->assertClass($condition, 'peer.sieve.condition.AddressCondition');
       $this->assertEquals(new CountMatch('gt'), $condition->matchtype);   // Should be ValueMatchType...
     }
   }

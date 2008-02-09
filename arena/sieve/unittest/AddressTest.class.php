@@ -22,7 +22,7 @@
      */
     protected function isFrom(AddressPart $ap, $src) {
       with ($condition= $this->parseCommandSetFrom($src)->commandAt(0)->condition); {
-        $this->assertClass($condition, 'peer.sieve.AddressCondition');
+        $this->assertClass($condition, 'peer.sieve.condition.AddressCondition');
         $this->assertEquals(MatchType::is(), $condition->matchtype);
         $this->assertEquals($ap, $condition->addresspart);
         $this->assertEquals(array('from'), $condition->headers);
@@ -89,7 +89,7 @@
            discard;
         }
       ')->commandAt(0)->condition;
-      $this->assertClass($condition, 'peer.sieve.AddressCondition');
+      $this->assertClass($condition, 'peer.sieve.condition.AddressCondition');
       $this->assertEquals(MatchType::contains(), $condition->matchtype);
       $this->assertEquals(array('To', 'TO', 'Cc', 'CC'), $condition->headers);
       $this->assertEquals(array('tsk@example.com'), $condition->keys);
@@ -106,7 +106,7 @@
            fileinto "INBOX.business.${2}"; stop;
         }
       ')->commandAt(0)->condition;
-      $this->assertClass($condition, 'peer.sieve.AddressCondition');
+      $this->assertClass($condition, 'peer.sieve.condition.AddressCondition');
       $this->assertEquals(MatchType::matches(), $condition->matchtype);
       $this->assertEquals(array('To', 'Cc'), $condition->headers);
       $this->assertEquals(array('coyote@**.com', 'wile@**.com'), $condition->keys);

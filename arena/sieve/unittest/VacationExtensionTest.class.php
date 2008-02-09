@@ -25,7 +25,7 @@
           vacation "Out of office";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.VacationAction');
+      $this->assertClass($action, 'peer.sieve.action.VacationAction');
       $this->assertEquals('Out of office', $action->reason);
     }
 
@@ -40,7 +40,7 @@
           vacation :days 7 "Out of office";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.VacationAction');
+      $this->assertClass($action, 'peer.sieve.action.VacationAction');
       $this->assertEquals(7, $action->days);
       $this->assertEquals('Out of office', $action->reason);
     }
@@ -56,7 +56,7 @@
           vacation :subject "Out of office" "I\'ll be back";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.VacationAction');
+      $this->assertClass($action, 'peer.sieve.action.VacationAction');
       $this->assertEquals('Out of office', $action->subject);
       $this->assertEquals('I\'ll be back', $action->reason);
     }
@@ -72,7 +72,7 @@
           vacation :from "oo@example.com" "I\'ll be back";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.VacationAction');
+      $this->assertClass($action, 'peer.sieve.action.VacationAction');
       $this->assertEquals('oo@example.com', $action->from);
       $this->assertEquals('I\'ll be back', $action->reason);
     }
@@ -88,7 +88,7 @@
           vacation :mime "Out of office";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.VacationAction');
+      $this->assertClass($action, 'peer.sieve.action.VacationAction');
       $this->assertTrue($action->mime);
       $this->assertEquals('Out of office', $action->reason);
     }
@@ -104,7 +104,7 @@
           vacation :addresses ["me@example.com", "you@example.com"] "Out of office";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.VacationAction');
+      $this->assertClass($action, 'peer.sieve.action.VacationAction');
       $this->assertEquals(array('me@example.com', 'you@example.com'), $action->addresses);
     }
 
@@ -123,7 +123,7 @@
             vacation :handle "ran-away" "I\'m out";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.VacationAction');
+      $this->assertClass($action, 'peer.sieve.action.VacationAction');
       $this->assertEquals('ran-away', $action->handle);
     }
   }

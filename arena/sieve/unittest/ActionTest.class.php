@@ -24,7 +24,7 @@
       $action= $this->parseCommandSetFrom('
         if size :under 1M { keep; } else { discard; }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.KeepAction');
+      $this->assertClass($action, 'peer.sieve.action.KeepAction');
     }
 
     /**
@@ -47,7 +47,7 @@
       $action= $this->parseCommandSetFrom('
         if header :contains ["from"] ["idiot@example.com"] { discard; }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.DiscardAction');
+      $this->assertClass($action, 'peer.sieve.action.DiscardAction');
     }
 
     /**
@@ -70,7 +70,7 @@
       $action= $this->parseCommandSetFrom('
         if size :over 1M { stop; }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.StopAction');
+      $this->assertClass($action, 'peer.sieve.action.StopAction');
     }
 
     /**
@@ -93,7 +93,7 @@
       $action= $this->parseCommandSetFrom('
         if size :over 1M { reject "Your message is too big"; }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.RejectAction');
+      $this->assertClass($action, 'peer.sieve.action.RejectAction');
       $this->assertEquals('Your message is too big', $action->reason);
     }
 
@@ -107,7 +107,7 @@
       $action= $this->parseCommandSetFrom('
         if size :over 1M { redirect "bart@example.com"; }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.RedirectAction');
+      $this->assertClass($action, 'peer.sieve.action.RedirectAction');
       $this->assertEquals('bart@example.com', $action->getTarget());
     }
 
@@ -121,7 +121,7 @@
       $action= $this->parseCommandSetFrom('
         if size :over 1M { forward "bort@example.com"; }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.ForwardAction');
+      $this->assertClass($action, 'peer.sieve.action.ForwardAction');
       $this->assertEquals('bort@example.com', $action->getTarget());
     }
 
@@ -135,7 +135,7 @@
       $action= $this->parseCommandSetFrom('
         if size :over 1M { fileinto "INBOX.huge"; }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.FileIntoAction');
+      $this->assertClass($action, 'peer.sieve.action.FileIntoAction');
       $this->assertEquals('INBOX.huge', $action->mailbox);
     }
   }

@@ -25,7 +25,7 @@
           notify "mailto:alm@example.com";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.NotifyAction');
+      $this->assertClass($action, 'peer.sieve.action.NotifyAction');
       $this->assertEquals('mailto:alm@example.com', $action->method);
     }
 
@@ -43,7 +43,7 @@
                                "tel:+14085551212";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.NotifyAction');
+      $this->assertClass($action, 'peer.sieve.action.NotifyAction');
       $this->assertEquals('tel:+14085551212', $action->method);
     }
 
@@ -58,7 +58,7 @@
           notify :from "notify@example.com" "mailto:alm@example.com";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.NotifyAction');
+      $this->assertClass($action, 'peer.sieve.action.NotifyAction');
       $this->assertEquals('notify@example.com', $action->from);
     }
 
@@ -73,7 +73,7 @@
           notify :importance 1 "mailto:alm@example.com";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.NotifyAction');
+      $this->assertClass($action, 'peer.sieve.action.NotifyAction');
       $this->assertEquals(1, $action->importance);
     }
 
@@ -88,7 +88,7 @@
           notify :options ["foo=bar"] "mailto:alm@example.com";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.NotifyAction');
+      $this->assertClass($action, 'peer.sieve.action.NotifyAction');
       $this->assertEquals(array('foo=bar'), $action->options);
     }
     
@@ -103,7 +103,7 @@
           notify :method "mailto" :options "tom@example.com" :low :message "8ung Baby";
         }
       ')->commandAt(0)->commands[0];
-      $this->assertClass($action, 'peer.sieve.NotifyAction');
+      $this->assertClass($action, 'peer.sieve.action.NotifyAction');
     }
   }
 ?>

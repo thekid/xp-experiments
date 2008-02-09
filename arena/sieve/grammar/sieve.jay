@@ -4,19 +4,19 @@
     'peer.sieve.CommandSet',
     'peer.sieve.Rule',
     'peer.sieve.AddressPart',
-    'peer.sieve.ActionFactory',
-    'peer.sieve.AllOfCondition',
-    'peer.sieve.NegationOfCondition',
-    'peer.sieve.AnyOfCondition',
-    'peer.sieve.HeaderCondition',
-    'peer.sieve.ExistsCondition',
-    'peer.sieve.SizeCondition',
-    'peer.sieve.AddressCondition',
-    'peer.sieve.EnvelopeCondition',
-    'peer.sieve.BooleanCondition',
-    'peer.sieve.MatchType',
-    'peer.sieve.ValueMatch',
-    'peer.sieve.CountMatch'
+    'peer.sieve.action.ActionFactory',
+    'peer.sieve.condition.AllOfCondition',
+    'peer.sieve.condition.NegationOfCondition',
+    'peer.sieve.condition.AnyOfCondition',
+    'peer.sieve.condition.HeaderCondition',
+    'peer.sieve.condition.ExistsCondition',
+    'peer.sieve.condition.SizeCondition',
+    'peer.sieve.condition.AddressCondition',
+    'peer.sieve.condition.EnvelopeCondition',
+    'peer.sieve.condition.BooleanCondition',
+    'peer.sieve.match.MatchType',
+    'peer.sieve.match.ValueMatch',
+    'peer.sieve.match.CountMatch'
   );
 %}
 

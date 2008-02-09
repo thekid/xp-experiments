@@ -21,7 +21,7 @@
     #[@test]
     public function oneCondition() {
       $condition= $this->parseCommandSetFrom('if anyof (false) { discard; }')->commandAt(0)->condition;
-      $this->assertClass($condition, 'peer.sieve.AnyOfCondition');
+      $this->assertClass($condition, 'peer.sieve.condition.AnyOfCondition');
       $this->assertEquals(1, $condition->numConditions());
       $this->assertClass($condition->conditionAt(0), 'peer.sieve.BooleanCondition');
     }
@@ -33,7 +33,7 @@
     #[@test]
     public function twoConditions() {
       $condition= $this->parseCommandSetFrom('if anyof (size :over 1000, false) { discard; }')->commandAt(0)->condition;
-      $this->assertClass($condition, 'peer.sieve.AnyOfCondition');
+      $this->assertClass($condition, 'peer.sieve.condition.AnyOfCondition');
       $this->assertEquals(2, $condition->numConditions());
       $this->assertClass($condition->conditionAt(0), 'peer.sieve.LargerThanCondition');
       $this->assertClass($condition->conditionAt(1), 'peer.sieve.BooleanCondition');
@@ -52,7 +52,7 @@
       ) { 
         fileinto "admin"; stop; 
       }')->commandAt(0)->condition;
-      $this->assertClass($condition, 'peer.sieve.AnyOfCondition');
+      $this->assertClass($condition, 'peer.sieve.condition.AnyOfCondition');
       $this->assertEquals(3, $condition->numConditions());
       $this->assertClass($condition->conditionAt(0), 'peer.sieve.HeaderCondition');
       $this->assertClass($condition->conditionAt(1), 'peer.sieve.HeaderCondition');

@@ -26,7 +26,7 @@
            discard;
         }
       ')->commandAt(0)->condition;
-      $this->assertClass($condition, 'peer.sieve.EnvelopeCondition');
+      $this->assertClass($condition, 'peer.sieve.condition.EnvelopeCondition');
       $this->assertEquals(MatchType::is(), $condition->matchtype);
       $this->assertEquals(AddressPart::$all, $condition->addresspart);
       $this->assertEquals(array('from'), $condition->headers);
