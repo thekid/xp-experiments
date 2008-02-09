@@ -124,7 +124,10 @@
         } else if ('/' === $token{0}) {
           $ahead= $this->tokenizer->nextToken(self::DELIMITERS);
           if ('*' === $ahead) {    // Multi-line comment
-            do { 
+            do {
+              if (!$this->tokenizer->hasMoreTokens()) {
+                throw new IllegalStateException('Unclosed multi-line comment');
+              }
               $t= $this->tokenizer->nextToken('/'); 
               $l= substr_count($t, "\n");
               $this->position[1]= strlen($t) + ($l ? 1 : $this->position[1]);

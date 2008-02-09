@@ -55,6 +55,20 @@
      *
      */
     #[@test]
+    public function unclosedMultilineComment() {
+      try {
+        $this->parse('/* this is an unclosed comment');
+        $this->fail('No exception thrown', NULL, 'text.parser.generic.ParseException');
+      } catch (ParseException $expected) {
+        $this->assertClass($expected->getCause(), 'lang.IllegalStateException');
+      }
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function scriptWithOnlyComments() {
       $this->assertTrue($this->parseCommandSetFrom('
         # Nothing to be seen here
