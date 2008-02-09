@@ -79,6 +79,7 @@
       );
 
       do {
+        $done= $this->tokenizer->hasMoreTokens();
         if ($this->ahead) {
           $token= $this->ahead;
           $this->ahead= NULL;
@@ -181,7 +182,7 @@
       } while (1);
       
       // fprintf(STDERR, "@ %d,%d: %d `%s`\n", $this->position[0], $this->position[1], $this->token, $this->value);
-      return $this->tokenizer->hasMoreTokens();
+      return $done;
     }
   }
 ?>

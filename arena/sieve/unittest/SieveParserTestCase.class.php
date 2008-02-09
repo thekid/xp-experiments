@@ -35,7 +35,7 @@
      * @return  peer.sieve.SyntaxTree
      */
     protected function parse($src) {
-      return $this->parser->parse(new peer新ieve微exer(new StringTokenizer($src."\0"), $this->name));
+      return $this->parser->parse(new peer新ieve微exer(new StringTokenizer($src), $this->name));
     }
     
     /**
@@ -45,7 +45,7 @@
      * @return  peer.sieve.CommandSet
      */
     protected function parseCommandSetFrom($src) {
-      return $this->parser->parse(new peer新ieve微exer(new StringTokenizer($src."\0"), $this->name))->commandset;
+      return $this->parser->parse(new peer新ieve微exer(new StringTokenizer($src), $this->name))->commandset;
     }
   }
 ?>
