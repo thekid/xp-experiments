@@ -5,9 +5,9 @@
  */
 
   uses(
-    'peer.sieve.Condition',
-    'peer.sieve.LargerThanCondition',
-    'peer.sieve.SmallerThanCondition'
+    'peer.sieve.condition.Condition',
+    'peer.sieve.condition.LargerThanCondition',
+    'peer.sieve.condition.SmallerThanCondition'
   );
 
   /**
@@ -15,7 +15,7 @@
    *
    * @purpose  Base class for size-based tests
    */
-  abstract class SizeCondition extends peer·sieve·Condition {
+  abstract class SizeCondition extends peer·sieve·condition·Condition {
     public $value= 0;
     
     /**

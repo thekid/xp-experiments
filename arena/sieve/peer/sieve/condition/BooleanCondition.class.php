@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('peer.sieve.Condition');
+  uses('peer.sieve.condition.Condition');
 
   /**
    * The "true" and "false" conditions
    *
    * @purpose  Condition implementation
    */
-  class BooleanCondition extends peer·sieve·Condition {
+  class BooleanCondition extends peer·sieve·condition·Condition {
     public
       $value= NULL;
 

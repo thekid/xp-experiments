@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.sieve.Action', 'peer.mail.InternetAddress');
+  uses('peer.sieve.action.Action', 'peer.mail.InternetAddress');
 
   /**
    * The "forward" implementation
@@ -12,7 +12,7 @@
    * @see      xp://peer.sieve.Action
    * @purpose  Action implementation
    */
-  class ForwardAction extends peer·sieve·Action {
+  class ForwardAction extends peer·sieve·action·Action {
     protected
       $target= NULL;
 

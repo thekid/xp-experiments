@@ -33,6 +33,7 @@
         'comparator'    => TOKEN_T_COMPARATOR,
         'envelope'      => TOKEN_T_ENVELOPE,
         'is'            => TOKEN_T_IS,
+        'exists'        => TOKEN_T_EXISTS,
         'contains'      => TOKEN_T_CONTAINS,
         'matches'       => TOKEN_T_MATCHES,
         'regex'         => TOKEN_T_REGEX,

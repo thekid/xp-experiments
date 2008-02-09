@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  uses('peer.sieve.ConditionComposite');
+  uses('peer.sieve.condition.ConditionComposite');
 
   /**
    * (Insert class' description here)
    *
    * @purpose  Base class for all rules
    */
-  class AnyOfCondition extends peer·sieve·ConditionComposite {
+  class AnyOfCondition extends peer·sieve·condition·ConditionComposite {
   }
 ?>

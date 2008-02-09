@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.sieve.Action');
+  uses('peer.sieve.action.Action');
 
   /**
    * The notify extension
@@ -31,7 +31,7 @@
    * @see      http://ietfreport.isoc.org/idref/draft-ietf-sieve-notify/
    * @purpose  Action
    */
-  class NotifyAction extends peer·sieve·Action {
+  class NotifyAction extends peer·sieve·action·Action {
     public 
       $method     = NULL,
       $from       = NULL,

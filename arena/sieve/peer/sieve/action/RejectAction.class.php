@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.sieve.Action');
+  uses('peer.sieve.action.Action');
 
   /**
    * The "reject" extension
@@ -12,7 +12,7 @@
    * @see      http://ietfreport.isoc.org/idref/draft-ietf-sieve-refuse-reject/
    * @purpose  Action
    */
-  class RejectAction extends peer·sieve·Action {
+  class RejectAction extends peer·sieve·action·Action {
     public
       $reason= NULL;
     

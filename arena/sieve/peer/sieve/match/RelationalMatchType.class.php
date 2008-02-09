@@ -4,13 +4,13 @@
  * $Id$
  */
 
-  uses('peer.sieve.MatchType');
+  uses('peer.sieve.match.MatchType');
 
   /**
    * Relational match type
    *
    * @see      rfc://5231
-   * @see      xp://peer.sieve.MatchType
+   * @see      xp://peer.sieve.match.MatchType
    * @purpose  RelationalMatchType implementation
    */
   abstract class RelationalMatchType extends MatchType {

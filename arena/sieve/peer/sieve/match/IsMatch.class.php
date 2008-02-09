@@ -4,12 +4,12 @@
  * $Id$
  */
 
-  uses('peer.sieve.MatchType');
+  uses('peer.sieve.match.MatchType');
 
   /**
    * The "is" match type
    *
-   * @see      xp://peer.sieve.MatchType
+   * @see      xp://peer.sieve.match.MatchType
    * @purpose  MatchType implementation
    */
   class IsMatch extends MatchType {

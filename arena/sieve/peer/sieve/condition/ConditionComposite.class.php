@@ -6,14 +6,14 @@
 
   $package= 'peer.sieve';
 
-  uses('peer.sieve.Condition', 'lang.IndexOutOfBoundsException');
+  uses('peer.sieve.condition.Condition', 'lang.IndexOutOfBoundsException');
 
   /**
    * For condition composites anyof and allof
    *
    * @purpose  Base class
    */
-  class peer新ieve嵩onditionComposite extends peer新ieve嵩ondition {
+  class peer新ieve搾ondition嵩onditionComposite extends peer新ieve搾ondition嵩ondition {
     public $conditions= array();
   
     /**

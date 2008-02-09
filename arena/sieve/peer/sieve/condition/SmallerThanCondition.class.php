@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.sieve.SizeCondition');
+  uses('peer.sieve.condition.SizeCondition');
 
   /**
    * (Insert class' description here)

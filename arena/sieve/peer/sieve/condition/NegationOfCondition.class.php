@@ -4,14 +4,14 @@
  * $Id$ 
  */
 
-  uses('peer.sieve.Condition');
+  uses('peer.sieve.condition.Condition');
 
   /**
    * The "not" condition
    *
    * @purpose  Condition implementation
    */
-  class NegationOfCondition extends peer·sieve·Condition {
+  class NegationOfCondition extends peer·sieve·condition·Condition {
     public $negated= NULL;
 
     /**

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.sieve.Action');
+  uses('peer.sieve.action.Action');
 
   /**
    * The vacation extension
@@ -20,7 +20,7 @@
    * @see      rfc://5230
    * @purpose  Action
    */
-  class VacationAction extends peer·sieve·Action {
+  class VacationAction extends peer·sieve·action·Action {
     public 
       $reason    = NULL, 
       $days      = -1, 

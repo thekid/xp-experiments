@@ -84,7 +84,7 @@
     public function uncoditionalRule() {
       $this->assertClass(
         $this->parseCommandSetFrom('redirect "tom@example.com";')->commandAt(0),
-        'peer.sieve.RedirectAction'
+        'peer.sieve.action.RedirectAction'
       );
     }
 

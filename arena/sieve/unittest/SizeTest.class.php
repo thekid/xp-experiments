@@ -21,7 +21,7 @@
     #[@test]
     public function largerThanCondition() {
       $condition= $this->parseCommandSetFrom('if size :over 1000 { discard; }')->commandAt(0)->condition;
-      $this->assertClass($condition, 'peer.sieve.condition.condition.LargerThanCondition');
+      $this->assertClass($condition, 'peer.sieve.condition.LargerThanCondition');
       $this->assertEquals(1000, $condition->value);
     }
     
@@ -32,7 +32,7 @@
     #[@test]
     public function smallerThanCondition() {
       $condition= $this->parseCommandSetFrom('if size :under 1000 { discard; }')->commandAt(0)->condition;
-      $this->assertClass($condition, 'peer.sieve.condition.condition.SmallerThanCondition');
+      $this->assertClass($condition, 'peer.sieve.condition.SmallerThanCondition');
       $this->assertEquals(1000, $condition->value);
     }
 

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  $package= 'peer.sieve';
+  $package= 'peer.sieve.action';
   
   uses('peer.sieve.Command');
 
@@ -14,7 +14,7 @@
    * @see      xp://peer.sieve.Command
    * @purpose  Command implementation
    */
-  abstract class peer新ieve嫂ction extends peer新ieve嵩ommand {
+  abstract class peer新ieve戢ction嫂ction extends peer新ieve嵩ommand {
 
     /**
      * Pass tags and arguments

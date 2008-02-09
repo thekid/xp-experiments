@@ -26,7 +26,7 @@
         }
       ')->commandAt(0);
       $this->assertClass($rule, 'peer.sieve.Rule');
-      $this->assertClass($rule->condition, 'peer.sieve.HeaderCondition');
+      $this->assertClass($rule->condition, 'peer.sieve.condition.HeaderCondition');
       $this->assertNull($rule->otherwise);
     }
 
@@ -44,9 +44,9 @@
         }
       ')->commandAt(0);
       $this->assertClass($rule, 'peer.sieve.Rule');
-      $this->assertClass($rule->condition, 'peer.sieve.HeaderCondition');
+      $this->assertClass($rule->condition, 'peer.sieve.condition.HeaderCondition');
       $this->assertClass($rule->otherwise, 'peer.sieve.Rule');
-      $this->assertClass($rule->otherwise->condition, 'peer.sieve.NegationOfCondition');
+      $this->assertClass($rule->otherwise->condition, 'peer.sieve.condition.NegationOfCondition');
       $this->assertEquals($rule->otherwise->condition->negated, $rule->condition);
     }
 
@@ -64,9 +64,9 @@
         }
       ')->commandAt(0);
       $this->assertClass($rule, 'peer.sieve.Rule');
-      $this->assertClass($rule->condition, 'peer.sieve.HeaderCondition');
+      $this->assertClass($rule->condition, 'peer.sieve.condition.HeaderCondition');
       $this->assertClass($rule->otherwise, 'peer.sieve.Rule');
-      $this->assertClass($rule->otherwise->condition, 'peer.sieve.HeaderCondition');
+      $this->assertClass($rule->otherwise->condition, 'peer.sieve.condition.HeaderCondition');
     }
 
     /**
@@ -85,11 +85,11 @@
         }
       ')->commandAt(0);
       $this->assertClass($rule, 'peer.sieve.Rule');
-      $this->assertClass($rule->condition, 'peer.sieve.HeaderCondition');
+      $this->assertClass($rule->condition, 'peer.sieve.condition.HeaderCondition');
       $this->assertClass($rule->otherwise, 'peer.sieve.Rule');
-      $this->assertClass($rule->otherwise->condition, 'peer.sieve.HeaderCondition');
+      $this->assertClass($rule->otherwise->condition, 'peer.sieve.condition.HeaderCondition');
       $this->assertClass($rule->otherwise->otherwise, 'peer.sieve.Rule');
-      $this->assertClass($rule->otherwise->otherwise->condition, 'peer.sieve.NegationOfCondition');
+      $this->assertClass($rule->otherwise->otherwise->condition, 'peer.sieve.condition.NegationOfCondition');
       $this->assertEquals($rule->otherwise->otherwise->condition->negated, $rule->otherwise->condition);
     }
 

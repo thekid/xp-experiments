@@ -4,12 +4,12 @@
  * $Id$
  */
 
-  uses('peer.sieve.RelationalMatchType');
+  uses('peer.sieve.match.RelationalMatchType');
 
   /**
    * The "count" relational match type
    *
-   * @see      xp://peer.sieve.RelationalMatchType
+   * @see      xp://peer.sieve.match.RelationalMatchType
    * @purpose  RelationalMatchType implementation
    */
   class CountMatch extends RelationalMatchType {

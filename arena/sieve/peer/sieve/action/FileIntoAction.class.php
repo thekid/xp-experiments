@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.sieve.Action');
+  uses('peer.sieve.action.Action');
 
   /**
    * The "fileinto" implementation
@@ -12,7 +12,7 @@
    * @see      xp://peer.sieve.Action
    * @purpose  Action implementation
    */
-  class FileIntoAction extends peer·sieve·Action {
+  class FileIntoAction extends peer·sieve·action·Action {
 
     /**
      * Pass tags and arguments

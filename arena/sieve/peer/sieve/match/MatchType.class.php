@@ -5,10 +5,10 @@
  */
 
   uses(
-    'peer.sieve.IsMatch',
-    'peer.sieve.ContainsMatch',
-    'peer.sieve.MatchesMatch',
-    'peer.sieve.RegexMatch'
+    'peer.sieve.match.IsMatch',
+    'peer.sieve.match.ContainsMatch',
+    'peer.sieve.match.MatchesMatch',
+    'peer.sieve.match.RegexMatch'
   );
 
   /**

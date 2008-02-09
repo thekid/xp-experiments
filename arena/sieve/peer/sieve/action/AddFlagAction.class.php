@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.sieve.Action');
+  uses('peer.sieve.action.Action');
 
   /**
    * The "addflag" action
@@ -17,7 +17,7 @@
    * @see      rfc://5232
    * @purpose  Action
    */
-  class AddFlagAction extends peer·sieve·Action {
+  class AddFlagAction extends peer·sieve·action·Action {
     public
       $flags    = array(),
       $variable = NULL;

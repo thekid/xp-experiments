@@ -23,7 +23,7 @@
       $condition= $this->parseCommandSetFrom('if anyof (false) { discard; }')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.condition.AnyOfCondition');
       $this->assertEquals(1, $condition->numConditions());
-      $this->assertClass($condition->conditionAt(0), 'peer.sieve.BooleanCondition');
+      $this->assertClass($condition->conditionAt(0), 'peer.sieve.condition.BooleanCondition');
     }
 
     /**
@@ -35,8 +35,8 @@
       $condition= $this->parseCommandSetFrom('if anyof (size :over 1000, false) { discard; }')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.condition.AnyOfCondition');
       $this->assertEquals(2, $condition->numConditions());
-      $this->assertClass($condition->conditionAt(0), 'peer.sieve.LargerThanCondition');
-      $this->assertClass($condition->conditionAt(1), 'peer.sieve.BooleanCondition');
+      $this->assertClass($condition->conditionAt(0), 'peer.sieve.condition.LargerThanCondition');
+      $this->assertClass($condition->conditionAt(1), 'peer.sieve.condition.BooleanCondition');
     }
 
     /**
@@ -54,9 +54,9 @@
       }')->commandAt(0)->condition;
       $this->assertClass($condition, 'peer.sieve.condition.AnyOfCondition');
       $this->assertEquals(3, $condition->numConditions());
-      $this->assertClass($condition->conditionAt(0), 'peer.sieve.HeaderCondition');
-      $this->assertClass($condition->conditionAt(1), 'peer.sieve.HeaderCondition');
-      $this->assertClass($condition->conditionAt(2), 'peer.sieve.HeaderCondition');
+      $this->assertClass($condition->conditionAt(0), 'peer.sieve.condition.HeaderCondition');
+      $this->assertClass($condition->conditionAt(1), 'peer.sieve.condition.HeaderCondition');
+      $this->assertClass($condition->conditionAt(2), 'peer.sieve.condition.HeaderCondition');
     }
   }
 ?>

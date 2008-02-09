@@ -11,6 +11,6 @@
    *
    * @purpose  Base class for all conditions
    */
-  class peer·sieve·Condition extends Object {
+  class peer·sieve·condition·Condition extends Object {
   }
 ?>

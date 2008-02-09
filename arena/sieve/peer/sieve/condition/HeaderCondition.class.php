@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('peer.sieve.Condition');
+  uses('peer.sieve.condition.Condition');
 
   /**
    * The "header" condition
    *
    * @purpose  Condition implementation
    */
-  class HeaderCondition extends peer·sieve·Condition {
+  class HeaderCondition extends peer·sieve·condition·Condition {
     public
       $matchtype = NULL,
       $names     = array(),
