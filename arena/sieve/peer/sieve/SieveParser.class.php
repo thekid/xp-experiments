@@ -426,7 +426,7 @@
     { $yyVal= array_merge(array($yyVals[-1+$yyTop]), $yyVals[0+$yyTop]); } break;
 
     case 12:  #line 99 "grammar/sieve.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new peer新ieve愛ule()); } break;
+    { $yyVals[0+$yyTop]= new peer新ieve愛ule(); } break;
 
     case 13:  #line 99 "grammar/sieve.jay"
     {
@@ -443,7 +443,7 @@
     { $yyVal= NULL; } break;
 
     case 16:  #line 114 "grammar/sieve.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new peer新ieve愛ule()); } break;
+    { $yyVals[0+$yyTop]= new peer新ieve愛ule(); } break;
 
     case 17:  #line 114 "grammar/sieve.jay"
     {
@@ -452,7 +452,7 @@
     } break;
 
     case 18:  #line 118 "grammar/sieve.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new peer新ieve愛ule()); } break;
+    { $yyVals[0+$yyTop]= new peer新ieve愛ule(); } break;
 
     case 19:  #line 118 "grammar/sieve.jay"
     {
@@ -466,7 +466,7 @@
     } break;
 
     case 20:  #line 131 "grammar/sieve.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(ActionFactory::newAction($yyVals[0+$yyTop])); } break;
+    { $yyVals[0+$yyTop]= ActionFactory::newAction($yyVals[0+$yyTop]); } break;
 
     case 21:  #line 131 "grammar/sieve.jay"
     {
@@ -479,7 +479,7 @@
     } break;
 
     case 22:  #line 144 "grammar/sieve.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new AllOfCondition()); } break;
+    { $yyVals[0+$yyTop]= new AllOfCondition(); } break;
 
     case 23:  #line 144 "grammar/sieve.jay"
     {
@@ -487,7 +487,7 @@
     } break;
 
     case 24:  #line 148 "grammar/sieve.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new AnyOfCondition()); } break;
+    { $yyVals[0+$yyTop]= new AnyOfCondition(); } break;
 
     case 25:  #line 148 "grammar/sieve.jay"
     {
@@ -495,7 +495,7 @@
     } break;
 
     case 26:  #line 152 "grammar/sieve.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new NegationOfCondition()); } break;
+    { $yyVals[0+$yyTop]= new NegationOfCondition(); } break;
 
     case 27:  #line 152 "grammar/sieve.jay"
     {
@@ -503,7 +503,7 @@
     } break;
 
     case 28:  #line 156 "grammar/sieve.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new HeaderCondition()); } break;
+    { $yyVals[0+$yyTop]= new HeaderCondition(); } break;
 
     case 29:  #line 156 "grammar/sieve.jay"
     { 
@@ -514,7 +514,7 @@
     } break;
 
     case 30:  #line 163 "grammar/sieve.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new ExistsCondition()); } break;
+    { $yyVals[0+$yyTop]= new ExistsCondition(); } break;
 
     case 31:  #line 163 "grammar/sieve.jay"
     {
@@ -524,7 +524,7 @@
     case 32:  #line 167 "grammar/sieve.jay"
     { 
       try { 
-        $yyVals[-2+$yyTop]= $yyLex->create(SizeCondition::forName($yyVals[0+$yyTop])); 
+        $yyVals[-2+$yyTop]= SizeCondition::forName($yyVals[0+$yyTop]); 
       } catch (IllegalArgumentException $e) { 
         $this->error(E_ERROR, $e->getMessage().' at '.$yyLex->fileName.', line '.$yyLex->position[0]); 
         $yyVals[-2+$yyTop]= NULL;
@@ -537,7 +537,7 @@
     } break;
 
     case 34:  #line 178 "grammar/sieve.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new EnvelopeCondition()); } break;
+    { $yyVals[0+$yyTop]= new EnvelopeCondition(); } break;
 
     case 35:  #line 178 "grammar/sieve.jay"
     {
@@ -549,7 +549,7 @@
     } break;
 
     case 36:  #line 186 "grammar/sieve.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new AddressCondition()); } break;
+    { $yyVals[0+$yyTop]= new AddressCondition(); } break;
 
     case 37:  #line 186 "grammar/sieve.jay"
     {
@@ -562,12 +562,12 @@
 
     case 38:  #line 194 "grammar/sieve.jay"
     { 
-      $yyVal= $yyLex->create(new BooleanCondition(TRUE));
+      $yyVal= new BooleanCondition(TRUE);
     } break;
 
     case 39:  #line 198 "grammar/sieve.jay"
     { 
-      $yyVal= $yyLex->create(new BooleanCondition(FALSE));
+      $yyVal= new BooleanCondition(FALSE);
     } break;
 
     case 40:  #line 205 "grammar/sieve.jay"

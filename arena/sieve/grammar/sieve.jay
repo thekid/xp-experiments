@@ -96,7 +96,7 @@ commands:
 ;
 
 command:
-    T_IF { $1= $yyLex->create(new peer新ieve愛ule()); } test '{' commands_opt '}' else_opt {
+    T_IF { $1= new peer新ieve愛ule(); } test '{' commands_opt '}' else_opt {
       $1->condition= $3;
       $1->commands= $5;
       $1->otherwise= $7;
@@ -111,11 +111,11 @@ command:
 
 else_opt:
     /* empty */ { $$= NULL; }
-  | T_ELSE { $1= $yyLex->create(new peer新ieve愛ule()); } '{' commands_opt '}' {
+  | T_ELSE { $1= new peer新ieve愛ule(); } '{' commands_opt '}' {
       $1->condition= NULL;
       $1->actions= $4;
     }
-  | T_ELSEIF { $1= $yyLex->create(new peer新ieve愛ule()); } test '{' commands_opt '}' else_opt {
+  | T_ELSEIF { $1= new peer新ieve愛ule(); } test '{' commands_opt '}' else_opt {
       $1->condition= $3;
       $1->commands= $5;
       $1->otherwise= $7;
@@ -128,7 +128,7 @@ else_opt:
 // }}}
 
 action:
-    T_WORD { $1= $yyLex->create(ActionFactory::newAction($1)); } taglist_opt arguments_opt ';' {
+    T_WORD { $1= ActionFactory::newAction($1); } taglist_opt arguments_opt ';' {
       try {
         $1->pass($3, $4);
       } catch (IllegalArgumentException $e) { 
@@ -141,32 +141,32 @@ action:
 // {{{ Tests
 test:
     // allof <tests: test-list>
-    T_ALLOF { $1= $yyLex->create(new AllOfCondition()); } '(' testlist ')' {
+    T_ALLOF { $1= new AllOfCondition(); } '(' testlist ')' {
       $1->conditions= $4;
     }
     // anyof <tests: test-list>
-  | T_ANYOF { $1= $yyLex->create(new AnyOfCondition()); } '(' testlist ')' {
+  | T_ANYOF { $1= new AnyOfCondition(); } '(' testlist ')' {
       $1->conditions= $4;
     }
     // not <test1: test>
-  | T_NOT { $1= $yyLex->create(new NegationOfCondition()); } test {
+  | T_NOT { $1= new NegationOfCondition(); } test {
       $1->negated= $3;
     }
     // header [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>
-  | T_HEADER { $1= $yyLex->create(new HeaderCondition()); } taglist_opt argument argument { 
+  | T_HEADER { $1= new HeaderCondition(); } taglist_opt argument argument { 
       isset($3['comparator']) && $1->comparator= $3['comparator'];
       isset($3['matchtype']) && $1->matchtype= $3['matchtype'];
       $1->names= (array)$4;
       $1->keys= (array)$5;
     }
     // exists <header-names: string-list>
-  | T_EXISTS { $1= $yyLex->create(new ExistsCondition()); } argument {
+  | T_EXISTS { $1= new ExistsCondition(); } argument {
       $1->names= (array)$3;
     }
     // size <":over" / ":under"> <limit: number>
   | T_SIZE ':' T_WORD { 
       try { 
-        $1= $yyLex->create(SizeCondition::forName($3)); 
+        $1= SizeCondition::forName($3); 
       } catch (IllegalArgumentException $e) { 
         $this->error(E_ERROR, $e->getMessage().' at '.$yyLex->fileName.', line '.$yyLex->position[0]); 
         $1= NULL;
@@ -175,7 +175,7 @@ test:
       $1 && $1->value= intval($5);
     }
     // envelope [COMPARATOR] [ADDRESS-PART] [MATCH-TYPE] <envelope-part: string-list> <key-list: string-list>
-  | T_ENVELOPE { $1= $yyLex->create(new EnvelopeCondition()); } taglist_opt argument argument {
+  | T_ENVELOPE { $1= new EnvelopeCondition(); } taglist_opt argument argument {
       isset($3['addresspart']) && $1->addresspart= $3['addresspart'];
       isset($3['comparator']) && $1->comparator= $3['comparator'];
       isset($3['matchtype']) && $1->matchtype= $3['matchtype'];
@@ -183,7 +183,7 @@ test:
       $1->keys= (array)$5;
     }
     // address [COMPARATOR] [ADDRESS-PART] [MATCH-TYPE] <header-list: string-list> <key-list: string-list>
-  | T_ADDRESS { $1= $yyLex->create(new AddressCondition()); } taglist_opt argument argument {
+  | T_ADDRESS { $1= new AddressCondition(); } taglist_opt argument argument {
       isset($3['addresspart']) && $1->addresspart= $3['addresspart'];
       isset($3['comparator']) && $1->comparator= $3['comparator'];
       isset($3['matchtype']) && $1->matchtype= $3['matchtype'];
@@ -192,11 +192,11 @@ test:
     }
     // true
   | T_TRUE { 
-      $$= $yyLex->create(new BooleanCondition(TRUE));
+      $$= new BooleanCondition(TRUE);
     }
     // false
   | T_FALSE { 
-      $$= $yyLex->create(new BooleanCondition(FALSE));
+      $$= new BooleanCondition(FALSE);
     }
 ;
 // }}}

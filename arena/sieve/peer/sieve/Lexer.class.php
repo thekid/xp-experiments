@@ -48,7 +48,6 @@
 
     const 
       DELIMITERS = " |&?!.:;,@%~=<>(){}[]#+-*/\"'\r\n\t";
-    
           
     private
       $ahead = NULL;
@@ -63,17 +62,6 @@
       $this->tokenizer= new StringTokenizer($input."\0", self::DELIMITERS, TRUE);
       $this->fileName= $source;
       $this->position= array(1, 1);   // Y, X
-    }
-
-    /**
-     * Create a new node 
-     *
-     * @param   xp.compiler.ast.Node
-     * @return  xp.compiler.ast.Node
-     */
-    public function create($n) {
-      $n->position= $this->position;
-      return $n;
     }
   
     /**
