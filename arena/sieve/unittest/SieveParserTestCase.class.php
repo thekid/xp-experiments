@@ -14,8 +14,9 @@
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.sieve.SieveParser
+   * @see      xp://peer.sieve.Lexer
+   * @purpose  Base class
    */
   abstract class SieveParserTestCase extends TestCase {
   
@@ -28,7 +29,7 @@
     }
 
     /**
-     * Parse sourcecode and return ruleset
+     * Parse sourcecode and return syntax tree
      *
      * @param   string src
      * @return  peer.sieve.SyntaxTree
@@ -38,10 +39,10 @@
     }
     
     /**
-     * Parse sourcecode and return ruleset
+     * Parse sourcecode and return command set
      *
      * @param   string src
-     * @return  peer.sieve.RuleSet
+     * @return  peer.sieve.CommandSet
      */
     protected function parseCommandSetFrom($src) {
       return $this->parser->parse(new peer·sieve·Lexer(new StringTokenizer($src."\0"), $this->name))->commandset;
