@@ -29,34 +29,34 @@
    */
   class math·Parser extends AbstractParser {
     protected static $yyLhs= array(-1,
-          0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0, 
     );
     protected static $yyLen= array(2,
-          1,     1,     3,     3,     3,     3,     3, 
+          1,     1,     2,     3,     3,     3,     3,     3, 
     );
     protected static $yyDefRed= array(0,
-          1,     2,     0,     0,     0,     0,     0,     0,     0,     7, 
-          0,     0,     5,     6, 
+          1,     2,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     8,     0,     0,     6,     7, 
     );
-    protected static $yyDgoto= array(4,
+    protected static $yyDgoto= array(5,
     );
     protected static $yySindex = array(          -40,
-          0,     0,   -40,   -27,   -38,   -40,   -40,   -40,   -40,     0, 
-        -25,   -25,     0,     0, 
+          0,     0,   -40,   -40,   -18,   -36,   -24,   -40,   -40,   -40, 
+        -40,     0,   -36,   -36,     0,     0, 
     );
     protected static $yyRindex= array(            0,
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          1,     2,     0,     0, 
+          0,     0,     0,     0,     0,     1,     0,     0,     0,     0, 
+          0,     0,     2,     7,     0,     0, 
     );
     protected static $yyGindex= array(5,
     );
-    protected static $yyTable = array(3,
-          3,     4,    10,     8,     6,     0,     7,     5,     9,     0, 
-         11,    12,    13,    14,     8,     6,     8,     7,     0,     9, 
-          0,     9,     0,     0,     0,     0,     0,     0,     0,     0, 
+    protected static $yyTable = array(4,
+          3,     4,     0,     0,     3,    10,     5,     6,     7,     0, 
+         11,     0,    13,    14,    15,    16,    12,    10,     8,     0, 
+          9,     0,    11,    10,     8,     0,     9,     0,    11,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     3,     4,     3,     4,     3,     4,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     3,     4,     3,     4,     3,     4,     5,     0,     5, 
+          0,     5,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
@@ -75,12 +75,12 @@
           0,     0,     0,     0,     0,     0,     1,     2, 
     );
     protected static $yyCheck = array(40,
-          0,     0,    41,    42,    43,    -1,    45,     3,    47,    -1, 
-          6,     7,     8,     9,    42,    43,    42,    45,    -1,    47, 
-         -1,    47,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+          0,     0,    -1,    -1,    45,    42,     0,     3,     4,    -1, 
+         47,    -1,     8,     9,    10,    11,    41,    42,    43,    -1, 
+         45,    -1,    47,    42,    43,    -1,    45,    -1,    47,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    41,    41,    43,    43,    45,    45,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         -1,    41,    41,    43,    43,    45,    45,    41,    -1,    43, 
+         -1,    45,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
@@ -98,7 +98,7 @@
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,   257,   258, 
     );
-    protected static $yyFinal= 4;
+    protected static $yyFinal= 5;
     protected static $yyName= array(    
       'end-of-file', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
@@ -280,20 +280,23 @@
     { $yyVal= new math·Constant(new Double($yyVals[0+$yyTop])); } break;
 
     case 3:  #line 25 "grammar/calculator.jay"
-    { $yyVal= new math·Addition($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
+    { $yyVal= new math·Multiplication(new math·Constant(new Integer(-1)), $yyVals[0+$yyTop]); } break;
 
     case 4:  #line 26 "grammar/calculator.jay"
-    { $yyVal= new math·Subtraction($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
+    { $yyVal= new math·Addition($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
 
     case 5:  #line 27 "grammar/calculator.jay"
-    { $yyVal= new math·Multiplication($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
+    { $yyVal= new math·Subtraction($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
 
     case 6:  #line 28 "grammar/calculator.jay"
-    { $yyVal= new math·Division($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
+    { $yyVal= new math·Multiplication($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
 
     case 7:  #line 29 "grammar/calculator.jay"
+    { $yyVal= new math·Division($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
+
+    case 8:  #line 30 "grammar/calculator.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
-#line 297 "-"
+#line 300 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

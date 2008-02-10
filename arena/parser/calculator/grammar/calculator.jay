@@ -21,7 +21,8 @@
 
 expression:
     T_INTEGER { $$= new math·Constant(new Integer($1)); }
-  | T_DOUBLE { $$= new math·Constant(new Double($1)); }  
+  | T_DOUBLE { $$= new math·Constant(new Double($1)); }
+  | '-' expression { $$= new math·Multiplication(new math·Constant(new Integer(-1)), $2); }
   | expression '+' expression { $$= new math·Addition($1, $3); }
   | expression '-' expression { $$= new math·Subtraction($1, $3); }
   | expression '*' expression { $$= new math·Multiplication($1, $3); }
