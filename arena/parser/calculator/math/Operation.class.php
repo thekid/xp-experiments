@@ -21,10 +21,10 @@
     /**
      * Constructor
      *
-     * @param   Object lhs
-     * @param   Object rhs
+     * @param   math.Expression lhs
+     * @param   math.Expression rhs
      */
-    public function __construct($lhs, $rhs) {
+    public function __construct(math·Expression $lhs, math·Expression $rhs) {
       $this->lhs= $lhs;
       $this->rhs= $rhs;
     }
