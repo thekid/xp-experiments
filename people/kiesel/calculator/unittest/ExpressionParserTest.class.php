@@ -34,8 +34,18 @@
      * @param   
      * @return  
      */
+    protected function astFor($expr) {
+      return $this->fixture->parse(new calc·Lexer($expr, '<unittest>'));
+    }    
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
     protected function evaluate($expr) {
-      return $this->fixture->parse(new calc·Lexer($expr, '<unittest>'))->evaluate();
+      return $this->astFor($expr)->evaluate();
     }    
       
     /**
@@ -102,6 +112,29 @@
     public function simpleNumberEvaluate() {
       $this->assertEquals(5, $this->evaluate('5 '));
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function simpleBracedExpression() {
+      $this->assertEquals(
+        new ExprNode(array(
+          'operator'  => '/',
+          'left'  => new ExprNode(array(
+            'operator'  => '+',
+            'left'      => new ExprNode(array('left' => '1')),
+            'right'     => new ExprNode(array('left' => '2'))
+          )),
+          'right' => new ExprNode(array('left' => '3'))
+        )),
+        $this->astFor('(1 + 2) / 3 ')
+      );
+      
+      $this->assertEquals(1, $this->evaluate('(1 + 2) / 3 '));
+    }
+    
     
     
   }

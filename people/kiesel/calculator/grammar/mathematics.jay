@@ -16,7 +16,9 @@
 start: expression { $$= $1; }
 
 expression:
-    '(' expression ')'
+    '(' expression ')' {
+      $$= $2;
+  }
   | expression operator expression {
       $$= $yyLex->create(new ExprNode(array(
         'operator'  => $2,

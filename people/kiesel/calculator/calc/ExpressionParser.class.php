@@ -273,7 +273,12 @@
     case 1:  #line 16 "grammar/mathematics.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 3:  #line 20 "grammar/mathematics.jay"
+    case 2:  #line 19 "grammar/mathematics.jay"
+    {
+      $yyVal= $yyVals[-1+$yyTop];
+  } break;
+
+    case 3:  #line 22 "grammar/mathematics.jay"
     {
       $yyVal= $yyLex->create(new ExprNode(array(
         'operator'  => $yyVals[-1+$yyTop],
@@ -282,13 +287,13 @@
       )));
   } break;
 
-    case 4:  #line 27 "grammar/mathematics.jay"
+    case 4:  #line 29 "grammar/mathematics.jay"
     { 
       $yyVal= $yyLex->create(new ExprNode(array(
         'left'      => $yyVals[0+$yyTop]
       )));
   } break;
-#line 292 "-"
+#line 297 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];
