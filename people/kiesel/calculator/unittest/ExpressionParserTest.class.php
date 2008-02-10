@@ -329,6 +329,17 @@
       );
     }
     
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function negationOfExpression() {
+      $this->assertEquals(
+        new Negation(new Multiplication(new Value(2), new Value(5))),
+        $this->astFor('-(2 * 5)')
+      );
+    }
     
     
     
