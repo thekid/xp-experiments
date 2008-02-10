@@ -37,6 +37,8 @@
       if (sizeof($a1) != sizeof($a2)) return FALSE;
 
       foreach (array_keys((array)$a1) as $k) {
+        if ('position' == $k) continue;
+        
         switch (TRUE) {
           case !array_key_exists($k, $a2): 
             return FALSE;

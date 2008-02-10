@@ -5,8 +5,8 @@
   
 %}
 %left '+' '-'
-%right '*' '/'
-
+%left '*' '/'
+ 
 %token T_NUMBER 260
 %token T_STRING 262 /* used in lexer */
 %token T_WORD 263 /* used in lexer */
@@ -16,8 +16,7 @@
 start: expression { $$= $1; }
 
 expression:
-    /* empty */
-  | '(' expression ')'
+    '(' expression ')'
   | expression operator expression {
       $$= $yyLex->create(new ExprNode(array(
         'operator'  => $2,
@@ -26,15 +25,17 @@ expression:
       )));
   }
   | T_NUMBER { 
-      $$= $yyLex->create(new ExprNode(array('left' => $1))); 
+      $$= $yyLex->create(new ExprNode(array(
+        'left'      => $1
+      )));
   }
 ;
 
 operator:
-    '+' { $$= $1; }
-  | '-' { $$= $1; }
-  | '*' { $$= $1; }
-  | '/' { $$= $1; }
+    '+'
+  | '-'
+  | '*'
+  | '/'
 ;
 
 %%
