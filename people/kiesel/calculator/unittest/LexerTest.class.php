@@ -95,6 +95,17 @@
         'pi()'
       );
     }
-        
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function functionExpressionWithArgument() {
+      $this->assertTokenSequence(
+        array(TOKEN_T_WORD, ord('('), ord('-'), TOKEN_T_NUMBER, ord(')')),
+        'abs(-15)'
+      );
+    }
   }
 ?>

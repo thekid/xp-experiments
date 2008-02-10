@@ -13,8 +13,18 @@
    * @see      reference
    * @purpose  purpose
    */
-  class PiFunction extends ExprNode {
-    
+  class AbsFunction extends ExprNode {
+      
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function __construct($val) {
+      $this->left= $val;
+    }
+        
     /**
      * (Insert method's description here)
      *
@@ -22,7 +32,7 @@
      * @return  
      */
     public function evaluate() {
-      return pi();
+      return abs($this->leftVal());
     }
   }
 ?>

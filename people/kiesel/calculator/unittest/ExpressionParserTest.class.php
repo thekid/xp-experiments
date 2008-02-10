@@ -249,11 +249,8 @@
      *
      */
     #[@test]
-    public function piParse() {
-      $this->assertEquals(
-        new PiFunction(),
-        $this->astFor('pi()')
-      );
+    public function simpleParameterlessFunctionParse() {
+      $this->assertEquals(new PiFunction(), $this->astFor('pi()'));
     }
     
     /**
@@ -261,11 +258,8 @@
      *
      */
     #[@test]
-    public function piEvaluate() {
-      $this->assertEquals(
-        3.14,
-        round($this->evaluate('pi()'), 2)
-      );
+    public function simpleParameterlessFunctionEvaluate() {
+      $this->assertEquals(3.14,round($this->evaluate('pi()'), 2));
     }
     
     /**
@@ -275,10 +269,7 @@
     #[@test]
     public function usingFunctionsInExpressionsParse() {
       $this->assertEquals(
-        new Multiplication(
-          new PiFunction(),
-          new Value(2)
-        ),
+        new Multiplication(new PiFunction(), new Value(2)),
         $this->astFor('pi() * 2')
       );
     }
@@ -289,10 +280,28 @@
      */
     #[@test]
     public function usingFunctionsInExpressionsEvaluate() {
+      $this->assertEquals(6.28, round($this->evaluate('pi() * 2'), 2));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function singleParameterFunctionParse() {
       $this->assertEquals(
-        6.28,
-        round($this->evaluate('pi() * 2'), 2)
+        new AbsFunction(new Value('-15')),
+        $this->astFor('abs(-15)')
       );
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function singleParameterFunctionEvaluate() {
+      $this->assertEquals(15, $this->evaluate('abs(-15)'));
     }
     
     

@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class FunctionNode extends Object {
+  class FunctionFactory extends Object {
     
     
     /**
@@ -31,10 +31,13 @@
      * @param   
      * @return  
      */
-    public static function create($fname) {
-      return create(new self())->getClass()->getPackage()->loadClass(
+    public static function create($fname, $args) {
+      $class= create(new self())->getClass()->getPackage()->loadClass(
         sprintf('%sFunction', ucfirst($fname))
-      )->newInstance();
+      );
+      
+      if (NULL === $args) return $class->newInstance();
+      return call_user_func_array(array($class, 'newInstance'), $args);
     }
   }
 ?>

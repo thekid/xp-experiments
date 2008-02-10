@@ -7,8 +7,9 @@
     'calc.Modulo',
     'calc.Power',
     'calc.Value',
-    'calc.FunctionNode',
-    'calc.PiFunction'
+    'calc.FunctionFactory',
+    'calc.PiFunction',
+    'calc.AbsFunction'
   );
   
 %}
@@ -36,9 +37,14 @@ expression:
   | atom
 ;
 
+expressions_opt:
+    /* empty */
+  | expressions_opt expression { $$[]= $2; }
+;
+
 atom:
     '-' T_NUMBER { $$= $yyLex->create(new Value(-$2)); }
   | T_NUMBER { $$= $yyLex->create(new Value($1)); }
-  | T_WORD '(' ')' { $$= $yyLex->create(FunctionNode::create($1)); }
+  | T_WORD '(' expressions_opt ')' { $$= $yyLex->create(FunctionFactory::create($1, $3)); }
 ;
 %%
