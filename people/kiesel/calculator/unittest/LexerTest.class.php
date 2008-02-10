@@ -55,6 +55,16 @@
      *
      */
     #[@test]
+    public function doubleNumberToken() {
+      $this->assertTokenSequence(array(TOKEN_T_NUMBER), '1.5');
+    }
+    
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function binaryExpression() {
       $this->assertTokenSequence(
         array(TOKEN_T_NUMBER, ord('*'), TOKEN_T_NUMBER),

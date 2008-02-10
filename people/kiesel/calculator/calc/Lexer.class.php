@@ -24,7 +24,7 @@
       );
 
     const 
-      DELIMITERS  = " |&?!.:;,@%~=<>(){}[]#+-*/\"'\r\n\t";
+      DELIMITERS  = " |&?!:;,@%~=<>(){}[]#+-*/\"'\r\n\t";
     
     private
       $ahead = NULL;
@@ -36,7 +36,7 @@
      * @param   string source
      */
     public function __construct($input, $source) {
-      $this->tokenizer= new StringTokenizer($input."\0", self::DELIMITERS, TRUE);
+      $this->tokenizer= new StringTokenizer($input." \0", self::DELIMITERS, TRUE);
       $this->fileName= $source;
       $this->position= array(1, 1);   // Y, X
     }
@@ -75,67 +75,13 @@
         }
         
         $this->position[1]+= strlen($this->value);
-        if ('"' === $token{0}) {
-          $this->token= TOKEN_T_STRING;
-          $this->value= '';
-          do {
-            if ($token{0} === ($t= $this->tokenizer->nextToken($token{0}))) {
-              // Empty string, e.g. "" or ''
-              break;
-            }
-            $this->value.= $t;
-            if ('\\' === $this->value{strlen($this->value)- 1}) {
-              $this->value= substr($this->value, 0, -1).$this->tokenizer->nextToken($token{0});
-              continue;
-            } 
-            $this->tokenizer->nextToken($token{0});
-            break;
-          } while ($this->tokenizer->hasMoreTokens());
-        } else if ('/' === $token{0}) {
-          $ahead= $this->tokenizer->nextToken(self::DELIMITERS);
-          if ('*' === $ahead) {    // Multi-line comment
-            do { 
-              $t= $this->tokenizer->nextToken('/'); 
-              $l= substr_count($t, "\n");
-              $this->position[1]= strlen($t) + ($l ? 1 : $this->position[1]);
-              $this->position[0]+= $l;
-            } while ('*' !== $t{strlen($t)- 1});
-            $this->tokenizer->nextToken('/');
-            continue;
-          } else {
-            $this->token= ord($token);
-            $this->value= $token;
-            $this->ahead= $ahead;
-          } 
-        } else if ('text' === $token) {
-          $ahead= $this->tokenizer->nextToken(self::DELIMITERS);
-          if (':' !== $ahead{0}) {
-            $this->token= TOKEN_T_WORD;
-            $this->value= $token;
-          } else {
-            $this->token= TOKEN_T_STRING;
-            $this->value= ltrim(substr($ahead, 1), "\r\n\t ");
-            do {
-              $this->value.= $this->tokenizer->nextToken('.');
-              if ("\n" !== $this->value{strlen($this->value)- 1}) {
-                continue;
-              }
-              $this->tokenizer->nextToken('.');
-              break;
-            } while ($this->tokenizer->hasMoreTokens());
-          }
-        } else if (isset(self::$keywords[$token])) {
+        if (isset(self::$keywords[$token])) {
           $this->token= self::$keywords[$token];
           $this->value= $token;
-        } else if ('#' === $token{0}) {
-          $this->tokenizer->nextToken("\n");
-          $this->position[1]= 1;
-          $this->position[0]++;
-          continue;
         } else if (FALSE !== strpos(self::DELIMITERS, $token) && 1 == strlen($token)) {
           $this->token= ord($token);
           $this->value= $token;
-        } else if (ctype_digit($token)) {
+        } else if (is_numeric($token)) {
           $this->token= TOKEN_T_NUMBER;
           $this->value= $token;
         } else if (ctype_digit($n= substr($token, 0, -1))) {
