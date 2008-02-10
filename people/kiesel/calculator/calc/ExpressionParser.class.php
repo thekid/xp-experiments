@@ -17,7 +17,7 @@
     'calc.FunctionFactory',
     'calc.PiFunction',
     'calc.AbsFunction',
-    'calc.Negation'
+    'calc.SignReversion'
   );
   
 #line 24 "-"
@@ -307,7 +307,7 @@
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
     case 2:  #line 31 "grammar/mathematics.jay"
-    { $yyVal= $yyLex->create(Negation::createFor($yyVals[0+$yyTop])); } break;
+    { $yyVal= $yyLex->create(SignReversion::createFor($yyVals[0+$yyTop])); } break;
 
     case 3:  #line 32 "grammar/mathematics.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
