@@ -23,6 +23,9 @@
      * @return  mixed either a float or int
      */
     protected function perform($lhs, $rhs) {
+      if (0 == $rhs) {
+        throw new IllegalArgumentException('Division by zero');
+      }
       return $lhs / $rhs;
     }
   }
