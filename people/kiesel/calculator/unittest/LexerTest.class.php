@@ -83,5 +83,18 @@
         '(1)'
       );
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function functionExpression() {
+      $this->assertTokenSequence(
+        array(TOKEN_T_WORD, ord('('), ord(')')),
+        'pi()'
+      );
+    }
+        
   }
 ?>

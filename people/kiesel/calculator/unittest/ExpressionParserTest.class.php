@@ -243,5 +243,60 @@
     public function simpleExpressionChainEvaluation() {
       $this->assertEquals(0, $this->evaluate('10 - 5 - 5'));
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function piParse() {
+      $this->assertEquals(
+        new PiFunction(),
+        $this->astFor('pi()')
+      );
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function piEvaluate() {
+      $this->assertEquals(
+        3.14,
+        round($this->evaluate('pi()'), 2)
+      );
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function usingFunctionsInExpressionsParse() {
+      $this->assertEquals(
+        new Multiplication(
+          new PiFunction(),
+          new Value(2)
+        ),
+        $this->astFor('pi() * 2')
+      );
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function usingFunctionsInExpressionsEvaluate() {
+      $this->assertEquals(
+        6.28,
+        round($this->evaluate('pi() * 2'), 2)
+      );
+    }
+    
+    
+    
+    
   }
 ?>
