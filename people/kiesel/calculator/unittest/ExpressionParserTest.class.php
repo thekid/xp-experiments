@@ -55,15 +55,10 @@
     #[@test]
     public function simpleAdditionParse() {
       $this->assertEquals(
-        new ExprNode(array(
-          'left'  => new ExprNode(array(
-            'left' => '1'
-          )),
-          'operator'  => '+',
-          'right'     => new ExprNode(array(
-            'left'      => '2'
-          ))
-        )),
+        new Addition(
+          new Value('1'),
+          new Value('2')
+        ),
         $this->fixture->parse(new calc·Lexer('1 + 2 ', '<unittest>')) // trailing ws needed!
       );
     }
@@ -138,9 +133,7 @@
     #[@test]
     public function simpleDoubleParse() {
       $this->assertEquals(
-        new ExprNode(array(
-          'left'  => '1.5'
-        )),
+        new Value('1.5'),
         $this->astFor('1.5')
       );
     }
@@ -163,15 +156,13 @@
     #[@test]
     public function simpleBracedExpression() {
       $this->assertEquals(
-        new ExprNode(array(
-          'operator'  => '/',
-          'left'  => new ExprNode(array(
-            'operator'  => '+',
-            'left'      => new ExprNode(array('left' => '1')),
-            'right'     => new ExprNode(array('left' => '2'))
-          )),
-          'right' => new ExprNode(array('left' => '3'))
-        )),
+        new Division(
+          new Addition(
+            new Value('1'),
+            new Value('2')
+          ),
+          new Value('3')
+        ),
         $this->astFor('(1 + 2) / 3')
       );
       
@@ -185,15 +176,13 @@
     #[@test]
     public function simpleExpressionChain() {
       $this->assertEquals(
-        new ExprNode(array(
-          'operator'  => '-',
-          'left'  => new ExprNode(array(
-            'operator'  => '-',
-            'left'      => new ExprNode(array('left' => '10')),
-            'right'     => new ExprNode(array('left' => '5'))
-          )),
-          'right'  => new ExprNode(array('left' => '5'))
-        )),
+        new Subtraction(
+          new Subtraction(
+            new Value('10'),
+            new Value('5')
+          ),
+          new Value('5')
+        ),
         $this->astFor('10 - 5 - 5')
       );
     }

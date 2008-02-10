@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class ExprNode extends calc·Node {
+  abstract class ExprNode extends calc·Node {
     protected
       $operator = NULL,
       $left     = NULL,
@@ -25,31 +25,7 @@
      * @param   
      * @return  
      */
-    public function evaluate() {
-      switch ($this->operator) {
-        default:
-        case NULL:
-          if (
-            is_string($this->left) && 
-            is_numeric($this->left) && 
-            FALSE === strpos($this->left, '.')
-          ) return (int)$this->left;
-          
-          return $this->left;
-        
-        case '+':
-          return $this->leftVal() + $this->rightVal();
-        
-        case '*':
-          return $this->leftVal() * $this->rightVal();
-          
-        case '-':
-          return $this->leftVal() - $this->rightVal();
-        
-        case '/':
-          return $this->leftVal() / $this->rightVal();
-      }
-    }
+    public abstract function evaluate();
     
     /**
      * (Insert method's description here)

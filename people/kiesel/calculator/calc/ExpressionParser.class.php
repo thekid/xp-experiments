@@ -7,10 +7,14 @@
 
 #line 2 "grammar/mathematics.jay"
   uses(
-    'calc.ExprNode'
+    'calc.Addition',
+    'calc.Subtraction',
+    'calc.Multiplication',
+    'calc.Division',
+    'calc.Value'
   );
   
-#line 14 "-"
+#line 18 "-"
   define('TOKEN_T_NUMBER',  260);
   define('TOKEN_T_STRING',  262);
   define('TOKEN_T_WORD',  263);
@@ -270,30 +274,30 @@
             // Actions
             switch ($yyN) {
 
-    case 1:  #line 17 "grammar/mathematics.jay"
+    case 1:  #line 21 "grammar/mathematics.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 2:  #line 20 "grammar/mathematics.jay"
+    case 2:  #line 24 "grammar/mathematics.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 3:  #line 21 "grammar/mathematics.jay"
-    { $yyVal= $yyLex->create(new ExprNode(array('operator' => '+', 'left' => $yyVals[-2+$yyTop],'right' => $yyVals[0+$yyTop]))); } break;
+    case 3:  #line 25 "grammar/mathematics.jay"
+    { $yyVal= $yyLex->create(new Addition($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 4:  #line 22 "grammar/mathematics.jay"
-    { $yyVal= $yyLex->create(new ExprNode(array('operator' => '-', 'left' => $yyVals[-2+$yyTop],'right' => $yyVals[0+$yyTop]))); } break;
+    case 4:  #line 26 "grammar/mathematics.jay"
+    { $yyVal= $yyLex->create(new Subtraction($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 5:  #line 23 "grammar/mathematics.jay"
-    { $yyVal= $yyLex->create(new ExprNode(array('operator' => '*', 'left' => $yyVals[-2+$yyTop],'right' => $yyVals[0+$yyTop]))); } break;
+    case 5:  #line 27 "grammar/mathematics.jay"
+    { $yyVal= $yyLex->create(new Multiplication($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 6:  #line 24 "grammar/mathematics.jay"
-    { $yyVal= $yyLex->create(new ExprNode(array('operator' => '/', 'left' => $yyVals[-2+$yyTop],'right' => $yyVals[0+$yyTop]))); } break;
+    case 6:  #line 28 "grammar/mathematics.jay"
+    { $yyVal= $yyLex->create(new Division($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 7:  #line 25 "grammar/mathematics.jay"
-    { $yyVal= $yyLex->create(new ExprNode(array('left' => -$yyVals[0+$yyTop]))); } break;
+    case 7:  #line 29 "grammar/mathematics.jay"
+    { $yyVal= $yyLex->create(new Value(-$yyVals[0+$yyTop])); } break;
 
-    case 8:  #line 26 "grammar/mathematics.jay"
-    { $yyVal= $yyLex->create(new ExprNode(array('left' => $yyVals[0+$yyTop]))); } break;
-#line 297 "-"
+    case 8:  #line 30 "grammar/mathematics.jay"
+    { $yyVal= $yyLex->create(new Value($yyVals[0+$yyTop])); } break;
+#line 301 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];
