@@ -17,14 +17,25 @@
    * @purpose  Parser demo
    */
   class Calculator extends Command {
+    protected $expr= NULL;
+    protected $verbose= FALSE;
 
     /**
-     * Test
+     * Set expression to evaluate
      *
      */
     #[@arg(position= 0)]
     public function setExpression($expr) {
       $this->expr= $expr;
+    }
+
+    /**
+     * Set whether to show the parsed expression before evaluating it
+     *
+     */
+    #[@arg]
+    public function setVerbose() {
+      $this->verbose= TRUE;
     }
 
 
@@ -34,7 +45,7 @@
      */
     public function run() {
       $expr= create(new math·Parser())->parse(new math·Lexer($this->expr));
-      $this->out->write($expr, '= ');
+      $this->verbose && $this->out->write($expr, '= ');
       $this->out->writeLine($expr->evaluate());
     }
   }
