@@ -1,0 +1,32 @@
+%{
+  $package= 'math';
+
+  uses(
+    'lang.types.Integer',
+    'lang.types.Double',
+    'math.Constant',
+    'math.Addition',
+    'math.Subtraction',
+    'math.Multiplication',
+    'math.Division'
+  );
+%}
+
+%token T_INTEGER T_DOUBLE
+%left '+' '-' 
+%left '*' '/'
+%start expression
+
+%%
+
+expression:
+    T_INTEGER { $$= new math·Constant(new Integer($1)); }
+  | T_DOUBLE { $$= new math·Constant(new Double($1)); }  
+  | expression '+' expression { $$= new math·Addition($1, $3); }
+  | expression '-' expression { $$= new math·Subtraction($1, $3); }
+  | expression '*' expression { $$= new math·Multiplication($1, $3); }
+  | expression '/' expression { $$= new math·Division($1, $3); }
+  | '(' expression ')' { $$= $2; }
+;
+
+%%
