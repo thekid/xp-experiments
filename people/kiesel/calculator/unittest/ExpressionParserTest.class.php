@@ -135,7 +135,33 @@
       $this->assertEquals(1, $this->evaluate('(1 + 2) / 3 '));
     }
     
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function simpleExpressionChain() {
+      $this->assertEquals(
+        new ExprNode(array(
+          'operator'  => '-',
+          'left'  => new ExprNode(array(
+            'operator'  => '-',
+            'left'      => new ExprNode(array('left' => '10')),
+            'right'     => new ExprNode(array('left' => '5'))
+          )),
+          'right'  => new ExprNode(array('left' => '5'))
+        )),
+        $this->astFor('10 - 5 - 5 ')
+      );
+    }
     
-    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function simpleExpressionChainEvaluation() {
+      $this->assertEquals(0, $this->evaluate('10 - 5 - 5 '));
+    }
   }
 ?>

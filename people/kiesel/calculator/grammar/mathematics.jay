@@ -4,7 +4,8 @@
   );
   
 %}
-%left '+' '-'
+
+%left '+' '-' 
 %left '*' '/'
  
 %token T_NUMBER 260
@@ -16,28 +17,15 @@
 start: expression { $$= $1; }
 
 expression:
-    '(' expression ')' {
-      $$= $2;
-  }
-  | expression operator expression {
-      $$= $yyLex->create(new ExprNode(array(
-        'operator'  => $2,
-        'left'      => $1,
-        'right'     => $3
-      )));
-  }
+    '(' expression ')' { $$= $2; }
+  | expression '+' expression { $$= $yyLex->create(new ExprNode(array('operator' => '+', 'left' => $1,'right' => $3))); }
+  | expression '-' expression { $$= $yyLex->create(new ExprNode(array('operator' => '-', 'left' => $1,'right' => $3))); }
+  | expression '*' expression { $$= $yyLex->create(new ExprNode(array('operator' => '*', 'left' => $1,'right' => $3))); }
+  | expression '/' expression { $$= $yyLex->create(new ExprNode(array('operator' => '/', 'left' => $1,'right' => $3))); }
   | T_NUMBER { 
       $$= $yyLex->create(new ExprNode(array(
         'left'      => $1
       )));
   }
 ;
-
-operator:
-    '+'
-  | '-'
-  | '*'
-  | '/'
-;
-
 %%
