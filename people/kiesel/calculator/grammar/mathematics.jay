@@ -9,7 +9,8 @@
     'calc.Value',
     'calc.FunctionFactory',
     'calc.PiFunction',
-    'calc.AbsFunction'
+    'calc.AbsFunction',
+    'calc.Negation'
   );
   
 %}
@@ -43,7 +44,7 @@ expressions_opt:
 ;
 
 atom:
-    '-' T_NUMBER { $$= $yyLex->create(new Value(-$2)); }
+    '-' atom { $$= $yyLex->create(Negation::createFor($2)); }
   | T_NUMBER { $$= $yyLex->create(new Value($1)); }
   | T_WORD '(' expressions_opt ')' { $$= $yyLex->create(FunctionFactory::create($1, $3)); }
 ;

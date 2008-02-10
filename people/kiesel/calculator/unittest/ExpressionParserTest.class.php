@@ -304,6 +304,32 @@
       $this->assertEquals(15, $this->evaluate('abs(-15)'));
     }
     
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function nestedFunctionsParse() {
+      $this->assertEquals(
+        new AbsFunction(new Negation(new PiFunction())),
+        $this->astFor('abs(-pi())')
+      );
+    }
+    
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function nestedFunctionsEvaluate() {
+      $this->assertEquals(
+        3.14,
+        round($this->evaluate('abs(-pi())'), 2)
+      );
+    }
+    
+    
     
     
     

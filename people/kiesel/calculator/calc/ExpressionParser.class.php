@@ -16,10 +16,11 @@
     'calc.Value',
     'calc.FunctionFactory',
     'calc.PiFunction',
-    'calc.AbsFunction'
+    'calc.AbsFunction',
+    'calc.Negation'
   );
   
-#line 23 "-"
+#line 24 "-"
   define('TOKEN_T_NUMBER',  260);
   define('TOKEN_T_STRING',  262);
   define('TOKEN_T_WORD',  263);
@@ -48,7 +49,7 @@
           6,     7,    17, 
     );
     protected static $yySindex = array(          -40,
-       -256,     0,   -34,   -40,     0,   -13,     0,     0,     0,   -25, 
+        -39,     0,   -36,   -40,     0,   -13,     0,     0,     0,   -25, 
         -40,   -40,   -40,   -40,   -40,   -40,   -38,     0,   -11,   -11, 
         -83,   -83,   -83,     0,     0,   -13, 
     );
@@ -58,11 +59,11 @@
           1,    10,    19,     0,     0,   -32, 
     );
     protected static $yyGindex= array(0,
-         73,     0,     0, 
+         73,    14,     0, 
     );
     protected static $yyTable = array(4,
-          5,     4,    25,     8,     1,     9,     1,    11,    11,     6, 
-         16,    15,     1,     0,     0,    18,    13,    11,     7,    12, 
+          5,     4,    25,     9,     1,     1,     1,    11,    11,     6, 
+         16,    15,     1,     0,     8,    18,    13,    11,     7,    12, 
           0,    14,     0,    15,     0,    15,     3,     0,    13,    11, 
          13,    12,     4,    14,     0,    14,     0,     5,     0,     0, 
           5,     5,     5,     5,     0,     5,     6,     5,     0,     6, 
@@ -83,7 +84,7 @@
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     2, 
-          0,     2,     3,     0,     3,     0,     0,    11,     0,     0, 
+          2,     2,     3,     3,     3,     0,     0,    11,     0,     0, 
          11,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
@@ -93,8 +94,8 @@
           0,     0,     4,     0,     0,     4, 
     );
     protected static $yyCheck = array(40,
-          0,    40,    41,   260,    45,    40,    45,    40,    41,     0, 
-         94,    37,     0,    -1,    -1,    41,    42,    43,     0,    45, 
+          0,    40,    41,    40,    45,    45,    45,    40,    41,     0, 
+         94,    37,     0,    -1,     1,    41,    42,    43,     0,    45, 
          -1,    47,    -1,    37,    -1,    37,     0,    -1,    42,    43, 
          42,    45,     0,    47,    -1,    47,    -1,    37,    -1,    -1, 
          40,    41,    42,    43,    -1,    45,    37,    47,    -1,    40, 
@@ -115,7 +116,7 @@
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   260, 
-         -1,   260,   263,    -1,   263,    -1,    -1,   260,    -1,    -1, 
+        260,   260,   263,   263,   263,    -1,    -1,   260,    -1,    -1, 
         263,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
@@ -300,42 +301,42 @@
             // Actions
             switch ($yyN) {
 
-    case 1:  #line 27 "grammar/mathematics.jay"
+    case 1:  #line 28 "grammar/mathematics.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 2:  #line 30 "grammar/mathematics.jay"
+    case 2:  #line 31 "grammar/mathematics.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 3:  #line 31 "grammar/mathematics.jay"
+    case 3:  #line 32 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Addition($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 4:  #line 32 "grammar/mathematics.jay"
+    case 4:  #line 33 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Subtraction($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 5:  #line 33 "grammar/mathematics.jay"
+    case 5:  #line 34 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Multiplication($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 6:  #line 34 "grammar/mathematics.jay"
+    case 6:  #line 35 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Division($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 7:  #line 35 "grammar/mathematics.jay"
+    case 7:  #line 36 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Modulo($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 8:  #line 36 "grammar/mathematics.jay"
+    case 8:  #line 37 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Power($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 11:  #line 42 "grammar/mathematics.jay"
+    case 11:  #line 43 "grammar/mathematics.jay"
     { $yyVal[]= $yyVals[0+$yyTop]; } break;
 
-    case 12:  #line 46 "grammar/mathematics.jay"
-    { $yyVal= $yyLex->create(new Value(-$yyVals[0+$yyTop])); } break;
+    case 12:  #line 47 "grammar/mathematics.jay"
+    { $yyVal= $yyLex->create(Negation::createFor($yyVals[0+$yyTop])); } break;
 
-    case 13:  #line 47 "grammar/mathematics.jay"
+    case 13:  #line 48 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Value($yyVals[0+$yyTop])); } break;
 
-    case 14:  #line 48 "grammar/mathematics.jay"
+    case 14:  #line 49 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(FunctionFactory::create($yyVals[-3+$yyTop], $yyVals[-1+$yyTop])); } break;
-#line 339 "-"
+#line 340 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];
