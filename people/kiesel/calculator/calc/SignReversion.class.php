@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class Negation extends ExprNode {
+  class SignReversion extends ExprNode {
 
     /**
      * (Insert method's description here)

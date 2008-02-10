@@ -10,7 +10,7 @@
     'calc.FunctionFactory',
     'calc.PiFunction',
     'calc.AbsFunction',
-    'calc.Negation'
+    'calc.SignReversion'
   );
   
 %}

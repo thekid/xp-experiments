@@ -311,7 +311,7 @@
     #[@test]
     public function nestedFunctionsParse() {
       $this->assertEquals(
-        new AbsFunction(new Negation(new PiFunction())),
+        new AbsFunction(new SignReversion(new PiFunction())),
         $this->astFor('abs(-pi())')
       );
     }
@@ -336,13 +336,21 @@
     #[@test]
     public function negationOfExpression() {
       $this->assertEquals(
-        new Negation(new Multiplication(new Value(2), new Value(5))),
+        new SignReversion(new Multiplication(new Value(2), new Value(5))),
         $this->astFor('-(2 * 5)')
       );
     }
     
-    
-    
-    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function optimizedSignReversionParse() {
+      $this->assertEquals(
+        new Value(-5),
+        $this->astFor('-(((5)))')
+      );
+    }
   }
 ?>
