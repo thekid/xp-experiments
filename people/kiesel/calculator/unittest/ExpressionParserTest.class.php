@@ -131,7 +131,7 @@
      *
      */
     #[@test]
-    public function parseModulo() {
+    public function moduloParse() {
       $this->assertEquals(
         new Modulo(
           new Value('9'),
@@ -150,7 +150,29 @@
       $this->assertEquals(2, $this->evaluate('9 % 7'));
     }
     
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function powerParse() {
+      $this->assertEquals(
+        new Power(
+          new Value('2'),
+          new Value('10')
+        ),
+        $this->astFor('2^10')
+      );
+    }
     
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function powerEvaluate() {
+      $this->assertEquals(1024, $this->evaluate('2 ^ 10'));
+    }
     
     /**
      * Test

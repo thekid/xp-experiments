@@ -12,10 +12,11 @@
     'calc.Multiplication',
     'calc.Division',
     'calc.Modulo',
+    'calc.Power',
     'calc.Value'
   );
   
-#line 19 "-"
+#line 20 "-"
   define('TOKEN_T_NUMBER',  260);
   define('TOKEN_T_STRING',  262);
   define('TOKEN_T_WORD',  263);
@@ -28,38 +29,38 @@
    */
   class ExpressionParser extends AbstractParser {
     protected static $yyLhs= array(-1,
-          0,     1,     1,     1,     1,     1,     1,     1,     1, 
+          0,     1,     1,     1,     1,     1,     1,     1,     1,     1, 
     );
     protected static $yyLen= array(2,
-          1,     3,     3,     3,     3,     3,     3,     2,     1, 
+          1,     3,     3,     3,     3,     3,     3,     3,     2,     1, 
     );
     protected static $yyDefRed= array(0,
-          0,     9,     0,     0,     0,     8,     0,     0,     0,     0, 
-          0,     0,     2,     0,     0,     5,     6,     7, 
+          0,    10,     0,     0,     0,     9,     0,     0,     0,     0, 
+          0,     0,     0,     2,     0,     0,     0,     0,     0,     8, 
     );
     protected static $yyDgoto= array(4,
           5, 
     );
     protected static $yySindex = array(          -40,
-       -256,     0,   -40,     0,   -27,     0,   -34,   -40,   -40,   -40, 
-        -40,   -40,     0,   -25,   -25,     0,     0,     0, 
+       -257,     0,   -40,     0,   -28,     0,   -35,   -40,   -40,   -40, 
+        -40,   -40,   -40,     0,   -26,   -26,   -76,   -76,   -76,     0, 
     );
     protected static $yyRindex= array(            0,
-          0,     0,     0,     0,     6,     0,     0,     0,     0,     0, 
-          0,     0,     0,     1,     2,     0,     0,     0, 
+          0,     0,     0,     0,    22,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     4,    28,     1,    13,    20,     0, 
     );
     protected static $yyGindex= array(0,
-         16, 
+         21, 
     );
     protected static $yyTable = array(3,
-          3,     4,    12,     6,     1,     1,    13,    10,     8,    12, 
-          9,    12,    11,     0,    10,     8,    10,     9,     7,    11, 
-          0,    11,     0,    14,    15,    16,    17,    18,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     3,     4,     3,     4,     3,     4,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          5,    12,     6,     3,     1,    14,    10,     8,    12,     9, 
+         12,    11,     6,    10,     8,    10,     9,    13,    11,     7, 
+         11,     1,     0,     7,     0,     0,     0,     4,    15,    16, 
+         17,    18,    19,    20,     0,     0,     0,     5,     0,     0, 
+          0,     5,     5,     5,     3,     5,     3,     5,     3,     6, 
+          0,     0,     0,     6,     6,     6,     7,     6,    13,     6, 
+          7,     7,     7,     0,     7,    13,     7,    13,     4,     0, 
+          4,     0,     4,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
@@ -76,14 +77,14 @@
           0,     0,     0,     0,     0,     0,     0,     0,     0,     2, 
     );
     protected static $yyCheck = array(40,
-          0,     0,    37,   260,    45,     0,    41,    42,    43,    37, 
-         45,    37,    47,    -1,    42,    43,    42,    45,     3,    47, 
-         -1,    47,    -1,     8,     9,    10,    11,    12,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    41,    41,    43,    43,    45,    45,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+          0,    37,   260,     0,    45,    41,    42,    43,    37,    45, 
+         37,    47,     0,    42,    43,    42,    45,    94,    47,     0, 
+         47,     0,    -1,     3,    -1,    -1,    -1,     0,     8,     9, 
+         10,    11,    12,    13,    -1,    -1,    -1,    37,    -1,    -1, 
+         -1,    41,    42,    43,    41,    45,    43,    47,    45,    37, 
+         -1,    -1,    -1,    41,    42,    43,    37,    45,    94,    47, 
+         41,    42,    43,    -1,    45,    94,    47,    94,    41,    -1, 
+         43,    -1,    45,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
@@ -108,6 +109,7 @@
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
+      NULL, "'^'", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
@@ -119,7 +121,6 @@
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
-      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       'T_NUMBER', NULL, 'T_STRING', 'T_WORD', 
     );
 
@@ -275,33 +276,36 @@
             // Actions
             switch ($yyN) {
 
-    case 1:  #line 22 "grammar/mathematics.jay"
+    case 1:  #line 24 "grammar/mathematics.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 2:  #line 25 "grammar/mathematics.jay"
+    case 2:  #line 27 "grammar/mathematics.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 3:  #line 26 "grammar/mathematics.jay"
+    case 3:  #line 28 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Addition($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 4:  #line 27 "grammar/mathematics.jay"
+    case 4:  #line 29 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Subtraction($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 5:  #line 28 "grammar/mathematics.jay"
+    case 5:  #line 30 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Multiplication($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 6:  #line 29 "grammar/mathematics.jay"
+    case 6:  #line 31 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Division($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 7:  #line 30 "grammar/mathematics.jay"
+    case 7:  #line 32 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Modulo($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
 
-    case 8:  #line 31 "grammar/mathematics.jay"
+    case 8:  #line 33 "grammar/mathematics.jay"
+    { $yyVal= $yyLex->create(new Power($yyVals[-2+$yyTop], $yyVals[0+$yyTop])); } break;
+
+    case 9:  #line 34 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Value(-$yyVals[0+$yyTop])); } break;
 
-    case 9:  #line 32 "grammar/mathematics.jay"
+    case 10:  #line 35 "grammar/mathematics.jay"
     { $yyVal= $yyLex->create(new Value($yyVals[0+$yyTop])); } break;
-#line 305 "-"
+#line 309 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

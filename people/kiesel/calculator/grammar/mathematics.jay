@@ -5,6 +5,7 @@
     'calc.Multiplication',
     'calc.Division',
     'calc.Modulo',
+    'calc.Power',
     'calc.Value'
   );
   
@@ -12,6 +13,7 @@
 
 %left '+' '-' 
 %left '*' '/' '%'
+%left '^'
  
 %token T_NUMBER 260
 %token T_STRING 262 /* used in lexer */
@@ -28,6 +30,7 @@ expression:
   | expression '*' expression { $$= $yyLex->create(new Multiplication($1, $3)); }
   | expression '/' expression { $$= $yyLex->create(new Division($1, $3)); }
   | expression '%' expression { $$= $yyLex->create(new Modulo($1, $3)); }
+  | expression '^' expression { $$= $yyLex->create(new Power($1, $3)); }
   | '-' T_NUMBER { $$= $yyLex->create(new Value(-$2)); }
   | T_NUMBER { $$= $yyLex->create(new Value($1)); }
 ;
