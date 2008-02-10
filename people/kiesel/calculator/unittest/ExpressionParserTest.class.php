@@ -118,6 +118,24 @@
      *
      */
     #[@test]
+    public function simpleNegativeNumberEvaluate() {
+      $this->assertEquals(-5, $this->evaluate('-5 '));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function simpleNegativeNumberProduct() {
+      $this->assertEquals(1, $this->evaluate('(-1) * (-1)'));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function simpleBracedExpression() {
       $this->assertEquals(
         new ExprNode(array(

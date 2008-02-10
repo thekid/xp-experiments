@@ -23,33 +23,33 @@
    */
   class ExpressionParser extends AbstractParser {
     protected static $yyLhs= array(-1,
-          0,     1,     1,     1,     1,     1,     1, 
+          0,     1,     1,     1,     1,     1,     1,     1, 
     );
     protected static $yyLen= array(2,
-          1,     3,     3,     3,     3,     3,     1, 
+          1,     3,     3,     3,     3,     3,     2,     1, 
     );
     protected static $yyDefRed= array(0,
-          7,     0,     0,     0,     0,     0,     0,     0,     0,     2, 
-          0,     0,     5,     6, 
+          0,     8,     0,     0,     0,     7,     0,     0,     0,     0, 
+          0,     2,     0,     0,     5,     6, 
     );
-    protected static $yyDgoto= array(3,
-          4, 
+    protected static $yyDgoto= array(4,
+          5, 
     );
     protected static $yySindex = array(          -40,
-          0,   -40,     0,   -39,   -28,   -40,   -40,   -40,   -40,     0, 
-        -26,   -26,     0,     0, 
+       -256,     0,   -40,     0,   -20,     0,   -26,   -40,   -40,   -40, 
+        -40,     0,   -39,   -39,     0,     0, 
     );
     protected static $yyRindex= array(            0,
-          0,     0,     0,     7,     0,     0,     0,     0,     0,     0, 
-          1,     2,     0,     0, 
+          0,     0,     0,     0,     7,     0,     0,     0,     0,     0, 
+          0,     0,     1,     2,     0,     0, 
     );
     protected static $yyGindex= array(0,
           3, 
     );
-    protected static $yyTable = array(2,
-          3,     4,     8,     6,     5,     7,     1,     9,    11,    12, 
-         13,    14,    10,     8,     6,     8,     7,     0,     9,     0, 
-          9,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+    protected static $yyTable = array(3,
+          3,     4,    10,     6,     1,     7,     1,    11,     0,     0, 
+         13,    14,    15,    16,    12,    10,     8,     0,     9,     0, 
+         11,    10,     8,     0,     9,     0,    11,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     3,     4,     3,     4,     3,     4,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
@@ -68,12 +68,12 @@
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     1, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     2, 
     );
     protected static $yyCheck = array(40,
-          0,     0,    42,    43,     2,    45,     0,    47,     6,     7, 
-          8,     9,    41,    42,    43,    42,    45,    -1,    47,    -1, 
-         47,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+          0,     0,    42,   260,    45,     3,     0,    47,    -1,    -1, 
+          8,     9,    10,    11,    41,    42,    43,    -1,    45,    -1, 
+         47,    42,    43,    -1,    45,    -1,    47,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    41,    41,    43,    43,    45,    45,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
@@ -94,7 +94,7 @@
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   260, 
     );
-    protected static $yyFinal= 3;
+    protected static $yyFinal= 4;
     protected static $yyName= array(    
       'end-of-file', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
@@ -289,12 +289,11 @@
     { $yyVal= $yyLex->create(new ExprNode(array('operator' => '/', 'left' => $yyVals[-2+$yyTop],'right' => $yyVals[0+$yyTop]))); } break;
 
     case 7:  #line 25 "grammar/mathematics.jay"
-    { 
-      $yyVal= $yyLex->create(new ExprNode(array(
-        'left'      => $yyVals[0+$yyTop]
-      )));
-  } break;
-#line 298 "-"
+    { $yyVal= $yyLex->create(new ExprNode(array('left' => -$yyVals[0+$yyTop]))); } break;
+
+    case 8:  #line 26 "grammar/mathematics.jay"
+    { $yyVal= $yyLex->create(new ExprNode(array('left' => $yyVals[0+$yyTop]))); } break;
+#line 297 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

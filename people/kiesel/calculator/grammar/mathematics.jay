@@ -22,10 +22,7 @@ expression:
   | expression '-' expression { $$= $yyLex->create(new ExprNode(array('operator' => '-', 'left' => $1,'right' => $3))); }
   | expression '*' expression { $$= $yyLex->create(new ExprNode(array('operator' => '*', 'left' => $1,'right' => $3))); }
   | expression '/' expression { $$= $yyLex->create(new ExprNode(array('operator' => '/', 'left' => $1,'right' => $3))); }
-  | T_NUMBER { 
-      $$= $yyLex->create(new ExprNode(array(
-        'left'      => $1
-      )));
-  }
+  | '-' T_NUMBER { $$= $yyLex->create(new ExprNode(array('left' => -$2))); }
+  | T_NUMBER { $$= $yyLex->create(new ExprNode(array('left' => $1))); }
 ;
 %%
