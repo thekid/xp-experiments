@@ -131,6 +131,32 @@
      *
      */
     #[@test]
+    public function parseModulo() {
+      $this->assertEquals(
+        new Modulo(
+          new Value('9'),
+          new Value('7')
+        ),
+        $this->astFor('9 % 7')
+      );
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function moduloEvaluate() {
+      $this->assertEquals(2, $this->evaluate('9 % 7'));
+    }
+    
+    
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function simpleDoubleParse() {
       $this->assertEquals(
         new Value('1.5'),
