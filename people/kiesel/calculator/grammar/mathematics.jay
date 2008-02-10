@@ -1,0 +1,40 @@
+%{
+  uses(
+    'calc.ExprNode'
+  );
+  
+%}
+%left '+' '-'
+%right '*' '/'
+
+%token T_NUMBER 260
+%token T_STRING 262 /* used in lexer */
+%token T_WORD 263 /* used in lexer */
+
+%%
+
+start: expression { $$= $1; }
+
+expression:
+    /* empty */
+  | '(' expression ')'
+  | expression operator expression {
+      $$= $yyLex->create(new ExprNode(array(
+        'operator'  => $2,
+        'left'      => $1,
+        'right'     => $3
+      )));
+  }
+  | T_NUMBER { 
+      $$= $yyLex->create(new ExprNode(array('left' => $1))); 
+  }
+;
+
+operator:
+    '+' { $$= $1; }
+  | '-' { $$= $1; }
+  | '*' { $$= $1; }
+  | '/' { $$= $1; }
+;
+
+%%
