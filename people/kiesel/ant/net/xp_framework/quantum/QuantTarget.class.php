@@ -96,10 +96,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Check whether this target needs to be run
      *
-     * @param   
-     * @return  
+     * @return  bool
      */
     protected function needsToRun() {
       // TBI
@@ -107,10 +106,10 @@
     }    
     
     /**
-     * (Insert method's description here)
+     * Run this target
      *
-     * @param   
-     * @return  
+     * @param   net.xp_framework.quantum.QuantProject project  
+     * @param   net.xp_framework.quantum.QuantEnvironment env  
      */
     public function run(QuantProject $project, QuantEnvironment $env) {
     
@@ -133,10 +132,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Creates a string representation
      *
-     * @param   
-     * @return  
+     * @return  string
      */
     public function toString() {
       $s= $this->getClassName().'@('.$this->hashCode()."){\n";
@@ -144,8 +142,6 @@
       $s.= '  `- depends: '.implode(', ', $this->depends)."\n";
       $s.= '  `- ['.sizeof($this->tasks)."] tasks\n";
       return $s.'}';
-
-    }    
-    
+    }        
   }
 ?>
