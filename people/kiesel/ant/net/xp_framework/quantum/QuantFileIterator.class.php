@@ -45,7 +45,7 @@
         return new QuantCollection($next, $this->basedir);
       }
       
-      if ($next instanceof IOelement) {
+      if ($next instanceof IOElement) {
         return new QuantFile($next, $this->basedir);
       }
 
