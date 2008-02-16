@@ -126,7 +126,7 @@
       }
       
       if (NULL !== $this->fileset) {
-        $iter= $this->fileset->iteratorFor($env);
+        $iter= $this->fileset->iteratorFor($this->env());
         while ($iter->hasNext()) {
           $element= $iter->next();
 
