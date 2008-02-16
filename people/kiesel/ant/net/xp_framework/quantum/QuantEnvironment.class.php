@@ -40,6 +40,9 @@
       $this->err= $err;
       $this->directorySeparator= $ds;
       $this->initializeDefaultExcludes();
+
+      // Initialize default properties (TBD: Compile a list of all of these)
+      $this->hashmap['classpath']= getenv('CLASSPATH');
     }
     
     public function initializeDefaultExcludes() {
@@ -129,6 +132,13 @@
     public function setPaths($paths) {
       foreach ($paths as $id => $path) {
         $this->paths[$id]= array();
+        
+        // Add path elements
+        foreach ($path->getPathElements($this) as $element) {
+          $this->paths[$id][]= $this->localUri($this->substitute($element));
+        }
+        
+        // Add filesets
         foreach ($path->getFilesets() as $set) {
           foreach ($set->iteratorFor($this) as $file) {
             $this->paths[$id][]= $set->getDir($this).$this->directorySeparator.$file->relativePath();
