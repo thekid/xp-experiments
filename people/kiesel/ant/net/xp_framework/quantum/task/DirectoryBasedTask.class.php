@@ -86,10 +86,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Set directory
      *
-     * @param   
-     * @return  
+     * @param   string dir
      */
     #[@xmlmapping(element= '@dir')]
     public function setDir($dir) {
@@ -97,10 +96,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Get an iterator on this task's fileset
      *
-     * @param   
-     * @return  
+     * @param   net.xp_framework.quantum.QuantEnvironment env
+     * @return  net.xp_framework.quantum.FileIterator
      */
     protected function iteratorForFileset($env) {
       return $this->fileset->iteratorFor($env);
