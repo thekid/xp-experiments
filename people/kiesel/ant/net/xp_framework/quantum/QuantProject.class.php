@@ -23,6 +23,7 @@
       $basedir      = '.',
       $description  = NULL,
       $default      = NULL,
+      $paths        = array(),
       $properties   = array(),
       $targets      = array(),
       $imports      = array();
@@ -62,10 +63,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Set description
      *
-     * @param   
-     * @return  
+     * @param   string desc
      */
     #[@xmlmapping(element= '@description|description')]
     public function setDescription($desc) {
@@ -78,18 +78,27 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'property', class='net.xp_framework.quantum.task.property.QuantPropertyTask')]
+    #[@xmlmapping(element= 'property', class= 'net.xp_framework.quantum.task.property.QuantPropertyTask')]
     public function addProperty($property) {
       $this->properties[]= $property;
     }
     
     /**
-     * (Insert method's description here)
+     * Add a path
      *
-     * @param   
-     * @return  
+     * @param   net.xp_framework.quantum.QuantPath path
      */
-    #[@xmlmapping(element= 'target', class='net.xp_framework.quantum.QuantTarget')]
+    #[@xmlmapping(element= 'path', class= 'net.xp_framework.quantum.QuantPath')]
+    public function addPath($path) {
+      $this->paths[$path->getId()]= $path;
+    }
+
+    /**
+     * Add a target
+     *
+     * @param   net.xp_framework.quantum.QuantTarget target
+     */
+    #[@xmlmapping(element= 'target', class= 'net.xp_framework.quantum.QuantTarget')]
     public function addTarget($target) {
       if (isset($this->targets[$target->getName()])) {
         throw new IllegalArgumentException('Target "'.$target->getName().'" is duplicate.');
@@ -99,10 +108,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Adds another buildfile to import
      *
-     * @param   
-     * @return  
+     * @param   net.xp_framework.quantum.QuantImport import
      */
     #[@xmlmapping(element= 'import', class= 'net.xp_framework.quantum.QuantImport')]
     public function importBuildfile($import) {
@@ -110,10 +118,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Sets default target
      *
-     * @param   
-     * @return  
+     * @param   string default
      */
     #[@xmlmapping(element= '@default')]
     public function setDefault($default) {
@@ -121,10 +128,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Runs a single target
      *
-     * @param   
-     * @return  
+     * @param   string name
+     * @throws  lang.IllegalArgumentException in case the target does not exist
      */
     public function runTarget($name) {
       if (!isset($this->targets[$name])) {
@@ -137,7 +144,9 @@
      * (Insert method's description here)
      *
      * @param   
-     * @return  
+     * @param 
+     * @param   mixed[] arguments
+     * @throws  lang.IllegalArgumentException
      */
     public function run($out, $err, $arguments) {
       if (sizeof($arguments) == 0) $arguments= array($this->default);
@@ -155,6 +164,10 @@
               if (!isset($this->targets[$name])) $this->targets[$name]= $target;
             }
             
+            foreach ($project->paths as $name => $target) {
+              if (!isset($this->paths[$name])) $this->paths[$name]= $target;
+            }
+
             $this->properties= array_merge($this->properties, $project->properties);
             foreach ($project->properties as $p) $this->properties[]= $p;
           }
@@ -171,6 +184,7 @@
       // Setup environment
       $this->environment= new QuantEnvironment($out, $err);
       foreach ($this->properties as $p) { $p->run($this->environment); }      
+      $this->environment->setPaths($this->paths);
       
       $this->runTarget($target);
     }
