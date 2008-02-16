@@ -92,11 +92,11 @@
         
         // Read error output if any
         while (!$p->out->eof()) {
-          $env->out->writeLine('[STDOUT:jar] '.$p->out->readLine()); 
+          $env->out->writeLine('[STDOUT:java] '.$p->out->readLine()); 
         }
         // Read error output if any
         while (!$p->err->eof()) {
-          $env->err->writeLine('[STDERR:jar] '.$p->err->readLine()); 
+          $env->err->writeLine('[STDERR:java] '.$p->err->readLine()); 
         }
         $p->close();
       } catch (IOException $e) {
