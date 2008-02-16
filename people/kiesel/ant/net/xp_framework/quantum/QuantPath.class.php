@@ -37,6 +37,16 @@
     }
 
     /**
+     * Add a path element
+     *
+     * @param   string path
+     */
+    #[@xmlmapping(element= 'pathelement/@path')]
+    public function addPathElement($path) {
+      $this->pathelements[]= $path;
+    }
+
+    /**
      * Set fileset
      *
      * @param   net.xp_framework.quantum.QuantFileset set
@@ -47,12 +57,21 @@
     }
 
     /**
-     * Get fileset
+     * Get filesets
      *
      * @return  net.xp_framework.quantum.QuantFileset[]
      */
     public function getFilesets() {
       return $this->filesets;
+    }
+
+    /**
+     * Get path elements
+     *
+     * @return  string[]
+     */
+    public function getPathElements() {
+      return $this->pathelements;
     }
   }
 ?>
