@@ -12,11 +12,10 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Runs a Quantum project
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://net.xp_framework.quantum.QuantProject
+   * @purpose  Command
    */
   class Quantum extends Command {
     public
@@ -26,10 +25,9 @@
       $dump     = FALSE;
 
     /**
-     * (Insert method's description here)
+     * Set buildfile
      *
-     * @param   
-     * @return  
+     * @param   string file default NULL
      */
     #[@arg(short= 'f')]
     public function setBuildfile($file= NULL) {
@@ -60,10 +58,8 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Run method
      *
-     * @param   
-     * @return  
      */
     public function run() {
       if ($this->dump) {
