@@ -14,15 +14,14 @@
   /**
    * (Insert class' description here)
    *
-   * @ext      extension
    * @see      reference
-   * @purpose  purpose
+   * @purpose  Task
    */
   class QuantJavacTask extends DirectoryBasedTask {
     public
       $destdir= NULL,
       $classpath= NULL,
-      $sourcepath= NULL,
+      $sourcepaths= NULL,
       $bootclasspath= NULL,
       $classpathref= NULL,
       $sourcepathref= NULL,
@@ -115,8 +114,8 @@
     /**
      * Get Classpath
      *
-     * @access  public
-     * @return  lang.Object
+     * @param   net.xp_framework.quantum.QuantEnvironment env
+     * @return  string[]
      */
     function getClasspath(QuantEnvironment $env) {
       if ($this->classpathref) {
@@ -127,28 +126,32 @@
     }
 
     /**
-     * Set Sourcepath
+     * Add sourcepath
      *
      * @access  public
      * @param   lang.Object sourcepath
      */
-    #[@xmlmapping(element= '@sourcepath')]
-    function setSourcepath($sourcepath) {
-      $this->sourcepath= $sourcepath;
+    #[@xmlmapping(element= '@sourcepath|src/@path')]
+    function addSourcepath($sourcepath) {
+      $this->sourcepaths[]= $sourcepath;
     }
 
     /**
-     * Get Sourcepath
+     * Get sourcepath
      *
      * @access  public
-     * @return  lang.Object
+     * @return  string[]
      */
     function getSourcepath(QuantEnvironment $env) {
       if ($this->sourcepathref) {
         return $env->getPath($this->sourcepathref);
       }
       
-      return $env->localUri($env->substitute($this->sourcepath));
+      $r= array();
+      foreach ($this->sourcepaths as $sourcepath) {
+        $r[]= $env->localUri($env->substitute($sourcepath));
+      }
+      return $r;
     }
 
     /**
@@ -157,7 +160,7 @@
      * @access  public
      * @param   lang.Object classpathref
      */
-    #[@xmlmapping(element= '@classpathref')]
+    #[@xmlmapping(element= '@classpathref|classpath/@refid')]
     function setClasspathref($classpathref) {
       $this->classpathref= $classpathref;
     }
@@ -232,7 +235,7 @@
      * @param   lang.Object debug
      */
     function setDebug($debug) {
-      $this->debug= ($debug == 'off');
+      $this->debug= ($debug == 'true');
     }
 
     /**
@@ -443,13 +446,13 @@
     protected function execute() {
       $env= $this->env();
       $cmdline= array();
-      if ($this->classpath || $this->classpathref) $cmdline[]= '-classpath '.$this->getClasspath($env);
       if ($this->destdir) $cmdline[]= '-d '.$this->getDestdir($env);
+      if ($this->classpath || $this->classpathref) $cmdline[]= '-classpath "'.implode($env->pathSeparator(), $this->getClasspath($env)).'"';
       if ($this->encoding) $cmdline[]= '-encoding '.$this->encoding;
       if ($this->debug) $cmdline[]= '-g';
       if (TRUE === $this->nowarn) $cmdline[]= '-nowarn';
       if ($this->source) $cmdline[]= '-source '.$this->source;
-      if ($this->sourcepath || $this->sourcepathref) $cmdline[]= '-sourcepath '.$this->getSourcepath($env);
+      if ($this->sourcepaths || $this->sourcepathref) $cmdline[]= '-sourcepath "'.implode($env->pathSeparator(), $this->getSourcepath($env)).'"';
       if (TRUE === $this->verbose) $cmdline[]= '-verbose';
       
       // Evaluate fileset
@@ -459,7 +462,7 @@
       $destdir= $this->getDestdir($env);
       while ($iterator->hasNext()) {
         $sourceElement= $iterator->next();
-        $targetfile= new File($destdir.DIRECTORY_SEPARATOR.str_replace('.java', '.class', $sourceElement->relativePath()));
+        $targetfile= new File($destdir.$env->directorySeparator().str_replace('.java', '.class', $sourceElement->relativePath()));
         
         // Rebuild when target does not exist or is out of date
         if (
@@ -487,12 +490,11 @@
         $env->out->writeLine('---> Executing '.$p->getCommandLine());
         $p->getInputStream()->close();
         
-        while (($out= $p->getOutputStream()->readLine()) || ($err= $p->getErrorStream()->readLine())) {
+        while (/*($out= $p->getOutputStream()->readLine()) ||*/ ($err= $p->getErrorStream()->readLine())) {
           if ($out) $env->out->writeLine('[STDOUT:javac] '.$out); 
           if ($err) $env->err->writeLine('[STDERR:javac] '.$err);
         }
         $p->close();
-        return;
       } catch (IOException $e) {
         if ($this->failOnError) {
           $lfile->unlink();  
