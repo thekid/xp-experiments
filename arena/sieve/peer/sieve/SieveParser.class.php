@@ -26,36 +26,6 @@
     'peer.sieve.match.CountMatch'
   );
 #line 29 "-"
-  define('TOKEN_T_WORD',  260);
-  define('TOKEN_T_STRING',  261);
-  define('TOKEN_T_NUMBER',  263);
-  define('TOKEN_T_REQUIRE',  270);
-  define('TOKEN_T_IF',  280);
-  define('TOKEN_T_ELSE',  281);
-  define('TOKEN_T_ELSEIF',  282);
-  define('TOKEN_T_ALLOF',  290);
-  define('TOKEN_T_ANYOF',  291);
-  define('TOKEN_T_NOT',  292);
-  define('TOKEN_T_HEADER',  300);
-  define('TOKEN_T_SIZE',  301);
-  define('TOKEN_T_ADDRESS',  302);
-  define('TOKEN_T_TRUE',  303);
-  define('TOKEN_T_FALSE',  304);
-  define('TOKEN_T_COMPARATOR',  305);
-  define('TOKEN_T_ENVELOPE',  306);
-  define('TOKEN_T_EXISTS',  307);
-  define('TOKEN_T_IS',  400);
-  define('TOKEN_T_CONTAINS',  401);
-  define('TOKEN_T_MATCHES',  402);
-  define('TOKEN_T_REGEX',  403);
-  define('TOKEN_T_VALUE',  404);
-  define('TOKEN_T_COUNT',  405);
-  define('TOKEN_T_ALL',  500);
-  define('TOKEN_T_DOMAIN',  501);
-  define('TOKEN_T_LOCALPART',  502);
-  define('TOKEN_T_USER',  503);
-  define('TOKEN_T_DETAIL',  504);
-  define('TOKEN_YY_ERRORCODE', 256);
 
   /**
    * Generated parser class
@@ -63,6 +33,37 @@
    * @purpose  Parser implementation
    */
   class SieveParser extends AbstractParser {
+    const T_WORD= 260;
+    const T_STRING= 261;
+    const T_NUMBER= 263;
+    const T_REQUIRE= 270;
+    const T_IF= 280;
+    const T_ELSE= 281;
+    const T_ELSEIF= 282;
+    const T_ALLOF= 290;
+    const T_ANYOF= 291;
+    const T_NOT= 292;
+    const T_HEADER= 300;
+    const T_SIZE= 301;
+    const T_ADDRESS= 302;
+    const T_TRUE= 303;
+    const T_FALSE= 304;
+    const T_COMPARATOR= 305;
+    const T_ENVELOPE= 306;
+    const T_EXISTS= 307;
+    const T_IS= 400;
+    const T_CONTAINS= 401;
+    const T_MATCHES= 402;
+    const T_REGEX= 403;
+    const T_VALUE= 404;
+    const T_COUNT= 405;
+    const T_ALL= 500;
+    const T_DOMAIN= 501;
+    const T_LOCALPART= 502;
+    const T_USER= 503;
+    const T_DETAIL= 504;
+    const YY_ERRORCODE= 256;
+
     protected static $yyLhs= array(-1,
           0,     1,     1,     3,     3,     4,     4,     2,     2,     6, 
           6,     9,     7,     7,    10,    12,    10,    13,    10,    15, 
@@ -650,7 +651,7 @@
 
     case 70:  #line 269 "grammar/sieve.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
-#line 654 "-"
+#line 655 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];
