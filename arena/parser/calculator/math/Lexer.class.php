@@ -6,7 +6,7 @@
 
   $package= 'math';
 
-  uses('text.StringTokenizer', 'text.parser.generic.AbstractLexer');
+  uses('text.StringTokenizer', 'math.Parser', 'text.parser.generic.AbstractLexer');
 
   /**
    * Lexer for mathematical expressions
@@ -53,10 +53,10 @@
           $this->token= ord($token);
           $this->value= $token;
         } else if (ctype_digit($token)) {
-          $this->token= TOKEN_T_INTEGER;
+          $this->token= math·Parser::T_INTEGER;
           $this->value= intval($token);
         } else if (2 == sscanf($token, '%d.%d', $whole, $fraction)) {
-          $this->token= TOKEN_T_DOUBLE;
+          $this->token= math·Parser::T_DOUBLE;
           $this->value= doubleval($token);
         } else {
           throw new IllegalStateException('Unknown token "'.$token.'"');

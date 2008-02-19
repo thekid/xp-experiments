@@ -18,9 +18,6 @@
     'math.Division'
   );
 #line 21 "-"
-  define('TOKEN_T_INTEGER',  257);
-  define('TOKEN_T_DOUBLE',  258);
-  define('TOKEN_YY_ERRORCODE', 256);
 
   /**
    * Generated parser class
@@ -28,6 +25,10 @@
    * @purpose  Parser implementation
    */
   class math·Parser extends AbstractParser {
+    const T_INTEGER= 257;
+    const T_DOUBLE= 258;
+    const YY_ERRORCODE= 256;
+
     protected static $yyLhs= array(-1,
           0,     0,     0,     0,     0,     0,     0,     0, 
     );
@@ -296,7 +297,7 @@
 
     case 8:  #line 30 "grammar/calculator.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
-#line 300 "-"
+#line 301 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];
