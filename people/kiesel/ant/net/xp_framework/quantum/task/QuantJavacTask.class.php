@@ -445,7 +445,15 @@
       $env= $this->env();
       $cmdline= array();
       if ($this->destdir) $cmdline[]= '-d '.$this->getDestdir($env);
-      if ($this->classpath || $this->classpathref) $cmdline[]= '-classpath "'.implode($env->pathSeparator(), $this->getClasspath($env)).'"';
+
+      // Compile classpath by merging destination dir (if set) and classpath
+      // and passing it as "-classpath" argument to the Java compiler
+      if ($this->classpath || $this->classpathref) $cmdline[]= sprintf(
+        '-classpath "%s%s"',
+        $this->destdir ? $this->getDestdir($env).$env->pathSeparator() : '',
+        implode($env->pathSeparator(), $this->getClasspath($env))
+      );
+
       if ($this->encoding) $cmdline[]= '-encoding '.$this->encoding;
       if ($this->debug) $cmdline[]= '-g';
       if (TRUE === $this->nowarn) $cmdline[]= '-nowarn';
