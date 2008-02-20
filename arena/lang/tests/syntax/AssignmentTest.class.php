@@ -127,7 +127,7 @@
           'position'      => array(4, 17), 
           'class'         => new TypeName('self'),
           'member'        => new VariableNode(array(
-            'position'      => array(4, 26), 
+            'position'      => array(4, 17), 
             'name'          => '$instance',
           ))
         )),
@@ -150,7 +150,7 @@
           'position'      => array(4, 17), 
           'class'         => new TypeName('self'),
           'member'        => new VariableNode(array(
-            'position'      => array(4, 48), 
+            'position'      => array(4, 17), 
             'name'          => '$instance',
             'chained'       => new InvocationNode(array(
               'position'       => array(4, 39), 

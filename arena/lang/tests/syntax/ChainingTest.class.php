@@ -133,7 +133,7 @@
         'position'       => array(4, 19), 
         'class'          => new TypeName('Logger'),
         'member'         => new InvocationNode(array(
-          'position'       => array(4, 48), 
+          'position'       => array(4, 31), 
           'name'           => 'getInstance',
           'parameters'     => NULL,
           'chained'          => new InvocationNode(array(

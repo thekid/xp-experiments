@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.StringTokenizer', 'text.parser.generic.AbstractLexer');
+  uses('text.StringTokenizer', 'xp.compiler.Parser', 'text.parser.generic.AbstractLexer');
   
   $package= 'xp.compiler';
 
@@ -17,64 +17,64 @@
   class xp·compiler·Lexer extends AbstractLexer {
     protected static
       $keywords  = array(
-        'public'        => TOKEN_T_PUBLIC,
-        'private'       => TOKEN_T_PRIVATE,
-        'protected'     => TOKEN_T_PROTECTED,
-        'static'        => TOKEN_T_STATIC,
-        'final'         => TOKEN_T_FINAL,
-        'abstract'      => TOKEN_T_ABSTRACT,
-        'inline'        => TOKEN_T_INLINE,
+        'public'        => Parser::T_PUBLIC,
+        'private'       => Parser::T_PRIVATE,
+        'protected'     => Parser::T_PROTECTED,
+        'static'        => Parser::T_STATIC,
+        'final'         => Parser::T_FINAL,
+        'abstract'      => Parser::T_ABSTRACT,
+        'inline'        => Parser::T_INLINE,
         
-        'package'       => TOKEN_T_PACKAGE,
-        'import'        => TOKEN_T_IMPORT,
-        'class'         => TOKEN_T_CLASS,
-        'interface'     => TOKEN_T_INTERFACE,
-        'enum'          => TOKEN_T_ENUM,
-        'extends'       => TOKEN_T_EXTENDS,
-        'implements'    => TOKEN_T_IMPLEMENTS,
+        'package'       => Parser::T_PACKAGE,
+        'import'        => Parser::T_IMPORT,
+        'class'         => Parser::T_CLASS,
+        'interface'     => Parser::T_INTERFACE,
+        'enum'          => Parser::T_ENUM,
+        'extends'       => Parser::T_EXTENDS,
+        'implements'    => Parser::T_IMPLEMENTS,
 
-        'operator'      => TOKEN_T_OPERATOR,
-        'throws'        => TOKEN_T_THROWS,
+        'operator'      => Parser::T_OPERATOR,
+        'throws'        => Parser::T_THROWS,
 
-        'property'      => TOKEN_T_PROPERTY,
+        'property'      => Parser::T_PROPERTY,
 
-        'throw'         => TOKEN_T_THROW,
-        'try'           => TOKEN_T_TRY,
-        'catch'         => TOKEN_T_CATCH,
-        'finally'       => TOKEN_T_FINALLY,
+        'throw'         => Parser::T_THROW,
+        'try'           => Parser::T_TRY,
+        'catch'         => Parser::T_CATCH,
+        'finally'       => Parser::T_FINALLY,
         
-        'return'        => TOKEN_T_RETURN,
-        'new'           => TOKEN_T_NEW,
+        'return'        => Parser::T_RETURN,
+        'new'           => Parser::T_NEW,
         
-        'for'           => TOKEN_T_FOR,
-        'foreach'       => TOKEN_T_FOREACH,
-        'as'            => TOKEN_T_AS,
-        'do'            => TOKEN_T_DO,
-        'while'         => TOKEN_T_WHILE,
-        'break'         => TOKEN_T_BREAK,
-        'continue'      => TOKEN_T_CONTINUE,
+        'for'           => Parser::T_FOR,
+        'foreach'       => Parser::T_FOREACH,
+        'as'            => Parser::T_AS,
+        'do'            => Parser::T_DO,
+        'while'         => Parser::T_WHILE,
+        'break'         => Parser::T_BREAK,
+        'continue'      => Parser::T_CONTINUE,
 
-        'if'            => TOKEN_T_IF,
-        'else'          => TOKEN_T_ELSE,
-        'switch'        => TOKEN_T_SWITCH,
-        'case'          => TOKEN_T_CASE,
-        'default'       => TOKEN_T_DEFAULT,
+        'if'            => Parser::T_IF,
+        'else'          => Parser::T_ELSE,
+        'switch'        => Parser::T_SWITCH,
+        'case'          => Parser::T_CASE,
+        'default'       => Parser::T_DEFAULT,
       );
 
     protected static
       $lookahead= array(
-        '-' => array('->' => TOKEN_T_OBJECT_OPERATOR, '-=' => TOKEN_T_SUB_EQUAL, '--' => TOKEN_T_DEC),
-        '>' => array('>=' => TOKEN_T_GE),
-        '<' => array('<=' => TOKEN_T_SE),
-        '+' => array('+=' => TOKEN_T_ADD_EQUAL, '++' => TOKEN_T_INC),
-        '*' => array('*=' => TOKEN_T_MUL_EQUAL),
-        '/' => array('/=' => TOKEN_T_DIV_EQUAL),
-        '%' => array('%=' => TOKEN_T_MOD_EQUAL),
-        '=' => array('==' => TOKEN_T_EQUALS, '=>' => TOKEN_T_DOUBLE_ARROW),
-        '!' => array('!=' => TOKEN_T_NOT_EQUALS),
-        ':' => array('::' => TOKEN_T_DOUBLE_COLON),
-        '|' => array('||' => TOKEN_T_BOOLEAN_OR),
-        '&' => array('&&' => TOKEN_T_BOOLEAN_AND),
+        '-' => array('->' => Parser::T_OBJECT_OPERATOR, '-=' => Parser::T_SUB_EQUAL, '--' => Parser::T_DEC),
+        '>' => array('>=' => Parser::T_GE),
+        '<' => array('<=' => Parser::T_SE),
+        '+' => array('+=' => Parser::T_ADD_EQUAL, '++' => Parser::T_INC),
+        '*' => array('*=' => Parser::T_MUL_EQUAL),
+        '/' => array('/=' => Parser::T_DIV_EQUAL),
+        '%' => array('%=' => Parser::T_MOD_EQUAL),
+        '=' => array('==' => Parser::T_EQUALS, '=>' => Parser::T_DOUBLE_ARROW),
+        '!' => array('!=' => Parser::T_NOT_EQUALS),
+        ':' => array('::' => Parser::T_DOUBLE_COLON),
+        '|' => array('||' => Parser::T_BOOLEAN_OR),
+        '&' => array('&&' => Parser::T_BOOLEAN_AND),
       );
 
     const 
@@ -131,7 +131,7 @@
         
         $this->position[1]+= strlen($this->value);
         if ("'" === $token{0} || '"' === $token{0}) {
-          $this->token= TOKEN_T_STRING;
+          $this->token= Parser::T_STRING;
           $this->value= '';
           do {
             if ($token{0} === ($t= $this->tokenizer->nextToken($token{0}))) {
@@ -147,7 +147,7 @@
             break;
           } while ($this->tokenizer->hasMoreTokens());
         } else if ('$' === $token{0}) {
-          $this->token= TOKEN_T_VARIABLE;
+          $this->token= Parser::T_VARIABLE;
           $this->value= $token;
         } else if (isset(self::$keywords[$token])) {
           $this->token= self::$keywords[$token];
@@ -194,10 +194,10 @@
             if (!ctype_digit($decimal)) {
               throw new FormatException('Illegal decimal number "'.$token.$ahead.$decimal.'"');
             }
-            $this->token= TOKEN_T_DECIMAL;
+            $this->token= Parser::T_DECIMAL;
             $this->value= $token.$ahead.$decimal;
           } else {
-            $this->token= TOKEN_T_NUMBER;
+            $this->token= Parser::T_NUMBER;
             $this->value= $token;
             $this->ahead= $ahead;
           }
@@ -205,10 +205,10 @@
           if (!ctype_xdigit(substr($token, 2))) {
             throw new FormatException('Illegal hex number "'.$token.'"');
           }
-          $this->token= TOKEN_T_NUMBER;
+          $this->token= Parser::T_NUMBER;
           $this->value= $token;
         } else {
-          $this->token= TOKEN_T_WORD;
+          $this->token= Parser::T_WORD;
           $this->value= $token;
         }
         

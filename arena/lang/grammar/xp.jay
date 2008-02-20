@@ -50,7 +50,9 @@
   );
 %}
 
-%left ',' '=' '+' '-' '*' '/' '%' '?' ':' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_BOOLEAN_OR T_BOOLEAN_AND
+%left ',' '=' '%' '?' ':' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_BOOLEAN_OR T_BOOLEAN_AND
+%left '+' '-'
+%left '*' '/'
 %right '[' '!' '~' T_INC T_DEC
 %nonassoc '<' '>' T_SE T_GE T_OBJECT_OPERATOR T_EQUALS T_NOT_EQUALS
 
@@ -542,6 +544,19 @@ instancecreation:
   }
 ;
 
+staticmember:
+    T_WORD { 
+      /* TBI: Constant */ 
+    }
+  | T_VARIABLE { 
+      $$= $yyLex->create(new VariableNode(array('name' => $1))); 
+    }
+  | T_WORD '(' expressionlist_opt ')' { 
+      $$= $yyLex->create(new InvocationNode(array('name' => $1))); 
+      $$->parameters= $3;
+    }
+;
+
 expression:
     literal
   | T_VARIABLE { $1= $yyLex->create(new VariableNode(array('name' => $1))); } chain_opt {
@@ -552,15 +567,9 @@ expression:
       $4 && $3->chained= $4;
       $$= $3;
     }
-  | qualifiedname T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode()); $2->class= new TypeName($1); } T_VARIABLE chain_opt {
-      $2->member= $yyLex->create(new VariableNode(array('name' => $4)));
+  | qualifiedname T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode()); $2->class= new TypeName($1); } staticmember chain_opt {
+      $2->member= $4;
       $5 && $2->member->chained= $5;
-      $$= $2;
-    } 
-  | qualifiedname T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode()); $2->class= new TypeName($1); } T_WORD '(' expressionlist_opt ')' chain_opt {
-      $2->member= $yyLex->create(new InvocationNode(array('name' => $4)));
-      $2->member->parameters= $6;
-      $8 && $2->member->chained= $8;
       $$= $2;
     } 
   | T_WORD '(' { $2= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' chain_opt { 
@@ -608,6 +617,7 @@ expression:
 
 literal:
     T_WORD { /* XXX Constant, e.g. NULL, FALSE, TRUE */ }
+  | qualifiedname T_DOUBLE_COLON T_CLASS { /* XXX class literal */ }
   | '[' { $1= $yyLex->create(new ArrayNode()); } expressionlist_opt ']' {
       $1->values= $3;
       $1->type= NULL;   // XXX anytype?
@@ -681,7 +691,12 @@ unary_postfix_operation:
 
 chain_opt:
     /* empty */ { $$= NULL; }
-  | chain
+  | chained
+;
+
+chained:
+    chain 
+  | chain chained {  $1->chained= $2; }
 ;
 
 chain:
@@ -696,7 +711,6 @@ chain:
       $1->name= $2;
       $1->parameters= $5;
     }
-  | chain chain { $1->chained= $2; }
 ;
 // }}}
 
@@ -721,7 +735,7 @@ typeparameters:
 ;
 
 typeparameter:
-    typename
+    typeref
   | '?' T_EXTENDS qualifiedname { $$= new TypeName($3.'+'); }
 ;
 
