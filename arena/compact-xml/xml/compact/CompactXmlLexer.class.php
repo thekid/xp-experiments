@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('text.StringTokenizer', 'text.parser.generic.AbstractLexer');
+  uses(
+    'text.StringTokenizer', 
+    'xml.compact.CompactXmlParser', 
+    'text.parser.generic.AbstractLexer'
+  );
 
   /**
    * Lexer for compact XML
@@ -29,7 +33,7 @@
     function __construct($input, $source) {
       $this->tokenizer= new StringTokenizer($input, self::DELIMITERS, TRUE);
       $this->fileName= $source;
-      $this->line= 0;
+      $this->position= array(1, 1);   // Y, X
     }
   
     /**
@@ -39,24 +43,27 @@
      */
     public function advance() {
       do {
+        if (!$this->tokenizer->hasMoreTokens()) return FALSE;
         $token= $this->tokenizer->nextToken(self::DELIMITERS);
         
         // Check for whitespace
         if (FALSE !== strpos(" \n\r\t", $token)) {
-          $this->line+= substr_count($token, "\n");
+          $l= substr_count($token, "\n");
+          $this->position[1]= strlen($token) + ($l ? 1 : $this->position[1]);
+          $this->position[0]+= $l;
           continue;
         }
         
         if ('"' == $token{0}) {
-          $this->token= TOKEN_T_STRING;
+          $this->token= CompactXmlParser::T_STRING;
           $this->value= $this->tokenizer->nextToken('"');
           $this->tokenizer->nextToken('"');
         } else if ('<' == $token{0}) {
-          $this->token= TOKEN_T_TEXT;
+          $this->token= CompactXmlParser::T_TEXT;
           $this->value= $this->tokenizer->nextToken('>');
           $this->tokenizer->nextToken('>');
         } else if ('#' == $token{0}) {
-          $this->token= TOKEN_T_COMMENT;
+          $this->token= CompactXmlParser::T_COMMENT;
           $this->value= ltrim($this->tokenizer->nextToken("\r\n"), ' ');
         } else if (isset(self::$keywords[$token])) {
           $this->token= self::$keywords[$token];
@@ -65,17 +72,17 @@
           $this->token= ord($token);
           $this->value= $token;
         } else if (preg_match('/^[0-9]+$/', $token)) {
-          $this->token= TOKEN_T_NUMBER;
+          $this->token= CompactXmlParser::T_NUMBER;
           $this->value= $token;
         } else {
-          $this->token= TOKEN_T_WORD;
+          $this->token= CompactXmlParser::T_WORD;
           $this->value= $token;
         }
         
         break;
       } while (1);
       
-      return $this->tokenizer->hasMoreTokens();
+      return TRUE;
     }
   }
 ?>

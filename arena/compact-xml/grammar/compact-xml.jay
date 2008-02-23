@@ -39,6 +39,9 @@ name:
 	|	T_WORD '[' T_WORD ']' {
 		  $$= new Node($1, NULL, array('id' => $3));
         }
+	|	T_WORD '[' T_STRING ']' {
+		  $$= new Node($1, NULL, array('id' => $3));
+        }
 ;
 
 attributes:

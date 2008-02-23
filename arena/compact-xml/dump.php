@@ -4,7 +4,12 @@
   uses(
     'io.File',
     'io.FileUtil',
-    'util.profiling.Timer',
+    'util.profiling.Timer'
+  );
+  
+  ClassLoader::getDefault()->registerPath(dirname(__FILE__));
+  
+  uses(
     'xml.compact.CompactXmlLexer', 
     'xml.compact.CompactXmlParser'
   );
