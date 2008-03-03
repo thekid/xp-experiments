@@ -13,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class CommandLineParser extends Object {
+  class CommandLine extends Object {
     protected
       $arguments  = array(),
       $unboundMap = array();
@@ -134,6 +134,21 @@
       $opt= ($long ? '--'.$long : '-'.$short);
       throw new IllegalArgumentException('No argument found for option '.$opt);
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function value($long, $short= NULL, $default= NULL) {
+      $value= $this->argument($long, $short, $default);
+      return ($value instanceof CommandLineArgument
+        ? $value->value()
+        : $value
+      );
+    }
+      
     
     /**
      * (Insert method's description here)

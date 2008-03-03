@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'util.cmd.CommandLineParser'
+    'util.cmd.CommandLine'
   );
 
   /**
@@ -15,7 +15,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class CommandLineParserTest extends TestCase {
+  class CommandLineTest extends TestCase {
 
     /**
      * (Insert method's description here)
@@ -24,7 +24,7 @@
      * @return  
      */
     public function setUp() {
-      $this->fixture= new CommandLineParser(array('--config=./etc', '-cp', '.:skeleton/', '-V', 'some.class.name', '--verbose', 'file1', 'file2'));
+      $this->fixture= new CommandLine(array('--config=./etc', '-cp', '.:skeleton/', '-V', 'some.class.name', '--verbose', 'file1', 'file2'));
     }
   
     /**
