@@ -1,15 +1,25 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
 package net.xp_framework.cmd;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.io.File;
-import javax.tools.*;
-import java.util.List;
+import java.io.IOException;
 import java.util.Arrays;
 import java.net.URL;
 import java.net.URLClassLoader;
+import net.xp_framework.text.*;
+import javax.tools.*;
 
+/**
+ * Runs a Command class 
+ *
+ */
 public class Runner {
     private static PrintStream out= System.out;
     private static PrintStream err= System.err;
@@ -45,13 +55,13 @@ public class Runner {
         if (!classname.endsWith(".java")) {
             cl= ClassLoader.getSystemClassLoader();
         } else {
-            File classfile= new File(classname);
             boolean success= false;
+            File classfile= new File(classname);
+            DiagnosticCollector<JavaFileObject> diagnostics= new DiagnosticCollector<JavaFileObject>();
 
+            JavaCompiler tool= ToolProvider.getSystemJavaCompiler();
+            StandardJavaFileManager manager= tool.getStandardFileManager(diagnostics, null, null);
             try {
-                JavaCompiler tool= ToolProvider.getSystemJavaCompiler();
-                StandardJavaFileManager manager= tool.getStandardFileManager(null, null, null);
-
                 success= tool.getTask(
                     null, 
                     manager, 
@@ -60,25 +70,34 @@ public class Runner {
                     null, 
                     manager.getJavaFileObjectsFromFiles(Arrays.asList(classfile))
                 ).call();
-                manager.close();
-
-                cl= new URLClassLoader(
-                    new URL[] { classfile.getCanonicalFile().toURI().toURL() } 
-                );
-            } catch (Exception e) {
-                err.println("*** Compilation failed");
+                cl= new URLClassLoader(new URL[] { classfile.getCanonicalFile().toURI().toURL() });
+            } catch (Throwable e) {
                 e.printStackTrace(err);
-                return 1;
-            }
-            
-            if (!success) {
-                err.println("*** Compilation failed");
-                return 1;
-            }
-            
-            classname= classname.substring(0, classname.length() -5).replace("/", ".");
+                success= false;
+            } finally {
+                try {
+                    manager.close();
+                } catch (IOException e) {
+                    e.printStackTrace(err);
+                    success= false;
+                }
+                if (!success) {
+                    err.println("*** Compilation failed");
+                    for (Diagnostic diagnostic: diagnostics.getDiagnostics()) {
+                        err.format(
+                            "    Error on line %d in %s%n",
+                            diagnostic.getLineNumber(),
+                            diagnostic.getSource()
+                        );
+                    }
+                    return 1;
+                }
+            }            
+
+            classname= classname.substring(0, classname.length() - ".java".length()).replace("/", ".");
         }
 
+        // Load class
         Class clazz= null;
         try {
             clazz= Class.forName(classname, true, cl);
@@ -114,13 +133,14 @@ public class Runner {
         instance.err= err;
         
         for (Method m: clazz.getMethods()) {
-            if (m.isAnnotationPresent(Arg.class)) {   // Pass arguments
+            Object[] args= null;
+
+            if (m.isAnnotationPresent(Arg.class)) {   // Pass one argument
                 Arg a= m.getAnnotation(Arg.class);
                 String longName;
                 char shortName= 0;
                 boolean exists;
                 boolean positional= false;
-                Object[] args= null;
 
                 if (-1 != a.position()) {
                     longName= "#" + String.valueOf(a.position() + 1);
@@ -150,20 +170,37 @@ public class Runner {
                     };
                 }
                 
-                try {
-                    m.invoke(instance, args);
-                } catch (IllegalAccessException e) {
-                    err.println("*** Could not invoke " + m);
-                    return 2;
-                } catch (InvocationTargetException e) {
-                    err.println("*** " + e.getMessage() + " " + e.getCause());
-                    return 2;
+            } else if (m.isAnnotationPresent(Args.class)) {   // Pass arguments
+                Args a= m.getAnnotation(Args.class);
+
+                if ("".equals(a.select())) {
+                    args= new Object[] { classparams.list.toArray(new String[] { }) };
+                } else {
+                    Scanned scanned= Scanner.scan(a.select(), "[%d..%d]");
+                    
+                    args= new Object[] { classparams.list.subList(
+                        scanned.get(0, 0), 
+                        scanned.get(1, classparams.count)
+                    ).toArray(new String[] { }) };
                 }
+            } else {
+                continue;
+            }
+
+            // Invoke method
+            try {
+                m.invoke(instance, args);
+            } catch (IllegalAccessException e) {
+                err.println("*** Could not invoke " + m);
+                return 2;
+            } catch (InvocationTargetException e) {
+                err.println("*** " + e.getMessage() + " " + e.getCause());
+                return 2;
             }
         }
-        
+
+        // Call the run() method
         instance.run();
-        
         return 0;
     }
 }

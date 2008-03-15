@@ -12,8 +12,6 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Arg {
-    int position() default -1;
-    String name()  default "";
-    char option() default 0;
+public @interface Args {
+    String select()  default "";
 }

@@ -1,3 +1,8 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
 package net.xp_framework.cmd;
 
 import java.util.Arrays;
