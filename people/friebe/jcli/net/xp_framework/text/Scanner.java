@@ -48,7 +48,9 @@ public abstract class Scanner {
             // Handle tokens:
             // * %d - an integer (0-9)
             // * %f - a float (0-9.)
+            // * %x - a hex number (0-9A-F), optionally prefixed w/ "0x"
             // * %s - a string (scan until next whitespace, \r\n\s\t)
+            // * %c - a single character
             switch (token.charAt(0)) {
                 case 'd': {
                     String number= span(input, "0123456789", offset, false);
@@ -56,6 +58,20 @@ public abstract class Scanner {
 
                     result.add(Integer.parseInt(number));
                     offset+= number.length();
+                    token= token.substring(1, token.length());
+                    break;
+                }
+
+                case 'x': {
+                    String hex= span(input, "0123456789xABCDEFabcdef", offset, false);
+                    if (0 == hex.length()) return result;
+
+                    if ("0x".equals(hex.substring(0, 2))) {
+                        result.add(Integer.parseInt(hex.substring(2, hex.length()), 16));
+                    } else {
+                        result.add(Integer.parseInt(hex, 16));
+                    }
+                    offset+= hex.length();
                     token= token.substring(1, token.length());
                     break;
                 }
@@ -74,6 +90,29 @@ public abstract class Scanner {
                     String string= span(input, "\r\n\t ", offset, true);
                     if (0 == string.length()) return result;
                     
+                    result.add(string);
+                    offset+= string.length();
+                    token= token.substring(1, token.length());
+                    break;
+                }
+
+                case 'c': {
+                    if (offset >= input.length()) return result;
+                    
+                    result.add(input.charAt(offset));
+                    offset+= 1;
+                    token= token.substring(1, token.length());
+                    break;
+                }
+
+                case '[': {
+                    String mask= token.substring(1, token.indexOf(']'));
+                    String string= null;
+                    if ('^' == mask.charAt(0)) {
+                        string= span(input, mask.substring(1, mask.length()), offset, true);
+                    } else {
+                        string= span(input, mask, offset, false);
+                    }
                     result.add(string);
                     offset+= string.length();
                     token= token.substring(1, token.length());
