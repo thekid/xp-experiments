@@ -36,6 +36,10 @@ public class ScannerTest {
         assertEquals(1, Scanner.scan("1", "%d").get(0));
     }
 
+    @Test public void negativeIntegerNumber() {
+        assertEquals(-100, Scanner.scan("-100", "%d").get(0));
+    }
+
     @Test public void hexNumber() {
         assertEquals(0xFF, Scanner.scan("FF", "%x").get(0));
     }
@@ -46,6 +50,10 @@ public class ScannerTest {
 
     @Test public void floatNumber() {
         assertEquals(1.0f, Scanner.scan("1", "%f").get(0));
+    }
+
+    @Test public void negativeFloatNumber() {
+        assertEquals(-1.0f, Scanner.scan("-1", "%f").get(0));
     }
 
     @Test public void string() {

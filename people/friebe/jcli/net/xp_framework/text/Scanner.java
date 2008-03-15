@@ -20,7 +20,7 @@ public abstract class Scanner {
      */
     protected static String span(String s, String mask, int offset, int length, boolean not) {
         StringBuffer result= new StringBuffer();
-        for (int i= offset; i < length; i++) {
+        for (int i= offset; i < Math.min(length, s.length()); i++) {
             char c= s.charAt(i);
             int p= mask.indexOf(c);
             
@@ -73,7 +73,7 @@ public abstract class Scanner {
                 // * %10s, %1d, %2x
                 do { c= token.charAt(i++); } while (c >= '0' && c <= '9');
                 if (i > 1) {
-                    length= Integer.parseInt(token.substring(0, i- 1))+ offset;
+                    length= Integer.parseInt(token.substring(0, i- 1)) + offset;
                 } else {
                     length= input.length();
                 }
@@ -88,10 +88,11 @@ public abstract class Scanner {
                 // * %[^<class>] - string (scan until any character inside <class> occurs)
                 switch (c) {
                     case 'd': {
-                        String number= span(input, "0123456789", offset, length, false);
+                        StringBuffer number= new StringBuffer(span(input, "-", offset, offset+ 1, false));
+                        number.append(span(input, "0123456789", offset+ number.length(), length, false));
                         if (0 == number.length()) return result;
 
-                        result.add(Integer.parseInt(number));
+                        result.add(Integer.parseInt(number.toString()));
                         offset+= number.length();
                         token= token.substring(i, token.length());
                         break;
@@ -112,7 +113,8 @@ public abstract class Scanner {
                     }
 
                     case 'f': {
-                        String number= span(input, "0123456789.", offset, length, false);
+                        StringBuffer number= new StringBuffer(span(input, "-", offset, offset+ 1, false));
+                        number.append(span(input, "0123456789.", offset+ number.length(), length, false));
                         if (0 == number.length()) return result;
 
                         result.add(Float.parseFloat(number.toString()));
