@@ -29,6 +29,25 @@ public abstract class Scanner {
         }
         return result.toString();
     }
+    
+    /**
+     * Returns a mask from a character class
+     *
+     */
+    protected static String mask(String s) {
+        StringBuffer mask= new StringBuffer();
+        for (int i= 0; i < s.length()- 1; i++) {
+            if ('-' == s.charAt(i+ 1)) {
+                for (char c= s.charAt(i); c < s.charAt(i+ 2); c++) {
+                    mask.append(c);
+                }
+                i+= 2;
+            } else {
+                mask.append(s.charAt(i));
+            }
+        }
+        return mask.append(s.charAt(s.length()- 1)).toString();
+    }
 
     /**
      * Scans a string 
@@ -52,6 +71,8 @@ public abstract class Scanner {
                 // * %x - a hex number (0-9A-F), optionally prefixed w/ "0x"
                 // * %s - a string (scan until next whitespace, \r\n\s\t)
                 // * %c - a single character
+                // * %[<class>] - string (scan until any character outside <class> occurs)
+                // * %[^<class>] - string (scan until any character inside <class> occurs)
                 switch (token.charAt(0)) {
                     case 'd': {
                         String number= span(input, "0123456789", offset, false);
@@ -107,16 +128,16 @@ public abstract class Scanner {
                     }
 
                     case '[': {
-                        String mask= token.substring(1, token.indexOf(']'));
+                        String characterClass= token.substring(1, token.indexOf(']'));
                         String string= null;
-                        if ('^' == mask.charAt(0)) {
-                            string= span(input, mask.substring(1, mask.length()), offset, true);
+                        if ('^' == characterClass.charAt(0)) {
+                            string= span(input, mask(characterClass.substring(1, characterClass.length())), offset, true);
                         } else {
-                            string= span(input, mask, offset, false);
+                            string= span(input, mask(characterClass), offset, false);
                         }
                         result.add(string);
                         offset+= string.length();
-                        token= token.substring(1 + mask.length() + 1, token.length());
+                        token= token.substring(1 + characterClass.length() + 1, token.length());
                         break;
                     }
                 }

@@ -66,6 +66,12 @@ public class ScannerTest {
         assertEquals(2, s.get(1));
     }
 
+    @Test public void characterClass() {
+        Scanned s= Scanner.scan("abcde", "%[a-d]%c");
+        assertEquals("abcd", s.get(0));
+        assertEquals('e', s.get(1));
+    }
+
     @Test public void hostGroup() {
         Scanned s= Scanner.scan("config[0-9]", "%[^[][%d-%d]");
         assertEquals("config", s.get(0));
