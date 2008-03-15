@@ -78,4 +78,11 @@ public class ScannerTest {
         assertEquals(0, s.get(1));
         assertEquals(9, s.get(2));
     }
+
+    @Test public void hexColor() {
+        Scanned s= Scanner.scan("AABBCC", "%2x%2x%2x");
+        assertEquals(0xAA, s.get(0));
+        assertEquals(0xBB, s.get(1));
+        assertEquals(0xCC, s.get(2));
+    }
 }
