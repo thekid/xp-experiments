@@ -60,13 +60,13 @@ public class ScannerTest {
         assertEquals("World", Scanner.scan("Hello World", "Hello %s").get(0));
     }
 
-    @Test @Ignore public void range() {
+    @Test public void range() {
         Scanned s= Scanner.scan("[1..2]", "[%d..%d]");
         assertEquals(1, s.get(0));
         assertEquals(2, s.get(1));
     }
 
-    @Test @Ignore public void hostGroup() {
+    @Test public void hostGroup() {
         Scanned s= Scanner.scan("config[0-9]", "%[^[][%d-%d]");
         assertEquals("config", s.get(0));
         assertEquals(0, s.get(1));
