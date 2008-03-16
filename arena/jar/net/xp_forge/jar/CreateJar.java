@@ -24,7 +24,7 @@ public class CreateJar extends Command {
      * Set filename of jar file
      *
      */
-    @Arg(position= 0) public void setHost(String fileName) throws IOException {
+    @Arg(position= 0) public void setJar(String fileName) throws IOException {
         this.jar= new JarOutputStream(new FileOutputStream(fileName));
     }
 
