@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Properties;
 import java.net.URL;
 import java.net.URLClassLoader;
 import net.xp_framework.text.*;
@@ -132,10 +133,26 @@ public class Runner {
         instance.out= out;
         instance.err= err;
         
+        // Default config base
+        String configBase= "etc";
+        
         for (Method m: clazz.getMethods()) {
             Object[] args= null;
-
-            if (m.isAnnotationPresent(Arg.class)) {   // Pass one argument
+            
+            if (m.isAnnotationPresent(Inject.class)) {   // Inject objects
+                Inject i= m.getAnnotation(Inject.class);
+                
+                if (m.getParameterTypes()[0].equals(Properties.class)) {
+                    Properties p= new Properties();
+                    try {
+                        p.load(new java.io.FileInputStream(new java.io.File(configBase, i.name())));
+                    } catch (java.io.IOException e) {
+                        e.printStackTrace(err);
+                        return 2;
+                    }
+                    args= new Object[] { p };
+                }
+            } else if (m.isAnnotationPresent(Arg.class)) {   // Pass one argument
                 Arg a= m.getAnnotation(Arg.class);
                 String longName;
                 char shortName= 0;
