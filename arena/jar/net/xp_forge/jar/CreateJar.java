@@ -101,16 +101,20 @@ public class CreateJar extends Command {
      */
     public void run() {
         try {
+            File cwd= new File(".");
+
             for (String name: this.input) {
                 int p;
-                String base= ".";
+                File base;
 
                 if (-1 != (p= name.indexOf(':'))) {
-                    base= name.substring(0, p);
+                    base= new File(name.substring(0, p));
                     name= name.substring(p+ 1, name.length());
+                } else {
+                    base= cwd;
                 }
 
-                this.addFile(new File(name), new File(base));
+                this.addFile(new File(name), base);
             }
             this.jar.close();
         } catch (IOException e) {
