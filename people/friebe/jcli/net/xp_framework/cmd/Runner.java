@@ -161,8 +161,14 @@ public class Runner {
                     
                     args= new Object[] { };
                 } else if (!exists) {
-                    err.println("*** Argument " + longName + " does not exist!");
-                    return 2;
+                    for (java.lang.annotation.Annotation pa: m.getParameterAnnotations()[0]) {
+                        if (!(pa instanceof Default)) continue;
+                        args= new Object[] { ((Default)pa).value() };
+                    }
+                    if (null == args) {
+                        err.println("*** Argument " + longName + " does not exist!");
+                        return 2;
+                    }
                 } else {
                     args= new Object[] { positional
                         ? classparams.value(a.position())
