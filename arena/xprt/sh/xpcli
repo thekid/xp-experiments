@@ -1,0 +1,3 @@
+#!/bin/sh
+
+CLASS="util.cmd.Runner" . `dirname "$0"`/xp
