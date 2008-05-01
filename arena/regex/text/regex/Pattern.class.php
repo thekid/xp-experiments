@@ -91,17 +91,36 @@
     }
 
     /**
+     * Returns whether given input is matched.
+     *
+     * @param   string input
+     * @return  bool
+     * @throws  lang.FormatException
+     */  
+    public function matches($input) {
+      if ($input instanceof String) {
+        $n= preg_match($this->regex, (string)$input->getBytes($this->utf8 ? 'utf-8' : 'iso-8859-1'));
+      } else {
+        $n= preg_match($this->regex, (string)$input);
+      }
+      if (FALSE === $n || PREG_NO_ERROR != preg_last_error()) {
+        throw new FormatException('Pattern "'.$this->regex.'" matching error');
+      }
+      return $n != 0;
+    }
+
+    /**
      * Returns how many times a given input is matched.
      *
      * @param   string input
      * @return  text.regex.MatchResult
      * @throws  lang.FormatException
      */  
-    public function matches($input) {
+    public function match($input) {
       if ($input instanceof String) {
-        $n= preg_match_all($this->regex, $this->utf8 ? $input->getBytes() : utf8_decode($input->getBytes()), $m);
+        $n= preg_match_all($this->regex, (string)$input->getBytes($this->utf8 ? 'utf-8' : 'iso-8859-1'), $m, PREG_SET_ORDER );
       } else {
-        $n= preg_match_all($this->regex, (string)$input, $m);
+        $n= preg_match_all($this->regex, (string)$input, $m, PREG_SET_ORDER );
       }
       if (FALSE === $n || PREG_NO_ERROR != preg_last_error()) {
         throw new FormatException('Pattern "'.$this->regex.'" matching error');

@@ -25,8 +25,26 @@
     public function length() {
       $this->assertEquals(
         0, 
-        Pattern::compile('ABC')->matches('123')->length()
+        Pattern::compile('ABC')->match('123')->length()
       );
+    }
+
+    /**
+     * Tests the MatchResult::matches() method
+     *
+     */
+    #[@test]
+    public function isMatched() {
+      $this->assertTrue(Pattern::compile('a+')->matches('aaa'));
+    }
+
+    /**
+     * Tests the MatchResult::matches() method
+     *
+     */
+    #[@test]
+    public function isNotMatched() {
+      $this->assertFalse(Pattern::compile('a+')->matches('bbb'));
     }
 
     /**
@@ -35,9 +53,9 @@
      */
     #[@test]
     public function stringPrimitiveInput() {
-      $this->assertEquals(0, Pattern::compile('.')->matches('')->length());
-      $this->assertEquals(1, Pattern::compile('.')->matches('a')->length());
-      $this->assertEquals(2, Pattern::compile('.')->matches('ab')->length());
+      $this->assertEquals(0, Pattern::compile('.')->match('')->length());
+      $this->assertEquals(1, Pattern::compile('.')->match('a')->length());
+      $this->assertEquals(2, Pattern::compile('.')->match('ab')->length());
     }
 
     /**
@@ -46,9 +64,9 @@
      */
     #[@test]
     public function stringObjectInput() {
-      $this->assertEquals(0, Pattern::compile('.')->matches(new String(''))->length());
-      $this->assertEquals(1, Pattern::compile('.')->matches(new String('a'))->length());
-      $this->assertEquals(2, Pattern::compile('.')->matches(new String('ab'))->length());
+      $this->assertEquals(0, Pattern::compile('.')->match(new String(''))->length());
+      $this->assertEquals(1, Pattern::compile('.')->match(new String('a'))->length());
+      $this->assertEquals(2, Pattern::compile('.')->match(new String('ab'))->length());
     }
 
     /**
@@ -59,7 +77,7 @@
     public function unicodePattern() {
       $this->assertEquals(
         array('GÃ¼n'), 
-        Pattern::compile('.Ã¼.', Pattern::UTF8)->matches(new String('Günter'))->group(0)
+        Pattern::compile('.Ã¼.', Pattern::UTF8)->match(new String('Günter'))->group(0)
       );
     }
 
@@ -71,7 +89,7 @@
     public function nonUnicodePattern() {
       $this->assertEquals(
         array('Gün'), 
-        Pattern::compile('.ü.')->matches(new String('Günter'))->group(0)
+        Pattern::compile('.ü.')->match(new String('Günter'))->group(0)
       );
     }
 
@@ -83,7 +101,7 @@
     public function caseInsensitive() {
       $this->assertEquals(
         1, 
-        Pattern::compile('a', Pattern::CASE_INSENSITIVE)->matches('A')->length()
+        Pattern::compile('a', Pattern::CASE_INSENSITIVE)->match('A')->length()
       );
     }
 
@@ -95,7 +113,34 @@
     public function groups() {
       $this->assertEquals(
         array(array('Hello')), 
-        Pattern::compile('H[ea]llo')->matches('Hello')->groups()
+        Pattern::compile('H[ea]llo')->match('Hello')->groups()
+      );
+    }
+
+    /**
+     * Tests the MatchResult::groups() method
+     *
+     */
+    #[@test]
+    public function groupsWithOneMatch() {
+      $this->assertEquals(
+        array(array('www.example.com', 'www.', 'www', 'com')), 
+        Pattern::compile('(([w]{3})\.)?example\.(com|net|org)')->match('www.example.com')->groups()
+      );
+    }
+
+    /**
+     * Tests the MatchResult::groups() method
+     *
+     */
+    #[@test]
+    public function groupsWithMultipleMatches() {
+      $this->assertEquals(
+        array(
+          array('www.example.com', 'www.', 'www', 'com'),
+          array('example.org', '', '', 'org'),
+        ), 
+        Pattern::compile('(([w]{3})\.)?example\.(com|net|org)')->match('www.example.com and example.org')->groups()
       );
     }
 
@@ -107,7 +152,36 @@
     public function group() {
       $this->assertEquals(
         array('Hello'), 
-        Pattern::compile('H[ea]llo')->matches('Hello')->group(0)
+        Pattern::compile('H[ea]llo')->match('Hello')->group(0)
+      );
+    }
+
+    /**
+     * Tests the MatchResult::group() method
+     *
+     */
+    #[@test]
+    public function groupWithOneMatch() {
+      $this->assertEquals(
+        array('www.example.com', 'www.', 'www', 'com'), 
+        Pattern::compile('(([w]{3})\.)?example\.(com|net|org)')->match('www.example.com')->group(0)
+      );
+    }
+
+    /**
+     * Tests the MatchResult::group() method
+     *
+     */
+    #[@test]
+    public function groupWithMultipleMatches() {
+      $match= Pattern::compile('(([w]{3})\.)?example\.(com|net|org)')->match('www.example.com and example.org');
+      $this->assertEquals(
+        array('www.example.com', 'www.', 'www', 'com'), 
+        $match->group(0)
+      );
+      $this->assertEquals(
+        array('example.org', '', '', 'org'), 
+        $match->group(1)
       );
     }
 
@@ -117,7 +191,7 @@
      */
     #[@test, @expect('lang.IndexOutOfBoundsException')]
     public function nonExistantGroup() {
-      Pattern::compile('H[ea]llo')->matches('Hello')->group(1);
+      Pattern::compile('H[ea]llo')->match('Hello')->group(1);
     }
 
     /**
