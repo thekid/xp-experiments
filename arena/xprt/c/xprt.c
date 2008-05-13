@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <stdio.h>
+#include <dirent.h>
 
 #ifdef __CYGWIN__
 #include <sys/cygwin.h>
@@ -35,10 +36,11 @@ static char *cygpath(char *in) {
   s                                                                 \
 );
 
-static int add_path(char **include_path, char *dir, char *file) {
+static int add_path_file(char **include_path, const char *dir, const char *file) {
     char *uri= NULL;
     char path[PATH_MAX];
     FILE *f= NULL;
+    int added= 0;
 
     /* Open URI */    
     asprintf(&uri, "%s"DIR_SEPARATOR"%s", dir, file);
@@ -72,10 +74,37 @@ static int add_path(char **include_path, char *dir, char *file) {
             strcat(*include_path, PATH_TRANSLATED(tmp));
         }
         strncat(*include_path, ARG_PATH_SEPARATOR, sizeof(ARG_PATH_SEPARATOR));
+        added++;
     }
     fclose(f);
 
-    return 0;
+    return added;
+}
+
+static int scan_path_files(char **include_path, const char* dir) {
+    DIR *d= NULL;
+    struct dirent *e= NULL;
+    int added= 0;
+
+    /* Open directory */
+    if (NULL == (d= opendir(dir))) return -1;
+    
+    /* Scan for .pth files */
+    while (NULL != (e= readdir(d))) {
+        int len= strlen(e->d_name);
+
+        if (len > 4 && (
+          '.' == e->d_name[len- 4] &&
+          'p' == e->d_name[len- 3] &&
+          't' == e->d_name[len- 2] &&
+          'h' == e->d_name[len- 1]
+        )) {
+            added+= add_path_file(include_path, dir, e->d_name);
+        }
+    }
+    closedir(d);
+
+    return added;
 }
 
 void execute(char *base, char *runner, char *include, int argc, char **argv) {
@@ -92,9 +121,16 @@ void execute(char *base, char *runner, char *include, int argc, char **argv) {
 
     /* Boot classpath */
     include_path= strdup("");
-    if (0 != add_path(&include_path, absolute, "boot.pth")) {
-        fprintf(stderr, "*** Cannot find boot class path in %s", absolute);
-        return;
+    {
+        int scanned= scan_path_files(&include_path, absolute);
+        
+        if (-1 == scanned) {
+            fprintf(stderr, "*** Error loading boot class path in %s", absolute);
+            return;
+        } else if (0 == scanned) {
+            fprintf(stderr, "*** Cannot find boot class path in %s", absolute);
+            return;
+        }            
     }
 
     /* User classpath */
@@ -102,8 +138,10 @@ void execute(char *base, char *runner, char *include, int argc, char **argv) {
         asprintf(&include_path, "%s"ARG_PATH_SEPARATOR, include);
     }
     
-    /* Always include the current directory */
-    strncat(include_path, ".", sizeof("."));
+    /* Look for .pth files in current directory, if we cannot find any, use it */
+    if (scan_path_files(&include_path, ".") <= 0) {
+        strncat(include_path, ".", sizeof("."));
+    }            
 
     /* Calculate executor's filename */
     {
