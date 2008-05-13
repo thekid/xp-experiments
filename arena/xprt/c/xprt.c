@@ -36,7 +36,7 @@ static char *cygpath(char *in) {
   s                                                                 \
 );
 
-static int add_path_file(char **include_path, const char *dir, const char *file) {
+static int add_path_file(char *include_path, const char *dir, const char *file) {
     char *uri= NULL;
     char path[PATH_MAX];
     FILE *f= NULL;
@@ -64,7 +64,7 @@ static int add_path_file(char **include_path, const char *dir, const char *file)
             
             strcpy(tmp, home);
             strncat(tmp, path+ 1, l);
-            strcat(*include_path, PATH_TRANSLATED(tmp));
+            strcat(include_path, PATH_TRANSLATED(tmp));
             free(tmp);
         } else {
             char *tmp= (char*) malloc(l+ strlen(dir)+ 1);
@@ -72,10 +72,10 @@ static int add_path_file(char **include_path, const char *dir, const char *file)
             strcpy(tmp, dir);
             strncat(tmp, DIR_SEPARATOR, sizeof(DIR_SEPARATOR));
             strncat(tmp, path, l+ 1);
-            strcat(*include_path, PATH_TRANSLATED(tmp));
+            strcat(include_path, PATH_TRANSLATED(tmp));
             free(tmp);
         }
-        strncat(*include_path, ARG_PATH_SEPARATOR, sizeof(ARG_PATH_SEPARATOR));
+        strncat(include_path, ARG_PATH_SEPARATOR, sizeof(ARG_PATH_SEPARATOR));
         added++;
     }
     fclose(f);
@@ -83,7 +83,7 @@ static int add_path_file(char **include_path, const char *dir, const char *file)
     return added;
 }
 
-static int scan_path_files(char **include_path, const char* dir) {
+static int scan_path_files(char *include_path, const char* dir) {
     DIR *d= NULL;
     struct dirent *e= NULL;
     int added= 0;
@@ -124,7 +124,7 @@ void execute(char *base, char *runner, char *include, int argc, char **argv) {
     /* Boot classpath */
     include_path= strdup("");
     {
-        int scanned= scan_path_files(&include_path, absolute);
+        int scanned= scan_path_files(include_path, absolute);
         
         if (-1 == scanned) {
             fprintf(stderr, "*** Error loading boot class path in %s", absolute);
@@ -141,7 +141,7 @@ void execute(char *base, char *runner, char *include, int argc, char **argv) {
     }
     
     /* Look for .pth files in current directory, if we cannot find any, use it */
-    if (scan_path_files(&include_path, ".") <= 0) {
+    if (scan_path_files(include_path, ".") <= 0) {
         strncat(include_path, ".", sizeof("."));
     }            
 
