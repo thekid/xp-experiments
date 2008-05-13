@@ -24,6 +24,14 @@ static char *cygpath(char *in) {
 #define DIR_SEPARATOR "/"
 #endif
 
+#define ADD_INCLUDE_XAR(inc, path, s) asprintf(                     \
+  &inc,                                                             \
+  "%s%s"DIR_SEPARATOR"lib"DIR_SEPARATOR"%s.xar"ARG_PATH_SEPARATOR,  \
+  inc,                                                              \
+  path,                                                             \
+  s                                                                 \
+);
+
 void execute(char *base, char *runner, char *include, int argc, char **argv) {
     char resolved[PATH_MAX];
     char *absolute= NULL, *include_path= "", *executor= NULL;
@@ -34,23 +42,18 @@ void execute(char *base, char *runner, char *include, int argc, char **argv) {
         fprintf(stderr, "*** Cannot resolve %s\n", base);
         return;
     }
-    absolute= dirname(dirname(resolved));
+    absolute= PATH_TRANSLATED(dirname(dirname(resolved)));
 
     /* Build include_path line */
+    asprintf(&include_path, "%s"ARG_PATH_SEPARATOR, absolute);
+    ADD_INCLUDE_XAR(include_path, absolute, "xp-rt-"XPVERSION);
+    ADD_INCLUDE_XAR(include_path, absolute, "xp-net.xp_framework-"XPVERSION);
+
     if (include) {
         asprintf(&include_path, "%s"ARG_PATH_SEPARATOR, include);
     }
-    asprintf(
-        &include_path, 
-        "%s%s%s%s"DIR_SEPARATOR"lib"DIR_SEPARATOR"xp-rt-"XPVERSION".xar%s%s"DIR_SEPARATOR"lib"DIR_SEPARATOR"xp-net.xp_framework-"XPVERSION".xar%s.", 
-        include_path, 
-        PATH_TRANSLATED(absolute), 
-        ARG_PATH_SEPARATOR, 
-        PATH_TRANSLATED(absolute), 
-        ARG_PATH_SEPARATOR, 
-        PATH_TRANSLATED(absolute), 
-        ARG_PATH_SEPARATOR
-    );
+    
+    strncat(include_path, ".", sizeof("."));
 
     /* Calculate executor's filename */
     {
@@ -79,7 +82,7 @@ void execute(char *base, char *runner, char *include, int argc, char **argv) {
     args= (char **)malloc((argc + 3) * sizeof(char *));
     args[0]= executor;
     asprintf(&args[1], "-dinclude_path=\"%s\"", include_path);
-    asprintf(&args[2], "%s"DIR_SEPARATOR"bin"DIR_SEPARATOR"%s.php", PATH_TRANSLATED(absolute), runner);
+    asprintf(&args[2], "%s"DIR_SEPARATOR"bin"DIR_SEPARATOR"%s.php", strdup(absolute), runner);
     memcpy(args+ 3, argv, argc * sizeof(char *));
     args[argc+ 3]= NULL;
     
@@ -88,6 +91,6 @@ void execute(char *base, char *runner, char *include, int argc, char **argv) {
     
     /* Run (never returns in success case) */
     if (-1 == execv(executor, args)) {
-        fprintf(stderr, "*** Could not execute %s\n", executor);
+        fprintf(stderr, "*** Could not execute %s %s %s [...]\n", args[0], args[1], args[2]);
     }
 }
