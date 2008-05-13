@@ -65,6 +65,7 @@ static int add_path_file(char **include_path, const char *dir, const char *file)
             strcpy(tmp, home);
             strncat(tmp, path+ 1, l);
             strcat(*include_path, PATH_TRANSLATED(tmp));
+            free(tmp);
         } else {
             char *tmp= (char*) malloc(l+ strlen(dir)+ 1);
             
@@ -72,6 +73,7 @@ static int add_path_file(char **include_path, const char *dir, const char *file)
             strncat(tmp, DIR_SEPARATOR, sizeof(DIR_SEPARATOR));
             strncat(tmp, path, l+ 1);
             strcat(*include_path, PATH_TRANSLATED(tmp));
+            free(tmp);
         }
         strncat(*include_path, ARG_PATH_SEPARATOR, sizeof(ARG_PATH_SEPARATOR));
         added++;
