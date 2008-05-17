@@ -6,6 +6,9 @@
   define('DETAIL_ANNOTATIONS',    5);
   define('DETAIL_NAME',           6);
 
+  // Change to build directory
+  chdir($argv[1]);
+
   while ($l= fgets(STDIN, 1024)) {
     sscanf($l, "%s %[^\n]", $class, $target);
     
@@ -117,14 +120,14 @@
     }
     
     // Append meta information function
-    $meta= tempnam('.', 'meta');  // basename($target);
+    $meta= basename($target);
     $m= fopen($meta, 'wb');
     fwrite($m, str_replace('?>', '', rtrim($source)));
     fwrite($m, ' function __'.$class.'() { return '.var_export($details, TRUE).'; } ?>');
     fclose($m);
   
     // Compile it
-    $name= tempnam('.', 'comp');
+    $name= tempnam($argv[1], 'comp');
     $f= fopen($name, 'wb');
     bcompiler_write_header($f);
     bcompiler_write_file($f, $meta);
