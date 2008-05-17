@@ -67,10 +67,12 @@
       
       // For all files - if it's a class file, compile it, otherwise just add it
       foreach (new FilteredIOCollectionIterator($this->origin, $filter, TRUE) as $e) {
+        $name= strtr(substr($e->getUri(), strlen($this->origin->getUri())), DIRECTORY_SEPARATOR, '/');
+
         if (xp::CLASS_FILE_EXT === substr($e->getUri(), -10)) {
-          $compiler->in->write($e->getUri()."\n");
+          $compiler->in->write(strtr(substr($name, 0, -10), '/', '_').' '.$e->getUri()."\n");
           sscanf($compiler->out->readLine(), "%c %[^\n]", $status, $data);
-          if ('-' === $status) {
+          if ('+' !== $status) {
             $this->err->writeLine('*** ', $data);
             continue;
           }
@@ -82,7 +84,6 @@
           $delete= FALSE;
         }
         
-        $name= strtr(substr($e->getUri(), strlen($this->origin->getUri())), DIRECTORY_SEPARATOR, '/');
         $this->archive->addFileBytes(
           $name, 
           basename($name), 
