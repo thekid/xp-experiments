@@ -23,12 +23,12 @@
    * Compiles the XP framework
    *
    * @ext      bcompiler
-   * @purpose  purpose
+   * @purpose  Compiler
    */
   class Compile extends Command {
   
     /**
-     * (Insert method's description here)
+     * Set origin directory (the directory the XP framework is in)
      *
      * @param   string
      */
@@ -38,7 +38,7 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Set name of archive file to create
      *
      * @param   string
      */
@@ -53,12 +53,19 @@
      *
      */
     public function run() {
+    
+      // Fork compiler process - this is necessary because the bcompiler_compile_* 
+      // functions will compile the source into the current context, which leads
+      // to "cannot redeclare class XXX" messages and other weird sideeffects.
       $compiler= new Process(Runtime::getInstance()->getExecutable()->getFilename(), array('compiler.php'));
 
+      // Exclude directories and version-control files
       $filter= new NegationOfFilter(new AnyOfFilter(array(
         new CollectionFilter(),
         new RegexFilter('/.svn/')
       )));
+      
+      // For all files - if it's a class file, compile it, otherwise just add it
       foreach (new FilteredIOCollectionIterator($this->origin, $filter, TRUE) as $e) {
         if (xp::CLASS_FILE_EXT === substr($e->getUri(), -10)) {
           $compiler->in->write($e->getUri()."\n");
