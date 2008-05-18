@@ -21,7 +21,7 @@ static char *cygpath(char *in) {
 #define DIR_SEPARATOR "\\"
 #define HOME_DIR getenv("HOME")
 #else
-#define PATH_TRANSLATED(s) (s)
+#define PATH_TRANSLATED(s) strdup(s)
 #define ENV_PATH_SEPARATOR ":"
 #define ARG_PATH_SEPARATOR ":"
 #define DIR_SEPARATOR "/"
@@ -75,6 +75,7 @@ static int add_path_file(char *include_path, const char *dir, const char *file) 
             strcat(include_path, PATH_TRANSLATED(tmp));
             free(tmp);
         }
+        
         strncat(include_path, ARG_PATH_SEPARATOR, sizeof(ARG_PATH_SEPARATOR));
         added++;
     }
@@ -141,7 +142,7 @@ void execute(char *base, char *runner, char *include, int argc, char **argv) {
     }
     
     /* Look for .pth files in current directory, if we cannot find any, use it */
-    if (scan_path_files(include_path, ".") <= 0) {
+    if (!realpath(".", resolved) || scan_path_files(include_path, resolved) <= 0) {
         strncat(include_path, ".", sizeof("."));
     }            
 
@@ -167,7 +168,7 @@ void execute(char *base, char *runner, char *include, int argc, char **argv) {
             return;
         }
     }
-
+    
     /* Build argument list */
     args= (char **)malloc((argc + 3) * sizeof(char *));
     args[0]= executor;
