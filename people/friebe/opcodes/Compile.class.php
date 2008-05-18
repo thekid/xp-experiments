@@ -49,6 +49,16 @@
     }
 
     /**
+     * Set build directory
+     *
+     * @param   string
+     */
+    #[@arg]
+    public function setBuildDir($dir= '.') {
+      $this->build= $dir;
+    }
+
+    /**
      * Main runner method
      *
      */
@@ -57,7 +67,7 @@
       // Fork compiler process - this is necessary because the bcompiler_compile_* 
       // functions will compile the source into the current context, which leads
       // to "cannot redeclare class XXX" messages and other weird sideeffects.
-      $compiler= new Process(Runtime::getInstance()->getExecutable()->getFilename(), array('compiler.php'));
+      $compiler= new Process(Runtime::getInstance()->getExecutable()->getFilename(), array('compiler.php', $this->build));
 
       // Exclude directories and version-control files
       $filter= new NegationOfFilter(new AnyOfFilter(array(
