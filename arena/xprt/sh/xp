@@ -1,73 +1,52 @@
 #!/bin/sh
 
-VERSION="5.6.6"
+# Include xprt
+DIRNAME=$(dirname $(realpath "$0"))
+. "$DIRNAME"/xprt
 
+# Initialite
+OPTIND=0
+INCLUDE=""
+INCLUDE_PATH="" 
 RUNNER="xp"
-ARGS=""
 
-BASEDIR=$(dirname "$(realpath "$0"/..)") #"
-if [ "$OS" = "Windows_NT" ]; then
-  BASEDIR=$(cygpath -m "${BASEDIR}")
-  PATHSEP=';'
-else
-  PATHSEP=':'
-fi
-
-# Default include path for releases
-INCLUDE=${BASEDIR}${PATHSEP}${BASEDIR}/lib/xp-rt-${VERSION}.xar
-
-# Parse arguments if no class is given - if so, the class will take care
-# of that by itself.
-if [ ! -z "$CLASS" ] ; then
-  FILE_ARGS=" ${CLASS}"
-else
-  USAGE="Usage: $0 [options] <class> [args...]"
-
-  if [ -z "$1" ] ; then
-    echo ${USAGE}
-    exit 1
+# Parse arguments
+for arg in "$@" ; do
+  if [ ! -z "$INCLUDE_ARG" ] ; then
+    INCLUDE="$arg$INCLUDE_ARG$INCLUDE" ; INCLUDE_ARG=""
+    OPTIND=`expr $OPTIND + 2`
+    continue
   fi
 
-  FILE_ARGS=""
-  OPTIND=0
-  for arg in "$@" ; do
-    if [ ! -z "$INCLUDE_ARG" ] ; then
-      INCLUDE="$arg$INCLUDE_ARG$INCLUDE" ; INCLUDE_ARG=""
-      OPTIND=`expr $OPTIND + 2`
-      continue
-    fi
+  case $arg in
+    -v)               # Display version
+      RUNNER="xpv"
+      OPTIND=`expr $OPTIND + 1`
+      ;;
+    -cp)              # Add class path
+      INCLUDE_ARG=${PATHSEP}
+      ;;
+    -e)               # Run source passed via command line
+      RUNNER="xpe"
+      OPTIND=`expr $OPTIND + 1`
+      ;;
+    -xar)             # Run a xar
+      RUNNER="xar"
+      OPTIND=`expr $OPTIND + 1`
+      ;;
+    -*)               # Any other arg
+      echo "*** Invalid argument $arg"
+      echo ${USAGE}
+      exit
+      ;;
+    *)                # First arg we find that does not begin with a "-"
+      break
+      ;;
+  esac
+done
 
-    case $arg in
-      -v)               # Display version
-        echo -n "XP ${VERSION}"
-        ${PHP5CLI:-php} -r 'echo " { PHP ", phpversion(), " & ZE ", zend_version(), " } @ ", php_uname(), "\n";'
-        echo "Copyright (c) 2001-2008 The XP Framework group"
-        echo ${INCLUDE}
-        exit 1
-        ;;
-      -cp)              # Add class path
-        INCLUDE_ARG=${PATHSEP}
-        ;;
-      -e)               # Run source passed via command line
-        RUNNER="xpe"
-        OPTIND=`expr $OPTIND + 1`
-        ;;
-      -xar)             # Run a xar
-        RUNNER="xar"
-        OPTIND=`expr $OPTIND + 1`
-        ;;
-      -*)               # Any other arg
-        echo "*** Invalid argument $arg"
-        echo ${USAGE}
-        exit
-        ;;
-      *)                # First arg we find that does not begin with a "-"
-        break
-        ;;
-    esac
-  done
-
-  shift $OPTIND
-fi
-
-${PHP5CLI:-php} '-dinclude_path="'${INCLUDE}'"' ${BASEDIR}/bin/${RUNNER}.php${FILE_ARGS} "$@"
+# Execute
+shift $OPTIND
+cmd=$(execute "$DIRNAME" "$RUNNER" "$INCLUDE")
+# DEBUG { echo "### $cmd ###" }
+$cmd "$@"

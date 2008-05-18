@@ -1,0 +1,69 @@
+#!/bin/sh
+#
+# $Id$
+
+if [ "$OS" = "Windows_NT" ]; then
+  PATHSEP=';'
+else
+  PATHSEP=':'
+fi
+
+translate_path() {
+  local path="$1"
+  
+  if [ '~' = $(expr substr "$path" 1 1) ]; then
+    path="$HOME"$(expr substr "$path" 2 $(expr length "$path"))
+  fi
+  
+  if [ "$OS" = "Windows_NT" ]; then
+    echo $(cygpath -m "$path")
+  else
+    echo $path
+  fi
+}
+
+add_path_file () {
+  local file="$1"
+  local includes=""
+  
+  for l in `cat $file | grep -v ^#` ; do
+    includes=$includes$(translate_path "$l")$PATHSEP
+  done
+  
+  echo $includes
+}
+
+scan_path_files() {
+  local dir="$1"
+  local includes=""
+  
+  if [ ! -d "$dir" ] ; then 
+    return ""; 
+  fi
+  
+  for i in `ls "$dir"/*.pth` ; do
+    includes=$includes$(add_path_file $i)
+  done
+  
+  echo $includes
+}
+
+execute() {
+  local base="$1"
+  local runner="$2"
+  local include="$3"
+
+  local absolute=$(realpath "$base")
+  local includes=$(scan_path_files "$absolute")
+  
+  if [ -z $includes ] ; then
+    echo "*** Error loading boot class path in $absolute" >&2;
+    return 1
+  fi
+  
+  if [ ! -z "$include" ] ; then
+    includes=$includes$include
+  fi
+  
+  echo "php -dinclude_path=\"$includes\" $(translate_path $absolute)/$runner.php"
+}

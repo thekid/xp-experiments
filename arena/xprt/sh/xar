@@ -1,3 +1,7 @@
 #!/bin/sh
 
-CLASS="util.cmd.Runner net.xp_framework.xar.Xar" . `dirname "$0"`/xp
+# Include xprt
+DIRNAME=$(dirname $(realpath "$0"))
+. "$DIRNAME"/xprt
+
+$(execute "$DIRNAME" "xp" "") util.cmd.Runner net.xp_framework.xar.Xar "$@"
