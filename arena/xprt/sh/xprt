@@ -11,9 +11,9 @@ fi
 translate_path() {
   local path="$1"
   
-  if [ '~' = $(expr substr "$path" 1 1) ]; then
-    path="$HOME"$(expr substr "$path" 2 $(expr length "$path"))
-  fi
+  case "$path" in
+    ~*) path=$HOME${path#"~"} ;;
+  esac
   
   if [ "$OS" = "Windows_NT" ]; then
     echo $(cygpath -m "$path")
