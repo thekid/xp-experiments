@@ -62,7 +62,14 @@ execute() {
   fi
   
   if [ ! -z "$include" ] ; then
-    includes=$includes$include
+    includes=$includes$include$PATHSEP
+  fi
+
+  local local_includes=$(scan_path_files ".")
+  if [ -z $local_includes ] ; then
+    includes=$includes"."
+  else
+    includes=$includes$local_includes
   fi
   
   echo "php -dinclude_path=\"$includes\" $(translate_path $absolute)/$runner.php"
