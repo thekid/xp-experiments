@@ -1,0 +1,64 @@
+BCompiler Bugs
+========================================================================
+$Id$
+
+The following bugs were found during unittesting a bcompile'd version of 
+the XP framework:
+
+Missing __toString()
+--------------------
+Found via: net.xp_framework.unittest.core.types.BytesTest and
+net.xp_framework.unittest.core.types.StringTest
+
+"Object of class Bytes could not be converted to string"
+
+See also:
+* http://news.php.net/php.pecl.dev/5438 
+
+Fix exists in patch @ http://news.php.net/php.pecl.dev/5439
+
+
+Array type hints
+----------------
+Found via unittests/rdbms.ini
+
+"Fatal error: Declaration of MockDialect::makeJoinBy() must be compatible 
+with that of SQLDialect::makeJoinBy()"
+
+Declaration in rdbms.SQLDialect:
+<code>
+  public abstract function makeJoinBy(array $conditions)
+</code>
+
+Array type hinting appeared first in PHP 5.1.
+
+See also:
+* http://de3.php.net/language.oop5.typehinting
+* http://cvs.php.net/ZendEngine2/zend_language_parser.y?r1=1.156&r2=1.155
+* http://wiki.php.net/rfc/typehint
+
+
+Overly long keys
+----------------
+When the filename of the compiled file is too long hash keys are 
+generated that are too long to be serialized as a char. This leads to 
+side effects of instruction being overwritten by overflowing data:
+
+"Fatal error: Argument 1 passed to ClassLoader::registerLoader() 
+must implement interface IClassLoader" and "Fatal error: Exceptions 
+must be valid objects derived from the Exception base class".
+
+Can be worked around by using a short path name when compiling, e.g.
+/tmp/LocalClassName.class.php instead of 
+~/xp.forge/trunk/experiments/people/friebe/opcodes/LocalClassName.class.php.
+
+Fix exists in patch @ http://news.php.net/php.pecl.dev/5439
+
+
+No 5.3 support
+--------------
+Namespaces are not supported yet. Probably also some other features
+won't work, and definitely the changes in _zval_struct have an
+impact (see http://news.php.net/php.pecl.dev/5438).
+
+BCompiler needs to be extended!
