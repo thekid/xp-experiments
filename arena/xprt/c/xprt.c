@@ -59,7 +59,7 @@ static int add_path_file(char *include_path, const char *dir, const char *file) 
 
         /* Qualify path */
         if ('~' == path[0]) {
-            char *home= HOME_DIR;
+            char *home= strdup(HOME_DIR);
             char *tmp= (char*) malloc(l+ strlen(home));
             
             strcpy(tmp, home);
