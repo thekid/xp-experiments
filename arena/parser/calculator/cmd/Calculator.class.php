@@ -13,6 +13,64 @@
   /**
    * Calculator
    *
+   * Expression syntax:
+   * <pre>
+   *   expression :=
+   *       expression * expression
+   *     | expression + expression
+   *     | expression - expression
+   *     | expression / expression
+   *     | expression % expression
+   *     | expression ^ expression
+   *     | expression!
+   *     | expression²
+   *     | expression³
+   *     | ( expression )
+   *     | number
+   *     | constant
+   *     | function ( expression [, expression, [...]] )
+   *
+   *   number :=
+   *       integer
+   *     | float
+   *
+   *   constant :=
+   *       PI
+   *     | E
+   *     | EULER
+   *
+   *   function :=
+   *       abs
+   *     | acos
+   *     | asin
+   *     | atan
+   *     | avg
+   *     | call
+   *     | ceil
+   *     | cos
+   *     | cosh
+   *     | count
+   *     | exp
+   *     | fac
+   *     | floor
+   *     | ln
+   *     | log
+   *     | log10
+   *     | max
+   *     | median
+   *     | min
+   *     | nthrt
+   *     | round
+   *     | sin
+   *     | sinh
+   *     | sqrt
+   *     | sum
+   *     | tan
+   *     | tanh
+   * </pre>
+   * 
+   * Precedence rules are followed.
+   *
    * @see      xp://math.Parser
    * @purpose  Parser demo
    */
