@@ -15,7 +15,7 @@
    * @purpose  Lexer
    */
   class math·Lexer extends AbstractLexer {
-    const DELIMITERS= " +-*/,^%²³()\r\n\t";
+    const DELIMITERS= " +-*/,^%²³!()\r\n\t";
     protected $tokenizer= NULL;
           
     /**
