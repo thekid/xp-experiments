@@ -19,7 +19,8 @@
 
 %token T_INTEGER T_DOUBLE T_WORD
 %left '+' '-' 
-%left '*' '/' '^' '%'
+%left '*' '/' '%'
+%left '^'
 %start expression
 
 %%
