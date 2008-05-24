@@ -14,6 +14,7 @@
     'math.functions.Factory',
     'math.functions.Call',
     'math.Constant',
+    'math.Value',
     'math.Addition',
     'math.Subtraction',
     'math.Multiplication',
@@ -21,7 +22,7 @@
     'math.Power',
     'math.Modulo'
   );
-#line 25 "-"
+#line 26 "-"
 
   /**
    * Generated parser class
@@ -287,48 +288,48 @@
             // Actions
             switch ($yyN) {
 
-    case 1:  #line 27 "grammar/calculator.jay"
-    { $yyVal= new math·Constant(new Integer($yyVals[0+$yyTop])); } break;
+    case 1:  #line 28 "grammar/calculator.jay"
+    { $yyVal= new math·Value(new Integer($yyVals[0+$yyTop])); } break;
 
-    case 2:  #line 28 "grammar/calculator.jay"
-    { $yyVal= new math·Constant(new Double($yyVals[0+$yyTop])); } break;
+    case 2:  #line 29 "grammar/calculator.jay"
+    { $yyVal= new math·Value(new Double($yyVals[0+$yyTop])); } break;
 
-    case 3:  #line 29 "grammar/calculator.jay"
+    case 3:  #line 30 "grammar/calculator.jay"
     { $yyVal= new math·functions·Call(math·functions·Factory::forName($yyVals[-3+$yyTop]), $yyVals[-1+$yyTop]); } break;
 
-    case 4:  #line 30 "grammar/calculator.jay"
-    { $yyVal= new math·Constant(new Double(constant('M_'.$yyVals[0+$yyTop]))); } break;
+    case 4:  #line 31 "grammar/calculator.jay"
+    { $yyVal= Enum::valueOf(XPClass::forName('math.Constant'), $yyVals[0+$yyTop]); } break;
 
-    case 5:  #line 31 "grammar/calculator.jay"
-    { $yyVal= new math·Multiplication(new math·Constant(new Integer(-1)), $yyVals[0+$yyTop]); } break;
+    case 5:  #line 32 "grammar/calculator.jay"
+    { $yyVal= new math·Multiplication(new math·Value(new Integer(-1)), $yyVals[0+$yyTop]); } break;
 
-    case 6:  #line 32 "grammar/calculator.jay"
+    case 6:  #line 33 "grammar/calculator.jay"
     { $yyVal= new math·Addition($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 7:  #line 33 "grammar/calculator.jay"
+    case 7:  #line 34 "grammar/calculator.jay"
     { $yyVal= new math·Subtraction($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 8:  #line 34 "grammar/calculator.jay"
+    case 8:  #line 35 "grammar/calculator.jay"
     { $yyVal= new math·Multiplication($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 9:  #line 35 "grammar/calculator.jay"
+    case 9:  #line 36 "grammar/calculator.jay"
     { $yyVal= new math·Division($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 10:  #line 36 "grammar/calculator.jay"
+    case 10:  #line 37 "grammar/calculator.jay"
     { $yyVal= new math·Power($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 11:  #line 37 "grammar/calculator.jay"
+    case 11:  #line 38 "grammar/calculator.jay"
     { $yyVal= new math·Modulo($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 12:  #line 38 "grammar/calculator.jay"
+    case 12:  #line 39 "grammar/calculator.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 13:  #line 42 "grammar/calculator.jay"
+    case 13:  #line 43 "grammar/calculator.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 14:  #line 43 "grammar/calculator.jay"
+    case 14:  #line 44 "grammar/calculator.jay"
     { $yyVal= array_merge($yyVals[-2+$yyTop], array($yyVals[0+$yyTop])); } break;
-#line 332 "-"
+#line 333 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

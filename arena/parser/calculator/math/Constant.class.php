@@ -6,42 +6,41 @@
 
   $package= 'math';
   
-  uses('math.Expression', 'lang.types.Number');
+  uses('lang.Enum', 'math.Expression');
 
   /**
    * Constant
    *
    * @purpose  Expression
    */
-  class math·Constant extends Object implements math·Expression {
-    protected
-      $number= NULL;
-      
-    /**
-     * Constructor
-     *
-     * @param   lang.types.Number number
-     */
-    public function __construct(Number $number) {
-      $this->number= $number;
+  abstract class math·Constant extends Enum implements math·Expression {
+    public static 
+      $PI     = NULL,
+      $E      = NULL,
+      $EULER  = NULL;
+
+    static function __static() {
+      self::$PI= newinstance(__CLASS__, array(0, 'PI'), '{
+        static function __static() { }
+        public function evaluate() { return M_PI; }
+      }');
+      self::$E= newinstance(__CLASS__, array(1, 'E'), '{
+        static function __static() { }
+        public function evaluate() { return M_E; }
+      }');
+      self::$EULER= newinstance(__CLASS__, array(2, 'EULER'), '{
+        static function __static() { }
+        public function evaluate() { return M_EULER; }
+      }');
     }
 
     /**
-     * Creates a string representation of this object
+     * Returns all enum members
      *
-     * @return  string
+     * @return  lang.Enum[]
      */
-    public function toString() {
-      return $this->getClassName().'('.xp::stringOf($this->number).')';
-    }
-
-    /**
-     * Evaluate this expression
-     *
-     * @return  lang.types.Number
-     */
-    public function evaluate() {
-      return $this->number;
+    public static function values() {
+      return parent::membersOf(__CLASS__);
     }
   }
 ?>
