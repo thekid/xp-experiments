@@ -15,7 +15,7 @@
    * @purpose  Lexer
    */
   class math·Lexer extends AbstractLexer {
-    const DELIMITERS= " +-*/()\r\n\t";
+    const DELIMITERS= " +-*/,()\r\n\t";
     protected $tokenizer= NULL;
           
     /**
@@ -59,7 +59,8 @@
           $this->token= math·Parser::T_DOUBLE;
           $this->value= doubleval($token);
         } else {
-          throw new IllegalStateException('Unknown token "'.$token.'"');
+          $this->token= math·Parser::T_WORD;
+          $this->value= $token;
         }
         
         break;
