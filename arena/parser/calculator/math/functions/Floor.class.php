@@ -9,7 +9,7 @@
   uses('math.functions.Function');
 
   /**
-   * Returns the next highest integer value by rounding up value if necessary.
+   * Round fractions down.
    *
    * @see      php://floor
    * @purpose  Function

@@ -9,12 +9,12 @@
   uses('math.functions.Function');
 
   /**
-   * Round fractions down
+   * Returns the next highest integer value by rounding up value if necessary
    *
-   * @see      php://floor
+   * @see      php://ceil
    * @purpose  Function
    */
-  class math·functions·Floor extends math·functions·Function {
+  class math·functions·Ceil extends math·functions·Function {
     
     /**
      * Calculate
@@ -23,7 +23,7 @@
      * @return  float
      */
     public static function calculate($arg) {
-      return floor($arg);
+      return ceil($arg);
     }
   }
 ?>
