@@ -18,9 +18,9 @@
 %}
 
 %token T_INTEGER T_DOUBLE T_WORD
-%left '+' '-' 
+%left '+' '-'
 %left '*' '/' '%'
-%left '^'
+%left '²' '³' '^'
 %start expression
 
 %%
@@ -36,6 +36,8 @@ expression:
   | expression '*' expression { $$= new math·Multiplication($1, $3); }
   | expression '/' expression { $$= new math·Division($1, $3); }
   | expression '^' expression { $$= new math·Power($1, $3); }
+  | expression '²' { $$= new math·Power($1, new math·Value(new Integer(2))); }
+  | expression '³' { $$= new math·Power($1, new math·Value(new Integer(3))); }
   | expression '%' expression { $$= new math·Modulo($1, $3); }
   | '(' expression ')' { $$= $2; }
 ;
