@@ -20,9 +20,9 @@
     /**
      * Constructor
      *
-     * @param   lang.types.Number number
+     * @param   math.Real number
      */
-    public function __construct(Number $number) {
+    public function __construct(Real $number) {
       $this->number= $number;
     }
 
@@ -41,11 +41,7 @@
      * @return  lang.types.Number
      */
     public function evaluate() {
-      if ($this->number instanceof Integer) {
-        return new Rational($this->number->value);
-      } else {
-        return new Real($this->number->value);
-      }
+      return $this->number;
     }
   }
 ?>

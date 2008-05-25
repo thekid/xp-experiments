@@ -29,7 +29,10 @@
       } else if (NULL !== $in) {             // Fraction
         sscanf($in, '%d/%[0-9]', $this->numerator, $d);
         $this->denominator= NULL === $d ? 1 : (int)$d;
-      };
+        if (0 == $this->denominator) {
+          throw new IllegalArgumentException('Denominator in '.$in.' may not be zero');
+        }
+      }
     }
 
     /**
