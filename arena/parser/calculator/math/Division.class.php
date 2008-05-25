@@ -39,7 +39,7 @@
         }
         return $r;
       }
-      return new Real($lhs->asNumber() - $rhs->asNumber());
+      return new Real($lhs->asNumber() / $rhs->asNumber());
     }
   }
 ?>
