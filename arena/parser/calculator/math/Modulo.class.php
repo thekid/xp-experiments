@@ -18,12 +18,19 @@
     /**
      * Perform this operation
      *
-     * @param   mixed lhs int
-     * @param   mixed rhs int
-     * @return  mixed int
+     * @param   math.Real lhs
+     * @param   math.Real rhs
+     * @return  math.Real
      */
-    protected function perform($lhs, $rhs) {
-      return $lhs % $rhs;
+    protected function perform(Real $lhs, Real $rhs) {
+      if ($lhs instanceof Rational && $rhs instanceof Rational) {
+        $sl= $lhs->shortened();
+        $sr= $rhs->shortened();
+        if ($sl instanceof Integer && $sr instanceof Integer) {
+          return new Rational($sl->value % $sr->value);
+        }
+      }
+      throw new IllegalArgumentException('Modulo not defined for '.xp::stringOf($lhs).' % '.xp::stringOf($rhs));
     }
   }
 ?>

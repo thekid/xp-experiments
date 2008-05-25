@@ -19,12 +19,18 @@
     /**
      * Perform this operation
      *
-     * @param   mixed lhs either a float or int
-     * @param   mixed rhs either a float or int
-     * @return  mixed either a float or int
+     * @param   math.Real lhs
+     * @param   math.Real rhs
+     * @return  math.Real
      */
-    protected function perform($lhs, $rhs) {
-      return pow($lhs, $rhs);
+    protected function perform(Real $lhs, Real $rhs) {
+      if ($lhs instanceof Rational && $rhs instanceof Rational) {
+        $r= new Rational();
+        $r->numerator= pow($lhs->numerator, $rhs->asNumber());
+        $r->denominator= pow($lhs->denominator, $rhs->asNumber());
+        return $r;
+      }
+      return new Real(pow($lhs->asNumber(), $rhs->asNumber()));
     }
   }
 ?>

@@ -24,8 +24,7 @@
      * @return  float
      */
     public static function calculate($arg) {
-      if (FALSE !== ($l= sqrt($arg))) return $l;
-      self::raiseError(__FILE__, __LINE__ - 1);
+      return sqrt($arg);
     }
   }
 ?>

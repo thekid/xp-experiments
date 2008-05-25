@@ -5,10 +5,13 @@
  */
 
   $package= 'math';
+  
+  uses('math.Real', 'math.Rational');
 
   /**
    * Represents an expression
    *
+   * @see      xp://math.Value
    * @see      xp://math.Constant
    * @see      xp://math.Operation
    * @purpose  Base interface
@@ -18,7 +21,7 @@
     /**
      * Evaluate this expression
      *
-     * @return  lang.types.Number
+     * @return  math.Real
      */
     public function evaluate();
   }

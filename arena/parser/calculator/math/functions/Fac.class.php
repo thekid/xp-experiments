@@ -23,7 +23,7 @@
      * @return  float
      */
     public static function calculate($arg) {
-      if (!is_int($arg)) {
+      if (floor($arg) != $arg) {
         throw new EvaluationError('Factorial not defined for non-integers');
       }
       

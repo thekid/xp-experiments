@@ -46,9 +46,10 @@
     public function evaluate() {
       $pass= array();
       foreach ($this->arguments as $argument) {
-        $pass[]= Primitive::unboxed($argument->evaluate());
+        $pass[]= $argument->evaluate()->asNumber();
       }
-      return Primitive::boxed(call_user_func_array(array($this->func, 'calculate'), $pass));
+      $r= call_user_func_array(array($this->func, 'calculate'), $pass);
+      return is_int($r) ? new Rational($r) : new Real($r);
     }
   }
 ?>

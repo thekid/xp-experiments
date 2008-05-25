@@ -6,7 +6,7 @@
 
   $package= 'math';
   
-  uses('math.Expression', 'lang.Primitive');
+  uses('math.Expression');
 
   /**
    * Operation
@@ -35,28 +35,25 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.xp::stringOf($this->lhs).', '.xp::stringOf($this->rhs).')';
+      return $this->getClassName()."(\n  ".xp::stringOf($this->lhs).",\n  ".xp::stringOf($this->rhs)."\n)";
     }
     
     /**
      * Perform this operation
      *
-     * @param   mixed lhs either a float or int
-     * @param   mixed rhs either a float or int
-     * @return  mixed either a float or int
+     * @param   math.Real lhs
+     * @param   math.Real rhs
+     * @return  math.Real
      */
-    protected abstract function perform($lhs, $rhs);
+    protected abstract function perform(Real $lhs, Real $rhs);
 
     /**
      * Evaluate this expression
      *
-     * @return  lang.types.Number
+     * @return  math.Real
      */
     public function evaluate() {
-      return Primitive::boxed($this->perform(
-        Primitive::unboxed($this->lhs->evaluate()),
-        Primitive::unboxed($this->rhs->evaluate())
-      ));
+      return $this->perform($this->lhs->evaluate(), $this->rhs->evaluate());
     }
   }
 ?>

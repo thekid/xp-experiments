@@ -41,7 +41,11 @@
      * @return  lang.types.Number
      */
     public function evaluate() {
-      return $this->number;
+      if ($this->number instanceof Integer) {
+        return new Rational($this->number->value);
+      } else {
+        return new Real($this->number->value);
+      }
     }
   }
 ?>

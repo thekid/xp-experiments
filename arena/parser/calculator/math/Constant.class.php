@@ -22,15 +22,15 @@
     static function __static() {
       self::$PI= newinstance(__CLASS__, array(0, 'PI'), '{
         static function __static() { }
-        public function evaluate() { return M_PI; }
+        public function evaluate() { return new Real(M_PI); }
       }');
       self::$E= newinstance(__CLASS__, array(1, 'E'), '{
         static function __static() { }
-        public function evaluate() { return M_E; }
+        public function evaluate() { return new Real(M_E); }
       }');
       self::$EULER= newinstance(__CLASS__, array(2, 'EULER'), '{
         static function __static() { }
-        public function evaluate() { return M_EULER; }
+        public function evaluate() { return new Real(M_EULER); }
       }');
     }
 

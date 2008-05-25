@@ -18,15 +18,28 @@
     /**
      * Perform this operation
      *
-     * @param   mixed lhs either a float or int
-     * @param   mixed rhs either a float or int
-     * @return  mixed either a float or int
+     * @param   math.Real lhs
+     * @param   math.Real rhs
+     * @return  math.Real
      */
-    protected function perform($lhs, $rhs) {
-      if (0 == $rhs) {
+    protected function perform(Real $lhs, Real $rhs) {
+      if ($rhs->equals(Real::$ZERO)) {
         throw new IllegalArgumentException('Division by zero');
       }
-      return $lhs / $rhs;
+
+      if ($lhs instanceof Rational && $rhs instanceof Rational) {
+        $r= new Rational();
+        $r->numerator= $lhs->numerator * $rhs->denominator;
+        $r->denominator= $lhs->denominator * $rhs->numerator;
+
+        // -1/-2 => 1/2
+        if ($r->numerator < 0 && $r->denominator < 0) {
+          $r->numerator*= -1;
+          $r->denominator*= -1;
+        }
+        return $r;
+      }
+      return new Real($lhs->asNumber() - $rhs->asNumber());
     }
   }
 ?>

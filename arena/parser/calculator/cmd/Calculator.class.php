@@ -16,15 +16,15 @@
    * Expression syntax:
    * <pre>
    *   expression :=
-   *       expression * expression
-   *     | expression + expression
-   *     | expression - expression
-   *     | expression / expression
-   *     | expression % expression
-   *     | expression ^ expression
-   *     | expression!
-   *     | expression²
-   *     | expression³
+   *       expression * expression    // Multiplication
+   *     | expression + expression    // Addition
+   *     | expression - expression    // Subtraction
+   *     | expression : expression    // Division
+   *     | expression % expression    // Modulo
+   *     | expression ^ expression    // Power
+   *     | expression!                // Factorial
+   *     | expression²                // Square
+   *     | expression³                // Cube
    *     | ( expression )
    *     | number
    *     | constant
