@@ -16,7 +16,7 @@
       $value  = '';
     
     const 
-      PRECISION= 20;
+      PRECISION= 16;
 
     public static 
       $FORMAT      = '',

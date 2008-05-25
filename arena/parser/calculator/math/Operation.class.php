@@ -35,7 +35,12 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName()."(\n  ".xp::stringOf($this->lhs).",\n  ".xp::stringOf($this->rhs)."\n)";
+      return sprintf(
+        "%s(\n  %s,\n  %s\n)", 
+        $this->getClassName(),
+        str_replace("\n", "\n  ", xp::stringOf($this->lhs)),
+        str_replace("\n", "\n  ", xp::stringOf($this->rhs))
+      );
     }
     
     /**

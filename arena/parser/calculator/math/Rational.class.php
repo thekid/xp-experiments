@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('math.Real', 'lang.Primitive');
+  uses('math.Real', 'lang.Primitive', 'lang.types.Integer', 'lang.types.Double');
 
   /**
    * Rational number
@@ -63,11 +63,17 @@
      * @return  lang.types.Number
      */
     public function shortened() {
-      if (0 == $this->numerator) return new Integer(0);    // 0/x
-      if (1 == $this->denominator) return new Integer($this->numerator); // x/1
-      $gcd= self::gcd(abs($this->numerator), $this->denominator);
-      if ($gcd == $this->denominator) return new Integer($this->numerator / $gcd);       // 2/2, 10/5
-      return new Float($this->numerator / $this->denominator);
+      if (0 == $this->numerator) {
+        return new Integer(0);    // 0/x
+      } else if (1 == $this->denominator) {
+        return new Integer($this->numerator); // x/1
+      } else {
+        $gcd= self::gcd(abs($this->numerator), $this->denominator);
+        return ($gcd == $this->denominator) 
+          ? new Integer($this->numerator / $gcd)        // 2/2, 10/5
+          : new Double($this->numerator / $this->denominator)
+        ;
+      }
     }
     
     /**
@@ -109,17 +115,16 @@
      */
     public function toString() {
       if (0 == $this->numerator) {
-        $s= '0';
+        return $this->getClassName().'(0)';
       } else if (1 == $this->denominator) {
-        $s= $this->numerator;
+        return $this->getClassName().'('.$this->numerator.')';
       } else {
         $gcd= self::gcd(abs($this->numerator), $this->denominator);
-        $s= ($gcd == $this->denominator) 
+        return $this->getClassName().'('.(($gcd == $this->denominator) 
           ? $this->numerator / $gcd
           : sprintf('%.0f/%.0f', $this->numerator / $gcd, $this->denominator / $gcd)
-        ;
+        ).')';
       }
-      return $this->getClassName().'('.$s.')';
     }
   }
 ?>
