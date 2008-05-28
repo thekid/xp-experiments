@@ -20,20 +20,28 @@ static char *cygpath(char *in) {
 #define ENV_PATH_SEPARATOR ":"
 #define DIR_SEPARATOR "\\"
 #define HOME_DIR getenv("HOME")
+
+/* /home || C:/cygwin/home or C:\cygwin\home || //filesrv/homes/ || \\filesrv\homes */
+#define IS_ABSOLUTE(p, l) (                                                     \
+    ('/' == p[0]) ||                                                            \
+    (l > 2 && ':' == p[1] && ('/' == p[2] || '\\' == p[2])) ||                  \
+    (l > 2 && (('/' == p[1] && '/' == p[2]) || ('\\' == p[1] && '\\' == p[2]))) \
+)
 #else
 #define PATH_TRANSLATED(s) strdup(s)
 #define ENV_PATH_SEPARATOR ":"
 #define ARG_PATH_SEPARATOR ":"
 #define DIR_SEPARATOR "/"
 #define HOME_DIR getenv("HOME")
+#define IS_ABSOLUTE(p, l) ('/' == path[0])
 #endif
 
-#define ADD_INCLUDE_XAR(inc, path, s) asprintf(                     \
-  &inc,                                                             \
-  "%s%s"DIR_SEPARATOR"lib"DIR_SEPARATOR"%s.xar"ARG_PATH_SEPARATOR,  \
-  inc,                                                              \
-  path,                                                             \
-  s                                                                 \
+#define ADD_INCLUDE_XAR(inc, path, s) asprintf(                       \
+    &inc,                                                             \
+    "%s%s"DIR_SEPARATOR"lib"DIR_SEPARATOR"%s.xar"ARG_PATH_SEPARATOR,  \
+    inc,                                                              \
+    path,                                                             \
+    s                                                                 \
 );
 
 static int add_path_file(char *include_path, const char *dir, const char *file) {
@@ -66,6 +74,8 @@ static int add_path_file(char *include_path, const char *dir, const char *file) 
             strncat(tmp, path+ 1, l);
             strcat(include_path, PATH_TRANSLATED(tmp));
             free(tmp);
+        } else if (IS_ABSOLUTE(path, l)) {
+            strcat(include_path, PATH_TRANSLATED(path));
         } else {
             char *tmp= (char*) malloc(l+ strlen(dir)+ 1);
             
