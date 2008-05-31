@@ -187,9 +187,6 @@ void execute(char *base, char *runner, char *include, int argc, char **argv) {
     memcpy(args+ 3, argv, argc * sizeof(char *));
     args[argc+ 3]= NULL;
     
-    /* Pass to env */
-    putenv("XPVERSION="XPVERSION);
-    
     /* Run (never returns in success case) */
     if (-1 == execv(executor, args)) {
         fprintf(stderr, "*** Could not execute %s %s %s [...]\n", args[0], args[1], args[2]);

@@ -1,6 +1,4 @@
-VERSION?=5.6.6
-
-CC=cc -Wall -DXPVERSION="\"$(VERSION)\"" -I.
+CC=cc -Wall -I.
 ifneq ($(uname | grep -i "cygwin"), "")
 EXE_EXT=.exe
 endif
