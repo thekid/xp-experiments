@@ -44,7 +44,7 @@ static char *cygpath(char *in) {
     s                                                                 \
 );
 
-static int add_path_file(char *include_path, const char *dir, const char *file) {
+static int add_path_file(char **include_path, const char *dir, const char *file) {
     char *uri= NULL;
     char path[PATH_MAX];
     FILE *f= NULL;
@@ -64,6 +64,9 @@ static int add_path_file(char *include_path, const char *dir, const char *file) 
 
         /* Ignore comments and empty lines */
         if (l < 0 || '#' == path[0]) continue;
+        
+        /* Get PATH_MAX * 2 bytes of memory, this should suffice for PATH_TRANSLATED(...) + ":" */
+        *include_path= (char*)realloc(*include_path, strlen(*include_path)+ PATH_MAX * 2);
 
         /* Qualify path */
         if ('~' == path[0]) {
@@ -72,21 +75,21 @@ static int add_path_file(char *include_path, const char *dir, const char *file) 
             
             strcpy(tmp, home);
             strncat(tmp, path+ 1, l);
-            strcat(include_path, PATH_TRANSLATED(tmp));
+            strcat(*include_path, PATH_TRANSLATED(tmp));
             free(tmp);
         } else if (IS_ABSOLUTE(path, l)) {
-            strcat(include_path, PATH_TRANSLATED(path));
+            strcat(*include_path, PATH_TRANSLATED(path));
         } else {
             char *tmp= (char*) malloc(l+ strlen(dir)+ 1);
             
             strcpy(tmp, dir);
             strncat(tmp, DIR_SEPARATOR, sizeof(DIR_SEPARATOR));
             strncat(tmp, path, l+ 1);
-            strcat(include_path, PATH_TRANSLATED(tmp));
+            strcat(*include_path, PATH_TRANSLATED(tmp));
             free(tmp);
         }
         
-        strncat(include_path, ARG_PATH_SEPARATOR, sizeof(ARG_PATH_SEPARATOR));
+        strncat(*include_path, ARG_PATH_SEPARATOR, sizeof(ARG_PATH_SEPARATOR));
         added++;
     }
     fclose(f);
@@ -94,7 +97,7 @@ static int add_path_file(char *include_path, const char *dir, const char *file) 
     return added;
 }
 
-static int scan_path_files(char *include_path, const char* dir) {
+static int scan_path_files(char **include_path, const char* dir) {
     DIR *d= NULL;
     struct dirent *e= NULL;
     int added= 0;
@@ -122,7 +125,7 @@ static int scan_path_files(char *include_path, const char* dir) {
 
 void execute(char *base, char *runner, char *include, int argc, char **argv) {
     char resolved[PATH_MAX];
-    char *absolute= NULL, *include_path= "", *executor= NULL;
+    char *absolute= NULL, *include_path= NULL, *executor= NULL;
     char **args= NULL;
 
     /* Calculate full path */
@@ -135,7 +138,7 @@ void execute(char *base, char *runner, char *include, int argc, char **argv) {
     /* Boot classpath */
     include_path= strdup("");
     {
-        int scanned= scan_path_files(include_path, absolute);
+        int scanned= scan_path_files(&include_path, absolute);
         
         if (-1 == scanned) {
             fprintf(stderr, "*** Error loading boot class path in %s", absolute);
@@ -146,13 +149,16 @@ void execute(char *base, char *runner, char *include, int argc, char **argv) {
         }            
     }
 
-    /* User classpath */
+    /* Concatenate user classpath */
     if (include) {
-        asprintf(&include_path, "%s"ARG_PATH_SEPARATOR, include);
+        include_path= (char*)realloc(include_path, strlen(include_path)+ strlen(include)+ sizeof(ARG_PATH_SEPARATOR));
+        strcat(include_path, include);
+        strncat(include_path, ARG_PATH_SEPARATOR, sizeof(ARG_PATH_SEPARATOR));
     }
     
     /* Look for .pth files in current directory, if we cannot find any, use it */
-    if (!realpath(".", resolved) || scan_path_files(include_path, resolved) <= 0) {
+    if (!realpath(".", resolved) || scan_path_files(&include_path, resolved) <= 0) {
+        include_path= (char*)realloc(include_path, strlen(include_path)+ sizeof("."));
         strncat(include_path, ".", sizeof("."));
     }            
 
@@ -183,7 +189,7 @@ void execute(char *base, char *runner, char *include, int argc, char **argv) {
     args= (char **)malloc((argc + 3) * sizeof(char *));
     args[0]= executor;
     asprintf(&args[1], "-dinclude_path=\"%s\"", include_path);
-    asprintf(&args[2], "%s"DIR_SEPARATOR"%s.php", strdup(absolute), runner);
+    asprintf(&args[2], "%s"DIR_SEPARATOR"%s.php", absolute, runner);
     memcpy(args+ 3, argv, argc * sizeof(char *));
     args[argc+ 3]= NULL;
     
