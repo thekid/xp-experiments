@@ -4,15 +4,19 @@
 
 if [ "$OS" = "Windows_NT" ]; then
   PATHSEP=';'
+  DIRSEP='\'
 else
   PATHSEP=':'
+  DIRSEP='/'
 fi
 
 translate_path() {
-  local path="$1"
+  local base="$1"
+  local path="$2"
   
   case "$path" in
-    ~*) path=$HOME${path#"~"} ;;
+    ~*) path=$HOME$DIRSEP${path#"~"} ;;    # ~/lib
+    .*) path=$base$DIRSEP$path ;;          # ../lib, ./classes
   esac
   
   if [ "$OS" = "Windows_NT" ]; then
@@ -23,11 +27,12 @@ translate_path() {
 }
 
 add_path_file () {
-  local file="$1"
+  local base="$1"
+  local file="$2"
   local includes=""
   
-  for l in `cat $file | grep -v ^#` ; do
-    includes=$includes$(translate_path "$l")$PATHSEP
+  for l in `grep -v ^# $file` ; do
+    includes=$includes$(translate_path "$base" "$l")$PATHSEP
   done
   
   echo $includes
@@ -41,8 +46,8 @@ scan_path_files() {
     return ""; 
   fi
   
-  for i in `ls "$dir"/*.pth` ; do
-    includes=$includes$(add_path_file $i)
+  for i in `ls "$dir"/*.pth 2>/dev/null` ; do
+    includes=$includes$(add_path_file "$dir" "$i")
   done
   
   echo $includes
@@ -53,11 +58,10 @@ execute() {
   local runner="$2"
   local include="$3"
 
-  local absolute=$(realpath "$base")
-  local includes=$(scan_path_files "$absolute")
-  
+  local includes=$(scan_path_files "$base")
+
   if [ -z $includes ] ; then
-    echo "*** Error loading boot class path in $absolute" >&2;
+    echo "*** Error loading boot class path in $base" >&2;
     return 1
   fi
   
@@ -72,5 +76,5 @@ execute() {
     includes=$includes$local_includes
   fi
   
-  echo "php -dinclude_path=\"$includes\" $(translate_path $absolute)/$runner.php"
+  echo "php -dinclude_path=\"$includes\" $(translate_path "$base" ".")$DIRSEP$runner.php"
 }
