@@ -1,0 +1,5 @@
+CC=cc -Wall -I.
+EXE_EXT=.exe
+RM=rm
+
+include Makefile.common

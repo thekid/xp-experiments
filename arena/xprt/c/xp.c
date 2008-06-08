@@ -36,6 +36,5 @@ int main(int argc, char ** argv) {
     memcpy(eargv, argv+ i, eargc * sizeof(char *));
     
     /* Run executor */
-    execute(argv[0], runner, include, eargc, eargv);
-    return 0;
+    return execute(argv[0], runner, include, eargc, eargv);
 }

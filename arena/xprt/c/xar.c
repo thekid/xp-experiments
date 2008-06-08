@@ -14,6 +14,5 @@ int main(int argc, char ** argv) {
     memcpy(eargv+ 2, argv+ 1, argc * sizeof(char *));
     
     /* Run executor */
-    execute(argv[0], "xp", NULL, eargc, eargv);
-    return 0;
+    return execute(argv[0], "xp", NULL, eargc, eargv);
 }
