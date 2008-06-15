@@ -2,7 +2,6 @@
 #include <string.h>
 #include <limits.h>
 #include <stdlib.h>
-#include <process.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -120,7 +119,7 @@ static int spawn(char *executable, char** args, int argc) {
     PROCESS_INFORMATION pi;
     DWORD exitcode;
     char* arguments, *p= NULL;
-    int i;
+    int i, q;
 
     memset(&si, 0, sizeof(STARTUPINFO));
     si.cb= sizeof(STARTUPINFO);
@@ -133,13 +132,16 @@ static int spawn(char *executable, char** args, int argc) {
         arguments= (char*) realloc(arguments, strlen(arguments) + (strlen(args[i]) * 2) + sizeof(" \"\"") + 1);
         strncat(arguments, "\"", sizeof("\""));
         
+        q= '"' != args[i][strlen(args[i])- 1];
         p= strtok(args[i], "\"");
         while (p != NULL) {
             strcat(arguments, p);
             strncat(arguments, "\\\"", sizeof("\\\""));
             p= strtok(NULL, "\"");
         }
-        arguments[strlen(arguments)- 2]= '\0';
+        if (q) {
+            arguments[strlen(arguments)- 2]= '\0';
+        }
         strncat(arguments, "\" ", sizeof("\" "));
     }
 
