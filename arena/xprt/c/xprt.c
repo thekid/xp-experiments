@@ -115,10 +115,68 @@ int asprintf(char **str, const char *fmt, ...) {
     return r+ 1;
 }
 
+static int spawn(char *executable, char** args, int argc) {
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+    DWORD exitcode;
+    char* arguments, *p= NULL;
+    int i;
+
+    memset(&si, 0, sizeof(STARTUPINFO));
+    si.cb= sizeof(STARTUPINFO);
+
+    /* Quote arguments */
+    arguments= strdup("");
+    for (i= 0; i < argc; i++) {
+        
+        /* Don't count the quote characters first, instead just go for the worst case */
+        arguments= (char*) realloc(arguments, strlen(arguments) + (strlen(args[i]) * 2) + sizeof(" \"\"") + 1);
+        strncat(arguments, "\"", sizeof("\""));
+        
+        p= strtok(args[i], "\"");
+        while (p != NULL) {
+            strcat(arguments, p);
+            strncat(arguments, "\\\"", sizeof("\\\""));
+            p= strtok(NULL, "\"");
+        }
+        arguments[strlen(arguments)- 2]= '\0';
+        strncat(arguments, "\" ", sizeof("\" "));
+    }
+
+    if (!CreateProcess(executable, (LPSTR)arguments, NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi)) {
+        return 127;
+    }
+    
+    if (WAIT_OBJECT_0 != WaitForSingleObject(pi.hProcess, INFINITE)) {
+        CloseHandle(pi.hProcess);
+        return 255;
+    }
+    
+    GetExitCodeProcess(pi.hProcess, &exitcode);
+    CloseHandle(pi.hProcess);
+    return exitcode;
+}
 #else
 #include <libgen.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <sys/wait.h>
+
+static int spawn(char *executable, char** args, int argc) {
+    pid_t pid;
+
+    pid= fork();
+    if (-1 == pid) {
+        return -1;
+    } else if (0 == pid) {
+        execv(executable, args);
+        exit(127);
+    } else {
+        int exitcode;
+        waitpid(pid, &exitcode, 0);
+        return exitcode;
+    }
+}
 #endif
 
 #include <sys/stat.h>
@@ -145,6 +203,7 @@ static char *cygpath(char *in) {
     cygwin_conv_to_win32_path(in, resolved);
     return strdup(resolved);
 }
+
 #else 
 #ifndef _WIN32
 #define EXE_EXT ""
@@ -306,7 +365,7 @@ int execute(char *base, char *runner, char *include, int argc, char **argv) {
     args[argc+ 3]= NULL;
    
     /* Run */
-    exitcode= spawnv(_P_WAIT, executor, (const char **) args);
+    exitcode= spawn(executor, args, argc + 3);
     if (-1 == exitcode) {
         fprintf(stderr, "*** Could not execute %s %s %s [...]\n", args[0], args[1], args[2]);
         exitcode= 255;
