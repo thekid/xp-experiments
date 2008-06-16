@@ -241,6 +241,7 @@ static int add_path_file(char **include_path, const char *dir, const char *file)
         if (l < 0 || '#' == path[0]) continue;
         
         /* Get PATH_MAX * 2 bytes of memory, this should suffice for PATH_TRANSLATED(...) + ":" */
+        l++;
         *include_path= (char*) realloc(*include_path, strlen(*include_path)+ PATH_MAX * 2);
 
         /* Qualify path */
