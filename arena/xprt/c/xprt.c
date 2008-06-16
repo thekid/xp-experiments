@@ -234,17 +234,17 @@ static int add_path_file(char **include_path, const char *dir, const char *file)
         int l= strlen(path);
 
         /* Trim trailing newline and whitespace characters */
-        while (l-- && ('\n' == path[l] || '\r' == path[l] || ' ' == path[l] || '\t' == path[l]));
-        path[l+ 1]= '\0';
+        while (l-- && ('\0' ==  path[l] || '\n' == path[l] || '\r' == path[l] || ' ' == path[l] || '\t' == path[l]));
 
         /* Ignore comments and empty lines */
-        if (l < 0 || '#' == path[0]) continue;
-        
+        if (l <= 0 || '#' == path[0]) continue;
+       
         /* Get PATH_MAX * 2 bytes of memory, this should suffice for PATH_TRANSLATED(...) + ":" */
-        l++;
         *include_path= (char*) realloc(*include_path, strlen(*include_path)+ PATH_MAX * 2);
 
         /* Qualify path */
+        l++;
+        path[l]= '\0';
         if ('~' == path[0]) {
             tmp= (char*) malloc(l+ strlen(home));
             strcpy(tmp, home);
