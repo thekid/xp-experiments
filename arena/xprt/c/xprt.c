@@ -234,7 +234,7 @@ static int add_path_file(char **include_path, const char *dir, const char *file)
         int l= strlen(path);
 
         /* Trim trailing newline and whitespace characters */
-        while (l-- && ('\0' ==  path[l] || '\n' == path[l] || '\r' == path[l] || ' ' == path[l] || '\t' == path[l]));
+        while (l-- && ('\0' == path[l] || '\n' == path[l] || '\r' == path[l] || ' ' == path[l] || '\t' == path[l]));
 
         /* Ignore comments and empty lines */
         if (l <= 0 || '#' == path[0]) continue;
@@ -261,7 +261,7 @@ static int add_path_file(char **include_path, const char *dir, const char *file)
             strcat(*include_path, PATH_TRANSLATED(tmp));
             free(tmp);
         }
-        
+
         strcat(*include_path, ARG_PATH_SEPARATOR);
         added++;
     }
