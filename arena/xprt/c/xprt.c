@@ -36,8 +36,7 @@ static DIR *opendir(const char *path) {
 
     spec= (char*) malloc(strlen(path)+ sizeof(DIR_SEPARATOR)+ 1 + 1);
     strcpy(spec, path);
-    strncat(spec, DIR_SEPARATOR, sizeof(DIR_SEPARATOR));
-    strncat(spec, "*", sizeof("*"));
+    strcat(spec, DIR_SEPARATOR"*");
 
     dir= (DIR*) malloc(sizeof(DIR));
     dir->handle= FindFirstFile(spec, &(dir->fileinfo));
@@ -54,7 +53,7 @@ static struct dirent *readdir(DIR *dir) {
         return NULL;
     }
    
-    strncpy(dir->entry.d_name, dir->fileinfo.cFileName, _MAX_FNAME+ 1);
+    strcpy(dir->entry.d_name, dir->fileinfo.cFileName);
     return &(dir->entry);
 }
 
@@ -129,20 +128,20 @@ static int spawn(char *executable, char** args, int argc) {
     for (i= 0; i < argc; i++) {
         
         /* Don't count the quote characters first, instead just go for the worst case */
-        arguments= (char*) realloc(arguments, strlen(arguments) + (strlen(args[i]) * 2) + sizeof(" \"\"") + 1);
-        strncat(arguments, "\"", sizeof("\""));
+        arguments= (char*) realloc(arguments, strlen(arguments) + (strlen(args[i]) * 2) + sizeof(" \"\""));
+        strcat(arguments, "\"");
         
         q= '"' != args[i][strlen(args[i])- 1];
         p= strtok(args[i], "\"");
         while (p != NULL) {
             strcat(arguments, p);
-            strncat(arguments, "\\\"", sizeof("\\\""));
+            strcat(arguments, "\\\"");
             p= strtok(NULL, "\"");
         }
         if (q) {
             arguments[strlen(arguments)- 2]= '\0';
         }
-        strncat(arguments, "\" ", sizeof("\" "));
+        strcat(arguments, "\" ");
     }
 
     if (!CreateProcess(executable, (LPSTR)arguments, NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi)) {
@@ -228,6 +227,8 @@ static int add_path_file(char **include_path, const char *dir, const char *file)
     asprintf(&uri, "%s"DIR_SEPARATOR"%s", dir, file);
     if (NULL == (f= fopen(uri, "rb"))) return -1;
 
+    home= HOME_DIR;
+
     /* Read file line by line */
     while (NULL != fgets(path, PATH_MAX, f)) {
         int l= strlen(path);
@@ -244,10 +245,9 @@ static int add_path_file(char **include_path, const char *dir, const char *file)
 
         /* Qualify path */
         if ('~' == path[0]) {
-            if (NULL == home) { home= strdup(HOME_DIR); /* Lazy init */ }
             tmp= (char*) malloc(l+ strlen(home));
             strcpy(tmp, home);
-            strncat(tmp, path+ 1, l);
+            strcat(tmp, path+ 1);
             strcat(*include_path, PATH_TRANSLATED(tmp));
             free(tmp);
         } else if (IS_ABSOLUTE(path, l)) {
@@ -255,13 +255,13 @@ static int add_path_file(char **include_path, const char *dir, const char *file)
         } else {
             tmp= (char*) malloc(l+ strlen(dir)+ 1);
             strcpy(tmp, dir);
-            strncat(tmp, DIR_SEPARATOR, sizeof(DIR_SEPARATOR));
-            strncat(tmp, path, l+ 1);
+            strcat(tmp, DIR_SEPARATOR);
+            strcat(tmp, path);
             strcat(*include_path, PATH_TRANSLATED(tmp));
             free(tmp);
         }
         
-        strncat(*include_path, ARG_PATH_SEPARATOR, sizeof(ARG_PATH_SEPARATOR));
+        strcat(*include_path, ARG_PATH_SEPARATOR);
         added++;
     }
     fclose(f);
@@ -324,15 +324,15 @@ int execute(char *base, char *runner, char *include, int argc, char **argv) {
 
     /* Concatenate user classpath */
     if (include) {
-        include_path= (char*)realloc(include_path, strlen(include_path)+ strlen(include)+ sizeof(ARG_PATH_SEPARATOR));
+        include_path= (char*) realloc(include_path, strlen(include_path)+ strlen(include)+ sizeof(ARG_PATH_SEPARATOR));
         strcat(include_path, include);
-        strncat(include_path, ARG_PATH_SEPARATOR, sizeof(ARG_PATH_SEPARATOR));
+        strcat(include_path, ARG_PATH_SEPARATOR);
     }
     
     /* Look for .pth files in current directory, if we cannot find any, use it */
     if (!realpath(".", resolved) || scan_path_files(&include_path, resolved) <= 0) {
-        include_path= (char*)realloc(include_path, strlen(include_path)+ sizeof("."));
-        strncat(include_path, ".", sizeof("."));
+        include_path= (char*) realloc(include_path, strlen(include_path)+ sizeof("."));
+        strcat(include_path, ".");
     }            
 
     /* Calculate executor's filename */
@@ -343,12 +343,15 @@ int execute(char *base, char *runner, char *include, int argc, char **argv) {
 
         p= strtok(path_env, ENV_PATH_SEPARATOR);
         while (p != NULL) {
-            asprintf(&executor, "%s"DIR_SEPARATOR"php"EXE_EXT, p);            
+            asprintf(&executor, "%s"DIR_SEPARATOR"php"EXE_EXT, p);
+            memset(&st, 0, sizeof(struct stat));
             if (0 == stat(executor, &st)) {
                 found= 1;
                 break;
             }
             p= strtok(NULL, ENV_PATH_SEPARATOR);
+            free(executor);
+            executor= NULL;
         }
         free(path_env);
         
@@ -359,7 +362,7 @@ int execute(char *base, char *runner, char *include, int argc, char **argv) {
     }
 
     /* Build argument list */
-    args= (char **)malloc((argc + 3) * sizeof(char *));
+    args= (char **) malloc((argc + 3) * sizeof(char *));
     args[0]= executor;
     asprintf(&args[1], "-dinclude_path=\"%s\"", include_path);
     asprintf(&args[2], "%s"DIR_SEPARATOR"%s.php", absolute, runner);
