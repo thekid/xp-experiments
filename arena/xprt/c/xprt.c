@@ -254,7 +254,7 @@ static int add_path_file(char **include_path, const char *dir, const char *file)
         } else if (IS_ABSOLUTE(path, l)) {
             strcat(*include_path, PATH_TRANSLATED(path));
         } else {
-            tmp= (char*) malloc(l+ strlen(dir)+ 1);
+            tmp= (char*) malloc(strlen(dir)+ sizeof(DIR_SEPARATOR) + l);
             strcpy(tmp, dir);
             strcat(tmp, DIR_SEPARATOR);
             strcat(tmp, path);
