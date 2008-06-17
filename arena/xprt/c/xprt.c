@@ -89,25 +89,34 @@ static char *realpath(const char* in, char* resolved) {
 
 int asprintf(char **str, const char *fmt, ...) {
     char *result;
-    int r;
+    int r, len;
     va_list list;
 
     va_start(list, fmt);
 
-    /* Start with an intial size  of 255 bytes */   
-    result= (char*) malloc(0xFF);
+    /* Start with an intial size of 255 bytes */
+    len= 0xFF;
+    result= (char*) malloc(len);
+    do {
 
-    /* The *snprintf functions return the number of characters that would have 
-     * been printed if the size were unlimited (not including the final `\0').
-     */
-    r= vsnprintf(result, 0xFF, fmt, list);
-    if (r >= 0 && r < 0xFF) {
-        *str= result;
-    } else {
-        result= (char*) realloc(result, r+ 1);
-        vsnprintf(result, r+ 1, fmt, list);
-        *str= result;
-    }
+        /* The *snprintf functions return the number of characters written 
+         * if the number of characters to write is less than or equal to count; 
+         * if the number of characters to write is greater than count, these 
+         * functions return -1 indicating that output has been truncated. 
+         * The return value does not include the terminating null, if one is written.
+         */
+        r= vsnprintf(result, len, fmt, list);
+        if (r >= 0 && r < len) {
+            *str= result;
+            r= 0;
+        } else {
+        
+            /* Increase length by 255 bytes, retry */
+            len+= 0xFF;
+            result= (char*) realloc(result, len);
+            r= -1;
+        }
+    } while (r != 0);
 
     va_end(list);
     return r+ 1;
@@ -124,8 +133,10 @@ static int spawn(char *executable, char** args, int argc) {
     si.cb= sizeof(STARTUPINFO);
 
     /* Quote arguments */
-    arguments= strdup("");
+    arguments= (char*) malloc(1);
+    arguments[0]= '\0';
     for (i= 0; i < argc; i++) {
+        if (NULL == args[i]) continue;
         
         /* Don't count the quote characters first, instead just go for the worst case */
         arguments= (char*) realloc(arguments, strlen(arguments) + (strlen(args[i]) * 2) + sizeof(" \"\""));
@@ -303,14 +314,23 @@ int execute(char *base, char *runner, char *include, int argc, char **argv) {
     int exitcode;
 
     /* Calculate full path */
+#ifdef _WIN32
+    if (!GetModuleFileName(0, resolved, PATH_MAX)) {
+        fprintf(stderr, "*** Cannot resolve %s\n", base);
+        return 127;
+    }
+#else
     if (!realpath(base, resolved)) {
         fprintf(stderr, "*** Cannot resolve %s\n", base);
         return 127;
     }
+#endif
+
     absolute= PATH_TRANSLATED(dirname(resolved));
 
     /* Boot classpath */
-    include_path= strdup("");
+    include_path= (char*) malloc(1);
+    include_path[0]= '\0';
     {
         int scanned= scan_path_files(&include_path, absolute);
         
