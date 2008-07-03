@@ -1,0 +1,34 @@
+Web tests
+========================================================================
+$Id$
+
+This experiment is the base for a new package <tt>unittest.web</tt> which
+will support web integration tests.
+
+
+Basics
+------
+<code>
+  class PlanetXpTestCase extends WebTestCase {
+  
+    public function setUp() {
+      $this->conn= new HttpConnection('http://planet-xp.net/');
+    }
+  
+    #[@test]
+    public function homePage() {
+      $this->beginAt('/xml/home');
+      $this->assertStatus(HTTP_OK);
+      $this->assertTitleEquals('XP Technology');
+      $this->assertTextPresent('Credits');
+    }
+  }
+</code>
+
+
+See also
+--------
+* http://jwebunit.sourceforge.net/quickstart.html - JWebUnit
+
+
+<EOF>
