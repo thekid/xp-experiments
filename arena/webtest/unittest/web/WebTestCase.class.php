@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'unittest.web.Form',
     'peer.http.HttpConnection',
     'peer.http.HttpConstants',
     'xml.XPath'
@@ -24,7 +25,9 @@
     
     private
       $dom      = NULL,
-      $xpath    = NULL,
+      $xpath    = NULL;
+    
+    public
       $base     = NULL;
     
     /**
@@ -49,7 +52,7 @@
      *
      * @return  php.DOMDocument
      */
-    protected function getDom() {
+    public function getDom() {
       if (NULL === $this->dom) {
         $contents= '';
         while ($chunk= $this->response->readData()) {
@@ -66,7 +69,7 @@
      *
      * @return  xml.XPath
      */
-    protected function getXPath() {
+    public function getXPath() {
       if (NULL === $this->xpath) {
         $this->xpath= new XPath($this->getDom());
       }
@@ -95,7 +98,7 @@
      * @param   string target
      * @throws  unittest.AssertionFailedError  
      */
-    protected function navigateTo($target) {
+    public function navigateTo($target) {
       if (strstr($target, '://')) {
         $url= new URL($target);
         $this->conn= $this->getConnection(sprintf(
@@ -255,6 +258,19 @@
     protected function assertFormPresent($name= NULL, $message= 'not_present') {
       $node= $this->getXPath()->query($name ? '//form[@name = "'.$name.'"]' : '//form')->item(0);
       $this->assertNotEquals(NULL, $node, $message);
+    }
+
+    /**
+     * Get form
+     *
+     * @param   string name default NULL
+     * @return  unittest.web.Form
+     * @throws  unittest.AssertionFailedError  
+     */
+    protected function getForm($name= NULL) {
+      $node= $this->getXPath()->query($name ? '//form[@name = "'.$name.'"]' : '//form')->item(0);
+      $this->assertNotEquals(NULL, $node);
+      return new unittest·web·Form($this, $node);
     }
 
     /**
