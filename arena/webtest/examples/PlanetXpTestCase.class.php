@@ -16,15 +16,17 @@
    * @purpose  Web test case
    */
   class PlanetXpTestCase extends WebTestCase {
-  
-    /**
-     * Set up this test case. Creates connection.
-     *
-     */
-    public function setUp() {
-      $this->conn= new HttpConnection('http://planet-xp.net/');
-    }
 
+    /**
+     * Get connection
+     *
+     * @param   string url
+     * @return  peer.http.HttpConnection
+     */
+    protected function getConnection($url= NULL) {
+      return new HttpConnection($url ? $url : 'http://planet-xp.net/');
+    }
+  
     /**
      * Test
      *

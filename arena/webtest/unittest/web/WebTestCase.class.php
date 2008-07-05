@@ -17,7 +17,7 @@
    * @see      xp://unittest.TestCase
    * @purpose  Integration tests
    */
-  class WebTestCase extends TestCase {
+  abstract class WebTestCase extends TestCase {
     protected
       $conn     = NULL,
       $response = NULL;
@@ -25,7 +25,24 @@
     private
       $dom      = NULL,
       $xpath    = NULL;
-      
+    
+    /**
+     * Get connection
+     *
+     * @param   string url
+     * @return  peer.http.HttpConnection
+     */
+    protected abstract function getConnection($url= NULL);
+
+    /**
+     * Set up this test case. Creates connection.
+     *
+     */
+    public function __construct($name, $url= NULL) {
+      parent::__construct($name);
+      $this->conn= $this->getConnection($url);
+    }
+    
     /**
      * Returns a DOM object for this response's contents. Lazy/Cached.
      *
