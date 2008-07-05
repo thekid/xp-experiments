@@ -24,7 +24,8 @@
     
     private
       $dom      = NULL,
-      $xpath    = NULL;
+      $xpath    = NULL,
+      $base     = NULL;
     
     /**
      * Get connection
@@ -73,19 +74,70 @@
     }
   
     /**
-     * Assert on the HTML title element
+     * Navigate to a relative URL 
      *
      * @param   string relative
      * @throws  unittest.AssertionFailedError  
      */
     protected function beginAt($relative) {
-      $this->dom= NULL;
-      $this->xpath= NULL;
+      $this->dom= $this->xpath= NULL;
       try {
         $this->response= $this->conn->get($relative);
+        $this->base= $relative;
       } catch (IOException $e) {
         $this->fail($relative, $e, NULL);
       }
+    }
+    
+    /**
+     * Navigate to a given URL
+     *
+     * @param   string target
+     * @throws  unittest.AssertionFailedError  
+     */
+    protected function navigateTo($target) {
+      if (strstr($target, '://')) {
+        $url= new URL($target);
+        $this->conn= $this->getConnection(sprintf(
+          '%s://%s%s/',
+          $url->getScheme(),
+          $url->getHost(),
+          -1 === $url->getPort(-1) ? '' : ':'.$url->getPort()
+        ));
+        $this->beginAt(sprintf(
+          '%s%s',
+          $url->getPath(),
+          NULL === $url->getQuery(NULL) ? '' : '?'.$url->getQuery()
+        ));
+      } else if ('/' === $target{0}) {
+        $this->beginAt($target);
+      } else {
+        $this->beginAt($this->base.$target);
+      }
+    }
+
+    /**
+     * Navigate to the page a link with a specified id points to
+     *
+     * @param   string id
+     * @throws  unittest.AssertionFailedError  
+     */
+    protected function clickLink($id) {
+      $node= $this->getXPath()->query('//a[@id = "'.$id.'"]')->item(0);
+      $this->assertNotEquals(NULL, $node);
+      $this->navigateTo($node->getAttribute('href'));
+    }
+
+    /**
+     * Navigate to the page a link with a specified text points to
+     *
+     * @param   string text
+     * @throws  unittest.AssertionFailedError  
+     */
+    protected function clickLinkWithText($text) {
+      $node= $this->getXPath()->query('//a[text() = "'.$text.'"]')->item(0);
+      $this->assertNotEquals(NULL, $node);
+      $this->navigateTo($node->getAttribute('href'));
     }
 
     /**
@@ -100,7 +152,18 @@
     }
 
     /**
-     * Assert a the "Content-Type" HTTP header is equ
+     * Assert the current URL equals a specified URL
+     *
+     * @param   peer.URL url
+     * @param   string message
+     * @throws  unittest.AssertionFailedError  
+     */
+    protected function assertUrlEquals(URL $url, $message= 'not_equals') {
+      $this->assertEquals($this->conn->getUrl(), $url, $message);
+    }
+
+    /**
+     * Assert a the "Content-Type" HTTP header's value equals the specified content-type
      *
      * @param   string ctype
      * @param   string message

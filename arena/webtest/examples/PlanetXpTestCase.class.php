@@ -91,5 +91,17 @@
       $this->assertElementPresent('menu', 'Top menu');
       $this->assertElementPresent('footer', 'Footer');
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function feedbackLinkGoesToBugzilla() {
+      $this->beginAt('/xml/home');
+      $this->clickLinkWithText('Feedback');
+      $this->assertUrlEquals(new URL('http://bugs.xp-framework.net/'));
+      $this->assertStatus(HTTP_OK);
+    }
   }
 ?>
