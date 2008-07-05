@@ -203,7 +203,7 @@
      */
     protected function assertTitleEquals($title, $message= 'not_equals') {
       $text= $this->getXPath()->query('//title/text()')->item(0);
-      $this->assertEquals($title, $text->data, $message);
+      $this->assertEquals($title, trim($text->data), $message);
     }
   }
 ?>
