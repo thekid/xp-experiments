@@ -76,5 +76,24 @@ execute() {
     includes=$includes$local_includes
   fi
   
-  echo "php -dinclude_path=\"$includes\" $(translate_path "$base" ".")$DIRSEP$runner.php"
+  config=""
+  executor="php"
+  args="-dinclude_path=\"$includes\" -dmagic_quotes_gpc=0"
+  if [ -e "$base"/php.ini ] ; then
+    for line in `cat "$base"/php.ini` ; do
+      case "$line" in
+        *=*)
+          key=${line%=*}
+          value=${line#*=}
+          if [ "executor" = "$key" ]; then
+            executor="$value"
+          else 
+            args="$args -d$key=\"$value\""
+          fi
+        ;;
+      esac
+    done
+  fi
+  
+  echo "$executor $args $(translate_path "$base" ".")$DIRSEP$runner.php"
 }

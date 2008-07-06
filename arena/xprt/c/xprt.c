@@ -1,7 +1,13 @@
+/* This file is part of the XP runners
+ *
+ * $Id$
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <hash.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -228,6 +234,30 @@ static char *cygpath(char *in) {
 #endif
 #endif
 
+static char* rtrim(char *v) {
+    register int l;
+
+    l= strlen(v);
+    while (l-- && ('\0' == v[l] || '\n' == v[l] || '\r' == v[l] || ' ' == v[l] || '\t' == v[l]));
+    v[++l]= '\0';
+    return v;
+}
+
+static int read_config_file(HASH **config, const char *file) {
+    FILE *f= NULL;
+    char line[1024], key[1024], value[1024];
+
+    if (NULL == (f= fopen(file, "rb"))) return -1;
+    while (NULL != fgets(line, 1024, f)) {
+        if (';' == line[0]) continue;
+        if (2 != sscanf(line, "%[^=]=%[^\n]", key, value)) continue;
+
+        hash_addstring(*config, rtrim(key), value);
+    }
+    fclose(f);
+    return 0;
+}
+
 static int add_path_file(char **include_path, const char *dir, const char *file) {
     char *uri= NULL, *home= NULL, *tmp;
     char path[PATH_MAX];
@@ -312,6 +342,10 @@ int execute(char *base, char *runner, char *include, int argc, char **argv) {
     char *absolute= NULL, *include_path= NULL, *executor= NULL;
     char **args= NULL;
     int exitcode;
+    HASH *config;
+
+    hash_init(&config, 1, 4);
+    hash_addint(config, "magic_quotes_gpc", 0);
 
     /* Calculate full path */
 #ifdef _WIN32
@@ -354,10 +388,33 @@ int execute(char *base, char *runner, char *include, int argc, char **argv) {
     if (!realpath(".", resolved) || scan_path_files(&include_path, resolved) <= 0) {
         include_path= (char*) realloc(include_path, strlen(include_path)+ sizeof("."));
         strcat(include_path, ".");
-    }            
-
-    /* Calculate executor's filename */
+    }
+    
+    /* Check for executor config */
     {
+        struct stat st;
+        char *ini;
+        
+        ini= (char*) malloc(strlen(absolute) + sizeof(DIR_SEPARATOR) + sizeof("php.ini"));
+        strcpy(ini, absolute);
+        strcat(ini, DIR_SEPARATOR);
+        strcat(ini, "php.ini");
+
+        memset(&st, 0, sizeof(struct stat));
+        if (0 == stat(ini, &st)) {
+            if (-1 == read_config_file(&config, ini)) {
+                fprintf(stderr, "*** Error loading config file %s", ini);
+                return 127;
+            }
+        }
+
+        free(ini);
+    }
+    
+    executor= hash_getstring(config, "executor", NULL);
+
+    /* Calculate executor's filename if not configured */
+    if (NULL == executor) {
         int found= 0;
         char *path_env= strdup(getenv("PATH")), *p= NULL;
         struct stat st;
@@ -380,23 +437,54 @@ int execute(char *base, char *runner, char *include, int argc, char **argv) {
             fprintf(stderr, "*** Cannot find php executable in PATH\n");
             return 127;
         }
+    } else {
+        struct stat st;
+
+        memset(&st, 0, sizeof(struct stat));
+        if (0 != stat(executor, &st)) {
+            fprintf(stderr, "*** Cannot find configured php executable %s\n", executor);
+            return 127;
+        }
+        hash_remove(config, "executor", 0);
     }
 
     /* Build argument list */
-    args= (char **) malloc((argc + 3) * sizeof(char *));
-    args[0]= executor;
-    asprintf(&args[1], "-dinclude_path=\"%s\"", include_path);
-    asprintf(&args[2], "%s"DIR_SEPARATOR"%s.php", absolute, runner);
-    memcpy(args+ 3, argv, argc * sizeof(char *));
-    args[argc+ 3]= NULL;
+    {
+        int c, pos;
+        HASH_ELEMENT *e;
+
+        args= (char **) malloc((argc + 3 + hash_num_elements(config)) * sizeof(char *));
+        args[0]= executor;
+        asprintf(&args[1], "-dinclude_path=\"%s\"", include_path);
+
+        pos= 2;
+        for (e= hash_first(config, &c); hash_has_more(config, c); e= hash_next(config, &c)) {
+            switch (e->type) {
+                case HASH_STRING: 
+                    asprintf(&args[pos], "-d%s=\"%s\"", e->key, e->value.str.val);
+                    pos++;
+                    break;
+                case HASH_INT: 
+                    asprintf(&args[pos], "-d%s=%d", e->key, e->value.lval);
+                    pos++;
+                    break;
+            }
+        }
+
+        asprintf(&args[pos], "%s"DIR_SEPARATOR"%s.php", absolute, runner);
+        memcpy(args+ pos + 1, argv, argc * sizeof(char *));
+        argc= argc + pos + 2;
+        args[argc- 1]= NULL;
+    }
    
     /* Run */
-    exitcode= spawn(executor, args, argc + 3);
+    exitcode= spawn(executor, args, argc);
     if (-1 == exitcode) {
         fprintf(stderr, "*** Could not execute %s %s %s [...]\n", args[0], args[1], args[2]);
         exitcode= 255;
     }
     
     free(executor);
+    hash_free(config);
     return exitcode;
 }

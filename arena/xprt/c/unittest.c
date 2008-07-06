@@ -1,3 +1,8 @@
+/* This file is part of the XP runners
+ *
+ * $Id$
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include "xprt.h"
