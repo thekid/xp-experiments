@@ -36,6 +36,20 @@
     public function getName() {
       return $this->node->getAttribute('name');
     }
+
+    /**
+     * Get this field's value
+     *
+     * @return  string
+     */
+    public abstract function getValue();
+
+    /**
+     * Set this field's value
+     *
+     * @param   string value
+     */
+    public abstract function setValue($value);
     
     /**
      * Creates a string representation
@@ -43,7 +57,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'<'.$this->getName().'>';
+      return $this->getClassName().'{'.$this->form->getTest()->getDom()->saveXML($this->node).'}';
     }
   }
 ?>

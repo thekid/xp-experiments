@@ -15,5 +15,23 @@
    * @purpose  Value object
    */
   class unittest·web·InputField extends unittest·web·Field {
+
+    /**
+     * Get this field's value
+     *
+     * @return  string
+     */
+    public function getValue() {
+      return $this->node->getAttribute('value');
+    }
+
+    /**
+     * Set this field's value
+     *
+     * @param   string value
+     */
+    public function setValue($value) {
+      $this->node->setAttribute('value', $value);
+    }
   }
 ?>

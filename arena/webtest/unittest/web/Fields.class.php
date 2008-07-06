@@ -9,7 +9,7 @@
   uses('lang.Enum', 'unittest.web.InputField');
 
   /**
-   * Represents a HTML field
+   * HTML field types enumeration
    *
    * @see      xp://unitform.web.Form#getFields
    * @purpose  Base class

@@ -30,6 +30,15 @@
       $this->test= $test;
       $this->node= $node;
     }
+
+    /**
+     * Get test
+     *
+     * @return  unittest.web.WebTestCase
+     */
+    public function getTest() {
+      return $this->test;
+    }
     
     /**
      * Get form action
@@ -57,6 +66,20 @@
       }
       return $fields;
     }
+
+    /**
+     * Get field by a specific name
+     *
+     * @param   string name
+     * @return  unittest.web.Field
+     * @throws  lang.IllegalArgumentException if the given field does not exist
+     */
+    public function getField($name) {
+      foreach ($this->getFields() as $field) {
+        if ($name === $field->getName()) return $field;
+      }
+      throw new IllegalArgumentException('No such field "'.$field.'"');
+    }
     
     /**
      * Creates a string representation
@@ -72,7 +95,12 @@
      *
      */
     public function submit() {
-      $this->test->navigateTo($this->getAction());
+      $uri= $this->getAction();
+      $params= '';
+      foreach ($this->getFields() as $field) {
+        $params.= '&'.$field->getName().'='.urlencode($field->getValue());
+      }
+      $this->test->navigateTo($uri, substr($params, 1));
     }
   }
 ?>

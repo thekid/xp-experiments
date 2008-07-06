@@ -27,9 +27,6 @@
       $dom      = NULL,
       $xpath    = NULL;
     
-    public
-      $base     = NULL;
-    
     /**
      * Get connection
      *
@@ -75,18 +72,31 @@
       }
       return $this->xpath;
     }
+    
+    /**
+     * Returns base
+     *
+     * @return  string
+     */
+    public function getBase() {
+      return $this->conn->getUrl()->getPath('/');
+    }
   
     /**
      * Navigate to a relative URL 
      *
      * @param   string relative
+     * @param   string params
      * @throws  unittest.AssertionFailedError  
      */
-    protected function beginAt($relative) {
+    protected function beginAt($relative, $params= NULL, $method= HTTP_GET) {
       $this->dom= $this->xpath= NULL;
+      $this->conn->getUrl()->setPath($relative);
       try {
-        $this->response= $this->conn->get($relative);
-        $this->base= $relative;
+        $request= $this->conn->create(new HttpRequest());
+        $request->setMethod($method);
+        $request->setParameters($params);
+        $this->response= $this->conn->send($request);
       } catch (IOException $e) {
         $this->fail($relative, $e, NULL);
       }
@@ -96,9 +106,10 @@
      * Navigate to a given URL
      *
      * @param   string target
+     * @param   string params
      * @throws  unittest.AssertionFailedError  
      */
-    public function navigateTo($target) {
+    public function navigateTo($target, $params= NULL, $method= HTTP_GET) {
       if (strstr($target, '://')) {
         $url= new URL($target);
         $this->conn= $this->getConnection(sprintf(
@@ -107,15 +118,11 @@
           $url->getHost(),
           -1 === $url->getPort(-1) ? '' : ':'.$url->getPort()
         ));
-        $this->beginAt(sprintf(
-          '%s%s',
-          $url->getPath(),
-          NULL === $url->getQuery(NULL) ? '' : '?'.$url->getQuery()
-        ));
+        $this->beginAt($url->getPath(), $url->getQuery($params));
       } else if ('/' === $target{0}) {
-        $this->beginAt($target);
+        $this->beginAt($target, $params);
       } else {
-        $this->beginAt($this->base.$target);
+        $this->beginAt($this->getBase().$target, $params);
       }
     }
 

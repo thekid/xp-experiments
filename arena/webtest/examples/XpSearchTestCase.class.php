@@ -34,7 +34,11 @@
     #[@test]
     public function searchFunction() {
       $this->beginAt('/xml/home');
-      echo $this->getForm()->toString();
+      $form= $this->getForm();
+      $form->getField('query')->setValue('Unittest');
+      $form->submit();
+      $this->assertStatus(HTTP_OK);
+      $this->assertTitleEquals('Search for "Unittest" - XP Framework');
     }
   }
 ?>
