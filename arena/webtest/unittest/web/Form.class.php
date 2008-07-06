@@ -51,6 +51,16 @@
     }
 
     /**
+     * Get form method
+     *
+     * @return  string
+     */
+    public function getMethod() {
+      $method= $this->node->getAttribute('method');
+      return $method ? $method : HTTP_GET;
+    }
+
+    /**
      * Get fields. Lazy / Cached.
      *
      * @return  unittest.web.Field[]
@@ -87,7 +97,13 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'(action= '.$this->getAction().')@'.xp::stringOf($this->getFields());
+      return sprintf(
+        '%s(action= %s, method= %s)@%s',
+        $this->getClassName(),
+        $this->getAction(),
+        $this->getMethod(),
+        xp::stringOf($this->getFields())
+      );
     }
 
     /**
@@ -95,12 +111,11 @@
      *
      */
     public function submit() {
-      $uri= $this->getAction();
       $params= '';
       foreach ($this->getFields() as $field) {
         $params.= '&'.$field->getName().'='.urlencode($field->getValue());
       }
-      $this->test->navigateTo($uri, substr($params, 1));
+      $this->test->navigateTo($this->getAction(), substr($params, 1), $this->getMethod());
     }
   }
 ?>
