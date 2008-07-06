@@ -6,7 +6,7 @@
 
   $package= 'unittest.web';
   
-  uses('lang.Enum', 'unittest.web.InputField');
+  uses('lang.Enum', 'unittest.web.InputField', 'unittest.web.SelectField', 'unittest.web.TextAreaField');
 
   /**
    * HTML field types enumeration
@@ -23,6 +23,20 @@
         
         public function newInstance($form, $node) {
           return new unittest·web·InputField($form, $node);
+        }
+      }');
+      self::$SELECT= newinstance(__CLASS__, array(1, 'SELECT'), '{
+        static function __static() { }
+        
+        public function newInstance($form, $node) {
+          return new unittest·web·SelectField($form, $node);
+        }
+      }');
+      self::$TEXTAREA= newinstance(__CLASS__, array(2, 'TEXTAREA'), '{
+        static function __static() { }
+        
+        public function newInstance($form, $node) {
+          return new unittest·web·TextAreaField($form, $node);
         }
       }');
     }
