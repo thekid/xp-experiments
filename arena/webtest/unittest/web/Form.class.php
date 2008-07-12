@@ -47,7 +47,7 @@
      */
     public function getAction() {
       $action= $this->node->getAttribute('action');
-      return $action ? $action : $this->test->base;
+      return $action ? $action : $this->test->getBase();
     }
 
     /**
