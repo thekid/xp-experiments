@@ -283,6 +283,15 @@
       $this->fixture->assertFormNotPresent('green');
     }
     
+    /**
+     * Assertion helper
+     *
+     * @param   string action
+     * @param   string method
+     * @param   unittest.web.Field[] fields
+     * @param   unittest.web.Form form
+     * @throws  unittest.AssertionFailedError  
+     */
     protected function assertForm($action, $method, $fields, $form) {
       $this->assertClass($form, 'unittest.web.Form');
       $this->assertEquals($action, $form->getAction());
