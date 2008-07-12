@@ -357,6 +357,18 @@
      * Test fields
      *
      */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function nonExistantField() {
+      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->beginAt('/');
+
+      $this->fixture->getForm()->getField('does-not-exist');
+    }
+
+    /**
+     * Test fields
+     *
+     */
     #[@test]
     public function textFieldWithoutValue() {
       $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
