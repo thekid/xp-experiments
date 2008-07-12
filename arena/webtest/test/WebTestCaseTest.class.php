@@ -223,9 +223,7 @@
             <title>Enter your name</title>
           </head>
           <body>
-            <form action="http://example.com/">
-              <input type="text" name="name"/>
-            </form>
+            <form action="http://example.com/"/>
           </body>
         </html>
       '));
@@ -267,12 +265,8 @@
             <title>Blue or red pill?</title>
           </head>
           <body>
-            <form name="blue" action="http://example.com/one">
-              <input type="text" name="name"/>
-            </form>
-            <form name="red" action="http://example.com/two">
-              <input type="text" name="name"/>
-            </form>
+            <form name="blue" action="http://example.com/one"/>
+            <form name="red" action="http://example.com/two"/>
           </body>
         </html>
       '));
@@ -288,15 +282,13 @@
      *
      * @param   string action
      * @param   string method
-     * @param   unittest.web.Field[] fields
      * @param   unittest.web.Form form
      * @throws  unittest.AssertionFailedError  
      */
-    protected function assertForm($action, $method, $fields, $form) {
+    protected function assertForm($action, $method, $form) {
       $this->assertClass($form, 'unittest.web.Form');
       $this->assertEquals($action, $form->getAction());
       $this->assertEquals($method, $form->getMethod());
-      $this->assertEquals($fields, $form->getFields());
     }
 
     /**
@@ -320,18 +312,125 @@
 
       $this->fixture->beginAt('/');
 
-      $this->assertForm(
-        'http://example.com/one', HTTP_GET, array(), 
-        $this->fixture->getForm('one')
-      );
-      $this->assertForm(
-        'http://example.com/two', HTTP_POST, array(), 
-        $this->fixture->getForm('two')
-      );
-      $this->assertForm(
-        '/', HTTP_GET, array(), 
-        $this->fixture->getForm('three')
-      );
+      $this->assertForm('http://example.com/one', HTTP_GET, $this->fixture->getForm('one'));
+      $this->assertForm('http://example.com/two', HTTP_POST, $this->fixture->getForm('two'));
+      $this->assertForm('/', HTTP_GET, $this->fixture->getForm('three'));
+    }
+
+    /**
+     * Returns the form used for testing below
+     *
+     * @return  string
+     */
+    protected function formFixture() {
+      return trim('
+        <html>
+          <head>
+            <title>Enter your name</title>
+          </head>
+          <body>
+            <form>
+              <input type="text" name="first"/>
+              <input type="text" name="initial" value=""/>
+              <input type="text" name="last" value="Tester"/>
+
+              <hr/>
+              <select name="gender">
+                <option value="-">(select one)</option>
+                <option value="M">male</option>
+                <option value="F">female</option>
+              </select>
+
+              <hr/>
+              <select name="payment">
+                <option value="V">Visa-Card</option>
+                <option value="M">Master-Card</option>
+                <option value="C" selected>Cheque</option>
+              </select>
+            </form>
+          </body>
+        </html>
+      ');
+    }
+
+    /**
+     * Test fields
+     *
+     */
+    #[@test]
+    public function textFieldWithoutValue() {
+      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->beginAt('/');
+
+      with ($f= $this->fixture->getForm()->getField('first')); {
+        $this->assertClass($f, 'unittest.web.InputField');
+        $this->assertEquals('first', $f->getName());
+        $this->assertEquals(NULL, $f->getValue());
+      }
+    }
+
+    /**
+     * Test fields
+     *
+     */
+    #[@test]
+    public function textFieldWithEmptyValue() {
+      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->beginAt('/');
+
+      with ($f= $this->fixture->getForm()->getField('initial')); {
+        $this->assertClass($f, 'unittest.web.InputField');
+        $this->assertEquals('initial', $f->getName());
+        $this->assertEquals('', $f->getValue());
+      }
+    }
+
+    /**
+     * Test fields
+     *
+     */
+    #[@test]
+    public function textFieldWithValue() {
+      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->beginAt('/');
+
+      with ($f= $this->fixture->getForm()->getField('last')); {
+        $this->assertClass($f, 'unittest.web.InputField');
+        $this->assertEquals('last', $f->getName());
+        $this->assertEquals('Tester', $f->getValue());
+      }
+    }
+
+    /**
+     * Test fields
+     *
+     */
+    #[@test]
+    public function selectFieldWithoutSelected() {
+      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->beginAt('/');
+
+      with ($f= $this->fixture->getForm()->getField('gender')); {
+        $this->assertClass($f, 'unittest.web.SelectField');
+        $this->assertEquals('gender', $f->getName());
+        $this->assertEquals('-', $f->getValue());
+      }
+    }
+
+    /**
+     * Test fields
+     *
+     */
+    #[@test]
+    public function selectFieldWithSelected() {
+      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->beginAt('/');
+
+      with ($f= $this->fixture->getForm()->getField('payment')); {
+        $this->assertClass($f, 'unittest.web.SelectField');
+        $this->assertEquals('payment', $f->getName());
+        $this->assertEquals('C', $f->getValue());
+      }
     }
   }
 ?>

@@ -88,7 +88,7 @@
       foreach ($this->getFields() as $field) {
         if ($name === $field->getName()) return $field;
       }
-      throw new IllegalArgumentException('No such field "'.$field.'"');
+      throw new IllegalArgumentException('No such field "'.$name.'"');
     }
     
     /**

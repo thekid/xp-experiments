@@ -23,7 +23,7 @@
      * @return  string
      */
     public function getValue() {
-      return $this->node->getAttribute('value');
+      return $this->node->hasAttribute('value') ? $this->node->getAttribute('value') : NULL;
     }
 
     /**
