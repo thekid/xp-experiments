@@ -358,7 +358,7 @@
      * @return  unittest.web.Form
      * @throws  unittest.AssertionFailedError  
      */
-    protected function getForm($name= NULL) {
+    public function getForm($name= NULL) {
       $node= $this->getXPath()->query($name ? '//form[@name = "'.$name.'"]' : '//form')->item(0);
       $this->assertNotEquals(NULL, $node);
       return new unittest·web·Form($this, $node);
