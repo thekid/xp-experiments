@@ -282,5 +282,46 @@
       $this->fixture->assertFormPresent('blue');
       $this->fixture->assertFormNotPresent('green');
     }
+    
+    protected function assertForm($action, $method, $fields, $form) {
+      $this->assertClass($form, 'unittest.web.Form');
+      $this->assertEquals($action, $form->getAction());
+      $this->assertEquals($method, $form->getMethod());
+    }
+
+    /**
+     * Test forms
+     *
+     */
+    #[@test]
+    public function getForm() {
+      $this->fixture->respondWith(HTTP_OK, array(), trim('
+        <html>
+          <head>
+            <title>Form-Mania!</title>
+          </head>
+          <body>
+            <form name="one" action="http://example.com/one"></form>
+            <form name="two" method="POST" action="http://example.com/two"></form>
+            <form name="three"></form>
+          </body>
+        </html>
+      '));
+
+      $this->fixture->beginAt('/');
+
+      $this->assertForm(
+        'http://example.com/one', HTTP_GET, array(), 
+        $this->fixture->getForm('one')
+      );
+      $this->assertForm(
+        'http://example.com/two', HTTP_POST, array(), 
+        $this->fixture->getForm('two')
+      );
+      $this->assertForm(
+        '/', HTTP_GET, array(), 
+        $this->fixture->getForm('three')
+      );
+    }
   }
 ?>
