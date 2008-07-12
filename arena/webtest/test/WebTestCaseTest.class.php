@@ -347,6 +347,10 @@
                 <option value="M">Master-Card</option>
                 <option value="C" selected>Cheque</option>
               </select>
+              
+              <hr/>
+              
+              <textarea name="comments">(Comments)</textarea>
             </form>
           </body>
         </html>
@@ -442,6 +446,22 @@
         $this->assertClass($f, 'unittest.web.SelectField');
         $this->assertEquals('payment', $f->getName());
         $this->assertEquals('C', $f->getValue());
+      }
+    }
+
+    /**
+     * Test fields
+     *
+     */
+    #[@test]
+    public function textArea() {
+      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->beginAt('/');
+
+      with ($f= $this->fixture->getForm()->getField('comments')); {
+        $this->assertClass($f, 'unittest.web.TextAreaField');
+        $this->assertEquals('comments', $f->getName());
+        $this->assertEquals('(Comments)', $f->getValue());
       }
     }
   }
