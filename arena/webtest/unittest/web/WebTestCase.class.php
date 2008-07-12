@@ -81,6 +81,20 @@
     public function getBase() {
       return $this->conn->getUrl()->getPath('/');
     }
+    
+    /**
+     * Perform a request
+     *
+     * @param   string method
+     * @param   string params
+     * @return  peer.http.HttpResponse
+     */
+    protected function doRequest($method, $params) {
+      $request= $this->conn->create(new HttpRequest());
+      $request->setMethod($method);
+      $request->setParameters($params);
+      return $this->conn->send($request);
+    }
   
     /**
      * Navigate to a relative URL 
@@ -89,15 +103,13 @@
      * @param   string params
      * @throws  unittest.AssertionFailedError  
      */
-    protected function beginAt($relative, $params= NULL, $method= HTTP_GET) {
+    public function beginAt($relative, $params= NULL, $method= HTTP_GET) {
       $this->dom= $this->xpath= NULL;
       $this->conn->getUrl()->setPath($relative);
       try {
-        $request= $this->conn->create(new HttpRequest());
-        $request->setMethod($method);
-        $request->setParameters($params);
-        $this->response= $this->conn->send($request);
-      } catch (IOException $e) {
+        $this->response= $this->doRequest($method, $params);
+      } catch (XPException $e) {
+        $this->response= xp::null();
         $this->fail($relative, $e, NULL);
       }
     }
@@ -157,7 +169,7 @@
      * @param   string message
      * @throws  unittest.AssertionFailedError  
      */
-    protected function assertStatus($status, $message= 'not_equals') {
+    public function assertStatus($status, $message= 'not_equals') {
       $this->assertEquals($status, $this->response->getStatusCode(), $message);
     }
 
@@ -168,7 +180,7 @@
      * @param   string message
      * @throws  unittest.AssertionFailedError  
      */
-    protected function assertUrlEquals(URL $url, $message= 'not_equals') {
+    public function assertUrlEquals(URL $url, $message= 'not_equals') {
       $this->assertEquals($this->conn->getUrl(), $url, $message);
     }
 
@@ -179,7 +191,7 @@
      * @param   string message
      * @throws  unittest.AssertionFailedError  
      */
-    protected function assertContentType($ctype, $message= 'not_equals') {
+    public function assertContentType($ctype, $message= 'not_equals') {
       $this->assertEquals($ctype, $this->response->getHeader('Content-Type'), $message);
     }
 
@@ -191,7 +203,7 @@
      * @param   string message
      * @throws  unittest.AssertionFailedError  
      */
-    protected function assertHeader($header, $value, $message= 'not_equals') {
+    public function assertHeader($header, $value, $message= 'not_equals') {
       $this->assertEquals($value, $this->response->getHeader($header), $message);
     }
 
@@ -202,9 +214,21 @@
      * @param   string message
      * @throws  unittest.AssertionFailedError  
      */
-    protected function assertElementPresent($id, $message= 'not_present') {
+    public function assertElementPresent($id, $message= 'not_present') {
       $node= $this->getXPath()->query('//*[@id = "'.$id.'"]')->item(0);
       $this->assertNotEquals(NULL, $node, $message);
+    }
+
+    /**
+     * Assert an element is not present
+     *
+     * @param   string id
+     * @param   string message
+     * @throws  unittest.AssertionFailedError  
+     */
+    public function assertElementNotPresent($id, $message= 'present') {
+      $node= $this->getXPath()->query('//*[@id = "'.$id.'"]')->item(0);
+      $this->assertEquals(NULL, $node, $message);
     }
     
     /**
@@ -214,9 +238,21 @@
      * @param   string message
      * @throws  unittest.AssertionFailedError  
      */
-    protected function assertTextPresent($text, $message= 'not_present') {
+    public function assertTextPresent($text, $message= 'not_present') {
       $node= $this->getXPath()->query('//*[text() = "'.$text.'"]')->item(0);
       $this->assertNotEquals(NULL, $node, $message);
+    }
+
+    /**
+     * Assert a text is not present
+     *
+     * @param   string text
+     * @param   string message
+     * @throws  unittest.AssertionFailedError  
+     */
+    public function assertTextNotPresent($text, $message= 'present') {
+      $node= $this->getXPath()->query('//*[text() = "'.$text.'"]')->item(0);
+      $this->assertEquals(NULL, $node, $message);
     }
 
     /**
@@ -226,9 +262,21 @@
      * @param   string message
      * @throws  unittest.AssertionFailedError  
      */
-    protected function assertImagePresent($src, $message= 'not_present') {
+    public function assertImagePresent($src, $message= 'not_present') {
       $node= $this->getXPath()->query('//img[@src = "'.$src.'"]')->item(0);
       $this->assertNotEquals(NULL, $node, $message);
+    }
+
+    /**
+     * Assert an image is not present
+     *
+     * @param   string src
+     * @param   string message
+     * @throws  unittest.AssertionFailedError  
+     */
+    public function assertImageNotPresent($src, $message= 'present') {
+      $node= $this->getXPath()->query('//img[@src = "'.$src.'"]')->item(0);
+      $this->assertEquals(NULL, $node, $message);
     }
 
     /**
@@ -238,9 +286,21 @@
      * @param   string message
      * @throws  unittest.AssertionFailedError  
      */
-    protected function assertLinkPresent($url, $message= 'not_present') {
+    public function assertLinkPresent($url, $message= 'not_present') {
       $node= $this->getXPath()->query('//a[@href = "'.$url.'"]')->item(0);
       $this->assertNotEquals(NULL, $node, $message);
+    }
+
+    /**
+     * Assert a link to a specified URL is not present
+     *
+     * @param   string url
+     * @param   string message
+     * @throws  unittest.AssertionFailedError  
+     */
+    public function assertLinkNotPresent($url, $message= 'present') {
+      $node= $this->getXPath()->query('//a[@href = "'.$url.'"]')->item(0);
+      $this->assertEquals(NULL, $node, $message);
     }
     
     /**
@@ -250,9 +310,21 @@
      * @param   string message
      * @throws  unittest.AssertionFailedError  
      */
-    protected function assertLinkPresentWithText($text, $message= 'not_present') {
+    public function assertLinkPresentWithText($text, $message= 'not_present') {
       $node= $this->getXPath()->query('//a[text() = "'.$text.'"]')->item(0);
       $this->assertNotEquals(NULL, $node, $message);
+    }
+
+    /**
+     * Assert a link with a specific text is not present
+     *
+     * @param   string text
+     * @param   string message
+     * @throws  unittest.AssertionFailedError  
+     */
+    public function assertLinkNotPresentWithText($text, $message= 'present') {
+      $node= $this->getXPath()->query('//a[text() = "'.$text.'"]')->item(0);
+      $this->assertEquals(NULL, $node, $message);
     }
 
     /**
@@ -262,9 +334,21 @@
      * @param   string message
      * @throws  unittest.AssertionFailedError  
      */
-    protected function assertFormPresent($name= NULL, $message= 'not_present') {
+    public function assertFormPresent($name= NULL, $message= 'not_present') {
       $node= $this->getXPath()->query($name ? '//form[@name = "'.$name.'"]' : '//form')->item(0);
       $this->assertNotEquals(NULL, $node, $message);
+    }
+
+    /**
+     * Assert a form is not present
+     *
+     * @param   string name default NULL
+     * @param   string message
+     * @throws  unittest.AssertionFailedError  
+     */
+    public function assertFormNotPresent($name= NULL, $message= 'present') {
+      $node= $this->getXPath()->query($name ? '//form[@name = "'.$name.'"]' : '//form')->item(0);
+      $this->assertEquals(NULL, $node, $message);
     }
 
     /**
@@ -287,7 +371,7 @@
      * @param   string message
      * @throws  unittest.AssertionFailedError  
      */
-    protected function assertTitleEquals($title, $message= 'not_equals') {
+    public function assertTitleEquals($title, $message= 'not_equals') {
       $text= $this->getXPath()->query('//title/text()')->item(0);
       $this->assertEquals($title, trim($text->data), $message);
     }
