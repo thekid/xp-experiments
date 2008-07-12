@@ -296,6 +296,7 @@
       $this->assertClass($form, 'unittest.web.Form');
       $this->assertEquals($action, $form->getAction());
       $this->assertEquals($method, $form->getMethod());
+      $this->assertEquals($fields, $form->getFields());
     }
 
     /**
