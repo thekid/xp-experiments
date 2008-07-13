@@ -100,7 +100,7 @@
     public function feedbackLinkGoesToBugzilla() {
       $this->beginAt('/xml/home');
       $this->clickLinkWithText('Feedback');
-      $this->assertUrlEquals(new URL('http://bugs.xp-framework.net/'));
+      $this->assertUrlEquals(new URL('http://bugs.xp-framework.net/enter_bug.cgi'));
       $this->assertStatus(HTTP_OK);
     }
   }
