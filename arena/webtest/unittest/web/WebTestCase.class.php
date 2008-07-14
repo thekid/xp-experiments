@@ -134,7 +134,8 @@
       } else if ('/' === $target{0}) {
         $this->beginAt($target, $params);
       } else {
-        $this->beginAt($this->getBase().$target, $params);
+        $base= $this->getBase();
+        $this->beginAt(substr($base, 0, strrpos($base, '/')).'/'.$target, $params);
       }
     }
 
