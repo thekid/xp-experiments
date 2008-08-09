@@ -9,6 +9,7 @@
 
   use scriptlet::Session;
   use scriptlet::Exception;
+  use operation::Success as S;
   
   var_dump(
     new Session(), 
@@ -16,6 +17,7 @@
     new Exception(), 
     new ::Exception(),
     create(new util::Date())->getTimeZone(),
-    create(new util::Date())->setTimeZone(new util::TimeZone())
+    create(new util::Date())->setTimeZone(new util::TimeZone()),
+    new S()
   );
 ?>
