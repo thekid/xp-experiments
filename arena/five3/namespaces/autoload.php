@@ -15,6 +15,7 @@
     new util::Date(), 
     new Exception(), 
     new ::Exception(),
-    create(new util::Date())->getTimeZone()
+    create(new util::Date())->getTimeZone(),
+    create(new util::Date())->setTimeZone(new util::TimeZone())
   );
 ?>
