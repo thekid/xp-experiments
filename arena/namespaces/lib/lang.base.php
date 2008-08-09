@@ -250,18 +250,22 @@
       
     // {{{ static mixed[] acquire(string archive)
     //     Archive instance handling pool function, opens an archive and reads header only once
-    public static function acquire($archive) {
+    static function acquire($archive) {
       static $archives= array();
+      static $unpack= array(
+        1 => 'a80id/a80*filename/a80*path/V1size/V1offset/a*reserved',
+        2 => 'a240id/V1size/V1offset/a*reserved'
+      );
+      
       if (!isset($archives[$archive])) {
         $archives[$archive]= array();
         $current= &$archives[$archive];
-
-        // Bootstrap loading, only to be used for core classes.
         $current['handle']= fopen($archive, 'rb');
-        $header= unpack('a3id/c1version/i1indexsize/a*reserved', fread($current['handle'], 0x0100));
+        $header= unpack('a3id/c1version/V1indexsize/a*reserved', fread($current['handle'], 0x0100));
+        if ('CCA' != $header['id']) raise('lang.FormatException', 'Malformed archive '.$archive);
         for ($current['index']= array(), $i= 0; $i < $header['indexsize']; $i++) {
           $entry= unpack(
-            'a80id/a80filename/a80path/i1size/i1offset/a*reserved', 
+            $unpack[$header['version']], 
             fread($current['handle'], 0x0100)
           );
           $current['index'][$entry['id']]= array($entry['size'], $entry['offset']);
@@ -275,9 +279,10 @@
     // {{{ function bool stream_open(string path, string mode, int options, string opened_path)
     //     Open the given stream and check if file exists
     function stream_open($path, $mode, $options, $opened_path) {
-      list($archive, $file)= sscanf($path, 'xar://%[^?]?%[^$]');
+      sscanf($path, 'xar://%[^?]?%[^$]', $archive, $file);
       $this->archive= urldecode($archive);
       $this->filename= $file;
+      
       $current= self::acquire($this->archive);
       return isset($current['index'][$this->filename]);
     }
@@ -323,7 +328,8 @@
         case SEEK_CUR: $this->position+= $offset; break;
         case SEEK_END: 
           $current= self::acquire($this->archive);
-          $this->position= $current['index'][$this->filename][0] + $offset; break;
+          $this->position= $current['index'][$this->filename][0] + $offset; 
+          break;
       }
       return TRUE;
     }
@@ -339,15 +345,13 @@
     // {{{ <string,int> url_stat(string path)
     //     Retrieve status of url
     function url_stat($path) {
-      list($archive, $file)= sscanf($path, 'xar://%[^?]?%[^$]');
-      $this->archive= urldecode($archive);
-      $this->filename= $file;
-      $current= self::acquire($this->archive);
+      sscanf($path, 'xar://%[^?]?%[^$]', $archive, $file);
+      $current= self::acquire(urldecode($archive));
 
-      if (!isset($current['index'][$this->filename])) return FALSE;
-      return array(
-        'size'  => $current['index'][$this->filename][0]
-      );
+      return isset($current['index'][$file]) 
+        ? array('size' => $current['index'][$file][0])
+        : FALSE
+      ;
     }
     // }}}
   }
@@ -373,16 +377,17 @@
   }
   // }}}
   
-  // {{{ null raise (string classname, string message)
+  // {{{ void raise (string classname, mixed* args)
   //     throws an exception by a given class name
-  function raise($classname, $message) {
+  function raise($classname) {
     try {
       $class= lang::XPClass::forName($classname);
     } catch (lang::ClassNotFoundException $e) {
       xp::error($e->getMessage());
     }
     
-    throw $class->newInstance($message);
+    $a= func_get_args();
+    throw call_user_func_array(array($class, 'newInstance'), array_slice($a, 1));
   }
   // }}}
 
@@ -392,53 +397,23 @@
   }
   // }}}
 
-  // {{{ mixed cast (mixed var, mixed type default NULL)
-  //     Casts. If var === NULL, it won't be touched
-  function cast($var, $type= NULL) {
-    if (NULL === $var) return NULL;
-
-    switch ($type) {
-      case NULL: 
-        break;
-
-      case 'int':
-      case 'integer':
-      case 'float':
-      case 'double':
-      case 'string':
-      case 'bool':
-      case 'null':
-        if ($var instanceof Object) $var= $var->toString();
-        settype($var, $type);
-        break;
-
-      case 'array':
-      case 'object':
-        settype($var, $type);
-        break;
-
-      default:
-        // Cast to an object of "$type"
-        $o= new $type;
-        if (is_object($var) || is_array($var)) {
-          foreach ($var as $k => $v) {
-            $o->$k= $v;
-          }
-        } else {
-          $o->scalar= $var;
-        }
-        return $o;
-        break;
+  // {{{ Generic cast (Generic expression, string type)
+  //     Casts an expression.
+  function cast(lang::Generic $expression= NULL, $type) {
+    if (NULL === $expression) {
+      return xp::null();
+    } else if (lang::XPClass::forName($type)->isInstance($expression)) {
+      return $expression;
     }
-    return $var;
-  }
-  // }}}
+
+    raise('lang.ClassCastException', 'Cannot cast '.xp::typeOf($expression).' to '.$type);
+   }
 
   // {{{ proto bool is(string class, lang.Object object)
   //     Checks whether a given object is of the class, a subclass or implements an interface
   function is($class, $object) {
-    $p= get_class($object);
-    if (is_null($class)) $class= 'null';
+    if (NULL === $class) return $object instanceof null;
+
     $class= xp::reflect($class);
     return $object instanceof $class;
   }
@@ -541,13 +516,8 @@
   ini_set('magic_quotes_runtime', FALSE);
   
   // Constants
-  defined('PATH_SEPARATOR') || define('PATH_SEPARATOR',  0 == strncasecmp('WIN', PHP_OS, 3) ? ';' : ':');
-  define('SKELETON_PATH', (getenv('SKELETON_PATH')
-    ? getenv('SKELETON_PATH')
-    : dirname(__FILE__).DIRECTORY_SEPARATOR
-  ));
-  define('LONG_MAX', is_int(2147483648) ? 9223372036854775807 : 2147483647);
-  define('LONG_MIN', -LONG_MAX - 1);
+  define('LONG_MAX', PHP_INT_MAX);
+  define('LONG_MIN', -PHP_INT_MAX - 1);
 
   // Hooks
   set_error_handler('__error');
