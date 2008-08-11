@@ -20,7 +20,7 @@
       $this->ordinal= $ordinal;
       $this->name= $name;
     }
-  
+
     public function __toString() {
       return $this->name;
     }
@@ -31,6 +31,28 @@
     }
   }
   // }}}
+
+  // {{{ Coin
+  class Coin extends Enum {
+    public static $penny, $nickel, $dime, $quarter;
+    
+    static function __static() {
+      self::$penny= new self(1, 'penny');
+      self::$nickel= new self(2, 'nickel');
+      self::$dime= new self(10, 'dime');
+      self::$quarter= new self(25, 'quarter');
+    }
+
+    public function color() {
+      switch ($this) {
+        case self::$penny: return 'copper';
+        case self::$nickel: return 'nickel';
+        case self::$dime: case self::$quarter: return 'silver';
+      }
+    }
+  }
+  Coin::__static();
+  // }}}
   
   // {{{ Operation
   abstract class Operation extends Enum {
@@ -38,8 +60,7 @@
     
     static function __static() {
       self::$plus= newinstance(__CLASS__, array(0, 'plus'), '{
-        static function __static() { }
-        public function evaluate($x, $y) { return $x + $y; } 
+        public function evaluate($x, $y) { return $x + $y; }
       }');
       self::$minus= newinstance(__CLASS__, array(1, 'minus'), '{
         static function __static() { }
@@ -63,8 +84,15 @@
   // {{{ main
   $a= @$argv[1] ?: 1;
   $b= @$argv[2] ?: 2;
+  
   foreach (Operation::values() as $op) {
     echo $a, ' ', $op, ' ', $b, ' = ', $op->evaluate($a, $b), "\n";
+  }
+  
+  echo "\n";
+  
+  foreach (Coin::values() as $c) {
+    echo $c, ': ', $c->color(), "\n";
   }
   // }}}
 ?>
