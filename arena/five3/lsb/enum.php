@@ -6,6 +6,7 @@
     $name= $parent.'·'.($counter++);
     eval('class '.$name.' extends '.$parent.' '.$src);
     $c= new ReflectionClass($name);
+    $c->getMethod('__static')->invoke(NULL);
     return $c->newInstanceArgs($args);
   }
   // }}}
@@ -17,9 +18,11 @@
       $ordinal  = 0;
 
     static function __static() {
-      $c= new ReflectionClass(get_called_class());
-      foreach (array_keys($c->getStaticProperties()) as $i => $name) {
-        static::${$name}= new static($i, $name);
+      if (__CLASS__ != ($cc= get_called_class())) {
+        $c= new ReflectionClass($cc);
+        foreach (array_keys($c->getStaticProperties()) as $i => $name) {
+          static::${$name}= new static($i, $name);
+        }
       }
     }
       
@@ -37,6 +40,7 @@
       return array_values($c->getStaticProperties());
     }
   }
+  Enum::__static();
   // }}}
 
   // {{{ Weekday
@@ -74,6 +78,7 @@
     
     static function __static() {
       self::$plus= newinstance(__CLASS__, array(0, 'plus'), '{
+        static function __static() { }
         public function evaluate($x, $y) { return $x + $y; }
       }');
       self::$minus= newinstance(__CLASS__, array(1, 'minus'), '{
@@ -110,6 +115,5 @@
   foreach (Operation::values() as $op) {
     echo $a, ' ', $op, ' ', $b, ' = ', $op->evaluate($a, $b), "\n";
   }
-  echo "\n";
     // }}}
 ?>
