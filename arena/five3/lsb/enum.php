@@ -12,10 +12,17 @@
 
   // {{{ Enum
   abstract class Enum {
-    protected
+    public
       $name     = '',
       $ordinal  = 0;
-  
+
+    static function __static() {
+      $c= new ReflectionClass(get_called_class());
+      foreach (array_keys($c->getStaticProperties()) as $i => $name) {
+        static::${$name}= new static($i, $name);
+      }
+    }
+      
     public function __construct($ordinal= 0, $name= '') {
       $this->ordinal= $ordinal;
       $this->name= $name;
@@ -32,6 +39,13 @@
   }
   // }}}
 
+  // {{{ Weekday
+  class Weekday extends Enum {
+    public static $MONDAY, $TUESDAY, $WEDNESDAY, $THURSDAY, $FRIDAY, $SATURDAY, $SUNDAY;
+  }
+  Weekday::__static();
+  // }}}
+  
   // {{{ Coin
   class Coin extends Enum {
     public static $penny, $nickel, $dime, $quarter;
@@ -53,7 +67,7 @@
   }
   Coin::__static();
   // }}}
-  
+
   // {{{ Operation
   abstract class Operation extends Enum {
     public static $plus, $minus, $times, $divided_by;
@@ -84,15 +98,18 @@
   // {{{ main
   $a= @$argv[1] ?: 1;
   $b= @$argv[2] ?: 2;
+
+  echo implode(', ', Weekday::values()), "\n";
+  echo "\n";
+  
+  foreach (Coin::values() as $c) {
+    echo $c, ': ', $c->ordinal, '¢ (color: ', $c->color(), ")\n";
+  }
+  echo "\n";
   
   foreach (Operation::values() as $op) {
     echo $a, ' ', $op, ' ', $b, ' = ', $op->evaluate($a, $b), "\n";
   }
-  
   echo "\n";
-  
-  foreach (Coin::values() as $c) {
-    echo $c, ': ', $c->color(), "\n";
-  }
-  // }}}
+    // }}}
 ?>
