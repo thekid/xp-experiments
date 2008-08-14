@@ -4,13 +4,14 @@
     
     // Calculate unique name
     $classname= $parent.'·'.($counter++);
-    
+
     // Extend parent class
-    $p= new ReflectionClass($parent);
-    if ($p->isInterface()) {
+    if (interface_exists($parent)) {
       $src= 'class '.$classname.' implements '.$parent.' {';
-    } else {
+    } else if (class_exists($parent)) {
       $src= 'class '.$classname.' extends '.$parent.' {';
+    } else {
+      throw new InvalidArgumentException('Class '.$parent.' does not exist');
     }
     $src.= ' public static $__methods= array();';
     
