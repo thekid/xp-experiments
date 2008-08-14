@@ -8,47 +8,47 @@
     // Extend parent class
     $p= new ReflectionClass($parent);
     if ($p->isInterface()) {
-      $s= 'class '.$classname.' implements '.$parent.' {';
+      $src= 'class '.$classname.' implements '.$parent.' {';
     } else {
-      $s= 'class '.$classname.' extends '.$parent.' {';
+      $src= 'class '.$classname.' extends '.$parent.' {';
     }
-    $s.= ' public static $__methods= array();';
+    $src.= ' public static $__methods= array();';
     
     // Build methods
     foreach ($methods as $method => $declaration) {
       
       // Build signature.
-      if ($m= new ReflectionMethod($declaration)) {
-        $signature= $arguments= '';
-        foreach ($m->getParameters() as $i => $parameter) { 
-          $arguments.= ', $arg'.$i;
-          if ($parameter->isArray()) {
-            $signature.= ', array';;
-          } else if ($class= $parameter->getClass()) {
-            $signature.= ', '.$class->getName();
-          } else {
-            $signature.= ',';
-          }
-          $signature.= ' '.($parameter->isPassedByReference() ? '&' : '').'$arg'.$i;
-          if ($parameter->allowsNull()) {
-            $signature.= '= NULL';
-          } else if ($parameter->isDefaultValueAvailable()) {
-            $signature.= '= '.var_export($parameter->getDefaultValue(), TRUE);
-          } else if ($parameter->isOptional()) {
-            $signature.= '= NULL';
-          }
+      $m= new ReflectionMethod($declaration);
+      $signature= $arguments= '';
+      $parameters= $m->getParameters();
+      for ($i= 1, $s= sizeof($parameters); $i < $s; $i++) {
+        $arguments.= ', $arg'.$i;
+        if ($parameters[$i]->isArray()) {
+          $signature.= ', array';;
+        } else if ($class= $parameters[$i]->getClass()) {
+          $signature.= ', '.$class->getName();
+        } else {
+          $signature.= ',';
+        }
+        $signature.= ' '.($parameters[$i]->isPassedByReference() ? '&' : '').'$arg'.$i;
+        if ($parameters[$i]->allowsNull()) {
+          $signature.= '= NULL';
+        } else if ($parameters[$i]->isDefaultValueAvailable()) {
+          $signature.= '= '.var_export($parameters[$i]->getDefaultValue(), TRUE);
+        } else if ($parameters[$i]->isOptional()) {
+          $signature.= '= NULL';
         }
       }
       
       // Create delegation method
-      $s.= 'function '.$method.'('.substr($signature, 2).') { 
-        $m= self::$__methods["'.$method.'"]; return $m('.substr($arguments, 2).');
+      $src.= 'function '.$method.'('.substr($signature, 2).') { 
+        $m= self::$__methods["'.$method.'"]; return $m($this, '.substr($arguments, 2).');
       }';
     }
-    $s.= '} return TRUE;';
+    $src.= '} return TRUE;';
     
     // Declare class
-    if (TRUE !== eval($s)) {
+    if (TRUE !== eval($src)) {
       throw new RuntimeException('Could not declare '.$classname);
     }
 
@@ -67,8 +67,8 @@
   }
   
   $op= newinstance('Operation', array(), array(
-    'perform' => function(Context $c= NULL) {
-      return $c;
+    'perform' => function($this, Context $c= NULL) {
+      var_dump($this); return $c;
     }
   ));
   var_dump($op->perform(newinstance('Context')));
