@@ -17,21 +17,25 @@
     // Build methods
     foreach ($methods as $method => $declaration) {
       
-      // Build signature. TODO: It would be better to have a ReflectionClosure()
-      // object!
-      if ($m= $p->getMethod($method)) {
+      // Build signature.
+      if ($m= new ReflectionMethod($declaration)) {
         $signature= $arguments= '';
         foreach ($m->getParameters() as $i => $parameter) { 
           $arguments.= ', $arg'.$i;
           if ($parameter->isArray()) {
-            $signature.= ', array $arg'.$i;
+            $signature.= ', array';;
           } else if ($class= $parameter->getClass()) {
-            $signature.= ', '.$class->getName().' $arg'.$i;
+            $signature.= ', '.$class->getName();
           } else {
-            $signature.= ', $arg'.$i;
+            $signature.= ',';
           }
-          if ($parameter->isOptional()) {
+          $signature.= ' '.($parameter->isPassedByReference() ? '&' : '').'$arg'.$i;
+          if ($parameter->allowsNull()) {
+            $signature.= '= NULL';
+          } else if ($parameter->isDefaultValueAvailable()) {
             $signature.= '= '.var_export($parameter->getDefaultValue(), TRUE);
+          } else if ($parameter->isOptional()) {
+            $signature.= '= NULL';
           }
         }
       }
@@ -63,7 +67,7 @@
   }
   
   $op= newinstance('Operation', array(), array(
-    'perform' => function(Context $c) {
+    'perform' => function(Context $c= NULL) {
       return $c;
     }
   ));
