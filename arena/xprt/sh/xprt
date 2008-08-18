@@ -15,8 +15,11 @@ translate_path() {
   local path="$2"
   
   case "$path" in
+    ?:*) ;;                                # C:\xp
+    \\*) ;;                                # \\filesrv\shares
+    /*) ;;                                 # /usr/local/lib
     ~*) path=$HOME$DIRSEP${path#"~"} ;;    # ~/lib
-    .*) path=$base$DIRSEP$path ;;          # ../lib, ./classes
+    *) path=$base$DIRSEP$path ;;           # lib, ../lib, ./classes
   esac
   
   if [ "$OS" = "Windows_NT" ]; then
@@ -107,5 +110,6 @@ execute() {
     done
   fi
 
+  # DEBUG echo ${executor}${ifs}${args}${ifs}$(translate_path "$xppath"/bin ".")${runner}".php" >&2;
   echo ${executor}${ifs}${args}${ifs}$(translate_path "$xppath"/bin ".")${runner}".php"
 }
