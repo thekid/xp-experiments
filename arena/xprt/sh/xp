@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # Include xprt
-DIRNAME=$(dirname $(realpath "$0"))
+DIRNAME=$(dirname "$(realpath "$0")") #"
 . "$DIRNAME"/xprt
 
-# Initialite
+# Initialize
 OPTIND=0
 INCLUDE=""
 INCLUDE_PATH="" 
@@ -21,18 +21,18 @@ for arg in "$@" ; do
   case $arg in
     -v)               # Display version
       RUNNER="xpv"
-      OPTIND=`expr $OPTIND + 1`
+      OPTIND=$(expr $OPTIND + 1)
       ;;
     -cp)              # Add class path
       INCLUDE_ARG=${PATHSEP}
       ;;
     -e)               # Run source passed via command line
       RUNNER="xpe"
-      OPTIND=`expr $OPTIND + 1`
+      OPTIND=$(expr $OPTIND + 1)
       ;;
     -xar)             # Run a xar
       RUNNER="xar"
-      OPTIND=`expr $OPTIND + 1`
+      OPTIND=$(expr $OPTIND + 1)
       ;;
     -*)               # Any other arg
       echo "*** Invalid argument $arg"
@@ -48,5 +48,6 @@ done
 # Execute
 shift $OPTIND
 cmd=$(execute "$DIRNAME" "$RUNNER" "$INCLUDE")
-# DEBUG { echo "### $cmd ###" }
+#DEBUG echo "### $cmd ## $@ ###"
+IFS="|"
 $cmd "$@"

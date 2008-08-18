@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# Include xprt
-DIRNAME=$(dirname $(realpath "$0"))
+DIRNAME=$(dirname "$(realpath "$0")") #"
 . "$DIRNAME"/xprt
-
-$(execute "$DIRNAME" "xp" "") util.cmd.Runner net.xp_framework.unittest.runner.cli.CliRunner "$@"
+cmd=$(execute "$DIRNAME" "xp" "")
+IFS="|"
+$cmd util.cmd.Runner net.xp_framework.unittest.runner.cli.CliRunner  "$@"
