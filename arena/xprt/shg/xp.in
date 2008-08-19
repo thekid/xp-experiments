@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Include xprt
+DIRNAME=$(dirname "$(realpath "$0")") #"
+
+
+# Execute
+shift $OPTIND
+cmd=$(execute "$DIRNAME" "$RUNNER" "$INCLUDE")
+#DEBUG echo "### $cmd ## $@ ###"
+IFS="|"
+$cmd "$@"
