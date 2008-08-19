@@ -1,7 +1,3 @@
-#!/bin/sh
-#
-# $Id$
-
 if [ "$OS" = "Windows_NT" ]; then
   PATHSEP=';'
   DIRSEP='\'
@@ -9,6 +5,7 @@ else
   PATHSEP=':'
   DIRSEP='/'
 fi
+DIRNAME=$(dirname "$(realpath "$0")") #"
 
 translate_path() {
   local base="$1"
@@ -50,7 +47,7 @@ scan_path_files() {
     return 1
   fi
   
-  ls "$dir"/*.pth 2>/dev/null | (
+  ls "$dir"/*.pth 2>/dev/null | ( # */
     while read i ; do
       includes=$includes$(add_path_file "$dir" "$i")
     done
@@ -111,47 +108,5 @@ execute() {
     done
   fi
 
-  # DEBUG echo ${executor}${ifs}${args}${ifs}$(translate_path "$xppath"/bin ".")${runner}".php" >&2;
-  echo ${executor}${ifs}${args}${ifs}$(translate_path "$xppath"/bin ".")${runner}".php"
+  echo ${executor}${ifs}${args}${ifs}$(translate_path "$xppath"/bin ".")${DIRSEP}${runner}".php"
 }
-
-# Initialize
-OPTIND=0
-INCLUDE=""
-INCLUDE_PATH="" 
-RUNNER="xp"
-
-# Parse arguments
-for arg in "$@" ; do
-  if [ ! -z "$INCLUDE_ARG" ] ; then
-    INCLUDE="$arg$INCLUDE_ARG$INCLUDE" ; INCLUDE_ARG=""
-    OPTIND=`expr $OPTIND + 2`
-    continue
-  fi
-
-  case $arg in
-    -v)               # Display version
-      RUNNER="xpv"
-      OPTIND=$(expr $OPTIND + 1)
-      ;;
-    -cp)              # Add class path
-      INCLUDE_ARG=${PATHSEP}
-      ;;
-    -e)               # Run source passed via command line
-      RUNNER="xpe"
-      OPTIND=$(expr $OPTIND + 1)
-      ;;
-    -xar)             # Run a xar
-      RUNNER="xar"
-      OPTIND=$(expr $OPTIND + 1)
-      ;;
-    -*)               # Any other arg
-      echo "*** Invalid argument $arg"
-      echo ${USAGE}
-      exit
-      ;;
-    *)                # First arg we find that does not begin with a "-"
-      break
-      ;;
-  esac
-done
