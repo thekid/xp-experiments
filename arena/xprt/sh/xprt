@@ -46,7 +46,8 @@ scan_path_files() {
   local includes=""
   
   if [ ! -d "$dir" ] ; then 
-    return ""; 
+    echo "Directory '$dir' does not exist" >&2
+    return 1
   fi
   
   ls "$dir"/*.pth 2>/dev/null | (
