@@ -31,9 +31,12 @@ add_path_file () {
   local file="$2"
   local includes=""
 
-  for l in `grep -v ^# "$file"` ; do
-    includes=$includes$(translate_path "$base" "$l")$PATHSEP
-  done
+  while read l ; do
+    case "$l" in
+      '#'*) ;;
+      *) includes=$includes$(translate_path "$base" "$l")$PATHSEP;;
+    done
+  done < "$file"
   
   echo $includes
 }
@@ -47,12 +50,10 @@ scan_path_files() {
     return 1
   fi
   
-  ls "$dir"/*.pth 2>/dev/null | ( # */
-    while read i ; do
-      includes=$includes$(add_path_file "$dir" "$i")
-    done
-    echo $includes
-  )
+  while read i ; do
+    includes=$includes$(add_path_file "$dir" "$i")
+  done < ls "$dir"/*.pth 2>/dev/null
+  echo $includes
 }
 
 execute() {
@@ -62,14 +63,14 @@ execute() {
   local xppath="$1"
   local ifs="|"
 
-  for line in `cat "$base"/xp.ini` ; do
+  while read line ; do
     case "$line" in
       use=*)
         value=${line#*=}
         xppath=$(translate_path "$base" "$value")
       ;;
     esac
-  done
+  done < "$base"/xp.ini
 
   local includes=$(scan_path_files "$xppath")
 
