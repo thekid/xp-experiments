@@ -4,6 +4,7 @@
 
   $src= $argv[1]; 
   $argv= array_slice($argv, 2); 
+  $argc-= 2;
   
   exit(eval($src));
 ?>
