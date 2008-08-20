@@ -33,7 +33,8 @@ add_path_file () {
 
   while read l ; do
     case "$l" in
-      $'#'*) ;;
+      $'#'*) ;;                            # Lines beginning with hash
+      '') ;;                               # Lines with whitespace only
       *) includes=$includes$(translate_path "$base" "$l")$PATHSEP ;;
     esac
   done < "$file"
