@@ -32,7 +32,24 @@
     }
   }
 
-  using(new FileReader(__FILE__), function($self) {
-    var_dump($self->read());
+  class FileWriter implements Closeable {
+    protected $fd;
+  
+    public function __construct($filename) {
+      $this->fd= fopen($filename, 'wb');
+    }
+
+    public function write($data) {
+      return fputs($this->fd, $data);
+    }
+  
+    public function close() {
+      echo '*** Closing file ', $this->fd, ' ***', "\n";
+      fclose($this->fd);
+    }
+  }
+
+  using(new FileReader(__FILE__), new FileWriter('php://stdout'), function($in, $out) {
+    $out->write($in->read());
   });
 ?>
