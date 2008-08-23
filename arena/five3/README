@@ -21,7 +21,7 @@ will look like in XP6.
 </code>
 
 Lambda
-~~~~~~
+------
 This directory explores what is possible with the new lambda/closure
 support added in 5.3.
 
@@ -35,7 +35,7 @@ automatically when leaving its scope:
 </code>
 
 Late static binding
-~~~~~~~~~~~~~~~~~~~
+-------------------
 The so-called "late static binding" features allows for inheritance of
 static methods and members.
 
