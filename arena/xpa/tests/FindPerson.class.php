@@ -34,7 +34,7 @@
     public function run() {
       $em= new EntityManager();
       $p= $em->find(XPClass::forName('entities.Person'), 1);
-      $this->out->writeLine($p);
+      $this->out->writeLine($p->isActive() ? 'active' : 'inactive', ': ', $p);
     }
   }
 ?>
