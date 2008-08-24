@@ -17,7 +17,7 @@
       $id= $class->getName();
       if (!isset($this->classes[$id])) {
         $this->classes[$id]= array(
-          strtolower(xp::reflect($id)),
+          $class->hasAnnotation('table', 'name') ? $class->getAnnotation('table', 'name') : strtolower(xp::reflect($id)),
           $class->getAnnotation('entity')
         );
         foreach ($class->getFields() as $field) {
@@ -33,10 +33,17 @@
       return $this->classes[$id];
     }
    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @param   
+     * @return  
+     */
     public function find(XPClass $class, $id) {
       $e= $this->classes($class);
       if (!($r= ConnectionManager::getInstance()->getByHost($e[1]['datasource'], 0)->query(
-        'select * from %c where %c = %d',
+        'select * from %l where %l = %d',
         $e[0],
         $e[2],
         $id
@@ -52,10 +59,22 @@
       return $i;
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
     public function persist(Object $o) {
     
     }
 
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
     public function remove(Object $o) {
     
     }
