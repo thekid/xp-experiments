@@ -254,24 +254,69 @@ static php_oel_op_array *oel_fetch_op_array(zval *arg_op_array TSRMLS_DC) {
 static php_oel_saved_env *oel_env_prepare(php_oel_op_array *res_op_array TSRMLS_DC) {
     php_oel_saved_env *env= (php_oel_saved_env *) emalloc(sizeof(php_oel_saved_env));
     /* Save enviroment */
-    env->zend_lineno=        zend_get_compiled_lineno(TSRMLS_C);
-    env->active_class_entry= CG(active_class_entry);
-    env->active_op_array=    CG(active_op_array);
-    env->in_compilation=     CG(in_compilation);
+    env->zend_lineno= zend_get_compiled_lineno(TSRMLS_C);
+    PHP_OEL_SAFE_CG(res_op_array, env, active_class_entry);
+    PHP_OEL_SAFE_CG(res_op_array, env, active_op_array);
+    PHP_OEL_SAFE_CG(res_op_array, env, in_compilation);
+    PHP_OEL_SAFE_CG(res_op_array, env, implementing_class);
+    PHP_OEL_SAFE_CG(res_op_array, env, interactive);
+    PHP_OEL_SAFE_CG(res_op_array, env, bp_stack);
+    PHP_OEL_SAFE_CG(res_op_array, env, switch_cond_stack);
+    PHP_OEL_SAFE_CG(res_op_array, env, foreach_copy_stack);
+    PHP_OEL_SAFE_CG(res_op_array, env, list_stack);
+    PHP_OEL_SAFE_CG(res_op_array, env, list_llist);
+    PHP_OEL_SAFE_CG(res_op_array, env, dimension_llist);
+    PHP_OEL_SAFE_CG(res_op_array, env, function_call_stack);
+    PHP_OEL_SAFE_CG(res_op_array, env, function_table);
+    PHP_OEL_SAFE_CG(res_op_array, env, class_table);
 
     /*  prepare enviroment */
-    CG(in_compilation)=     1;
-    CG(active_op_array)=    res_op_array->oel_cg.active_op_array;
-    CG(active_class_entry)= res_op_array->oel_cg.active_class_entry;
-    CG(zend_lineno)=        zend_get_executed_lineno(TSRMLS_C);
+    CG(in_compilation)= 1;
+    CG(zend_lineno)=    zend_get_executed_lineno(TSRMLS_C);
+    PHP_OEL_SET_CG(res_op_array, env, active_op_array);
+    PHP_OEL_SET_CG(res_op_array, env, active_class_entry);
+    PHP_OEL_SET_CG(res_op_array, env, implementing_class);
+    PHP_OEL_SET_CG(res_op_array, env, interactive);
+    PHP_OEL_SET_CG(res_op_array, env, bp_stack);
+    PHP_OEL_SET_CG(res_op_array, env, switch_cond_stack);
+    PHP_OEL_SET_CG(res_op_array, env, foreach_copy_stack);
+    PHP_OEL_SET_CG(res_op_array, env, list_stack);
+    PHP_OEL_SET_CG(res_op_array, env, list_llist);
+    PHP_OEL_SET_CG(res_op_array, env, dimension_llist);
+    PHP_OEL_SET_CG(res_op_array, env, function_call_stack);
+    PHP_OEL_SET_CG(res_op_array, env, function_table);
+    PHP_OEL_SET_CG(res_op_array, env, class_table);
     return env;
 }
 
 static void oel_env_restore(php_oel_op_array *res_op_array, php_oel_saved_env *env TSRMLS_DC) {
-    CG(zend_lineno)=        env->zend_lineno;
-    CG(active_class_entry)= env->active_class_entry;
-    CG(active_op_array)=    env->active_op_array;
-    CG(in_compilation)=     env->in_compilation;
+    PHP_OEL_RESAFE_CG(res_op_array, env, implementing_class);
+    PHP_OEL_RESAFE_CG(res_op_array, env, interactive);
+    PHP_OEL_RESAFE_CG(res_op_array, env, bp_stack);
+    PHP_OEL_RESAFE_CG(res_op_array, env, switch_cond_stack);
+    PHP_OEL_RESAFE_CG(res_op_array, env, foreach_copy_stack);
+    PHP_OEL_RESAFE_CG(res_op_array, env, list_stack);
+    PHP_OEL_RESAFE_CG(res_op_array, env, list_llist);
+    PHP_OEL_RESAFE_CG(res_op_array, env, dimension_llist);
+    PHP_OEL_RESAFE_CG(res_op_array, env, function_call_stack);
+    PHP_OEL_RESAFE_CG(res_op_array, env, function_table);
+    PHP_OEL_RESAFE_CG(res_op_array, env, class_table);
+
+    PHP_OEL_RESET_CG(res_op_array, env, class_table);
+    PHP_OEL_RESET_CG(res_op_array, env, function_table);
+    PHP_OEL_RESET_CG(res_op_array, env, function_call_stack);
+    PHP_OEL_RESET_CG(res_op_array, env, dimension_llist);
+    PHP_OEL_RESET_CG(res_op_array, env, list_llist);
+    PHP_OEL_RESET_CG(res_op_array, env, list_stack);
+    PHP_OEL_RESET_CG(res_op_array, env, foreach_copy_stack);
+    PHP_OEL_RESET_CG(res_op_array, env, switch_cond_stack);
+    PHP_OEL_RESET_CG(res_op_array, env, bp_stack);
+    PHP_OEL_RESET_CG(res_op_array, env, interactive);
+    PHP_OEL_RESET_CG(res_op_array, env, implementing_class);
+    PHP_OEL_RESET_CG(res_op_array, env, zend_lineno);
+    PHP_OEL_RESET_CG(res_op_array, env, active_class_entry);
+    PHP_OEL_RESET_CG(res_op_array, env, active_op_array);
+    PHP_OEL_RESET_CG(res_op_array, env, in_compilation);
     efree(env);
 }
 
@@ -362,6 +407,14 @@ static php_oel_op_array *oel_init_oel_op_array(TSRMLS_DC) {
     memset(res_op_array, '\0', sizeof(php_oel_op_array));
     res_op_array->final= 0;
     res_op_array->type=  OEL_TYPE_OAR_BASE;
+    res_op_array->oel_cg.interactive= CG(interactive);
+    zend_stack_init(&(res_op_array->oel_cg.foreach_copy_stack));
+    zend_stack_init(&(res_op_array->oel_cg.switch_cond_stack));
+    zend_stack_init(&(res_op_array->oel_cg.bp_stack));
+    zend_stack_init(&(res_op_array->oel_cg.list_stack));
+    zend_llist_init(&(res_op_array->oel_cg.list_llist), sizeof(list_llist_element), NULL, 0);
+    zend_llist_init(&(res_op_array->oel_cg.dimension_llist), sizeof(int), NULL, 0);
+    zend_stack_init(&(res_op_array->oel_cg.function_call_stack));
     return res_op_array;
 }
 
@@ -369,7 +422,12 @@ static php_oel_op_array *oel_init_oel_op_array(TSRMLS_DC) {
 static php_oel_op_array *oel_init_child_op_array(php_oel_op_array *parent TSRMLS_DC) {
     php_oel_op_array *func_op_array=          oel_init_oel_op_array(TSRMLS_CC);
     func_op_array->oel_cg.active_class_entry= parent->oel_cg.active_class_entry;
+    func_op_array->oel_cg.implementing_class= parent->oel_cg.implementing_class;
+    func_op_array->oel_cg.interactive=        parent->oel_cg.interactive;
+    func_op_array->oel_cg.function_table=     parent->oel_cg.function_table;
+    func_op_array->oel_cg.class_table=        parent->oel_cg.class_table;
     func_op_array->parent=                    parent;
+    func_op_array->next=                      parent->child;
     func_op_array->next=                      parent->child;
     parent->child=                            func_op_array;
     return func_op_array;
@@ -377,26 +435,35 @@ static php_oel_op_array *oel_init_child_op_array(php_oel_op_array *parent TSRMLS
 
 /* create a new op array */
 static php_oel_op_array *oel_create_new_op_array(TSRMLS_DC) {
+    char *orig_compiled_filename, *new_compiled_filename;
     php_oel_op_array *res_op_array= oel_init_oel_op_array(TSRMLS_CC);
     res_op_array->oel_cg.active_op_array=(zend_op_array *) emalloc(sizeof(zend_op_array));
     memset(res_op_array->oel_cg.active_op_array, '\0', sizeof(zend_op_array));
-    res_op_array->oel_cg.active_op_array->filename= "";
+
+    res_op_array->oel_cg.function_table = (HashTable *) malloc(sizeof(HashTable));
+    zend_hash_init_ex(res_op_array->oel_cg.function_table, 100, NULL, ZEND_FUNCTION_DTOR, 1, 0);
+
+    res_op_array->oel_cg.class_table = (HashTable *) malloc(sizeof(HashTable));
+    zend_hash_init_ex(res_op_array->oel_cg.class_table, 10, NULL, ZEND_CLASS_DTOR, 1, 0);
+
+    res_op_array->oel_cg.active_op_array->filename= NULL;
+    new_compiled_filename= (char *) emalloc(sizeof(PHP_OEL_OAR_RES_NAME) + sizeof(" (defined in )") + strlen(EG(active_op_array)->filename));
+    sprintf(new_compiled_filename, "%s (defined in %s)", PHP_OEL_OAR_RES_NAME, EG(active_op_array)->filename);
+
     zend_bool orig_interactive= CG(interactive);
-    char* orig_compiled_filename= CG(compiled_filename);
-    CG(compiled_filename)= (char *) emalloc(sizeof(PHP_OEL_OAR_RES_NAME) + sizeof(" (defined in )") + strlen(EG(active_op_array)->filename));
-    strcpy(CG(compiled_filename), PHP_OEL_OAR_RES_NAME);
-    strcpy(CG(compiled_filename) + strlen(CG(compiled_filename)), " (defined in ");
-    strcpy(CG(compiled_filename) + strlen(CG(compiled_filename)), EG(active_op_array)->filename);
-    strcpy(CG(compiled_filename) + strlen(CG(compiled_filename)), ")");
+    orig_compiled_filename=     zend_get_compiled_filename(TSRMLS_C);
+
+    zend_set_compiled_filename(new_compiled_filename TSRMLS_CC);
     CG(interactive)= 0;
     init_op_array(res_op_array->oel_cg.active_op_array, ZEND_EVAL_CODE, INITIAL_OP_ARRAY_SIZE TSRMLS_CC);
     CG(interactive)= orig_interactive;
-    CG(compiled_filename)= orig_compiled_filename;
+    zend_restore_compiled_filename(orig_compiled_filename TSRMLS_CC);
+    efree(new_compiled_filename);
     return res_op_array;
 }
 
 /* prepare for execution */
-static void oel_finalize_op_array(php_oel_op_array* res_op_array TSRMLS_DC) {
+static void oel_finalize_op_array(php_oel_op_array *res_op_array TSRMLS_DC) {
     if (res_op_array->next)  oel_finalize_op_array(res_op_array->next);
     if (res_op_array->child) oel_finalize_op_array(res_op_array->child);
     if (!res_op_array->final) {
@@ -460,11 +527,23 @@ static void php_oel_destroy_op_array(php_oel_op_array *res_op_array TSRMLS_DC) {
     oel_stack_destroy_token(res_op_array TSRMLS_CC);
     oel_stack_destroy_operand(res_op_array TSRMLS_CC);
     if (res_op_array->oel_cg.active_op_array) {
-        efree(res_op_array->oel_cg.active_op_array->filename);
+        zend_stack_destroy(&(res_op_array->oel_cg.bp_stack));
+        zend_stack_destroy(&(res_op_array->oel_cg.switch_cond_stack));
+        zend_stack_destroy(&(res_op_array->oel_cg.foreach_copy_stack));
+        zend_stack_destroy(&(res_op_array->oel_cg.list_stack));
+        zend_llist_destroy(&(res_op_array->oel_cg.list_llist));
+        zend_llist_destroy(&(res_op_array->oel_cg.dimension_llist));
+        zend_stack_destroy(&(res_op_array->oel_cg.function_call_stack));
         /* function and method op arrays are cleared by their parents */
         if (res_op_array->type == OEL_TYPE_OAR_BASE) {
             destroy_op_array(res_op_array->oel_cg.active_op_array TSRMLS_CC);
             efree(res_op_array->oel_cg.active_op_array);
+
+            zend_hash_destroy(res_op_array->oel_cg.function_table);
+            free(res_op_array->oel_cg.function_table);
+
+            zend_hash_destroy(res_op_array->oel_cg.class_table);
+            free(res_op_array->oel_cg.class_table);
         }
     }
     efree(res_op_array);

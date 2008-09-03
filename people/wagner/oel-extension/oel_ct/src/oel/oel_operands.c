@@ -150,7 +150,7 @@ PHP_FUNCTION(oel_push_property) {
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
-PHP_FUNCTION(oel_push_constant) {  /* TODO: test inner and outer class */
+PHP_FUNCTION(oel_push_constant) {
     zval *arg_op_array;
     char *arg_name;
     int   arg_name_len;

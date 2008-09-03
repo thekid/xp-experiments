@@ -42,17 +42,17 @@ PHP_FUNCTION(oel_new_function) {
     func_token->u.opline_num= CG(zend_lineno);
 
     php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
-    char* orig_compiled_filename= CG(compiled_filename);
-    CG(compiled_filename)= (char *) emalloc(sizeof(PHP_OEL_FUN_RES_NAME) + sizeof(" (defined in )") + strlen(EG(active_op_array)->filename));
-    strcpy(CG(compiled_filename), PHP_OEL_FUN_RES_NAME);
-    strcpy(CG(compiled_filename) + strlen(CG(compiled_filename)), " (defined in ");
-    strcpy(CG(compiled_filename) + strlen(CG(compiled_filename)), EG(active_op_array)->filename);
-    strcpy(CG(compiled_filename) + strlen(CG(compiled_filename)), ")");
     zend_do_begin_function_declaration(func_token, func_name, 0, arg_ref, func_flags TSRMLS_CC);
-    CG(compiled_filename)= orig_compiled_filename;
     func_op_array->oel_cg.active_op_array= CG(active_op_array);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 
+    char *new_filename, *old_filename;
+    new_filename= (char *) emalloc(sizeof(PHP_OEL_FUN_RES_NAME) + sizeof(" (defined in )") + strlen(EG(active_op_array)->filename));
+    sprintf(new_filename, "%s (defined in %s)", PHP_OEL_NME_RES_NAME, EG(active_op_array)->filename);
+    old_filename= zend_get_compiled_filename(TSRMLS_C);
+    func_op_array->oel_cg.active_op_array->filename= zend_set_compiled_filename(new_filename TSRMLS_CC);
+    zend_restore_compiled_filename(old_filename TSRMLS_CC);
+    efree(new_filename);
     ZEND_REGISTER_RESOURCE(return_value, func_op_array, le_oel_fun);
 }
 
@@ -76,9 +76,10 @@ PHP_FUNCTION(oel_new_method) {
     php_oel_op_array *func_op_array= oel_init_child_op_array(res_op_array TSRMLS_CC);
     func_op_array->type= OEL_TYPE_OAR_METHOD;
 
+    int modifier;
     znode *func_name= oel_create_token(func_op_array, OEL_TYPE_UNSET TSRMLS_CC);
     ZVAL_STRINGL(&func_name->u.constant, arg_func_name, arg_func_name_len, 1);
-    int modifier= 0x0;
+    modifier= 0x0;
     modifier|= (!arg_stat) ? 0x0 : ZEND_ACC_STATIC;
     modifier|= arg_acc & (ZEND_ACC_PROTECTED | ZEND_ACC_PRIVATE | ZEND_ACC_PUBLIC);
     modifier|= (!arg_fin)  ? 0x0 : ZEND_ACC_FINAL;
@@ -87,17 +88,17 @@ PHP_FUNCTION(oel_new_method) {
     znode *func_token= oel_create_token(func_op_array, OEL_TYPE_OAR_METHOD TSRMLS_CC);
 
     php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
-    char* orig_compiled_filename= CG(compiled_filename);
-    CG(compiled_filename)= (char *) emalloc(sizeof(PHP_OEL_NME_RES_NAME) + sizeof(" (defined in )") + strlen(EG(active_op_array)->filename));
-    strcpy(CG(compiled_filename), PHP_OEL_NME_RES_NAME);
-    strcpy(CG(compiled_filename) + strlen(CG(compiled_filename)), " (defined in ");
-    strcpy(CG(compiled_filename) + strlen(CG(compiled_filename)), EG(active_op_array)->filename);
-    strcpy(CG(compiled_filename) + strlen(CG(compiled_filename)), ")");
     zend_do_begin_function_declaration(func_token, func_name, 1, arg_ref, func_flags TSRMLS_CC);
-    CG(compiled_filename)= orig_compiled_filename;
     func_op_array->oel_cg.active_op_array= CG(active_op_array);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 
+    char *new_filename, *old_filename;
+    new_filename= (char *) emalloc(sizeof(PHP_OEL_NME_RES_NAME) + sizeof(" (defined in )") + strlen(EG(active_op_array)->filename));
+    sprintf(new_filename, "%s (defined in %s)", PHP_OEL_NME_RES_NAME, EG(active_op_array)->filename);
+    old_filename= zend_get_compiled_filename(TSRMLS_C);
+    func_op_array->oel_cg.active_op_array->filename= zend_set_compiled_filename(new_filename TSRMLS_CC);
+    zend_restore_compiled_filename(old_filename TSRMLS_CC);
+    efree(new_filename);
     ZEND_REGISTER_RESOURCE(return_value, func_op_array, le_oel_nme);
 }
 
@@ -117,9 +118,10 @@ PHP_FUNCTION(oel_new_abstract_method) {
     php_oel_op_array *func_op_array= oel_init_child_op_array(res_op_array TSRMLS_CC);
     func_op_array->type= OEL_TYPE_OAR_AMETHOD;
 
+    int modifier;
     znode *func_name= oel_create_token(func_op_array, OEL_TYPE_UNSET TSRMLS_CC);
     ZVAL_STRINGL(&func_name->u.constant, arg_func_name, arg_func_name_len, 1);
-    int modifier= ZEND_ACC_ABSTRACT;
+    modifier= ZEND_ACC_ABSTRACT;
     modifier|= (!arg_stat) ? 0x0 : ZEND_ACC_STATIC;
     modifier|= arg_acc & (ZEND_ACC_PROTECTED | ZEND_ACC_PUBLIC);
     znode *func_flags= oel_create_token(func_op_array, OEL_TYPE_UNSET TSRMLS_CC);
@@ -127,17 +129,17 @@ PHP_FUNCTION(oel_new_abstract_method) {
     znode *func_token= oel_create_token(func_op_array, OEL_TYPE_OAR_AMETHOD TSRMLS_CC);
 
     php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
-    char* orig_compiled_filename= CG(compiled_filename);
-    CG(compiled_filename)= (char *) emalloc(sizeof(PHP_OEL_AME_RES_NAME) + sizeof(" (defined in )") + strlen(EG(active_op_array)->filename));
-    strcpy(CG(compiled_filename), PHP_OEL_AME_RES_NAME);
-    strcpy(CG(compiled_filename) + strlen(CG(compiled_filename)), " (defined in ");
-    strcpy(CG(compiled_filename) + strlen(CG(compiled_filename)), EG(active_op_array)->filename);
-    strcpy(CG(compiled_filename) + strlen(CG(compiled_filename)), ")");
     zend_do_begin_function_declaration(func_token, func_name, 1, arg_ref, func_flags TSRMLS_CC);
-    CG(compiled_filename)= orig_compiled_filename;
     func_op_array->oel_cg.active_op_array= CG(active_op_array);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 
+    char *new_filename, *old_filename;
+    new_filename= (char *) emalloc(sizeof(PHP_OEL_FUN_RES_NAME) + sizeof(" (defined in )") + strlen(EG(active_op_array)->filename));
+    sprintf(new_filename, "%s (defined in %s)", PHP_OEL_NME_RES_NAME, EG(active_op_array)->filename);
+    old_filename= zend_get_compiled_filename(TSRMLS_C);
+    func_op_array->oel_cg.active_op_array->filename= zend_set_compiled_filename(new_filename TSRMLS_CC);
+    zend_restore_compiled_filename(old_filename TSRMLS_CC);
+    efree(new_filename);
     ZEND_REGISTER_RESOURCE(return_value, func_op_array, le_oel_ame);
 }
 
@@ -206,7 +208,7 @@ PHP_FUNCTION(oel_add_call_method) {
     znode *parameter_count= oel_create_extvar(res_op_array TSRMLS_CC);
     ZVAL_LONG(&parameter_count->u.constant, arg_parameter_count);
     php_oel_znode *params= oel_fetch_call_parameters(res_op_array, arg_parameter_count TSRMLS_CC);
-    znode* object= oel_stack_top_operand(res_op_array TSRMLS_CC);
+    znode *object= oel_stack_top_operand(res_op_array TSRMLS_CC);
     znode *method= oel_create_extvar(res_op_array TSRMLS_CC);
     ZVAL_STRINGL(&method->u.constant, arg_func_name, arg_func_name_len, 1);
     znode *result= object;

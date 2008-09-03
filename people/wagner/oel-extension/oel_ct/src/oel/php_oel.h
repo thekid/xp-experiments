@@ -61,6 +61,11 @@
     static int    oel_stack_size_##v(php_oel_op_array* TSRMLS_DC);              \
     static void   oel_stack_destroy_##v(php_oel_op_array* TSRMLS_DC);           \
 
+    #define PHP_OEL_SAFE_CG(o, e, p)   (e)->p= CG(p); 
+    #define PHP_OEL_SET_CG(o, e, p)    CG(p)= (o)->oel_cg.p; 
+    #define PHP_OEL_RESAFE_CG(o, e, p) (o)->oel_cg.p= CG(p); 
+    #define PHP_OEL_RESET_CG(o, e, p)  CG(p)= (e)->p; 
+
     typedef struct _php_oel_znode {
         znode *ext_var;
         int    type;
@@ -78,16 +83,42 @@
         int type;
 
         struct {
-          zend_op_array    *active_op_array;
-          zend_class_entry *active_class_entry;
+            zend_op_array    *active_op_array;
+            zend_class_entry *active_class_entry;
+            znode             implementing_class;
+            int               interactive;
+            zend_stack        bp_stack;
+            zend_stack        switch_cond_stack;
+            zend_stack        foreach_copy_stack;
+            zend_stack        list_stack;
+            zend_llist        list_llist;
+            zend_llist        dimension_llist;
+            zend_stack        function_call_stack;
+            HashTable         *function_table;
+            HashTable         *class_table;
         } oel_cg;
     } php_oel_op_array;
 
     typedef struct _php_oel_saved_env {
         zend_bool         in_compilation;
+        uint              zend_lineno;
         zend_op_array    *active_op_array;
         zend_class_entry *active_class_entry;
-        uint              zend_lineno;
+        znode             implementing_class;
+        int               interactive;
+        zend_stack        bp_stack;
+        zend_stack        switch_cond_stack;
+        zend_stack        foreach_copy_stack;
+        zend_stack        list_stack;
+        zend_llist        list_llist;
+        zend_llist        dimension_llist;
+        zend_stack        function_call_stack;
+        HashTable         *function_table;
+        HashTable         *class_table;
+        
+        /*
+        TODO:
+        */
     } php_oel_saved_env;
 
     PHP_MINIT_FUNCTION(oel);

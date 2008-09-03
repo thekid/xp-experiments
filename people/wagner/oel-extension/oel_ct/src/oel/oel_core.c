@@ -19,6 +19,9 @@ PHP_FUNCTION(oel_execute) {
     if (!res_op_array->final) {
         oel_compile_error(E_WARNING, "op array must be finalized before executing");
     } else {
+        zend_hash_merge(EG(function_table), res_op_array->oel_cg.function_table, NULL, NULL, sizeof(zend_function),    0);
+        zend_hash_merge(EG(class_table),    res_op_array->oel_cg.class_table,    NULL, NULL, sizeof(zend_class_entry), 0);
+
         /* execute */
         zend_bool          orig_in_compilation=       CG(in_compilation);
         zend_execute_data *orig_current_execute_data= EG(current_execute_data);
