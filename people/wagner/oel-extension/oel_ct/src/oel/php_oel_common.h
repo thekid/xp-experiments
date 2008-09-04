@@ -1,7 +1,7 @@
 #ifndef PHP_OEL_COMMON_H
 #define PHP_OEL_COMMON_H 1
 
-    #define PHP_OEL_VERSION "0.9.5"
+    #define PHP_OEL_VERSION "1.0.0"
     #define PHP_OEL_EXTNAME "oel"
     #define PHP_OEL_OAR_RES_NAME "oel op code array"
     #define PHP_OEL_FUN_RES_NAME "oel function op code array"
