@@ -1,0 +1,46 @@
+%{
+
+  $package= "oel";
+
+  uses(
+    'oel.InstructionTreeRoot',
+    'oel.InstructionTree'
+  );
+
+%}
+
+%token T_INTEGER T_DOUBLE T_PI T_E T_EULER
+%left '+' '-'
+%left '*' ':' '%'
+
+%%
+
+start:
+    { $this->op_array= oel_new_op_array(); }
+      expression
+    { 
+      $$= new oel텶nstructionTreeRoot($this->op_array, array());
+      $$->addPreInstruction($1= new oel텶nstructionTree("oel_add_return", array($this->op_array)));
+      $1->addPreInstruction($2);
+    }
+;
+
+expression:
+    number { $$= new oel텶nstructionTree("oel_push_value", array($this->op_array, $1)); }
+  | expression '+' expression { $$= new oel텶nstructionTree("oel_add_binary_op", array($this->op_array, OEL_BINARY_OP_ADD)); $$->addPreInstruction($3); $$->addPreInstruction($1); }
+  | expression '-' expression { $$= new oel텶nstructionTree("oel_add_binary_op", array($this->op_array, OEL_BINARY_OP_SUB)); $$->addPreInstruction($3); $$->addPreInstruction($1); }
+  | expression '*' expression { $$= new oel텶nstructionTree("oel_add_binary_op", array($this->op_array, OEL_BINARY_OP_MUL)); $$->addPreInstruction($3); $$->addPreInstruction($1); }
+  | expression ':' expression { $$= new oel텶nstructionTree("oel_add_binary_op", array($this->op_array, OEL_BINARY_OP_DIV)); $$->addPreInstruction($3); $$->addPreInstruction($1); }
+  | expression '%' expression { $$= new oel텶nstructionTree("oel_add_binary_op", array($this->op_array, OEL_BINARY_OP_MOD)); $$->addPreInstruction($3); $$->addPreInstruction($1); }
+  | '(' expression ')' { $$= $2; }
+;
+
+number:
+    T_INTEGER { $$= $1; }
+  | T_DOUBLE  { $$= $1; }
+  | T_PI      { $$= $1; }
+  | T_E       { $$= $1; }
+  | T_EULER   { $$= $1; }
+;
+
+%%
