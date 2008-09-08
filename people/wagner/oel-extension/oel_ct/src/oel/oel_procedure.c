@@ -175,7 +175,7 @@ PHP_FUNCTION(oel_add_call_function_name) {
     int   arg_parameter_count;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rl", &arg_op_array, &arg_parameter_count) == FAILURE) { RETURN_NULL(); }
     php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
-    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "oel_add_call_function_dynamic op without oel_add_begin_variable_parse");
+    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "oel_add_call_function_name op without oel_add_begin_variable_parse");
 
     oel_stack_pop_token(res_op_array TSRMLS_CC);
     znode *parameter_count= oel_create_extvar(res_op_array TSRMLS_CC);

@@ -110,6 +110,7 @@
     PHP_FUNCTION(oel_add_isset);
 
     PHP_FUNCTION(oel_add_receive_arg);
+    PHP_FUNCTION(oel_add_static_variable);
     PHP_FUNCTION(oel_add_begin_variable_parse);
     PHP_FUNCTION(oel_add_end_variable_parse);
     PHP_FUNCTION(oel_push_variable);

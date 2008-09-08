@@ -32,6 +32,24 @@ PHP_FUNCTION(oel_add_receive_arg) {
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
+PHP_FUNCTION(oel_add_static_variable) {
+    zval *arg_op_array;
+    char *arg_name;
+    int   arg_name_len;
+    zval *arg_init;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rsz", &arg_op_array, &arg_name, &arg_name_len, &arg_init) == FAILURE) { RETURN_NULL(); }
+    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+
+    znode *name= oel_create_extvar(res_op_array TSRMLS_CC);
+    ZVAL_STRINGL(&(name->u.constant), arg_name, arg_name_len, 1);
+    znode *init= oel_create_extvar(res_op_array TSRMLS_CC);
+    ZVAL_ZVAL(&(init->u.constant), arg_init, 1, 0);
+
+    php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+    zend_do_fetch_static_variable(name, init, ZEND_FETCH_STATIC TSRMLS_CC);
+    oel_env_restore(res_op_array, env TSRMLS_CC);
+}
+
 PHP_FUNCTION(oel_add_begin_variable_parse) {
     zval *arg_op_array;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }

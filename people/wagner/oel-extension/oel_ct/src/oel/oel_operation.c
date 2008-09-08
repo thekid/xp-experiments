@@ -257,15 +257,15 @@ PHP_FUNCTION(oel_add_assign) {
     if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "oel_add_assign without oel_add_begin_variable_parse");
     oel_stack_pop_token(res_op_array TSRMLS_CC);
 
-    znode *righthand= oel_stack_pop_operand(res_op_array TSRMLS_CC);
     znode *lefthand=  oel_stack_pop_operand(res_op_array TSRMLS_CC);
+    znode *righthand= oel_stack_pop_operand(res_op_array TSRMLS_CC);
     znode *result=    oel_create_extvar(res_op_array TSRMLS_CC);
     oel_stack_push_operand(res_op_array, result TSRMLS_CC);
 
     php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_check_writable_variable(lefthand);
-    if (arg_is_ref) zend_do_assign_ref(result, righthand, lefthand TSRMLS_CC);
-    else zend_do_assign(result, righthand, lefthand TSRMLS_CC);
+    if (arg_is_ref) zend_do_assign_ref(result, lefthand, righthand TSRMLS_CC);
+    else zend_do_assign(result, lefthand, righthand TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 

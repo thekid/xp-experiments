@@ -28,7 +28,7 @@ PHP_FUNCTION(oel_execute) {
         zend_op          **orig_opline_ptr=           EG(opline_ptr);
         zend_op_array     *orig_active_op_array=      EG(active_op_array);
         EG(active_op_array)= res_op_array->oel_cg.active_op_array;
-        zend_first_try {
+        zend_try {
             zend_execute(res_op_array->oel_cg.active_op_array TSRMLS_CC);
             if ((EG(exception))) {
                 zend_throw_exception_internal(EG(exception) TSRMLS_CC);
@@ -62,11 +62,10 @@ PHP_FUNCTION(oel_add_return) {
     zval *arg_op_array;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
     php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
-
     znode *val= oel_stack_pop_operand(res_op_array TSRMLS_CC);
-    if (val->u.EA.type & ZEND_PARSED_STATIC_MEMBER
-     || val->u.EA.type & ZEND_PARSED_VARIABLE
-     || val->u.EA.type & ZEND_PARSED_MEMBER) {
+    if ((val->u.EA.type == ZEND_PARSED_STATIC_MEMBER)
+     || (val->u.EA.type == ZEND_PARSED_VARIABLE)
+     || (val->u.EA.type == ZEND_PARSED_MEMBER)) {
         if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "return variable without oel_add_begin_variable_parse");
         end_v_parse= 1;
         oel_stack_pop_token(res_op_array TSRMLS_CC);

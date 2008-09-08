@@ -67,6 +67,7 @@ static function_entry oel_functions[]= {
     PHP_FE(oel_add_isset, NULL)
 
     PHP_FE(oel_add_receive_arg, NULL)
+    PHP_FE(oel_add_static_variable, NULL)
     PHP_FE(oel_add_begin_variable_parse, NULL)
     PHP_FE(oel_add_end_variable_parse, NULL)
     PHP_FE(oel_push_variable, NULL)
@@ -226,13 +227,13 @@ PHP_MINIT_FUNCTION(oel) {
     REGISTER_LONG_CONSTANT("OEL_OP_BOOL_AND",                   ZEND_JMPZ_EX,             CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("OEL_OP_BOOL_OR",                    ZEND_JMPNZ_EX,            CONST_CS | CONST_PERSISTENT);
 
-    REGISTER_LONG_CONSTANT("OEL_OP_TO_INT",                     IS_LONG,                   CONST_CS | CONST_PERSISTENT);
-    REGISTER_LONG_CONSTANT("OEL_OP_TO_DOUBLE",                  IS_DOUBLE,                 CONST_CS | CONST_PERSISTENT);
-    REGISTER_LONG_CONSTANT("OEL_OP_TO_STRING",                  IS_STRING,                 CONST_CS | CONST_PERSISTENT);
-    REGISTER_LONG_CONSTANT("OEL_OP_TO_ARRAY",                   IS_ARRAY,                  CONST_CS | CONST_PERSISTENT);
-    REGISTER_LONG_CONSTANT("OEL_OP_TO_OBJECT",                  IS_OBJECT,                 CONST_CS | CONST_PERSISTENT);
-    REGISTER_LONG_CONSTANT("OEL_OP_TO_BOOL",                    IS_BOOL,                   CONST_CS | CONST_PERSISTENT);
-    REGISTER_LONG_CONSTANT("OEL_OP_TO_UNSET",                   IS_NULL,                   CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("OEL_OP_TO_INT",                     IS_LONG,                  CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("OEL_OP_TO_DOUBLE",                  IS_DOUBLE,                CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("OEL_OP_TO_STRING",                  IS_STRING,                CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("OEL_OP_TO_ARRAY",                   IS_ARRAY,                 CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("OEL_OP_TO_OBJECT",                  IS_OBJECT,                CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("OEL_OP_TO_BOOL",                    IS_BOOL,                  CONST_CS | CONST_PERSISTENT);
+    REGISTER_LONG_CONSTANT("OEL_OP_TO_UNSET",                   IS_NULL,                  CONST_CS | CONST_PERSISTENT);
     return SUCCESS;
 }
 
@@ -394,10 +395,12 @@ static int oel_token_isa(php_oel_op_array *res_op_array TSRMLS_DC, int type, ...
 /* create a new znode for an op_array */
 static znode *oel_create_extvar(php_oel_op_array *res_op_array TSRMLS_DC) {
     znode *node= (znode *) emalloc(sizeof(znode));
+    memset(node, '\0', sizeof(znode));
     oel_stack_push_extvar(res_op_array, node TSRMLS_CC);
     node->op_type= IS_CONST;
     node->u.constant.refcount= 1;
     node->u.constant.is_ref= 0;
+    node->u.EA.type= 0;
     return node;
 }
 
@@ -427,7 +430,6 @@ static php_oel_op_array *oel_init_child_op_array(php_oel_op_array *parent TSRMLS
     func_op_array->oel_cg.function_table=     parent->oel_cg.function_table;
     func_op_array->oel_cg.class_table=        parent->oel_cg.class_table;
     func_op_array->parent=                    parent;
-    func_op_array->next=                      parent->child;
     func_op_array->next=                      parent->child;
     parent->child=                            func_op_array;
     return func_op_array;
@@ -538,12 +540,6 @@ static void php_oel_destroy_op_array(php_oel_op_array *res_op_array TSRMLS_DC) {
         if (res_op_array->type == OEL_TYPE_OAR_BASE) {
             destroy_op_array(res_op_array->oel_cg.active_op_array TSRMLS_CC);
             efree(res_op_array->oel_cg.active_op_array);
-
-            zend_hash_destroy(res_op_array->oel_cg.function_table);
-            free(res_op_array->oel_cg.function_table);
-
-            zend_hash_destroy(res_op_array->oel_cg.class_table);
-            free(res_op_array->oel_cg.class_table);
         }
     }
     efree(res_op_array);
