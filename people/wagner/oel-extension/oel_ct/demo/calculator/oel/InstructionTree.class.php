@@ -11,18 +11,21 @@
     private
       $preInstructions= array();
     public
-      $name= "",
-      $config= array();
+      $name=    "",
+      $config=  array(),
+      $is_root= 0;
 
     /**
      * Constructor
      *
      * @param   string name
      * @param   array config
+     * @param   bool  is_root
      */
-    public function __construct($name, Array $config) {
-      $this->name= $name;
-      $this->config= $config;
+    public function __construct($name, Array $config, $is_root= FALSE) {
+      $this->name=    $name;
+      $this->config=  $config;
+      $this->is_root= $is_root;
     }
 
     /**

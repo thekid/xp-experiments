@@ -60,7 +60,7 @@
       $instructionTree= $parser->parse(new oel·Lexer($this->expr));
 
       $this->out->write($this->expr, '= ');
-      $this->out->writeLine($instructionTree->accept(new oel·ExecuteVisitor()));
+      $this->out->writeLine($instructionTree->accept(new oel·ExecuteVisitor(oel_new_op_array())));
     }
   }
 ?>
