@@ -560,16 +560,15 @@ static void php_oel_destroy_op_array(php_oel_op_array *res_op_array TSRMLS_DC) {
 }
 
 static void oel_compile_error(int type, const char *format, ...) {
-    TSRMLS_D;
     char *orig_filename;
     uint  orig_lineno;
     va_list arglist;
     zend_bool orig_in_compilation;
+    TSRMLS_FETCH();
 
     va_start(arglist, format);
     orig_filename= zend_get_compiled_filename(TSRMLS_C);
     orig_lineno=   zend_get_compiled_lineno(TSRMLS_C);
-    TSRMLS_FETCH();
 
     orig_in_compilation= CG(in_compilation);
     CG(compiled_filename)= zend_get_executed_filename(TSRMLS_C);

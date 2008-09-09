@@ -179,7 +179,7 @@ PHP_FUNCTION(oel_push_constant) {
     php_oel_saved_env *env;
     znode             *result, *name, *classname= NULL, *class=NULL;
     char              *arg_name,     *arg_classname= NULL;
-    int                arg_name_len,  arg_classname_len= 0, arg_indirections;
+    int                arg_name_len,  arg_classname_len= 0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|s", &arg_op_array, &arg_name, &arg_name_len, &arg_classname, &arg_classname_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
@@ -206,7 +206,6 @@ PHP_FUNCTION(oel_push_constant) {
 PHP_FUNCTION(oel_push_value) {
     zval              *arg_op_array, *arg_const;
     php_oel_op_array  *res_op_array;
-    php_oel_saved_env *env;
     znode             *const_node;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rz", &arg_op_array, &arg_const) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);

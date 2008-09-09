@@ -54,9 +54,9 @@ PHP_FUNCTION(oel_add_begin_abstract_class_declaration) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
-    znode             *class_name, *parent_class_name, *parent_class_node, *class_token;
+    znode             *class_name, *parent_class_name, *class_token;
     char              *arg_class_name,    *arg_parent_name= NULL;
-    int                arg_class_name_len, arg_parent_name_len= 0, arg_is_final= 0, mod;
+    int                arg_class_name_len, arg_parent_name_len= 0, arg_is_final= 0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|s", &arg_op_array, &arg_class_name, &arg_class_name_len, &arg_parent_name, &arg_parent_name_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
@@ -102,7 +102,7 @@ PHP_FUNCTION(oel_add_begin_interface_declaration) {
     php_oel_saved_env *env;
     znode             *class_name, *parent_class_name, *class_token;
     char              *arg_class_name,    *arg_parent_name= NULL;
-    int                arg_class_name_len, arg_parent_name_len= 0, arg_is_final= 0, mod;
+    int                arg_class_name_len, arg_parent_name_len= 0, arg_is_final= 0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|s", &arg_op_array, &arg_class_name, &arg_class_name_len, &arg_parent_name, &arg_parent_name_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 

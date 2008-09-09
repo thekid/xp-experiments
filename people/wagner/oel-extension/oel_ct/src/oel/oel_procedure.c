@@ -140,7 +140,7 @@ PHP_FUNCTION(oel_new_abstract_method) {
 
 PHP_FUNCTION(oel_add_call_function) {
     zval              *arg_op_array;
-    php_oel_op_array  *res_op_array, *func_op_array;
+    php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     php_oel_znode     *params;
     znode             *parameter_count, *func_name, *result;
@@ -168,11 +168,11 @@ PHP_FUNCTION(oel_add_call_function) {
 
 PHP_FUNCTION(oel_add_call_function_name) {
     zval              *arg_op_array;
-    php_oel_op_array  *res_op_array, *func_op_array;
+    php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     php_oel_znode     *params;
     znode             *parameter_count, *func_name, *result;
-    int                arg_parameter_count, is_dynamic;
+    int                arg_parameter_count;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rl", &arg_op_array, &arg_parameter_count) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "oel_add_call_function_name op without oel_add_begin_variable_parse");
@@ -196,7 +196,7 @@ PHP_FUNCTION(oel_add_call_function_name) {
 
 PHP_FUNCTION(oel_add_call_method) {
     zval              *arg_op_array;
-    php_oel_op_array  *res_op_array, *func_op_array;
+    php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     php_oel_znode     *params;
     znode             *parameter_count, *object, *method, *result;
@@ -227,7 +227,7 @@ PHP_FUNCTION(oel_add_call_method) {
 
 PHP_FUNCTION(oel_add_call_method_static) {
     zval              *arg_op_array;
-    php_oel_op_array  *res_op_array, *func_op_array;
+    php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     php_oel_znode     *params;
     znode             *parameter_count, *func_name, *class, *result;
@@ -258,7 +258,7 @@ PHP_FUNCTION(oel_add_call_method_static) {
 
 PHP_FUNCTION(oel_add_call_method_name) {
     zval              *arg_op_array;
-    php_oel_op_array  *res_op_array, *func_op_array;
+    php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     php_oel_znode     *params;
     znode             *parameter_count, *method, *object, *result;
@@ -287,7 +287,7 @@ PHP_FUNCTION(oel_add_call_method_name) {
 
 PHP_FUNCTION(oel_add_call_method_name_static) {
     zval              *arg_op_array;
-    php_oel_op_array  *res_op_array, *func_op_array;
+    php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     php_oel_znode     *params;
     znode             *parameter_count, *func_name, *class, *result;
@@ -317,7 +317,7 @@ PHP_FUNCTION(oel_add_call_method_name_static) {
 
 PHP_FUNCTION(oel_add_new_object) {
     zval              *arg_op_array;
-    php_oel_op_array  *res_op_array, *func_op_array;
+    php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     php_oel_znode     *params;
     znode             *parameter_count, *class_name, *class, *result, *token;
