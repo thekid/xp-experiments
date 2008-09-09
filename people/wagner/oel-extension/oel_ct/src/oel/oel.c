@@ -138,9 +138,9 @@ static int oel_stack_destroy_rec(int counter, php_oel_znode **stack_head TSRMLS_
 static int oel_stack_size(char *stack_name, php_oel_znode **stack_head TSRMLS_DC);
 static int oel_stack_top_get_type(char *stack_name, php_oel_znode **stack_head TSRMLS_DC);
 static int oel_token_isa(php_oel_op_array *res_op_array TSRMLS_DC, int type, ...);
-static php_oel_op_array *oel_create_new_op_array(TSRMLS_DC);
+static php_oel_op_array *oel_create_new_op_array(TSRMLS_D);
 static php_oel_op_array *oel_init_child_op_array(php_oel_op_array *parent TSRMLS_DC);
-static php_oel_op_array *oel_init_oel_op_array(TSRMLS_DC);
+static php_oel_op_array *oel_init_oel_op_array(TSRMLS_D);
 static void oel_compile_error(int type, const char *format, ...);
 static void oel_finalize_op_array(php_oel_op_array* res_op_array TSRMLS_DC);
 static void oel_stack_destroy(char *stack_name, php_oel_znode **stack_head TSRMLS_DC);
@@ -243,10 +243,10 @@ PHP_OEL_STACK_SERVICE_FUNCTIONS(token);
 PHP_OEL_STACK_SERVICE_FUNCTIONS(extvar);
 
 static php_oel_op_array *oel_fetch_op_array(zval *arg_op_array TSRMLS_DC) {
-    php_oel_op_array *oel_op_array=  (php_oel_op_array *) zend_fetch_resource(&arg_op_array, -1, NULL, NULL, 1, le_oel_oar);
-    if (!oel_op_array) oel_op_array= (php_oel_op_array *) zend_fetch_resource(&arg_op_array, -1, NULL, NULL, 1, le_oel_fun);
-    if (!oel_op_array) oel_op_array= (php_oel_op_array *) zend_fetch_resource(&arg_op_array, -1, NULL, NULL, 1, le_oel_nme);
-    if (!oel_op_array) oel_op_array= (php_oel_op_array *) zend_fetch_resource(&arg_op_array, -1, NULL, NULL, 1, le_oel_ame);
+    php_oel_op_array *oel_op_array= (php_oel_op_array *) zend_fetch_resource(&arg_op_array TSRMLS_CC, -1, NULL, NULL, 1, le_oel_oar);
+    if (!oel_op_array) oel_op_array= (php_oel_op_array *) zend_fetch_resource(&arg_op_array TSRMLS_CC, -1, NULL, NULL, 1, le_oel_fun);
+    if (!oel_op_array) oel_op_array= (php_oel_op_array *) zend_fetch_resource(&arg_op_array TSRMLS_CC, -1, NULL, NULL, 1, le_oel_nme);
+    if (!oel_op_array) oel_op_array= (php_oel_op_array *) zend_fetch_resource(&arg_op_array TSRMLS_CC, -1, NULL, NULL, 1, le_oel_ame);
     if (!oel_op_array) oel_compile_error(E_ERROR, "resource must be of type <%s>, <%s>, <%s> or <%s>", PHP_OEL_OAR_RES_NAME, PHP_OEL_FUN_RES_NAME, PHP_OEL_NME_RES_NAME, PHP_OEL_AME_RES_NAME);
     return oel_op_array;
 }
@@ -323,16 +323,19 @@ static void oel_env_restore(php_oel_op_array *res_op_array, php_oel_saved_env *e
 
 /* common stack functions */
 static void oel_stack_push(char *stack_name, php_oel_znode **stack_head, znode *node TSRMLS_DC) {
-    php_oel_znode *oel_znode= (php_oel_znode *) emalloc(sizeof(php_oel_znode));
+    php_oel_znode *oel_znode;
+    oel_znode= (php_oel_znode *) emalloc(sizeof(php_oel_znode));
     oel_znode->ext_var= node;
     oel_znode->type= OEL_TYPE_UNSET;
     oel_znode->next_var= *stack_head;
     *stack_head= oel_znode;
 }
 static znode *oel_stack_pop(char *stack_name, php_oel_znode **stack_head TSRMLS_DC) {
+    znode *node;
+    php_oel_znode *oel_znode;
     if (!*stack_head) oel_compile_error(E_ERROR, "try to pop empty stack (%s)", stack_name);
-    znode *node= oel_stack_top(stack_name, stack_head TSRMLS_CC);
-    php_oel_znode *oel_znode= *stack_head;
+    node= oel_stack_top(stack_name, stack_head TSRMLS_CC);
+    oel_znode= *stack_head;
     *stack_head= oel_znode->next_var;
     efree(oel_znode);
     return node;
@@ -380,11 +383,12 @@ static znode *oel_create_token(php_oel_op_array *res_op_array, int type TSRMLS_D
 }
 /* test the top token to be of a cetain type */
 static int oel_token_isa(php_oel_op_array *res_op_array TSRMLS_DC, int type, ...) {
-    if (oel_stack_size_token(res_op_array TSRMLS_CC) < 1) return 0;
-
     va_list ap;
-    int token_type=  oel_stack_top_get_type_token(res_op_array TSRMLS_CC);
+    int token_type;
     int i, result= 0;
+
+    if (oel_stack_size_token(res_op_array TSRMLS_CC) < 1) return 0;
+    token_type=  oel_stack_top_get_type_token(res_op_array TSRMLS_CC);
     va_start(ap, type);
     for (i= 0; i < type; i++) {
       result= (token_type == va_arg(ap, int)) || result;
@@ -405,7 +409,7 @@ static znode *oel_create_extvar(php_oel_op_array *res_op_array TSRMLS_DC) {
 }
 
 /* create a new op array resource */
-static php_oel_op_array *oel_init_oel_op_array(TSRMLS_DC) {
+static php_oel_op_array *oel_init_oel_op_array(TSRMLS_D) {
     php_oel_op_array *res_op_array= (php_oel_op_array *) emalloc(sizeof(php_oel_op_array));
     memset(res_op_array, '\0', sizeof(php_oel_op_array));
     res_op_array->final= 0;
@@ -423,7 +427,7 @@ static php_oel_op_array *oel_init_oel_op_array(TSRMLS_DC) {
 
 /* create a new child op array resource */
 static php_oel_op_array *oel_init_child_op_array(php_oel_op_array *parent TSRMLS_DC) {
-    php_oel_op_array *func_op_array=          oel_init_oel_op_array(TSRMLS_CC);
+    php_oel_op_array *func_op_array=          oel_init_oel_op_array(TSRMLS_C);
     func_op_array->oel_cg.active_class_entry= parent->oel_cg.active_class_entry;
     func_op_array->oel_cg.implementing_class= parent->oel_cg.implementing_class;
     func_op_array->oel_cg.interactive=        parent->oel_cg.interactive;
@@ -436,9 +440,13 @@ static php_oel_op_array *oel_init_child_op_array(php_oel_op_array *parent TSRMLS
 }
 
 /* create a new op array */
-static php_oel_op_array *oel_create_new_op_array(TSRMLS_DC) {
-    char *orig_compiled_filename, *new_compiled_filename;
-    php_oel_op_array *res_op_array= oel_init_oel_op_array(TSRMLS_CC);
+static php_oel_op_array *oel_create_new_op_array(TSRMLS_D) {
+    char *orig_compiled_filename;
+    char *new_compiled_filename;
+    php_oel_op_array *res_op_array;
+    zend_bool orig_interactive;
+
+    res_op_array= oel_init_oel_op_array(TSRMLS_C);
     res_op_array->oel_cg.active_op_array=(zend_op_array *) emalloc(sizeof(zend_op_array));
     memset(res_op_array->oel_cg.active_op_array, '\0', sizeof(zend_op_array));
 
@@ -452,8 +460,8 @@ static php_oel_op_array *oel_create_new_op_array(TSRMLS_DC) {
     new_compiled_filename= (char *) emalloc(sizeof(PHP_OEL_OAR_RES_NAME) + sizeof(" (defined in )") + strlen(EG(active_op_array)->filename));
     sprintf(new_compiled_filename, "%s (defined in %s)", PHP_OEL_OAR_RES_NAME, EG(active_op_array)->filename);
 
-    zend_bool orig_interactive= CG(interactive);
-    orig_compiled_filename=     zend_get_compiled_filename(TSRMLS_C);
+    orig_interactive= CG(interactive);
+    orig_compiled_filename= zend_get_compiled_filename(TSRMLS_C);
 
     zend_set_compiled_filename(new_compiled_filename TSRMLS_CC);
     CG(interactive)= 0;
@@ -466,43 +474,49 @@ static php_oel_op_array *oel_create_new_op_array(TSRMLS_DC) {
 
 /* prepare for execution */
 static void oel_finalize_op_array(php_oel_op_array *res_op_array TSRMLS_DC) {
-    if (res_op_array->next)  oel_finalize_op_array(res_op_array->next);
-    if (res_op_array->child) oel_finalize_op_array(res_op_array->child);
+    php_oel_saved_env *env;
+    znode *func_token;
+    znode *func_flags;
+    znode *func_name;
+    znode *body;
+
+    if (res_op_array->next)  oel_finalize_op_array(res_op_array->next TSRMLS_CC);
+    if (res_op_array->child) oel_finalize_op_array(res_op_array->child TSRMLS_CC);
     if (!res_op_array->final) {
         if(res_op_array->type == OEL_TYPE_OAR_BASE) {
-            php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+            env= oel_env_prepare(res_op_array TSRMLS_CC);
             zend_do_return(NULL, 0 TSRMLS_CC);
             zend_do_handle_exception(TSRMLS_C);
             oel_env_restore(res_op_array, env TSRMLS_CC);
             pass_two(res_op_array->oel_cg.active_op_array TSRMLS_CC);
         } else if (res_op_array->type == OEL_TYPE_OAR_FUNCTION) {
             if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_OAR_FUNCTION)) oel_compile_error(E_ERROR, "opend token is not of type function");
-            php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+            env= oel_env_prepare(res_op_array TSRMLS_CC);
             zend_do_end_function_declaration(oel_stack_pop_token(res_op_array TSRMLS_CC) TSRMLS_CC);
             oel_env_restore(res_op_array, env TSRMLS_CC);
         } else if (res_op_array->type == OEL_TYPE_OAR_METHOD) {
             if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_OAR_METHOD)) oel_compile_error(E_ERROR, "opend token is not of type method");
-            znode *func_token= oel_stack_pop_token(res_op_array TSRMLS_CC);
-            znode *func_flags= oel_stack_pop_token(res_op_array TSRMLS_CC);
-            znode *func_name=  oel_stack_pop_token(res_op_array TSRMLS_CC);
+            func_token= oel_stack_pop_token(res_op_array TSRMLS_CC);
+            func_flags= oel_stack_pop_token(res_op_array TSRMLS_CC);
+            func_name=  oel_stack_pop_token(res_op_array TSRMLS_CC);
 
-            znode *body= oel_create_extvar(res_op_array TSRMLS_CC);
+            body= oel_create_extvar(res_op_array TSRMLS_CC);
             ZVAL_LONG(&body->u.constant, (ZEND_ACC_INTERFACE & res_op_array->oel_cg.active_class_entry->ce_flags) ? ZEND_ACC_ABSTRACT : 0);
 
-            php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+            env= oel_env_prepare(res_op_array TSRMLS_CC);
             zend_do_abstract_method(func_name, func_flags, body TSRMLS_CC);
             zend_do_end_function_declaration(func_token TSRMLS_CC);
             oel_env_restore(res_op_array, env TSRMLS_CC);
         } else if (res_op_array->type == OEL_TYPE_OAR_AMETHOD) {
             if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_OAR_AMETHOD)) oel_compile_error(E_ERROR, "opend token is not of type abstract method");
-            znode *func_token= oel_stack_pop_token(res_op_array TSRMLS_CC);
-            znode *func_flags= oel_stack_pop_token(res_op_array TSRMLS_CC);
-            znode *func_name=  oel_stack_pop_token(res_op_array TSRMLS_CC);
+            func_token= oel_stack_pop_token(res_op_array TSRMLS_CC);
+            func_flags= oel_stack_pop_token(res_op_array TSRMLS_CC);
+            func_name=  oel_stack_pop_token(res_op_array TSRMLS_CC);
 
-            znode *body=  oel_create_extvar(res_op_array TSRMLS_CC);
+            body=  oel_create_extvar(res_op_array TSRMLS_CC);
             ZVAL_LONG(&body->u.constant, ZEND_ACC_ABSTRACT);
 
-            php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+            env= oel_env_prepare(res_op_array TSRMLS_CC);
             zend_do_abstract_method(func_name, func_flags, body TSRMLS_CC);
             zend_do_end_function_declaration(func_token TSRMLS_CC);
             oel_env_restore(res_op_array, env TSRMLS_CC);
@@ -517,13 +531,13 @@ static void oel_finalize_op_array(php_oel_op_array *res_op_array TSRMLS_DC) {
 /* destroy op array resource */
 static void php_oel_op_array_dtor(zend_rsrc_list_entry *rsrc TSRMLS_DC) {
     php_oel_op_array *res_op_array= (php_oel_op_array *) rsrc->ptr;
-    if (res_op_array) php_oel_destroy_op_array(res_op_array);
+    if (res_op_array) php_oel_destroy_op_array(res_op_array TSRMLS_CC);
 }
 
 /* destroy op array */
 static void php_oel_destroy_op_array(php_oel_op_array *res_op_array TSRMLS_DC) {
-    if (res_op_array->next)  { php_oel_destroy_op_array(res_op_array->next) ; res_op_array->next=  NULL; }
-    if (res_op_array->child) { php_oel_destroy_op_array(res_op_array->child); res_op_array->child= NULL; }
+    if (res_op_array->next)  { php_oel_destroy_op_array(res_op_array->next  TSRMLS_CC) ; res_op_array->next=  NULL; }
+    if (res_op_array->child) { php_oel_destroy_op_array(res_op_array->child TSRMLS_CC); res_op_array->child= NULL; }
 
     if (res_op_array->stack_extvar) oel_stack_destroy_silent(&(res_op_array->stack_extvar) TSRMLS_CC);
     oel_stack_destroy_token(res_op_array TSRMLS_CC);
@@ -546,13 +560,18 @@ static void php_oel_destroy_op_array(php_oel_op_array *res_op_array TSRMLS_DC) {
 }
 
 static void oel_compile_error(int type, const char *format, ...) {
+    TSRMLS_D;
+    char *orig_filename;
+    uint  orig_lineno;
     va_list arglist;
-    va_start(arglist, format);
-    TSRMLS_FETCH();
-    char *orig_filename= zend_get_compiled_filename(TSRMLS_C);
-    uint  orig_lineno=   zend_get_compiled_lineno(TSRMLS_C);
+    zend_bool orig_in_compilation;
 
-    zend_bool orig_in_compilation= CG(in_compilation);
+    va_start(arglist, format);
+    orig_filename= zend_get_compiled_filename(TSRMLS_C);
+    orig_lineno=   zend_get_compiled_lineno(TSRMLS_C);
+    TSRMLS_FETCH();
+
+    orig_in_compilation= CG(in_compilation);
     CG(compiled_filename)= zend_get_executed_filename(TSRMLS_C);
     CG(zend_lineno)=       zend_get_executed_lineno(TSRMLS_C);
     CG(in_compilation)=    1;

@@ -1,20 +1,28 @@
 PHP_FUNCTION(oel_new_op_array) {
-    php_oel_op_array *res_op_array= oel_create_new_op_array(TSRMLS_CC);
+    php_oel_op_array *res_op_array;
+    res_op_array= oel_create_new_op_array(TSRMLS_C);
     ZEND_REGISTER_RESOURCE(return_value, res_op_array, le_oel_oar);
 }
 
 PHP_FUNCTION(oel_finalize) {
-    zval *arg_op_array;
+    zval             *arg_op_array;
+    php_oel_op_array *res_op_array;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
 
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     oel_finalize_op_array(res_op_array TSRMLS_CC);
 }
 
 PHP_FUNCTION(oel_execute) {
-    zval *arg_op_array;
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    zend_bool          orig_in_compilation;
+    zend_execute_data *orig_current_execute_data;
+    zend_op          **orig_opline_ptr;
+    zend_op_array     *orig_active_op_array;
+
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
     if (!res_op_array->final) {
         oel_compile_error(E_WARNING, "op array must be finalized before executing");
@@ -23,10 +31,10 @@ PHP_FUNCTION(oel_execute) {
         zend_hash_merge(EG(class_table),    res_op_array->oel_cg.class_table,    NULL, NULL, sizeof(zend_class_entry), 0);
 
         /* execute */
-        zend_bool          orig_in_compilation=       CG(in_compilation);
-        zend_execute_data *orig_current_execute_data= EG(current_execute_data);
-        zend_op          **orig_opline_ptr=           EG(opline_ptr);
-        zend_op_array     *orig_active_op_array=      EG(active_op_array);
+        orig_in_compilation=       CG(in_compilation);
+        orig_current_execute_data= EG(current_execute_data);
+        orig_opline_ptr=           EG(opline_ptr);
+        orig_active_op_array=      EG(active_op_array);
         EG(active_op_array)= res_op_array->oel_cg.active_op_array;
         zend_try {
             zend_execute(res_op_array->oel_cg.active_op_array TSRMLS_CC);
@@ -46,23 +54,29 @@ PHP_FUNCTION(oel_execute) {
 }
 
 PHP_FUNCTION(oel_add_echo) {
-    zval *arg_op_array;
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    znode             *val;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
-    znode *val= oel_stack_pop_operand(res_op_array TSRMLS_CC);
+    val= oel_stack_pop_operand(res_op_array TSRMLS_CC);
 
-    php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_echo(val TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
 PHP_FUNCTION(oel_add_return) {
-    int  end_v_parse= 0;
-    zval *arg_op_array;
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    znode             *val;
+    int  end_v_parse=  0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
-    znode *val= oel_stack_pop_operand(res_op_array TSRMLS_CC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
+    val= oel_stack_pop_operand(res_op_array TSRMLS_CC);
     if ((val->u.EA.type == ZEND_PARSED_STATIC_MEMBER)
      || (val->u.EA.type == ZEND_PARSED_VARIABLE)
      || (val->u.EA.type == ZEND_PARSED_MEMBER)) {
@@ -71,64 +85,73 @@ PHP_FUNCTION(oel_add_return) {
         oel_stack_pop_token(res_op_array TSRMLS_CC);
     }
 
-    php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_return(val, end_v_parse TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
 PHP_FUNCTION(oel_add_free) {
-    zval *arg_op_array;
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    znode             *var;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
-    znode *var= oel_stack_pop_operand(res_op_array TSRMLS_CC);
+    var= oel_stack_pop_operand(res_op_array TSRMLS_CC);
 
-    php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_free(var TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
 PHP_FUNCTION(oel_add_break) {
-    zval *arg_op_array;
-    int   arg_depth= 0;
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    int                arg_depth= 0;
+    znode             *depth= NULL;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r|l!", &arg_op_array, &arg_depth) == FAILURE) { RETURN_NULL(); }
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
-    znode *depth= NULL;
     if (arg_depth) {
         depth= oel_create_extvar(res_op_array TSRMLS_CC);
         ZVAL_LONG(&depth->u.constant, arg_depth);
     }
 
-    php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_brk_cont(ZEND_BRK, depth TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
 PHP_FUNCTION(oel_add_continue) {
-    zval *arg_op_array;
-    int   arg_depth= 0;
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    int                arg_depth= 0;
+    znode             *depth= NULL;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r|l!", &arg_op_array, &arg_depth) == FAILURE) { RETURN_NULL(); }
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
-    znode *depth= NULL;
     if (arg_depth) {
         depth= oel_create_extvar(res_op_array TSRMLS_CC);
         ZVAL_LONG(&depth->u.constant, arg_depth);
     }
 
-    php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_brk_cont(ZEND_CONT, depth TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
 PHP_FUNCTION(oel_add_exit) {
-    zval *arg_op_array;
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    znode             *expr= NULL, *result;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
-    znode *result= oel_create_extvar(res_op_array TSRMLS_CC);
-    znode *expr= NULL;
+    result= oel_create_extvar(res_op_array TSRMLS_CC);
     if (oel_stack_size_operand(res_op_array TSRMLS_CC) > 0) {
         expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
     } else {
@@ -137,91 +160,109 @@ PHP_FUNCTION(oel_add_exit) {
         expr->op_type= IS_UNUSED;
     }
 
-    php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_exit(result, expr TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
 PHP_FUNCTION(oel_add_include) {
-    zval *arg_op_array;
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    znode             *expr, *result;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
-    znode *expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
-    znode *result= oel_create_extvar(res_op_array TSRMLS_CC);
+    expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
+    result= oel_create_extvar(res_op_array TSRMLS_CC);
     oel_stack_push_operand(res_op_array, result TSRMLS_CC);
 
-    php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_include_or_eval(ZEND_INCLUDE, result, expr TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
 PHP_FUNCTION(oel_add_include_once) {
-    zval *arg_op_array;
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    znode             *expr, *result;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
-    znode *expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
-    znode *result= oel_create_extvar(res_op_array TSRMLS_CC);
+    expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
+    result= oel_create_extvar(res_op_array TSRMLS_CC);
     oel_stack_push_operand(res_op_array, result TSRMLS_CC);
 
-    php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_include_or_eval(ZEND_INCLUDE_ONCE, result, expr TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
 PHP_FUNCTION(oel_add_require) {
-    zval *arg_op_array;
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    znode             *expr, *result;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
-    znode *expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
-    znode *result= oel_create_extvar(res_op_array TSRMLS_CC);
+    expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
+    result= oel_create_extvar(res_op_array TSRMLS_CC);
     oel_stack_push_operand(res_op_array, result TSRMLS_CC);
 
-    php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_include_or_eval(ZEND_REQUIRE, result, expr TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
 PHP_FUNCTION(oel_add_require_once) {
-    zval *arg_op_array;
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    znode             *expr, *result;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
-    znode *expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
-    znode *result= oel_create_extvar(res_op_array TSRMLS_CC);
+    expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
+    result= oel_create_extvar(res_op_array TSRMLS_CC);
     oel_stack_push_operand(res_op_array, result TSRMLS_CC);
 
-    php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_include_or_eval(ZEND_REQUIRE_ONCE, result, expr TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
 PHP_FUNCTION(oel_add_eval) {
-    zval *arg_op_array;
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    znode             *expr, *result;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
-    znode *expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
-    znode *result= oel_create_extvar(res_op_array TSRMLS_CC);
+    expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
+    result= oel_create_extvar(res_op_array TSRMLS_CC);
     oel_stack_push_operand(res_op_array, result TSRMLS_CC);
 
-    php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_include_or_eval(ZEND_EVAL, result, expr TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
 PHP_FUNCTION(oel_add_unset) {
-    zval *arg_op_array;
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    znode             *expr;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
-    php_oel_op_array *res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_DC);
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "oel_add_unset without oel_add_begin_variable_parse");
 
     oel_stack_pop_token(res_op_array TSRMLS_CC);
-    znode *expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
+    expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
 
-    php_oel_saved_env *env= oel_env_prepare(res_op_array TSRMLS_CC);
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_end_variable_parse(BP_VAR_UNSET, 0 TSRMLS_CC);
     zend_do_unset(expr TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
