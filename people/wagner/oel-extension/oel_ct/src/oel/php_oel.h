@@ -1,5 +1,5 @@
 #ifndef PHP_OEL_H
-#define PHP_OEL_H 1
+#define PHP_OEL_H
 
     #include "php_oel_common.h"
 
@@ -167,7 +167,7 @@
     PHP_FUNCTION(oel_add_end_catchblock);
     PHP_FUNCTION(oel_add_throw);
 
-    extern zend_module_entry oel_entry;
-    #define phpext_oel_ptr &oel_entry
+    extern zend_module_entry oel_module_entry;
+    #define phpext_oel_ptr &oel_module_entry
 
 #endif

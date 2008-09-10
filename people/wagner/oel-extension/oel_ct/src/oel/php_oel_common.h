@@ -1,5 +1,5 @@
 #ifndef PHP_OEL_COMMON_H
-#define PHP_OEL_COMMON_H 1
+#define PHP_OEL_COMMON_H
 
     #define PHP_OEL_VERSION "1.0.0"
     #define PHP_OEL_EXTNAME "oel"
