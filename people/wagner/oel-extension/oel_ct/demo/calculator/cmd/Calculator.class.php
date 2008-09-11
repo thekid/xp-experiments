@@ -8,7 +8,6 @@
     'util.cmd.Command',
     'oel.Lexer',
     'oel.Parser',
-    'oel.ExecuteVisitor',
     'oel.InstructionTree'
   );
 
