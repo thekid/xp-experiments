@@ -14,7 +14,6 @@
     /**
      * Constructor
      *
-     * @param   string name
      * @param   resource(oel op array) oparray
      */
     public function __construct($oparray) {
@@ -28,6 +27,7 @@
      * @return  mixed
      */
     public function visit(oel·iAcceptor $acceptor) {
+      foreach ($acceptor->preInstructions as $instruction) $instruction->accept($this);
       if ($acceptor->is_root) {
         oel_finalize($this->oparray);
         return oel_execute($this->oparray);

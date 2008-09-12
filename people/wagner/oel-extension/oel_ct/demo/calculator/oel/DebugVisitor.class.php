@@ -13,9 +13,9 @@
      * dump an instruction
      *
      * @param   oel.iAcceptor acceptor
-     * @return  mixed
      */
     public function visit(oel·iAcceptor $acceptor) {
+      foreach ($acceptor->preInstructions as $instruction) $instruction->accept($this);
       if (!$acceptor->is_root) {
         printf("op: %s(%s)\n", $acceptor->name, $this->paramString($acceptor->config));
       }
@@ -27,7 +27,7 @@
      * @param   array config
      * @return  string
      */
-    private function paramString(Array $config) {
+    final protected function paramString(Array $config) {
       $result= array();
       foreach ($config as $conf) {
         switch (gettype($conf)) {

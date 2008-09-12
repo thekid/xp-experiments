@@ -8,12 +8,11 @@
   );
 
   class oel·InstructionTree extends Object implements oel·iAcceptor {
-    private
-      $preInstructions= array();
     public
-      $name=    "",
-      $config=  array(),
-      $is_root= 0;
+      $preInstructions= array(),
+      $name=            "",
+      $config=          array(),
+      $is_root=         0;
 
     /**
      * Constructor
@@ -43,7 +42,6 @@
      * @param   oel.iVisitor visitor
      */
     public function accept(oel·iVisitor $visitor) {
-      foreach ($this->preInstructions as $instruction) $instruction->accept($visitor);
       return $visitor->visit($this);
     }
   }

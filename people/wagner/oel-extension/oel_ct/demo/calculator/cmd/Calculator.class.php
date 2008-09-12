@@ -10,7 +10,8 @@
     'oel.Parser',
     'oel.InstructionTree',
     'oel.ExecuteVisitor',
-    'oel.DebugVisitor'
+    'oel.DebugVisitor',
+    'oel.SyntaxTreeVisitor'
   );
 
   /**
