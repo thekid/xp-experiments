@@ -3,10 +3,10 @@
 #
 # $Id$
 
-all: xp xar xpcli unittest
+all: xp xar xpcli unittest doclet
 
 clean: 
-	-rm xp xar xpcli unittest
+	-rm xp xar xpcli unittest doclet
 
 %: %.in common.in macros.h
 	(echo "#!/bin/sh" ; $(CC) -E -I. -x c -C -P -imacros macros.h $< ) > $@

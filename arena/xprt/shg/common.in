@@ -112,5 +112,5 @@ execute() {
     done
   fi
 
-  echo ${executor}${ifs}${args}${ifs}$(translate_path "." "${base}")${DIRSEP}${runner}".php"
+  echo ${executor}${ifs}${args}${ifs}$(translate_path "." "${base}")/${runner}'.php'
 }
