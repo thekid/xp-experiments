@@ -508,6 +508,13 @@
   }
   // }}}
 
+  // {{{ void __autoload(string fqcn)
+  //     Class loading interception
+  function __autoload($fqcn) {
+    uses(str_replace('::', '.', $fqcn));
+  }
+  // }}}
+
   // {{{ initialization
   error_reporting(E_ALL);
   
@@ -529,19 +536,28 @@
 
   // Register stream wrapper for .xar class loading
   stream_wrapper_register('xar', 'xarloader');
-
-  // Omnipresent classes
+  
+  // Bootstrapping
   uses(
+    'lang.Generic',
     'lang.Object',
+    'lang.StackTraceElement',
+    'lang.Throwable',
     'lang.Error',
     'lang.XPException',
+    'lang.IClassLoader',
+    'lang.Type',
     'lang.XPClass',
     'lang.NullPointerException',
     'lang.IllegalAccessException',
     'lang.IllegalArgumentException',
     'lang.IllegalStateException',
+    'lang.ClassNotFoundException',
     'lang.FormatException',
-    'lang.ClassLoader'
+    'lang.FileSystemClassLoader',
+    'lang.archive.ArchiveClassLoader',
+    'lang.ClassLoader',
+    'lang.reflect.Modifiers'
   );
   // }}}
 ?>

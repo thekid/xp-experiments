@@ -37,16 +37,16 @@
    * Convert all skeleton classes:
    * <pre>
    * $ xpcli convert.ToXp6 
-   *   -b ../../../skeleton/ 
-   *   -o ../../../skeleton/
+   *   -b ../../../../../xp/trunk/skeleton/
+   *   -o ../../../../../xp/trunk/skeleton/
    *   -t lib/xp-rt-6.0.0alpha.xar
    * </pre>
    *
    * Convert all classes in the net.xp_framework package in ports:
    * <pre>
    * $ xpcli convert.ToXp6 
-   *   -b ../../../ports/classes/ 
-   *   -o ../../../ports/classes/net/xp_framework/
+   *   -b ../../../../../xp/trunk/ports/classes/ 
+   *   -o ../../../../../xp/trunk/ports/classes/net/xp_framework/
    *   -t lib/xp-net.xp_framework-6.0.0alpha.xar
    * </pre>
    *
@@ -87,8 +87,13 @@
       ST_INTF         = 'intf',
       ST_CLASS        = 'clss',
       ST_USES         = 'uses',
-      ST_ANONYMOUS    = 'anon';
+      ST_ANONYMOUS    = 'anon',
+      ST_NAMESPACE    = 'nspc';
 
+    /**
+     * Constructor
+     *
+     */
     public function __construct() {
       $this->patchesDir= dirname(__FILE__).'/patches/';
     }
@@ -167,6 +172,10 @@
      * @return  string in colon-notation (package::Name)
      */
     protected function mapName($qname, $namespace= NULL) {
+      if (FALSE !== ($m= strrpos($qname, '·'))) {
+        $qname= substr($qname, $m+ 1);
+      }
+      
       if (NULL === ($mapped= $this->nameMap[$qname])) {
         $this->err->writeLine('*** No mapping for ', $qname);
         return $qname;
@@ -206,27 +215,51 @@
           // Insert namespace declaration after "This class is part of..." file comment
           case self::ST_INITIAL.T_COMMENT: {
             $out.= $token[1]."\n\n  namespace ".str_replace('.', '::', $namespace).';';
-            array_unshift($state, self::ST_DECL);
+            array_unshift($state, self::ST_NAMESPACE);
+            break;
+          }
+          
+          // $package= 'package.name'; - swallow completely
+          case self::ST_NAMESPACE.T_VARIABLE: {
+            while (';' !== $t[$i] && $i < $s) { $i++; }
             break;
           }
           
           // Remember loaded classes in uses() for use as mapping
-          case self::ST_DECL.self::T_USES: {
-            $out.= '::'.$token[1];
+          case self::ST_NAMESPACE.self::T_USES: {
+            $used= array();
             array_unshift($state, self::ST_USES);
+            $out= rtrim($out)."\n";
             break;
           }
           
           case self::ST_USES.T_CONSTANT_ENCAPSED_STRING: {
             $name= trim($token[1], "'");
-            $this->nameMap[xp::reflect($name)]= new String(str_replace('.', '::', $name));
-            $out.= $token[1];
+            $fqcn= new String(str_replace('.', '::', $name));
+            $this->nameMap[xp::reflect($name)]= $fqcn;
+            $used[]= $fqcn;
             break;
           }
           
-          case self::ST_USES.')': {
-            $out.= $token[1];
+          case self::ST_USES.'(': case self::ST_USES.',': case self::ST_USES.')': 
+          case self::ST_USES.T_WHITESPACE:
+            // Swallow token
+            break;
+          
+          case self::ST_USES.';': {
+            foreach ($used as $fqcn) {
+              $out.= '  use '.$fqcn.";\n";
+            }
+            $used= array();
             array_shift($state);
+            break;
+          }
+          
+          // class declaration
+          case self::ST_NAMESPACE.T_CLASS: case self::ST_NAMESPACE.T_INTERFACE: {
+            $out.= $token[1];
+            array_unshift($state, self::ST_DECL);
+            array_unshift($state, self::ST_CLASS);
             break;
           }
           
@@ -389,14 +422,14 @@
 
         // Convert sourcecode
         $out= $this->convertSource($qname, token_get_all(file_get_contents($e->getUri())));
-        
+
         // See if there is a patch
         if (file_exists($patch= $this->patchesDir.$qname.'.patch')) {
           $this->out->writeLine('XP ', $qname);
           
           $converted= new File($this->patchesDir.$qname);
           FileUtil::setContents($converted, $out);
-          $cmd= sprintf('patch -i %s %s', $patch, $converted->getURI());
+          $cmd= sprintf('patch -i "%s" "%s"', $patch, $converted->getURI());
           $this->out->writeLine(`$cmd`);
           clearstatcache();
           $out= FileUtil::getContents($converted);
