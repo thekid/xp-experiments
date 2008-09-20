@@ -116,5 +116,5 @@ execute() {
     done < "$xppath"/php.ini
   fi
 
-  echo ${executor}${ifs}${args}${ifs}$(translate_path "." "${base}")/tools/${runner}'.php'
+  echo ${executor}${ifs}${args}${ifs}$(translate_path "." "${xppath}")/tools/${runner}'.php'
 }

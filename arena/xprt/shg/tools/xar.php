@@ -1,6 +1,5 @@
 <?php 
   require('lang.base.php'); 
-  xp::sapi('cli'); 
   uses('util.Properties');
 
   $cl= ClassLoader::registerLoader(new ArchiveClassLoader($argv[1]));
