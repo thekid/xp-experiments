@@ -66,14 +66,18 @@ execute() {
   local xppath="$1"
   local ifs="|"
 
-  while read line ; do
-    case "$line" in
-      use=*)
-        value=${line#*=}
-        xppath=$(translate_path "$base" "$value")
-      ;;
-    esac
-  done < "$base"/xp.ini
+  if [ "" = "$USE_XP" ] ; then
+    while read line ; do
+      case "$line" in
+        use=*)
+          value="${line#*=}"
+          xppath=$(translate_path "$base" "$value")
+        ;;
+      esac
+    done < "$base"/xp.ini
+  else
+    xppath=$(translate_path "." "$USE_XP")
+  fi
 
   local includes=$(scan_path_files "$xppath")
 
@@ -97,11 +101,11 @@ execute() {
   executor="php"
   args="-dinclude_path=\"$includes\"${ifs}-dmagic_quotes_gpc=0"
   if [ -e "$xppath"/php.ini ] ; then
-    for line in `cat "$xppath"/php.ini` ; do
+    while read line ; do 
       case "$line" in
         *=*)
           key=${line%=*}
-          value=${line#*=}
+          value="${line#*=}"
           if [ "executor" = "$key" ]; then
             executor="$value"
           else 
@@ -109,7 +113,7 @@ execute() {
           fi
         ;;
       esac
-    done
+    done < "$xppath"/php.ini
   fi
 
   echo ${executor}${ifs}${args}${ifs}$(translate_path "." "${base}")/${runner}'.php'
