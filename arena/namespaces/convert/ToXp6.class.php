@@ -42,6 +42,14 @@
    *   -t lib/xp-rt-6.0.0alpha.xar
    * </pre>
    *
+   * Convert all tools classes:
+   * <pre>
+   * $ xpcli convert.ToXp6 
+   *   -b ../../../../../xp/trunk/tools/
+   *   -o ../../../../../xp/trunk/tools/
+   *   -t lib/xp-tools-6.0.0alpha.xar
+   * </pre>
+   *
    * Convert all classes in the net.xp_framework package in ports:
    * <pre>
    * $ xpcli convert.ToXp6 
@@ -172,13 +180,13 @@
      * @return  string in colon-notation (package::Name)
      */
     protected function mapName($qname, $namespace= NULL) {
-      if (FALSE !== ($m= strrpos($qname, '·'))) {
-        $qname= substr($qname, $m+ 1);
-      }
-      
-      if (NULL === ($mapped= $this->nameMap[$qname])) {
-        $this->err->writeLine('*** No mapping for ', $qname);
-        return $qname;
+      if (strstr($qname, '·')) {
+        $mapped= str_replace('·', '::', $qname);
+      } else {
+        if (NULL === ($mapped= $this->nameMap[$qname])) {
+          $this->err->writeLine('*** No mapping for ', $qname);
+          return $qname;
+        }
       }
 
       // Return local name if mapped name matches current namespace
