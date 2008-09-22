@@ -88,7 +88,8 @@
       T_DELETE        = 0xF007,
       T_WITH          = 0xF008,
       T_REF           = 0xF009,
-      T_DEREF         = 0xF00A;  
+      T_DEREF         = 0xF00A,
+      T_CAST          = 0xF00B;
     
     // States
     const
@@ -162,6 +163,7 @@
         'is'            => self::T_IS,
         'create'        => self::T_CREATE,
         'raise'         => self::T_RAISE,
+        'cast'          => self::T_CAST,
         'finally'       => self::T_FINALLY,
         'delete'        => self::T_DELETE,
         'with'          => self::T_WITH,
@@ -402,7 +404,7 @@
           case self::ST_ANONYMOUS.self::T_DEREF: case self::ST_DECL.self::T_DEREF:
           case self::ST_DECL.self::T_RAISE: case self::ST_DECL.self::T_FINALLY:
           case self::ST_DECL.self::T_DELETE: case self::ST_DECL.self::T_WITH: 
-          case self::ST_DECL.self::T_IS: {
+          case self::ST_DECL.self::T_IS: case self::ST_DECL.self::T_CAST: {
             $out.= '::'.$token[1];
             break;
           }
