@@ -14,7 +14,10 @@
     'io.collections.iterate.CollectionFilter',
     'io.collections.iterate.NegationOfFilter',
     'io.collections.iterate.RegexFilter',
+    'io.collections.iterate.ExtensionEqualsFilter',
     'util.collections.HashTable',
+    'text.StreamTokenizer',
+    'io.streams.FileInputStream',
     'io.File',
     'io.Folder',
     'io.FileUtil',
@@ -68,6 +71,7 @@
    */
   class ToXp6 extends Command {
     protected
+      $origin        = NULL,
       $iterator      = NULL,
       $baseUriLength = 0,
       $patchesDir    = '',
@@ -113,15 +117,15 @@
      */
     #[@arg]
     public function setOrigin($origin) {
+      $this->origin= new FileCollection($origin);
       $this->iterator= new FilteredIOCollectionIterator(
-        new FileCollection($origin),
+        $this->origin,
         new AllOfFilter(array(
           new NegationOfFilter(new RegexFilter('#'.preg_quote(DIRECTORY_SEPARATOR).'(CVS|\.svn)'.preg_quote(DIRECTORY_SEPARATOR).'#')),
           new NegationOfFilter(new CollectionFilter())
         )),
         TRUE
       );
-      $this->out->writeLine($this->iterator);
     }
 
     /**
@@ -180,13 +184,9 @@
      * @return  string in colon-notation (package::Name)
      */
     protected function mapName($qname, $namespace= NULL) {
-      if (strstr($qname, '·')) {
-        $mapped= str_replace('·', '::', $qname);
-      } else {
-        if (NULL === ($mapped= $this->nameMap[$qname])) {
-          $this->err->writeLine('*** No mapping for ', $qname);
-          return $qname;
-        }
+      if (NULL === ($mapped= $this->nameMap[$qname])) {
+        $this->err->writeLine('*** No mapping for ', $qname);
+        return $qname;
       }
 
       // Return local name if mapped name matches current namespace
@@ -487,30 +487,33 @@
      *
      */
     public function run() {
-    
-      // Build name map
+      $this->out->writeLine('===> Starting conversion to ', $this->target);
+      
       $this->nameMap= create('new util.collections.HashTable<String, String>()');
-      $this->nameMap['self']= new String('self');
-      $this->nameMap['parent']= new String('parent');
-      foreach (array_merge(get_declared_interfaces(), get_declared_classes()) as $name) {
-        $r= new ReflectionClass($name);
-        if ($r->isInternal()) {
-          $this->nameMap[$name]= new String('::'.$name);
-        } else {
-          $this->nameMap[$name]= new String(str_replace('.', '::', xp::nameOf($name)));
+      $package= $this->getClass()->getPackage();
+      foreach ($package->getResources() as $resource) {
+        if ('.map' != substr($resource, -4)) continue;
+        
+        $entries= 0;
+        $st= new StreamTokenizer(new FileInputStream($package->getResourceAsStream($resource)), "\r\n");
+        while ($st->hasMoreTokens()) {
+          sscanf($st->nextToken(), "%[^=]=%[^\r]", $name, $qualified);
+          $this->nameMap->put($name, new String($qualified));
+          $entries++;
         }
+        $this->out->writeLine('---> Loaded name map ', $resource, ' (', $entries, ')');
       }
-      $this->nameMap['xp']= new String('::xp');
-      $this->nameMap['null']= new String('::null');
-      $this->nameMap['xarloader']= new String('::xarloader');
       
       // Iterate over origin directory, converting each
+      $this->out->writeLine('===> Converting files from ', $this->iterator);
       while ($this->iterator->hasNext()) {
         $this->add($this->target, $this->iterator->next(), $this->baseUriLength);
       }
       
       // Finish off archive
       $this->target->create();
+      
+      $this->out->writeLine('===> Done');
     }
   }
 ?>
