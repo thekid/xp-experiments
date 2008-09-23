@@ -197,7 +197,7 @@
      * @param   string namespace default NULL in colon-notation
      * @return  string in colon-notation (package::Name)
      */
-    protected function mapName($qname, $namespace= NULL) {
+    protected function mapName($qname, $namespace= NULL, $context= '?') {
       if (strstr($qname, '·')) {
         $mapped= str_replace('·', '::', $qname);
       } else {
@@ -207,7 +207,7 @@
           // need to be fully qualified or mapped, so check for this
           $search= ($namespace !== NULL ? str_replace('::', '.', $namespace).'.' : '').$qname;
           if (!ClassLoader::findClass($search) instanceof IClassLoader) {
-            $this->err->writeLine('*** No mapping for ', $qname, ' (current namespace: ', $namespace,')');
+            $this->err->writeLine('*** No mapping for ', $qname, ' (current namespace: ', $namespace,', class= ', $context, ')');
           }
           return $qname;
         }
@@ -310,7 +310,7 @@
           }
           
           case self::ST_CLASS.T_STRING: {
-            $out.= $this->mapName($token[1], $namespace);
+            $out.= $this->mapName($token[1], $namespace, $qname);
             array_shift($state);
             break;
           }
@@ -329,7 +329,7 @@
           }
           
           case self::ST_INTF.T_STRING: {
-            $out.= $this->mapName($token[1], $namespace);
+            $out.= $this->mapName($token[1], $namespace, $qname);
             break;
           }
           
@@ -343,7 +343,7 @@
           case self::ST_DECL.T_STRING: {
             $next= $this->tokenOf($t[$i+ 1]);
             if (T_DOUBLE_COLON == $next[0]) {
-              $out.= $this->mapName($token[1], $namespace);
+              $out.= $this->mapName($token[1], $namespace, $qname);
 
               // Swallow token after double coloin
               // (fixes self::create() being rewritten to self::::create())
@@ -403,7 +403,7 @@
             $ws= $this->tokenOf($t[$i+ 1]);
             $var= $this->tokenOf($t[$i+ 2]);
             if (T_WHITESPACE === $ws[0] && T_VARIABLE === $var[0]) {
-              $out.= in_array($token[1], $nonClassTypes) ? $token[1] : $this->mapName($token[1], $namespace);
+              $out.= in_array($token[1], $nonClassTypes) ? $token[1] : $this->mapName($token[1], $namespace, $qname);
             } else {
               $out.= $token[1];
             }
@@ -542,11 +542,11 @@
           $this->nameMap->put($name, new String($qualified));
           $entries++;
         }
-        $this->out->writeLine('---> Loaded name map ', $resource, ' (', $entries, ')');
+        $this->verbose && $this->out->writeLine('---> Loaded name map ', $resource, ' (', $entries, ')');
       }
       
       // Iterate over origin directory, converting each
-      $this->out->writeLine('===> Converting files from ', $this->iterator);
+      $this->verbose && $this->out->writeLine('===> Converting files from ', $this->iterator);
       while ($this->iterator->hasNext()) {
         $this->add($this->target, $this->iterator->next(), $this->baseUriLength);
       }
