@@ -75,7 +75,8 @@
       $iterator      = NULL,
       $baseUriLength = 0,
       $patchesDir    = '',
-      $nameMap       = NULL;
+      $nameMap       = NULL,
+      $verbose       = FALSE;
 
     // XP tokens
     const
@@ -127,6 +128,7 @@
         )),
         TRUE
       );
+      $this->verbose && $this->out->writeLine($this->iterator);
     }
 
     /**
@@ -148,6 +150,16 @@
     public function setTarget($target) {
       $this->target= new Archive(new File($target));
       $this->target->open(ARCHIVE_CREATE);
+    }
+    
+    /**
+     * Enable verbose mode
+     *
+     * @param   bood v default FALSE
+     */
+    #[@arg]
+    public function setVerbose($v= FALSE) {
+      $this->verbose= ($v !== FALSE);
     }
     
     /**
@@ -186,9 +198,19 @@
      * @return  string in colon-notation (package::Name)
      */
     protected function mapName($qname, $namespace= NULL) {
-      if (NULL === ($mapped= $this->nameMap[$qname])) {
-        $this->err->writeLine('*** No mapping for ', $qname);
-        return $qname;
+      if (strstr($qname, '·')) {
+        $mapped= str_replace('·', '::', $qname);
+      } else {
+        if (NULL === ($mapped= $this->nameMap[$qname])) {
+          
+          // If the searched class resides in the same namespace, it does not
+          // need to be fully qualified or mapped, so check for this
+          $search= ($namespace !== NULL ? str_replace('::', '.', $namespace).'.' : '').$qname;
+          if (!ClassLoader::findClass($search) instanceof IClassLoader) {
+            $this->err->writeLine('*** No mapping for ', $qname, ' (current namespace: ', $namespace,')');
+          }
+          return $qname;
+        }
       }
 
       // Return local name if mapped name matches current namespace
@@ -214,6 +236,12 @@
       $package= substr($qname, 0, $p);
       $namespace= str_replace('.', '::', $package);
       $class= substr($qname, $p+ 1);
+      
+      // If not converting "anonymous" classes, put current class' mapping
+      // into namemap.
+      if (strlen($qname)) {
+        $this->nameMap[$class]= new String($namespace.'::'.$class);
+      }
       
       // Tokenize file
       $state= array($initial);
@@ -426,25 +454,36 @@
      * @param   int baseUriLength
      */
     protected function add(Archive $target, FileElement $e, $baseUriLength) {
+      static $lastpackage= '';
+      
       $uri= $e->getURI();
       if (xp::CLASS_FILE_EXT === substr($uri, -strlen(xp::CLASS_FILE_EXT))) {
         $qname= strtr(substr($uri, $baseUriLength, -strlen(xp::CLASS_FILE_EXT)), '/\\', '..');
 
         // Convert sourcecode
-        $out= $this->convertSource($qname, token_get_all(file_get_contents($e->getUri())));
+        $out= $this->convertSource($qname, token_get_all(file_get_contents($uri)));
 
         // See if there is a patch
         if (file_exists($patch= $this->patchesDir.$qname.'.patch')) {
-          $this->out->writeLine('XP ', $qname);
+          $this->verbose && $this->out->writeLine('XP ', $qname);
           
           $converted= new File($this->patchesDir.$qname);
           FileUtil::setContents($converted, $out);
           $cmd= sprintf('patch -i "%s" "%s"', $patch, $converted->getURI());
-          $this->out->writeLine(`$cmd`);
+          $this->verbose && $this->out->writeLine(`$cmd`);
           clearstatcache();
           $out= FileUtil::getContents($converted);
         } else {
-          $this->out->writeLine('X  ', $qname);
+          if ($lastpackage != substr($qname, 0, strrpos($qname, '.'))) {
+            $lastpackage= substr($qname, 0, strrpos($qname, '.'));
+            $this->out->writeLine();
+            $this->out->write($lastpackage, ' ');
+          }
+          if ($this->verbose) {
+            $this->out->writeLine('X  ', $qname);
+          } else {
+            $this->out->write('.');
+          }
         }
 
         // Write converted sourcecode to target archive
@@ -473,13 +512,13 @@
         $out->create();
         
         $qname= strtr(substr($uri, $baseUriLength), DIRECTORY_SEPARATOR, '/');
-        $this->out->writeLine('XA ', $qname);
+        $this->verbose && $this->out->writeLine('XA ', $qname);
         $target->add($out->file, $qname);
       } else {
       
         // Copy file directly
         $qname= strtr(substr($uri, $baseUriLength), DIRECTORY_SEPARATOR, '/');
-        $this->out->writeLine('A  ', $qname);
+        $this->verbose && $this->out->writeLine('A  ', $qname);
         $target->add(new File($uri), $qname);
       }
     }
