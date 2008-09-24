@@ -345,11 +345,31 @@
             if (T_DOUBLE_COLON == $next[0]) {
               $out.= $this->mapName($token[1], $namespace, $qname);
 
-              // Swallow token after double coloin
+              // Swallow token after double colon
               // (fixes self::create() being rewritten to self::::create())
               $member= $this->tokenOf($t[$i+ 2]);
               $out.= '::'.$member[1];
               $i+= 2;
+
+              // ClassLoader::defineClass('fully.qualified', 'parent.fqcn', array('interface.fqcns'), '{ source }');
+              // ClassLoader::defineInterface('fully.qualified', array('parent.fqcns'), '{ source }');
+              $complete= $token[1].'::'.$member[1];
+              $converted= NULL;
+              if ('ClassLoader::defineClass' == $complete || 'ClassLoader::defineInterface' == $complete) {
+                do {
+                  $next= $this->tokenOf($t[++$i]);
+                  if (';' == $next[0]) {
+                    $out.= $next[1];
+                    break;
+                  } else if (T_CONSTANT_ENCAPSED_STRING === $next[0] && '{' === $next[1]{1}) {
+                    $quote= $next[1]{0};
+                    $converted= $this->convertSource('', token_get_all('<?php '.trim($next[1], $quote).' ?>'), self::ST_DECL);
+                    $out.= $quote.substr($converted, 6, -3).$quote;
+                  } else {
+                    $out.= $next[1];
+                  }
+                } while (!$converted && $i < $s);
+              }
             } else {
               $out.= $token[1];
             }
