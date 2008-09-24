@@ -470,7 +470,7 @@
           $converted= new File($this->patchesDir.$qname);
           FileUtil::setContents($converted, $out);
           $cmd= sprintf('patch -i "%s" "%s"', $patch, $converted->getURI());
-          $this->verbose && $this->out->writeLine(`$cmd`);
+          $this->out->writeLine(`$cmd`);
           clearstatcache();
           $out= FileUtil::getContents($converted);
         } else {
