@@ -1,0 +1,24 @@
+
+.phony: lib.rt lib.tools lib.net.xp_framework libs all
+
+XP_BASE?=../../../../../xp.public/trunk
+CONVERT_CMD=xpcli convert/ToXP6.class.php
+
+lib.rt:
+	${CONVERT_CMD} -o ${XP_BASE}/skeleton -b ${XP_BASE}/skeleton -t lib/xp-rt-6.0.0alpha.xar
+    
+lib.tools:
+	${CONVERT_CMD} -o ${XP_BASE}/tools -b ${XP_BASE}/tools -t lib/xp-tools-6.0.0alpha.xar
+
+lib.net.xp_framework:
+	${CONVERT_CMD} -o ${XP_BASE}/ports/classes -b ${XP_BASE}/ports/classes -t lib/xp-net.xp_framework-6.0.0alpha.xar
+
+test.core:
+	USE_XP=six unittest core.ini
+    
+test.all:
+	for i in `ls -1 ${XP_BASE}/ports/unittest/*.ini | grep -v core` ; do echo -n "$$i: " ; USE_XP=six unittest $$i ; done
+
+test: test.core test.all    
+libs: xp-rt xp-tools xp-net.xp_framework
+all: libs test
