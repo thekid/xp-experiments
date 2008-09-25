@@ -168,7 +168,7 @@
      * @param   mixed t
      * @return  array
      */
-    protected function tokenOf($t) {
+    protected function tokenOf($t, $last= NULL) {
       static $map= array(
         'uses'          => self::T_USES,
         'newinstance'   => self::T_NEWINSTANCE,
@@ -184,7 +184,10 @@
       );
 
       $normalized= is_array($t) ? $t : array($t, $t);
-      if (T_STRING == $normalized[0] && isset($map[$normalized[1]])) {
+      if (
+        (!is_array($last) || $last[0] !== T_OBJECT_OPERATOR) &&
+        T_STRING == $normalized[0] && isset($map[$normalized[1]])
+      ) {
         $normalized[0]= $map[$normalized[1]];
       }
       return $normalized;
@@ -247,7 +250,7 @@
       $state= array($initial);
       $out= '';
       for ($i= 0, $s= sizeof($t); $i < $s; $i++) {
-        $token= $this->tokenOf($t[$i]);
+        $token= $this->tokenOf($t[$i], ($i > 0 ? $t[$i- 1] : NULL));
         switch ($state[0].$token[0]) {
         
           // Insert namespace declaration after "This class is part of..." file comment

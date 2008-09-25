@@ -107,3 +107,7 @@ SplObjectStorage=::SplObjectStorage
 XMLReader=::XMLReader
 XMLWriter=::XMLWriter
 XSLTProcessor=::XSLTProcessor
+SoapParam=::SoapParam
+SoapType=::SoapType
+SoapVar=::SoapVar
+SoapClient=::SoapClient
