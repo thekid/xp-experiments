@@ -720,6 +720,7 @@ FileAppender=util::log::FileAppender
 LogAppender=util::log::LogAppender
 LogCategory=util::log::LogCategory
 Logger=util::log::Logger
+LogLevel=util::log::LogLevel
 LogObserver=util::log::LogObserver
 SmtpAppender=util::log::SmtpAppender
 SyslogAppender=util::log::SyslogAppender
