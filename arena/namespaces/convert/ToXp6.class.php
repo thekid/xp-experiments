@@ -198,30 +198,33 @@
      *
      * @param   string qname in dot-notation (package.Name)
      * @param   string namespace default NULL in colon-notation
+     * @param   array<string, bool> imports
+     * @param   string context
      * @return  string in colon-notation (package::Name)
      */
-    protected function mapName($qname, $namespace= NULL, $context= '?') {
-      if (strstr($qname, '·')) {
-        $mapped= str_replace('·', '::', $qname);
-      } else {
-        if (NULL === ($mapped= $this->nameMap[$qname])) {
-          
-          // If the searched class resides in the same namespace, it does not
-          // need to be fully qualified or mapped, so check for this
-          $search= ($namespace !== NULL ? str_replace('::', '.', $namespace).'.' : '').$qname;
-          if (!ClassLoader::findClass($search) instanceof IClassLoader) {
-            $this->err->writeLine('*** No mapping for ', $qname, ' (current namespace: ', $namespace,', class= ', $context, ')');
-          }
-          return $qname;
+    protected function mapName($qname, $namespace= NULL, array $imports= array(), $context= '?') {
+      if (NULL === ($mapped= $this->nameMap[$qname])) {
+
+        // If the searched class resides in the same namespace, it does not
+        // need to be fully qualified or mapped, so check for this
+        $search= ($namespace !== NULL ? str_replace('::', '.', $namespace).'.' : '').$qname;
+        if (!ClassLoader::findClass($search) instanceof IClassLoader) {
+          $this->err->writeLine('*** No mapping for ', $qname, ' (current namespace: ', $namespace,', class= ', $context, ')');
         }
+        return $qname;
       }
 
-      // Return local name if mapped name matches current namespace
-      $p= strrpos($mapped, '::');
-      if (FALSE !== $p && $namespace == substr($mapped, 0, $p)) {
+      // Return local name if mapped name is in imports or current namespace
+      if (isset($imports[(string)$mapped])) {
+        $this->verbose && $this->out->writeLine('I:', $context, ': ', $qname, ' => ', $imports[(string)$mapped]);
+        return $imports[(string)$mapped]; 
+      } else if (FALSE !== ($p= strrpos($mapped, '::')) && $namespace == substr($mapped, 0, $p)) {
+        $this->verbose && $this->out->writeLine('N:', $context, ': ', $qname, ' => ', substr($mapped, $p+ 2));
         return substr($mapped, $p+ 2);
+      } else {
+        $this->verbose && $this->out->writeLine('M:', $context, ': ', $qname, ' => ', $mapped);
+        return $mapped;
       }
-      return $mapped;
     }
     
     /**
@@ -240,14 +243,9 @@
       $namespace= str_replace('.', '::', $package);
       $class= substr($qname, $p+ 1);
       
-      // If not converting "anonymous" classes, put current class' mapping
-      // into namemap.
-      if (strlen($qname)) {
-        $this->nameMap[$class]= new String($namespace.'::'.$class);
-      }
-      
       // Tokenize file
       $state= array($initial);
+      $imports= array();
       $out= '';
       for ($i= 0, $s= sizeof($t); $i < $s; $i++) {
         $token= $this->tokenOf($t[$i], ($i > 0 ? $t[$i- 1] : NULL));
@@ -268,17 +266,25 @@
           
           // Remember loaded classes in uses() for use as mapping
           case self::ST_NAMESPACE.self::T_USES: {
-            $used= array();
+            $uses= array();
             array_unshift($state, self::ST_USES);
             $out= rtrim($out)."\n";
             break;
           }
           
           case self::ST_USES.T_CONSTANT_ENCAPSED_STRING: {
-            $name= trim($token[1], "'");
-            $fqcn= new String(str_replace('.', '::', $name));
-            $this->nameMap[xp::reflect($name)]= $fqcn;
-            $used[]= $fqcn;
+            $fqcn= str_replace('.', '::', trim($token[1], "'"));
+            $local= substr($fqcn, strrpos($fqcn, '::')+ 2);
+            if ($local == $class) {
+              $this->err->writeLine('*** Name clash between ', $fqcn, ' and declared', $class, ' in ', $qname, ', using qualified name for ', $fqcn);
+              $imports[$fqcn]= $fqcn;
+            } else if ($other= array_search($local, $imports)) {
+              $this->err->writeLine('*** Name clash between ', $fqcn, ' and other ', $other, ' in ', $qname, ', using qualified name for ', $fqcn);
+              $imports[$fqcn]= $fqcn;
+            } else {
+              $uses[]= $fqcn;
+              $imports[$fqcn]= $local;
+            }
             break;
           }
           
@@ -288,19 +294,22 @@
             break;
           
           case self::ST_USES.';': {
-            foreach ($used as $fqcn) {
+            foreach ($uses as $fqcn) {
               $out.= '  use '.$fqcn.";\n";
             }
-            $used= array();
+            $this->verbose && $this->err->writeLine('Imports in ', $qname, ': ', $imports);
+            $uses= array();
             array_shift($state);
             break;
           }
           
-          // class declaration
+          // class declaration - always use local name here!
           case self::ST_NAMESPACE.T_CLASS: case self::ST_NAMESPACE.T_INTERFACE: {
-            $out.= $token[1];
+            $out.= $token[1].' ';
+            $declaration= $this->tokenOf($t[$i+ 2]);
+            $out.= (FALSE !== $p= strrpos($declaration[1], '·')) ? substr($declaration[1], $p+ 1) : $declaration[1];
+            $i+= 2;
             array_unshift($state, self::ST_DECL);
-            array_unshift($state, self::ST_CLASS);
             break;
           }
           
@@ -313,7 +322,7 @@
           }
           
           case self::ST_CLASS.T_STRING: {
-            $out.= $this->mapName($token[1], $namespace, $qname);
+            $out.= $this->mapName($token[1], $namespace, $imports, $qname);
             array_shift($state);
             break;
           }
@@ -332,7 +341,7 @@
           }
           
           case self::ST_INTF.T_STRING: {
-            $out.= $this->mapName($token[1], $namespace, $qname);
+            $out.= $this->mapName($token[1], $namespace, $imports, $qname);
             break;
           }
           
@@ -346,7 +355,7 @@
           case self::ST_DECL.T_STRING: {
             $next= $this->tokenOf($t[$i+ 1]);
             if (T_DOUBLE_COLON == $next[0]) {
-              $out.= $this->mapName($token[1], $namespace, $qname);
+              $out.= $this->mapName($token[1], $namespace, $imports, $qname);
 
               // Swallow token after double colon
               // (fixes self::create() being rewritten to self::::create())
@@ -426,7 +435,7 @@
             $ws= $this->tokenOf($t[$i+ 1]);
             $var= $this->tokenOf($t[$i+ 2]);
             if (T_WHITESPACE === $ws[0] && T_VARIABLE === $var[0]) {
-              $out.= in_array($token[1], $nonClassTypes) ? $token[1] : $this->mapName($token[1], $namespace, $qname);
+              $out.= in_array($token[1], $nonClassTypes) ? $token[1] : $this->mapName($token[1], $namespace, $imports, $qname);
             } else {
               $out.= $token[1];
             }
