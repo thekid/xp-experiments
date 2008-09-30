@@ -17,9 +17,12 @@ lib.net.xp_framework:
 test.core:
 	USE_XP=six unittest core.ini
 
-test.all:
+test.separate:
 	-for i in `ls -1 ${XP_BASE}/ports/unittest/*.ini | grep -v core` ; do echo -n "$$i: " ; USE_XP=six unittest $$i ; done
 
-test: test.core test.all    
+test.all:
+	ls -1 ${XP_BASE}/ports/unittest/*.ini | grep -v core | USE_XP=six xargs unittest
+
+test: test.core test.separate    
 libs: lib.rt lib.tools lib.net.xp_framework
 all: libs test
