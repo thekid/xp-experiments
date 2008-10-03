@@ -26,39 +26,6 @@ translate_path() {
   fi
 }
 
-add_path_file () {
-  local base="$1"
-  local file="$2"
-  local includes=""
-
-  while read l ; do
-    case "$l" in
-      $'#'*) ;;                            # Lines beginning with hash
-      '') ;;                               # Lines with whitespace only
-      *) includes=$includes$(translate_path "$base" "$l")$PATHSEP ;;
-    esac
-  done < "$file"
-  
-  echo $includes
-}
-
-scan_path_files() {
-  local dir="$1"
-  local includes=""
-  
-  if [ ! -d "$dir" ] ; then 
-    echo "Directory '$dir' does not exist" >&2
-    return 1
-  fi
-  
-  ls "$dir"/*.pth 2>/dev/null | ( # */
-    while read i ; do
-      includes=$includes$(add_path_file "$dir" "$i")
-    done
-    echo $includes
-  )
-}
-
 execute() {
   local base="$1"
   local runner="$2"
@@ -78,28 +45,10 @@ execute() {
   else
     xppath=$(translate_path "." "$USE_XP")
   fi
-
-  local includes=$(scan_path_files "$xppath")
-
-  if [ -z "$includes" ] ; then
-    echo "*** Error loading boot class path in $xppath" >&2;
-    return 1
-  fi
-  
-  if [ ! -z "$include" ] ; then
-    includes=$includes$include$PATHSEP
-  fi
-
-  local local_includes=$(scan_path_files ".")
-  if [ -z $local_includes ] ; then
-    includes=$includes"."
-  else
-    includes=$includes$local_includes
-  fi
   
   config=""
   executor="php"
-  args="-dinclude_path=\"$includes\"${ifs}-dmagic_quotes_gpc=0"
+  args="-dinclude_path=\"$include\"${ifs}-dmagic_quotes_gpc=0"
   if [ -e "$xppath"/php.ini ] ; then
     while read line ; do 
       case "$line" in

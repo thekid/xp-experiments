@@ -1,14 +1,13 @@
 #include <common.in>
 
 OPTIND=0
-INCLUDE=""
-INCLUDE_PATH="" 
+INCLUDE_PATH="."
 TOOL=
 RUNNER="class"
 
 for arg in "$@" ; do
   if [ ! -z "$INCLUDE_ARG" ] ; then
-    INCLUDE="$arg$INCLUDE_ARG$INCLUDE" ; INCLUDE_ARG=""
+    INCLUDE_PATH="$arg$INCLUDE_ARG$INCLUDE_PATH" ; INCLUDE_ARG=""
     OPTIND=`expr $OPTIND + 2`
     continue
   fi
@@ -41,4 +40,4 @@ for arg in "$@" ; do
 done
 shift $OPTIND
 
-EXEC($RUNNER, $INCLUDES, $TOOL)
+EXEC($RUNNER, $INCLUDE_PATH, $TOOL)
