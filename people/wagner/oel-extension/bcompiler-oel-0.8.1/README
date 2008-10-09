@@ -1,15 +1,15 @@
 This is a patched version of Bcompiler 0.8.1:
 
 * I added a function to store oel opcode arrays.
-* bcompiler_write_oel_oparray(resource<oel op array>) in only bcompiler.c is patched
+* bcompiler_write_oel_oparray(resource[oel op array]) in only bcompiler.c is patched
 
 Original: bcompiler README
 --------------------------------------
 Notes:
 
-1.Compiling on an old version of PHP4.
-2.Using the example compiler
-3.Known issues
+* Compiling on an old version of PHP4.
+* Using the example compiler
+* Known issues
 
 1.Compiling on an old version of PHP4.
 -------------------------------------
