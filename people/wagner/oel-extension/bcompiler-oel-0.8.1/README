@@ -19,8 +19,8 @@ Note: Does not support bz compressed encoded files.
 Before running phpize you must copy the old config.m4 and Makefile.in into place
 
 <pre>
-cp config.m4.old config.m4
-cp Makefile.in.old Makefile.in
+  cp config.m4.old config.m4
+  cp Makefile.in.old Makefile.in
 </pre>
 
 2.Using the example compiler
@@ -30,7 +30,7 @@ I wrote a rough compiler to compiler classes (and all there inherited informatio
 
 Usage:
 <pre>
-php examples/bcompiler_compiler.php location/of/my/php/class.php
+  php examples/bcompiler_compiler.php location/of/my/php/class.php
 </pre>
 
 This will take the class.php file, try and work out all the depandant classes, (eg. via includes, requires etc.) and bulid a single binary class.php.phb 
@@ -38,14 +38,14 @@ This will take the class.php file, try and work out all the depandant classes, (
 to use this,
 write a small program.
 <code>
-#!/usr/bin/php
-<?
-dl('bcompiler.so');
-dl('curl.so'); // do all your module loading here 
+  #!/usr/bin/php
+  <?
+  dl('bcompiler.so');
+  dl('curl.so'); // do all your module loading here 
 
-bcompiler_load('location/of/my/php/class.php.phb');
-// call the main method of myclass, or do what you like here...
-myclass::main();
+  bcompiler_load('location/of/my/php/class.php.phb');
+  // call the main method of myclass, or do what you like here...
+  myclass::main();
 </code>
 
 Know Issues.
