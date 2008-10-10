@@ -27,8 +27,11 @@ PHP_FUNCTION(oel_execute) {
     if (!res_op_array->final) {
         oel_compile_error(E_WARNING, "op array must be finalized before executing");
     } else {
-        zend_hash_merge(EG(function_table), res_op_array->oel_cg.function_table, NULL, NULL, sizeof(zend_function),    0);
-        zend_hash_merge(EG(class_table),    res_op_array->oel_cg.class_table,    NULL, NULL, sizeof(zend_class_entry), 0);
+        if (!res_op_array->merged) {
+            zend_hash_merge(EG(function_table), res_op_array->oel_cg.function_table, NULL, NULL, sizeof(zend_function),    0);
+            zend_hash_merge(EG(class_table),    res_op_array->oel_cg.class_table,    NULL, NULL, sizeof(zend_class_entry), 0);
+            res_op_array->merged= 1;
+        }
 
         /* execute */
         orig_in_compilation=       CG(in_compilation);
@@ -44,7 +47,7 @@ PHP_FUNCTION(oel_execute) {
                 RETVAL_ZVAL(*EG(return_value_ptr_ptr), 1, 1);
             }
         } zend_catch {
-            fprintf(stderr, "BAIL!\n"); /* FIXME */
+            fprintf(stderr, "An op array tried to end the script. Reason could be a fatal error or an exit code.\n"); /* FIXME */
         } zend_end_try();
         EG(active_op_array)=      orig_active_op_array;
         EG(opline_ptr)=           orig_opline_ptr;
