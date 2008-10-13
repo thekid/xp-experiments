@@ -9,11 +9,11 @@
   );
 
   foreach($arr as $value) {
-    echo $value; echo " --- ";
+    echo $value; echo " --- \n";
   }
 
   foreach($arr as $key => $value) {
-    echo $key; echo " => "; echo $value; echo " --- ";
+    echo $key; echo " => "; echo $value; echo " --- \n";
   }
 
 ?>

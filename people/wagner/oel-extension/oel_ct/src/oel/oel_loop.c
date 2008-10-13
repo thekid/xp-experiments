@@ -119,24 +119,27 @@ PHP_FUNCTION(oel_add_begin_foreach_body) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
-    znode             *value, *key, *foreach_token, *as_token, *open_brackets_token;
+    znode             *value, *key, *foreach_token, *as_token, *open_brackets_token, *tmp;
     zend_bool          arg_ref= 0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r|b!", &arg_op_array, &arg_ref) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
-    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "oel_add_begin_foreach_body without oel_add_begin_variable_parse (for value)");
 
+    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "oel_add_begin_foreach_body without oel_add_begin_variable_parse (for value)");
     oel_stack_pop_token(res_op_array TSRMLS_CC);
+    key= oel_stack_pop_operand(res_op_array TSRMLS_CC);
     value= oel_stack_pop_operand(res_op_array TSRMLS_CC);
     if (arg_ref) value->u.EA.type |= ZEND_PARSED_REFERENCE_VARIABLE;
-    key;
-    if (oel_stack_size_operand(res_op_array TSRMLS_CC) > 0) {
+
+    if (key->op_type != IS_CONST) {
         if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "oel_add_begin_foreach_body without oel_add_begin_variable_parse (for key)");
         else oel_stack_pop_token(res_op_array TSRMLS_CC);
-        key= oel_stack_pop_operand(res_op_array TSRMLS_CC);
+        tmp= key;
+        key= value;
+        value= tmp;
     } else {
-        key= oel_create_extvar(res_op_array TSRMLS_CC);
         key->op_type= IS_UNUSED;
     }
+
     if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_FOREACH_BODY)) oel_compile_error(E_ERROR, "token is not of type foreach body");
     open_brackets_token= oel_stack_pop_token(res_op_array TSRMLS_CC);
     as_token=            oel_stack_pop_token(res_op_array TSRMLS_CC);

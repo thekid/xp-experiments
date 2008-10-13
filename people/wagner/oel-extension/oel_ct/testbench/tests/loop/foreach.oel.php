@@ -7,12 +7,13 @@
   oel_add_begin_foreach($op_a);
     oel_add_begin_variable_parse($op_a);
     oel_push_variable($op_a, "value");
+    oel_push_value($op_a, NULL);
   oel_add_begin_foreach_body($op_a);
     oel_add_begin_variable_parse($op_a);
     oel_push_variable($op_a, "value");
     oel_add_end_variable_parse($op_a);
     oel_add_echo($op_a);
-    oel_push_value($op_a, " --- ");
+    oel_push_value($op_a, " --- \n");
     oel_add_echo($op_a);
   oel_add_end_foreach($op_a);
 
@@ -34,7 +35,7 @@
     oel_push_variable($op_a, "value");
     oel_add_end_variable_parse($op_a);
     oel_add_echo($op_a);
-    oel_push_value($op_a, " --- ");
+    oel_push_value($op_a, " --- \n");
     oel_add_echo($op_a);
   oel_add_end_foreach($op_a);
 
