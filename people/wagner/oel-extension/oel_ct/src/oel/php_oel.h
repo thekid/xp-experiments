@@ -118,8 +118,8 @@
     PHP_FUNCTION(oel_add_incdec_op);
     PHP_FUNCTION(oel_add_binary_op);
     PHP_FUNCTION(oel_add_begin_tinary_op);
-    PHP_FUNCTION(oel_add_tinary_op_true);
-    PHP_FUNCTION(oel_add_tinary_op_false);
+    PHP_FUNCTION(oel_add_end_tinary_op_true);
+    PHP_FUNCTION(oel_add_end_tinary_op_false);
     PHP_FUNCTION(oel_add_begin_logical_op);
     PHP_FUNCTION(oel_add_end_logical_op);
     PHP_FUNCTION(oel_add_cast_op);

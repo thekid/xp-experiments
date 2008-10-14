@@ -11,12 +11,12 @@
   oel_add_begin_variable_parse($op_a);
   oel_push_variable($op_a, "a");
   oel_add_assign($op_a);
-  oel_add_tinary_op_true($op_a);
+  oel_add_end_tinary_op_true($op_a);
   oel_push_value($op_a, "Zweig 2");
   oel_add_begin_variable_parse($op_a);
   oel_push_variable($op_a, "a");
   oel_add_assign($op_a);
-  oel_add_tinary_op_false($op_a);
+  oel_add_end_tinary_op_false($op_a);
   oel_add_free($op_a);
 
   oel_add_begin_variable_parse($op_b);
@@ -24,9 +24,9 @@
   oel_add_end_variable_parse($op_b);
   oel_add_begin_tinary_op($op_b);
   oel_push_value($op_b, "Zweig 1");
-  oel_add_tinary_op_true($op_b);
+  oel_add_end_tinary_op_true($op_b);
   oel_push_value($op_b, "Zweig 2");
-  oel_add_tinary_op_false($op_b);
+  oel_add_end_tinary_op_false($op_b);
   oel_add_begin_variable_parse($op_b);
   oel_push_variable($op_b, "a");
   oel_add_assign($op_b);

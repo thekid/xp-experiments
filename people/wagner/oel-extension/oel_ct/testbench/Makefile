@@ -71,3 +71,11 @@ test.%:
 		$(TEST) \
 	done; \
 	$(TEST_END)
+
+testboel:
+	@echo -e "\n\n ===> begin serialize"; \
+	bin/test_boel testsboel/serialize.php; \
+	echo -e "\n\n ===> begin deserialize"; \
+	bin/test_bcompile testsboel/deserialize.php; \
+	rm testsboel/OELFunction.class.phpc \
+	rm testsboel/OELObject.class.phpc \

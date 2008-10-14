@@ -178,7 +178,7 @@ PHP_FUNCTION(oel_add_begin_tinary_op) {
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
-PHP_FUNCTION(oel_add_tinary_op_true) {
+PHP_FUNCTION(oel_add_end_tinary_op_true) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
@@ -196,7 +196,7 @@ PHP_FUNCTION(oel_add_tinary_op_true) {
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
-PHP_FUNCTION(oel_add_tinary_op_false) {
+PHP_FUNCTION(oel_add_end_tinary_op_false) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
