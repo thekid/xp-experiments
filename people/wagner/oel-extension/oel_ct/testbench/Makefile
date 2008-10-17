@@ -8,6 +8,7 @@ ALL_RESULT=/tmp/oel_all_test
 
 RED=\\033[31m
 GREEN=\\033[32m
+CLEAR=/usr/bin/tput init
 
 TEST= echo -n "        testing "`basename $$t | sed s/.oel.php//`" ..."; \
 	if [ -f $$t ]; then \
@@ -15,17 +16,17 @@ TEST= echo -n "        testing "`basename $$t | sed s/.oel.php//`" ..."; \
 		echo -n "... "; \
 		sh ${PHP} `echo $$t | sed s/.oel.php/.php/` 1>${PHP_RESULT} 2>&1 ; \
 		diff ${DIFF_PARAM} ${OEL_RESULT} ${PHP_RESULT} > ${DIFF_RESULT}; \
-		if [ "`stat -nf %z ${DIFF_RESULT}`" -gt "0" ]; then \
-			echo -e ${RED}"FAILED"; tput reset; \
+		if [ -s ${DIFF_RESULT} ]; then \
+			echo -e ${RED}"FAILED"; ${CLEAR}; \
 			echo " ========>>> "$$t":" >> ${ALL_RESULT}; \
 			cat ${DIFF_RESULT} >> ${ALL_RESULT}; \
 			echo "" >> ${ALL_RESULT}; \
 			echo "" >> ${ALL_RESULT}; \
 		else \
-			echo -e ${GREEN}"OK"; tput reset; \
+			echo -e ${GREEN}"OK"; ${CLEAR}; \
 		fi; \
 	else \
-		echo -e ... ${RED}"no test found"; tput reset; \
+		echo -e ... ${RED}"no test found"; ${CLEAR}; \
 	fi;
 TEST_PREPARE= echo " ==> start test"; \
 	echo -n "" > ${OEL_RESULT}; \
@@ -34,7 +35,7 @@ TEST_PREPARE= echo " ==> start test"; \
 	echo -n "" > ${ALL_RESULT}; 
 TEST_END= echo ""; \
 	echo ""; \
-	if [ "`stat -nf %z ${ALL_RESULT}`" -gt "0" ]; then \
+	if [ -s ${ALL_RESULT} ]; then \
 		echo "==> errors:"; \
 		cat ${ALL_RESULT}; \
 	fi; \
@@ -71,11 +72,3 @@ test.%:
 		$(TEST) \
 	done; \
 	$(TEST_END)
-
-testboel:
-	@echo -e "\n\n ===> begin serialize"; \
-	bin/test_boel testsboel/serialize.php; \
-	echo -e "\n\n ===> begin deserialize"; \
-	bin/test_bcompile testsboel/deserialize.php; \
-	rm testsboel/OELFunction.class.phpc \
-	rm testsboel/OELObject.class.phpc \

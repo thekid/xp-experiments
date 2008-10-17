@@ -80,9 +80,7 @@ PHP_FUNCTION(oel_add_return) {
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     val= oel_stack_pop_operand(res_op_array TSRMLS_CC);
-    if ((val->u.EA.type == ZEND_PARSED_STATIC_MEMBER)
-     || (val->u.EA.type == ZEND_PARSED_VARIABLE)
-     || (val->u.EA.type == ZEND_PARSED_MEMBER)) {
+    if ((val->op_type & (IS_VAR | IS_CV)) && (val->u.EA.type & (ZEND_PARSED_STATIC_MEMBER | ZEND_PARSED_VARIABLE | ZEND_PARSED_MEMBER))) {
         if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "return variable without oel_add_begin_variable_parse");
         end_v_parse= 1;
         oel_stack_pop_token(res_op_array TSRMLS_CC);
