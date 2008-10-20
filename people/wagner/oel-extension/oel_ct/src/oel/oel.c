@@ -314,10 +314,10 @@ static void oel_env_restore(php_oel_op_array *res_op_array, php_oel_saved_env *e
     PHP_OEL_RESET_CG(res_op_array, env, bp_stack);
     PHP_OEL_RESET_CG(res_op_array, env, interactive);
     PHP_OEL_RESET_CG(res_op_array, env, implementing_class);
-    PHP_OEL_RESET_CG(res_op_array, env, zend_lineno);
     PHP_OEL_RESET_CG(res_op_array, env, active_class_entry);
     PHP_OEL_RESET_CG(res_op_array, env, active_op_array);
     PHP_OEL_RESET_CG(res_op_array, env, in_compilation);
+    CG(zend_lineno)= env->zend_lineno;
     efree(env);
 }
 

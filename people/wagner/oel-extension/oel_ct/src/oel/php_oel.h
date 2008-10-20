@@ -69,10 +69,10 @@
     static int    oel_stack_size_##v(php_oel_op_array* TSRMLS_DC);              \
     static void   oel_stack_destroy_##v(php_oel_op_array* TSRMLS_DC);           \
 
-    #define PHP_OEL_SAFE_CG(o, e, p)   (e)->p= CG(p); 
+    #define PHP_OEL_SAFE_CG(o, e, p)   (e)->cg.p= CG(p); 
     #define PHP_OEL_SET_CG(o, e, p)    CG(p)= (o)->oel_cg.p; 
     #define PHP_OEL_RESAFE_CG(o, e, p) (o)->oel_cg.p= CG(p); 
-    #define PHP_OEL_RESET_CG(o, e, p)  CG(p)= (e)->p; 
+    #define PHP_OEL_RESET_CG(o, e, p)  CG(p)= (e)->cg.p; 
 
     PHP_MINIT_FUNCTION(oel);
 

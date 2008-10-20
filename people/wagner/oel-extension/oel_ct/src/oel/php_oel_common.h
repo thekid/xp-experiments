@@ -32,6 +32,23 @@
     #define OEL_TYPE_OAR_METHOD            4
     #define OEL_TYPE_OAR_AMETHOD           5
 
+    struct _oel_cg {
+        zend_op_array    *active_op_array;
+        zend_class_entry *active_class_entry;
+        znode             implementing_class;
+        zend_bool         in_compilation;
+        int               interactive;
+        zend_stack        bp_stack;
+        zend_stack        switch_cond_stack;
+        zend_stack        foreach_copy_stack;
+        zend_stack        list_stack;
+        zend_llist        list_llist;
+        zend_llist        dimension_llist;
+        zend_stack        function_call_stack;
+        HashTable         *function_table;
+        HashTable         *class_table;
+    };
+
     typedef struct _php_oel_znode {
         znode *ext_var;
         int    type;
@@ -48,40 +65,12 @@
         int merged;
         int final;
         int type;
-
-        struct {
-            zend_op_array    *active_op_array;
-            zend_class_entry *active_class_entry;
-            znode             implementing_class;
-            int               interactive;
-            zend_stack        bp_stack;
-            zend_stack        switch_cond_stack;
-            zend_stack        foreach_copy_stack;
-            zend_stack        list_stack;
-            zend_llist        list_llist;
-            zend_llist        dimension_llist;
-            zend_stack        function_call_stack;
-            HashTable         *function_table;
-            HashTable         *class_table;
-        } oel_cg;
+        struct _oel_cg oel_cg;
     } php_oel_op_array;
 
     typedef struct _php_oel_saved_env {
-        zend_bool         in_compilation;
-        uint              zend_lineno;
-        zend_op_array    *active_op_array;
-        zend_class_entry *active_class_entry;
-        znode             implementing_class;
-        int               interactive;
-        zend_stack        bp_stack;
-        zend_stack        switch_cond_stack;
-        zend_stack        foreach_copy_stack;
-        zend_stack        list_stack;
-        zend_llist        list_llist;
-        zend_llist        dimension_llist;
-        zend_stack        function_call_stack;
-        HashTable         *function_table;
-        HashTable         *class_table;
+        uint   zend_lineno;
+        struct _oel_cg cg;
     } php_oel_saved_env;
 
 #endif
