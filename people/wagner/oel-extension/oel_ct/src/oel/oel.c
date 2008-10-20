@@ -131,28 +131,28 @@ PHP_OEL_STACK_SERVICE_FUNCTIONS_HEADER(operand);
 PHP_OEL_STACK_SERVICE_FUNCTIONS_HEADER(token);
 PHP_OEL_STACK_SERVICE_FUNCTIONS_HEADER(extvar);
 
-static php_oel_op_array *oel_fetch_op_array(zval *arg_op_array TSRMLS_DC);
-static php_oel_saved_env *oel_env_prepare(php_oel_op_array *res_op_array TSRMLS_DC);
-static void oel_env_restore(php_oel_op_array *res_op_array, php_oel_saved_env *env TSRMLS_DC);
-static int oel_stack_destroy_rec(int counter, php_oel_znode **stack_head TSRMLS_DC);
-static int oel_stack_size(char *stack_name, php_oel_znode **stack_head TSRMLS_DC);
-static int oel_stack_top_get_type(char *stack_name, php_oel_znode **stack_head TSRMLS_DC);
-static int oel_token_isa(php_oel_op_array *res_op_array TSRMLS_DC, int type, ...);
+static php_oel_op_array *oel_fetch_op_array(zval* TSRMLS_DC);
+static php_oel_saved_env *oel_env_prepare(php_oel_op_array* TSRMLS_DC);
+static void oel_env_restore(php_oel_op_array*, php_oel_saved_env* TSRMLS_DC);
+static int oel_stack_destroy_rec(int, php_oel_znode** TSRMLS_DC);
+static int oel_stack_size(char*, php_oel_znode** TSRMLS_DC);
+static int oel_stack_top_get_type(char*, php_oel_znode** TSRMLS_DC);
+static int oel_token_isa(php_oel_op_array* TSRMLS_DC, int, ...);
 static php_oel_op_array *oel_create_new_op_array(TSRMLS_D);
-static php_oel_op_array *oel_init_child_op_array(php_oel_op_array *parent TSRMLS_DC);
+static php_oel_op_array *oel_init_child_op_array(php_oel_op_array* TSRMLS_DC);
 static php_oel_op_array *oel_init_oel_op_array(TSRMLS_D);
-static void oel_compile_error(int type, const char *format, ...);
-static void oel_finalize_op_array(php_oel_op_array* res_op_array TSRMLS_DC);
-static void oel_stack_destroy(char *stack_name, php_oel_znode **stack_head TSRMLS_DC);
-static void oel_stack_destroy_silent(php_oel_znode **stack_head TSRMLS_DC);
-static void oel_stack_push(char *stack_name, php_oel_znode **stack_head, znode *node TSRMLS_DC);
-static void oel_stack_top_set_type(char *stack_name, php_oel_znode **stack_head, int type TSRMLS_DC);
-static void php_oel_destroy_op_array(php_oel_op_array *res_op_array TSRMLS_DC);
-static void php_oel_op_array_dtor(zend_rsrc_list_entry *rsrc TSRMLS_DC);
-static znode *oel_create_extvar(php_oel_op_array *res_op_array TSRMLS_DC);
-static znode *oel_create_token(php_oel_op_array *res_op_array, int type TSRMLS_DC);
-static znode *oel_stack_pop(char *stack_name, php_oel_znode **stack_head TSRMLS_DC);
-static znode *oel_stack_top(char *stack_name, php_oel_znode **stack_head TSRMLS_DC);
+static void oel_compile_error(int, const char*, ...);
+static void oel_finalize_op_array(php_oel_op_array* TSRMLS_DC);
+static void oel_stack_destroy(char*, php_oel_znode** TSRMLS_DC);
+static void oel_stack_destroy_silent(php_oel_znode** TSRMLS_DC);
+static void oel_stack_push(char*, php_oel_znode**, znode* TSRMLS_DC);
+static void oel_stack_top_set_type(char*, php_oel_znode**, int TSRMLS_DC);
+static void php_oel_destroy_op_array(php_oel_op_array* TSRMLS_DC);
+static void php_oel_op_array_dtor(zend_rsrc_list_entry* TSRMLS_DC);
+static znode *oel_create_extvar(php_oel_op_array* TSRMLS_DC);
+static znode *oel_create_token(php_oel_op_array*, int TSRMLS_DC);
+static znode *oel_stack_pop(char*, php_oel_znode** TSRMLS_DC);
+static znode *oel_stack_top(char*, php_oel_znode** TSRMLS_DC);
 
 zend_module_entry oel_module_entry= {
 #if ZEND_MODULE_API_NO >= 20010901
