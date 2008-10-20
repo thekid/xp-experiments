@@ -3,11 +3,11 @@
   $package= 'oel';
 
   uses(
-    'oel.iVisitor',
+    'util.Visitor',
     'oel.iAcceptor'
   );
 
-  class oel·ExecuteVisitor extends Object implements oel·iVisitor {
+  class oel·ExecuteVisitor extends Object implements Visitor {
     private
       $oparray= NULL;
 
@@ -26,7 +26,7 @@
      * @param   oel.iAcceptor acceptor
      * @return  mixed
      */
-    public function visit(oel·iAcceptor $acceptor) {
+    public function visit($acceptor) {
       foreach ($acceptor->preInstructions as $instruction) $instruction->accept($this);
       if ($acceptor->is_root) {
         oel_finalize($this->oparray);

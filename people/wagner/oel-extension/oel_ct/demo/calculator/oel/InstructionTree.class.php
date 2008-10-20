@@ -3,7 +3,7 @@
   $package= 'oel';
 
   uses(
-    'oel.iVisitor',
+    'util.Visitor',
     'oel.iAcceptor'
   );
 
@@ -39,9 +39,9 @@
     /**
      * visit Instructions
      *
-     * @param   oel.iVisitor visitor
+     * @param   util.Visitor visitor
      */
-    public function accept(oel·iVisitor $visitor) {
+    public function accept(Visitor $visitor) {
       return $visitor->visit($this);
     }
   }

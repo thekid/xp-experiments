@@ -3,18 +3,18 @@
   $package= 'oel';
 
   uses(
-    'oel.iVisitor',
+    'util.Visitor',
     'oel.iAcceptor'
   );
 
-  class oel·DebugVisitor extends Object implements oel·iVisitor {
+  class oel·DebugVisitor extends Object implements Visitor {
 
     /**
      * dump an instruction
      *
      * @param   oel.iAcceptor acceptor
      */
-    public function visit(oel·iAcceptor $acceptor) {
+    public function visit($acceptor) {
       foreach ($acceptor->preInstructions as $instruction) $instruction->accept($this);
       if (!$acceptor->is_root) {
         printf("op: %s(%s)\n", $acceptor->name, $this->paramString($acceptor->config));
