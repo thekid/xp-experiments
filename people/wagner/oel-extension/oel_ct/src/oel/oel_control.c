@@ -31,6 +31,21 @@ PHP_FUNCTION(oel_add_end_if) {
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
+PHP_FUNCTION(oel_add_end_else) {
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
+    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_ELSE)) oel_compile_error(E_ERROR, "token is not of type else");
+
+    oel_stack_pop_token(res_op_array TSRMLS_CC);
+
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
+    zend_do_if_end(TSRMLS_C);
+    oel_env_restore(res_op_array, env TSRMLS_CC);
+}
+
 PHP_FUNCTION(oel_add_begin_elseif) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
@@ -61,21 +76,6 @@ PHP_FUNCTION(oel_add_end_elseif) {
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_if_after_statement(if_token, 0 TSRMLS_CC);
-    oel_env_restore(res_op_array, env TSRMLS_CC);
-}
-
-PHP_FUNCTION(oel_add_end_else) {
-    zval              *arg_op_array;
-    php_oel_op_array  *res_op_array;
-    php_oel_saved_env *env;
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
-    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
-    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_ELSE)) oel_compile_error(E_ERROR, "token is not of type else");
-
-    oel_stack_pop_token(res_op_array TSRMLS_CC);
-
-    env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_if_end(TSRMLS_C);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 

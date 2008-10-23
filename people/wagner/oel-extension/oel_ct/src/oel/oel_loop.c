@@ -108,7 +108,7 @@ PHP_FUNCTION(oel_add_begin_foreach) {
     }
     foreach_token=       oel_create_token(res_op_array, OEL_TYPE_TOKEN_FOREACH      TSRMLS_CC);
     as_token=            oel_create_token(res_op_array, OEL_TYPE_UNSET              TSRMLS_CC);
-    open_brackets_token= oel_create_token(res_op_array, OEL_TYPE_TOKEN_FOREACH_BODY TSRMLS_CC);
+    open_brackets_token= oel_create_token(res_op_array, OEL_TYPE_TOKEN_FOREACH_HEAD TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_foreach_begin(foreach_token, open_brackets_token, array, as_token, is_variable TSRMLS_CC);
@@ -140,7 +140,7 @@ PHP_FUNCTION(oel_add_begin_foreach_body) {
         key->op_type= IS_UNUSED;
     }
 
-    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_FOREACH_BODY)) oel_compile_error(E_ERROR, "token is not of type foreach body");
+    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_FOREACH_HEAD)) oel_compile_error(E_ERROR, "token is not of type foreach body");
     open_brackets_token= oel_stack_pop_token(res_op_array TSRMLS_CC);
     as_token=            oel_stack_pop_token(res_op_array TSRMLS_CC);
     if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_FOREACH)) oel_compile_error(E_ERROR, "token is not of type foreach");

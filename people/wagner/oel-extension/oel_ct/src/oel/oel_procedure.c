@@ -28,8 +28,9 @@ PHP_FUNCTION(oel_new_function) {
     php_oel_saved_env *env;
     znode             *func_name, *func_flags, *func_token;
     char              *arg_func_name, *new_filename, *old_filename;
-    int                arg_func_name_len, arg_ref= 0;
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|l", &arg_op_array, &arg_func_name, &arg_func_name_len, &arg_ref) == FAILURE) { RETURN_NULL(); }
+    int                arg_func_name_len;
+    zend_bool          arg_ref= 0;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|b", &arg_op_array, &arg_func_name, &arg_func_name_len, &arg_ref) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (oel_token_isa(res_op_array TSRMLS_CC, 3, OEL_TYPE_TOKEN_CLASS, OEL_TYPE_TOKEN_ACLASS, OEL_TYPE_TOKEN_ICLASS)) oel_compile_error(E_ERROR, "function must not be declared inner a class or an interface declaration (declare methods instead)");
 
@@ -63,8 +64,9 @@ PHP_FUNCTION(oel_new_method) {
     php_oel_saved_env *env;
     znode             *func_name, *func_flags, *func_token;
     char              *arg_func_name, *new_filename, *old_filename;
-    int                arg_func_name_len, arg_ref= 0, arg_stat= 0, arg_acc= 0, arg_fin= 0, modifier= 0x0;
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|llll", &arg_op_array, &arg_func_name, &arg_func_name_len, &arg_ref, &arg_stat, &arg_acc, &arg_fin) == FAILURE) { RETURN_NULL(); }
+    int                arg_func_name_len, arg_acc= 0, modifier= 0x0;
+    zend_bool          arg_ref= 0, arg_stat= 0, arg_fin= 0;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|bblb", &arg_op_array, &arg_func_name, &arg_func_name_len, &arg_ref, &arg_stat, &arg_acc, &arg_fin) == FAILURE) { RETURN_NULL(); }
     if (!arg_acc) arg_acc= ZEND_ACC_PUBLIC;
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!oel_token_isa(res_op_array TSRMLS_CC, 3, OEL_TYPE_TOKEN_CLASS, OEL_TYPE_TOKEN_ACLASS, OEL_TYPE_TOKEN_ICLASS)) oel_compile_error(E_ERROR, "method must be declared inner a class or an interface declaration");
@@ -105,8 +107,9 @@ PHP_FUNCTION(oel_new_abstract_method) {
     php_oel_saved_env *env;
     znode             *func_name, *func_flags, *func_token;
     char              *arg_func_name, *new_filename, *old_filename;
-    int                arg_func_name_len, arg_ref= 0, arg_stat= 0, arg_acc= 0, modifier= 0x0;
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|lll", &arg_op_array, &arg_func_name, &arg_func_name_len, &arg_ref, &arg_stat, &arg_acc) == FAILURE) { RETURN_NULL(); }
+    int                arg_func_name_len, arg_acc= 0, modifier= 0x0;
+    zend_bool          arg_ref= 0, arg_stat= 0;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|bbl", &arg_op_array, &arg_func_name, &arg_func_name_len, &arg_ref, &arg_stat, &arg_acc) == FAILURE) { RETURN_NULL(); }
     if (!arg_acc) arg_acc= ZEND_ACC_PUBLIC;
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_ACLASS)) oel_compile_error(E_ERROR, "abstract method must be declared inner an abstract class declaration");
@@ -175,9 +178,7 @@ PHP_FUNCTION(oel_add_call_function_name) {
     int                arg_parameter_count;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rl", &arg_op_array, &arg_parameter_count) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
-    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "oel_add_call_function_name op without oel_add_begin_variable_parse");
 
-    oel_stack_pop_token(res_op_array TSRMLS_CC);
     parameter_count= oel_create_extvar(res_op_array TSRMLS_CC);
     ZVAL_LONG(&parameter_count->u.constant, arg_parameter_count);
     params= oel_fetch_call_parameters(res_op_array, arg_parameter_count TSRMLS_CC);
@@ -185,7 +186,6 @@ PHP_FUNCTION(oel_add_call_function_name) {
     result= func_name;
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_end_variable_parse(BP_VAR_R, 0 TSRMLS_CC); 
     zend_do_begin_dynamic_function_call(func_name TSRMLS_CC);
     oel_build_call_parameter_pass(res_op_array, params TSRMLS_CC);
     zend_do_end_function_call(func_name, result, parameter_count, 0, 1 TSRMLS_CC);

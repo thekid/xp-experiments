@@ -4,8 +4,9 @@ PHP_FUNCTION(oel_add_begin_class_declaration) {
     php_oel_saved_env *env;
     znode             *class_name, *parent_class_name, *parent_class_node, *class_token;
     char              *arg_class_name, *arg_parent_name= NULL;
-    int                arg_parent_name_len= 0, arg_is_final= 0, arg_class_name_len, mod;
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|sl", &arg_op_array, &arg_class_name, &arg_class_name_len, &arg_parent_name, &arg_parent_name_len, &arg_is_final) == FAILURE) { RETURN_NULL(); }
+    int                arg_parent_name_len= 0, arg_class_name_len, mod;
+    zend_bool          arg_is_final= 0;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|sb", &arg_op_array, &arg_class_name, &arg_class_name_len, &arg_parent_name, &arg_parent_name_len, &arg_is_final) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
     class_name= oel_create_token(res_op_array, OEL_TYPE_UNSET TSRMLS_CC);
@@ -151,6 +152,7 @@ PHP_FUNCTION(oel_add_implements_interface) {
     int                arg_iname_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_iname, &arg_iname_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
+    if (!oel_token_isa(res_op_array TSRMLS_CC, 2, OEL_TYPE_TOKEN_CLASS, OEL_TYPE_TOKEN_ACLASS)) oel_compile_error(E_ERROR, "wrong token: only classes and and abstract classes can implement interfaces");
 
     interface_name= oel_create_extvar(res_op_array TSRMLS_CC);
     ZVAL_STRINGL(&interface_name->u.constant, arg_iname, arg_iname_len, 1);
@@ -168,8 +170,9 @@ PHP_FUNCTION(oel_add_declare_property) {
     php_oel_saved_env *env;
     znode             *name, *default_value;
     char              *arg_name;
-    int                arg_name_len, arg_stat= 0, arg_acc= 0, flags;
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|zll", &arg_op_array, &arg_name, &arg_name_len, &arg_default_value, &arg_stat, &arg_acc) == FAILURE) { RETURN_NULL(); }
+    int                arg_name_len, arg_acc= 0, flags;
+    zend_bool          arg_stat= 0;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|zbl", &arg_op_array, &arg_name, &arg_name_len, &arg_default_value, &arg_stat, &arg_acc) == FAILURE) { RETURN_NULL(); }
     if (!arg_acc) arg_acc= ZEND_ACC_PUBLIC;
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!oel_token_isa(res_op_array TSRMLS_CC, 2, OEL_TYPE_TOKEN_CLASS, OEL_TYPE_TOKEN_ACLASS)) oel_compile_error(E_ERROR, "member must be declared inner a class declaration");

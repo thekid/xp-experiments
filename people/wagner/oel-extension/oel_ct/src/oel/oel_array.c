@@ -3,15 +3,14 @@ PHP_FUNCTION(oel_add_begin_array_init) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *result;
-    zend_bool          arg_is_ref= 0;
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r|b", &arg_op_array, &arg_is_ref) == FAILURE) { RETURN_NULL(); }
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
     result= oel_create_token(res_op_array, OEL_TYPE_TOKEN_ARRAY_INIT TSRMLS_CC);
     oel_stack_push_operand(res_op_array, result TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_init_array(result, NULL, NULL, arg_is_ref TSRMLS_CC);
+    zend_do_init_array(result, NULL, NULL, 0 TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
@@ -106,8 +105,7 @@ PHP_FUNCTION(oel_add_begin_staticarray_init) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *result;
-    zend_bool          arg_is_ref= 0;
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r|b", &arg_op_array, &arg_is_ref) == FAILURE) { RETURN_NULL(); }
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
     result= oel_create_token(res_op_array, OEL_TYPE_TOKEN_ARRAY_STATIC TSRMLS_CC);
@@ -206,6 +204,7 @@ PHP_FUNCTION(oel_add_begin_inner_list) {
     php_oel_saved_env *env;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
+    if (!oel_token_isa(res_op_array TSRMLS_CC, 2, OEL_TYPE_TOKEN_LIST, OEL_TYPE_TOKEN_LIST_INNER)) oel_compile_error(E_ERROR, "token is not of type list or inner list");
     oel_create_token(res_op_array, OEL_TYPE_TOKEN_LIST_INNER TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);

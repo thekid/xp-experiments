@@ -40,7 +40,7 @@
     #define OEL_TYPE_TOKEN_DOWHILE        22
     #define OEL_TYPE_TOKEN_DOWHILE_BODY   23
     #define OEL_TYPE_TOKEN_FOREACH        24
-    #define OEL_TYPE_TOKEN_FOREACH_BODY   25
+    #define OEL_TYPE_TOKEN_FOREACH_HEAD   25
     #define OEL_TYPE_TOKEN_ARRAY_INIT     26
     #define OEL_TYPE_TOKEN_ARRAY_STATIC   27
     #define OEL_TYPE_TOKEN_LIST           28
@@ -75,6 +75,7 @@
     #define PHP_OEL_RESET_CG(o, e, p)  CG(p)= (e)->cg.p; 
 
     PHP_MINIT_FUNCTION(oel);
+    PHP_MINFO_FUNCTION(oel);
 
     PHP_FUNCTION(oel_new_op_array);
     PHP_FUNCTION(oel_finalize);

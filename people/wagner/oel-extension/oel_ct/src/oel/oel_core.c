@@ -153,13 +153,7 @@ PHP_FUNCTION(oel_add_exit) {
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
     result= oel_create_extvar(res_op_array TSRMLS_CC);
-    if (oel_stack_size_operand(res_op_array TSRMLS_CC) > 0) {
-        expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
-    } else {
-        expr= oel_create_extvar(res_op_array TSRMLS_CC);
-        memset(expr, 0, sizeof(znode));
-        expr->op_type= IS_UNUSED;
-    }
+    expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_exit(result, expr TSRMLS_CC);

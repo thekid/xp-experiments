@@ -164,7 +164,7 @@ zend_module_entry oel_module_entry= {
     NULL,
     NULL,
     NULL,
-    NULL,
+    PHP_MINFO(oel),
 #if ZEND_MODULE_API_NO >= 20010901
     PHP_OEL_VERSION,
 #endif
@@ -235,6 +235,13 @@ PHP_MINIT_FUNCTION(oel) {
     REGISTER_LONG_CONSTANT("OEL_OP_TO_BOOL",                    IS_BOOL,                  CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("OEL_OP_TO_UNSET",                   IS_NULL,                  CONST_CS | CONST_PERSISTENT);
     return SUCCESS;
+}
+
+PHP_MINFO_FUNCTION(oel) {
+  php_info_print_table_start();
+  php_info_print_table_row(2, "OEL Extension support", "enabled");
+  php_info_print_table_row(2, "OEL version", PHP_OEL_VERSION);
+  php_info_print_table_end();
 }
 
 /* stack functions for stacks */

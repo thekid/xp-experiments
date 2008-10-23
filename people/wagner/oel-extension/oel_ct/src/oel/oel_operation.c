@@ -228,7 +228,7 @@ PHP_FUNCTION(oel_add_begin_logical_op) {
 
     expr=  oel_stack_pop_operand(res_op_array TSRMLS_CC);
     oel_stack_push_token(res_op_array, expr TSRMLS_CC);
-    token= oel_create_token(res_op_array, (is_boolean_and_op(arg_operation) ? OEL_TYPE_TOKEN_LOGIC_AND : OEL_TYPE_TOKEN_LOGIC_AND) TSRMLS_CC);
+    token= oel_create_token(res_op_array, (is_boolean_and_op(arg_operation) ? OEL_TYPE_TOKEN_LOGIC_AND : OEL_TYPE_TOKEN_LOGIC_OR) TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
     if (is_boolean_and_op(arg_operation)) zend_do_boolean_and_begin(expr, token TSRMLS_CC);
