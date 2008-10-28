@@ -155,6 +155,7 @@
     PHP_FUNCTION(oel_add_end_abstract_class_declaration);
     PHP_FUNCTION(oel_add_begin_interface_declaration);
     PHP_FUNCTION(oel_add_end_interface_declaration);
+    PHP_FUNCTION(oel_add_parent_interface);
     PHP_FUNCTION(oel_add_implements_interface);
     PHP_FUNCTION(oel_add_declare_property);
     PHP_FUNCTION(oel_add_declare_class_constant);

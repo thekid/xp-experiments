@@ -93,6 +93,7 @@ static function_entry oel_functions[]= {
     PHP_FE(oel_add_end_abstract_class_declaration, NULL)
     PHP_FE(oel_add_begin_interface_declaration, NULL)
     PHP_FE(oel_add_end_interface_declaration, NULL)
+    PHP_FE(oel_add_parent_interface, NULL)
     PHP_FE(oel_add_implements_interface, NULL)
     PHP_FE(oel_add_declare_property, NULL)
     PHP_FE(oel_add_declare_class_constant, NULL)

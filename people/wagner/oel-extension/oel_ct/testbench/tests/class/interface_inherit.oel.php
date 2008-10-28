@@ -11,8 +11,8 @@
   oel_add_end_interface_declaration($op_a);
 
   oel_add_begin_interface_declaration($op_a, "ClassC");
-  oel_add_implements_interface($op_a, "ClassA");
-  oel_add_implements_interface($op_a, "ClassB");
+  oel_add_parent_interface($op_a, "ClassA");
+  oel_add_parent_interface($op_a, "ClassB");
   oel_new_method($op_a, "methC");
   oel_add_end_interface_declaration($op_a);
 

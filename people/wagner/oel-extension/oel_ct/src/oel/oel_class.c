@@ -137,6 +137,27 @@ PHP_FUNCTION(oel_add_end_interface_declaration) {
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
+PHP_FUNCTION(oel_add_parent_interface) {
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_saved_env *env;
+    znode             *interface_name, *interface_node;
+    char              *arg_iname;
+    int                arg_iname_len;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_iname, &arg_iname_len) == FAILURE) { RETURN_NULL(); }
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
+    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_ICLASS)) oel_compile_error(E_ERROR, "wrong token: interface token expected");
+
+    interface_name= oel_create_extvar(res_op_array TSRMLS_CC);
+    ZVAL_STRINGL(&interface_name->u.constant, arg_iname, arg_iname_len, 1);
+    interface_node= oel_create_extvar(res_op_array TSRMLS_CC);
+
+    env= oel_env_prepare(res_op_array TSRMLS_CC);
+    zend_do_fetch_class(interface_node, interface_name TSRMLS_CC);
+    zend_do_implements_interface(interface_node TSRMLS_CC);
+    oel_env_restore(res_op_array, env TSRMLS_CC);
+}
+
 PHP_FUNCTION(oel_add_implements_interface) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
@@ -146,7 +167,7 @@ PHP_FUNCTION(oel_add_implements_interface) {
     int                arg_iname_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_iname, &arg_iname_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
-    if (!oel_token_isa(res_op_array TSRMLS_CC, 3, OEL_TYPE_TOKEN_CLASS, OEL_TYPE_TOKEN_ACLASS, OEL_TYPE_TOKEN_ICLASS)) oel_compile_error(E_ERROR, "wrong token: class, abstract classor interface token expected");
+    if (!oel_token_isa(res_op_array TSRMLS_CC, 2, OEL_TYPE_TOKEN_CLASS, OEL_TYPE_TOKEN_ACLASS)) oel_compile_error(E_ERROR, "wrong token: class or abstract class token expected");
 
     interface_name= oel_create_extvar(res_op_array TSRMLS_CC);
     ZVAL_STRINGL(&interface_name->u.constant, arg_iname, arg_iname_len, 1);

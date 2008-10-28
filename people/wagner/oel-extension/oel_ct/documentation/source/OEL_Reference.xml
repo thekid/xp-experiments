@@ -332,9 +332,23 @@
     </description>
   </function>
 
+  <function name="oel_add_parent_interface">
+    <tokens>
+      <token type="test" name="OEL_TYPE_TOKEN_ICLASS" />
+    </tokens>
+    <parameters>
+      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="string" optional="FALSE">parent interface name</parameter>
+    </parameters>
+    <tags><tag name="oel" /><tag name="class" /></tags>
+    <description>
+      Add a parent interface to an interface.
+    </description>
+  </function>
+
   <function name="oel_add_implements_interface">
     <tokens>
-      <token type="test" name="OEL_TYPE_TOKEN_CLASS|OEL_TYPE_TOKEN_ACLASS|OEL_TYPE_TOKEN_ICLASS" />
+      <token type="test" name="OEL_TYPE_TOKEN_CLASS|OEL_TYPE_TOKEN_ACLASS" />
     </tokens>
     <parameters>
       <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
@@ -342,7 +356,7 @@
     </parameters>
     <tags><tag name="oel" /><tag name="class" /></tags>
     <description>
-      Add an interface to a class. If the class is an interface it will extend this.
+      Add an interface to a class.
     </description>
   </function>
 
