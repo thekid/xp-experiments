@@ -1,7 +1,22 @@
 <?php
 
-  interface A {}
-  interface B {}
-  interface C extends A, B {}
+  interface ClassA {
+    function methA();
+  }
+
+  interface ClassB {
+    function methB();
+  }
+
+  interface ClassC extends ClassA, ClassB {
+    function methC();
+  }
+
+  $c= new ReflectionClass("ClassC");
+  var_dump(
+    $c->getMethods(),
+    $c->getInterfaces(),
+    $c->getParentclass()
+  );
 
 ?>
