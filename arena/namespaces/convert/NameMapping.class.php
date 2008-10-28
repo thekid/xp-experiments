@@ -128,7 +128,7 @@
               continue;
             }
             
-            $qualifiedName= str_replace('/', '::', substr($entry, 0, -strlen(xp::CLASS_FILE_EXT)));
+            $qualifiedName= str_replace('/', '.', substr($entry, 0, -strlen(xp::CLASS_FILE_EXT)));
             $this->err->write($this->mapName($nameMap, $className, $qualifiedName, $messages) ? '.' : '!');
           }
           $a->close();
@@ -141,7 +141,7 @@
           foreach ($this->bases as $base) {
             if ($uri->startsWith($base->getUri())) $uri= $uri->substring(strlen($base->getUri()));
           }
-          $qualifiedName= str_replace('.', '::', strtr(substr($uri, 0, -strlen(xp::CLASS_FILE_EXT)), '/\\', '..'));
+          $qualifiedName= strtr(substr($uri, 0, -strlen(xp::CLASS_FILE_EXT)), '/\\', '..');
           $this->err->write($this->mapName($nameMap, $className, $qualifiedName, $messages) ? '.' : '!');
         } else {
           $messages->add(new String('Could not determine what to do with '.$uri));
