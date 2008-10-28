@@ -1,0 +1,2018 @@
+<html xmlns:exsl="http://exslt.org/common" xmlns:docu=".">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>OEL - Opcode Engeneering Library for PHP</title>
+<style type="text/css">
+          .func div {
+            padding-bottom: 8px;
+          }
+          .func {
+            padding-bottom: 10px;
+          }
+          ul {
+            margin-top: 0;
+            margin-bottom: 0;
+          }
+          h1, h2, h3, h4 {
+            color: #7777ff;
+          }
+          h3 {
+            margin-bottom: 0;
+          }
+          small {
+            font-size: 90%;
+          }
+        </style>
+</head>
+<body>
+<h1>OEL - Opcode Engeneering Library for PHP</h1>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_array_init">oel_add_begin_array_init</a></h3></div>
+<div class="func_desc">
+      Begin an array definition.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>push: OEL_TYPE_TOKEN_ARRAY_INIT</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_end_array_init">oel_add_end_array_init</a> <a href="#oel_add_array_init_element">oel_add_array_init_element</a> <a href="#oel_add_array_init_key_element">oel_add_array_init_key_element</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_array_init">oel_add_end_array_init</a></h3></div>
+<div class="func_desc">
+      Finish  an array definition.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_ARRAY_INIT</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_array_init">oel_add_begin_array_init</a> <a href="#oel_add_array_init_element">oel_add_array_init_element</a> <a href="#oel_add_array_init_key_element">oel_add_array_init_key_element</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_array_init_element">oel_add_array_init_element</a></h3></div>
+<div class="func_desc">
+      Add a value to an array.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+<b>?</b>
+      (bool) TRUE if element is a reference<small><br>default value: FALSE</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>test: OEL_TYPE_TOKEN_ARRAY_INIT</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_array_init">oel_add_begin_array_init</a> <a href="#oel_add_end_array_init">oel_add_end_array_init</a> <a href="#oel_add_array_init_key_element">oel_add_array_init_key_element</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_array_init_key_element">oel_add_array_init_key_element</a></h3></div>
+<div class="func_desc">
+      Add a value key pair to an array.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+<b>?</b>
+      (bool) TRUE for element is a reference<small><br>default value: FALSE</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>test: OEL_TYPE_TOKEN_ARRAY_INIT</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_array_init">oel_add_begin_array_init</a> <a href="#oel_add_end_array_init">oel_add_end_array_init</a> <a href="#oel_add_array_init_element">oel_add_array_init_element</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_push_dim">oel_push_dim</a></h3></div>
+<div class="func_desc">
+      fetch an array dimension handle by key.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_push_new_dim">oel_push_new_dim</a></h3></div>
+<div class="func_desc">
+      Fetch an new array dimension handle ($array[]= ...).
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_staticarray_init">oel_add_begin_staticarray_init</a></h3></div>
+<div class="func_desc">
+      Begin a static array definition.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>push: OEL_TYPE_TOKEN_ARRAY_STATIC</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_end_staticarray_init">oel_add_end_staticarray_init</a> <a href="#oel_add_staticarray_init_element">oel_add_staticarray_init_element</a> <a href="#oel_add_staticarray_init_key_element">oel_add_staticarray_init_key_element</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_staticarray_init">oel_add_end_staticarray_init</a></h3></div>
+<div class="func_desc">
+      end a static array definition.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_ARRAY_STATIC</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_staticarray_init">oel_add_begin_staticarray_init</a> <a href="#oel_add_staticarray_init_element">oel_add_staticarray_init_element</a> <a href="#oel_add_staticarray_init_key_element">oel_add_staticarray_init_key_element</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_staticarray_init_element">oel_add_staticarray_init_element</a></h3></div>
+<div class="func_desc">
+      Add an element to the static array.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+<b>?</b>
+      (bool) TRUE if element is a reference<small><br>default value: FALSE</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>test: OEL_TYPE_TOKEN_ARRAY_STATIC</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_staticarray_init">oel_add_begin_staticarray_init</a> <a href="#oel_add_end_staticarray_init">oel_add_end_staticarray_init</a> <a href="#oel_add_staticarray_init_key_element">oel_add_staticarray_init_key_element</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_staticarray_init_key_element">oel_add_staticarray_init_key_element</a></h3></div>
+<div class="func_desc">
+      Add a key element pair to the static array.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+<b>?</b>
+      (bool) TRUE if element is a reference<small><br>default value: FALSE</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>test: OEL_TYPE_TOKEN_ARRAY_STATIC</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_staticarray_init">oel_add_begin_staticarray_init</a> <a href="#oel_add_end_staticarray_init">oel_add_end_staticarray_init</a> <a href="#oel_add_staticarray_init_element">oel_add_staticarray_init_element</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_list">oel_add_begin_list</a></h3></div>
+<div class="func_desc">
+      Begin a list declaration (list($a, $b)= ...).
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>push: OEL_TYPE_TOKEN_LIST</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_list">oel_add_end_list</a></h3></div>
+<div class="func_desc">
+      End a list declaration and assigns an array to its elements.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_LIST</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_inner_list">oel_add_begin_inner_list</a></h3></div>
+<div class="func_desc">
+      Begin a list declaration inner an other list declaration.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>test: OEL_TYPE_TOKEN_LIST|OEL_TYPE_TOKEN_LIST_INNER</li>
+<li>push: OEL_TYPE_TOKEN_LIST_INNER</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_inner_list">oel_add_end_inner_list</a></h3></div>
+<div class="func_desc">
+      End a list declaration inner an other list declaration.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_LIST_INNER</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_list_element">oel_add_list_element</a></h3></div>
+<div class="func_desc">
+      Add a list element to an open list
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>pop: OEL_TYPE_TOKEN_VARIABLE</li>
+<li>test: OEL_TYPE_TOKEN_LIST|OEL_TYPE_TOKEN_LIST_INNER</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_class_declaration">oel_add_begin_class_declaration</a></h3></div>
+<div class="func_desc">
+      Begin class definition.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) class name</li>
+<li>
+<b>?</b>
+      (string) parent class name<small><br>default value: none</small>
+</li>
+<li>
+<b>?</b>
+      (bool) TRUE if class is final<small><br>default value: FALSE</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>push: OEL_TYPE_TOKEN_CLASS</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_end_class_declaration">oel_add_end_class_declaration</a> <a href="#oel_add_begin_abstract_class_declaration">oel_add_begin_abstract_class_declaration</a> <a href="#oel_add_end_abstract_class_declaration">oel_add_end_abstract_class_declaration</a> <a href="#oel_add_begin_interface_declaration">oel_add_begin_interface_declaration</a> <a href="#oel_add_end_interface_declaration">oel_add_end_interface_declaration</a> <a href="#oel_add_implements_interface">oel_add_implements_interface</a> <a href="#oel_add_declare_property">oel_add_declare_property</a> <a href="#oel_add_declare_class_constant">oel_add_declare_class_constant</a> <a href="#oel_finalize">oel_finalize</a> <a href="#oel_new_method">oel_new_method</a> <a href="#oel_new_abstract_method">oel_new_abstract_method</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_class_declaration">oel_add_end_class_declaration</a></h3></div>
+<div class="func_desc">
+      End class definition.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_CLASS</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_class_declaration">oel_add_begin_class_declaration</a> <a href="#oel_add_begin_abstract_class_declaration">oel_add_begin_abstract_class_declaration</a> <a href="#oel_add_end_abstract_class_declaration">oel_add_end_abstract_class_declaration</a> <a href="#oel_add_begin_interface_declaration">oel_add_begin_interface_declaration</a> <a href="#oel_add_end_interface_declaration">oel_add_end_interface_declaration</a> <a href="#oel_add_implements_interface">oel_add_implements_interface</a> <a href="#oel_add_declare_property">oel_add_declare_property</a> <a href="#oel_add_declare_class_constant">oel_add_declare_class_constant</a> <a href="#oel_finalize">oel_finalize</a> <a href="#oel_new_method">oel_new_method</a> <a href="#oel_new_abstract_method">oel_new_abstract_method</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_abstract_class_declaration">oel_add_begin_abstract_class_declaration</a></h3></div>
+<div class="func_desc">
+      Begin an abstract class definietion.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) class name</li>
+<li>
+<b>?</b>
+      (string) parent class name<small><br>default value: none</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>push: OEL_TYPE_TOKEN_ACLASS</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_class_declaration">oel_add_begin_class_declaration</a> <a href="#oel_add_end_class_declaration">oel_add_end_class_declaration</a> <a href="#oel_add_end_abstract_class_declaration">oel_add_end_abstract_class_declaration</a> <a href="#oel_add_begin_interface_declaration">oel_add_begin_interface_declaration</a> <a href="#oel_add_end_interface_declaration">oel_add_end_interface_declaration</a> <a href="#oel_add_implements_interface">oel_add_implements_interface</a> <a href="#oel_add_declare_property">oel_add_declare_property</a> <a href="#oel_add_declare_class_constant">oel_add_declare_class_constant</a> <a href="#oel_finalize">oel_finalize</a> <a href="#oel_new_method">oel_new_method</a> <a href="#oel_new_abstract_method">oel_new_abstract_method</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_abstract_class_declaration">oel_add_end_abstract_class_declaration</a></h3></div>
+<div class="func_desc">
+      End an abstract class definietion.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_ACLASS</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_class_declaration">oel_add_begin_class_declaration</a> <a href="#oel_add_end_class_declaration">oel_add_end_class_declaration</a> <a href="#oel_add_begin_abstract_class_declaration">oel_add_begin_abstract_class_declaration</a> <a href="#oel_add_begin_interface_declaration">oel_add_begin_interface_declaration</a> <a href="#oel_add_end_interface_declaration">oel_add_end_interface_declaration</a> <a href="#oel_add_implements_interface">oel_add_implements_interface</a> <a href="#oel_add_declare_property">oel_add_declare_property</a> <a href="#oel_add_declare_class_constant">oel_add_declare_class_constant</a> <a href="#oel_finalize">oel_finalize</a> <a href="#oel_new_method">oel_new_method</a> <a href="#oel_new_abstract_method">oel_new_abstract_method</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_interface_declaration">oel_add_begin_interface_declaration</a></h3></div>
+<div class="func_desc">
+      Begin interface declaration.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) interface name</li>
+<li>
+<b>?</b>
+      (string) parent interface name<small><br>default value: none</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>push: OEL_TYPE_TOKEN_ICLASS</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_class_declaration">oel_add_begin_class_declaration</a> <a href="#oel_add_end_class_declaration">oel_add_end_class_declaration</a> <a href="#oel_add_begin_abstract_class_declaration">oel_add_begin_abstract_class_declaration</a> <a href="#oel_add_end_abstract_class_declaration">oel_add_end_abstract_class_declaration</a> <a href="#oel_add_end_interface_declaration">oel_add_end_interface_declaration</a> <a href="#oel_add_implements_interface">oel_add_implements_interface</a> <a href="#oel_add_declare_property">oel_add_declare_property</a> <a href="#oel_add_declare_class_constant">oel_add_declare_class_constant</a> <a href="#oel_finalize">oel_finalize</a> <a href="#oel_new_method">oel_new_method</a> <a href="#oel_new_abstract_method">oel_new_abstract_method</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_interface_declaration">oel_add_end_interface_declaration</a></h3></div>
+<div class="func_desc">
+      End interface declaration.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_ICLASS</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_class_declaration">oel_add_begin_class_declaration</a> <a href="#oel_add_end_class_declaration">oel_add_end_class_declaration</a> <a href="#oel_add_begin_abstract_class_declaration">oel_add_begin_abstract_class_declaration</a> <a href="#oel_add_end_abstract_class_declaration">oel_add_end_abstract_class_declaration</a> <a href="#oel_add_begin_interface_declaration">oel_add_begin_interface_declaration</a> <a href="#oel_add_implements_interface">oel_add_implements_interface</a> <a href="#oel_add_declare_property">oel_add_declare_property</a> <a href="#oel_add_declare_class_constant">oel_add_declare_class_constant</a> <a href="#oel_finalize">oel_finalize</a> <a href="#oel_new_method">oel_new_method</a> <a href="#oel_new_abstract_method">oel_new_abstract_method</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_implements_interface">oel_add_implements_interface</a></h3></div>
+<div class="func_desc">
+      Add an interface to a class.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) implementing interface name</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>test: OEL_TYPE_TOKEN_CLASS|OEL_TYPE_TOKEN_ACLASS</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_class_declaration">oel_add_begin_class_declaration</a> <a href="#oel_add_end_class_declaration">oel_add_end_class_declaration</a> <a href="#oel_add_begin_abstract_class_declaration">oel_add_begin_abstract_class_declaration</a> <a href="#oel_add_end_abstract_class_declaration">oel_add_end_abstract_class_declaration</a> <a href="#oel_add_begin_interface_declaration">oel_add_begin_interface_declaration</a> <a href="#oel_add_end_interface_declaration">oel_add_end_interface_declaration</a> <a href="#oel_add_declare_property">oel_add_declare_property</a> <a href="#oel_add_declare_class_constant">oel_add_declare_class_constant</a> <a href="#oel_finalize">oel_finalize</a> <a href="#oel_new_method">oel_new_method</a> <a href="#oel_new_abstract_method">oel_new_abstract_method</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_declare_property">oel_add_declare_property</a></h3></div>
+<div class="func_desc">
+      Add a class member to a class.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) property name</li>
+<li>
+<b>?</b>
+      (mixed) default value<small><br>default value: NULL</small>
+</li>
+<li>
+<b>?</b>
+      (bool) TRUE if property is static<small><br>default value: FALSE</small>
+</li>
+<li>
+<b>?</b>
+      (integer) access flag (OEL_ACC_PRIVATE, OEL_ACC_PROTECTED, OEL_ACC_PUBLIC)<small><br>default value: OEL_ACC_PUBLIC</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>test: OEL_TYPE_TOKEN_CLASS|OEL_TYPE_TOKEN_ACLASS</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_class_declaration">oel_add_begin_class_declaration</a> <a href="#oel_add_end_class_declaration">oel_add_end_class_declaration</a> <a href="#oel_add_begin_abstract_class_declaration">oel_add_begin_abstract_class_declaration</a> <a href="#oel_add_end_abstract_class_declaration">oel_add_end_abstract_class_declaration</a> <a href="#oel_add_begin_interface_declaration">oel_add_begin_interface_declaration</a> <a href="#oel_add_end_interface_declaration">oel_add_end_interface_declaration</a> <a href="#oel_add_implements_interface">oel_add_implements_interface</a> <a href="#oel_add_declare_class_constant">oel_add_declare_class_constant</a> <a href="#oel_finalize">oel_finalize</a> <a href="#oel_new_method">oel_new_method</a> <a href="#oel_new_abstract_method">oel_new_abstract_method</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_declare_class_constant">oel_add_declare_class_constant</a></h3></div>
+<div class="func_desc">
+      Add a class constant to a class.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) class constant name</li>
+<li>
+      (mixed) class constant value</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>test: OEL_TYPE_TOKEN_CLASS|OEL_TYPE_TOKEN_ACLASS|OEL_TYPE_TOKEN_ICLASS</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_class_declaration">oel_add_begin_class_declaration</a> <a href="#oel_add_end_class_declaration">oel_add_end_class_declaration</a> <a href="#oel_add_begin_abstract_class_declaration">oel_add_begin_abstract_class_declaration</a> <a href="#oel_add_end_abstract_class_declaration">oel_add_end_abstract_class_declaration</a> <a href="#oel_add_begin_interface_declaration">oel_add_begin_interface_declaration</a> <a href="#oel_add_end_interface_declaration">oel_add_end_interface_declaration</a> <a href="#oel_add_implements_interface">oel_add_implements_interface</a> <a href="#oel_add_declare_property">oel_add_declare_property</a> <a href="#oel_finalize">oel_finalize</a> <a href="#oel_new_method">oel_new_method</a> <a href="#oel_new_abstract_method">oel_new_abstract_method</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_instanceof">oel_add_instanceof</a></h3></div>
+<div class="func_desc">
+      Test a variable for being an instance of a certain class.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) class name to test for</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_clone">oel_add_clone</a></h3></div>
+<div class="func_desc">
+      Clone an object.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_if">oel_add_begin_if</a></h3></div>
+<div class="func_desc">
+      Begin an if-then-else block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>push: OEL_TYPE_TOKEN_ELSE</li>
+<li>push: OEL_TYPE_TOKEN_IF</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_end_if">oel_add_end_if</a> <a href="#oel_add_end_else">oel_add_end_else</a> <a href="#oel_add_begin_elseif">oel_add_begin_elseif</a> <a href="#oel_add_end_elseif">oel_add_end_elseif</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_if">oel_add_end_if</a></h3></div>
+<div class="func_desc">
+      End an if block and begin an else block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_IF</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_if">oel_add_begin_if</a> <a href="#oel_add_end_else">oel_add_end_else</a> <a href="#oel_add_begin_elseif">oel_add_begin_elseif</a> <a href="#oel_add_end_elseif">oel_add_end_elseif</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_else">oel_add_end_else</a></h3></div>
+<div class="func_desc">
+      End an if-then-else block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_ELSE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_if">oel_add_begin_if</a> <a href="#oel_add_end_if">oel_add_end_if</a> <a href="#oel_add_begin_elseif">oel_add_begin_elseif</a> <a href="#oel_add_end_elseif">oel_add_end_elseif</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_elseif">oel_add_begin_elseif</a></h3></div>
+<div class="func_desc">
+      Begin an elseif block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>test: OEL_TYPE_TOKEN_ELSE</li>
+<li>push: OEL_TYPE_TOKEN_ELSEIF</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_if">oel_add_begin_if</a> <a href="#oel_add_end_if">oel_add_end_if</a> <a href="#oel_add_end_else">oel_add_end_else</a> <a href="#oel_add_end_elseif">oel_add_end_elseif</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_elseif">oel_add_end_elseif</a></h3></div>
+<div class="func_desc">
+      End an elseif block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_ELSEIF</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_if">oel_add_begin_if</a> <a href="#oel_add_end_if">oel_add_end_if</a> <a href="#oel_add_end_else">oel_add_end_else</a> <a href="#oel_add_begin_elseif">oel_add_begin_elseif</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_switch">oel_add_begin_switch</a></h3></div>
+<div class="func_desc">
+      Begin a switch block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_SWITCH</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_end_switch">oel_add_end_switch</a> <a href="#oel_add_begin_case">oel_add_begin_case</a> <a href="#oel_add_end_case">oel_add_end_case</a> <a href="#oel_add_begin_default">oel_add_begin_default</a> <a href="#oel_add_end_default">oel_add_end_default</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_switch">oel_add_end_switch</a></h3></div>
+<div class="func_desc">
+      End a switch block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_SWITCH</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_switch">oel_add_begin_switch</a> <a href="#oel_add_begin_case">oel_add_begin_case</a> <a href="#oel_add_end_case">oel_add_end_case</a> <a href="#oel_add_begin_default">oel_add_begin_default</a> <a href="#oel_add_end_default">oel_add_end_default</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_case">oel_add_begin_case</a></h3></div>
+<div class="func_desc">
+      Begin an switch-case block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>test: OEL_TYPE_TOKEN_SWITCH</li>
+<li>push: OEL_TYPE_TOKEN_SWITCH_CASE</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_switch">oel_add_begin_switch</a> <a href="#oel_add_end_switch">oel_add_end_switch</a> <a href="#oel_add_end_case">oel_add_end_case</a> <a href="#oel_add_begin_default">oel_add_begin_default</a> <a href="#oel_add_end_default">oel_add_end_default</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_case">oel_add_end_case</a></h3></div>
+<div class="func_desc">
+      End an switch-case block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_SWITCH_CASE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_switch">oel_add_begin_switch</a> <a href="#oel_add_end_switch">oel_add_end_switch</a> <a href="#oel_add_begin_case">oel_add_begin_case</a> <a href="#oel_add_begin_default">oel_add_begin_default</a> <a href="#oel_add_end_default">oel_add_end_default</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_default">oel_add_begin_default</a></h3></div>
+<div class="func_desc">
+      Begin an switch-default block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>test: OEL_TYPE_TOKEN_SWITCH</li>
+<li>push: OEL_TYPE_TOKEN_SWITCH_DEFAULT</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_switch">oel_add_begin_switch</a> <a href="#oel_add_end_switch">oel_add_end_switch</a> <a href="#oel_add_begin_case">oel_add_begin_case</a> <a href="#oel_add_end_case">oel_add_end_case</a> <a href="#oel_add_end_default">oel_add_end_default</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_default">oel_add_end_default</a></h3></div>
+<div class="func_desc">
+      End an switch-default block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_SWITCH_DEFAULT</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_switch">oel_add_begin_switch</a> <a href="#oel_add_end_switch">oel_add_end_switch</a> <a href="#oel_add_begin_case">oel_add_begin_case</a> <a href="#oel_add_end_case">oel_add_end_case</a> <a href="#oel_add_begin_default">oel_add_begin_default</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_new_op_array">oel_new_op_array</a></h3></div>
+<div class="func_desc">
+      Create new base opcode array.
+    </div>
+<div class="func_return">
+<b>return:</b> (resource(oel)) OEL resource handle</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_finalize">oel_finalize</a></h3></div>
+<div class="func_desc">
+      Prepare execution or save op of an base opcode array. A finalized opcode array cannot be modified anymore.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_OAR_FUNCTION|OEL_TYPE_OAR_METHOD|OEL_TYPE_OAR_AMETHOD</li></ul>
+</div>
+<div class="func_see">
+          See also: </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_execute">oel_execute</a></h3></div>
+<div class="func_desc">
+      Execute an opcode array.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_echo">oel_add_echo</a></h3></div>
+<div class="func_desc">
+      Print anything to stdout.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_return">oel_add_return</a></h3></div>
+<div class="func_desc">
+      Return a value. Pop OEL_TYPE_TOKEN_VARIABLE if the value is a variable.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+<b>?</b>
+      () <small><br>default value: </small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_VARIABLE</li></ul>
+</div>
+<div class="func_see">
+          See also: </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_free">oel_add_free</a></h3></div>
+<div class="func_desc">
+      Destroy the top of the operand stack.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_break">oel_add_break</a></h3></div>
+<div class="func_desc">
+      Break up a block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+<b>?</b>
+      (integer) depth to break<small><br>default value: 1</small>
+</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_continue">oel_add_continue</a></h3></div>
+<div class="func_desc">
+      Continue a loop body.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+<b>?</b>
+      (integer) depth to continue<small><br>default value: 1</small>
+</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_exit">oel_add_exit</a></h3></div>
+<div class="func_desc">
+      Exit processing.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_include">oel_add_include</a></h3></div>
+<div class="func_desc">
+      Include a php program.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_include_once">oel_add_include_once</a></h3></div>
+<div class="func_desc">
+      Include a php program once.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_require">oel_add_require</a></h3></div>
+<div class="func_desc">
+      Require a php program.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_require_once">oel_add_require_once</a></h3></div>
+<div class="func_desc">
+      Require a php program once.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_eval">oel_add_eval</a></h3></div>
+<div class="func_desc">
+      Evaluate a source code string.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_unset">oel_add_unset</a></h3></div>
+<div class="func_desc">
+      Unset a variable.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_VARIABLE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_while">oel_add_begin_while</a></h3></div>
+<div class="func_desc">
+      Begin while loop head.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>push: OEL_TYPE_TOKEN_WHILE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_while_body">oel_add_begin_while_body</a> <a href="#oel_add_end_while">oel_add_end_while</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_while_body">oel_add_begin_while_body</a></h3></div>
+<div class="func_desc">
+      End while loop head and begin while loop body.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>test: OEL_TYPE_TOKEN_WHILE</li>
+<li>push: OEL_TYPE_TOKEN_WHILE_BODY</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_while">oel_add_begin_while</a> <a href="#oel_add_end_while">oel_add_end_while</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_while">oel_add_end_while</a></h3></div>
+<div class="func_desc">
+      End while loop body.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>pop: OEL_TYPE_TOKEN_WHILE_BODY</li>
+<li>pop: OEL_TYPE_TOKEN_WHILE</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_while">oel_add_begin_while</a> <a href="#oel_add_begin_while_body">oel_add_begin_while_body</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_dowhile">oel_add_begin_dowhile</a></h3></div>
+<div class="func_desc">
+      Begin dowhile loop body.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>push: OEL_TYPE_TOKEN_DOWHILE</li>
+<li>push: OEL_TYPE_TOKEN_DOWHILE_BODY</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_end_dowhile_body">oel_add_end_dowhile_body</a> <a href="#oel_add_end_dowhile">oel_add_end_dowhile</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_dowhile_body">oel_add_end_dowhile_body</a></h3></div>
+<div class="func_desc">
+      End dowhile loop body and begin condition.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>test: OEL_TYPE_TOKEN_DOWHILE_BODY</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_dowhile">oel_add_begin_dowhile</a> <a href="#oel_add_end_dowhile">oel_add_end_dowhile</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_dowhile">oel_add_end_dowhile</a></h3></div>
+<div class="func_desc">
+      End dowhile loop.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>pop: OEL_TYPE_TOKEN_DOWHILE_BODY</li>
+<li>pop: OEL_TYPE_TOKEN_DOWHILE</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_dowhile">oel_add_begin_dowhile</a> <a href="#oel_add_end_dowhile_body">oel_add_end_dowhile_body</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_foreach">oel_add_begin_foreach</a></h3></div>
+<div class="func_desc">
+      Begin foreach loop. Array can be static or a function result, so OEL_TYPE_TOKEN_VARIABLE won't be poped.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>pop: OEL_TYPE_TOKEN_VARIABLE</li>
+<li>pop: OEL_TYPE_TOKEN_FOREACH</li>
+<li>pop: OEL_TYPE_TOKEN_FOREACH_HEAD</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_foreach_body">oel_add_begin_foreach_body</a></h3></div>
+<div class="func_desc">
+      End foreach loop head and begin foreach body. Key can be NULL, so OEL_TYPE_TOKEN_VARIABLE won't be poped.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+<b>?</b>
+      (bool) TRUE if value is a reference<small><br>default value: FALSE</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>pop: OEL_TYPE_TOKEN_VARIABLE</li>
+<li>pop: OEL_TYPE_TOKEN_VARIABLE</li>
+<li>pop: OEL_TYPE_TOKEN_FOREACH_HEAD</li>
+<li>test: OEL_TYPE_TOKEN_FOREACH</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_foreach">oel_add_end_foreach</a></h3></div>
+<div class="func_desc">
+      begin foreach body.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>pop: OEL_TYPE_TOKEN_FOREACH</li>
+<li>test: </li>
+<li>push: </li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_receive_arg">oel_add_receive_arg</a></h3></div>
+<div class="func_desc">
+      define a parameter of a function/method.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) argument position (starts with 1)</li>
+<li>
+      (string) name of the parameter</li>
+<li>
+<b>?</b>
+      (mixed) default value (if present and not NULL parameter is optional)<small><br>default value: NULL</small>
+</li>
+<li>
+<b>?</b>
+      (string) class type<small><br>default value: none</small>
+</li>
+<li>
+<b>?</b>
+      (bool) TRUE if parameter is a reference<small><br>default value: FALSE</small>
+</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_static_variable">oel_add_static_variable</a></h3></div>
+<div class="func_desc">
+      Declare a static variable.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) variable name</li>
+<li>
+      (mixed) initial value</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_variable_parse">oel_add_begin_variable_parse</a></h3></div>
+<div class="func_desc">
+      Prepare back patch stack for a chained expression.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>push: OEL_TYPE_TOKEN_VARIABLE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_variable_parse">oel_add_end_variable_parse</a></h3></div>
+<div class="func_desc">
+      End expression and declare it readable.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+<b>?</b>
+      () <small><br>default value: </small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_VARIABLE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_push_variable">oel_push_variable</a></h3></div>
+<div class="func_desc">
+      Push a variable by name on the operand stack. If it is a static member of a class, it's class name must be named as second parameter.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) variable name</li>
+<li>
+<b>?</b>
+      (string) class name for static access<small><br>default value: NULL</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>test: OEL_TYPE_TOKEN_VARIABLE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_push_variable_indirect">oel_push_variable_indirect</a></h3></div>
+<div class="func_desc">
+      Push a variable by it name on the operand stack. The variable name is storen in a variable.
+      If it is a static member of a class, it's class name must be named as second parameter.
+      (fetch b indirect with indirection level 2: $a= "b"; $$a;)
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) number of indirections</li>
+<li>
+      (string) variable name</li>
+<li>
+<b>?</b>
+      (string) class name for static access<small><br>default value: NULL</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>test: OEL_TYPE_TOKEN_VARIABLE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_push_property">oel_push_property</a></h3></div>
+<div class="func_desc">
+      Push an object member on the operand stack.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) property name</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_push_constant">oel_push_constant</a></h3></div>
+<div class="func_desc">
+      Push a constant on the operand stack.
+      If it is a constant of a class, it's class name must be named as second parameter.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) name of the constant</li>
+<li>
+<b>?</b>
+      (string) class name<small><br>default value: NULL</small>
+</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_push_value">oel_push_value</a></h3></div>
+<div class="func_desc">
+      Push a value on the stack.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (mixed) value</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_unary_op">oel_add_unary_op</a></h3></div>
+<div class="func_desc">
+      perform an operation on one operand. Operations:
+        OEL_UNARY_OP_BOOL_NOT: boolean not
+        OEL_UNARY_OP_BW_NOT: bitwise not
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) operation</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_incdec_op">oel_add_incdec_op</a></h3></div>
+<div class="func_desc">
+      Perform an incrementation or a decrementation. Operations:<code><pre>
+        OEL_OP_POST_INC: $a++
+        OEL_OP_POST_DEC: $a--
+        OEL_OP_PRE_INC:  ++$a
+        OEL_OP_PRE_DEC:  --$a</pre></code>
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) operation</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_VARIABLE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_binary_op">oel_add_binary_op</a></h3></div>
+<div class="func_desc">
+      Perform an operation with two operands.
+      OEL_TYPE_TOKEN_VARIABLE is poped if operation is an assign operation.
+      Operations:<code><pre>
+        OEL_BINARY_OP_BW_OR:               $a | $b
+        OEL_BINARY_OP_BW_AND:              $a &amp; $b
+        OEL_BINARY_OP_BW_XOR:              $a ^ $b
+        OEL_BINARY_OP_CONCAT:              $a.$b
+        OEL_BINARY_OP_ADD:                 $a + $b
+        OEL_BINARY_OP_SUB:                 $a - $b
+        OEL_BINARY_OP_MUL:                 $a * $b
+        OEL_BINARY_OP_DIV:                 $a / $b
+        OEL_BINARY_OP_MOD:                 $a % $b
+        OEL_BINARY_OP_SL:                  $a &lt;&lt; $b
+        OEL_BINARY_OP_SR:                  $a &gt;&gt; $b
+        OEL_BINARY_OP_IS_IDENTICAL:        $a === $b
+        OEL_BINARY_OP_IS_NOT_IDENTICAL:    $a !== $b
+        OEL_BINARY_OP_IS_EQUAL:            $a == $b
+        OEL_BINARY_OP_IS_NOT_EQUAL:        $a != $b
+        OEL_BINARY_OP_IS_SMALLER:          $a &lt; $b
+        OEL_BINARY_OP_IS_SMALLER_OR_EQUAL: $a &lt;= $b
+        OEL_BINARY_OP_BOOL_XOR:            $a xor $b</pre></code>
+      Assign Operations:<code><pre>
+        OEL_BINARY_OP_ASSIGN_ADD:    $a+= $b
+        OEL_BINARY_OP_ASSIGN_SUB:    $a-= $b
+        OEL_BINARY_OP_ASSIGN_MUL:    $a*= $b
+        OEL_BINARY_OP_ASSIGN_DIV:    $a/= $b
+        OEL_BINARY_OP_ASSIGN_CONCAT: $a.= $b
+        OEL_BINARY_OP_ASSIGN_MOD:    $a%= $b
+        OEL_BINARY_OP_ASSIGN_BW_AND: $a&amp;= $b
+        OEL_BINARY_OP_ASSIGN_BW_OR:  $a|= $b
+        OEL_BINARY_OP_ASSIGN_BW_XOR: $a^= $b
+        OEL_BINARY_OP_ASSIGN_SL:     $a&lt;&lt;= $b
+        OEL_BINARY_OP_ASSIGN_SR:     $a&gt;&gt;= $b</pre></code>
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) operation</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_VARIABLE</li></ul>
+</div>
+<div class="func_see">
+          See also: </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_tinary_op">oel_add_begin_tinary_op</a></h3></div>
+<div class="func_desc">
+      Begin tinary operator positiv part (?:).
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>push: OEL_TYPE_TOKEN_TINARY1</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_end_tinary_op_TRUE">oel_add_end_tinary_op_TRUE</a> <a href="#oel_add_end_tinary_op_FALSE">oel_add_end_tinary_op_FALSE</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_tinary_op_TRUE">oel_add_end_tinary_op_TRUE</a></h3></div>
+<div class="func_desc">
+      End tinary operator positiv part and begin negativ part.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>test: OEL_TYPE_TOKEN_TINARY1</li>
+<li>push: OEL_TYPE_TOKEN_TINARY2</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_tinary_op">oel_add_begin_tinary_op</a> <a href="#oel_add_end_tinary_op_FALSE">oel_add_end_tinary_op_FALSE</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_tinary_op_FALSE">oel_add_end_tinary_op_FALSE</a></h3></div>
+<div class="func_desc">
+      End negativ part.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>pop: OEL_TYPE_TOKEN_TINARY2</li>
+<li>pop: OEL_TYPE_TOKEN_TINARY1</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_tinary_op">oel_add_begin_tinary_op</a> <a href="#oel_add_end_tinary_op_TRUE">oel_add_end_tinary_op_TRUE</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_logical_op">oel_add_begin_logical_op</a></h3></div>
+<div class="func_desc">
+      Begin a logical operation. Operation:<code><pre>
+      EL_OP_BOOL_AND: $a &amp;&amp; $b
+      EL_OP_BOOL_OR:  $a || $b</pre></code>
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) operation</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>push: OEL_TYPE_TOKEN_LOGIC_AND|OEL_TYPE_TOKEN_LOGIC_OR</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_end_logical_op">oel_add_end_logical_op</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_logical_op">oel_add_end_logical_op</a></h3></div>
+<div class="func_desc">
+      End a logical operation.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) operation</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_LOGIC_AND|OEL_TYPE_TOKEN_LOGIC_OR</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_logical_op">oel_add_begin_logical_op</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_cast_op">oel_add_cast_op</a></h3></div>
+<div class="func_desc">
+      Cast an operand. Operations:<code><pre>
+      OEL_OP_TO_INT:    cast to integer
+      OEL_OP_TO_DOUBLE: cast to double
+      OEL_OP_TO_STRING: cast to string
+      OEL_OP_TO_ARRAY:  cast to array
+      OEL_OP_TO_OBJECT: cast to object(std)
+      OEL_OP_TO_BOOL:   cast to bool
+      OEL_OP_TO_UNSET:  cast to NULL</pre></code>
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) operation</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_assign">oel_add_assign</a></h3></div>
+<div class="func_desc">
+      Assign anything to a variable.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+<b>?</b>
+      (bool) TRUE to assign as reference<small><br>default value: FALSE</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_VARIABLE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_empty">oel_add_empty</a></h3></div>
+<div class="func_desc">
+      Test if variable is empty
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_VARIABLE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_isset">oel_add_isset</a></h3></div>
+<div class="func_desc">
+      Test if a variable is set.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_VARIABLE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_call_method">oel_add_call_method</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_new_function">oel_new_function</a></h3></div>
+<div class="func_desc">
+      Create function's opcode array resource.
+    </div>
+<div class="func_return">
+<b>return:</b> (resource(oel)) OEL resource handle</div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) function name</li>
+<li>
+<b>?</b>
+      (bool) TRUE if function returns a reference<small><br>default value: FALSE</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>push: OEL_TYPE_OAR_FUNCTION</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_finalize">oel_finalize</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_new_method">oel_new_method</a></h3></div>
+<div class="func_desc">
+      Create a method's opcode array resource.
+    </div>
+<div class="func_return">
+<b>return:</b> (resource(oel)) OEL resource handle</div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) method name</li>
+<li>
+<b>?</b>
+      (bool) TRUE if method returns a reference<small><br>default value: FALSE</small>
+</li>
+<li>
+<b>?</b>
+      (bool) TRUE if method is static<small><br>default value: FALSE</small>
+</li>
+<li>
+<b>?</b>
+      (integer) access flag (OEL_ACC_PRIVATE, OEL_ACC_PROTECTED, OEL_ACC_PUBLIC)<small><br>default value: OEL_ACC_PUBLIC</small>
+</li>
+<li>
+<b>?</b>
+      (bool) TRUE if method is final<small><br>default value: FALSE</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>test: OEL_TYPE_TOKEN_CLASS|OEL_TYPE_TOKEN_ACLASS|OEL_TYPE_TOKEN_ICLASS</li>
+<li>push: OEL_TYPE_OAR_METHOD</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_class_declaration">oel_add_begin_class_declaration</a> <a href="#oel_add_end_class_declaration">oel_add_end_class_declaration</a> <a href="#oel_add_begin_abstract_class_declaration">oel_add_begin_abstract_class_declaration</a> <a href="#oel_add_end_abstract_class_declaration">oel_add_end_abstract_class_declaration</a> <a href="#oel_add_begin_interface_declaration">oel_add_begin_interface_declaration</a> <a href="#oel_add_end_interface_declaration">oel_add_end_interface_declaration</a> <a href="#oel_add_implements_interface">oel_add_implements_interface</a> <a href="#oel_add_declare_property">oel_add_declare_property</a> <a href="#oel_add_declare_class_constant">oel_add_declare_class_constant</a> <a href="#oel_finalize">oel_finalize</a> <a href="#oel_new_abstract_method">oel_new_abstract_method</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_new_abstract_method">oel_new_abstract_method</a></h3></div>
+<div class="func_desc">
+      Create an abstract method's opcode array resource.
+    </div>
+<div class="func_return">
+<b>return:</b> (resource(oel)) OEL resource handle</div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) method name</li>
+<li>
+<b>?</b>
+      (bool) TRUE if method returns a reference<small><br>default value: FALSE</small>
+</li>
+<li>
+<b>?</b>
+      (bool) TRUE if method is static<small><br>default value: FALSE</small>
+</li>
+<li>
+<b>?</b>
+      (integer) access flag (OEL_ACC_PRIVATE, OEL_ACC_PROTECTED, OEL_ACC_PUBLIC)<small><br>default value: OEL_ACC_PUBLIC</small>
+</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>test: OEL_TYPE_TOKEN_ACLASS</li>
+<li>push: OEL_TYPE_OAR_AMETHOD</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_class_declaration">oel_add_begin_class_declaration</a> <a href="#oel_add_end_class_declaration">oel_add_end_class_declaration</a> <a href="#oel_add_begin_abstract_class_declaration">oel_add_begin_abstract_class_declaration</a> <a href="#oel_add_end_abstract_class_declaration">oel_add_end_abstract_class_declaration</a> <a href="#oel_add_begin_interface_declaration">oel_add_begin_interface_declaration</a> <a href="#oel_add_end_interface_declaration">oel_add_end_interface_declaration</a> <a href="#oel_add_implements_interface">oel_add_implements_interface</a> <a href="#oel_add_declare_property">oel_add_declare_property</a> <a href="#oel_add_declare_class_constant">oel_add_declare_class_constant</a> <a href="#oel_finalize">oel_finalize</a> <a href="#oel_new_method">oel_new_method</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_call_function">oel_add_call_function</a></h3></div>
+<div class="func_desc">
+      Make a function call.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) number of parameters to pop</li>
+<li>
+      (string) name of function</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_call_function_name">oel_add_call_function_name</a></h3></div>
+<div class="func_desc">
+      Make a function call by name.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) number of parameters to pop</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_call_method">oel_add_call_method</a></h3></div>
+<div class="func_desc">
+      Make a method call.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) number of parameters to pop</li>
+<li>
+      (string) method name</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_VARIABLE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method_name">oel_add_call_method_name</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_call_method_static">oel_add_call_method_static</a></h3></div>
+<div class="func_desc">
+      Make a static method call.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) number of parameters to pop</li>
+<li>
+      (string) method name</li>
+<li>
+      (string) class name</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_call_method_name">oel_add_call_method_name</a></h3></div>
+<div class="func_desc">
+      Make a method call by name.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) number of parameters to pop</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_VARIABLE</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_list">oel_add_begin_list</a> <a href="#oel_add_end_list">oel_add_end_list</a> <a href="#oel_add_begin_inner_list">oel_add_begin_inner_list</a> <a href="#oel_add_end_inner_list">oel_add_end_inner_list</a> <a href="#oel_add_list_element">oel_add_list_element</a> <a href="#oel_add_return">oel_add_return</a> <a href="#oel_add_unset">oel_add_unset</a> <a href="#oel_add_begin_foreach">oel_add_begin_foreach</a> <a href="#oel_add_begin_foreach_body">oel_add_begin_foreach_body</a> <a href="#oel_add_end_foreach">oel_add_end_foreach</a> <a href="#oel_add_begin_variable_parse">oel_add_begin_variable_parse</a> <a href="#oel_add_end_variable_parse">oel_add_end_variable_parse</a> <a href="#oel_push_variable">oel_push_variable</a> <a href="#oel_push_variable_indirect">oel_push_variable_indirect</a> <a href="#oel_add_incdec_op">oel_add_incdec_op</a> <a href="#oel_add_binary_op">oel_add_binary_op</a> <a href="#oel_add_assign">oel_add_assign</a> <a href="#oel_add_empty">oel_add_empty</a> <a href="#oel_add_isset">oel_add_isset</a> <a href="#oel_add_call_method">oel_add_call_method</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_call_method_name_static">oel_add_call_method_name_static</a></h3></div>
+<div class="func_desc">
+      Make a static method call by name.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) number of parameters to pop</li>
+<li>
+      (string) class name</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_new_object">oel_add_new_object</a></h3></div>
+<div class="func_desc">
+      Make new object;
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) number of parameters to pop</li>
+<li>
+      (string) class name</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_tryblock">oel_add_begin_tryblock</a></h3></div>
+<div class="func_desc">
+      Begin try block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>push: OEL_TYPE_TOKEN_TRY</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_catchblock">oel_add_begin_catchblock</a> <a href="#oel_add_begin_firstcatch">oel_add_begin_firstcatch</a> <a href="#oel_add_end_firstcatch">oel_add_end_firstcatch</a> <a href="#oel_add_begin_catch">oel_add_begin_catch</a> <a href="#oel_add_end_catch">oel_add_end_catch</a> <a href="#oel_add_end_catchblock">oel_add_end_catchblock</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_catchblock">oel_add_begin_catchblock</a></h3></div>
+<div class="func_desc">
+      End try block and begin all-catch block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>test: OEL_TYPE_TOKEN_TRY</li>
+<li>push: OEL_TYPE_TOKEN_CATCH</li>
+<li>push: OEL_TYPE_TOKEN_CATCH_FIRST</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_tryblock">oel_add_begin_tryblock</a> <a href="#oel_add_begin_firstcatch">oel_add_begin_firstcatch</a> <a href="#oel_add_end_firstcatch">oel_add_end_firstcatch</a> <a href="#oel_add_begin_catch">oel_add_begin_catch</a> <a href="#oel_add_end_catch">oel_add_end_catch</a> <a href="#oel_add_end_catchblock">oel_add_end_catchblock</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_firstcatch">oel_add_begin_firstcatch</a></h3></div>
+<div class="func_desc">
+      Begin the first catch block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) exception class name</li>
+<li>
+      (string) variable name</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>test: OEL_TYPE_TOKEN_CATCH_FIRST</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_tryblock">oel_add_begin_tryblock</a> <a href="#oel_add_begin_catchblock">oel_add_begin_catchblock</a> <a href="#oel_add_end_firstcatch">oel_add_end_firstcatch</a> <a href="#oel_add_begin_catch">oel_add_begin_catch</a> <a href="#oel_add_end_catch">oel_add_end_catch</a> <a href="#oel_add_end_catchblock">oel_add_end_catchblock</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_firstcatch">oel_add_end_firstcatch</a></h3></div>
+<div class="func_desc">
+      End the first catch block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>pop: OEL_TYPE_TOKEN_CATCH_FIRST</li>
+<li>push: OEL_TYPE_TOKEN_CATCH_LAST</li>
+<li>push: OEL_TYPE_TOKEN_CATCH_ADD</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_tryblock">oel_add_begin_tryblock</a> <a href="#oel_add_begin_catchblock">oel_add_begin_catchblock</a> <a href="#oel_add_begin_firstcatch">oel_add_begin_firstcatch</a> <a href="#oel_add_begin_catch">oel_add_begin_catch</a> <a href="#oel_add_end_catch">oel_add_end_catch</a> <a href="#oel_add_end_catchblock">oel_add_end_catchblock</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_begin_catch">oel_add_begin_catch</a></h3></div>
+<div class="func_desc">
+      Begin an additional catch block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (string) exception class name</li>
+<li>
+      (string) variable name</li>
+</ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>test: OEL_TYPE_TOKEN_CATCH_ADD</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_tryblock">oel_add_begin_tryblock</a> <a href="#oel_add_begin_catchblock">oel_add_begin_catchblock</a> <a href="#oel_add_begin_firstcatch">oel_add_begin_firstcatch</a> <a href="#oel_add_end_firstcatch">oel_add_end_firstcatch</a> <a href="#oel_add_end_catch">oel_add_end_catch</a> <a href="#oel_add_end_catchblock">oel_add_end_catchblock</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_catch">oel_add_end_catch</a></h3></div>
+<div class="func_desc">
+      End an additional catch block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul><li>test: OEL_TYPE_TOKEN_CATCH_ADD</li></ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_tryblock">oel_add_begin_tryblock</a> <a href="#oel_add_begin_catchblock">oel_add_begin_catchblock</a> <a href="#oel_add_begin_firstcatch">oel_add_begin_firstcatch</a> <a href="#oel_add_end_firstcatch">oel_add_end_firstcatch</a> <a href="#oel_add_begin_catch">oel_add_begin_catch</a> <a href="#oel_add_end_catchblock">oel_add_end_catchblock</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_end_catchblock">oel_add_end_catchblock</a></h3></div>
+<div class="func_desc">
+      End all-catch block.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_tokens">
+          Token-Stack:<ul>
+<li>pop: OEL_TYPE_TOKEN_CATCH_ADD</li>
+<li>pop: OEL_TYPE_TOKEN_CATCH_LAST</li>
+<li>pop: OEL_TYPE_TOKEN_CATCH</li>
+<li>pop: OEL_TYPE_TOKEN_TRY</li>
+</ul>
+</div>
+<div class="func_see">
+          See also: <a href="#oel_add_begin_tryblock">oel_add_begin_tryblock</a> <a href="#oel_add_begin_catchblock">oel_add_begin_catchblock</a> <a href="#oel_add_begin_firstcatch">oel_add_begin_firstcatch</a> <a href="#oel_add_end_firstcatch">oel_add_end_firstcatch</a> <a href="#oel_add_begin_catch">oel_add_begin_catch</a> <a href="#oel_add_end_catch">oel_add_end_catch</a> </div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="oel_add_throw">oel_add_throw</a></h3></div>
+<div class="func_desc">
+      Throw an exception
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+<div class="func">
+<div class="func_head"><h3><a name="bcompiler_write_oel_oparray">bcompiler_write_oel_oparray</a></h3></div>
+<div class="func_desc">
+      Serialize an opcode array.
+    </div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(stream)) output stream resource handle</li>
+<li>
+      (resource(oel)) OEL resource handle</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#">^Top</a></div>
+</div>
+</body>
+</html>

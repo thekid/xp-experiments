@@ -101,26 +101,20 @@ PHP_FUNCTION(oel_add_begin_interface_declaration) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
-    znode             *class_name, *parent_class_name, *class_token;
+    znode             *class_name, *class_token;
     char              *arg_class_name,    *arg_parent_name= NULL;
     int                arg_class_name_len, arg_parent_name_len= 0, arg_is_final= 0;
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|s", &arg_op_array, &arg_class_name, &arg_class_name_len, &arg_parent_name, &arg_parent_name_len) == FAILURE) { RETURN_NULL(); }
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_class_name, &arg_class_name_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
     class_name= oel_create_token(res_op_array, OEL_TYPE_UNSET TSRMLS_CC);
     ZVAL_STRINGL(&class_name->u.constant, arg_class_name, arg_class_name_len, 1);
-    parent_class_name= oel_create_extvar(res_op_array TSRMLS_CC);
-    if (arg_parent_name_len > 0) {
-        ZVAL_STRINGL(&parent_class_name->u.constant, arg_parent_name, arg_parent_name_len, 1);
-    } else {
-        parent_class_name->op_type= IS_UNUSED;
-    }
     class_token= oel_create_token(res_op_array, OEL_TYPE_TOKEN_ICLASS TSRMLS_CC);
     class_token->u.opline_num= CG(zend_lineno);
     class_token->u.EA.type= ZEND_ACC_INTERFACE;
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_begin_class_declaration(class_token, class_name, parent_class_name TSRMLS_CC);
+    zend_do_begin_class_declaration(class_token, class_name, NULL TSRMLS_CC);
     res_op_array->oel_cg.active_class_entry= CG(active_class_entry);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
@@ -152,7 +146,7 @@ PHP_FUNCTION(oel_add_implements_interface) {
     int                arg_iname_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_iname, &arg_iname_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
-    if (!oel_token_isa(res_op_array TSRMLS_CC, 2, OEL_TYPE_TOKEN_CLASS, OEL_TYPE_TOKEN_ACLASS)) oel_compile_error(E_ERROR, "wrong token: only classes and and abstract classes can implement interfaces");
+    if (!oel_token_isa(res_op_array TSRMLS_CC, 3, OEL_TYPE_TOKEN_CLASS, OEL_TYPE_TOKEN_ACLASS, OEL_TYPE_TOKEN_ICLASS)) oel_compile_error(E_ERROR, "wrong token: class, abstract classor interface token expected");
 
     interface_name= oel_create_extvar(res_op_array TSRMLS_CC);
     ZVAL_STRINGL(&interface_name->u.constant, arg_iname, arg_iname_len, 1);

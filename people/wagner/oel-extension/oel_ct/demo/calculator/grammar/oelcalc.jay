@@ -31,7 +31,8 @@ expression:
   | expression '*' expression { $$= new oel텶nstructionTree("oel_add_binary_op", array(OEL_BINARY_OP_MUL)); $$->addPreInstruction($3); $$->addPreInstruction($1); }
   | expression ':' expression { $$= new oel텶nstructionTree("oel_add_binary_op", array(OEL_BINARY_OP_DIV)); $$->addPreInstruction($3); $$->addPreInstruction($1); }
   | expression '%' expression { $$= new oel텶nstructionTree("oel_add_binary_op", array(OEL_BINARY_OP_MOD)); $$->addPreInstruction($3); $$->addPreInstruction($1); }
-  | '(' expression ')' { $$= $2; }
+  | '-' expression            { $$= new oel텶nstructionTree("oel_add_binary_op", array(OEL_BINARY_OP_MUL)); $$->addPreInstruction($2); $$->addPreInstruction(new oel텶nstructionTree("oel_push_value", array(-1))); }
+  | '(' expression ')'        { $$= $2; }
 ;
 
 number:
