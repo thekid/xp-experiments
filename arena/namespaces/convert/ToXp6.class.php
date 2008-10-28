@@ -103,6 +103,9 @@
       ST_USES         = 'uses',
       ST_ANONYMOUS    = 'anon',
       ST_NAMESPACE    = 'nspc';
+    
+    const
+      SEPARATOR       = '\\';
 
     /**
      * Constructor
@@ -207,7 +210,7 @@
 
         // If the searched class resides in the same namespace, it does not
         // need to be fully qualified or mapped, so check for this
-        $search= ($namespace !== NULL ? str_replace('::', '.', $namespace).'.' : '').$qname;
+        $search= ($namespace !== NULL ? str_replace(self::SEPARATOR, '.', $namespace).'.' : '').$qname;
         if (!ClassLoader::findClass($search) instanceof IClassLoader) {
           $this->err->writeLine('*** No mapping for ', $qname, ' (current namespace: ', $namespace,', class= ', $context, ')');
         }
@@ -218,7 +221,7 @@
       if (isset($imports[(string)$mapped])) {
         $this->verbose && $this->out->writeLine('I:', $context, ': ', $qname, ' => ', $imports[(string)$mapped]);
         return $imports[(string)$mapped]; 
-      } else if (FALSE !== ($p= strrpos($mapped, '::')) && $namespace == substr($mapped, 0, $p)) {
+      } else if (FALSE !== ($p= strrpos($mapped, self::SEPARATOR)) && $namespace == substr($mapped, 0, $p)) {
         $this->verbose && $this->out->writeLine('N:', $context, ': ', $qname, ' => ', substr($mapped, $p+ 2));
         return substr($mapped, $p+ 2);
       } else {
@@ -240,7 +243,7 @@
       // Calculate class and package name from qualified name
       $p= strrpos($qname, '.');
       $package= substr($qname, 0, $p);
-      $namespace= str_replace('.', '::', $package);
+      $namespace= str_replace('.', self::SEPARATOR, $package);
       $class= substr($qname, $p+ 1);
       
       // Tokenize file
@@ -253,7 +256,7 @@
         
           // Insert namespace declaration after "This class is part of..." file comment
           case self::ST_INITIAL.T_COMMENT: {
-            $out.= $token[1]."\n\n  namespace ".str_replace('.', '::', $namespace).';';
+            $out.= $token[1]."\n\n  namespace ".str_replace('.', self::SEPARATOR, $namespace).';';
             array_unshift($state, self::ST_NAMESPACE);
             break;
           }
@@ -273,8 +276,8 @@
           }
           
           case self::ST_USES.T_CONSTANT_ENCAPSED_STRING: {
-            $fqcn= str_replace('.', '::', trim($token[1], "'"));
-            $local= substr($fqcn, strrpos($fqcn, '::')+ 2);
+            $fqcn= str_replace('.', self::SEPARATOR, trim($token[1], "'"));
+            $local= substr($fqcn, strrpos($fqcn, self::SEPARATOR)+ strlen(self::SEPARATOR));
             if ($local == $class) {
               $this->err->writeLine('*** Name clash between ', $fqcn, ' and declared', $class, ' in ', $qname, ', using qualified name for ', $fqcn);
               $imports[$fqcn]= $fqcn;
@@ -365,7 +368,7 @@
 
               // ClassLoader::defineClass('fully.qualified', 'parent.fqcn', array('interface.fqcns'), '{ source }');
               // ClassLoader::defineInterface('fully.qualified', array('parent.fqcns'), '{ source }');
-              $complete= $token[1].'::'.$member[1];
+              $complete= $token[1].self::SEPARATOR.$member[1];
               $converted= NULL;
               if ('ClassLoader::defineClass' == $complete || 'ClassLoader::defineInterface' == $complete) {
                 do {
@@ -444,7 +447,7 @@
           
           // Anonymous class creation - newinstance('fully.qualified', array(...), '{ source }');
           case self::ST_DECL.self::T_NEWINSTANCE:  {
-            $out.= '::newinstance('.$t[$i+ 2][1];
+            $out.= self::SEPARATOR.'newinstance('.$t[$i+ 2][1];
             $i+= 2;
             array_unshift($state, self::ST_ANONYMOUS);
             break;
@@ -465,7 +468,7 @@
           case self::ST_DECL.self::T_RAISE: case self::ST_DECL.self::T_FINALLY:
           case self::ST_DECL.self::T_DELETE: case self::ST_DECL.self::T_WITH: 
           case self::ST_DECL.self::T_IS: case self::ST_DECL.self::T_CAST: {
-            $out.= '::'.$token[1];
+            $out.= self::SEPARATOR.$token[1];
             break;
           }
           
@@ -571,7 +574,7 @@
         $st= new StreamTokenizer(new FileInputStream($package->getResourceAsStream($resource)), "\r\n");
         while ($st->hasMoreTokens()) {
           sscanf($st->nextToken(), "%[^=]=%[^\r]", $name, $qualified);
-          $this->nameMap->put($name, new String($qualified));
+          $this->nameMap->put($name, new String(str_replace('.', self::SEPARATOR, $qualified)));
           $entries++;
         }
         $this->verbose && $this->out->writeLine('---> Loaded name map ', $resource, ' (', $entries, ')');
