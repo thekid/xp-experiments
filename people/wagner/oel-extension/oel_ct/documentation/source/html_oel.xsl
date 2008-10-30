@@ -44,8 +44,8 @@
   </xsl:template>
 
   <xsl:template name="function">
-    <div class="func">
-      <div class="func_head"><h3><a name="{@name}"><xsl:value-of select="@name" /></a></h3></div>
+    <div class="func" id="{@name}">
+      <div class="func_head"><h3><xsl:value-of select="@name" /></h3></div>
       <div class="func_desc">
         <xsl:copy-of select="description/node()" />
       </div>
@@ -64,12 +64,15 @@
         <div class="func_tokens">
           Token-Stack:<ul>
             <xsl:for-each select="tokens/token">
-              <li><xsl:value-of select="@type" />:&#160;<xsl:value-of select="@name" /></li>
+              <li>
+                <xsl:if test="@certain = 'FALSE'">?&#160;</xsl:if>
+                <xsl:value-of select="@type" />:&#160;<xsl:value-of select="@name" />
+              </li>
             </xsl:for-each>
           </ul>
         </div>
       </xsl:if>
-      <xsl:if test="tokens/token">
+      <xsl:if test="tokens/token[not(@certain = 'FALSE')]">
         <div class="func_see">
           See also:<xsl:text> </xsl:text>
           <xsl:for-each select="docu:collectByToken(.)">
@@ -77,7 +80,7 @@
           </xsl:for-each>
         </div>
       </xsl:if>
-      <div class="func_foot"><a href="#">^Top</a></div>
+      <div class="func_foot"><a href="#top">^Top</a></div>
     </div>
   </xsl:template>
 

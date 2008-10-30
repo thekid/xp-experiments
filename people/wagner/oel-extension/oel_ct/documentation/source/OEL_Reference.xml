@@ -1161,7 +1161,7 @@
     </description>
   </function>
 
-  <function name="oel_add_end_tinary_op_TRUE">
+  <function name="oel_add_end_tinary_op_true">
     <tokens>
       <token type="test" name="OEL_TYPE_TOKEN_TINARY1" />
       <token type="push" name="OEL_TYPE_TOKEN_TINARY2" />
@@ -1178,7 +1178,7 @@
     </description>
   </function>
 
-  <function name="oel_add_end_tinary_op_FALSE">
+  <function name="oel_add_end_tinary_op_false">
     <tokens>
       <token type="pop" name="OEL_TYPE_TOKEN_TINARY2" />
       <token type="pop" name="OEL_TYPE_TOKEN_TINARY1" />
@@ -1210,8 +1210,8 @@
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
       Begin a logical operation. Operation:<code><pre>
-      EL_OP_BOOL_AND: $a &amp;&amp; $b
-      EL_OP_BOOL_OR:  $a || $b</pre></code>
+      OEL_OP_BOOL_AND: $a &amp;&amp; $b
+      OEL_OP_BOOL_OR:  $a || $b</pre></code>
     </description>
   </function>
 
