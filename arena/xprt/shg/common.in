@@ -26,6 +26,22 @@ translate_path() {
   fi
 }
 
+locate() {
+  local base="$1"
+  local xppath="$2"
+  local file="$3"
+  
+  IFS="$PATHSEP"
+  for i in $xppath ; do
+    qualified=$(translate_path "$base" "$i")/$file
+    if [ -e "$qualified" ] ; then
+      echo "$qualified"
+      return
+    fi
+  done
+  echo ""
+}
+
 execute() {
   local base="$1"
   local runner="$2"
@@ -38,18 +54,19 @@ execute() {
       case "$line" in
         use=*)
           value="${line#*=}"
-          xppath=$(translate_path "$base" "$value")
+          xppath="$value"
         ;;
       esac
     done < "$base"/xp.ini
   else
-    xppath=$(translate_path "." "$USE_XP")
+    xppath="$USE_XP"
+    base='.'
   fi
-  
+
   config=""
   executor="php"
   args="-dinclude_path=\"$include\"${ifs}-dmagic_quotes_gpc=0"
-  if [ -e "$xppath"/php.ini ] ; then
+  if [ $(locate "{$base}" "$xppath" "php.ini") ] ; then
     while read line ; do 
       case "$line" in
         *=*)
@@ -65,5 +82,5 @@ execute() {
     done < "$xppath"/php.ini
   fi
 
-  echo ${executor}${ifs}${args}${ifs}$(translate_path "." "${xppath}")/tools/${runner}'.php'
+  echo ${executor}${ifs}${args}${ifs}$(locate "${base}" "${xppath}" "tools/"${runner}".php")
 }
