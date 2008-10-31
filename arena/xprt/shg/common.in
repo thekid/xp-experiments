@@ -26,14 +26,25 @@ translate_path() {
   fi
 }
 
-locate() {
+translate_paths() {
   local base="$1"
   local xppath="$2"
-  local file="$3"
+
+  translated=""
+  IFS="$PATHSEP"
+  for i in $xppath ; do
+    translated="$translated$PATHSEP"$(translate_path "$base" "$i")
+  done
+  echo "${translated:1}"
+}
+
+locate() {
+  local xppath="$1"
+  local file="$2"
   
   IFS="$PATHSEP"
   for i in $xppath ; do
-    qualified=$(translate_path "$base" "$i")/$file
+    qualified="$i/$file"
     if [ -e "$qualified" ] ; then
       echo "$qualified"
       return
@@ -54,19 +65,17 @@ execute() {
       case "$line" in
         use=*)
           value="${line#*=}"
-          xppath="$value"
+          USE_XP=$(translate_paths "$base" "$value")
         ;;
       esac
     done < "$base"/xp.ini
   else
-    xppath="$USE_XP"
-    base='.'
+    USE_XP=$(translate_paths "." "$USE_XP")
   fi
 
-  config=""
   executor="php"
-  args="-dinclude_path=\"$include\"${ifs}-dmagic_quotes_gpc=0"
-  if [ $(locate "{$base}" "$xppath" "php.ini") ] ; then
+  args="-dinclude_path=\"$include\"${ifs}-duser_dir=\"$USE_XP\"${ifs}-dmagic_quotes_gpc=0"
+  if [ $(locate "$USE_XP" "php.ini") ] ; then
     while read line ; do 
       case "$line" in
         *=*)
@@ -82,5 +91,5 @@ execute() {
     done < "$xppath"/php.ini
   fi
 
-  echo ${executor}${ifs}${args}${ifs}$(locate "${base}" "${xppath}" "tools/"${runner}".php")
+  echo ${executor}${ifs}${args}${ifs}$(locate "$USE_XP" "tools/"${runner}".php")
 }
