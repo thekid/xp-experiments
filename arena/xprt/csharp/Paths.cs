@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Net.XpFramework.Runner
 {
-    class PathExtension
+    class Paths
     {
         /// <summary>
         /// Returns the directory name of a given file name

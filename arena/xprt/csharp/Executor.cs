@@ -37,19 +37,19 @@ namespace Net.XpFramework.Runner
                     string[] parsed = line.Split(new char[] { '=' }, 2);
                     if (parsed[KEY] == "use")
                     {
-                        use_xp = PathExtension.Translate(base_dir, parsed[VALUE].Split(PATH_SEPARATOR));
+                        use_xp = Paths.Translate(base_dir, parsed[VALUE].Split(PATH_SEPARATOR));
                     }
                 }
             }
             else
             {
-                use_xp = PathExtension.Translate(System.Environment.CurrentDirectory, env.Split(PATH_SEPARATOR));
+                use_xp = Paths.Translate(System.Environment.CurrentDirectory, env.Split(PATH_SEPARATOR));
             }
             
             // Search for tool
             string executor = "php";
             string argv = "-dinclude_path=\".;" + String.Join(new string(PATH_SEPARATOR), includes) + "\" -duser_dir=\"" + String.Join(";", use_xp.ToArray()) + "\" -dmagic_quotes_gpc=0";
-            foreach (string ini in PathExtension.Locate(use_xp, "php.ini", false))
+            foreach (string ini in Paths.Locate(use_xp, "php.ini", false))
             {
                 foreach (string line in File.ReadAllLines(ini))
                 {
@@ -68,7 +68,7 @@ namespace Net.XpFramework.Runner
             // Spawn runtime
             var proc = new System.Diagnostics.Process();
             proc.StartInfo.FileName = executor;
-            proc.StartInfo.Arguments = argv + " \"" + PathExtension.Locate(use_xp, "tools\\" + runner + ".php", true).First() + "\" " + tool + " \"" + String.Join("\" \"", args) + "\"";
+            proc.StartInfo.Arguments = argv + " \"" + Paths.Locate(use_xp, "tools\\" + runner + ".php", true).First() + "\" " + tool + " \"" + String.Join("\" \"", args) + "\"";
             proc.StartInfo.UseShellExecute = false;
             try
             {

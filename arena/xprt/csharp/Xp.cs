@@ -57,7 +57,7 @@ namespace Net.XpFramework.Runner
             // Execute
             try
             {
-                Environment.Exit(Executor.Execute(PathExtension.DirName(PathExtension.Binary()), runner, tool, includes.ToArray(), argv));
+                Environment.Exit(Executor.Execute(Paths.DirName(Paths.Binary()), runner, tool, includes.ToArray(), argv));
             }
             catch (Exception e) 
             {
