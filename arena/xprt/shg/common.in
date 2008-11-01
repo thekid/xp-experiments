@@ -8,8 +8,8 @@ fi
 DIRNAME=$(dirname "$(realpath "$0")") #"
 
 translate_path() {
-  local base="$1"
-  local path="$2"
+  base="$1"
+  path="$2"
   
   case "$path" in
     ?:*) ;;                                # C:\xp
@@ -27,38 +27,40 @@ translate_path() {
 }
 
 translate_paths() {
-  local base="$1"
-  local xppath="$2"
+  base="$1"
+  path="$2"
 
   translated=""
   IFS="$PATHSEP"
-  for i in $xppath ; do
+  for i in $path ; do
     translated="$translated$PATHSEP"$(translate_path "$base" "$i")
   done
   echo "${translated:1}"
 }
 
 locate() {
-  local xppath="$1"
-  local file="$2"
+  path="$1"
+  file="$2"
+  expect=$3
   
   IFS="$PATHSEP"
-  for i in $xppath ; do
+  for i in $path ; do
     qualified="$i/$file"
     if [ -e "$qualified" ] ; then
       echo "$qualified"
-      return
+      if [ $expect = 1 ] ; then return ; fi
     fi
   done
+  if [ $expect = 1 ] ; then echo "*** Failed to locate $file in $path" >&2 ; fi
   echo ""
 }
 
 execute() {
-  local base="$1"
-  local runner="$2"
-  local include="$3"
-  local xppath="$1"
-  local ifs="|"
+  base="$1"
+  runner="$2"
+  include="$3"
+  xppath="$1"
+  ifs="|"
 
   if [ "" = "$USE_XP" ] ; then
     while read line ; do
@@ -75,7 +77,8 @@ execute() {
 
   executor="php"
   args="-dinclude_path=\"$include\"${ifs}-duser_dir=\"$USE_XP\"${ifs}-dmagic_quotes_gpc=0"
-  if [ $(locate "$USE_XP" "php.ini") ] ; then
+  IFS=$'\n'
+  for ini in $(locate "$USE_XP" "php.ini" 0) ; do
     while read line ; do 
       case "$line" in
         *=*)
@@ -88,8 +91,8 @@ execute() {
           fi
         ;;
       esac
-    done < "$xppath"/php.ini
-  fi
+    done < $ini
+  done
 
-  echo ${executor}${ifs}${args}${ifs}$(locate "$USE_XP" "tools/"${runner}".php")
+  echo ${executor}${ifs}${args}${ifs}$(locate "$USE_XP" "tools/"${runner}".php" 1)
 }
