@@ -66,8 +66,7 @@ execute() {
     while read line ; do
       case "$line" in
         use=*)
-          value="${line#*=}"
-          USE_XP=$(translate_paths "$base" "$value")
+          USE_XP=$(translate_paths "$base" "${line#*=}")
         ;;
       esac
     done < "$base"/xp.ini
@@ -83,11 +82,10 @@ execute() {
       case "$line" in
         *=*)
           key=${line%=*}
-          value="${line#*=}"
           if [ "executor" = "$key" ]; then
-            executor="$value"
+            executor="${line#*=}"
           else 
-            args="$args${ifs}-d$key=\"$value\""
+            args="$args${ifs}-d$key=\"${line#*=}\""
           fi
         ;;
       esac
