@@ -11,6 +11,7 @@ namespace Net.XpFramework.Runner
         private static int KEY = 0;
         private static int VALUE = 1;
         private static char[] PATH_SEPARATOR = new char[] { Path.PathSeparator };
+        private static char[] KVAL_SEPARATOR = new char[] { '=' };
 
         /// <summary>
         /// 
@@ -23,7 +24,7 @@ namespace Net.XpFramework.Runner
         public static int Execute(string base_dir, string runner, string tool, string[] includes, string[] args)
         {
             // Determine USE_XP path from either environment option or from xp.ini
-            string env = System.Environment.GetEnvironmentVariable("USE_XP");
+            var env = System.Environment.GetEnvironmentVariable("USE_XP");
             IEnumerable<string> use_xp = null;
             if (null == env)
             {
@@ -32,9 +33,9 @@ namespace Net.XpFramework.Runner
                     throw new FileNotFoundException("Cannot find xp.ini in " + base_dir);
                 }
 
-                foreach (string line in File.ReadAllLines(base_dir + "xp.ini"))
+                foreach (var line in File.ReadAllLines(base_dir + "xp.ini"))
                 {
-                    string[] parsed = line.Split(new char[] { '=' }, 2);
+                    var parsed = line.Split(KVAL_SEPARATOR, 2);
                     if (parsed[KEY] == "use")
                     {
                         use_xp = Paths.Translate(base_dir, parsed[VALUE].Split(PATH_SEPARATOR));
@@ -47,13 +48,17 @@ namespace Net.XpFramework.Runner
             }
             
             // Search for tool
-            string executor = "php";
-            string argv = "-dinclude_path=\".;" + String.Join(new string(PATH_SEPARATOR), includes) + "\" -duser_dir=\"" + String.Join(";", use_xp.ToArray()) + "\" -dmagic_quotes_gpc=0";
-            foreach (string ini in Paths.Locate(use_xp, "php.ini", false))
+            var executor = "php";
+            var argv = String.Format(
+                "-dinclude_path=\".;{0}\" -duser_dir=\"{1}\" -dmagic_quotes_gpc=0",
+                String.Join(new string(PATH_SEPARATOR), includes),
+                String.Join(new string(PATH_SEPARATOR), use_xp.ToArray())
+            );
+            foreach (var ini in Paths.Locate(use_xp, "php.ini", false))
             {
-                foreach (string line in File.ReadAllLines(ini))
+                foreach (var line in File.ReadAllLines(ini))
                 {
-                    string[] parsed = line.Split(new char[] { '=' }, 2);
+                    var parsed = line.Split(KVAL_SEPARATOR, 2);
                     if (parsed[KEY] == "executor")
                     {
                         executor = parsed[VALUE];
@@ -68,7 +73,11 @@ namespace Net.XpFramework.Runner
             // Spawn runtime
             var proc = new System.Diagnostics.Process();
             proc.StartInfo.FileName = executor;
-            proc.StartInfo.Arguments = argv + " \"" + Paths.Locate(use_xp, "tools\\" + runner + ".php", true).First() + "\" " + tool + " \"" + String.Join("\" \"", args) + "\"";
+            proc.StartInfo.Arguments = argv + " \"" + Paths.Locate(use_xp, "tools\\" + runner + ".php", true).First() + "\" " + tool;
+            if (args.Length > 0)
+            {
+                proc.StartInfo.Arguments +=  " \"" + String.Join("\" \"", args) + "\"";
+            }
             proc.StartInfo.UseShellExecute = false;
             try
             {
