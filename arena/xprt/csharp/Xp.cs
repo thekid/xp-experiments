@@ -52,7 +52,7 @@ namespace Net.XpFramework.Runner
 
             // Shift
             var argv = new string[args.Length - shift];
-            System.Array.Copy(args, shift, argv, 0, args.Length - shift);
+            Array.Copy(args, shift, argv, 0, args.Length - shift);
 
             // Execute
             Execute(runner, tool, includes.ToArray(), argv);
