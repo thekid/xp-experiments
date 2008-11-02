@@ -15,7 +15,7 @@ namespace Net.XpFramework.Runner
             }
             catch (Exception e) 
             {
-                Console.Error.WriteLine("*** " + e.Message);
+                Console.Error.WriteLine("*** " + e.GetType() + ": " + e.Message);
                 Environment.Exit(0xFF);
             }
         }
