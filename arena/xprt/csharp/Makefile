@@ -1,5 +1,5 @@
 CSC?=csc
-CLASSES=Executor.cs Paths.cs
+CLASSES=Executor.cs Paths.cs BaseRunner.cs
 
 all: xp.exe xpcli.exe xar.exe unittest.exe cgen.exe doclet.exe
 

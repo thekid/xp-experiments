@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Net.XpFramework.Runner
 {
-    class Xp
+    class Xp : BaseRunner
     {
 
         static void Main(string[] args)
@@ -55,15 +55,7 @@ namespace Net.XpFramework.Runner
             System.Array.Copy(args, shift, argv, 0, args.Length - shift);
 
             // Execute
-            try
-            {
-                Environment.Exit(Executor.Execute(Paths.DirName(Paths.Binary()), runner, tool, includes.ToArray(), argv));
-            }
-            catch (Exception e) 
-            {
-                Console.Error.WriteLine("*** " + e.Message);
-                Environment.Exit(0xFF);
-            }
+            Execute(runner, tool, includes.ToArray(), argv);
         }
     }
 }
