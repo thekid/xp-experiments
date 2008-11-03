@@ -9,8 +9,8 @@ fi
 if [ -L "$0" ] ; then
   link="$(readlink "$0")"
   case "$link" in
-    /*) DIRNAME=$(dirname "$link") ;;      # Absolute
-    *) DIRNAME=$(dirname "$0") ;;          # Relative
+    /*) DIRNAME=$(dirname "$link") ;;                 # Absolute
+    *) DIRNAME=$(dirname "$(dirname "$0")/$link") ;;  # Relative
   esac
 else
   DIRNAME=$(dirname "$0")
