@@ -35,7 +35,7 @@ translate_paths() {
   for i in $path ; do
     translated="$translated$PATHSEP"$(translate_path "$base" "$i")
   done
-  echo "${translated:1}"
+  echo "${translated#$PATHSEP}"
 }
 
 locate() {
