@@ -5,7 +5,16 @@ else
   PATHSEP=':'
   DIRSEP='/'
 fi
-DIRNAME=$(dirname "$(realpath "$0")") #"
+
+if [ -L "$0" ] ; then
+  link="$(readlink "$0")"
+  case "$link" in
+    /*) DIRNAME=$(dirname "$link") ;;      # Absolute
+    *) DIRNAME=$(dirname "$0") ;;          # Relative
+  esac
+else
+  DIRNAME=$(dirname "$0")
+fi
 
 translate_path() {
   base="$1"
