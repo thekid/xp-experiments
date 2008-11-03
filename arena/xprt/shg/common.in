@@ -76,7 +76,8 @@ execute() {
 
   executor="php"
   args="-dinclude_path=\"$include\"${ifs}-duser_dir=\"$USE_XP\"${ifs}-dmagic_quotes_gpc=0"
-  IFS=$'\n'
+  IFS="
+"
   for ini in $(locate "$USE_XP" "php.ini" 0) ; do
     while read line ; do 
       case "$line" in
@@ -92,5 +93,6 @@ execute() {
     done < $ini
   done
 
+  IFS=" "
   echo ${executor}${ifs}${args}${ifs}$(locate "$USE_XP" "tools/"${runner}".php" 1)
 }
