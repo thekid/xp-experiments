@@ -1435,10 +1435,10 @@
 </div>
 <div class="func_foot"><a href="#top">^Top</a></div>
 </div>
-<div class="func" id="oel_add_begin_tinary_op">
-<div class="func_head"><h3>oel_add_begin_tinary_op</h3></div>
+<div class="func" id="oel_add_begin_tenary_op">
+<div class="func_head"><h3>oel_add_begin_tenary_op</h3></div>
 <div class="func_desc">
-      Begin tinary operator positiv part (?:).
+      Begin tenary operator positiv part (?:).
     </div>
 <div class="func_params">
           Parameters:
@@ -1446,16 +1446,16 @@
       (resource(oel)) OEL resource handle</li></ul>
 </div>
 <div class="func_tokens">
-          Token-Stack:<ul><li>push: OEL_TYPE_TOKEN_TINARY1</li></ul>
+          Token-Stack:<ul><li>push: OEL_TYPE_TOKEN_TENARY1</li></ul>
 </div>
 <div class="func_see">
-          See also: <a href="#oel_add_end_tinary_op_true">oel_add_end_tinary_op_true</a> <a href="#oel_add_end_tinary_op_false">oel_add_end_tinary_op_false</a> </div>
+          See also: <a href="#oel_add_end_tenary_op_true">oel_add_end_tenary_op_true</a> <a href="#oel_add_end_tenary_op_false">oel_add_end_tenary_op_false</a> </div>
 <div class="func_foot"><a href="#top">^Top</a></div>
 </div>
-<div class="func" id="oel_add_end_tinary_op_true">
-<div class="func_head"><h3>oel_add_end_tinary_op_true</h3></div>
+<div class="func" id="oel_add_end_tenary_op_true">
+<div class="func_head"><h3>oel_add_end_tenary_op_true</h3></div>
 <div class="func_desc">
-      End tinary operator positiv part and begin negativ part.
+      End tenary operator positiv part and begin negativ part.
     </div>
 <div class="func_params">
           Parameters:
@@ -1464,16 +1464,16 @@
 </div>
 <div class="func_tokens">
           Token-Stack:<ul>
-<li>test: OEL_TYPE_TOKEN_TINARY1</li>
-<li>push: OEL_TYPE_TOKEN_TINARY2</li>
+<li>test: OEL_TYPE_TOKEN_TENARY1</li>
+<li>push: OEL_TYPE_TOKEN_TENARY2</li>
 </ul>
 </div>
 <div class="func_see">
-          See also: <a href="#oel_add_begin_tinary_op">oel_add_begin_tinary_op</a> <a href="#oel_add_end_tinary_op_false">oel_add_end_tinary_op_false</a> </div>
+          See also: <a href="#oel_add_begin_tenary_op">oel_add_begin_tenary_op</a> <a href="#oel_add_end_tenary_op_false">oel_add_end_tenary_op_false</a> </div>
 <div class="func_foot"><a href="#top">^Top</a></div>
 </div>
-<div class="func" id="oel_add_end_tinary_op_false">
-<div class="func_head"><h3>oel_add_end_tinary_op_false</h3></div>
+<div class="func" id="oel_add_end_tenary_op_false">
+<div class="func_head"><h3>oel_add_end_tenary_op_false</h3></div>
 <div class="func_desc">
       End negativ part.
     </div>
@@ -1484,12 +1484,12 @@
 </div>
 <div class="func_tokens">
           Token-Stack:<ul>
-<li>pop: OEL_TYPE_TOKEN_TINARY2</li>
-<li>pop: OEL_TYPE_TOKEN_TINARY1</li>
+<li>pop: OEL_TYPE_TOKEN_TENARY2</li>
+<li>pop: OEL_TYPE_TOKEN_TENARY1</li>
 </ul>
 </div>
 <div class="func_see">
-          See also: <a href="#oel_add_begin_tinary_op">oel_add_begin_tinary_op</a> <a href="#oel_add_end_tinary_op_true">oel_add_end_tinary_op_true</a> </div>
+          See also: <a href="#oel_add_begin_tenary_op">oel_add_begin_tenary_op</a> <a href="#oel_add_end_tenary_op_true">oel_add_end_tenary_op_true</a> </div>
 <div class="func_foot"><a href="#top">^Top</a></div>
 </div>
 <div class="func" id="oel_add_begin_logical_op">

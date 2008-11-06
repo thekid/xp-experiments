@@ -32,8 +32,8 @@
     #define OEL_TYPE_TOKEN_SWITCH_DEFAULT 14
     #define OEL_TYPE_TOKEN_LOGIC_AND      15
     #define OEL_TYPE_TOKEN_LOGIC_OR       16
-    #define OEL_TYPE_TOKEN_TINARY1        17
-    #define OEL_TYPE_TOKEN_TINARY2        18
+    #define OEL_TYPE_TOKEN_TENARY1        17
+    #define OEL_TYPE_TOKEN_TENARY2        18
     #define OEL_TYPE_TOKEN_VARIABLE       19
     #define OEL_TYPE_TOKEN_WHILE          20
     #define OEL_TYPE_TOKEN_WHILE_BODY     21
@@ -118,9 +118,9 @@
     PHP_FUNCTION(oel_add_unary_op);
     PHP_FUNCTION(oel_add_incdec_op);
     PHP_FUNCTION(oel_add_binary_op);
-    PHP_FUNCTION(oel_add_begin_tinary_op);
-    PHP_FUNCTION(oel_add_end_tinary_op_true);
-    PHP_FUNCTION(oel_add_end_tinary_op_false);
+    PHP_FUNCTION(oel_add_begin_tenary_op);
+    PHP_FUNCTION(oel_add_end_tenary_op_true);
+    PHP_FUNCTION(oel_add_end_tenary_op_false);
     PHP_FUNCTION(oel_add_begin_logical_op);
     PHP_FUNCTION(oel_add_end_logical_op);
     PHP_FUNCTION(oel_add_cast_op);

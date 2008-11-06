@@ -1145,9 +1145,9 @@
     </description>
   </function>
 
-  <function name="oel_add_begin_tinary_op">
+  <function name="oel_add_begin_tenary_op">
     <tokens>
-      <token type="push" name="OEL_TYPE_TOKEN_TINARY1" />
+      <token type="push" name="OEL_TYPE_TOKEN_TENARY1" />
     </tokens>
     <operands>
       <operand type="pop">condition result</operand>
@@ -1157,14 +1157,14 @@
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
-      Begin tinary operator positiv part (?:).
+      Begin tenary operator positiv part (?:).
     </description>
   </function>
 
-  <function name="oel_add_end_tinary_op_true">
+  <function name="oel_add_end_tenary_op_true">
     <tokens>
-      <token type="test" name="OEL_TYPE_TOKEN_TINARY1" />
-      <token type="push" name="OEL_TYPE_TOKEN_TINARY2" />
+      <token type="test" name="OEL_TYPE_TOKEN_TENARY1" />
+      <token type="push" name="OEL_TYPE_TOKEN_TENARY2" />
     </tokens>
     <operands>
       <operand type="pop">expression result</operand>
@@ -1174,14 +1174,14 @@
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
-      End tinary operator positiv part and begin negativ part.
+      End tenary operator positiv part and begin negativ part.
     </description>
   </function>
 
-  <function name="oel_add_end_tinary_op_false">
+  <function name="oel_add_end_tenary_op_false">
     <tokens>
-      <token type="pop" name="OEL_TYPE_TOKEN_TINARY2" />
-      <token type="pop" name="OEL_TYPE_TOKEN_TINARY1" />
+      <token type="pop" name="OEL_TYPE_TOKEN_TENARY2" />
+      <token type="pop" name="OEL_TYPE_TOKEN_TENARY1" />
     </tokens>
     <operands>
       <operand type="pop">expression result</operand>

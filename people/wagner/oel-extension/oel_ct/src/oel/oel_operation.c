@@ -162,7 +162,7 @@ PHP_FUNCTION(oel_add_binary_op) {
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
-PHP_FUNCTION(oel_add_begin_tinary_op) {
+PHP_FUNCTION(oel_add_begin_tenary_op) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
@@ -171,39 +171,39 @@ PHP_FUNCTION(oel_add_begin_tinary_op) {
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
     cond=  oel_stack_pop_operand(res_op_array TSRMLS_CC);
-    token= oel_create_token(res_op_array, OEL_TYPE_TOKEN_TINARY1 TSRMLS_CC);
+    token= oel_create_token(res_op_array, OEL_TYPE_TOKEN_TENARY1 TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_begin_qm_op(cond, token TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
-PHP_FUNCTION(oel_add_end_tinary_op_true) {
+PHP_FUNCTION(oel_add_end_tenary_op_true) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *truepart, *token1, *token2;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
-    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_TINARY1)) oel_compile_error(E_ERROR, "token is not of type trinary 1");
+    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_TENARY1)) oel_compile_error(E_ERROR, "token is not of type trinary 1");
 
     truepart= oel_stack_pop_operand(res_op_array TSRMLS_CC);
     token1=   oel_stack_top_token(res_op_array TSRMLS_CC);
-    token2=   oel_create_token(res_op_array, OEL_TYPE_TOKEN_TINARY2 TSRMLS_CC);
+    token2=   oel_create_token(res_op_array, OEL_TYPE_TOKEN_TENARY2 TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_do_qm_true(truepart, token1, token2 TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
-PHP_FUNCTION(oel_add_end_tinary_op_false) {
+PHP_FUNCTION(oel_add_end_tenary_op_false) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *failpart, *token1, *token2, *result;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
-    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_TINARY2)) oel_compile_error(E_ERROR, "token is not of type trinary 2");
+    if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_TENARY2)) oel_compile_error(E_ERROR, "token is not of type trinary 2");
 
     failpart= oel_stack_pop_operand(res_op_array TSRMLS_CC);
     token2=   oel_stack_pop_token(res_op_array TSRMLS_CC);
