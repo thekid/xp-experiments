@@ -17,7 +17,7 @@
       <operand type="push">initialized array handle</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -30,7 +30,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_ARRAY_INIT" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -48,8 +48,8 @@
       <operand type="push">array handle</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE if element is a reference</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="bool" default="FALSE" name="is_reference">TRUE if element is a reference</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -68,8 +68,8 @@
       <operand type="push">array handle</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE for element is a reference</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="bool" default="FALSE" name="is_reference">TRUE for element is a reference</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -84,7 +84,7 @@
       <operand type="push">array dimension handle</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -98,7 +98,7 @@
       <operand type="push">array dimension handle</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -114,7 +114,7 @@
       <operand type="push">static array handle</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -127,7 +127,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_ARRAY_STATIC" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -145,8 +145,8 @@
       <operand type="push">static array handle</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE if element is a reference</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="bool" default="FALSE" name="is_reference">TRUE if element is a reference</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -165,8 +165,8 @@
       <operand type="push">static array handle</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE if element is a reference</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="bool" default="FALSE" name="is_reference">TRUE if element is a reference</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -179,7 +179,7 @@
       <token type="push" name="OEL_TYPE_TOKEN_LIST" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -195,7 +195,7 @@
       <operand type="pop">an array to assign to the list's elements</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -209,7 +209,7 @@
       <token type="push" name="OEL_TYPE_TOKEN_LIST_INNER" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -222,7 +222,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_LIST_INNER" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -239,7 +239,7 @@
       <operand type="pop">variable to add as list element</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="array" /></tags>
     <description>
@@ -252,10 +252,10 @@
       <token type="push" name="OEL_TYPE_TOKEN_CLASS" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">class name</parameter>
-      <parameter type="string" optional="TRUE" default="none">parent class name</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE if class is final</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="name">class name</parameter>
+      <parameter type="string" default="none" name="parent_name">parent class name</parameter>
+      <parameter type="bool" default="FALSE" name="is_final">TRUE if class is final</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="class" /></tags>
     <description>
@@ -268,7 +268,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_CLASS" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="class" /></tags>
     <description>
@@ -281,9 +281,9 @@
       <token type="push" name="OEL_TYPE_TOKEN_ACLASS" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">class name</parameter>
-      <parameter type="string" optional="TRUE" default="none">parent class name</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="name">class name</parameter>
+      <parameter type="string" default="none" name="parent_name">parent class name</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="class" /></tags>
     <description>
@@ -296,7 +296,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_ACLASS" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="class" /></tags>
     <description>
@@ -309,9 +309,8 @@
       <token type="push" name="OEL_TYPE_TOKEN_ICLASS" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">interface name</parameter>
-      <parameter type="string" optional="TRUE" default="none">parent interface name</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="name">interface name</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="class" /></tags>
     <description>
@@ -324,7 +323,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_ICLASS" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="class" /></tags>
     <description>
@@ -337,8 +336,8 @@
       <token type="test" name="OEL_TYPE_TOKEN_ICLASS" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">parent interface name</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="parent_name">parent interface name</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="class" /></tags>
     <description>
@@ -351,8 +350,8 @@
       <token type="test" name="OEL_TYPE_TOKEN_CLASS|OEL_TYPE_TOKEN_ACLASS" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">implementing interface name</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="interface_name">implementing interface name</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="class" /></tags>
     <description>
@@ -365,11 +364,11 @@
       <token type="test" name="OEL_TYPE_TOKEN_CLASS|OEL_TYPE_TOKEN_ACLASS" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">property name</parameter>
-      <parameter type="mixed" optional="TRUE" default="NULL">default value</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE if property is static</parameter>
-      <parameter type="integer" optional="TRUE" default="OEL_ACC_PUBLIC">access flag (OEL_ACC_PRIVATE, OEL_ACC_PROTECTED, OEL_ACC_PUBLIC)</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="name">property name</parameter>
+      <parameter type="mixed" default="NULL" name="default_value">default value</parameter>
+      <parameter type="bool" default="FALSE" name="is_static">TRUE if property is static</parameter>
+      <parameter type="integer" default="OEL_ACC_PUBLIC" name="access">access flag (OEL_ACC_PRIVATE, OEL_ACC_PROTECTED, OEL_ACC_PUBLIC)</parameter>
     </parameters>
     <description>
       Add a class member to a class.
@@ -381,9 +380,9 @@
       <token type="test" name="OEL_TYPE_TOKEN_CLASS|OEL_TYPE_TOKEN_ACLASS|OEL_TYPE_TOKEN_ICLASS" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">class constant name</parameter>
-      <parameter type="mixed" optional="FALSE">class constant value</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="name">class constant name</parameter>
+      <parameter type="mixed" name="value">class constant value</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="class" /></tags>
     <description>
@@ -397,8 +396,8 @@
       <operand type="push">test result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">class name to test for</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="class_name">class name to test for</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="class" /></tags>
     <description>
@@ -412,7 +411,7 @@
       <operand type="push">cloned object</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="class" /></tags>
     <description>
@@ -429,7 +428,7 @@
       <operand type="pop">result of condition test</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="control" /></tags>
     <description>
@@ -442,7 +441,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_IF" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="control" /></tags>
     <description>
@@ -455,7 +454,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_ELSE" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="control" /></tags>
     <description>
@@ -472,7 +471,7 @@
       <operand type="pop">result of condition test</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="control" /></tags>
     <description>
@@ -485,7 +484,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_ELSEIF" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="control" /></tags>
     <description>
@@ -501,7 +500,7 @@
       <operand type="pop">switch subject</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="control" /></tags>
     <description>
@@ -514,7 +513,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_SWITCH" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="control" /></tags>
     <description>
@@ -531,7 +530,7 @@
       <operand type="pop">switch case comperand</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="control" /></tags>
     <description>
@@ -544,7 +543,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_SWITCH_CASE" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="control" /></tags>
     <description>
@@ -558,7 +557,7 @@
       <token type="push" name="OEL_TYPE_TOKEN_SWITCH_DEFAULT" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="control" /></tags>
     <description>
@@ -571,7 +570,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_SWITCH_DEFAULT" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="control" /></tags>
     <description>
@@ -592,7 +591,7 @@
       <token type="pop" name="OEL_TYPE_OAR_FUNCTION|OEL_TYPE_OAR_METHOD|OEL_TYPE_OAR_AMETHOD" certain="FALSE" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="core" /></tags>
     <description>
@@ -602,7 +601,7 @@
 
   <function name="oel_execute">
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="core" /></tags>
     <description>
@@ -615,7 +614,7 @@
       <operand type="pop">value to echo</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="core" /></tags>
     <description>
@@ -631,8 +630,8 @@
       <operand type="pop">value to return</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="" optional="TRUE" default=""></parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="" default=""></parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="core" /></tags>
     <description>
@@ -645,7 +644,7 @@
       <operand type="pop">value to free</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operand" /></tags>
     <description>
@@ -655,8 +654,8 @@
 
   <function name="oel_add_break">
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="TRUE" default="1">depth to break</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" default="1" name="depth">depth to break</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="loop" /><tag name="control" /></tags>
     <description>
@@ -666,8 +665,8 @@
 
   <function name="oel_add_continue">
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="TRUE" default="1">depth to continue</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" default="1" name="depth">depth to continue</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="loop" /></tags>
     <description>
@@ -680,7 +679,7 @@
       <operand type="pop">value as exitcode</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="core" /></tags>
     <description>
@@ -694,7 +693,7 @@
       <operand type="push">result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="core" /></tags>
     <description>
@@ -708,7 +707,7 @@
       <operand type="push">result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="core" /></tags>
     <description>
@@ -722,7 +721,7 @@
       <operand type="push">result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="core" /></tags>
     <description>
@@ -736,7 +735,7 @@
       <operand type="push">result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="core" /></tags>
     <description>
@@ -750,7 +749,7 @@
       <operand type="push">result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="core" /></tags>
     <description>
@@ -766,7 +765,7 @@
       <operand type="pop">variable to unset</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operand" /></tags>
     <description>
@@ -779,7 +778,7 @@
       <token type="push" name="OEL_TYPE_TOKEN_WHILE" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="loop" /></tags>
     <description>
@@ -796,7 +795,7 @@
       <operand type="pop">condition result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="loop" /></tags>
     <description>
@@ -810,7 +809,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_WHILE" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="loop" /></tags>
     <description>
@@ -824,7 +823,7 @@
       <token type="push" name="OEL_TYPE_TOKEN_DOWHILE_BODY" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="loop" /></tags>
     <description>
@@ -837,7 +836,7 @@
       <token type="test" name="OEL_TYPE_TOKEN_DOWHILE_BODY" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="loop" /></tags>
     <description>
@@ -854,7 +853,7 @@
       <operand type="pop">loop condition result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="loop" /></tags>
     <description>
@@ -872,7 +871,7 @@
       <operand type="pop">array to iterate</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="loop" /></tags>
     <description>
@@ -892,8 +891,8 @@
       <operand type="pop">value</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE if value is a reference</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="bool" default="FALSE" name="is_ref">TRUE if value is a reference</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="loop" /></tags>
     <description>
@@ -912,7 +911,7 @@
       <operand type="push"></operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="loop" /></tags>
     <description>
@@ -922,12 +921,12 @@
 
   <function name="oel_add_receive_arg">
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">argument position (starts with 1)</parameter>
-      <parameter type="string" optional="FALSE">name of the parameter</parameter>
-      <parameter type="mixed" optional="TRUE" default="NULL">default value (if present and not NULL parameter is optional)</parameter>
-      <parameter type="string" optional="TRUE" default="none">class type</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE if parameter is a reference</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="offset">argument position (starts with 1)</parameter>
+      <parameter type="string" name="name">name of the parameter</parameter>
+      <parameter type="mixed" default="NULL" name="default_value">default value (if present and not NULL parameter is optional)</parameter>
+      <parameter type="string" default="none" name="class_name">class type</parameter>
+      <parameter type="bool" default="FALSE" name="is_ref">TRUE if parameter is a reference</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="procedure" /></tags>
     <description>
@@ -937,9 +936,9 @@
 
   <function name="oel_add_static_variable">
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">variable name</parameter>
-      <parameter type="mixed" optional="FALSE">initial value</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="name">variable name</parameter>
+      <parameter type="mixed" name="init_value">initial value</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operand" /></tags>
     <description>
@@ -952,7 +951,7 @@
       <token type="push" name="OEL_TYPE_TOKEN_VARIABLE" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operand" /></tags>
     <description>
@@ -965,8 +964,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_VARIABLE" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="" optional="TRUE" default=""></parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operand" /></tags>
     <description>
@@ -982,9 +980,9 @@
       <operand type="push">variable</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">variable name</parameter>
-      <parameter type="string" optional="TRUE" default="NULL">class name for static access</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="name">variable name</parameter>
+      <parameter type="string" default="NULL" name="class_name">class name for static access</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operand" /></tags>
     <description>
@@ -997,10 +995,10 @@
       <token type="test" name="OEL_TYPE_TOKEN_VARIABLE" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">number of indirections</parameter>
-      <parameter type="string" optional="FALSE">variable name</parameter>
-      <parameter type="string" optional="TRUE" default="NULL">class name for static access</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="indirections">number of indirections</parameter>
+      <parameter type="string" name="name">variable name</parameter>
+      <parameter type="string" default="NULL" name="class_name">class name for static access</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operand" /></tags>
     <description>
@@ -1016,8 +1014,8 @@
       <operand type="push">property</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">property name</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="name">property name</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operand" /></tags>
     <description>
@@ -1030,9 +1028,9 @@
       <operand type="push">constant value</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">name of the constant</parameter>
-      <parameter type="string" optional="TRUE" default="NULL">class name</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="name">name of the constant</parameter>
+      <parameter type="string" default="NULL" name="class_name">class name</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operand" /></tags>
     <description>
@@ -1046,8 +1044,8 @@
       <operand type="push">value</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="mixed" optional="FALSE">value</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="mixed" name="value">value</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operand" /></tags>
     <description>
@@ -1061,8 +1059,8 @@
       <operand type="pop">result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">operation</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="operation">operation</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
@@ -1081,8 +1079,8 @@
       <operand type="push">result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">operation</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="operation">operation</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
@@ -1104,8 +1102,8 @@
       <operand type="push">result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">operation</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="operation">operation</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
@@ -1153,7 +1151,7 @@
       <operand type="pop">condition result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
@@ -1170,7 +1168,7 @@
       <operand type="pop">expression result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
@@ -1188,7 +1186,7 @@
       <operand type="push">result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
@@ -1204,8 +1202,8 @@
       <operand type="pop">lefthand expression result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">operation</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="operation">operation</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
@@ -1224,8 +1222,8 @@
       <operand type="push">result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">operation</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="operation">operation</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
@@ -1239,8 +1237,8 @@
       <operand type="push">result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">operation</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="operation">operation</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
@@ -1265,8 +1263,8 @@
       <operand type="push">assigned value</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE to assign as reference</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="bool" default="FALSE" name="is_ref">TRUE to assign as reference</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
@@ -1283,7 +1281,7 @@
       <operand type="push">result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
@@ -1300,7 +1298,7 @@
       <operand type="push">result</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="operation" /></tags>
     <description>
@@ -1313,9 +1311,9 @@
       <token type="push" name="OEL_TYPE_OAR_FUNCTION" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">function name</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE if function returns a reference</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="name">function name</parameter>
+      <parameter type="bool" default="FALSE" name="is_ref">TRUE if function returns a reference</parameter>
     </parameters>
     <return type="resource(oel)">OEL resource handle</return>
     <tags><tag name="oel" /><tag name="procedure" /></tags>
@@ -1330,12 +1328,12 @@
       <token type="push" name="OEL_TYPE_OAR_METHOD" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">method name</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE if method returns a reference</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE if method is static</parameter>
-      <parameter type="integer" optional="TRUE" default="OEL_ACC_PUBLIC">access flag (OEL_ACC_PRIVATE, OEL_ACC_PROTECTED, OEL_ACC_PUBLIC)</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE if method is final</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="name">method name</parameter>
+      <parameter type="bool" default="FALSE" name="is_ref">TRUE if method returns a reference</parameter>
+      <parameter type="bool" default="FALSE" name="is_static">TRUE if method is static</parameter>
+      <parameter type="integer" default="OEL_ACC_PUBLIC" name="access">access flag (OEL_ACC_PRIVATE, OEL_ACC_PROTECTED, OEL_ACC_PUBLIC)</parameter>
+      <parameter type="bool" default="FALSE" name="is_final">TRUE if method is final</parameter>
     </parameters>
     <return type="resource(oel)">OEL resource handle</return>
     <tags><tag name="oel" /><tag name="procedure" /></tags>
@@ -1350,11 +1348,11 @@
       <token type="push" name="OEL_TYPE_OAR_AMETHOD" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">method name</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE if method returns a reference</parameter>
-      <parameter type="bool" optional="TRUE" default="FALSE">TRUE if method is static</parameter>
-      <parameter type="integer" optional="TRUE" default="OEL_ACC_PUBLIC">access flag (OEL_ACC_PRIVATE, OEL_ACC_PROTECTED, OEL_ACC_PUBLIC)</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="name">method name</parameter>
+      <parameter type="bool" default="FALSE" name="is_ref">TRUE if method returns a reference</parameter>
+      <parameter type="bool" default="FALSE" name="is_static">TRUE if method is static</parameter>
+      <parameter type="integer" default="OEL_ACC_PUBLIC" name="access">access flag (OEL_ACC_PRIVATE, OEL_ACC_PROTECTED, OEL_ACC_PUBLIC)</parameter>
     </parameters>
     <return type="resource(oel)">OEL resource handle</return>
     <tags><tag name="oel" /><tag name="procedure" /></tags>
@@ -1368,9 +1366,9 @@
       <operand type="pop">parameters</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">number of parameters to pop</parameter>
-      <parameter type="string" optional="FALSE">name of function</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="count">number of parameters to pop</parameter>
+      <parameter type="string" name="name">name of function</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="procedure" /></tags>
     <description>
@@ -1384,8 +1382,8 @@
       <operand type="pop">function name</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">number of parameters to pop</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="count">number of parameters to pop</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="procedure" /></tags>
     <description>
@@ -1402,9 +1400,9 @@
       <operand type="pop">object</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">number of parameters to pop</parameter>
-      <parameter type="string" optional="FALSE">method name</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="count">number of parameters to pop</parameter>
+      <parameter type="string" name="name">method name</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="procedure" /></tags>
     <description>
@@ -1417,10 +1415,10 @@
       <operand type="pop">parameters</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">number of parameters to pop</parameter>
-      <parameter type="string" optional="FALSE">method name</parameter>
-      <parameter type="string" optional="FALSE">class name</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="count">number of parameters to pop</parameter>
+      <parameter type="string" name="name">method name</parameter>
+      <parameter type="string" name="class_name">class name</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="procedure" /></tags>
     <description>
@@ -1438,8 +1436,8 @@
       <operand type="pop">object</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">number of parameters to pop</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="count">number of parameters to pop</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="procedure" /></tags>
     <description>
@@ -1453,9 +1451,9 @@
       <operand type="pop">method name</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">number of parameters to pop</parameter>
-      <parameter type="string" optional="FALSE">class name</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="count">number of parameters to pop</parameter>
+      <parameter type="string" name="class_name">class name</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="procedure" /></tags>
     <description>
@@ -1468,9 +1466,9 @@
       <operand type="pop">parameters</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="integer" optional="FALSE">number of parameters to pop</parameter>
-      <parameter type="string" optional="FALSE">class name</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="count">number of parameters to pop</parameter>
+      <parameter type="string" name="class_name">class name</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="procedure" /><tag name="class" /></tags>
     <description>
@@ -1483,7 +1481,7 @@
       <token type="push" name="OEL_TYPE_TOKEN_TRY" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="error" /></tags>
     <description>
@@ -1498,7 +1496,7 @@
       <token type="push" name="OEL_TYPE_TOKEN_CATCH_FIRST" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="error" /></tags>
     <description>
@@ -1511,9 +1509,9 @@
       <token type="test" name="OEL_TYPE_TOKEN_CATCH_FIRST" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">exception class name</parameter>
-      <parameter type="string" optional="FALSE">variable name</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="class_name">exception class name</parameter>
+      <parameter type="string" name="variable_name">variable name</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="error" /></tags>
     <description>
@@ -1528,7 +1526,7 @@
       <token type="push" name="OEL_TYPE_TOKEN_CATCH_ADD" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="error" /></tags>
     <description>
@@ -1541,9 +1539,9 @@
       <token type="test" name="OEL_TYPE_TOKEN_CATCH_ADD" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
-      <parameter type="string" optional="FALSE">exception class name</parameter>
-      <parameter type="string" optional="FALSE">variable name</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="class_name">exception class name</parameter>
+      <parameter type="string" name="variable_name">variable name</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="error" /></tags>
     <description>
@@ -1556,7 +1554,7 @@
       <token type="test" name="OEL_TYPE_TOKEN_CATCH_ADD" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="error" /></tags>
     <description>
@@ -1572,7 +1570,7 @@
       <token type="pop" name="OEL_TYPE_TOKEN_TRY" />
     </tokens>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="error" /></tags>
     <description>
@@ -1585,7 +1583,7 @@
       <operand type="pop">exception object</operand>
     </operands>
     <parameters>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="error" /></tags>
     <description>
@@ -1595,8 +1593,8 @@
 
   <function name="bcompiler_write_oel_oparray">
     <parameters>
-      <parameter type="resource(stream)" optional="FALSE">output stream resource handle</parameter>
-      <parameter type="resource(oel)" optional="FALSE">OEL resource handle</parameter>
+      <parameter type="resource(stream)" name="fp">output stream resource handle</parameter>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
     </parameters>
     <tags><tag name="oel" /><tag name="boel" /><tag name="bcompiler" /></tags>
     <description>

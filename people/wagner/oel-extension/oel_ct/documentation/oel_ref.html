@@ -22,6 +22,26 @@
           small {
             font-size: 90%;
           }
+          .signature {
+            border: 1px dashed black;
+            padding: 5px 20px;
+            background-color: #eeeeee;
+            font-family: monospace;
+            font-weight: bold;
+          }
+          .signature .return {
+            color: darkred;
+          }
+          .signature .params .optional {
+            font-style: italic;
+            font-weight: normal;
+          }
+          .signature .params .type {
+            color: darkred;
+          }
+          .signature .params .default {
+            color: darkblue;
+          }
         </style>
 </head>
 <body>
@@ -31,6 +51,9 @@
 <div class="func_desc">
       Begin an array definition.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_array_init</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -48,6 +71,9 @@
 <div class="func_desc">
       Finish  an array definition.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_array_init</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -65,6 +91,9 @@
 <div class="func_desc">
       Add a value to an array.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_array_init_element</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_reference</span>=<span class="default"> FALSE</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -88,6 +117,9 @@
 <div class="func_desc">
       Add a value key pair to an array.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_array_init_key_element</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_reference</span>=<span class="default"> FALSE</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -111,6 +143,9 @@
 <div class="func_desc">
       fetch an array dimension handle by key.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_push_dim</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -123,6 +158,9 @@
 <div class="func_desc">
       Fetch an new array dimension handle ($array[]= ...).
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_push_new_dim</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -135,6 +173,9 @@
 <div class="func_desc">
       Begin a static array definition.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_staticarray_init</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -152,6 +193,9 @@
 <div class="func_desc">
       end a static array definition.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_staticarray_init</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -169,6 +213,9 @@
 <div class="func_desc">
       Add an element to the static array.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_staticarray_init_element</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_reference</span>=<span class="default"> FALSE</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -192,6 +239,9 @@
 <div class="func_desc">
       Add a key element pair to the static array.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_staticarray_init_key_element</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_reference</span>=<span class="default"> FALSE</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -215,6 +265,9 @@
 <div class="func_desc">
       Begin a list declaration (list($a, $b)= ...).
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_list</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -232,6 +285,9 @@
 <div class="func_desc">
       End a list declaration and assigns an array to its elements.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_list</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -249,6 +305,9 @@
 <div class="func_desc">
       Begin a list declaration inner an other list declaration.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_inner_list</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -269,6 +328,9 @@
 <div class="func_desc">
       End a list declaration inner an other list declaration.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_inner_list</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -286,6 +348,9 @@
 <div class="func_desc">
       Add a list element to an open list
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_list_element</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -306,6 +371,9 @@
 <div class="func_desc">
       Begin class definition.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_class_declaration</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>, <span class="param optional"><span class="type">string</span><span class="name"> parent_name</span>=<span class="default"> none</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_final</span>=<span class="default"> FALSE</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -335,6 +403,9 @@
 <div class="func_desc">
       End class definition.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_class_declaration</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -352,6 +423,9 @@
 <div class="func_desc">
       Begin an abstract class definietion.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_abstract_class_declaration</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>, <span class="param optional"><span class="type">string</span><span class="name"> parent_name</span>=<span class="default"> none</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -377,6 +451,9 @@
 <div class="func_desc">
       End an abstract class definietion.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_abstract_class_declaration</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -394,6 +471,9 @@
 <div class="func_desc">
       Begin interface declaration.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_interface_declaration</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -401,10 +481,6 @@
       (resource(oel)) OEL resource handle</li>
 <li>
       (string) interface name</li>
-<li>
-<b>?</b>
-      (string) parent interface name<small><br>default value: none</small>
-</li>
 </ul>
 </div>
 <div class="func_tokens">
@@ -419,6 +495,9 @@
 <div class="func_desc">
       End interface declaration.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_interface_declaration</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -436,6 +515,9 @@
 <div class="func_desc">
       Add a parent interface to an interface.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_parent_interface</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> parent_name</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -457,6 +539,9 @@
 <div class="func_desc">
       Add an interface to a class.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_implements_interface</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> interface_name</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -478,6 +563,9 @@
 <div class="func_desc">
       Add a class member to a class.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_declare_property</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>, <span class="param optional"><span class="type">mixed</span><span class="name"> default_value</span>=<span class="default"> NULL</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_static</span>=<span class="default"> FALSE</span></span>, <span class="param optional"><span class="type">integer</span><span class="name"> access</span>=<span class="default"> OEL_ACC_PUBLIC</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -511,6 +599,9 @@
 <div class="func_desc">
       Add a class constant to a class.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_declare_class_constant</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>, <span class="param "><span class="type">mixed</span><span class="name"> value</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -534,6 +625,9 @@
 <div class="func_desc">
       Test a variable for being an instance of a certain class.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_instanceof</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> class_name</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -550,6 +644,9 @@
 <div class="func_desc">
       Clone an object.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_clone</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -562,6 +659,9 @@
 <div class="func_desc">
       Begin an if-then-else block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_if</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -582,6 +682,9 @@
 <div class="func_desc">
       End an if block and begin an else block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_if</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -599,6 +702,9 @@
 <div class="func_desc">
       End an if-then-else block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_else</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -616,6 +722,9 @@
 <div class="func_desc">
       Begin an elseif block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_elseif</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -636,6 +745,9 @@
 <div class="func_desc">
       End an elseif block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_elseif</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -653,6 +765,9 @@
 <div class="func_desc">
       Begin a switch block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_switch</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -670,6 +785,9 @@
 <div class="func_desc">
       End a switch block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_switch</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -687,6 +805,9 @@
 <div class="func_desc">
       Begin an switch-case block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_case</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -707,6 +828,9 @@
 <div class="func_desc">
       End an switch-case block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_case</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -724,6 +848,9 @@
 <div class="func_desc">
       Begin an switch-default block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_default</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -744,6 +871,9 @@
 <div class="func_desc">
       End an switch-default block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_default</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -761,6 +891,9 @@
 <div class="func_desc">
       Create new base opcode array.
     </div>
+<div class="signature"><code><span class="return">resource(oel) </span><span class="name">oel_new_op_array</span><span class="params">(
+            
+          )</span></code></div>
 <div class="func_return">
 <b>return:</b> (resource(oel)) OEL resource handle</div>
 <div class="func_foot"><a href="#top">^Top</a></div>
@@ -770,6 +903,9 @@
 <div class="func_desc">
       Prepare execution or save op of an base opcode array. A finalized opcode array cannot be modified anymore.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_finalize</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -785,6 +921,9 @@
 <div class="func_desc">
       Execute an opcode array.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_execute</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -797,6 +936,9 @@
 <div class="func_desc">
       Print anything to stdout.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_echo</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -809,6 +951,9 @@
 <div class="func_desc">
       Return a value. Pop OEL_TYPE_TOKEN_VARIABLE if the value is a variable.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_return</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param optional"><span class="type"></span><span class="name"> </span>=<span class="default"> </span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -830,6 +975,9 @@
 <div class="func_desc">
       Destroy the top of the operand stack.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_free</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -842,6 +990,9 @@
 <div class="func_desc">
       Break up a block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_break</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param optional"><span class="type">integer</span><span class="name"> depth</span>=<span class="default"> 1</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -860,6 +1011,9 @@
 <div class="func_desc">
       Continue a loop body.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_continue</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param optional"><span class="type">integer</span><span class="name"> depth</span>=<span class="default"> 1</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -878,6 +1032,9 @@
 <div class="func_desc">
       Exit processing.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_exit</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -890,6 +1047,9 @@
 <div class="func_desc">
       Include a php program.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_include</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -902,6 +1062,9 @@
 <div class="func_desc">
       Include a php program once.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_include_once</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -914,6 +1077,9 @@
 <div class="func_desc">
       Require a php program.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_require</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -926,6 +1092,9 @@
 <div class="func_desc">
       Require a php program once.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_require_once</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -938,6 +1107,9 @@
 <div class="func_desc">
       Evaluate a source code string.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_eval</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -950,6 +1122,9 @@
 <div class="func_desc">
       Unset a variable.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_unset</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -967,6 +1142,9 @@
 <div class="func_desc">
       Begin while loop head.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_while</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -984,6 +1162,9 @@
 <div class="func_desc">
       End while loop head and begin while loop body.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_while_body</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1004,6 +1185,9 @@
 <div class="func_desc">
       End while loop body.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_while</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1024,6 +1208,9 @@
 <div class="func_desc">
       Begin dowhile loop body.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_dowhile</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1044,6 +1231,9 @@
 <div class="func_desc">
       End dowhile loop body and begin condition.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_dowhile_body</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1061,6 +1251,9 @@
 <div class="func_desc">
       End dowhile loop.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_dowhile</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1081,6 +1274,9 @@
 <div class="func_desc">
       Begin foreach loop. Array can be static or a function result, so OEL_TYPE_TOKEN_VARIABLE won't be poped.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_foreach</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1102,6 +1298,9 @@
 <div class="func_desc">
       End foreach loop head and begin foreach body. Key can be NULL, so OEL_TYPE_TOKEN_VARIABLE won't be poped.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_foreach_body</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_ref</span>=<span class="default"> FALSE</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1130,6 +1329,9 @@
 <div class="func_desc">
       begin foreach body.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_foreach</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1151,6 +1353,9 @@
 <div class="func_desc">
       define a parameter of a function/method.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_receive_arg</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> offset</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>, <span class="param optional"><span class="type">mixed</span><span class="name"> default_value</span>=<span class="default"> NULL</span></span>, <span class="param optional"><span class="type">string</span><span class="name"> class_name</span>=<span class="default"> none</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_ref</span>=<span class="default"> FALSE</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1181,6 +1386,9 @@
 <div class="func_desc">
       Declare a static variable.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_static_variable</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>, <span class="param "><span class="type">mixed</span><span class="name"> init_value</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1199,6 +1407,9 @@
 <div class="func_desc">
       Prepare back patch stack for a chained expression.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_variable_parse</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1216,16 +1427,13 @@
 <div class="func_desc">
       End expression and declare it readable.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_variable_parse</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
-          <ul>
-<li>
-      (resource(oel)) OEL resource handle</li>
-<li>
-<b>?</b>
-      () <small><br>default value: </small>
-</li>
-</ul>
+          <ul><li>
+      (resource(oel)) OEL resource handle</li></ul>
 </div>
 <div class="func_tokens">
           Token-Stack:<ul><li>pop: OEL_TYPE_TOKEN_VARIABLE</li></ul>
@@ -1239,6 +1447,9 @@
 <div class="func_desc">
       Push a variable by name on the operand stack. If it is a static member of a class, it's class name must be named as second parameter.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_push_variable</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>, <span class="param optional"><span class="type">string</span><span class="name"> class_name</span>=<span class="default"> NULL</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1266,6 +1477,9 @@
       If it is a static member of a class, it's class name must be named as second parameter.
       (fetch b indirect with indirection level 2: $a= "b"; $$a;)
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_push_variable_indirect</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> indirections</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>, <span class="param optional"><span class="type">string</span><span class="name"> class_name</span>=<span class="default"> NULL</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1293,6 +1507,9 @@
 <div class="func_desc">
       Push an object member on the operand stack.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_push_property</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1310,6 +1527,9 @@
       Push a constant on the operand stack.
       If it is a constant of a class, it's class name must be named as second parameter.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_push_constant</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>, <span class="param optional"><span class="type">string</span><span class="name"> class_name</span>=<span class="default"> NULL</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1330,6 +1550,9 @@
 <div class="func_desc">
       Push a value on the stack.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_push_value</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">mixed</span><span class="name"> value</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1348,6 +1571,9 @@
         OEL_UNARY_OP_BOOL_NOT: boolean not
         OEL_UNARY_OP_BW_NOT: bitwise not
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_unary_op</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> operation</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1368,6 +1594,9 @@
         OEL_OP_PRE_INC:  ++$a
         OEL_OP_PRE_DEC:  --$a</pre></code>
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_incdec_op</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> operation</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1421,6 +1650,9 @@
         OEL_BINARY_OP_ASSIGN_SL:     $a&lt;&lt;= $b
         OEL_BINARY_OP_ASSIGN_SR:     $a&gt;&gt;= $b</pre></code>
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_binary_op</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> operation</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1440,6 +1672,9 @@
 <div class="func_desc">
       Begin tenary operator positiv part (?:).
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_tenary_op</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1457,6 +1692,9 @@
 <div class="func_desc">
       End tenary operator positiv part and begin negativ part.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_tenary_op_true</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1477,6 +1715,9 @@
 <div class="func_desc">
       End negativ part.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_tenary_op_false</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1499,6 +1740,9 @@
       OEL_OP_BOOL_AND: $a &amp;&amp; $b
       OEL_OP_BOOL_OR:  $a || $b</pre></code>
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_logical_op</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> operation</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1520,6 +1764,9 @@
 <div class="func_desc">
       End a logical operation.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_logical_op</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> operation</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1548,6 +1795,9 @@
       OEL_OP_TO_BOOL:   cast to bool
       OEL_OP_TO_UNSET:  cast to NULL</pre></code>
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_cast_op</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> operation</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1564,6 +1814,9 @@
 <div class="func_desc">
       Assign anything to a variable.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_assign</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_ref</span>=<span class="default"> FALSE</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1587,6 +1840,9 @@
 <div class="func_desc">
       Test if variable is empty
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_empty</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1604,6 +1860,9 @@
 <div class="func_desc">
       Test if a variable is set.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_isset</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1621,6 +1880,9 @@
 <div class="func_desc">
       Create function's opcode array resource.
     </div>
+<div class="signature"><code><span class="return">resource(oel) </span><span class="name">oel_new_function</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_ref</span>=<span class="default"> FALSE</span></span>
+          )</span></code></div>
 <div class="func_return">
 <b>return:</b> (resource(oel)) OEL resource handle</div>
 <div class="func_params">
@@ -1648,6 +1910,9 @@
 <div class="func_desc">
       Create a method's opcode array resource.
     </div>
+<div class="signature"><code><span class="return">resource(oel) </span><span class="name">oel_new_method</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_ref</span>=<span class="default"> FALSE</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_static</span>=<span class="default"> FALSE</span></span>, <span class="param optional"><span class="type">integer</span><span class="name"> access</span>=<span class="default"> OEL_ACC_PUBLIC</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_final</span>=<span class="default"> FALSE</span></span>
+          )</span></code></div>
 <div class="func_return">
 <b>return:</b> (resource(oel)) OEL resource handle</div>
 <div class="func_params">
@@ -1690,6 +1955,9 @@
 <div class="func_desc">
       Create an abstract method's opcode array resource.
     </div>
+<div class="signature"><code><span class="return">resource(oel) </span><span class="name">oel_new_abstract_method</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_ref</span>=<span class="default"> FALSE</span></span>, <span class="param optional"><span class="type">bool</span><span class="name"> is_static</span>=<span class="default"> FALSE</span></span>, <span class="param optional"><span class="type">integer</span><span class="name"> access</span>=<span class="default"> OEL_ACC_PUBLIC</span></span>
+          )</span></code></div>
 <div class="func_return">
 <b>return:</b> (resource(oel)) OEL resource handle</div>
 <div class="func_params">
@@ -1728,6 +1996,9 @@
 <div class="func_desc">
       Make a function call.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_call_function</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> count</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1746,6 +2017,9 @@
 <div class="func_desc">
       Make a function call by name.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_call_function_name</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> count</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1762,6 +2036,9 @@
 <div class="func_desc">
       Make a method call.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_call_method</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> count</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1785,6 +2062,9 @@
 <div class="func_desc">
       Make a static method call.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_call_method_static</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> count</span></span>, <span class="param "><span class="type">string</span><span class="name"> name</span></span>, <span class="param "><span class="type">string</span><span class="name"> class_name</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1805,6 +2085,9 @@
 <div class="func_desc">
       Make a method call by name.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_call_method_name</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> count</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1826,6 +2109,9 @@
 <div class="func_desc">
       Make a static method call by name.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_call_method_name_static</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> count</span></span>, <span class="param "><span class="type">string</span><span class="name"> class_name</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1844,6 +2130,9 @@
 <div class="func_desc">
       Make new object;
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_new_object</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> count</span></span>, <span class="param "><span class="type">string</span><span class="name"> class_name</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1862,6 +2151,9 @@
 <div class="func_desc">
       Begin try block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_tryblock</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1879,6 +2171,9 @@
 <div class="func_desc">
       End try block and begin all-catch block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_catchblock</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1900,6 +2195,9 @@
 <div class="func_desc">
       Begin the first catch block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_firstcatch</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> class_name</span></span>, <span class="param "><span class="type">string</span><span class="name"> variable_name</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1923,6 +2221,9 @@
 <div class="func_desc">
       End the first catch block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_firstcatch</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1944,6 +2245,9 @@
 <div class="func_desc">
       Begin an additional catch block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_begin_catch</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">string</span><span class="name"> class_name</span></span>, <span class="param "><span class="type">string</span><span class="name"> variable_name</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>
@@ -1967,6 +2271,9 @@
 <div class="func_desc">
       End an additional catch block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_catch</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -1984,6 +2291,9 @@
 <div class="func_desc">
       End all-catch block.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_end_catchblock</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -2006,6 +2316,9 @@
 <div class="func_desc">
       Throw an exception
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_add_throw</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul><li>
@@ -2018,6 +2331,9 @@
 <div class="func_desc">
       Serialize an opcode array.
     </div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">bcompiler_write_oel_oparray</span><span class="params">(
+            <span class="param "><span class="type">resource(stream)</span><span class="name"> fp</span></span>, <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>
+          )</span></code></div>
 <div class="func_params">
           Parameters:
           <ul>

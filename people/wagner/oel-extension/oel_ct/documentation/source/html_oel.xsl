@@ -34,6 +34,26 @@
           small {
             font-size: 90%;
           }
+          .signature {
+            border: 1px dashed black;
+            padding: 5px 20px;
+            background-color: #eeeeee;
+            font-family: monospace;
+            font-weight: bold;
+          }
+          .signature .return {
+            color: darkred;
+          }
+          .signature .params .optional {
+            font-style: italic;
+            font-weight: normal;
+          }
+          .signature .params .type {
+            color: darkred;
+          }
+          .signature .params .default {
+            color: darkblue;
+          }
         ]]></style>
       </head>
       <body>
@@ -48,6 +68,22 @@
       <div class="func_head"><h3><xsl:value-of select="@name" /></h3></div>
       <div class="func_desc">
         <xsl:copy-of select="description/node()" />
+      </div>
+      <div class="signature">
+        <code>
+          <span class="return"><xsl:value-of select="docu:ifThenElse(return, return/@type, 'NULL')" />&#160;</span>
+          <span class="name"><xsl:value-of select="@name" /></span>
+          <span class="params">(
+            <xsl:for-each select="parameters/parameter">
+              <span class="param { docu:ifThenElse(@default, 'optional') }">
+                <span class="type"><xsl:value-of select="@type" /></span>
+                <span class="name">&#160;<xsl:value-of select="@name" /></span>
+                <xsl:if test="@default">=<span class="default">&#160;<xsl:value-of select="@default" /></span></xsl:if>
+              </span>
+              <xsl:if test="not(position() = last())">, </xsl:if>
+            </xsl:for-each>
+          )</span>
+        </code>
       </div>
       <xsl:if test="return">
         <div class="func_return"><b>return:</b>&#160;(<xsl:value-of select="return/@type"/>)&#160;<xsl:copy-of select="return/text()" /></div>
@@ -86,9 +122,9 @@
 
   <xsl:template name="function_param">
     <li>
-      <xsl:if test="@optional != 'FALSE'"><b>?</b></xsl:if>
+      <xsl:if test="@default"><b>?</b></xsl:if>
       (<xsl:value-of select="./@type"/>)&#160;<xsl:copy-of select="text()" />
-      <xsl:if test="@optional != 'FALSE'"><small><br />default value:&#160;<xsl:value-of select="@default" /></small></xsl:if>
+      <xsl:if test="@default"><small><br />default value:&#160;<xsl:value-of select="@default" /></small></xsl:if>
     </li>
   </xsl:template>
 
@@ -116,6 +152,16 @@
     <xsl:choose>
       <xsl:when test="count($functions) = 0"><func:result select="/.." /></xsl:when>
       <xsl:otherwise><func:result select="$directResult | docu:_collectByToken($directResult, $collected | $directResult)" /></xsl:otherwise>
+    </xsl:choose>
+  </func:function>
+
+  <func:function name="docu:ifThenElse">
+    <xsl:param name="cond" />
+    <xsl:param name="then" />
+    <xsl:param name="else" select="''" />
+    <xsl:choose>
+      <xsl:when test="$cond"><func:result select="$then" /></xsl:when>
+      <xsl:otherwise><func:result select="$else" /></xsl:otherwise>
     </xsl:choose>
   </func:function>
 
