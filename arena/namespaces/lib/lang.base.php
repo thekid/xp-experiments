@@ -92,7 +92,7 @@
         return '<null>';
       } else if (is_int($arg) || is_float($arg)) {
         return (string)$arg;
-      } else if ($arg instanceof lang::Generic && !isset($protect[$arg->hashCode()])) {
+      } else if ($arg instanceof \lang\Generic && !isset($protect[$arg->hashCode()])) {
         $protect[$arg->hashCode()]= TRUE;
         $s= $arg->toString();
         unset($protect[$arg->hashCode()]);
@@ -187,7 +187,7 @@
     // {{{ internal string reflect(string str)
     //     Retrieve PHP conformant name for fqcn
     static function reflect($str) {
-      return str_replace('.', '::', $str);
+      return str_replace('.', '\\', $str);
     }
     // }}}
 
@@ -208,35 +208,35 @@
     //     Constructor to avoid magic __call invokation
     public function __construct() {
       if (isset(xp::$registry['null'])) {
-        throw new lang::IllegalAccessException('Cannot create new instances of xp::null()');
+        throw new \lang\IllegalAccessException('Cannot create new instances of xp::null()');
       }
     }
     
     // {{{ public void __clone(void)
     //     Clone interceptor
     public function __clone() {
-      throw new lang::NullPointerException('Object cloning intercepted.');
+      throw new \lang\NullPointerException('Object cloning intercepted.');
     }
     // }}}
     
     // {{{ magic mixed __call(string name, mixed[] args)
     //     Call proxy
     function __call($name, $args) {
-      throw new lang::NullPointerException('Method.invokation('.$name.')');
+      throw new \lang\NullPointerException('Method.invokation('.$name.')');
     }
     // }}}
 
     // {{{ magic void __set(string name, mixed value)
     //     Set proxy
     function __set($name, $value) {
-      throw new lang::NullPointerException('Property.write('.$name.')');
+      throw new \lang\NullPointerException('Property.write('.$name.')');
     }
     // }}}
 
     // {{{ magic mixed __get(string name)
     //     Set proxy
     function __get($name) {
-      throw new lang::NullPointerException('Property.read('.$name.')');
+      throw new \lang\NullPointerException('Property.read('.$name.')');
     }
     // }}}
   }
@@ -363,7 +363,7 @@
     if (0 == error_reporting() || is_null($file)) return;
 
     if (E_RECOVERABLE_ERROR == $code) {
-      throw new lang::IllegalArgumentException($msg.' @ '.$file.':'.$line);
+      throw new \lang\IllegalArgumentException($msg.' @ '.$file.':'.$line);
     } else {
       @xp::$registry['errors'][$file][$line][$msg]++;
     }
@@ -381,8 +381,8 @@
   //     throws an exception by a given class name
   function raise($classname) {
     try {
-      $class= lang::XPClass::forName($classname);
-    } catch (lang::ClassNotFoundException $e) {
+      $class= \lang\XPClass::forName($classname);
+    } catch (\lang\ClassNotFoundException $e) {
       xp::error($e->getMessage());
     }
     
@@ -399,10 +399,10 @@
 
   // {{{ Generic cast (Generic expression, string type)
   //     Casts an expression.
-  function cast(lang::Generic $expression= NULL, $type) {
+  function cast(\lang\Generic $expression= NULL, $type) {
     if (NULL === $expression) {
       return xp::null();
-    } else if (lang::XPClass::forName($type)->isInstance($expression)) {
+    } else if (\lang\XPClass::forName($type)->isInstance($expression)) {
       return $expression;
     }
 
@@ -453,16 +453,16 @@
 
     $class= xp::reflect($classname);
     if (!class_exists($class) && !interface_exists($class)) {
-      xp::error(xp::stringOf(new lang::Error('Class "'.$classname.'" does not exist')));
+      xp::error(xp::stringOf(new \lang\Error('Class "'.$classname.'" does not exist')));
       // Bails
     }
 
     $name= substr($class, strrpos($class, '::')+ 2).'·'.(++$u);
     
     // Checks whether an interface or a class was given
-    $cl= lang::DynamicClassLoader::instanceFor(__FUNCTION__);
+    $cl= \lang\DynamicClassLoader::instanceFor(__FUNCTION__);
     if (interface_exists($class)) {
-      $cl->setClassBytes($name, 'class '.$name.' extends lang::Object implements '.$class.' '.$bytes);
+      $cl->setClassBytes($name, 'class '.$name.' extends \lang\Object implements '.$class.' '.$bytes);
     } else {
       $cl->setClassBytes($name, 'class '.$name.' extends '.$class.' '.$bytes);
     }
@@ -480,14 +480,14 @@
   // {{{ lang.Generic create(mixed spec)
   //     Creates a generic object
   function create($spec) {
-    if ($spec instanceof lang::Generic) return $spec;
+    if ($spec instanceof \lang\Generic) return $spec;
 
     sscanf($spec, 'new %[^<]<%[^>]>', $classname, $types);
     $class= xp::reflect($classname);
     
     // Check whether class is generic
     if (!property_exists($class, '__generic')) {
-      throw new lang::IllegalArgumentException('Class '.$classname.' is not generic');
+      throw new \lang\IllegalArgumentException('Class '.$classname.' is not generic');
     }
     
     // Instanciate without invoking the constructor and pass type information. 
@@ -511,7 +511,7 @@
   // {{{ void __autoload(string fqcn)
   //     Class loading interception
   function __autoload($fqcn) {
-    uses(str_replace('::', '.', $fqcn));
+    uses(str_replace('\\', '.', $fqcn));
   }
   // }}}
 

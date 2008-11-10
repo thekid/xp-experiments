@@ -276,16 +276,16 @@
           }
           
           case self::ST_USES.T_CONSTANT_ENCAPSED_STRING: {
-            $fqcn= str_replace('.', self::SEPARATOR, trim($token[1], "'"));
+            $fqcn= self::SEPARATOR.str_replace('.', self::SEPARATOR, trim($token[1], "'"));
             $local= substr($fqcn, strrpos($fqcn, self::SEPARATOR)+ strlen(self::SEPARATOR));
             if ($local == $class) {
-              $this->err->writeLine('*** Name clash between ', $fqcn, ' and declared', $class, ' in ', $qname, ', using qualified name for ', $fqcn);
+              $this->err->writeLine('*** Name clash between ', $fqcn, ' and declared ', $class, ' in ', $qname, ', using qualified name for ', $fqcn);
               $imports[$fqcn]= $fqcn;
             } else if ($other= array_search($local, $imports)) {
               $this->err->writeLine('*** Name clash between ', $fqcn, ' and other ', $other, ' in ', $qname, ', using qualified name for ', $fqcn);
               $imports[$fqcn]= $fqcn;
             } else {
-              $uses[]= $fqcn;
+              $uses[]= substr($fqcn, 1);
               $imports[$fqcn]= $local;
             }
             break;
@@ -370,7 +370,7 @@
               // ClassLoader::defineInterface('fully.qualified', array('parent.fqcns'), '{ source }');
               $complete= $token[1].self::SEPARATOR.$member[1];
               $converted= NULL;
-              if ('ClassLoader::defineClass' == $complete || 'ClassLoader::defineInterface' == $complete) {
+              if ('ClassLoader::defineClass' == $token[1].'::'.$member[1] || 'ClassLoader::defineInterface' == $token[1].'::'.$member[1]) {
                 do {
                   $next= $this->tokenOf($t[++$i]);
                   if (';' == $next[0]) {
