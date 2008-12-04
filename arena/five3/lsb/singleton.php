@@ -15,13 +15,24 @@
   }
   
   class Logger extends Singleton {
-  
     public function log($arg) {
       var_dump($arg);
     }
   }
+
+  class DriverManager extends Singleton {
+    protected $drivers= array(
+      'mysql' => 'rdbms.mysql.MySQLConnection'
+    );
+  
+    public static function getConnection($dsn) {
+      $u= parse_url($dsn);
+      return self::getInstance()->drivers[$u['scheme']];
+    }
+  }
   
   Logger::getInstance()->log('Hello');
+  var_dump(DriverManager::getConnection('mysql://root@localhost'));
 
   // Fatal error: Call to private Singleton::__construct 
   // new Logger();
