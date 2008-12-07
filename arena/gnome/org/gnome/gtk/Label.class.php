@@ -14,6 +14,12 @@
    * @purpose  purpose
    */
   class Label extends Widget {
+
+    /**
+     * Constructor
+     *
+     * @param   string text
+     */
     public function __construct($text) {
       $this->handle= new GtkLabel($text);
     }

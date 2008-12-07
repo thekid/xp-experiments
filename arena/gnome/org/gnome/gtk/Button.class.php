@@ -17,6 +17,11 @@
   class Button extends Widget {
     const Clicked= 'org.gnome.gdk.events.ButtonClickedEvent';
     
+    /**
+     * Constructor
+     *
+     * @param   string text
+     */
     public function __construct($text) {
       $this->handle= new GtkButton($text);
       $this->handle->set_name('Button:'.ucfirst($text));
