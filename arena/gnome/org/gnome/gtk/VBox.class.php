@@ -16,6 +16,10 @@
    */
   class VBox extends Widget {
     
+    /**
+     * Constructor
+     *
+     */
     public function __construct() {
       $this->handle= new GtkVBox();
     }
