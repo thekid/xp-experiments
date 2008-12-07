@@ -1,7 +1,18 @@
 Gnome API redesign
 ========================================================================
 
-Test it:
+Setting it up
+~~~~~~~~~~~~~
+Getting PHP-GTK is as easy as:
+
+* Go to http://gtk.php.net/download.php
+* Download php-gtk-2.0.1 Windows binary pack and php-gtk-2.0.1 Windows binary extensions pack
+* Unpack their contents into, say, f:\Programme\php-gtk2
+* You need php-gtk.extensions = php_gtk_libglade2.dll in php-cli.ini
+
+Testing it
+~~~~~~~~~~
 <pre>
   XP_RT=f:/Programme/php-gtk2/php xp ButtonClick
+  XP_RT=f:/Programme/php-gtk2/php xp GladeApp
 </pre>
