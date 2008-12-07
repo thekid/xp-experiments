@@ -1,0 +1,7 @@
+Gnome API redesign
+========================================================================
+
+Test it:
+<pre>
+  XP_RT=f:/Programme/php-gtk2/php xp ButtonClick
+</pre>
