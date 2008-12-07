@@ -14,12 +14,10 @@ Getting PHP-GTK is as easy as:
 * Unpack their contents into, say, f:\Programme\php-gtk2
 * You need php-gtk.extensions = php_gtk_libglade2.dll in php-cli.ini
 
-
 Setting it up (Un*x)
 ~~~~~~~~~~~~~~~~~~~~
-<summary>
-TODO!
-</summary>
+See here http://php-gtk.eu/de/resources/installing and here
+http://gtk.php.net/manual/en/tutorials.installation.php
 
 Testing it
 ~~~~~~~~~~
