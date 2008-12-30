@@ -12,6 +12,16 @@
    * @purpose  Abstract base class
    */
   abstract class Scriptlet extends Object {
+    protected $config= NULL;
+  
+    /**
+     * Set scriptlet configuration
+     *
+     * @param   * config
+     */
+    public function init($config) {
+      $this->config= $config;
+    }
 
     /**
      * Service a request
