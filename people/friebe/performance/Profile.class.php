@@ -42,6 +42,7 @@
         throw new IllegalArgumentException($class->toString().' is not a profileable enum');
       }
 
+      $this->out->writeLine('== Profiling ', $class, ' ==');
       if ($member) {
         $this->fixture= array(Enum::valueOf($class, $member));
       } else {
@@ -65,7 +66,7 @@
      */
     public function run() {
       $t= new Timer();
-      
+
       foreach ($this->fixture as $member) {
         with ($t->start()); {
           $member->run($this->times);
@@ -80,6 +81,11 @@
           );
         }
       }
+      $this->out->writeLinef(
+        '== Memory used: %.3f kB / peak: %.3f kB ==', 
+        memory_get_usage() / 1024,
+        memory_get_peak_usage() / 1024
+      );
     }
   }
 ?>
