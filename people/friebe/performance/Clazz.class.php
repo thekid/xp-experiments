@@ -34,7 +34,7 @@
   }
   
   /*static*/ class _Methods implements Iterator {
-    protected $elements, $offset, $size;
+    public $elements, $offset, $size;
     
     public function __construct($elements) {
       $this->elements= $elements;
@@ -133,7 +133,7 @@
      */
     public function listMethodsCached() {
       if (!isset($this->cache[1])) {
-        $this->cache[1]= $this->getMethods();
+        $this->cache[1]= $this->listMethods();
       }
       return $this->cache[1];
     } 
@@ -154,7 +154,7 @@
      */
     public function methodIteratorCached() {
       if (!isset($this->cache[2])) {
-        $this->cache[2]= $this->methods();
+        $this->cache[2]= $this->methodIterator();
       }
       return $this->cache[2];
     } 
