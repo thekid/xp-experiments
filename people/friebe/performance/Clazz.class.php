@@ -59,6 +59,27 @@
     } 
 
     /**
+     * Get class methods
+     *
+     * @return  ArrayObject<ReflectionMethod>
+     */
+    public function listMethods() {
+      return new ArrayObject($this->reflect->getMethods());
+    } 
+
+    /**
+     * Get class methods - cached
+     *
+     * @return  ArrayObject<ReflectionMethod>
+     */
+    public function listMethodsCached() {
+      if (!isset($this->cache[0])) {
+        $this->cache[0]= $this->getMethods();
+      }
+      return $this->cache[0];
+    } 
+
+    /**
      * Get iterator for class methods
      *
      * @return  Iterator<ReflectionMethod>

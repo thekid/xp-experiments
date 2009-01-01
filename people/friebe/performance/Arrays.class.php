@@ -15,6 +15,8 @@
     public static
       $array,
       $array_cached,
+      $arrayobject,
+      $arrayobject_cached,
       $iteration,
       $iteration_cached;
     
@@ -47,7 +49,35 @@
           $this->assertEqual(40, sizeof($names));
         }
       }');
-      self::$iteration= newinstance(__CLASS__, array(2, 'iteration'), '{
+      self::$arrayobject= newinstance(__CLASS__, array(1, 'arrayobject'), '{
+        static function __static() { }
+
+        public function run($times) {
+          $class= Clazz::forName("lang.XPClass");
+          for ($i= 0; $i < $times; $i++) {
+            $names= array();
+            foreach ($class->listMethods() as $method) {
+              $names[]= $method->getName();
+            }
+          }
+          $this->assertEqual(40, sizeof($names));
+        }
+      }');
+      self::$arrayobject_cached= newinstance(__CLASS__, array(2, 'arrayobject_cached'), '{
+        static function __static() { }
+
+        public function run($times) {
+          $class= Clazz::forName("lang.XPClass");
+          for ($i= 0; $i < $times; $i++) {
+            $names= array();
+            foreach ($class->listMethodsCached() as $method) {
+              $names[]= $method->getName();
+            }
+          }
+          $this->assertEqual(40, sizeof($names));
+        }
+      }');
+      self::$iteration= newinstance(__CLASS__, array(3, 'iteration'), '{
         static function __static() { }
 
         public function run($times) {
@@ -61,7 +91,7 @@
           $this->assertEqual(40, sizeof($names));
         }
       }');
-      self::$iteration_cached= newinstance(__CLASS__, array(3, 'iteration_cached'), '{
+      self::$iteration_cached= newinstance(__CLASS__, array(4, 'iteration_cached'), '{
         static function __static() { }
 
         public function run($times) {
