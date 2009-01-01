@@ -4,6 +4,65 @@
  * $Id$ 
  */
 
+  /*static*/ class _Method extends Object {
+    protected $reflect;
+
+    public function __construct($reflect) {
+      $this->reflect= $reflect;
+    }
+    
+    public function name() {
+      return $this->reflect->getName();
+    }
+  }
+  
+  /*static*/ class _MethodList extends ArrayObject {
+    public function __construct($a) {
+      parent::__construct($a);
+      $this->setIteratorClass('_MethodIterator');
+    }
+
+    public function offsetGet($offset) {
+      return new _Method(parent::offsetGet($offset));
+    }
+  }
+  
+  /*static*/ class _MethodIterator extends ArrayIterator {
+    public function current() {
+      return new _Method(parent::current());
+    }
+  }
+  
+  /*static*/ class _Methods implements Iterator {
+    protected $elements, $offset, $size;
+    
+    public function __construct($elements) {
+      $this->elements= $elements;
+      $this->offset= 0;
+      $this->size= sizeof($elements);
+    }
+    
+    public function rewind() {
+      $this->offset= 0;
+    }
+    
+    public function next() {
+      $this->offset++;
+    }
+    
+    public function valid() {
+      return $this->offset < $this->size;   
+    }
+    
+    public function key() {
+      return $this->offset;
+    }
+
+    public function current() {
+      return new _Method($this->elements[$this->offset]);
+    }
+  }
+
   /**
    * Mini XPClass
    *
@@ -41,7 +100,7 @@
     public function getMethods() {
       $r= array();
       foreach ($this->reflect->getMethods() as $method) {
-        $r[]= $method;
+        $r[]= new _Method($method);
       }
       return $r;
     } 
@@ -64,7 +123,7 @@
      * @return  ArrayObject<ReflectionMethod>
      */
     public function listMethods() {
-      return new ArrayObject($this->reflect->getMethods());
+      return new _MethodList($this->reflect->getMethods());
     } 
 
     /**
@@ -73,10 +132,10 @@
      * @return  ArrayObject<ReflectionMethod>
      */
     public function listMethodsCached() {
-      if (!isset($this->cache[0])) {
-        $this->cache[0]= $this->getMethods();
+      if (!isset($this->cache[1])) {
+        $this->cache[1]= $this->getMethods();
       }
-      return $this->cache[0];
+      return $this->cache[1];
     } 
 
     /**
@@ -84,8 +143,8 @@
      *
      * @return  Iterator<ReflectionMethod>
      */
-    public function methods() {
-      return new ArrayIterator($this->reflect->getMethods());
+    public function methodIterator() {
+      return new _MethodIterator($this->reflect->getMethods());
     } 
 
     /**
@@ -93,11 +152,32 @@
      *
      * @return  Iterator<ReflectionMethod>
      */
-    public function methodsCached() {
-      if (!isset($this->cache[1])) {
-        $this->cache[1]= $this->methods();
+    public function methodIteratorCached() {
+      if (!isset($this->cache[2])) {
+        $this->cache[2]= $this->methods();
       }
-      return $this->cache[1];
+      return $this->cache[2];
+    } 
+
+    /**
+     * Get object for class methods
+     *
+     * @return  _Methods
+     */
+    public function methods() {
+      return new _Methods($this->reflect->getMethods());
+    } 
+
+    /**
+     * Get object for class methods - cached
+     *
+     * @return  _Methods
+     */
+    public function methodsCached() {
+      if (!isset($this->cache[3])) {
+        $this->cache[3]= $this->methods();
+      }
+      return $this->cache[3];
     } 
   }
 ?>

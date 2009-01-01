@@ -18,7 +18,9 @@
       $arrayobject,
       $arrayobject_cached,
       $iteration,
-      $iteration_cached;
+      $iteration_cached,
+      $object,
+      $object_cached;
     
     static function __static() {
       self::$array= newinstance(__CLASS__, array(0, 'array'), '{
@@ -29,7 +31,7 @@
           for ($i= 0; $i < $times; $i++) {
             $names= array();
             foreach ($class->getMethods() as $method) {
-              $names[]= $method->getName();
+              $names[]= $method->name();
             }
           }
           $this->assertEqual(40, sizeof($names));
@@ -43,13 +45,13 @@
           for ($i= 0; $i < $times; $i++) {
             $names= array();
             foreach ($class->getMethodsCached() as $method) {
-              $names[]= $method->getName();
+              $names[]= $method->name();
             }
           }
           $this->assertEqual(40, sizeof($names));
         }
       }');
-      self::$arrayobject= newinstance(__CLASS__, array(1, 'arrayobject'), '{
+      self::$arrayobject= newinstance(__CLASS__, array(2, 'arrayobject'), '{
         static function __static() { }
 
         public function run($times) {
@@ -57,13 +59,13 @@
           for ($i= 0; $i < $times; $i++) {
             $names= array();
             foreach ($class->listMethods() as $method) {
-              $names[]= $method->getName();
+              $names[]= $method->name();
             }
           }
           $this->assertEqual(40, sizeof($names));
         }
       }');
-      self::$arrayobject_cached= newinstance(__CLASS__, array(2, 'arrayobject_cached'), '{
+      self::$arrayobject_cached= newinstance(__CLASS__, array(3, 'arrayobject_cached'), '{
         static function __static() { }
 
         public function run($times) {
@@ -71,13 +73,41 @@
           for ($i= 0; $i < $times; $i++) {
             $names= array();
             foreach ($class->listMethodsCached() as $method) {
-              $names[]= $method->getName();
+              $names[]= $method->name();
             }
           }
           $this->assertEqual(40, sizeof($names));
         }
       }');
-      self::$iteration= newinstance(__CLASS__, array(3, 'iteration'), '{
+      self::$iteration= newinstance(__CLASS__, array(4, 'iteration'), '{
+        static function __static() { }
+
+        public function run($times) {
+          $class= Clazz::forName("lang.XPClass");
+          for ($i= 0; $i < $times; $i++) {
+            $names= array();
+            foreach ($class->methodIterator() as $method) {
+              $names[]= $method->name();
+            }
+          }
+          $this->assertEqual(40, sizeof($names));
+        }
+      }');
+      self::$iteration_cached= newinstance(__CLASS__, array(5, 'iteration_cached'), '{
+        static function __static() { }
+
+        public function run($times) {
+          $class= Clazz::forName("lang.XPClass");
+          for ($i= 0; $i < $times; $i++) {
+            $names= array();
+            foreach ($class->methodIteratorCached() as $method) {
+              $names[]= $method->name();
+            }
+          }
+          $this->assertEqual(40, sizeof($names));
+        }
+      }');
+      self::$object= newinstance(__CLASS__, array(6, 'object'), '{
         static function __static() { }
 
         public function run($times) {
@@ -85,13 +115,13 @@
           for ($i= 0; $i < $times; $i++) {
             $names= array();
             foreach ($class->methods() as $method) {
-              $names[]= $method->getName();
+              $names[]= $method->name();
             }
           }
           $this->assertEqual(40, sizeof($names));
         }
       }');
-      self::$iteration_cached= newinstance(__CLASS__, array(4, 'iteration_cached'), '{
+      self::$object_cached= newinstance(__CLASS__, array(7, 'object_cached'), '{
         static function __static() { }
 
         public function run($times) {
@@ -99,7 +129,7 @@
           for ($i= 0; $i < $times; $i++) {
             $names= array();
             foreach ($class->methodsCached() as $method) {
-              $names[]= $method->getName();
+              $names[]= $method->name();
             }
           }
           $this->assertEqual(40, sizeof($names));
