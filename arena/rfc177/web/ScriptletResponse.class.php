@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('io.streams.OutputStream');
+
   /**
    * Defines the response sent by the server to the client
    *

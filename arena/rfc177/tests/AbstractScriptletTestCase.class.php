@@ -33,6 +33,7 @@
         public function __construct(URL $url) {
           $this->url= $url;
         }
+        public function getInputStream() { }
         public function getContentLength() { }
         public function getContentType() { }
         public function getCharacterEncoding() { }

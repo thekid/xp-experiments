@@ -24,6 +24,15 @@
     }
 
     /**
+     * Returns input stream
+     *
+     * @return  io.streams.InputStream
+     */
+    public function getInputStream() {
+      return $this->wrapped->getInputStream();
+    }
+
+    /**
      * Returns whether a session exists
      *
      * @return  bool

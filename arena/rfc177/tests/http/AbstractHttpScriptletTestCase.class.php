@@ -35,6 +35,7 @@
           $this->method= $method;
           $this->url= $url;
         }
+        public function getInputStream() { }
         public function getCookies() { }
         public function hasCookie($name) { }
         public function getCookie($name, $default= NULL) { }

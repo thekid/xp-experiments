@@ -92,11 +92,13 @@
     #[@test]
     public function redirection() {
       $stream= new MemoryOutputStream();
-      newinstance('web.http.HttpScriptlet', array(), '{
+      $redirect= newinstance('web.http.HttpScriptlet', array(), '{
         protected function doGet(HttpScriptletRequest $request, HttpScriptletResponse $response) {
           $response->sendRedirect(new URL("http://example.com/"));
         }
-      }')->service(
+      }');
+      
+      $redirect->service(
         $this->newHttpRequest('GET', new URL('http://localhost/')), 
         $this->newHttpResponse($stream)
       );

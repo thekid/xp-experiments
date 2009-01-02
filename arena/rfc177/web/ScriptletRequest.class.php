@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.URL');
+  uses('peer.URL', 'io.streams.InputStream');
 
   /**
    * Defines the request sent by the client to the server
@@ -12,6 +12,13 @@
    * @purpose  Interface
    */  
   interface ScriptletRequest {
+
+    /**
+     * Returns input stream
+     *
+     * @return  io.streams.InputStream
+     */
+    public function getInputStream();
 
     /**
      * Gets the length of the request sent by the client.
