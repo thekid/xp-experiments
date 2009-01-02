@@ -6,6 +6,7 @@
 
   uses(
     'tests.AbstractScriptletTestCase',
+    'web.GenericScriptlet',
     'io.streams.MemoryOutputStream'
   );
 
@@ -18,29 +19,43 @@
   class ScriptletTest extends AbstractScriptletTestCase {
   
     /**
-     * Returns a scriptlet that will echo the request object
+     * Returns a scriptlet without implementation
      *
      */
-    protected function newEchoScriptlet() {
-      return newinstance('web.Scriptlet', array(), '{
-        public function service(ScriptletRequest $request, ScriptletResponse $response) {
-          $response->getOutputStream()->write($request->toString());
+    protected function noImplScriptlet() {
+      return newinstance('web.GenericScriptlet', array(), '{ }');
+    }
+
+    /**
+     * Returns a scriptlet with implementation
+     *
+     */
+    protected function newScriptlet() {
+      return newinstance('web.GenericScriptlet', array(), '{ 
+        protected function doGet(ScriptletRequest $request, ScriptletResponse $response) {
+          $response->getOutputStream()->write("<h1>Enter your name</h1>");
+        }
+
+        protected function doPost(ScriptletRequest $request, ScriptletResponse $response) {
+          $response->getOutputStream()->write("<h1>Hello ".$request->getParam("name")."</h1>");
         }
       }');
     }
-    
+
     /**
      * Test
      *
      */
     #[@test]
-    public function noParameters() {
-      $stream= new MemoryOutputStream();
-      $this->newEchoScriptlet()->service(
-        $this->newRequest(new URL('http://localhost/')), 
-        $this->newResponse($stream)
-      );
-      $this->assertEquals('OK: Request(params{ })', $stream->getBytes());
+    public function notImplemented() {
+      foreach (array('GET', 'HEAD', 'POST') as $method) {
+        $stream= new MemoryOutputStream();
+        $this->noImplScriptlet()->service(
+          $this->newHttpRequest($method, new URL('http://localhost/?a=b&c=d')), 
+          $this->newHttpResponse($stream)
+        );
+        $this->assertEquals('400 { Content-Type="text/html" } : <h1>Method "'.$method.'" not supported</h1>', $stream->getBytes(), $method);
+      }
     }
 
     /**
@@ -48,13 +63,13 @@
      *
      */
     #[@test]
-    public function withParameters() {
+    public function enter() {
       $stream= new MemoryOutputStream();
-      $this->newEchoScriptlet()->service(
-        $this->newRequest(new URL('http://localhost/?a=b&c=d')), 
-        $this->newResponse($stream)
+      $this->newScriptlet()->service(
+        $this->newHttpRequest('GET', new URL('http://localhost/')), 
+        $this->newHttpResponse($stream)
       );
-      $this->assertEquals('OK: Request(params{ a="b" c="d" })', $stream->getBytes());
+      $this->assertEquals('200 { Content-Type="text/html" } : <h1>Enter your name</h1>', $stream->getBytes());
     }
 
     /**
@@ -62,20 +77,13 @@
      *
      */
     #[@test]
-    public function arrayParameter() {
+    public function hello() {
       $stream= new MemoryOutputStream();
-      $this->newEchoScriptlet()->service(
-        $this->newRequest(new URL('http://localhost/?a[]=a&a[]=b&a[]=c')), 
-        $this->newResponse($stream)
+      $this->newScriptlet()->service(
+        $this->newHttpRequest('POST', new URL('http://localhost/?name=World')), 
+        $this->newHttpResponse($stream)
       );
-      $this->assertEquals(
-        "OK: Request(params{ a=[\n".
-        "  0 => \"a\"\n".
-        "  1 => \"b\"\n". 
-        "  2 => \"c\"\n".
-        "] })", 
-        $stream->getBytes()
-      );
+      $this->assertEquals('200 { Content-Type="text/html" } : <h1>Hello World</h1>', $stream->getBytes());
     }
 
     /**
@@ -83,19 +91,19 @@
      *
      */
     #[@test]
-    public function mapParameter() {
+    public function redirection() {
       $stream= new MemoryOutputStream();
-      $this->newEchoScriptlet()->service(
-        $this->newRequest(new URL('http://localhost/?a[a]=a&a[b]=b')), 
-        $this->newResponse($stream)
+      $redirect= newinstance('web.GenericScriptlet', array(), '{
+        protected function doGet(ScriptletRequest $request, ScriptletResponse $response) {
+          $response->sendRedirect(new URL("http://example.com/"));
+        }
+      }');
+      
+      $redirect->service(
+        $this->newHttpRequest('GET', new URL('http://localhost/')), 
+        $this->newHttpResponse($stream)
       );
-      $this->assertEquals(
-        "OK: Request(params{ a=[\n".
-        "  a => \"a\"\n".
-        "  b => \"b\"\n". 
-        "] })", 
-        $stream->getBytes()
-      );
+      $this->assertEquals('302 { Location="http://example.com/" } : ', $stream->getBytes());
     }
   }
 ?>
