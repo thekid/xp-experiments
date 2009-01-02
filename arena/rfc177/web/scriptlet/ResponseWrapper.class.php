@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('web.ScriptletResponse');
+  uses('web.scriptlet.ScriptletResponse');
 
   /**
    * Wraps a response - that is, delegates all calls to the wrapped response
@@ -18,7 +18,7 @@
     /**
      * Constructor
      *
-     * @param   web.ScriptletResponse wrapped
+     * @param   web.scriptlet.ScriptletResponse wrapped
      */
     public function __construct(ScriptletResponse $wrapped) {
       $this->wrapped= $wrapped;
@@ -133,7 +133,7 @@
      *   $response->addCookie(new Cookie('lastvisit', date('Y-m-d')));
      * </code>
      *
-     * @param   web.Cookie cookie
+     * @param   web.scriptlet.Cookie cookie
      */
     public function addCookie($cookie) {
       return $this->wrapped->setCookie($cookie);

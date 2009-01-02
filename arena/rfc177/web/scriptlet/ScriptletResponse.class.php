@@ -86,7 +86,7 @@
      *   $response->addCookie(new Cookie('lastvisit', date('Y-m-d')));
      * </code>
      *
-     * @param   web.Cookie cookie
+     * @param   web.scriptlet.Cookie cookie
      */
     public function addCookie($cookie);
 

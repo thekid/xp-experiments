@@ -76,7 +76,7 @@
     /**
      * Retrieve all cookies
      *
-     * @return  web.Cookie[]
+     * @return  web.scriptlet.Cookie[]
      */
     public function getCookies();
     
@@ -100,7 +100,7 @@
      * Retrieve cookie by it's name
      *
      * @param   mixed default default NULL the default value if cookie is non-existant
-     * @return  web.Cookie
+     * @return  web.scriptlet.Cookie
      */
     public function getCookie($name, $default= NULL);
 

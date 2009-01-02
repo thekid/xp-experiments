@@ -15,7 +15,7 @@
      * Returns a request dispatcher
      *
      * @param   string path
-     * @return  web.RequestDispatcher
+     * @return  web.scriptlet.RequestDispatcher
      */
     public function dispatcher($path);
   }

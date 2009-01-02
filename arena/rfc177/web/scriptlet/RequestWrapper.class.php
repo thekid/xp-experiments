@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('web.ScriptletRequest');
+  uses('web.scriptlet.ScriptletRequest');
 
   /**
    * Wraps a request - that is, delegates all calls to the wrapped request
@@ -18,7 +18,7 @@
     /**
      * Constructor
      *
-     * @param   web.ScriptletRequest wrapped
+     * @param   web.scriptlet.ScriptletRequest wrapped
      */
     public function __construct(ScriptletRequest $wrapped) {
       $this->wrapped= $wrapped;
@@ -121,7 +121,7 @@
     /**
      * Retrieves the session or NULL if none exists
      *
-     * @return  web.Session session object
+     * @return  web.scriptlet.Session session object
      */
     public function getSession() {
       return $this->wrapped->getSession();
@@ -130,7 +130,7 @@
     /**
      * Retrieve all cookies
      *
-     * @return  web.Cookie[]
+     * @return  web.scriptlet.Cookie[]
      */
     public function getCookies() {
       return $this->wrapped->getCookies();
@@ -158,7 +158,7 @@
      * Retrieve cookie by it's name
      *
      * @param   mixed default default NULL the default value if cookie is non-existant
-     * @return  web.Cookie
+     * @return  web.scriptlet.Cookie
      */
     public function getCookie($name, $default= NULL) {
       return $this->wrapped->getCookie($name, $default);

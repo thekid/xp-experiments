@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.streams.OutputStream', 'web.ScriptletResponse');
+  uses('io.streams.OutputStream', 'web.scriptlet.ScriptletResponse');
 
   /**
    * Output stream that commits the response on the first method
@@ -20,7 +20,7 @@
      * Constructor
      *
      * @param   io.streams.OutputStream out
-     * @param   web.ScriptletResponse res
+     * @param   web.scriptlet.ScriptletResponse res
      */
     public function __construct(OutputStream $out, ScriptletResponse $res) {
       $this->out= $out;

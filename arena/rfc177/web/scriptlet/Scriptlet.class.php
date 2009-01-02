@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('web.ScriptletRequest', 'web.ScriptletResponse', 'web.ScriptletException');
+  uses('web.scriptlet.ScriptletRequest', 'web.scriptlet.ScriptletResponse', 'web.scriptlet.ScriptletException');
 
   /**
    * Base scriptlet
@@ -26,9 +26,9 @@
     /**
      * Service a request
      *
-     * @param   web.ScriptletRequest request
-     * @param   web.ScriptletResponse response
-     * @throws  web.ScriptletException to indicate fatal error situations
+     * @param   web.scriptlet.ScriptletRequest request
+     * @param   web.scriptlet.ScriptletResponse response
+     * @throws  web.scriptlet.ScriptletException to indicate fatal error situations
      */
     abstract public function service(ScriptletRequest $request, ScriptletResponse $response);
     

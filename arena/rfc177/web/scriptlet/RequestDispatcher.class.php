@@ -14,8 +14,8 @@
     /**
      * Dispatch a request
      *
-     * @param   web.ScriptletRequest request
-     * @param   web.ScriptletResponse response
+     * @param   web.scriptlet.ScriptletRequest request
+     * @param   web.scriptlet.ScriptletResponse response
      */
     public function dispatch(ScriptletRequest $request, ScriptletResponse $response);
   }

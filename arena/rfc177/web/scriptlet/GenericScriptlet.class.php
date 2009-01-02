@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('web.Scriptlet');
+  uses('web.scriptlet.Scriptlet');
 
   /**
    * Provides a class for all scriptlets answering HTTP requests.
@@ -20,7 +20,7 @@
    * The service() method dispatches requests to these methods depending
    * on the request method
    *
-   * @see      xp://web.scriptlet
+   * @see      xp://web.scriptlet.scriptlet
    * @purpose  Abstract base class
    */
   abstract class GenericScriptlet extends Scriptlet {
@@ -28,8 +28,8 @@
     /**
      * Called by the service method for requests made by GET method.
      *
-     * @param   web.ScriptletRequest request
-     * @param   web.ScriptletResponse response
+     * @param   web.scriptlet.ScriptletRequest request
+     * @param   web.scriptlet.ScriptletResponse response
      */
     protected function doGet(ScriptletRequest $request, ScriptletResponse $response) {
       $response->sendError(400, 'Method "GET" not supported');
@@ -38,8 +38,8 @@
     /**
      * Called by the service method for requests made by HEAD method.
      *
-     * @param   web.ScriptletRequest request
-     * @param   web.ScriptletResponse response
+     * @param   web.scriptlet.ScriptletRequest request
+     * @param   web.scriptlet.ScriptletResponse response
      */
     protected function doHead(ScriptletRequest $request, ScriptletResponse $response) {
       $response->sendError(400, 'Method "HEAD" not supported');
@@ -48,8 +48,8 @@
     /**
      * Called by the service method for requests made by POST method.
      *
-     * @param   web.ScriptletRequest request
-     * @param   web.ScriptletResponse response
+     * @param   web.scriptlet.ScriptletRequest request
+     * @param   web.scriptlet.ScriptletResponse response
      */
     protected function doPost(ScriptletRequest $request, ScriptletResponse $response) {
       $response->sendError(400, 'Method "POST" not supported');
@@ -58,9 +58,9 @@
     /**
      * Service a request
      *
-     * @param   web.ScriptletRequest request
-     * @param   web.ScriptletResponse response
-     * @throws  web.ScriptletException to indicate fatal error situations
+     * @param   web.scriptlet.ScriptletRequest request
+     * @param   web.scriptlet.ScriptletResponse response
+     * @throws  web.scriptlet.ScriptletException to indicate fatal error situations
      */
     public function service(ScriptletRequest $request, ScriptletResponse $response) {
       
