@@ -8,10 +8,10 @@
     'unittest.TestCase',
     'peer.URL',
     'io.streams.OutputStream',
-    'web.Scriptlet',
-    'web.ScriptletRequest',
-    'web.ScriptletResponse',
-    'web.ScriptletOutputStream'
+    'web.scriptlet.Scriptlet',
+    'web.scriptlet.ScriptletRequest',
+    'web.scriptlet.ScriptletResponse',
+    'web.scriptlet.ScriptletOutputStream'
   );
 
   /**
@@ -25,10 +25,10 @@
      * Returns a new request with a given URL
      *
      * @param   peer.URL url
-     * @return  web.ScriptletRequest
+     * @return  web.scriptlet.ScriptletRequest
      */
     protected function newHttpRequest($method, URL $url) {
-      return newinstance('web.ScriptletRequest', array($method, $url), '{
+      return newinstance('web.scriptlet.ScriptletRequest', array($method, $url), '{
         private $url, $method;
         
         public function __construct($method, URL $url) {
@@ -73,10 +73,10 @@
      * Returns a new response with a given output stream
      *
      * @param   io.streams.OutputStream
-     * @return  web.ScriptletResponse
+     * @return  web.scriptlet.ScriptletResponse
      */
     protected function newHttpResponse(OutputStream $stream) {
-      return newinstance('web.ScriptletResponse', array($stream), '{
+      return newinstance('web.scriptlet.ScriptletResponse', array($stream), '{
         private $stream;
         private $status= 200;
         private $headers= array("Content-Type" => "text/html");

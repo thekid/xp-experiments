@@ -6,7 +6,7 @@
 
   uses(
     'tests.AbstractScriptletTestCase',
-    'web.GenericScriptlet',
+    'web.scriptlet.GenericScriptlet',
     'io.streams.MemoryOutputStream'
   );
 
@@ -23,7 +23,7 @@
      *
      */
     protected function noImplScriptlet() {
-      return newinstance('web.GenericScriptlet', array(), '{ }');
+      return newinstance('web.scriptlet.GenericScriptlet', array(), '{ }');
     }
 
     /**
@@ -31,7 +31,7 @@
      *
      */
     protected function newScriptlet() {
-      return newinstance('web.GenericScriptlet', array(), '{ 
+      return newinstance('web.scriptlet.GenericScriptlet', array(), '{ 
         protected function doGet(ScriptletRequest $request, ScriptletResponse $response) {
           $response->getOutputStream()->write("<h1>Enter your name</h1>");
         }
@@ -93,7 +93,7 @@
     #[@test]
     public function redirection() {
       $stream= new MemoryOutputStream();
-      $redirect= newinstance('web.GenericScriptlet', array(), '{
+      $redirect= newinstance('web.scriptlet.GenericScriptlet', array(), '{
         protected function doGet(ScriptletRequest $request, ScriptletResponse $response) {
           $response->sendRedirect(new URL("http://example.com/"));
         }
