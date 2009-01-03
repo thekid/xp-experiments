@@ -38,7 +38,7 @@
         '-dsafe_mode=0',          // Switch off "safe" mode
         '-dmagic_quotes_gpc=0',   // Get rid of magic quotes
         '-dextension_dir="'.ini_get('extension_dir').'"',
-        '-dinclude_path=".'.PATH_SEPARATOR.get_include_path().'"'
+        '-dinclude_path="\"'.get_include_path().'\""'
       );
       
       // Store source to temporary file
