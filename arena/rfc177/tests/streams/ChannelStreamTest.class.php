@@ -82,6 +82,36 @@
     public function outputIsNotAnInputStream() {
       new ChannelInputStream('outpit');
     }
+
+    /**
+     * Test writing to a closed channel results in an IOException
+     *
+     */
+    #[@test, @expect('io.IOException')]
+    public function writeToClosedChannel() {
+      $r= ChannelWrapper::capture(newinstance('lang.Runnable', array(), '{
+        public function run() {
+          $s= new ChannelOutputStream("output");
+          $s->close();
+          $s->write("whatever");
+        }
+      }'));
+    }
+
+    /**
+     * Test readin from a closed channel results in an IOException
+     *
+     */
+    #[@test, @expect('io.IOException')]
+    public function readingFromClosedChannel() {
+      $r= ChannelWrapper::capture(newinstance('lang.Runnable', array(), '{
+        public function run() {
+          $s= new ChannelInputStream("input");
+          $s->close();
+          $s->read();
+        }
+      }'));
+    }
   
     /**
      * Test "output" channel

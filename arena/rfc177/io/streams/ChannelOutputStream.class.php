@@ -40,7 +40,9 @@
      * @param   mixed arg
      */
     public function write($arg) { 
-      fwrite($this->fd, $arg);
+      if (FALSE === fwrite($this->fd, $arg)) {
+        throw new IOException('Could not write '.strlen($arg).' bytes to '.$this->name.' channel');
+      }
     }
 
     /**

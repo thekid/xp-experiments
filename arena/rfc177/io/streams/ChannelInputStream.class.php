@@ -41,7 +41,10 @@
      * @return  string
      */
     public function read($limit= 8192) {
-      return fread($this->fd, $limit);
+      if (FALSE === ($bytes= fread($this->fd, $limit))) {
+        throw new IOException('Could not read '.$limit.' bytes from '.$this->name.' channel');
+      }
+      return $bytes;
     }
 
     /**
