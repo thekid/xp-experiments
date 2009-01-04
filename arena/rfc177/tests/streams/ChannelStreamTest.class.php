@@ -8,9 +8,7 @@
     'unittest.TestCase',
     'io.streams.ChannelOutputStream',
     'io.streams.ChannelInputStream',
-    'io.TempFile',
-    'tests.streams.RuntimeOutput',
-    'lang.Runtime'
+    'tests.streams.ChannelWrapper'
   );
 
   /**
@@ -21,65 +19,6 @@
    * @purpose  purpose
    */
   class ChannelStreamTest extends TestCase {
-
-    /**
-     * Runs sourcecode in a new runtime
-     *
-     * @param   string[] args
-     * @param   string src
-     * @param   string in default ''
-     * @param   int expectedExitCode default 0
-     * @throws  lang.IllegalStateException if process exits with a non-zero exitcode
-     * @return  string out
-     */
-    protected function runInNewRuntime($args, $src, $in= '', $expectedExitCode= 0) {
-      $defaultArgs= array(
-        '-n',                     // Do not use any configuration file
-        '-dsafe_mode=0',          // Switch off "safe" mode
-        '-dmagic_quotes_gpc=0',   // Get rid of magic quotes
-        '-dextension_dir="'.ini_get('extension_dir').'"',
-        '-dinclude_path="\"'.get_include_path().'\""'
-      );
-      
-      // Store source to temporary file
-      with ($t= new TempFile($this->getName())); {
-        $t->open(FILE_MODE_WRITE);
-        $t->write('<?php require("lang.base.php"); uses("lang.Runtime");');
-        $t->write('  try { '.$src.' } catch (Throwable $e) { $e->printStackTrace(); exit(-1); }');
-        $t->write('?>');
-        $t->close();
-      }
-
-      // Fork runtime
-      with (
-        $out= $err= '', 
-        $p= new Process(Runtime::getInstance()->getExecutable()->getFilename(), array_merge($args, $defaultArgs, array('"'.$t->getURI().'"')))
-      ); {
-        $p->in->write($in);
-        $p->in->close();
-        
-        // Read output
-        while ($b= $p->out->read()) { $out.= $b; }
-        while ($b= $p->err->read()) { $err.= $b; }
-        
-        // Close process, get rid of temp file
-        $exitv= $p->close();
-        $t->unlink();
-        
-        // Check for exitcode
-        if ($expectedExitCode !== $exitv) {
-          throw new IllegalStateException(sprintf(
-            "Command %s failed with exit code #%d (instead of %d) {OUT: %s\nERR: %s\n}",
-            $p->getCommandLine(),
-            $exitv,
-            $expectedExitCode,
-            $out,
-            $err
-          ));
-        }
-      }
-      return new RuntimeOutput($exitv, $out, $err);
-    }
 
     /**
      * Test ChannelOutputStream constructed with an invalid channel name
@@ -150,15 +89,14 @@
      */
     #[@test]
     public function output() {
-      $r= $this->runInNewRuntime(array(), '
-        uses("io.streams.ChannelOutputStream");
-
-        $s= new ChannelOutputStream("output");
-        $s->write("+OK Hello");
-      ');
+      $r= ChannelWrapper::capture(newinstance('lang.Runnable', array(), '{
+        public function run() {
+          $s= new ChannelOutputStream("output");
+          $s->write("+OK Hello");
+        }
+      }'));
         
-      $this->assertEquals('+OK Hello', $r->out());
-      $this->assertEquals('', $r->err());
+      $this->assertEquals('+OK Hello', $r['output']);
     }
 
     /**
@@ -167,15 +105,14 @@
      */
     #[@test]
     public function stdout() {
-      $r= $this->runInNewRuntime(array(), '
-        uses("io.streams.ChannelOutputStream");
-
-        $s= new ChannelOutputStream("stdout");
-        $s->write("+OK Hello");
-      ');
+      $r= ChannelWrapper::capture(newinstance('lang.Runnable', array(), '{
+        public function run() {
+          $s= new ChannelOutputStream("stdout");
+          $s->write("+OK Hello");
+        }
+      }'));
         
-      $this->assertEquals('+OK Hello', $r->out());
-      $this->assertEquals('', $r->err());
+      $this->assertEquals('+OK Hello', $r['stdout']);
     }
 
     /**
@@ -184,15 +121,14 @@
      */
     #[@test]
     public function stderr() {
-      $r= $this->runInNewRuntime(array(), '
-        uses("io.streams.ChannelOutputStream");
-
-        $s= new ChannelOutputStream("stderr");
-        $s->write("+OK Hello");
-      ');
+      $r= ChannelWrapper::capture(newinstance('lang.Runnable', array(), '{
+        public function run() {
+          $s= new ChannelOutputStream("stderr");
+          $s->write("+OK Hello");
+        }
+      }'));
         
-      $this->assertEquals('+OK Hello', $r->err());
-      $this->assertEquals('', $r->out());
+      $this->assertEquals('+OK Hello', $r['stderr']);
     }
 
     /**
@@ -201,36 +137,36 @@
      */
     #[@test]
     public function stdin() {
-      $r= $this->runInNewRuntime(array(), '
-        uses("io.streams.ChannelInputStream");
-
-        $s= new ChannelInputStream("stdin");
-        while ($s->available()) {
-          echo $s->read();
+      $r= ChannelWrapper::capture(newinstance('lang.Runnable', array(), '{
+        public function run() {
+          $i= new ChannelInputStream("stdin");
+          $o= new ChannelOutputStream("stdout");
+          while ($i->available()) {
+            $o->write($i->read());
+          }
         }
-      ', '+OK Piped input');
+      }'), array('stdin' => '+OK Piped input'));
         
-      $this->assertEquals('+OK Piped input', $r->out());
-      $this->assertEquals('', $r->err());
+      $this->assertEquals('+OK Piped input', $r['stdout']);
     }
 
     /**
      * Test "input" channel
      *
      */
-    #[@test, @ignore('There is no way to fill "php://input" in CLI php')]
+    #[@test]
     public function input() {
-      $r= $this->runInNewRuntime(array(), '
-        uses("io.streams.ChannelInputStream");
-
-        $s= new ChannelInputStream("input");
-        while ($s->available()) {
-          echo $s->read();
+      $r= ChannelWrapper::capture(newinstance('lang.Runnable', array(), '{
+        public function run() {
+          $i= new ChannelInputStream("input");
+          $o= new ChannelOutputStream("stdout");
+          while ($i->available()) {
+            $o->write($i->read());
+          }
         }
-      ', '+OK Piped input');
+      }'), array('input' => '+OK Piped input'));
         
-      $this->assertEquals('+OK Piped input', $r->out());
-      $this->assertEquals('', $r->err());
+      $this->assertEquals('+OK Piped input', $r['stdout']);
     }
   }
 ?>
