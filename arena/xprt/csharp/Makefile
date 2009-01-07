@@ -22,4 +22,4 @@ doclet.exe: Doclet.cs $(CLASSES)
 	$(CSC) /nologo /target:exe /out:$@ Doclet.cs $(CLASSES)
 
 clean:
-	-rm xp.exe
+	-rm xp.exe xpcli.exe xar.exe unittest.exe cgen.exe doclet.exe
