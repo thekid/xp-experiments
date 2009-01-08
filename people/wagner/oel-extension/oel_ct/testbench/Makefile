@@ -1,5 +1,5 @@
-OEL=sh ./bin/test_oel
-PHP=sh  ./bin/test_php
+OEL?=sh ./bin/test_oel
+PHP?=sh  ./bin/test_php
 OEL_RESULT=/tmp/oel_test
 PHP_RESULT=/tmp/oel_php_test
 DIFF_RESULT=/tmp/oel_test.diff
