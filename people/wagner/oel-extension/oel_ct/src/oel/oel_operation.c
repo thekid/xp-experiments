@@ -99,7 +99,7 @@ PHP_FUNCTION(oel_add_unary_op) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *operand, *result;
-    int                arg_operation;
+    zend_ulong         arg_operation;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rl", &arg_op_array, &arg_operation) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!is_unary_op(arg_operation)) oel_compile_error(E_ERROR, "operation is not a unary operation");
@@ -117,7 +117,7 @@ PHP_FUNCTION(oel_add_incdec_op) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *operand, *result;
-    int                arg_operation;
+    zend_ulong         arg_operation;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rl", &arg_op_array, &arg_operation) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "assigning op without oel_add_begin_variable_parse");
@@ -140,7 +140,7 @@ PHP_FUNCTION(oel_add_binary_op) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *lefthand, *righthand, *result;
-    int                arg_operation;
+    zend_ulong         arg_operation;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rl", &arg_op_array, &arg_operation) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!is_binary_op(arg_operation)) oel_compile_error(E_ERROR, "operation is not a binary operation");
@@ -241,7 +241,7 @@ PHP_FUNCTION(oel_add_end_logical_op) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *token, *expr1, *expr2, *result;
-    int                token_type;
+    zend_ulong         token_type;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!oel_token_isa(res_op_array TSRMLS_CC, 2, OEL_TYPE_TOKEN_LOGIC_AND, OEL_TYPE_TOKEN_LOGIC_OR)) oel_compile_error(E_ERROR, "token type is not a logical operation");
@@ -264,7 +264,7 @@ PHP_FUNCTION(oel_add_cast_op) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *expr, *result;
-    int                arg_operation;
+    zend_ulong         arg_operation;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rl", &arg_op_array, &arg_operation) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!is_cast_op(arg_operation)) oel_compile_error(E_ERROR, "operation is not a cast operation");
