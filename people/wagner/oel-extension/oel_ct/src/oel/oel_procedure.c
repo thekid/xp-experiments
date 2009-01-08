@@ -161,7 +161,7 @@ PHP_FUNCTION(oel_add_call_function) {
     oel_stack_push_operand(res_op_array, result TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    is_dynamic= zend_do_begin_function_call(func_name TSRMLS_CC);
+    is_dynamic= zend_do_begin_function_call(func_name PHP_OEL_COMPAT_NSC(0) TSRMLS_CC);
     oel_build_call_parameter_pass(res_op_array, params TSRMLS_CC);
     zend_do_end_function_call(func_name, result, parameter_count, 0, is_dynamic TSRMLS_CC);
     zend_do_extended_fcall_end(TSRMLS_C);
@@ -186,7 +186,7 @@ PHP_FUNCTION(oel_add_call_function_name) {
     result= func_name;
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_begin_dynamic_function_call(func_name TSRMLS_CC);
+    zend_do_begin_dynamic_function_call(func_name PHP_OEL_COMPAT_NSC(0) TSRMLS_CC);
     oel_build_call_parameter_pass(res_op_array, params TSRMLS_CC);
     zend_do_end_function_call(func_name, result, parameter_count, 0, 1 TSRMLS_CC);
     zend_do_extended_fcall_end(TSRMLS_C);

@@ -80,9 +80,11 @@
 
         #define PHP_OEL_COMPAT_EVP(o)
         #define PHP_OEL_COMPAT_FCT(o, i) i
+        #define PHP_OEL_COMPAT_NSC(i)
     #else
         #define PHP_OEL_COMPAT_EVP(o) o, 
         #define PHP_OEL_COMPAT_FCT(o, i) o
+        #define PHP_OEL_COMPAT_NSC(i) , i
     #endif
 
     PHP_MINIT_FUNCTION(oel);

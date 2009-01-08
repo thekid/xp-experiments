@@ -198,9 +198,9 @@ PHP_FUNCTION(oel_push_constant) {
     env= oel_env_prepare(res_op_array TSRMLS_CC);
     if (arg_classname_len) {
         zend_do_fetch_class(class, classname TSRMLS_CC);
-        zend_do_fetch_constant(result, class, name, ZEND_RT TSRMLS_CC);
+        zend_do_fetch_constant(result, class, name, ZEND_RT PHP_OEL_COMPAT_NSC(0) TSRMLS_CC);
     } else {
-        zend_do_fetch_constant(result, NULL, name, ZEND_RT TSRMLS_CC);
+        zend_do_fetch_constant(result, NULL, name, ZEND_RT PHP_OEL_COMPAT_NSC(0) TSRMLS_CC);
     }
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
