@@ -154,7 +154,7 @@ PHP_FUNCTION(oel_add_binary_op) {
         if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "assigning binary op without oel_add_begin_variable_parse");
         oel_stack_pop_token(res_op_array TSRMLS_CC);
         zend_check_writable_variable(lefthand);
-        zend_do_end_variable_parse(PHP_OEL_COMPAT_EVP(righthand) BP_VAR_RW, 0 TSRMLS_CC);
+        zend_do_end_variable_parse(PHP_OEL_COMPAT_EVP(lefthand) BP_VAR_RW, 0 TSRMLS_CC);
         zend_do_binary_assign_op(arg_operation, result, lefthand, righthand TSRMLS_CC);
     } else {
         zend_do_binary_op(arg_operation, result, lefthand, righthand TSRMLS_CC);
