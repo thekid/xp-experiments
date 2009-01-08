@@ -276,7 +276,7 @@ PHP_FUNCTION(oel_add_unset) {
     expr= oel_stack_pop_operand(res_op_array TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_end_variable_parse(BP_VAR_UNSET, 0 TSRMLS_CC);
+    zend_do_end_variable_parse(PHP_OEL_COMPAT_EVP(expr) BP_VAR_UNSET, 0 TSRMLS_CC);
     zend_do_unset(expr TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }

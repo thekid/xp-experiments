@@ -129,7 +129,7 @@ PHP_FUNCTION(oel_add_incdec_op) {
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
     zend_check_writable_variable(operand);
-    zend_do_end_variable_parse(BP_VAR_RW, 0 TSRMLS_CC);
+    zend_do_end_variable_parse(PHP_OEL_COMPAT_EVP(operand) BP_VAR_RW, 0 TSRMLS_CC);
     if (is_incdec_post_op(arg_operation)) zend_do_post_incdec(result, operand, arg_operation TSRMLS_CC);
     else zend_do_pre_incdec(result, operand, arg_operation TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
@@ -154,7 +154,7 @@ PHP_FUNCTION(oel_add_binary_op) {
         if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "assigning binary op without oel_add_begin_variable_parse");
         oel_stack_pop_token(res_op_array TSRMLS_CC);
         zend_check_writable_variable(lefthand);
-        zend_do_end_variable_parse(BP_VAR_RW, 0 TSRMLS_CC);
+        zend_do_end_variable_parse(PHP_OEL_COMPAT_EVP(righthand) BP_VAR_RW, 0 TSRMLS_CC);
         zend_do_binary_assign_op(arg_operation, result, lefthand, righthand TSRMLS_CC);
     } else {
         zend_do_binary_op(arg_operation, result, lefthand, righthand TSRMLS_CC);

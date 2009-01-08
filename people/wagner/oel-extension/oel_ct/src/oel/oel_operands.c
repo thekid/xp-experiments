@@ -69,14 +69,16 @@ PHP_FUNCTION(oel_add_end_variable_parse) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
+    znode             *variable;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "oel_add_end_variable_parse without oel_add_begin_variable_parse");
 
     oel_stack_pop_token(res_op_array TSRMLS_CC);
+    variable= oel_stack_top_operand(res_op_array TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_end_variable_parse(BP_VAR_R, 0 TSRMLS_CC);
+    zend_do_end_variable_parse(PHP_OEL_COMPAT_EVP(variable) BP_VAR_R, 0 TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 

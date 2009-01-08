@@ -75,10 +75,13 @@
     #define PHP_OEL_RESET_CG(o, e, p)  CG(p)= (e)->cg.p; 
 
     #if ZEND_MODULE_API_NO < 20071006
-        #define Z_SET_REFCOUNT(o, v); o.refcount= v;
-        #define Z_SET_ISREF_TO(o, v); o.is_ref= v;
+        #define Z_SET_REFCOUNT(o, v) (o).refcount= (v)
+        #define Z_SET_ISREF_TO(o, v) (o).is_ref= (v)
+
+        #define PHP_OEL_COMPAT_EVP(o)
+    #else
+        #define PHP_OEL_COMPAT_EVP(o) o, 
     #endif
-        
 
     PHP_MINIT_FUNCTION(oel);
     PHP_MINFO_FUNCTION(oel);
