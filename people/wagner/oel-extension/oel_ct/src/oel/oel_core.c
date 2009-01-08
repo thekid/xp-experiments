@@ -16,7 +16,8 @@ PHP_FUNCTION(oel_finalize) {
 PHP_FUNCTION(oel_execute) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
-    zend_bool          orig_in_compilation;
+    zend_bool          orig_in_compilation, orig_in_execution;
+    int               error;
     zend_execute_data *orig_current_execute_data;
     zend_op          **orig_opline_ptr;
     zend_op_array     *orig_active_op_array;
@@ -34,7 +35,9 @@ PHP_FUNCTION(oel_execute) {
         }
 
         /* execute */
+        error= -1;
         orig_in_compilation=       CG(in_compilation);
+        orig_in_execution=         EG(in_execution);
         orig_current_execute_data= EG(current_execute_data);
         orig_opline_ptr=           EG(opline_ptr);
         orig_active_op_array=      EG(active_op_array);
@@ -47,12 +50,27 @@ PHP_FUNCTION(oel_execute) {
                 RETVAL_ZVAL(*EG(return_value_ptr_ptr), 1, 1);
             }
         } zend_catch {
-            fprintf(stderr, "An op array tried to end the script. Reason could be a fatal error or an exit code.\n"); /* FIXME */
+            error= EG(exit_status);
         } zend_end_try();
         EG(active_op_array)=      orig_active_op_array;
         EG(opline_ptr)=           orig_opline_ptr;
         EG(current_execute_data)= orig_current_execute_data;
+        EG(in_execution)=         orig_in_execution;
         CG(in_compilation)=       orig_in_compilation;
+        
+        switch (error) {
+            case -1: 
+                /* Success */ 
+                break;
+
+            case 0xFF: 
+                zend_error(E_WARNING, "Op array execution was ended by fatal error");
+                break;
+
+            default:
+                zend_error(E_WARNING, "Op array execution was ended by a call to exit");
+                break;
+        }
     }
 }
 
