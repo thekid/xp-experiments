@@ -221,7 +221,7 @@ PHP_FUNCTION(oel_add_begin_logical_op) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *expr, *token;
-    int                arg_operation;
+    zend_ulong         arg_operation;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rl", &arg_op_array, &arg_operation) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!is_boolean_op(arg_operation)) oel_compile_error(E_ERROR, "operation is not a boolean operation");

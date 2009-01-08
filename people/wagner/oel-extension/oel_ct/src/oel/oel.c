@@ -251,10 +251,7 @@ PHP_OEL_STACK_SERVICE_FUNCTIONS(token);
 PHP_OEL_STACK_SERVICE_FUNCTIONS(extvar);
 
 static php_oel_op_array *oel_fetch_op_array(zval *arg_op_array TSRMLS_DC) {
-    php_oel_op_array *oel_op_array= (php_oel_op_array *) zend_fetch_resource(&arg_op_array TSRMLS_CC, -1, NULL, NULL, 1, le_oel_oar);
-    if (!oel_op_array) oel_op_array= (php_oel_op_array *) zend_fetch_resource(&arg_op_array TSRMLS_CC, -1, NULL, NULL, 1, le_oel_fun);
-    if (!oel_op_array) oel_op_array= (php_oel_op_array *) zend_fetch_resource(&arg_op_array TSRMLS_CC, -1, NULL, NULL, 1, le_oel_nme);
-    if (!oel_op_array) oel_op_array= (php_oel_op_array *) zend_fetch_resource(&arg_op_array TSRMLS_CC, -1, NULL, NULL, 1, le_oel_ame);
+    php_oel_op_array *oel_op_array= (php_oel_op_array *) zend_fetch_resource(&arg_op_array TSRMLS_CC, -1, "", NULL, 4, le_oel_oar, le_oel_fun, le_oel_nme, le_oel_ame);
     if (!oel_op_array) oel_compile_error(E_ERROR, "resource must be of type <%s>, <%s>, <%s> or <%s>", PHP_OEL_OAR_RES_NAME, PHP_OEL_FUN_RES_NAME, PHP_OEL_NME_RES_NAME, PHP_OEL_AME_RES_NAME);
     return oel_op_array;
 }

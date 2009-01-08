@@ -96,7 +96,7 @@ PHP_FUNCTION(oel_add_begin_foreach) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *array, *foreach_token, *as_token, *open_brackets_token;
-    int is_variable;
+    int                is_variable;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 

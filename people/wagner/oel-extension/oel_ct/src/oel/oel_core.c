@@ -94,7 +94,7 @@ PHP_FUNCTION(oel_add_return) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *val;
-    int  end_v_parse=  0;
+    zend_ulong         end_v_parse=  0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     val= oel_stack_pop_operand(res_op_array TSRMLS_CC);
@@ -147,7 +147,7 @@ PHP_FUNCTION(oel_add_continue) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
-    int                arg_depth= 0;
+    zend_ulong         arg_depth= 0;
     znode             *depth= NULL;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r|l!", &arg_op_array, &arg_depth) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);

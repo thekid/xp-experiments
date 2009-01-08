@@ -36,8 +36,8 @@ PHP_FUNCTION(oel_add_begin_firstcatch) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *try_token, *catch_token, *first_catch_token, *catch_var, *catch_class;
-    char *arg_class_name,     *arg_var_name;
-    int   arg_class_name_len,  arg_var_name_len;
+    zend_uchar        *arg_class_name, *arg_var_name;
+    zend_ulong         arg_class_name_len,  arg_var_name_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rss", &arg_op_array, &arg_class_name, &arg_class_name_len, &arg_var_name, &arg_var_name_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_CATCH_FIRST)) oel_compile_error(E_ERROR, "token is not of type first catch");
@@ -89,8 +89,8 @@ PHP_FUNCTION(oel_add_begin_catch) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *add_catch_token, *last_catch_token, *catch_var, *catch_class;
-    char *arg_class_name,     *arg_var_name;
-    int   arg_class_name_len,  arg_var_name_len;
+    zend_uchar        *arg_class_name, *arg_var_name;
+    zend_ulong         arg_class_name_len, arg_var_name_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rss", &arg_op_array, &arg_class_name, &arg_class_name_len, &arg_var_name, &arg_var_name_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_CATCH_FIRST)) oel_compile_error(E_ERROR, "first catch must be declared with oel_add_begin_firstcatch");
