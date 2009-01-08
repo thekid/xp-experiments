@@ -3,8 +3,8 @@ PHP_FUNCTION(oel_add_begin_class_declaration) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *class_name, *parent_class_name, *parent_class_node, *class_token;
-    char              *arg_class_name, *arg_parent_name= NULL;
-    int                arg_parent_name_len= 0, arg_class_name_len, mod;
+    zend_uchar        *arg_class_name, *arg_parent_name= NULL;
+    zend_ulong         arg_parent_name_len= 0, arg_class_name_len;
     zend_bool          arg_is_final= 0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|sb", &arg_op_array, &arg_class_name, &arg_class_name_len, &arg_parent_name, &arg_parent_name_len, &arg_is_final) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
@@ -18,7 +18,6 @@ PHP_FUNCTION(oel_add_begin_class_declaration) {
     } else {
         parent_class_node->op_type= IS_UNUSED;
     }
-    mod= (arg_is_final) ? ZEND_ACC_FINAL : 0x0;
 
     class_token= oel_create_token(res_op_array, OEL_TYPE_TOKEN_CLASS TSRMLS_CC);
     class_token->u.opline_num= CG(zend_lineno);
@@ -56,8 +55,8 @@ PHP_FUNCTION(oel_add_begin_abstract_class_declaration) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *class_name, *parent_class_name, *class_token;
-    char              *arg_class_name,    *arg_parent_name= NULL;
-    int                arg_class_name_len, arg_parent_name_len= 0, arg_is_final= 0;
+    zend_uchar        *arg_class_name,    *arg_parent_name= NULL;
+    zend_ulong         arg_class_name_len, arg_parent_name_len= 0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|s", &arg_op_array, &arg_class_name, &arg_class_name_len, &arg_parent_name, &arg_parent_name_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
@@ -102,8 +101,8 @@ PHP_FUNCTION(oel_add_begin_interface_declaration) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *class_name, *class_token;
-    char              *arg_class_name;
-    int                arg_class_name_len, arg_is_final= 0;
+    zend_uchar        *arg_class_name;
+    zend_ulong         arg_class_name_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_class_name, &arg_class_name_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
@@ -142,8 +141,8 @@ PHP_FUNCTION(oel_add_parent_interface) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *interface_name, *interface_node;
-    char              *arg_iname;
-    int                arg_iname_len;
+    zend_uchar        *arg_iname;
+    zend_ulong         arg_iname_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_iname, &arg_iname_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_ICLASS)) oel_compile_error(E_ERROR, "wrong token: interface token expected");
@@ -153,8 +152,12 @@ PHP_FUNCTION(oel_add_parent_interface) {
     interface_node= oel_create_extvar(res_op_array TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_fetch_class(interface_node, interface_name TSRMLS_CC);
-    zend_do_implements_interface(interface_node TSRMLS_CC);
+    #if ZEND_MODULE_API_NO < 20071006
+        zend_do_fetch_class(interface_node, interface_name TSRMLS_CC);
+        zend_do_implements_interface(interface_node TSRMLS_CC);
+    #else
+        zend_do_implements_interface(interface_name TSRMLS_CC);
+    #endif
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
@@ -163,8 +166,8 @@ PHP_FUNCTION(oel_add_implements_interface) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *interface_name, *interface_node;
-    char              *arg_iname;
-    int                arg_iname_len;
+    zend_uchar        *arg_iname;
+    zend_ulong         arg_iname_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_iname, &arg_iname_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!oel_token_isa(res_op_array TSRMLS_CC, 2, OEL_TYPE_TOKEN_CLASS, OEL_TYPE_TOKEN_ACLASS)) oel_compile_error(E_ERROR, "wrong token: class or abstract class token expected");
@@ -174,8 +177,12 @@ PHP_FUNCTION(oel_add_implements_interface) {
     interface_node= oel_create_extvar(res_op_array TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_fetch_class(interface_node, interface_name TSRMLS_CC);
-    zend_do_implements_interface(interface_node TSRMLS_CC);
+    #if ZEND_MODULE_API_NO < 20071006
+        zend_do_fetch_class(interface_node, interface_name TSRMLS_CC);
+        zend_do_implements_interface(interface_node TSRMLS_CC);
+    #else
+        zend_do_implements_interface(interface_name TSRMLS_CC);
+    #endif
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
@@ -184,8 +191,8 @@ PHP_FUNCTION(oel_add_declare_property) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *name, *default_value;
-    char              *arg_name;
-    int                arg_name_len, arg_acc= 0, flags;
+    zend_uchar        *arg_name;
+    zend_ulong         arg_name_len, arg_acc= 0, flags;
     zend_bool          arg_stat= 0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|zbl", &arg_op_array, &arg_name, &arg_name_len, &arg_default_value, &arg_stat, &arg_acc) == FAILURE) { RETURN_NULL(); }
     if (!arg_acc) arg_acc= ZEND_ACC_PUBLIC;
@@ -208,8 +215,8 @@ PHP_FUNCTION(oel_add_declare_class_constant) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *name, *value;
-    char              *arg_name;
-    int                arg_name_len;
+    zend_uchar        *arg_name;
+    zend_ulong         arg_name_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rsz", &arg_op_array, &arg_name, &arg_name_len, &arg_value) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if(!oel_token_isa(res_op_array TSRMLS_CC, 3, OEL_TYPE_TOKEN_CLASS, OEL_TYPE_TOKEN_ACLASS, OEL_TYPE_TOKEN_ICLASS)) oel_compile_error(E_ERROR, "member must be declared inner a class or interface declaration");
@@ -229,8 +236,8 @@ PHP_FUNCTION(oel_add_instanceof) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *instance, *result, *name;
-    char              *arg_name;
-    int                arg_name_len;
+    zend_uchar        *arg_name;
+    zend_ulong         arg_name_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_name, &arg_name_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
