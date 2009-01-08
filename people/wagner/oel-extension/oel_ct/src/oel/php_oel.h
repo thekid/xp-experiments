@@ -79,8 +79,10 @@
         #define Z_SET_ISREF_TO(o, v) (o).is_ref= (v)
 
         #define PHP_OEL_COMPAT_EVP(o)
+        #define PHP_OEL_COMPAT_FCT(o, i) i
     #else
         #define PHP_OEL_COMPAT_EVP(o) o, 
+        #define PHP_OEL_COMPAT_FCT(o, i) o
     #endif
 
     PHP_MINIT_FUNCTION(oel);

@@ -57,7 +57,7 @@ PHP_FUNCTION(oel_add_begin_firstcatch) {
     env= oel_env_prepare(res_op_array TSRMLS_CC);
     catch_token->u.opline_num= get_next_op_number(res_op_array->oel_cg.active_op_array);
     zend_do_fetch_class(catch_class, catch_class TSRMLS_CC);
-    zend_do_begin_catch(try_token, catch_class, catch_var, 1 TSRMLS_CC);
+    zend_do_begin_catch(try_token, catch_class, catch_var, PHP_OEL_COMPAT_FCT(first_catch_token, 1) TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
@@ -108,7 +108,7 @@ PHP_FUNCTION(oel_add_begin_catch) {
     env= oel_env_prepare(res_op_array TSRMLS_CC);
     last_catch_token->u.opline_num= get_next_op_number(CG(active_op_array));
     zend_do_fetch_class(catch_class, catch_class TSRMLS_CC);
-    zend_do_begin_catch(add_catch_token, catch_class, catch_var, 0 TSRMLS_CC);
+    zend_do_begin_catch(add_catch_token, catch_class, catch_var, PHP_OEL_COMPAT_FCT(NULL, 0) TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 
