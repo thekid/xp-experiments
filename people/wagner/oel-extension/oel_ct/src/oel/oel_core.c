@@ -46,7 +46,7 @@ PHP_FUNCTION(oel_execute) {
             zend_execute(res_op_array->oel_cg.active_op_array TSRMLS_CC);
             if ((EG(exception))) {
                 zend_throw_exception_internal(EG(exception) TSRMLS_CC);
-            } else {
+            } else if (EG(return_value_ptr_ptr)) {
                 RETVAL_ZVAL(*EG(return_value_ptr_ptr), 1, 1);
             }
         } zend_catch {
