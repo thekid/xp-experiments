@@ -14,6 +14,13 @@
   interface ScriptletResponse {
 
     /**
+     * Set request this response is to.
+     *
+     * @param   web.scriptlet.ScriptletRequest r
+     */
+    public function setRequest(ScriptletRequest $r);
+
+    /**
      * Sets the length of the content body in the response. 
      *
      * @param   int length

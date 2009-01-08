@@ -83,6 +83,8 @@
         public function __construct(OutputStream $stream) {
           $this->stream= new ScriptletOutputStream($stream, $this);
         }
+        public function setRequest(ScriptletRequest $r) {
+        }
         public function setContentLength($length) { 
           $this->headers["Content-Length"]= $length;
         }
