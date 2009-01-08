@@ -74,6 +74,12 @@
     #define PHP_OEL_RESAFE_CG(o, e, p) (o)->oel_cg.p= CG(p); 
     #define PHP_OEL_RESET_CG(o, e, p)  CG(p)= (e)->cg.p; 
 
+    #if ZEND_MODULE_API_NO < 20071006
+        #define Z_SET_REFCOUNT(o, v); o.refcount= v;
+        #define Z_SET_ISREF_TO(o, v); o.is_ref= v;
+    #endif
+        
+
     PHP_MINIT_FUNCTION(oel);
     PHP_MINFO_FUNCTION(oel);
 

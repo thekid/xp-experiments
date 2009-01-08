@@ -410,8 +410,8 @@ static znode *oel_create_extvar(php_oel_op_array *res_op_array TSRMLS_DC) {
     memset(node, '\0', sizeof(znode));
     oel_stack_push_extvar(res_op_array, node TSRMLS_CC);
     node->op_type= IS_CONST;
-    node->u.constant.refcount= 1;
-    node->u.constant.is_ref= 0;
+    Z_SET_REFCOUNT(node->u.constant, 1);
+    Z_SET_ISREF_TO(node->u.constant, 0);
     node->u.EA.type= 0;
     return node;
 }
