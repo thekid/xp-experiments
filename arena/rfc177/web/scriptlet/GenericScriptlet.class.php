@@ -63,6 +63,7 @@
      * @throws  web.scriptlet.ScriptletException to indicate fatal error situations
      */
     public function service(ScriptletRequest $request, ScriptletResponse $response) {
+      $response->setRequest($request);
       
       // Need to use dynamic invocation here instead of reflection API because the
       // latter does not allow calling protected methods, not even if the calling 
