@@ -37,14 +37,15 @@ zend_std_get_method() fbc cache
 -------------------------------
 <pre>
 $ java Profile MethodCalls
-PUBLIC: 0,020 seconds for 10000000 runs (500000000 / second)
-PROTECTED: 0,023 seconds for 10000000 runs (434782609 / second)
-PRIVATE: 0,021 seconds for 10000000 runs (476190476 / second)
+PUBLIC: 0,013 seconds for 10000000 runs (769230769 / second)
+PROTECTED: 0,014 seconds for 10000000 runs (714285714 / second)
+PRIVATE: 0,015 seconds for 10000000 runs (666666667 / second)
 
 $ xpcli Profile MethodCalls
-public: 0.089 seconds for 100000 calls (1122687 / second)
-private: 0.089 seconds for 100000 calls (1123114 / second)
-protected: 0.087 seconds for 100000 calls (1151411 / second)
+public: 0.083 seconds for 100000 calls (1202502 / second)
+private: 0.083 seconds for 100000 calls (1208385 / second)
+protected: 0.086 seconds for 100000 calls (1167722 / second)
+
 </pre>
 
-=> 445 times faster ~ 500
+=> 551 => 658 times faster ~ 600
