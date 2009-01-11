@@ -57,7 +57,7 @@
      */
     #[@arg]
     public function setTimes($times= 100000) {
-      $this->times= $times;
+      $this->times= (int)$times;
     }
     
     /**
