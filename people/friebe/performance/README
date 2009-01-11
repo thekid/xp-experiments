@@ -5,47 +5,48 @@ $Id$
 
 Comparison chart
 ----------------
-<pre>
-$ java Profile MethodCalls
-PUBLIC: 0,031 seconds for 10000000 runs (322580645 / second)
-PROTECTED: 0,031 seconds for 10000000 runs (322580645 / second)
-PRIVATE: 0,016 seconds for 10000000 runs (625000000 / second)
+Comparing C# (v3.5), Java (1.6.0) and PHP (5.3):
 
-$ xpcli Profile MethodCalls
-public: 0.199 seconds for 100000 calls (502533 / second)
-private: 0.207 seconds for 100000 calls (482793 / second)
-protected: 0.214 seconds for 100000 calls (468303 / second)
-</pre>
-
-=> 641 - 1334 times faster ~ 1000
-
-<pre>
-$ java Profile Increment
-POST: 0,031 seconds for 10000000 runs (322580645 / second)
-PRE: 0,047 seconds for 10000000 runs (212765957 / second)
-BINARY: 0,015 seconds for 10000000 runs (666666667 / second)
-
-$ xpcli Profile Increment
-post: 0.021 seconds for 100000 calls (4696606 / second)
-pre: 0.019 seconds for 100000 calls (5278709 / second)
-binary: 0.022 seconds for 100000 calls (4514713 / second)
-</pre>
-
-=> 40 - 147 times faster ~ 100
-
-zend_std_get_method() fbc cache
--------------------------------
+Method calls
+~~~~~~~~~~~~
 <pre>
 $ java Profile MethodCalls
 PUBLIC: 0,013 seconds for 10000000 runs (769230769 / second)
 PROTECTED: 0,014 seconds for 10000000 runs (714285714 / second)
 PRIVATE: 0,015 seconds for 10000000 runs (666666667 / second)
 
+$ ./Profile.exe MethodCalls
+PUBLIC: 0,040 seconds for 10000000 runs (251244287 / second)
+PRIVATE: 0,081 seconds for 10000000 runs (124027931 / second)
+PROTECTED: 0,115 seconds for 10000000 runs (86964008 / second)
+
 $ xpcli Profile MethodCalls
+public: 0.142 seconds for 100000 calls (703348 / second)
+private: 0.145 seconds for 100000 calls (688986 / second)
+protected: 0.155 seconds for 100000 calls (644296 / second)
+
+$ XP_RT='php-with-fbc-cache\php' xpcli Profile MethodCalls
 public: 0.083 seconds for 100000 calls (1202502 / second)
 private: 0.083 seconds for 100000 calls (1208385 / second)
 protected: 0.086 seconds for 100000 calls (1167722 / second)
-
 </pre>
 
-=> 551 => 658 times faster ~ 600
+Increment
+~~~~~~~~~
+POST = <tt>a++</tt>, PRE = <tt>++a</tt>, BINARY = <tt>a= a+ 1</tt>
+<pre>
+$ java Profile Increment
+POST: 0,013 seconds for 10000000 runs (769230769 / second)
+PRE: 0,014 seconds for 10000000 runs (714285714 / second)
+BINARY: 0,014 seconds for 10000000 runs (714285714 / second)
+
+$ ./Profile.exe Increment
+POST: 0,013 seconds for 10000000 runs (743505480 / second)
+PRE: 0,028 seconds for 10000000 runs (361650573 / second)
+BINARY: 0,042 seconds for 10000000 runs (240051659 / second)
+
+$ xpcli Profile Increment
+post: 0.020 seconds for 100000 calls (4978580 / second)
+pre: 0.018 seconds for 100000 calls (5461760 / second)
+binary: 0.022 seconds for 100000 calls (4531639 / second)
+</pre>
