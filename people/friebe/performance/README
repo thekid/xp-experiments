@@ -5,7 +5,7 @@ $Id$
 
 Comparison chart
 ----------------
-Comparing C# (v3.5), Java (1.6.0) and PHP (5.3):
+Comparing C# (v3.5), Java (1.6.0), PHP (5.3) and PHP (5.3-with-fc-cache)
 
 Method calls
 ~~~~~~~~~~~~
@@ -67,4 +67,13 @@ POST = <tt>a++</tt>, PRE = <tt>++a</tt>, BINARY = <tt>a= a+ 1</tt>
   post: 0.020 seconds for 100000 calls (4978580 / second)
   pre: 0.018 seconds for 100000 calls (5461760 / second)
   binary: 0.022 seconds for 100000 calls (4531639 / second)
+</pre>
+
+Table 1: Comparing PHP:
+<pre>
+  Type      PHP   C#    Java
+  --------- ----- ----- -----
+  post      1     149   154
+  pre       1     66    131
+  binary    1     53    158
 </pre>
