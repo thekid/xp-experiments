@@ -1,6 +1,6 @@
 using System;
 
-class Test : XxCli.Command
+class Test : XcCli.Command
 {
     public override void run() 
     {

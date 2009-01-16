@@ -1,6 +1,6 @@
 using System;
 
-namespace XxCli 
+namespace XcCli 
 {
     public abstract class Command
     {

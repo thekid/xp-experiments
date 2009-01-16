@@ -1,5 +1,5 @@
 using System;
-using XxCli;
+using XcCli;
 
 class Hello : Command
 {

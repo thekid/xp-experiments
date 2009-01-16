@@ -1,6 +1,6 @@
 using System;
 
-namespace XxCli 
+namespace XcCli 
 {
     public class Arg : Attribute
     {

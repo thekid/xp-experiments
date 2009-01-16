@@ -4,7 +4,7 @@ using System.Reflection;
 using System.CodeDom.Compiler;
 using System.IO;
 
-namespace XxCli 
+namespace XcCli 
 {    
     public class Runner
     {
@@ -35,7 +35,7 @@ namespace XxCli
             // Set whether to treat all warnings as errors.
             cp.TreatWarningsAsErrors = false;
 
-            cp.ReferencedAssemblies.Add("xxclilib.dll");
+            cp.ReferencedAssemblies.Add("xcclilib.dll");
 
             // Invoke compilation of the source file.
             CompilerResults cr = provider.CompileAssemblyFromFile(cp, new string[] {

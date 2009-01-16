@@ -1,6 +1,6 @@
 using System.Reflection;
 
-[assembly: AssemblyTitle("XxCli")]
+[assembly: AssemblyTitle("XcCli")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
