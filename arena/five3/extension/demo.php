@@ -6,7 +6,7 @@
   class Object {
     public function __call($method, $args) {
       foreach (Extension::$methods as $k => $v) {
-        if (!$this instanceof $k || !isset($v[$method])) continue;
+        if (!isset($v[$method]) || !$this instanceof $k) continue;
         array_unshift($args, $this);
         return $v[$method]->invokeArgs($this, $args);
       }
