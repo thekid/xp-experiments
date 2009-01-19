@@ -8,7 +8,7 @@ ALL_RESULT=/tmp/oel_all_test
 
 RED=\\033[31m
 GREEN=\\033[32m
-CLEAR=/usr/bin/tput init
+CLEAR=\\033[0m
 
 TEST= echo -n "        testing "`basename $$t | sed s/.oel.php//`" ..."; \
 	if [ -f $$t ]; then \
@@ -17,16 +17,16 @@ TEST= echo -n "        testing "`basename $$t | sed s/.oel.php//`" ..."; \
 		${PHP} `echo $$t | sed s/.oel.php/.php/` 1>${PHP_RESULT} 2>&1 ; \
 		diff ${DIFF_PARAM} ${OEL_RESULT} ${PHP_RESULT} > ${DIFF_RESULT}; \
 		if [ -s ${DIFF_RESULT} ]; then \
-			echo -e ${RED}"FAILED"; ${CLEAR}; \
+			echo -e ${RED}"FAILED"${CLEAR}; \
 			echo " ========>>> "$$t":" >> ${ALL_RESULT}; \
 			cat ${DIFF_RESULT} >> ${ALL_RESULT}; \
 			echo "" >> ${ALL_RESULT}; \
 			echo "" >> ${ALL_RESULT}; \
 		else \
-			echo -e ${GREEN}"OK"; ${CLEAR}; \
+			echo -e ${GREEN}"OK"${CLEAR}; \
 		fi; \
 	else \
-		echo -e ... ${RED}"no test found"; ${CLEAR}; \
+		echo -e ... ${RED}"no test found"${CLEAR}; \
 	fi;
 TEST_PREPARE= echo " ==> start test"; \
 	echo -n "" > ${OEL_RESULT}; \
