@@ -21,8 +21,10 @@
     public function process() {
       if (!$this->message) return;
       
-      // TODO change contenttype header
-      //$this->setHeader('Content-type', 'text/xml');
+      // Content-type header must be overwritten as Apache Axis
+      // is throwing an exception when content-type is "text/xml"
+      $this->setHeader('Content-type', 'application/soap+xml');
+      
       if (NULL !== $this->message->getFault()) {
         $this->setStatus(HTTP_INTERNAL_SERVER_ERROR);
       }
