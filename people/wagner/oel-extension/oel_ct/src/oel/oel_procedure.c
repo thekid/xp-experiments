@@ -175,7 +175,7 @@ PHP_FUNCTION(oel_add_call_function_name) {
     php_oel_saved_env *env;
     php_oel_znode     *params;
     znode             *parameter_count, *func_name, *result;
-    int                arg_parameter_count;
+    zend_ulong         arg_parameter_count;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rl", &arg_op_array, &arg_parameter_count) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
@@ -247,7 +247,7 @@ PHP_FUNCTION(oel_add_call_method_static) {
     oel_stack_push_operand(res_op_array, result TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_fetch_class(class, class TSRMLS_CC);
+    PHP_OEL_COMPAT_FCL(class);
     zend_do_begin_class_member_function_call(class, func_name TSRMLS_CC);
     oel_build_call_parameter_pass(res_op_array, params TSRMLS_CC);
     zend_do_end_function_call(NULL, result, parameter_count, 1, 1 TSRMLS_CC);
@@ -262,7 +262,7 @@ PHP_FUNCTION(oel_add_call_method_name) {
     php_oel_saved_env *env;
     php_oel_znode     *params;
     znode             *parameter_count, *method, *object, *result;
-    int                arg_parameter_count;
+    zend_ulong         arg_parameter_count;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rl", &arg_op_array, &arg_parameter_count) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "oel_add_call_method op without oel_add_begin_variable_parse");
@@ -306,7 +306,7 @@ PHP_FUNCTION(oel_add_call_method_name_static) {
     oel_stack_push_operand(res_op_array, result TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_fetch_class(class, class TSRMLS_CC);
+    PHP_OEL_COMPAT_FCL(class);
     zend_do_begin_class_member_function_call(class, func_name TSRMLS_CC);
     oel_build_call_parameter_pass(res_op_array, params TSRMLS_CC);
     zend_do_end_function_call(NULL, result, parameter_count, 1, 1 TSRMLS_CC);

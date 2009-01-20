@@ -37,7 +37,7 @@
         zend_class_entry *active_class_entry;
         znode             implementing_class;
         zend_bool         in_compilation;
-        int               interactive;
+        zend_ulong        interactive;
         zend_stack        bp_stack;
         zend_stack        switch_cond_stack;
         zend_stack        foreach_copy_stack;
@@ -50,8 +50,8 @@
     };
 
     typedef struct _php_oel_znode {
-        znode *ext_var;
-        int    type;
+        znode                 *ext_var;
+        int                    type;
         struct _php_oel_znode *next_var;
     } php_oel_znode;
 

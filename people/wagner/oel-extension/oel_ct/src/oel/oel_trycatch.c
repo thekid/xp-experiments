@@ -56,7 +56,8 @@ PHP_FUNCTION(oel_add_begin_firstcatch) {
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
     catch_token->u.opline_num= get_next_op_number(res_op_array->oel_cg.active_op_array);
-    zend_do_fetch_class(catch_class, catch_class TSRMLS_CC);
+    PHP_OEL_COMPAT_FCL(catch_class);
+    zend_do_first_catch(first_catch_token TSRMLS_CC);
     zend_do_begin_catch(try_token, catch_class, catch_var, PHP_OEL_COMPAT_FCT(first_catch_token, 1) TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
@@ -75,6 +76,8 @@ PHP_FUNCTION(oel_add_end_firstcatch) {
     try_token=         oel_stack_top_token(res_op_array TSRMLS_CC);
     oel_stack_push_token(res_op_array, catch_token TSRMLS_CC);
     oel_stack_top_set_type_token(res_op_array, OEL_TYPE_TOKEN_CATCH TSRMLS_CC);
+    oel_stack_push_token(res_op_array, first_catch_token TSRMLS_CC);
+    oel_stack_top_set_type_token(res_op_array, OEL_TYPE_TOKEN_CATCH_FIRST TSRMLS_CC);
     last_catch_token= oel_create_token(res_op_array, OEL_TYPE_TOKEN_CATCH_LAST TSRMLS_CC);
     oel_create_token(res_op_array, OEL_TYPE_TOKEN_CATCH_ADD TSRMLS_CC);
 
@@ -100,14 +103,16 @@ PHP_FUNCTION(oel_add_begin_catch) {
     last_catch_token= oel_stack_top_token(res_op_array TSRMLS_CC);
     oel_stack_push_token(res_op_array, add_catch_token TSRMLS_CC);
     oel_stack_top_set_type_token(res_op_array, OEL_TYPE_TOKEN_CATCH_ADD TSRMLS_CC);
+ 
     catch_var=   oel_create_extvar(res_op_array TSRMLS_CC);
     ZVAL_STRINGL(&catch_var->u.constant, arg_var_name, arg_var_name_len, 1);
+ 
     catch_class= oel_create_extvar(res_op_array TSRMLS_CC);
     ZVAL_STRINGL(&catch_class->u.constant, arg_class_name, arg_class_name_len, 1);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
     last_catch_token->u.opline_num= get_next_op_number(CG(active_op_array));
-    zend_do_fetch_class(catch_class, catch_class TSRMLS_CC);
+    PHP_OEL_COMPAT_FCL(catch_class);
     zend_do_begin_catch(add_catch_token, catch_class, catch_var, PHP_OEL_COMPAT_FCT(NULL, 0) TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
@@ -133,19 +138,20 @@ PHP_FUNCTION(oel_add_end_catchblock) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
-    znode             *try_token, *catch_token, *add_catch_token, *last_catch_token;
+    znode             *try_token, *catch_token, *add_catch_token, *last_catch_token, *first_catch_token;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg_op_array) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     if (oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_CATCH_FIRST)) oel_compile_error(E_ERROR, "catchblock must contain at least one catch");
     if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_CATCH_ADD)) oel_compile_error(E_ERROR, "token is not of type catch");
 
-    add_catch_token=  oel_stack_pop_token(res_op_array TSRMLS_CC);
-    last_catch_token= oel_stack_pop_token(res_op_array TSRMLS_CC);
-    catch_token=      oel_stack_pop_token(res_op_array TSRMLS_CC);
-    try_token=        oel_stack_pop_token(res_op_array TSRMLS_CC);
+    add_catch_token=   oel_stack_pop_token(res_op_array TSRMLS_CC);
+    last_catch_token=  oel_stack_pop_token(res_op_array TSRMLS_CC);
+    first_catch_token= oel_stack_pop_token(res_op_array TSRMLS_CC);
+    catch_token=       oel_stack_pop_token(res_op_array TSRMLS_CC);
+    try_token=         oel_stack_pop_token(res_op_array TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_mark_last_catch(catch_token, last_catch_token TSRMLS_CC);
+    zend_do_mark_last_catch(first_catch_token, last_catch_token TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 

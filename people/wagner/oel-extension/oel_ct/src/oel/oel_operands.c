@@ -86,7 +86,7 @@ PHP_FUNCTION(oel_push_variable) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
-    znode             *result, *varname, *classname= NULL, *class=NULL;
+    znode             *result, *varname, *classname= NULL;
     zend_uchar        *arg_varname,     *arg_classname= NULL;
     zend_ulong         arg_varname_len,  arg_classname_len= 0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|s", &arg_op_array, &arg_varname, &arg_varname_len, &arg_classname, &arg_classname_len) == FAILURE) { RETURN_NULL(); }
@@ -98,16 +98,15 @@ PHP_FUNCTION(oel_push_variable) {
     varname= oel_create_extvar(res_op_array TSRMLS_CC);
     ZVAL_STRINGL(&(varname->u.constant), arg_varname, arg_varname_len, 1);
     if (arg_classname_len) {
-        class= oel_create_extvar(res_op_array TSRMLS_CC);
         classname= oel_create_extvar(res_op_array TSRMLS_CC);
         ZVAL_STRINGL(&(classname->u.constant), arg_classname, arg_classname_len, 1);
     }
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
     if (arg_classname_len) {
-        zend_do_fetch_class(class, classname TSRMLS_CC);
+        PHP_OEL_COMPAT_FCL(classname);
         fetch_simple_variable(result, varname, 1 TSRMLS_CC);
-        zend_do_fetch_static_member(result, class TSRMLS_CC);
+        zend_do_fetch_static_member(result, classname TSRMLS_CC);
         result->u.EA.type= ZEND_PARSED_STATIC_MEMBER;
     } else {
         fetch_simple_variable(result, varname, 1 TSRMLS_CC);

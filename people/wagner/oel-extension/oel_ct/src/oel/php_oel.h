@@ -81,10 +81,12 @@
         #define PHP_OEL_COMPAT_EVP(o)
         #define PHP_OEL_COMPAT_FCT(o, i) i
         #define PHP_OEL_COMPAT_NSC(i)
+        #define PHP_OEL_COMPAT_FCL(n) zend_do_fetch_class(n, n TSRMLS_CC);
     #else
         #define PHP_OEL_COMPAT_EVP(o) o, 
         #define PHP_OEL_COMPAT_FCT(o, i) o
         #define PHP_OEL_COMPAT_NSC(i) , i
+        #define PHP_OEL_COMPAT_FCL(n)
     #endif
 
     PHP_MINIT_FUNCTION(oel);
