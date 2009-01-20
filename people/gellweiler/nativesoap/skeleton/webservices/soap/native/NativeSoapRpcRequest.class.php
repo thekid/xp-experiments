@@ -31,16 +31,20 @@
         $this->getHeader('Content-Type'),
         $matches
       );
-
+      
       list(
         $class, 
         $method
       )= explode('#', str_replace('"', '', $matches[2]));
       
-      $m->setHandlerClass($class);
-      $m->setMethod($method);
+      // Check if soap action header was set properly 
+      // if not leave as is.
+      if ($class && $method) {
+        $m->setHandlerClass($class);
+        $m->setMethod($method);
+      }
+
       $m->setMapping($this->mapping);
-      
       return $m;
     }
   }
