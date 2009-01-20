@@ -42,6 +42,9 @@
    * @purpose  Represent SOAP Message
    */
   class NativeSoapMessage extends Tree implements AbstractRpcMessage {
+    const
+      XMLNS_SOAPENV = 'http://www.w3.org/2003/05/soap-envelope';
+
     protected
       $request  = NULL,
       $response = NULL;
@@ -112,6 +115,18 @@
     public static function fromString($string) {
       $m= parent::fromString($string, __CLASS__);
       $m->request= $string;
+      
+      with($call= $m->_bodyElement()->children[0]); {
+        $method= substr($call->getName(), strpos($call->getName(), ':')+1);
+        $class= (FALSE === strpos($call->getName(), ':')
+          ? $call->getAttribute('xmlns')
+          : array_search(substr($call->getName(), 0, strpos($call->getName(), ':')), $m->namespaces)
+        );
+
+        $m->setMethod($method);
+        $m->setHandlerClass($class);
+      }
+
       return $m;
     }
 
@@ -126,7 +141,6 @@
      * @return  xml.Tree
      */ 
     public static function fromFile($file) {
-      // XXX FIXME
       return parent::fromFile($file, __CLASS__);
     }
     
@@ -139,6 +153,10 @@
      * @param   xml.SOAPNode node
      */
     protected function _retrieveNamespaces($node) {
+      foreach ($node->attribute as $key => $val) {
+        if (0 != strncmp('xmlns:', $key, 6)) continue;
+        $this->namespaces[$val]= substr($key, 6);
+      }
     }
     
     /**
@@ -157,6 +175,21 @@
      * @throws  lang.FormatException in case the body element could not be found
      */    
     public function _bodyElement() {
+
+      // Look for namespaces in the root node
+      $this->_retrieveNamespaces($this->root);
+      
+      // Search for the body node. For usual, this will be the first element,
+      // but some SOAP clients may include a header node (which we silently 
+      // ignore for now).
+      for ($i= 0, $s= sizeof($this->root->children); $i < $s; $i++) {
+        if (0 == strcasecmp(
+          $this->root->children[$i]->getName(), 
+          $this->namespaces[self::XMLNS_SOAPENV].':Body'
+        )) return $this->root->children[$i];
+      }
+
+      throw new FormatException('Could not locate Body element');
     }
 
     /**
