@@ -1,0 +1,55 @@
+                
+                |-------------------------------------------------------------|
+                | getVacationsForXYZ()                                        |
+                |  [XYZ = Person,Group,Department,Location]                   |
+                |-------------------------------------------------------------|
+                |                                                             |
+                |     ------------------------------------------------        |
+                |    /                                                \       |
+      INPUT     |    | - Person/Group/Department/Location ID  (int)   |       |   INPUT
+      -------------> | - Start Date (    ?     )                      | --------------->
+                |    | - End Date   (    ?     )                      |       |
+                |    | [- Vacation types (array of int ODER int) ]    |       |
+                |    |                                                |       |
+                |    \------------------------------------------------/       |
+                |                                                             |
+PHP Person      |                                                             |  Database Dude
+                |     ------------------------------------------------        |
+      0         |    /                                                \       |      0
+     /|\        |    | - Vacation             (array/object)          |       |     /|\
+    / | \       |    |   - Person             (array/object)          |       |    / | \
+     / \        |    |     - Person ID        (int)                   |       |     / \
+    /   \       |    |     - First name       (string)                |       |    /   \
+                |    |     - Name             (string)                |       |
+                |    |     - Department ID    (int)                   |       |
+                |    |     - Department name  (string)                |       |
+                |    |   - Substitute         (array/object)          |       |
+                |    |     - Person ID        (int)                   |       |
+      OUTPUT    |    |     - First Name       (string)                |       |   OUTPUT
+      <------------- |     - Name             (string)                | <----------------
+                |    |   - Vacation ID        (int)                   |       |
+                |    |   - BZ ID              (int)                   |       |
+                |    |   - Vacation type ID   (int)                   |       |
+                |    |   - Start date         ( ? )                   |       |
+                |    |   - End date           ( ? )                   |       |
+                |    |   - Days               (int)                   |       |
+                |    |   - Editor             (array/object)          |       |
+                |    |     - Person ID        (int)                   |       |
+                |    |     - First Name       (string)                |       |
+                |    |     - Name             (string)                |       |
+                |    |                                                |       |
+                |    \------------------------------------------------/       |
+                |                                                             |
+                |-------------------------------------------------------------|
+
+
+Beschreibung
+
+Die Schnittstelle soll für eine Bestimmte ID sowie für einen bestimmten Zeitraum, angegeben durch Start- und Endzeitpunkt
+alle Vacations Zurückliefern
+
+Noch zu klären:
+  - Datenformat für Zeitpunkte (String, UNIX-Timestamp, whatever)
+  - Ausgabeformat der Daten (Objekt/Array und dessen Aufbau)
+  - Kann ein Parameter in zwei typen angegeben werden und ein javaseitiger Typcheck erfolgen?
+
