@@ -7,9 +7,9 @@
                 |     ------------------------------------------------        |
                 |    /                                                \       |
       INPUT     |    | - Person/Group/Department/Location ID  (int)   |       |   INPUT
-      -------------> | - Start Date (    ?     )                      | --------------->
-                |    | - End Date   (    ?     )                      |       |
-                |    | [- Vacation types (array of int ODER int) ]    |       |
+      -------------> | - Start Date (int [timestamp] )                | --------------->
+                |    | - End Date   (int [timestamp] )                |       |
+                |    | [- Vacation types (array of int)  ]            |       |
                 |    |                                                |       |
                 |    \------------------------------------------------/       |
                 |                                                             |
@@ -30,8 +30,8 @@ PHP Person      |                                                             | 
                 |    |   - Vacation ID        (int)                   |       |
                 |    |   - BZ ID              (int)                   |       |
                 |    |   - Vacation type ID   (int)                   |       |
-                |    |   - Start date         ( ? )                   |       |
-                |    |   - End date           ( ? )                   |       |
+                |    |   - Start date         (int [timestamp] )      |       |
+                |    |   - End date           (int [timestamp] )      |       |
                 |    |   - Days               (int)                   |       |
                 |    |   - Editor             (array/object)          |       |
                 |    |     - Person ID        (int)                   |       |
@@ -49,7 +49,11 @@ Die Schnittstelle soll für eine Bestimmte ID sowie für einen bestimmten Zeitraum
 alle Vacations Zurückliefern
 
 Noch zu klären:
-  - Datenformat für Zeitpunkte (String, UNIX-Timestamp, whatever)
+  - Datenformat für Zeitpunkte (UNIX-Timestamp, whatever)
+    - Unix Timestamp bezieht sich auf GMT, Zeitzone wird nicht Berücksichtigt
+    - Vorschlag: wir einigen uns auf eine feste Zeitzone (z.B. GMT) für die Übergabe und handlen die Abweichung selbst.
   - Ausgabeformat der Daten (Objekt/Array und dessen Aufbau)
-  - Kann ein Parameter in zwei typen angegeben werden und ein javaseitiger Typcheck erfolgen?
-
+    - Wie ich vermutete gibt es den Datentyp "Liste" in PHP nicht.
+    - Es gibt allerdings eine PHP Typklasse im XP.Public/.../lang/types
+  - Vacation Types:
+    -> Können wir eine ID vereinbaren die für "Alle" steht z.B. "0" dass man dann keine große Liste übergeben muss?
