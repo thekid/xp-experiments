@@ -4,6 +4,9 @@
 #include "config.h"
 #endif
 
+#include "Zend/zend_API.h"
+#include "Zend/zend_exceptions.h"
+
 #include "php.h"
 #include "php_oel.h"
 
