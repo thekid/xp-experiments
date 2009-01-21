@@ -15,6 +15,7 @@ PHP_FUNCTION(oel_finalize) {
 
 PHP_FUNCTION(oel_execute) {
     zval              *arg_op_array;
+    zval              **orig_return_value_ptr_ptr;
     php_oel_op_array  *res_op_array;
     zend_bool          orig_in_compilation, orig_in_execution;
     int               error;
@@ -41,17 +42,22 @@ PHP_FUNCTION(oel_execute) {
         orig_current_execute_data= EG(current_execute_data);
         orig_opline_ptr=           EG(opline_ptr);
         orig_active_op_array=      EG(active_op_array);
+        orig_return_value_ptr_ptr= EG(return_value_ptr_ptr);
         EG(active_op_array)= res_op_array->oel_cg.active_op_array;
+
+        EG(return_value_ptr_ptr)= (zval **) emalloc(sizeof(zval *));
         zend_try {
             zend_execute(res_op_array->oel_cg.active_op_array TSRMLS_CC);
             if ((EG(exception))) {
                 zend_throw_exception_internal(EG(exception) TSRMLS_CC);
-            } else if (EG(return_value_ptr_ptr)) {
-                RETVAL_ZVAL(*EG(return_value_ptr_ptr), 1, 1);
             }
+            RETVAL_ZVAL(*EG(return_value_ptr_ptr), 0, 1);
         } zend_catch {
             error= EG(exit_status);
         } zend_end_try();
+        efree(EG(return_value_ptr_ptr));
+
+        EG(return_value_ptr_ptr)= orig_return_value_ptr_ptr;
         EG(active_op_array)=      orig_active_op_array;
         EG(opline_ptr)=           orig_opline_ptr;
         EG(current_execute_data)= orig_current_execute_data;
