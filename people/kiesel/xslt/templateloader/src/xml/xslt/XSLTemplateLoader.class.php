@@ -11,7 +11,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class XSLFileLoader extends Object {
+  class XSLTemplateLoader extends Object {
     protected
       $currentPath  = '';
     

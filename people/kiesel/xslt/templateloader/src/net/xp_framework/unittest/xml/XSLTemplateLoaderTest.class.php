@@ -4,9 +4,9 @@
  * $Id$
  */
   uses(
-    'util.cmd.Command',
+    'unittest.TestCase',
     'xml.DomXSLProcessor',
-    'XSLFileLoader'
+    'xml.xslt.XSLTemplateLoader'
   );
 
   /**
@@ -16,7 +16,27 @@
    * @see      reference
    * @purpose  purpose
    */
-  class Transformation extends Command {
+  class XSLTemplateLoaderTest extends TestCase {
+
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function setUp() {
+      stream_wrapper_register('xsl', 'XSLTemplateLoader');
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function tearDown() {
+      stream_wrapper_unregister('xsl');
+    }   
   
     /**
      * (Insert method's description here)
@@ -25,23 +45,37 @@
      * @return  
      */
     protected function transformAgainst($path) {
-      $this->out->writeLine('---> Running against xsl: ', $path);
       $proc= new DomXSLProcessor();
       $proc->setXMLBuf('<document/>');
       
       $proc->setXSLFile($path);
       $proc->run();
-      $this->out->writeLine('>>> ', $proc->output());
-    }  
+    }
 
     /**
      * Main runner method
      *
      */
-    public function run() {
-      stream_wrapper_register('xsl', 'XSLFileLoader');
+    #[@test]
+    public function simpleLoading() {
       $this->transformAgainst('xsl://XSL-INF/master.xsl');
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function loadingWithInclude() {
       $this->transformAgainst('xsl://XSL-INF/stylesheet-including-master.xsl');
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function loadingWithRelativeInclude() {
       $this->transformAgainst('xsl://XSL-INF/sub/stylesheet-including-master.xsl');
     }
   }
