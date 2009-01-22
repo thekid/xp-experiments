@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document xmlns="http://xp-framework.net/xmlns/i18n">
+  <textgroup name="common">
+    <description>Common texts...</description>
+    <textgroup name="startscreen">
+      <text name="welcome">
+        <translation lang="de_DE" timestamp="2009-01-22 12:00+0100" author="alex@lost">Willkommen</translation>
+        <translation lang="en_US" timestamp="2009-01-22 12:00+0100" author="timm@thekid">Welcome</translation>
+        <translation lang="fr_FR" timestamp="2009-01-22 15:00+0100" author="alex@lost">Bienvenue</translation>
+      </text>
+    </textgroup>
+    <text name="profile">
+      <translation lang="de_DE" timestamp="2009-01-21 18:00+0100" author="alex@lost">Profil</translation>
+    </text>
+  </textgroup>
+</document>
