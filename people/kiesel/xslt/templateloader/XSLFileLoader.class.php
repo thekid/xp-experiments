@@ -25,13 +25,12 @@
      * @return  
      */
     public function stream_open($path, $mode, $options, $opened_path) {
-      var_dump(__FUNCTION__);
+      var_dump(__FUNCTION__.': '.$path);
       if ($mode !== 'r' && $mode !== 'rb') return FALSE;
     
       $path= substr($path, 6);
       // TBI: Should be cloned, so we can open file multiple times?
       $this->resource= ClassLoader::getDefault()->getResourceAsStream($path);
-      var_dump($this->resource);
       $this->resource->open(FILE_MODE_READ);
       
       // TBI: Error reporint: exceptions or trigger_error()?
@@ -131,7 +130,7 @@
      * @return  
      */
     public function url_stat($path, $flags) {
-      var_dump(__FUNCTION__);
+      var_dump(__FUNCTION__.': '.$path);
       // Remove xsl:// from path
       $path= substr($path, 6);
       $cl= ClassLoader::getDefault()->findResource($path);

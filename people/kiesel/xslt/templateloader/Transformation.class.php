@@ -17,6 +17,22 @@
    * @purpose  purpose
    */
   class Transformation extends Command {
+  
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    protected function transformAgainst($path) {
+      $this->out->writeLine('---> Running against xsl: ', $path);
+      $proc= new DomXSLProcessor();
+      $proc->setXMLBuf('<document/>');
+      
+      $proc->setXSLFile($path);
+      $proc->run();
+      $this->out->writeLine('>>> ', $proc->output());
+    }  
 
     /**
      * Main runner method
@@ -24,15 +40,8 @@
      */
     public function run() {
       stream_wrapper_register('xsl', 'XSLFileLoader');
-    
-      $proc= new DomXSLProcessor();
-      $proc->setXMLBuf('<document/>');
-      
-      $proc->setXSLFile('xsl://XSL-INF/master.xsl');
-      
-      $proc->run();
-      
-      $this->out->writeLine('>>> ', $proc->output());
+      $this->transformAgainst('xsl://XSL-INF/master.xsl');
+      $this->transformAgainst('xsl://XSL-INF/stylesheet-including-master.xsl');
     }
   }
 ?>
