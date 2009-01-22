@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xp:document xmlns="http://xp-framework.net/xmlns/i18n">
+<document>
   <textgroup name="common">
     <description>Common texts...</description>
     <textgroup name="startscreen">
@@ -13,4 +13,4 @@
       <translation lang="de_DE" timestamp="2009-01-21 18:00+0100" author="alex@lost">Profil</translation>
     </text>
   </textgroup>
-</xp:document>
+</document>

@@ -41,9 +41,10 @@
      * @param   
      * @return  
      */
+    #[@test]
     public function marshal() {
       $document= SnippetDocument::parse(ClassLoader::getDefault()->getResource('xml/xp-app.i18n.xml'));
-      $document->toXML();
-    }    
+      var_dump($document->toXML());
+    }
   }
 ?>

@@ -38,16 +38,6 @@
      * @param   
      * @return  
      */
-    public function getLanguageCode() {
-      return $this->code;
-    }    
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
     #[@xmlmapping(element= '@timestamp')]
     public function setTimestamp($t) {
       $this->timestamp= new Date($t);
@@ -85,6 +75,51 @@
     public function setSnippet($s) {
       $this->snippet= trim($s);
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlfactory(element= '@lang')]    
+    public function getLanguageCode() {
+      return $this->code;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlfactory(element= '@timestamp')]
+    public function getTimestampForXml() {
+      return $this->timestamp->toString();
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlfactory(element= '@author')]
+    public function getAuthor() {
+      return $this->author;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlfactory(element= '.')]
+    public function getSnippet() {
+      return $this->snippet;
+    }    
+    
     
     /**
      * (Insert method's description here)

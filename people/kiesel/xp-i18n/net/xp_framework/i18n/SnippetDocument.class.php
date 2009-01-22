@@ -13,7 +13,6 @@
    * @see      reference
    * @purpose  purpose
    */
-  #[@xmlns('xp' => 'http://xp-framework.net/xmlns/i18n')]
   class SnippetDocument extends Object {
     protected
       $textgroups = array();
@@ -35,7 +34,7 @@
      * @return  
      */
     public function toXML() {
-      return Marshaller::marshal($this, new QName('http://xp-framework.net/xmlns/i18n', 'document', 'xp'));
+      return Marshaller::marshal($this);
     }
     
     /**
@@ -44,7 +43,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'xp:textgroup', class= 'net.xp_framework.i18n.TextGroup')]
+    #[@xmlmapping(element= 'textgroup', class= 'net.xp_framework.i18n.TextGroup')]
     public function addTextGroup(TextGroup $tg) {
       $this->textgroups[]= $tg;
     }
@@ -55,7 +54,7 @@
      * @param   
      * @return  
      */
-    #[@xmlfactory(element= 'xp:textgroup')]
+    #[@xmlfactory(element= 'textgroup')]
     public function getTextgroups() {
       return $this->textgroups;
     }    

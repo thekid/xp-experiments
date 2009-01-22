@@ -24,7 +24,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'xp:description')]
+    #[@xmlmapping(element= 'description')]
     public function setDescription($d) {
       $this->description= $d;
     }
@@ -46,7 +46,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'xp:textgroup', class= 'net.xp_framework.i18n.TextGroup')]
+    #[@xmlmapping(element= 'textgroup', class= 'net.xp_framework.i18n.TextGroup')]
     public function addTextGroup(self $tg) {
       $this->textgroups[]= $tg;
     }
@@ -57,9 +57,53 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'xp:text', class= 'net.xp_framework.i18n.TextSnippet')]
+    #[@xmlmapping(element= 'text', class= 'net.xp_framework.i18n.TextSnippet')]
     public function addTextSnippet(TextSnippet $ts) {
       $this->snippets[]= $ts;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlfactory(element= '@name')]
+    public function getName() {
+      return $this->name;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlfactory(element= 'description')]
+    public function getDescription() {
+      return $this->description;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlfactory(element= 'textgroup')]
+    public function getTextgroups() {
+      return $this->textgroups;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlfactory(element= 'text')]
+    public function getSnippets() {
+      return $this->snippets;
     }
     
     /**

@@ -23,7 +23,7 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'xp:description')]
+    #[@xmlmapping(element= 'description')]
     public function setDescription($d) {
       $this->description= $d;
     }
@@ -46,13 +46,35 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= 'xp:translation', class= 'net.xp_framework.i18n.Translation')]
+    #[@xmlmapping(element= 'translation', class= 'net.xp_framework.i18n.Translation')]
     public function addTranslation(Translation $t) {
       if (isset($this->translations[$t->getLanguageCode()]))
         throw new IllegalArgumentException('Double translation!');
       
       $this->translations[$t->getLanguageCode()]= $t;
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlfactory(element= '@name')]
+    public function getName() {
+      return $this->name;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlfactory(element= 'translation')]
+    public function getTranslations() {
+      return $this->translations;
+    }    
     
     /**
      * (Insert method's description here)
