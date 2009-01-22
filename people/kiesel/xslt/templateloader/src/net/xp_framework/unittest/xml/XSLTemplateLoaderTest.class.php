@@ -51,14 +51,61 @@
       $proc->setXSLFile($path);
       $proc->run();
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    protected function registerClassLoaderAndTransformFor($clpath, $path) {
+      $loader= ClassLoader::getDefault()->registerPath($clpath);
+      $this->transformAgainst($path);
+      ClassLoader::getDefault()->removeLoader($loader);
+    }    
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    protected function transformAgainstFromXar($path) {
+      $this->registerClassLoaderAndTransformFor(
+        dirname(__FILE__).'/xp-xsl-inf.xar',
+        $path
+      );
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    protected function transformAgainstDefault($path) {
+      $this->registerClassLoaderAndTransformFor(
+        dirname(__FILE__),
+        $path
+      );
+    }
 
     /**
-     * Main runner method
+     * Test
      *
      */
     #[@test]
     public function simpleLoading() {
-      $this->transformAgainst('xsl://XSL-INF/master.xsl');
+      $this->transformAgainstDefault('xsl://XSL-INF/master.xsl');
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function simpleLoadingFromXar() {
+      $this->transformAgainstFromXar('xsl://XSL-INF/master.xsl');
     }
     
     /**
@@ -67,7 +114,16 @@
      */
     #[@test]
     public function loadingWithInclude() {
-      $this->transformAgainst('xsl://XSL-INF/stylesheet-including-master.xsl');
+      $this->transformAgainstDefault('xsl://XSL-INF/stylesheet-including-master.xsl');
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function loadingWithIncludeFromXar() {
+      $this->transformAgainstFromXar('xsl://XSL-INF/stylesheet-including-master.xsl');
     }
     
     /**
@@ -76,7 +132,16 @@
      */
     #[@test]
     public function loadingWithRelativeInclude() {
-      $this->transformAgainst('xsl://XSL-INF/sub/stylesheet-including-master.xsl');
+      $this->transformAgainstDefault('xsl://XSL-INF/sub/stylesheet-including-master.xsl');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function loadingWithRelativeIncludeFromXar() {
+      $this->transformAgainstDefault('xsl://XSL-INF/sub/stylesheet-including-master.xsl');
     }
   }
 ?>

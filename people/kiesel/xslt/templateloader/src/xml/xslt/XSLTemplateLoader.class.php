@@ -25,7 +25,6 @@
      * @return  
      */
     public function stream_open($path, $mode, $options, $opened_path) {
-      var_dump(__FUNCTION__.': '.$path);
       if ($mode !== 'r' && $mode !== 'rb') return FALSE;
     
       $path= substr($path, 6);
