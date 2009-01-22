@@ -42,6 +42,7 @@
       stream_wrapper_register('xsl', 'XSLFileLoader');
       $this->transformAgainst('xsl://XSL-INF/master.xsl');
       $this->transformAgainst('xsl://XSL-INF/stylesheet-including-master.xsl');
+      $this->transformAgainst('xsl://XSL-INF/sub/stylesheet-including-master.xsl');
     }
   }
 ?>

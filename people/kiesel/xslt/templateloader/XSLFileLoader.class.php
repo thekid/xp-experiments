@@ -45,8 +45,8 @@
      * @return  
      */
     public function stream_close() {
-      var_dump(__FUNCTION__);
-      delete($this->resource);
+      $this->resource->close();
+      
     }
     
     /**
@@ -56,7 +56,6 @@
      * @return  
      */
     public function stream_read($count) {
-      var_dump(__FUNCTION__);
       return $this->resource->read($count);
     }
     
@@ -67,7 +66,6 @@
      * @return  
      */
     public function stream_write($data) {
-      var_dump(__FUNCTION__);
     }
     
     /**
@@ -77,7 +75,6 @@
      * @return  
      */
     public function stream_eof() {
-      var_dump(__FUNCTION__);
       return $this->resource->eof();
     }
     
@@ -88,7 +85,6 @@
      * @return  
      */
     public function stream_tell() {
-      var_dump(__FUNCTION__);
       return $this->resource->tell();
     }
     
@@ -99,7 +95,6 @@
      * @return  
      */
     public function stream_seek($offset, $whence) {
-      var_dump(__FUNCTION__);
       $this->resource->seek($offset);
     }
     
@@ -110,7 +105,6 @@
      * @return  
      */
     public function stream_flush() {
-      var_dump(__FUNCTION__);
     }
     
     /**
@@ -120,7 +114,6 @@
      * @return  
      */
     public function stream_stat() {
-      var_dump(__FUNCTION__);
     }
     
     /**
@@ -130,7 +123,6 @@
      * @return  
      */
     public function url_stat($path, $flags) {
-      var_dump(__FUNCTION__.': '.$path);
       // Remove xsl:// from path
       $path= substr($path, 6);
       $cl= ClassLoader::getDefault()->findResource($path);
