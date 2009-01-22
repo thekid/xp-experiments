@@ -33,7 +33,17 @@
     #[@test]
     public function parse() {
       $document= SnippetDocument::parse(ClassLoader::getDefault()->getResource('xml/xp-app.i18n.xml'));
-      var_dump($document->toString());
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function marshal() {
+      $document= SnippetDocument::parse(ClassLoader::getDefault()->getResource('xml/xp-app.i18n.xml'));
+      $document->toXML();
+    }    
   }
 ?>

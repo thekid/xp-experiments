@@ -19,7 +19,7 @@
       $timestamp  = NULL,
       $author     = NULL,
       $snippet    = NULL,
-      $isValid    = NULL;
+      $valid      = NULL;
 
     /**
      * (Insert method's description here)
@@ -85,5 +85,23 @@
     public function setSnippet($s) {
       $this->snippet= trim($s);
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function toString() {
+      $s= $this->getClassName().'@('.$this->hashCode().') {'.PHP_EOL;
+      $s.= sprintf("  [%s] => (author= %s, timestamp= %s, valid= %s)\n",
+        $this->code,
+        $this->author,
+        $this->timestamp->toString(),
+        $this->valid
+      );
+      $s.= "    '".$this->snippet."'\n";
+      return $s.'  }'.PHP_EOL;
+    }    
   }
 ?>

@@ -62,7 +62,15 @@
      */
     public function toString() {
       $s= $this->getClassName().'@('.$this->hashCode().') {'.PHP_EOL;
+      $s.= sprintf("name= '%s'\n", $this->name);
+      $s.= sprintf("description= '%s'\n", $this->description);
+      $s.= "translations [\n  ";
       
+      foreach ($this->translations as $t) {
+        $s.= str_replace("\n", "\n  ", $t->toString());
+      }
+      
+      return $s.'}'.PHP_EOL;
     }    
     
   }

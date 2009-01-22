@@ -72,17 +72,17 @@
       $s= $this->getClassName().'@('.$this->hashCode().') {'.PHP_EOL;
       $s.= sprintf("name= '%s'\n", $this->name);
       $s.= sprintf("description= '%s'\n", $this->description);
-      $s.= "textgroups= [\n";
+      $s.= "textgroups= [\n  ";
       
       foreach ($this->textgroups as $tg) {
-        $s.= $tg->toString();
+        $s.= str_replace("\n", "\n  ", $tg->toString());
       }
       
       foreach ($this->snippets as $ts) {
-        $s.= $ts->toString();
+        $s.= str_replace("\n", "\n  ", $ts->toString());
       }
       
-      return $s.PHP_EOL;
+      return $s.'}'.PHP_EOL;
     }
   }
 ?>
