@@ -10,5 +10,7 @@
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  encoding="iso-8859-1"
 >
-  <xsl:output method="xml" encoding="utf-8"/>
+  <xsl:output method="text" encoding="utf-8"/>
+  
+  <xsl:template match="/document">Found the <xsl:value-of select="name()"/> node.</xsl:template>
 </xsl:stylesheet>

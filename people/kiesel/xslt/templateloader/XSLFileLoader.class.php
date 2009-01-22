@@ -25,12 +25,13 @@
      * @return  
      */
     public function stream_open($path, $mode, $options, $opened_path) {
-      var_dump(__FUNCTION__, $mode);
+      var_dump(__FUNCTION__);
       if ($mode !== 'r' && $mode !== 'rb') return FALSE;
     
       $path= substr($path, 6);
       // TBI: Should be cloned, so we can open file multiple times?
-      $this->resource= ClassLoader::getDefault()->getResource($path);
+      $this->resource= ClassLoader::getDefault()->getResourceAsStream($path);
+      var_dump($this->resource);
       $this->resource->open(FILE_MODE_READ);
       
       // TBI: Error reporint: exceptions or trigger_error()?
@@ -57,7 +58,7 @@
      */
     public function stream_read($count) {
       var_dump(__FUNCTION__);
-      
+      return $this->resource->read($count);
     }
     
     /**
@@ -78,6 +79,7 @@
      */
     public function stream_eof() {
       var_dump(__FUNCTION__);
+      return $this->resource->eof();
     }
     
     /**
@@ -88,6 +90,7 @@
      */
     public function stream_tell() {
       var_dump(__FUNCTION__);
+      return $this->resource->tell();
     }
     
     /**
@@ -98,6 +101,7 @@
      */
     public function stream_seek($offset, $whence) {
       var_dump(__FUNCTION__);
+      $this->resource->seek($offset);
     }
     
     /**
