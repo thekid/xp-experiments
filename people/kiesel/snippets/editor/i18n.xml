@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<texts>
+  <group name="common">
+    <description>This section contains common text modules</description>
+    
+    <text name="welcome">
+      <translation 
+       for="de_DE"
+       lastchange="2009-01-20 18:00:00+0100"
+       by="kiesel"
+      >Welcome</translation>
+      <translation 
+       for="en_UK
+       lastchange="2009-01-20 19:00:00+0100"
+       by="kiesel"
+      >Welcome</translation>
+    </text>
+  </group>
+</texts>
