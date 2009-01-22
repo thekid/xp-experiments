@@ -23,13 +23,12 @@
      *
      */
     public function run() {
-      stream_wrapper_register('xslxar', 'XSLFileLoader');
+      stream_wrapper_register('xsl', 'XSLFileLoader');
     
       $proc= new DomXSLProcessor();
       $proc->setXMLBuf('<document/>');
       
-      // TBI
-      $proc->setXSLFile('xslxar://XSL-INF/master.xsl');
+      $proc->setXSLFile('xsl://XSL-INF/master.xsl');
       
       $proc->run();
       

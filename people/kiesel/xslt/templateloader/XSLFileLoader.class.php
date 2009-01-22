@@ -13,12 +13,10 @@
    */
   class XSLFileLoader extends Object {
     protected
-      $paths        = array(),
       $currentPath  = '';
     
-    public function __construct() {
-      var_dump(__FUNCTION__);
-    }
+    private
+      $resource= NULL;
     
     /**
      * (Insert method's description here)
@@ -27,10 +25,17 @@
      * @return  
      */
     public function stream_open($path, $mode, $options, $opened_path) {
-      throw Exception("foo");
-      var_dump("being here");
-      Console::writeLine('---> stream_open(', $path, ', ', $mode, ', ', $options, ')');
-      return FALSE;
+      var_dump(__FUNCTION__, $mode);
+      if ($mode !== 'r' && $mode !== 'rb') return FALSE;
+    
+      $path= substr($path, 6);
+      // TBI: Should be cloned, so we can open file multiple times?
+      $this->resource= ClassLoader::getDefault()->getResource($path);
+      $this->resource->open(FILE_MODE_READ);
+      
+      // TBI: Error reporint: exceptions or trigger_error()?
+      // TBI: Evaluate STREAM_USE_PATH in options and set opened_path
+      return TRUE;
     }
     
     /**
@@ -40,7 +45,8 @@
      * @return  
      */
     public function stream_close() {
-    
+      var_dump(__FUNCTION__);
+      delete($this->resource);
     }
     
     /**
@@ -50,7 +56,8 @@
      * @return  
      */
     public function stream_read($count) {
-    
+      var_dump(__FUNCTION__);
+      
     }
     
     /**
@@ -60,7 +67,7 @@
      * @return  
      */
     public function stream_write($data) {
-    
+      var_dump(__FUNCTION__);
     }
     
     /**
@@ -70,7 +77,7 @@
      * @return  
      */
     public function stream_eof() {
-    
+      var_dump(__FUNCTION__);
     }
     
     /**
@@ -80,7 +87,7 @@
      * @return  
      */
     public function stream_tell() {
-    
+      var_dump(__FUNCTION__);
     }
     
     /**
@@ -90,7 +97,7 @@
      * @return  
      */
     public function stream_seek($offset, $whence) {
-    
+      var_dump(__FUNCTION__);
     }
     
     /**
@@ -100,7 +107,7 @@
      * @return  
      */
     public function stream_flush() {
-    
+      var_dump(__FUNCTION__);
     }
     
     /**
@@ -110,7 +117,7 @@
      * @return  
      */
     public function stream_stat() {
-    
+      var_dump(__FUNCTION__);
     }
     
     /**
@@ -120,8 +127,14 @@
      * @return  
      */
     public function url_stat($path, $flags) {
-    var_dump(__FUNCTION__, $path, $flags);
+      var_dump(__FUNCTION__);
+      // Remove xsl:// from path
+      $path= substr($path, 6);
+      $cl= ClassLoader::getDefault()->findResource($path);
+      if ($cl instanceof null) return FALSE;
 
+      // Return array to indicate existance
+      return array();
     }                            
   }
 ?>
