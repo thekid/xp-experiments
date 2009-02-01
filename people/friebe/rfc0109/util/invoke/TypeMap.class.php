@@ -14,10 +14,21 @@
    */
   class TypeMap extends Object {
     
+    /**
+     * Constructor
+     *
+     * @param   util.collections.Map<lang.XPClass, lang.Generic> backing
+     */
     public function __construct(Map $backing) {
       $this->backing= $backing;
     }
     
+    /**
+     * Resolves a type
+     *
+     * @param   lang.Type in
+     * @return  lang.Generic resolved or NULL if this type cannot be resolved
+     */
     public function resolve(Type $in) {
       if ($in instanceof Primitive) $in= $in->asClass();
       $best= -1;
@@ -105,6 +116,7 @@
       $map->put(XPClass::forName('lang.types.ArrayList'), new String('ArrayListMapper'));
       $map->put(XPClass::forName('lang.Generic'), new String('GenericMapper'));
       $map->put(XPClass::forName('lang.Object'), new String('ObjectMapper'));
+      $map->put(XPClass::forName('lang.Enum'), new String('EnumMapper'));
       $map->put(XPClass::forName('util.Date'), new String('DateMapper'));
       $map->put(XPClass::forName('lang.Throwable'), new String('ThrowableMapper'));
       
