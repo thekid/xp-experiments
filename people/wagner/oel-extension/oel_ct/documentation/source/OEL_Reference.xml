@@ -1591,6 +1591,24 @@
     </description>
   </function>
 
+  <function name="oel_set_source_file">
+    <parameters>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="string" name="filename" default="NULL">NULL to set filename to the oel default</parameter>
+    </parameters>
+    <tags><tag name="core" /><tag name="compiler" /></tags>
+    <description>Set current filename debug information for error handling.</description>
+  </function>
+
+  <function name="oel_set_source_line">
+    <parameters>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type="integer" name="lineno">current compile line number</parameter>
+    </parameters>
+    <tags><tag name="core" /><tag name="compiler" /></tags>
+    <description>Set current line number debug information for error handling.</description>
+  </function>
+
   <function name="bcompiler_write_oel_oparray">
     <parameters>
       <parameter type="resource(stream)" name="fp">output stream resource handle</parameter>
@@ -1601,5 +1619,25 @@
       Serialize an opcode array.
     </description>
   </function>
+
+<!-- new function
+  <function name="...">
+    <tokens>
+      <token type="pop" name="..." />
+      <token type="push" name="..." />
+      <token type="test" name="..." />
+    </tokens>
+    <operands>
+      <operand type="pop">...</operand>
+      <operand type="push">...</operand>
+    </operands>
+    <parameters>
+      <parameter type="resource(oel)" name="op_array">OEL resource handle</parameter>
+      <parameter type=".." name="..." default="...">...</parameter>
+    </parameters>
+    <tags><tag name="..." /></tags>
+    <description></description>
+  </function>
+-->
 
 </documentation>

@@ -2326,6 +2326,42 @@
 </div>
 <div class="func_foot"><a href="#top">^Top</a></div>
 </div>
+<div class="func" id="oel_set_source_file">
+<div class="func_head"><h3>oel_set_source_file</h3></div>
+<div class="func_desc">Set current filename debug information for error handling.</div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_set_source_file</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param optional"><span class="type">string</span><span class="name"> filename</span>=<span class="default"> NULL</span></span>
+          )</span></code></div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+<b>?</b>
+      (string) NULL to set filename to the oel default<small><br>default value: NULL</small>
+</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#top">^Top</a></div>
+</div>
+<div class="func" id="oel_set_source_line">
+<div class="func_head"><h3>oel_set_source_line</h3></div>
+<div class="func_desc">Set current line number debug information for error handling.</div>
+<div class="signature"><code><span class="return">NULL </span><span class="name">oel_set_source_line</span><span class="params">(
+            <span class="param "><span class="type">resource(oel)</span><span class="name"> op_array</span></span>, <span class="param "><span class="type">integer</span><span class="name"> lineno</span></span>
+          )</span></code></div>
+<div class="func_params">
+          Parameters:
+          <ul>
+<li>
+      (resource(oel)) OEL resource handle</li>
+<li>
+      (integer) current compile line number</li>
+</ul>
+</div>
+<div class="func_foot"><a href="#top">^Top</a></div>
+</div>
 <div class="func" id="bcompiler_write_oel_oparray">
 <div class="func_head"><h3>bcompiler_write_oel_oparray</h3></div>
 <div class="func_desc">
