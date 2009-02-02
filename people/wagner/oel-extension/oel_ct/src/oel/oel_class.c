@@ -3,7 +3,7 @@ PHP_FUNCTION(oel_add_begin_class_declaration) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *class_name, *parent_class_name, *parent_class_node, *class_token;
-    zend_uchar        *arg_class_name, *arg_parent_name= NULL;
+    char              *arg_class_name, *arg_parent_name= NULL;
     zend_ulong         arg_parent_name_len= 0, arg_class_name_len;
     zend_bool          arg_is_final= 0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|sb", &arg_op_array, &arg_class_name, &arg_class_name_len, &arg_parent_name, &arg_parent_name_len, &arg_is_final) == FAILURE) { RETURN_NULL(); }
@@ -55,7 +55,7 @@ PHP_FUNCTION(oel_add_begin_abstract_class_declaration) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *class_name, *parent_class_name, *class_token;
-    zend_uchar        *arg_class_name,    *arg_parent_name= NULL;
+    char              *arg_class_name,    *arg_parent_name= NULL;
     zend_ulong         arg_class_name_len, arg_parent_name_len= 0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|s", &arg_op_array, &arg_class_name, &arg_class_name_len, &arg_parent_name, &arg_parent_name_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
@@ -101,7 +101,7 @@ PHP_FUNCTION(oel_add_begin_interface_declaration) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *class_name, *class_token;
-    zend_uchar        *arg_class_name;
+    char              *arg_class_name;
     zend_ulong         arg_class_name_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_class_name, &arg_class_name_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
@@ -141,7 +141,7 @@ PHP_FUNCTION(oel_add_parent_interface) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *interface_node;
-    zend_uchar        *arg_iname;
+    char              *arg_iname;
     zend_ulong         arg_iname_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_iname, &arg_iname_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
@@ -161,7 +161,7 @@ PHP_FUNCTION(oel_add_implements_interface) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *interface_node;
-    zend_uchar        *arg_iname;
+    char              *arg_iname;
     zend_ulong         arg_iname_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_iname, &arg_iname_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
@@ -181,7 +181,7 @@ PHP_FUNCTION(oel_add_declare_property) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *name, *default_value;
-    zend_uchar        *arg_name;
+    char              *arg_name;
     zend_ulong         arg_name_len, arg_acc= 0, flags;
     zend_bool          arg_stat= 0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|zbl", &arg_op_array, &arg_name, &arg_name_len, &arg_default_value, &arg_stat, &arg_acc) == FAILURE) { RETURN_NULL(); }
@@ -205,7 +205,7 @@ PHP_FUNCTION(oel_add_declare_class_constant) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *name, *value;
-    zend_uchar        *arg_name;
+    char              *arg_name;
     zend_ulong         arg_name_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rsz", &arg_op_array, &arg_name, &arg_name_len, &arg_value) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
@@ -226,7 +226,7 @@ PHP_FUNCTION(oel_add_instanceof) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *instance, *result, *name;
-    zend_uchar        *arg_name;
+    char              *arg_name;
     zend_ulong         arg_name_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_name, &arg_name_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);

@@ -65,7 +65,10 @@
         int merged;
         int final;
         int type;
+        int lineno;
         struct _oel_cg oel_cg;
+	int is_custom_source;
+	char *orig_filename;
     } php_oel_op_array;
 
     typedef struct _php_oel_saved_env {

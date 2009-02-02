@@ -3,9 +3,8 @@ PHP_FUNCTION(oel_add_receive_arg) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *result, *offset, *varname, *initialization, *class_type;
-    zend_uchar        *arg_varname,     *arg_class= NULL;
+    char              *arg_varname, *arg_class= NULL, op, pass_by_reference;;
     zend_ulong         arg_varname_len, arg_class_len= 0, arg_ref= 0, arg_offset;
-    zend_uchar         op, pass_by_reference;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rls|z!sb", &arg_op_array, &arg_offset, &arg_varname, &arg_varname_len, &arg_initialization, &arg_class, &arg_class_len, &arg_ref) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
@@ -36,7 +35,7 @@ PHP_FUNCTION(oel_add_static_variable) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *name, *init;
-    zend_uchar        *arg_name;
+    char              *arg_name;
     zend_ulong         arg_name_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rsz", &arg_op_array, &arg_name, &arg_name_len, &arg_init) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
@@ -87,7 +86,7 @@ PHP_FUNCTION(oel_push_variable) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *result, *varname, *classname= NULL;
-    zend_uchar        *arg_varname,     *arg_classname= NULL;
+    char              *arg_varname,     *arg_classname= NULL;
     zend_ulong         arg_varname_len,  arg_classname_len= 0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|s", &arg_op_array, &arg_varname, &arg_varname_len, &arg_classname, &arg_classname_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
@@ -120,7 +119,7 @@ PHP_FUNCTION(oel_push_variable_indirect) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *indirections, *result, *varname, *class=NULL;
-    zend_uchar        *arg_varname,     *arg_classname= NULL;
+    char              *arg_varname,     *arg_classname= NULL;
     zend_ulong         arg_varname_len,  arg_classname_len= 0, arg_indirections;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rls|s", &arg_op_array, &arg_indirections, &arg_varname, &arg_varname_len, &arg_classname, &arg_classname_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
@@ -155,7 +154,7 @@ PHP_FUNCTION(oel_push_property) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *object, *result, *property;
-    zend_uchar        *arg_name;
+    char              *arg_name;
     zend_ulong         arg_name_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &arg_op_array, &arg_name, &arg_name_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
@@ -178,7 +177,7 @@ PHP_FUNCTION(oel_push_constant) {
     php_oel_op_array  *res_op_array;
     php_oel_saved_env *env;
     znode             *result, *name, *classname= NULL, *class=NULL;
-    zend_uchar        *arg_name,     *arg_classname= NULL;
+    char              *arg_name,     *arg_classname= NULL;
     zend_ulong         arg_name_len,  arg_classname_len= 0;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs|s", &arg_op_array, &arg_name, &arg_name_len, &arg_classname, &arg_classname_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);

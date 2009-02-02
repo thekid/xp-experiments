@@ -81,6 +81,42 @@ PHP_FUNCTION(oel_execute) {
     }
 }
 
+PHP_FUNCTION(oel_set_source_file) {
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    char              *arg_filename, *orig_compiled_filename;;
+    zend_ulong        arg_filename_len;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs!", &arg_op_array, &arg_filename, &arg_filename_len) == FAILURE) { RETURN_NULL(); }
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
+
+    if (!arg_filename && !res_op_array->is_custom_source) return;
+
+    if (!arg_filename) {
+        res_op_array->oel_cg.active_op_array->filename= res_op_array->orig_filename;
+        res_op_array->is_custom_source= 0;
+    } else {
+        res_op_array->orig_filename= res_op_array->oel_cg.active_op_array->filename;
+
+        orig_compiled_filename= zend_get_compiled_filename(TSRMLS_C);
+        zend_set_compiled_filename(arg_filename TSRMLS_CC);
+        res_op_array->oel_cg.active_op_array->filename= CG(compiled_filename);
+        zend_restore_compiled_filename(orig_compiled_filename TSRMLS_CC);
+
+        res_op_array->lineno= 0;
+        res_op_array->is_custom_source= 1;
+    }
+}
+
+PHP_FUNCTION(oel_set_source_line) {
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    zend_ulong         arg_lineno;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rl", &arg_op_array, &arg_lineno) == FAILURE) { RETURN_NULL(); }
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
+    
+    res_op_array->lineno= (int)arg_lineno;
+}
+
 PHP_FUNCTION(oel_add_echo) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;

@@ -1,11 +1,15 @@
 /* $Id$ */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+  #include "config.h"
 #endif
 
-#include "Zend/zend_API.h"
-#include "Zend/zend_exceptions.h"
+#include "php.h"
+#include "php_globals.h"
+#include "ext/standard/info.h"
+#include "ext/standard/php_string.h"
+#include "ext/standard/basic_functions.h"
+#include "zend_exceptions.h"
 
 #include "php.h"
 #include "php_oel.h"
@@ -16,11 +20,16 @@ int le_oel_fun;
 int le_oel_nme;
 int le_oel_ame;
 
+zend_class_entry *php_oel_ce_opcode;
+zend_class_entry *php_oel_ce_opline;
+
 static function_entry oel_functions[]= {
 
     PHP_FE(oel_new_op_array, NULL)
     PHP_FE(oel_finalize, NULL)
     PHP_FE(oel_execute, NULL)
+    PHP_FE(oel_set_source_file, NULL)
+    PHP_FE(oel_set_source_line, NULL)
     PHP_FE(oel_add_echo, NULL)
     PHP_FE(oel_add_return, NULL)
     PHP_FE(oel_add_free, NULL)
@@ -128,6 +137,17 @@ static function_entry oel_functions[]= {
     PHP_FE(oel_add_end_catchblock, NULL)
     PHP_FE(oel_add_throw, NULL)
 
+    PHP_FE(oel_get_op_array, NULL)
+    PHP_FE(oel_get_translation_array, NULL)
+
+    {NULL, NULL, NULL}
+};
+
+static function_entry oel_ce_opcode_functions[]= {
+    {NULL, NULL, NULL}
+};
+
+static function_entry oel_ce_opline_functions[]= {
     {NULL, NULL, NULL}
 };
 
@@ -181,6 +201,14 @@ ZEND_GET_MODULE(oel)
 
 /* init extension */
 PHP_MINIT_FUNCTION(oel) {
+    zend_class_entry tmp_ce_opcode, tmp_ce_opline;
+    
+    INIT_CLASS_ENTRY(tmp_ce_opcode, PHP_OEL_CN_OPCODE, oel_ce_opcode_functions);
+    php_oel_ce_opcode= zend_register_internal_class(&tmp_ce_opcode TSRMLS_CC);
+
+    INIT_CLASS_ENTRY(tmp_ce_opline, PHP_OEL_CN_OPLINE, oel_ce_opline_functions);
+    php_oel_ce_opline= zend_register_internal_class(&tmp_ce_opline TSRMLS_CC);
+
     le_oel_oar= zend_register_list_destructors_ex(php_oel_op_array_dtor, NULL, PHP_OEL_OAR_RES_NAME, module_number);
     le_oel_fun= zend_register_list_destructors_ex(NULL, NULL, PHP_OEL_FUN_RES_NAME, module_number);
     le_oel_nme= zend_register_list_destructors_ex(NULL, NULL, PHP_OEL_NME_RES_NAME, module_number);
@@ -238,6 +266,7 @@ PHP_MINIT_FUNCTION(oel) {
     REGISTER_LONG_CONSTANT("OEL_OP_TO_OBJECT",                  IS_OBJECT,                CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("OEL_OP_TO_BOOL",                    IS_BOOL,                  CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("OEL_OP_TO_UNSET",                   IS_NULL,                  CONST_CS | CONST_PERSISTENT);
+
     return SUCCESS;
 }
 
@@ -281,7 +310,7 @@ static php_oel_saved_env *oel_env_prepare(php_oel_op_array *res_op_array TSRMLS_
 
     /*  prepare enviroment */
     CG(in_compilation)= 1;
-    CG(zend_lineno)=    zend_get_executed_lineno(TSRMLS_C);
+    CG(zend_lineno)= res_op_array->is_custom_source ? res_op_array->lineno : zend_get_executed_lineno(TSRMLS_C);
     PHP_OEL_SET_CG(res_op_array, env, active_op_array);
     PHP_OEL_SET_CG(res_op_array, env, active_class_entry);
     PHP_OEL_SET_CG(res_op_array, env, implementing_class);
@@ -601,3 +630,4 @@ static void oel_compile_error(int type, const char *format, ...) {
 #include "oel_operation.c"
 #include "oel_procedure.c"
 #include "oel_trycatch.c"
+#include "oel_debug.c"

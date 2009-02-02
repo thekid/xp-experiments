@@ -74,6 +74,9 @@
     #define PHP_OEL_RESAFE_CG(o, e, p) (o)->oel_cg.p= CG(p); 
     #define PHP_OEL_RESET_CG(o, e, p)  CG(p)= (e)->cg.p; 
 
+    #define PHP_OEL_CN_OPCODE "OelOpcode"
+    #define PHP_OEL_CN_OPLINE "OelOpline"
+
     #if ZEND_MODULE_API_NO < 20071006
         #define Z_SET_REFCOUNT(o, v) (o).refcount= (v)
         #define Z_SET_ISREF_TO(o, v) (o).is_ref= (v)
@@ -95,6 +98,8 @@
     PHP_FUNCTION(oel_new_op_array);
     PHP_FUNCTION(oel_finalize);
     PHP_FUNCTION(oel_execute);
+    PHP_FUNCTION(oel_set_source_file);
+    PHP_FUNCTION(oel_set_source_line);
     PHP_FUNCTION(oel_add_echo);
     PHP_FUNCTION(oel_add_return);
     PHP_FUNCTION(oel_add_free);
@@ -201,6 +206,9 @@
     PHP_FUNCTION(oel_add_end_catch);
     PHP_FUNCTION(oel_add_end_catchblock);
     PHP_FUNCTION(oel_add_throw);
+
+    PHP_FUNCTION(oel_get_op_array);
+    PHP_FUNCTION(oel_get_translation_array);
 
     extern zend_module_entry oel_module_entry;
     #define phpext_oel_ptr &oel_module_entry
