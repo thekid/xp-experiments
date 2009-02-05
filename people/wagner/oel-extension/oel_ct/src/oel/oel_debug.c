@@ -15,7 +15,7 @@ void oel_add_next_index_opline(zval *result_arr, zend_op *opline) {
 
     object_init_ex(oh_opline, php_oel_ce_opline);
     add_property_zval(oh_opline, "opcode", oh_opcode);
-    Z_SET_REFCOUNT(*oh_opline, 1);
+    Z_SET_REFCOUNT(*oh_opcode, 1);
 
     object_init_ex(oh_opcode, php_oel_ce_opcode);
     add_property_long(oh_opcode, "op", opline->opcode);
