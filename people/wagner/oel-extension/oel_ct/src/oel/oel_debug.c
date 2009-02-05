@@ -10,11 +10,12 @@ void oel_add_next_index_opline(zval *result_arr, zend_op *opline) {
     array_init(trans_arr);
     fill_opcode_translation_array(trans_arr);
     zend_hash_index_find(Z_ARRVAL_P(trans_arr), opline->opcode, (void**)&opcode_mne);
-    
+
     add_next_index_zval(result_arr, oh_opline);
-    
+
     object_init_ex(oh_opline, php_oel_ce_opline);
     add_property_zval(oh_opline, "opcode", oh_opcode);
+    Z_SET_REFCOUNT(*oh_opline, 1);
 
     object_init_ex(oh_opcode, php_oel_ce_opcode);
     add_property_long(oh_opcode, "op", opline->opcode);
