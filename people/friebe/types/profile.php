@@ -50,12 +50,42 @@
       echo ']', "\n";
     }
   }
+  
+  class DelegatingPrinter {
+    protected static $__signature= array(
+      'println' => array('string'),
+      'dump'    => array('array', 'integer')
+    );
+
+    public function ·println($s) {
+      echo $s, "\n";
+    }
+
+    public function ·dump($a, $indent) {
+      $prefix= str_repeat(' ', $indent);
+      echo 'array [', "\n";
+      foreach ($a as $k => $v) {
+        echo $prefix, $k, ' => ', $v, "\n";
+      }
+      echo ']', "\n";
+    }
+    
+    public function __call($name, $args) {
+      foreach (self::$__signature[$name] as $i => $type) {
+        if ($type !== gettype($args[$i])) {
+          throw new InvalidArgumentException('Type mismatch @ '.$name.'#'.$i);
+        }
+      }
+      return call_user_func_array(array($this, '·'.$name), $args);
+    }
+  }
 
   $times= isset($argv[1]) ? (int)$argv[1] : 10000;
   $implementations= array(
     new Printer(), 
     new HintedPrinter(),
-    new CheckingPrinter()
+    new CheckingPrinter(),
+    new DelegatingPrinter()
   );
   
   print("== Success case ==\n");
