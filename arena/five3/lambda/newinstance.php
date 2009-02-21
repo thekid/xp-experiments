@@ -46,7 +46,7 @@
         $m= self::$__methods["'.$method.'"]; return $m($this, '.substr($arguments, 2).');
       }';
     }
-    $src.= '} return TRUE;';
+    $src.= '} '.$classname.'::$__methods= $methods; return TRUE;';
     
     // Declare class
     if (TRUE !== eval($src)) {
@@ -55,9 +55,7 @@
 
     // Instantiate
     $c= new ReflectionClass($classname);
-    $c->setStaticPropertyValue('__methods', $methods);
     return $c->getConstructor() ? $c->newInstanceArgs($args) : $c->newInstance();
-    
   }
   
   interface Context {
