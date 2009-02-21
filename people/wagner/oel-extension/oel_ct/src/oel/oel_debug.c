@@ -1,6 +1,6 @@
 #include "opcodes.20071006.c"
 
-void oel_add_next_index_opline(zval *result_arr, zend_op *opline) {
+void oel_add_next_index_opline(zval *result_arr, zend_op *opline TSRMLS_DC) {
     zval *oh_opline, *oh_opcode, *trans_arr, **opcode_mne;
 
     MAKE_STD_ZVAL(oh_opcode);
@@ -37,7 +37,7 @@ PHP_FUNCTION(oel_get_op_array) {
     opline= res_op_array->oel_cg.active_op_array->opcodes;
     end = opline + res_op_array->oel_cg.active_op_array->last;
     while (opline < end) {
-        oel_add_next_index_opline(return_value, opline);
+        oel_add_next_index_opline(return_value, opline TSRMLS_CC);
         opline++;
     }
 }
