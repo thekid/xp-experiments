@@ -122,7 +122,8 @@
 
       
     protected function emitClass($op, $declaration) {
-      oel_add_begin_class_declaration($op, $declaration->name->name);
+      $parent= $declaration->parent ? $declaration->parent->name : 'lang.Object';
+      oel_add_begin_class_declaration($op, $declaration->name->name, xp::reflect($parent));
       
       // Methods
       foreach ($declaration->body['methods'] as $node) {
