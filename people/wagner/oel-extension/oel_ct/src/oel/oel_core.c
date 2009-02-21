@@ -84,7 +84,7 @@ PHP_FUNCTION(oel_execute) {
 PHP_FUNCTION(oel_set_source_file) {
     zval              *arg_op_array;
     php_oel_op_array  *res_op_array;
-    char              *arg_filename, *orig_compiled_filename;;
+    char              *arg_filename, *orig_compiled_filename;
     zend_ulong        arg_filename_len;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs!", &arg_op_array, &arg_filename, &arg_filename_len) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
