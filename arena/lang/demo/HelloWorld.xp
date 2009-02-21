@@ -6,7 +6,7 @@ public class HelloWorld {
     if ($args[0]) {
       Console::writeLine('Hello ', $args[0]);
     } else {
-      Console::writeLine('Hello World');
+      Console::writeLine('Hello World @ ', new Date()->toString('Y-m-d'));
     }
   }
 }

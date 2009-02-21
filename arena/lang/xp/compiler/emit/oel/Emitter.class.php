@@ -83,13 +83,17 @@
       } else if ($ref->member instanceof VariableNode) {  // Static member
         oel_add_begin_variable_parse($op);
         oel_push_variable($op, ltrim($ref->member->name, '$'), $ref->class->name);   // without '$'
-        
         $this->emitChain($op, $ref->member);
-        
         oel_add_end_variable_parse($op);
       } else {
         $this->errors[]= 'Cannot emit class member '.xp::stringOf($ref->member);
       }
+    }
+
+    protected function emitInstanceCreation($op, $new) {
+      $n= $this->emitAll($op, $new->parameters);
+      oel_add_new_object($op, $n, $new->type->name);
+      // $this->emitChain($op, $new);
     }
     
     protected function emitAll($op, $nodes) {
