@@ -129,6 +129,7 @@
 start:
     package_opt imports_opt declaration {
       $$= new ParseTree();
+      $$->origin= $yyLex->fileName;
       $$->package= $1;
       $$->imports= $2;
       $$->declaration= $3;
