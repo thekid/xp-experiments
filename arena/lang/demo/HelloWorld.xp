@@ -1,0 +1,12 @@
+import util.cmd.Console;
+
+public class HelloWorld {
+
+  public static void main(string[] $args) {
+    if ($args[0]) {
+      Console::writeLine('Hello ', $args[0]);
+    } else {
+      Console::writeLine('Hello World');
+    }
+  }
+}

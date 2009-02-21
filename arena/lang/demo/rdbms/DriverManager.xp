@@ -1,6 +1,29 @@
 package rdbms;
 
-public class DriverManager {
+public module Singleton {
+  protected static self $instance;
+
+  static {
+    self::$instance= new self();
+  }
+
+  /**
+   * Private constructor to ensure this class cannot be instantiated
+   * by means of "new".
+   *
+   */
+  private empty final __construct();
+
+  /**
+   * Retrieve instance
+   *
+   */
+  public static self getInstance() {
+    return self::$instance;
+  }
+}
+
+public class DriverManager includes patterns.Singleton {
   protected static self $instance;
   protected static array<string, string> $builtin;
   protected array<string, XPClass> $drivers;

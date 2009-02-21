@@ -1,28 +1,62 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
 package util.collections;
 
 import lang.NoSuchElementException;
+import static util.collections.HashProvider.hashOf;
 
+/**
+ * Hash table consisting of non-null objects as keys and values
+ *
+ * @test     xp://net.xp_framework.unittest.util.collections.HashTableTest
+ * @test     xp://net.xp_framework.unittest.util.collections.GenericsTest
+ * @test     xp://net.xp_framework.unittest.util.collections.ArrayAccessTest
+ * @test     xp://net.xp_framework.unittest.util.collections.BoxingTest
+ * @purpose  Map interface implementation
+ */
 public class HashTable<K, V> extends lang.Object implements Map<K, V> {
-  protected array $elements;
+  protected map $buckets= [];
+  protected int $hash= 0;
 
   /**
-   * Put an element into this hashtable
+   * Associates the specified value with the specified key in this map.
+   * If the map previously contained a mapping for this key, the old 
+   * value is replaced by the specified value.
+   * Returns previous value associated with specified key, or NULL if 
+   * there was no mapping for the specified key.
    *
+   * @param   key
+   * @param   value
+   * @return  previous value associated with the key
    */
-  public void put(K $key, V $value) {
-    $this->elements[$key->hashCode()]= $value;
+  public V put(K $key, V $value) {
+    $h= $key->hashCode();
+    if (!isset($this->buckets[$h])) {
+      $previous= NULL;
+    } else {
+      $previous= $this->buckets[$h][1];
+    }
+
+    $this->buckets[$h]= [$key, $value];
+    $this->hash+= hashOf($h ~ $value->hashCode());
+    return $previous;
   }
 
   /**
-   * Get an element from this hashtable
+   * Returns the value to which this map maps the specified key. 
    *
+   * @param   key
+   * @return  the value associated with the key
+   * @throws  NoSuchElementException in case the key does not exist
    */
   public V get(K $key) throws NoSuchElementException {
-    $k= $key->hashCode();
-    if (!isset($this->elements[$k])) {
+    $h= $key->hashCode();
+    if (!isset($this->buckets[$h])) {
       throw new NoSuchElementException('No such element ' ~ $k);
     }
-    return $this->elements[$k];
+    return $this->buckets[$h][1];
   }
 
   /**
@@ -37,7 +71,7 @@ public class HashTable<K, V> extends lang.Object implements Map<K, V> {
    * =[offset] overloading
    *
    */  
-  public E operator[K $key] () {
+  public V operator[K $key] () {
     return $this->get($key);
   }
 }
