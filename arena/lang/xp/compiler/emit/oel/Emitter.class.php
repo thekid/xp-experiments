@@ -71,6 +71,12 @@
       }
     }
     
+    protected function emitComparison($op, $cmp) {
+      $this->emitOne($op, $cmp->lhs);
+      $this->emitOne($op, $cmp->rhs);
+      oel_add_binary_op($op, OEL_BINARY_OP_IS_EQUAL);   // TODO: depending on $cmp->op, use other assignments
+    }
+    
     protected function emitIf($op, $if) {
       $this->emitOne($op, $if->condition);
       oel_add_begin_if($op); {
@@ -96,9 +102,14 @@
       }
     }
 
+    protected function emitThrow($op, $throw) {
+      $this->emitOne($op, $throw->expression);
+      oel_add_throw($op);
+    }
+
     protected function emitInstanceCreation($op, $new) {
       $n= $this->emitAll($op, $new->parameters);
-      oel_add_new_object($op, $n, $new->type->name);
+      oel_add_new_object($op, $n, xp::reflect($new->type->name));
       oel_add_begin_variable_parse($op);
       $this->emitChain($op, $new);
       oel_add_end_variable_parse($op);
