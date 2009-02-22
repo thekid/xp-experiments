@@ -1,0 +1,13 @@
+public class Each<T> {
+  public T[] $values;
+
+  protected __construct(T[] $values) {
+    $this->values= $values;
+  }
+  
+  public static void main(string[] $args) {
+    foreach (new self<string>($args)->values as $value) {
+      Console::writeLine('- ', $value);
+    }
+  }  
+}
