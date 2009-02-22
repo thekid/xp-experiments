@@ -8,7 +8,7 @@ public class Each<T> {
   }
   
   public static void main(string[] $args) {
-    foreach (new self<string>($args)->values as $value) {
+    foreach ($value in new self<string>($args)->values) {
       Console::writeLine('- ', $value);
     }
   }  

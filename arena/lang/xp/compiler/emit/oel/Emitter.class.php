@@ -102,7 +102,7 @@
       $this->emitOne($op, $foreach->expression);
       oel_add_begin_foreach($op); {
         oel_add_begin_variable_parse($op);
-        oel_push_variable($op, 'value');      // FIXME: Assignment
+        oel_push_variable($op, ltrim($foreach->assignment, '$'));
         oel_push_value($op, NULL);
       }
       oel_add_begin_foreach_body($op); {
