@@ -22,12 +22,13 @@
     protected 
       $op     = NULL,
       $errors = array(),
+      $class  = array(),
       $types  = NULL;
     
     protected function emitInvocation($op, $inv) {
       $n= $this->emitAll($op, $inv->parameters);
       oel_add_call_function($op, $n, $inv->name);
-      oel_add_free($op);
+      $inv->free && oel_add_free($op);
     }
     
     protected function emitString($op, $str) {
@@ -122,11 +123,20 @@
     }
     
     protected function emitClassMember($op, $ref) {
-      if ($ref->member instanceof InvocationNode) {       // Static method call
+      if ($ref->member instanceof InvocationNode) {
+
+        // Static method call
         $n= $this->emitAll($op, $ref->member->parameters);
-        oel_add_call_method_static($op, $n, $ref->member->name, $ref->class->name);
-        oel_add_free($op);
-      } else if ($ref->member instanceof VariableNode) {  // Static member
+        oel_add_call_method_static($op, $n, $ref->member->name, $this->resolve($ref->class->name));
+        $ref->free && oel_add_free($op);
+      } else if ($ref->member instanceof VariableNode && '$class' === $ref->member->name) {
+      
+        // Magic "class" member
+        oel_push_value($op, $this->resolve($ref->class->name));
+        oel_add_new_object($op, 1, 'XPClass');
+      } else if ($ref->member instanceof VariableNode) {
+      
+        // Static member
         oel_add_begin_variable_parse($op);
         oel_push_variable($op, ltrim($ref->member->name, '$'), $ref->class->name);   // without '$'
         $this->emitChain($op, $ref->member);
@@ -143,7 +153,7 @@
 
     protected function emitInstanceCreation($op, $new) {
       $n= $this->emitAll($op, $new->parameters);
-      oel_add_new_object($op, $n, xp::reflect($new->type->name));
+      oel_add_new_object($op, $n, $this->resolve($new->type->name));
       oel_add_begin_variable_parse($op);
       $this->emitChain($op, $new);
       oel_add_end_variable_parse($op);
@@ -204,8 +214,11 @@
     }
       
     protected function emitClass($op, $declaration) {
+    
+      // Start
       $parent= $declaration->parent ? $declaration->parent->name : 'lang.Object';
-      oel_add_begin_class_declaration($op, $declaration->name->name, xp::reflect($parent));
+      oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
+      array_unshift($this->class, $this->resolve($declaration->name->name));
       
       // Fields
       foreach ($declaration->body['fields'] as $node) {
@@ -220,8 +233,22 @@
       
       // Methods
       $this->emitAll($op, $declaration->body['methods']);
-
+      
+      // Finish
       oel_add_end_class_declaration($op);
+
+      // xp::$registry['class.'.$name]= $qualified;
+      oel_push_value($op, 'class.'.$this->class[0]);
+      oel_push_value($op, $declaration->name->name);
+      oel_add_call_method_static($op, 2, 'registry', 'xp');
+      oel_add_free($op);
+    
+      array_shift($this->class);
+    }
+
+    protected function emitReturn($op, xp·compiler·ast·Node $return) {
+      $this->emitOne($op, $return->expression);
+      oel_add_return($op);
     }
     
     /**
@@ -231,7 +258,7 @@
      * @param   xp.compiler.ast.Node node
      * @return  int
      */
-    protected function emitOne($op, $node) {
+    protected function emitOne($op, xp·compiler·ast·Node $node) {
       $target= 'emit'.substr(get_class($node), 0, -strlen('Node'));
       if (method_exists($this, $target)) {
         oel_set_source_line($op, $node->position[0]);
@@ -251,11 +278,19 @@
      * @return  int
      */
     protected function emitAll($op, $nodes) {
-      $r= 0;
+      $emitted= 0;
       foreach ((array)$nodes as $node) {
-        $r+= $this->emitOne($op, $node);
+        $emitted+= $this->emitOne($op, $node);
       }
-      return $r;
+      return $emitted;
+    }
+    
+    protected function resolve($name) {
+      if ('self' === $name) {
+        return $this->class[0];
+      } else {
+        return xp::reflect($name);
+      }
     }
     
     /**

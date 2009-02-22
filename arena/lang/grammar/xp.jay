@@ -445,7 +445,7 @@ statement:
   | T_THROW { $1= $yyLex->create(new ThrowNode()); } expression ';' {
       $1->expression= $3;
     }
-  | expression ';'
+  | expression ';' { $1->free= TRUE; }
   | ';'
 ;
 

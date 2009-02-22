@@ -1495,6 +1495,9 @@
       $yyVals[-3+$yyTop]->expression= $yyVals[-1+$yyTop];
     } break;
 
+    case 110:  #line 448 "grammar/xp.jay"
+    { $yyVals[-1+$yyTop]->free= TRUE; } break;
+
     case 112:  #line 453 "grammar/xp.jay"
     { $yyVal= NULL; } break;
 
@@ -1915,7 +1918,7 @@
 
     case 235:  #line 762 "grammar/xp.jay"
     { $yyVal= MODIFIER_INLINE; } break;
-#line 1919 "-"
+#line 1922 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];
