@@ -4,32 +4,14 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'xp.compiler.Lexer',
-    'xp.compiler.Parser'
-  );
+  uses('tests.syntax.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class ControlStructuresTest extends TestCase {
+  class ControlStructuresTest extends ParserTestCase {
   
-    /**
-     * Parse method source and return statements inside this method.
-     *
-     * @param   string src
-     * @return  xp.compiler.Node[]
-     */
-    protected function parse($src) {
-      return create(new Parser())->parse(new xp·compiler·Lexer('class Container {
-        public void method() {
-          '.$src.'
-        }
-      }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->body;
-    }
-
     /**
      * Test if statement without else
      *
@@ -38,7 +20,7 @@
     public function ifStatement() {
       $this->assertEquals(array(new IfNode(array(
         'position'       => array(4, 11),
-        'condition'      => new VariableNode(array('position' => array(4, 15), 'name' => '$i')),
+        'condition'      => $this->create(new VariableNode('$i'), array(4, 15)),
         'statements'     => NULL,
         'otherwise'      => NULL, 
       ))), $this->parse('
@@ -54,7 +36,7 @@
     public function ifStatementWithOutCurlies() {
       $this->assertEquals(array(new IfNode(array(
         'position'       => array(4, 11),
-        'condition'      => new VariableNode(array('position' => array(4, 15), 'name' => '$i')),
+        'condition'      => $this->create(new VariableNode('$i'), array(4, 15)),
         'statements'     => array(new ReturnNode(array(
           'position'       => array(4, 19),
           'expression'     => 'TRUE'
@@ -73,7 +55,7 @@
     public function ifElseStatement() {
       $this->assertEquals(array(new IfNode(array(
         'position'       => array(4, 11),
-        'condition'      => new VariableNode(array('position' => array(4, 15), 'name' => '$i')),
+        'condition'      => $this->create(new VariableNode('$i'), array(4, 15)),
         'statements'     => NULL, 
         'otherwise'      => new ElseNode(array(
           'position'       => array(4, 23),
@@ -94,7 +76,7 @@
         'position'       => array(4, 11),
         'condition'      => new BinaryOpNode(array(
           'position'       => array(4, 21),
-          'lhs'            => new VariableNode(array('position' => array(4, 15), 'name' => '$i')),
+          'lhs'            => $this->create(new VariableNode('$i'), array(4, 15)),
           'rhs'            => new NumberNode(array('position' => array(4, 20), 'value' => '3')),
           'op'             => '%'
         )),
@@ -105,7 +87,7 @@
             'position'       => array(4, 32),
             'condition'      => new BinaryOpNode(array(
               'position'       => array(4, 42),
-              'lhs'            => new VariableNode(array('position' => array(4, 36), 'name' => '$i')),
+              'lhs'            => $this->create(new VariableNode('$i'), array(4, 36)),
               'rhs'            => new NumberNode(array('position' => array(4, 41), 'value' => '2')),
               'op'             => '%'
             )),
@@ -129,7 +111,7 @@
     public function emptySwitchStatement() {
       $this->assertEquals(array(new SwitchNode(array(
         'position'       => array(4, 11),
-        'expression'     => new VariableNode(array('position' => array(4, 19), 'name' => '$i')),
+        'expression'     => $this->create(new VariableNode('$i'), array(4, 19)),
         'cases'          => NULL,
       ))), $this->parse('
         switch ($i) { }
@@ -144,7 +126,7 @@
     public function switchStatement() {
       $this->assertEquals(array(new SwitchNode(array(
         'position'       => array(4, 11),
-        'expression'     => new VariableNode(array('position' => array(4, 19), 'name' => '$i')),
+        'expression'     => $this->create(new VariableNode('$i'), array(4, 19)),
         'cases'          => array(
           new CaseNode(array(
             'position'       => array(5, 13),
@@ -167,7 +149,7 @@
             'statements'     => array(
               new BinaryOpNode(array(
                 'position'   => array(7, 35),
-                'lhs'        => new VariableNode(array('position' => array(7, 22), 'name' => '$i')),
+                'lhs'        => $this->create(new VariableNode('$i'), array(7, 22)),
                 'rhs'        => new StringNode(array('position' => array(7, 27), 'value' => ' entries')),
                 'op'         => '~'
               )),

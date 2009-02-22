@@ -4,32 +4,14 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'xp.compiler.Lexer',
-    'xp.compiler.Parser'
-  );
+  uses('tests.syntax.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class LoopTest extends TestCase {
+  class LoopTest extends ParserTestCase {
   
-    /**
-     * Parse method source and return statements inside this method.
-     *
-     * @param   string src
-     * @return  xp.compiler.Node[]
-     */
-    protected function parse($src) {
-      return create(new Parser())->parse(new xp·compiler·Lexer('class Container {
-        public void method() {
-          '.$src.'
-        }
-      }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->body;
-    }
-
     /**
      * Test for loop
      *
@@ -40,19 +22,19 @@
         'position'       => array(4, 11),
         'initialization' => array(new AssignmentNode(array(
           'position'       => array(4, 21),
-          'variable'       => new VariableNode(array('position' => array(4, 16), 'name' => '$i')),
+          'variable'       => $this->create(new VariableNode('$i'), array(4, 16)),
           'expression'     => new NumberNode(array('position' => array(4, 20), 'value' => '0')),
           'op'             => '='
         ))),
         'condition'      => array(new ComparisonNode(array(
           'position'      => array(4, 28),
-          'lhs'           => new VariableNode(array('position' => array(4, 23), 'name' => '$i')),
+          'lhs'           => $this->create(new VariableNode('$i'), array(4, 23)),
           'rhs'           => new NumberNode(array('position' => array(4, 28), 'value' => '1000')),
           'op'            => '<'
         ))),
         'loop'           => array(new UnaryOpNode(array(
           'position'      => array(4, 36),
-          'expression'    => new VariableNode(array('position' => array(4, 34), 'name' => '$i')),
+          'expression'    => $this->create(new VariableNode('$i'), array(4, 34)),
           'op'            => '++',
           'postfix'       => TRUE
         ))),
@@ -70,7 +52,7 @@
     public function foreachLoop() {
       $this->assertEquals(array(new ForeachNode(array(
         'position'      => array(4, 11),
-        'expression'    => new VariableNode(array('position' => array(4, 20), 'name' => '$list')),
+        'expression'    => $this->create(new VariableNode('$list'), array(4, 20)),
         'statements'    => NULL, 
       ))), $this->parse('
         foreach ($list as $key => $value) { }
@@ -89,7 +71,7 @@
           'position'      => array(4, 25),
           'lhs'           => new UnaryOpNode(array(
             'position'      => array(4, 20),
-            'expression'    => new VariableNode(array('position' => array(4, 18), 'name' => '$i')),
+            'expression'    => $this->create(new VariableNode('$i'), array(4, 18)),
             'op'            => '++',
             'postfix'       => TRUE
           )),
@@ -114,7 +96,8 @@
           'position'      => array(4, 32),
           'lhs'           => new UnaryOpNode(array(
             'position'      => array(4, 27),
-            'expression'    => new VariableNode(array('position' => array(4, 25), 'name' => '$i')),'op'            => '++',
+            'expression'    => $this->create(new VariableNode('$i'), array(4, 25)),
+            'op'            => '++',
             'postfix'       => TRUE
           )),
           'rhs'           => new NumberNode(array('position' => array(4, 32), 'value' => '10000')),

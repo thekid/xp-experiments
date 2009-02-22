@@ -4,20 +4,16 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'xp.compiler.Lexer',
-    'xp.compiler.Parser'
-  );
+  uses('tests.syntax.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class FieldDeclarationTest extends TestCase {
+  class FieldDeclarationTest extends ParserTestCase {
   
     /**
-     * Parse method source and return statements inside this method.
+     * Parse class source and return statements inside field declaration
      *
      * @param   string src
      * @return  xp.compiler.Node[]
@@ -143,14 +139,7 @@
           'annotations'=> NULL,
           'get'        => array(new ReturnNode(array(
             'position'   => array(3, 39),
-            'expression' => new VariableNode(array(
-              'position'    => array(3, 46), 
-              'name'        => '$this',
-              'chained'     => new VariableNode(array(
-                'position'    => array(3, 58), 
-                'name'        => '_name'
-              ))
-            ))
+            'expression' => $this->create(new VariableNode('$this', $this->create(new VariableNode('_name'), array(3, 58))), array(3, 46)),
           ))),
           'set'        => NULL,
         ))

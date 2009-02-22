@@ -4,50 +4,30 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'xp.compiler.Lexer',
-    'xp.compiler.Parser'
-  );
+  uses('tests.syntax.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class ChainingTest extends TestCase {
+  class ChainingTest extends ParserTestCase {
   
-    /**
-     * Parse method source and return statements inside this method.
-     *
-     * @param   string src
-     * @return  xp.compiler.Node[]
-     */
-    protected function parse($src) {
-      return create(new Parser())->parse(new xp·compiler·Lexer('class Container {
-        public void method() {
-          '.$src.'
-        }
-      }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->body;
-    }
-
     /**
      * Test simple method call on an object
      *
      */
     #[@test]
     public function methodCall() {
-      $this->assertEquals(array(new VariableNode(array(
-        'position'       => array(4, 11), 
-        'name'           => '$m',
-        'chained'        => new InvocationNode(array(
+      $this->assertEquals(array($this->create(new VariableNode(
+        '$m',
+        new InvocationNode(array(
           'position'       => array(4, 21), 
           'name'           => 'invoke',
-          'parameters'     => array(new VariableNode(array(
-            'position'       => array(4, 22), 
-            'name'           => '$args',
-          )))
+          'parameters'     => array(
+            $this->create(new VariableNode('$args'), array(4, 22))
+          )
         ))
-      ))), $this->parse('
+      ), array(4, 11))), $this->parse('
         $m->invoke($args);
       '));
     }
@@ -58,10 +38,9 @@
      */
     #[@test]
     public function chainedMethodCalls() {
-      $this->assertEquals(array(new VariableNode(array(
-        'position'       => array(4, 11), 
-        'name'           => '$l',
-        'chained'        => new InvocationNode(array(
+      $this->assertEquals(array($this->create(new VariableNode(
+        '$l',
+        new InvocationNode(array(
           'position'       => array(4, 27), 
           'name'           => 'withAppender',
           'parameters'     => NULL,
@@ -71,7 +50,7 @@
             'parameters'     => NULL,
           ))
         ))
-      ))), $this->parse('
+      ), array(4, 11))), $this->parse('
         $l->withAppender()->debug();
       '));
     }
@@ -102,23 +81,19 @@
      */
     #[@test]
     public function arrayOffsetOnMethod() {
-      $this->assertEquals(array(new VariableNode(array(
-        'position'       => array(4, 11), 
-        'name'           => '$l',
-        'chained'        => new InvocationNode(array(
+      $this->assertEquals(array($this->create(new VariableNode(
+        '$l',
+        new InvocationNode(array(
           'position'       => array(4, 23), 
           'name'           => 'elements',
           'parameters'     => NULL,
           'chained'          => new ArrayAccessNode(array(
             'position'       => array(4, 25), 
             'offset'         => new NumberNode(array('position' => array(4, 26), 'value' => '0')),
-            'chained'        => new VariableNode(array(
-              'position'       => array(4, 34), 
-              'name'           => 'name'            
-            ))
+            'chained'        => $this->create(new VariableNode('name'), array(4, 34)),
           ))
         ))
-      ))), $this->parse('
+      ), array(4, 11))), $this->parse('
         $l->elements()[0]->name;
       '));
     }

@@ -4,32 +4,14 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'xp.compiler.Lexer',
-    'xp.compiler.Parser'
-  );
+  uses('tests.syntax.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class ExceptionExpressionTest extends TestCase {
+  class ExceptionExpressionTest extends ParserTestCase {
   
-    /**
-     * Parse method source and return statements inside this method.
-     *
-     * @param   string src
-     * @return  xp.compiler.Node[]
-     */
-    protected function parse($src) {
-      return create(new Parser())->parse(new xp·compiler·Lexer('class Container {
-        public void method() {
-          '.$src.'
-        }
-      }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->body;
-    }
-
     /**
      * Test try/catch
      *
@@ -39,30 +21,28 @@
       $this->assertEquals(array(new TryNode(array(
         'position'   => array(4, 15),
         'statements' => array(
-          new VariableNode(array(
-            'position'   => array(5, 13),
-            'name'       => '$method',
-            'chained'    => new InvocationNode(array(
+          $this->create(new VariableNode(
+            '$method', 
+            new InvocationNode(array(
               'position'   => array(5, 26),
               'name'       => 'call',
               'parameters' => NULL
             ))
-          ))
+          ), array(5, 13))
         ), 
         'handling'   => array(
           new CatchNode(array(
             'position'   => array(6, 13),
             'type'       => new TypeName('IllegalArgumentException'),
             'variable'   => '$e',
-            'statements' => array(new VariableNode(array(
-              'position'   => array(7, 13),
-              'name'       => '$this',
-              'chained'    => new InvocationNode(array(
+            'statements' => array($this->create(new VariableNode(
+              '$this',
+              new InvocationNode(array(
                 'position'   => array(7, 28),
                 'name'       => 'finalize',
                 'parameters' => NULL
               ))
-            ))), 
+            ), array(7, 13))), 
           ))
         )
       ))), $this->parse('
@@ -107,8 +87,8 @@
               'position'   => array(5, 19),
               'type'       => new TypeName('ChainedException'),
               'parameters' => array(
-                new StringNode(array('position' => array(5, 40), 'value' => 'Hello')),
-                new VariableNode(array('position' => array(5, 47), 'name' => '$e')),
+                $this->create(new StringNode(array('value' => 'Hello')), array(5, 40)),
+                $this->create(new VariableNode('$e'), array(5, 47)),
               )
             ))
           ))
@@ -116,15 +96,14 @@
         'handling'   => array(
           new FinallyNode(array(
             'position'   => array(6, 13),
-            'statements' => array(new VariableNode(array(
-              'position'   => array(7, 13),
-              'name'       => '$this',
-              'chained'    => new InvocationNode(array(
+            'statements' => array($this->create(new VariableNode(
+              '$this',
+              new InvocationNode(array(
                 'position'   => array(7, 28),
                 'name'       => 'finalize',
                 'parameters' => NULL
               ))
-            ))), 
+            ), array(7, 13))), 
           ))
         )
       ))), $this->parse('
@@ -170,10 +149,9 @@
             'variable'   => '$e',
             'statements' => array(new ThrowNode(array(
               'position'   => array(8, 13),
-              'expression' => new VariableNode(array(
-                'position'   => array(8, 19),
-                'name'       => '$e',
-                'chained'    => new InvocationNode(array(
+              'expression' => $this->create(new VariableNode(
+                '$e',
+                new InvocationNode(array(
                   'position'   => array(8, 32),
                   'name'       => 'getCauses',
                   'parameters' => NULL,
@@ -182,7 +160,7 @@
                     'offset'     => new NumberNode(array('position' => array(8, 35), 'value' => '0')),
                   ))
                 ))
-              ))
+              ), array(8, 19))
             ))), 
           )),
           new CatchNode(array(

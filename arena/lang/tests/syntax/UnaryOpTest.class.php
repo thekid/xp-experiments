@@ -4,32 +4,14 @@
  * $Id$
  */
 
-  uses(
-    'unittest.TestCase',
-    'xp.compiler.Lexer',
-    'xp.compiler.Parser'
-  );
+  uses('tests.syntax.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class UnaryOpTest extends TestCase {
+  class UnaryOpTest extends ParserTestCase {
   
-    /**
-     * Parse method source and return statements inside this method.
-     *
-     * @param   string src
-     * @return  xp.compiler.Node[]
-     */
-    protected function parse($src) {
-      return create(new Parser())->parse(new xp·compiler·Lexer('class Container {
-        public void method() {
-          '.$src.'
-        }
-      }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->body;
-    }
-
     /**
      * Test negation
      *
@@ -38,7 +20,7 @@
     public function negation() {
       $this->assertEquals(array(new UnaryOpNode(array(
         'position'      => array(4, 14),
-        'expression'    => new VariableNode(array('position' => array(4, 12), 'name' => '$i')),
+        'expression'    => $this->create(new VariableNode('$i'), array(4, 12)),
         'op'            => '!'
       ))), $this->parse('
         !$i;
@@ -53,7 +35,7 @@
     public function complement() {
       $this->assertEquals(array(new UnaryOpNode(array(
         'position'      => array(4, 14),
-        'expression'    => new VariableNode(array('position' => array(4, 12), 'name' => '$i')),
+        'expression'    => $this->create(new VariableNode('$i'), array(4, 12)),
         'op'            => '~'
       ))), $this->parse('
         ~$i;
@@ -68,7 +50,7 @@
     public function increment() {
       $this->assertEquals(array(new UnaryOpNode(array(
         'position'      => array(4, 15),
-        'expression'    => new VariableNode(array('position' => array(4, 13), 'name' => '$i')),
+        'expression'    => $this->create(new VariableNode('$i'), array(4, 13)),
         'op'            => '++'
       ))), $this->parse('
         ++$i;
@@ -83,7 +65,7 @@
     public function decrement() {
       $this->assertEquals(array(new UnaryOpNode(array(
         'position'      => array(4, 15),
-        'expression'    => new VariableNode(array('position' => array(4, 13), 'name' => '$i')),
+        'expression'    => $this->create(new VariableNode('$i'), array(4, 13)),
         'op'            => '--'
       ))), $this->parse('
         --$i;

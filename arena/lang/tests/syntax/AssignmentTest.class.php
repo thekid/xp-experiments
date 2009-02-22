@@ -4,32 +4,14 @@
  * $Id$
  */
 
-  uses(
-    'unittest.TestCase',
-    'xp.compiler.Lexer',
-    'xp.compiler.Parser'
-  );
+  uses('tests.syntax.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class AssignmentTest extends TestCase {
+  class AssignmentTest extends ParserTestCase {
   
-    /**
-     * Parse method source and return statements inside this method.
-     *
-     * @param   string src
-     * @return  xp.compiler.Node[]
-     */
-    protected function parse($src) {
-      return create(new Parser())->parse(new xp·compiler·Lexer('class Container {
-        public void method() {
-          '.$src.'
-        }
-      }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->body;
-    }
-
     /**
      * Test assigning to a variable
      *
@@ -38,7 +20,7 @@
     public function toVariable() {
       $this->assertEquals(array(new AssignmentNode(array(
         'position'      => array(4, 16),
-        'variable'      => new VariableNode(array('position' => array(4, 11), 'name' => '$i')),
+        'variable'      => $this->create(new VariableNode('$i'), array(4, 11)),
         'expression'    => new NumberNode(array('position' => array(4, 15), 'value' => '0')),
         'op'            => '='
       ))), $this->parse('
@@ -54,14 +36,13 @@
     public function toArrayOffset() {
       $this->assertEquals(array(new AssignmentNode(array(
         'position'      => array(4, 19),
-        'variable'      => new VariableNode(array(
-          'position'      => array(4, 11), 
-          'name'          => '$i',
-          'chained'       => new ArrayAccessNode(array(
+        'variable'      => $this->create(new VariableNode(
+          '$i',
+          new ArrayAccessNode(array(
             'position'      => array(4, 13), 
             'offset'        => new NumberNode(array('position' => array(4, 14), 'value' => '0')),
           ))
-        )),
+        ), array(4, 11)),
         'expression'    => new NumberNode(array('position' => array(4, 18), 'value' => '0')),
         'op'            => '='
       ))), $this->parse('
@@ -77,14 +58,13 @@
     public function appendToArray() {
       $this->assertEquals(array(new AssignmentNode(array(
         'position'      => array(4, 18),
-        'variable'      => new VariableNode(array(
-          'position'      => array(4, 11), 
-          'name'          => '$i',
-          'chained'       => new ArrayAccessNode(array(
+        'variable'      => $this->create(new VariableNode(
+          '$i',
+          new ArrayAccessNode(array(
             'position'      => array(4, 13), 
             'offset'        => NULL,
           ))
-        )),
+        ), array(4, 11)),
         'expression'    => new NumberNode(array('position' => array(4, 17), 'value' => '0')),
         'op'            => '='
       ))), $this->parse('
@@ -100,14 +80,10 @@
     public function toInstanceMember() {
       $this->assertEquals(array(new AssignmentNode(array(
         'position'      => array(4, 28),
-        'variable'      => new VariableNode(array(
-          'position'      => array(4, 11), 
-          'name'          => '$class',
-          'chained'       => new VariableNode(array(
-            'position'      => array(4, 25), 
-            'name'          => 'member',
-          ))
-        )),
+        'variable'      => $this->create(new VariableNode(
+          '$class',
+          $this->create(new VariableNode('member'), array(4, 25))
+        ), array(4, 11)),
         'expression'    => new NumberNode(array('position' => array(4, 27), 'value' => '0')),
         'op'            => '='
       ))), $this->parse('
@@ -126,10 +102,7 @@
         'variable'      => new ClassMemberNode(array(
           'position'      => array(4, 17), 
           'class'         => new TypeName('self'),
-          'member'        => new VariableNode(array(
-            'position'      => array(4, 17), 
-            'name'          => '$instance',
-          ))
+          'member'        => $this->create(new VariableNode('$instance'), array(4, 17))
         )),
         'expression'    => 'NULL',    // FIXME: ConstantNode?
         'op'            => '='
@@ -149,16 +122,12 @@
         'variable'      => new ClassMemberNode(array(
           'position'      => array(4, 17), 
           'class'         => new TypeName('self'),
-          'member'        => new VariableNode(array(
-            'position'      => array(4, 17), 
-            'name'          => '$instance',
-            'chained'       => new InvocationNode(array(
-              'position'       => array(4, 39), 
-              'name'           => 'addAppender',
-              'parameters'     => NULL,
-              'chained'        => new VariableNode(array('position' => array(4, 48), 'name' => 'flags')),
-            ))
-          ))
+          'member'        => $this->create(new VariableNode('$instance', new InvocationNode(array(
+            'position'       => array(4, 39), 
+            'name'           => 'addAppender',
+            'parameters'     => NULL,
+            'chained'        => $this->create(new VariableNode('flags'), array(4, 48)),
+          ))), array(4, 17))
         )),
         'expression'    =>  new NumberNode(array('position' => array(4, 50), 'value' => '0')),
         'op'            => '='

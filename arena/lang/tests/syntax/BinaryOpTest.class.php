@@ -4,32 +4,14 @@
  * $Id$
  */
 
-  uses(
-    'unittest.TestCase',
-    'xp.compiler.Lexer',
-    'xp.compiler.Parser'
-  );
+  uses('tests.syntax.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class BinaryOpTest extends TestCase {
+  class BinaryOpTest extends ParserTestCase {
   
-    /**
-     * Parse method source and return statements inside this method.
-     *
-     * @param   string src
-     * @return  xp.compiler.Node[]
-     */
-    protected function parse($src) {
-      return create(new Parser())->parse(new xp·compiler·Lexer('class Container {
-        public void method() {
-          '.$src.'
-        }
-      }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->body;
-    }
-
     /**
      * Test addition operator
      *
@@ -38,7 +20,7 @@
     public function addition() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'position'      => array(4, 18),
-        'lhs'           => new VariableNode(array('position' => array(4, 11), 'name' => '$i')),
+        'lhs'           => $this->create(new VariableNode('$i'), array(4, 11)),
         'rhs'           => new NumberNode(array('position' => array(4, 16), 'value' => '10')),
         'op'            => '+'
       ))), $this->parse('
@@ -54,7 +36,7 @@
     public function subtraction() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'position'      => array(4, 18),
-        'lhs'           => new VariableNode(array('position' => array(4, 11), 'name' => '$i')),
+        'lhs'           => $this->create(new VariableNode('$i'), array(4, 11)),
         'rhs'           => new NumberNode(array('position' => array(4, 16), 'value' => '10')),
         'op'            => '-'
       ))), $this->parse('
@@ -70,7 +52,7 @@
     public function multiplication() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'position'      => array(4, 18),
-        'lhs'           => new VariableNode(array('position' => array(4, 11), 'name' => '$i')),
+        'lhs'           => $this->create(new VariableNode('$i'), array(4, 11)),
         'rhs'           => new NumberNode(array('position' => array(4, 16), 'value' => '10')),
         'op'            => '*'
       ))), $this->parse('
@@ -86,7 +68,7 @@
     public function division() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'position'      => array(4, 18),
-        'lhs'           => new VariableNode(array('position' => array(4, 11), 'name' => '$i')),
+        'lhs'           => $this->create(new VariableNode('$i'), array(4, 11)),
         'rhs'           => new NumberNode(array('position' => array(4, 16), 'value' => '10')),
         'op'            => '/'
       ))), $this->parse('
@@ -103,7 +85,7 @@
     public function modulo() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'position'      => array(4, 18),
-        'lhs'           => new VariableNode(array('position' => array(4, 11), 'name' => '$i')),
+        'lhs'           => $this->create(new VariableNode('$i'), array(4, 11)),
         'rhs'           => new NumberNode(array('position' => array(4, 16), 'value' => '10')),
         'op'            => '%'
       ))), $this->parse('
