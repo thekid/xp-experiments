@@ -24,6 +24,15 @@
       $this->name= $name;
       $this->components= $components;
     }
+    
+    /**
+     * Return whether this type is an array type
+     *
+     * @return  bool
+     */
+    public function isArray() {
+      return '[]' == substr($this->name, -2);
+    }
 
     /**
      * (Insert method's description here)
