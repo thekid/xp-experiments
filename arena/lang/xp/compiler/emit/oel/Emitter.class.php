@@ -97,6 +97,19 @@
       $this->emitOne($op, $cmp->rhs);
       oel_add_binary_op($op, OEL_BINARY_OP_IS_EQUAL);   // TODO: depending on $cmp->op, use other assignments
     }
+
+    protected function emitForeach($op, $foreach) {
+      $this->emitOne($op, $foreach->expression);
+      oel_add_begin_foreach($op); {
+        oel_add_begin_variable_parse($op);
+        oel_push_variable($op, 'value');      // FIXME: Assignment
+        oel_push_value($op, NULL);
+      }
+      oel_add_begin_foreach_body($op); {
+        $this->emitAll($op, $foreach->statements);
+      }
+      oel_add_end_foreach($op);
+    }
     
     protected function emitIf($op, $if) {
       $this->emitOne($op, $if->condition);
@@ -152,30 +165,62 @@
       oel_add_free($op);
     }
 
+    protected function emitMethod($op, $method) {
+      $mop= oel_new_method(
+        $op, 
+        $method->name, 
+        FALSE,          // Returns reference
+        Modifiers::isStatic($method->modifiers),
+        $method->modifiers,
+        Modifiers::isFinal($method->modifiers)
+      );
+
+      // Arguments
+      foreach ($method->arguments as $i => $arg) {
+        oel_add_receive_arg($mop, $i + 1, substr($arg['name'], 1));  // without '$'
+        $this->types[new VariableNode($arg['name'])]= $arg['type'];
+      }
+
+      $this->emitAll($mop, $method->body);
+    }
+
+    protected function emitConstructor($op, $constructor) {
+      $cop= oel_new_method(
+        $op, 
+        '__construct', 
+        FALSE,          // Returns reference
+        FALSE,          // Constructor can never be static
+        $constructor->modifiers,
+        Modifiers::isFinal($constructor->modifiers)
+      );
+
+      // Arguments
+      foreach ($constructor->arguments as $i => $arg) {
+        oel_add_receive_arg($cop, $i + 1, substr($arg['name'], 1));  // without '$'
+        $this->types[new VariableNode($arg['name'])]= $arg['type'];
+      }
+
+      $this->emitAll($cop, $constructor->body);
+    }
       
     protected function emitClass($op, $declaration) {
       $parent= $declaration->parent ? $declaration->parent->name : 'lang.Object';
       oel_add_begin_class_declaration($op, $declaration->name->name, xp::reflect($parent));
       
-      // Methods
-      foreach ($declaration->body['methods'] as $node) {
-        $method= oel_new_method(
+      // Fields
+      foreach ($declaration->body['fields'] as $node) {
+        oel_add_declare_property(
           $op, 
-          $node->name, 
-          FALSE,          // Returns reference
+          ltrim($node->name, '$'),
+          NULL,           // Initial value
           Modifiers::isStatic($node->modifiers),
-          $node->modifiers,
-          Modifiers::isFinal($node->modifiers)
+          $node->modifiers
         );
-        
-        // Arguments
-        foreach ($node->arguments as $i => $arg) {
-          oel_add_receive_arg($method, $i + 1, substr($arg['name'], 1));  // without '$'
-          $this->types[new VariableNode($arg['name'])]= $arg['type'];
-        }
-        
-        $this->emitAll($method, $node->body);
       }
+      
+      // Methods
+      $this->emitAll($op, $declaration->body['methods']);
+
       oel_add_end_class_declaration($op);
     }
     
