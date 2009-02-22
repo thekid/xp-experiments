@@ -1,3 +1,5 @@
+import util.cmd.Console;
+
 public class Each<T> {
   public T[] $values;
 
