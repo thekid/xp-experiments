@@ -3,7 +3,12 @@ import util.cmd.Console;
 public class Reflect {
 
   protected static void dump(lang.XPClass $class) {
-    Console::writeLine('Class ', $class->getName(), ' {');
+    $parent= $class->getParentClass();
+    Console::writeLinef(
+      'class %s%s {',
+      $class->getName(),
+      $parent ? ' extends ' ~ $parent->getName() : ''
+    );
     foreach ($method in $class->getMethods()) {
       Console::writeLinef(
         '  - %s %s::%s()', 

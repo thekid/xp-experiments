@@ -34,6 +34,10 @@
     protected function emitString($op, $str) {
       oel_push_value($op, $str->value);
     }
+
+    protected function emitNumber($op, $num) {
+      oel_push_value($op, (int)$num->value);
+    }
     
     protected function emitVariable($op, $var) {
       oel_add_begin_variable_parse($op);
@@ -93,10 +97,44 @@
       }
     }
     
+    protected function emitBinaryOp($op, xp·compiler·ast·Node $node) {
+      static $ops= array(
+        '~'   => OEL_BINARY_OP_CONCAT
+      );
+      
+      $this->emitOne($op, $node->rhs);
+      $this->emitOne($op, $node->lhs);
+      oel_add_binary_op($op, $ops[$node->op]);
+    }
+
+    protected function emitTernary($op, xp·compiler·ast·Node $ternary) {
+      $this->emitOne($op, $ternary->condition);
+      oel_add_begin_tenary_op($op);                   // FIXME: Name should be te*r*nary
+      $this->emitOne($op, $ternary->expression);
+      oel_add_end_tenary_op_true($op);
+      $this->emitOne($op, $ternary->conditional);
+      oel_add_end_tenary_op_false($op);
+    }
+
     protected function emitComparison($op, $cmp) {
-      $this->emitOne($op, $cmp->lhs);
-      $this->emitOne($op, $cmp->rhs);
-      oel_add_binary_op($op, OEL_BINARY_OP_IS_EQUAL);   // TODO: depending on $cmp->op, use other assignments
+      static $ops= array(
+        '=='   => array(FALSE, OEL_BINARY_OP_IS_EQUAL),
+        '!='   => array(FALSE, OEL_BINARY_OP_IS_NOT_EQUAL),
+        '<='   => array(FALSE, OEL_BINARY_OP_IS_SMALLER_OR_EQUAL),
+        '<'    => array(FALSE, OEL_BINARY_OP_IS_SMALLER),
+        '>='   => array(TRUE, OEL_BINARY_OP_IS_SMALLER_OR_EQUAL),
+        '>'    => array(TRUE, OEL_BINARY_OP_IS_SMALLER),
+      );
+
+      $operator= $ops[$cmp->op];
+      if ($operator[0]) {
+        $this->emitOne($op, $cmp->lhs);
+        $this->emitOne($op, $cmp->rhs);
+      } else {
+        $this->emitOne($op, $cmp->rhs);
+        $this->emitOne($op, $cmp->lhs);
+      }
+      oel_add_binary_op($op, $operator[1]);
     }
 
     protected function emitForeach($op, $foreach) {
@@ -246,6 +284,7 @@
       array_shift($this->class);
     }
 
+
     protected function emitReturn($op, xp·compiler·ast·Node $return) {
       $this->emitOne($op, $return->expression);
       oel_add_return($op);
@@ -285,6 +324,12 @@
       return $emitted;
     }
     
+    /**
+     * Resolve a class name
+     *
+     * @param   string name
+     * @return  string resolved
+     */
     protected function resolve($name) {
       if ('self' === $name) {
         return $this->class[0];
