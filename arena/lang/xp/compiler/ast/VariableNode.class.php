@@ -7,11 +7,32 @@
   uses('xp.compiler.ast.Node');
 
   /**
-   * (Insert class' description here)
+   * Represents a variable
    *
-   * @purpose  purpose
    */
   class VariableNode extends xp·compiler·ast·Node {
+    public
+      $name    = '',
+      $chained = NULL;
     
+    /**
+     * Constructor
+     *
+     * @param   string name
+     * @param   xp.compiler.ast.Node chained
+     */
+    public function __construct($name= '', xp·compiler·ast·Node $chained= NULL) {
+      $this->name= $name;
+      $this->chained= $chained;
+    }
+    
+    /**
+     * Returns a hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return 'xp.var:'.$this->name;
+    }
   }
 ?>
