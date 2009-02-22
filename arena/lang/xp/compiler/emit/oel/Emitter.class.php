@@ -6,7 +6,11 @@
 
   $package= 'xp.compiler.emit.oel';
 
-  uses('xp.compiler.emit.Emitter', 'lang.reflect.Modifiers');
+  uses(
+    'xp.compiler.emit.Emitter', 
+    'lang.reflect.Modifiers',
+    'util.collections.HashTable'
+  );
 
   /**
    * (Insert class' description here)
@@ -15,8 +19,10 @@
    * @see      xp://xp.compiler.ast.Node
    */
   class xp·compiler·emit·oel·Emitter extends Emitter {
-    protected $op= NULL;
-    protected $errors= array();
+    protected 
+      $op     = NULL,
+      $errors = array(),
+      $types  = NULL;
     
     protected function emitInvocation($op, $inv) {
       $n= $this->emitAll($op, $inv->parameters);
@@ -31,6 +37,21 @@
     protected function emitVariable($op, $var) {
       oel_add_begin_variable_parse($op);
       oel_push_variable($op, ltrim($var->name, '$'));    // without '$'
+      
+      // Type overloading: 
+      // * $array->length := sizeof($array)
+      if ($this->types->containsKey($var)) {
+        if (
+          $this->types[$var]->isArray() && 
+          $var->chained instanceof VariableNode &&
+          'length' == $var->chained->name 
+        ) {
+          oel_add_end_variable_parse($op);
+          oel_add_call_function($op, 1, 'sizeof');
+          return;
+        }
+      }
+      
       $this->emitChain($op, $var);
       oel_add_end_variable_parse($op);
     }
@@ -150,6 +171,7 @@
         // Arguments
         foreach ($node->arguments as $i => $arg) {
           oel_add_receive_arg($method, $i + 1, substr($arg['name'], 1));  // without '$'
+          $this->types[new VariableNode($arg['name'])]= $arg['type'];
         }
         
         $this->emitAll($method, $node->body);
@@ -199,6 +221,9 @@
      */
     public function emit(ParseTree $tree) {
       $this->errors= array();
+      $this->types= new HashTable();
+      
+      // Create and initialize op array
       $this->op= oel_new_op_array();
       oel_set_source_file($this->op, $tree->origin);
       oel_set_source_line($this->op, 0);
