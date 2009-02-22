@@ -48,7 +48,7 @@
         
         'for'           => Parser::T_FOR,
         'foreach'       => Parser::T_FOREACH,
-        'as'            => Parser::T_AS,
+        'in'            => Parser::T_IN,
         'do'            => Parser::T_DO,
         'while'         => Parser::T_WHILE,
         'break'         => Parser::T_BREAK,

@@ -52,10 +52,11 @@
     public function foreachLoop() {
       $this->assertEquals(array(new ForeachNode(array(
         'position'      => array(4, 11),
-        'expression'    => $this->create(new VariableNode('$list'), array(4, 20)),
+        'expression'    => $this->create(new VariableNode('$list'), array(4, 30)),
+        'assignment'    => '$value',
         'statements'    => NULL, 
       ))), $this->parse('
-        foreach ($list as $key => $value) { }
+        foreach ($value in $list) { }
       '));
     }
 

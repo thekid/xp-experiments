@@ -97,7 +97,7 @@
 %token T_WHILE 361
 %token T_DO 362
 %token T_FOREACH 363
-%token T_AS 364
+%token T_IN 364
 %token T_BREAK 365
 %token T_CONTINUE 366
 
@@ -418,9 +418,9 @@ statement:
       $1->loop= $8;
       $1->statements= $10;
     }
-  | T_FOREACH { $1= $yyLex->create(new ForeachNode()); } '(' expression T_AS foreachassignment ')' block {
-      $1->expression= $4;
-      // $1->assignment= $6; XX FIXME XX
+  | T_FOREACH { $1= $yyLex->create(new ForeachNode()); } '(' T_VARIABLE T_IN expression ')' block {
+      $1->expression= $6;
+      $1->assignment= $4;
       $1->statements= $8;
     }
   | T_WHILE { $1= $yyLex->create(new WhileNode()); } '(' expression ')' block {
@@ -467,11 +467,6 @@ case:
   | T_DEFAULT { $1= $yyLex->create(new DefaultNode()); } ':' statements_opt { 
       $1->statements= $4;
     }
-;
-
-foreachassignment:
-    T_VARIABLE T_DOUBLE_ARROW T_VARIABLE { $$= array($1, $3); }
-  | T_VARIABLE { $$= array(NULL, $1); }
 ;
 
 block:
