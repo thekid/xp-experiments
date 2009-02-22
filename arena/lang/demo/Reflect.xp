@@ -1,0 +1,21 @@
+import util.cmd.Console;
+
+public class Reflect {
+
+  protected static void dump(lang.XPClass $class) {
+    Console::writeLine('Class ', $class->getName(), ' {');
+    foreach ($method in $class->getMethods()) {
+      Console::writeLinef(
+        '  - %s %s::%s()', 
+        implode(' ', lang.reflect.Modifiers::namesOf($modifiers)),
+        $method->getDeclaringClass()->getName(),
+        $method->getName()
+      );
+    }
+    Console::writeLine('}');
+  }
+
+  public static void main(string[] $args) {
+    self::dump(self::$class);
+  }
+}
