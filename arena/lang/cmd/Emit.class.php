@@ -54,8 +54,8 @@
      * @return  
      */
     #[@arg]
-    public function setArgs($args= '') {
-      $this->args= explode(',', $args);
+    public function setArgs($args= NULL) {
+      $this->args= NULL !== $args ? explode(',', $args) : array();
     }
 
     /**
