@@ -1663,7 +1663,7 @@
 
     case 146:  #line 552 "grammar/xp.jay"
     { 
-      $yyVal= $yyLex->create(new VariableNode(array('name' => $yyVals[0+$yyTop]))); 
+      $yyVal= $yyLex->create(new VariableNode($yyVals[0+$yyTop])); 
     } break;
 
     case 147:  #line 555 "grammar/xp.jay"
@@ -1673,7 +1673,7 @@
     } break;
 
     case 149:  #line 563 "grammar/xp.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new VariableNode(array('name' => $yyVals[0+$yyTop]))); } break;
+    { $yyVals[0+$yyTop]= $yyLex->create(new VariableNode($yyVals[0+$yyTop])); } break;
 
     case 150:  #line 563 "grammar/xp.jay"
     {
@@ -1904,79 +1904,78 @@
 
     case 212:  #line 707 "grammar/xp.jay"
     {
-      $yyVal= $yyLex->create(new VariableNode()); 
-      $yyVal->name= $yyVals[0+$yyTop]; 
+      $yyVal= $yyLex->create(new VariableNode($yyVals[0+$yyTop])); 
     } break;
 
-    case 213:  #line 711 "grammar/xp.jay"
+    case 213:  #line 710 "grammar/xp.jay"
     { $yyVals[-2+$yyTop]= $yyLex->create(new InvocationNode()); } break;
 
-    case 214:  #line 711 "grammar/xp.jay"
+    case 214:  #line 710 "grammar/xp.jay"
     { 
       $yyVals[-5+$yyTop]->name= $yyVals[-4+$yyTop];
       $yyVals[-5+$yyTop]->parameters= $yyVals[-1+$yyTop];
     } break;
 
-    case 217:  #line 725 "grammar/xp.jay"
+    case 217:  #line 724 "grammar/xp.jay"
     { $yyVal= new TypeName($yyVals[0+$yyTop]); } break;
 
-    case 218:  #line 726 "grammar/xp.jay"
+    case 218:  #line 725 "grammar/xp.jay"
     { $yyVal= new TypeName($yyVals[-3+$yyTop], $yyVals[-1+$yyTop]); } break;
 
-    case 219:  #line 730 "grammar/xp.jay"
+    case 219:  #line 729 "grammar/xp.jay"
     { $yyVal= new TypeName($yyVals[-2+$yyTop].'[]'); } break;
 
-    case 220:  #line 734 "grammar/xp.jay"
+    case 220:  #line 733 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 221:  #line 735 "grammar/xp.jay"
+    case 221:  #line 734 "grammar/xp.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 223:  #line 740 "grammar/xp.jay"
+    case 223:  #line 739 "grammar/xp.jay"
     { $yyVal= new TypeName($yyVals[0+$yyTop].'+'); } break;
 
-    case 224:  #line 744 "grammar/xp.jay"
+    case 224:  #line 743 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 225:  #line 745 "grammar/xp.jay"
+    case 225:  #line 744 "grammar/xp.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 226:  #line 751 "grammar/xp.jay"
+    case 226:  #line 750 "grammar/xp.jay"
     { $yyVal= 0; } break;
 
-    case 227:  #line 752 "grammar/xp.jay"
+    case 227:  #line 751 "grammar/xp.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 228:  #line 756 "grammar/xp.jay"
+    case 228:  #line 755 "grammar/xp.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 229:  #line 757 "grammar/xp.jay"
+    case 229:  #line 756 "grammar/xp.jay"
     { $yyVal= $yyVals[-1+$yyTop] | $yyVals[0+$yyTop]; } break;
 
-    case 230:  #line 761 "grammar/xp.jay"
+    case 230:  #line 760 "grammar/xp.jay"
     { $yyVal= MODIFIER_PUBLIC; } break;
 
-    case 231:  #line 762 "grammar/xp.jay"
+    case 231:  #line 761 "grammar/xp.jay"
     { $yyVal= MODIFIER_PROTECTED; } break;
 
-    case 232:  #line 763 "grammar/xp.jay"
+    case 232:  #line 762 "grammar/xp.jay"
     { $yyVal= MODIFIER_PRIVATE; } break;
 
-    case 233:  #line 764 "grammar/xp.jay"
+    case 233:  #line 763 "grammar/xp.jay"
     { $yyVal= MODIFIER_STATIC; } break;
 
-    case 234:  #line 765 "grammar/xp.jay"
+    case 234:  #line 764 "grammar/xp.jay"
     { $yyVal= MODIFIER_ABSTRACT; } break;
 
-    case 235:  #line 766 "grammar/xp.jay"
+    case 235:  #line 765 "grammar/xp.jay"
     { $yyVal= MODIFIER_FINAL; } break;
 
-    case 236:  #line 767 "grammar/xp.jay"
+    case 236:  #line 766 "grammar/xp.jay"
     { $yyVal= MODIFIER_NATIVE; } break;
 
-    case 237:  #line 768 "grammar/xp.jay"
+    case 237:  #line 767 "grammar/xp.jay"
     { $yyVal= MODIFIER_INLINE; } break;
-#line 1980 "-"
+#line 1979 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

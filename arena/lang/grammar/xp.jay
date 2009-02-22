@@ -550,7 +550,7 @@ staticmember:
       /* TBI: Constant */ 
     }
   | T_VARIABLE { 
-      $$= $yyLex->create(new VariableNode(array('name' => $1))); 
+      $$= $yyLex->create(new VariableNode($1)); 
     }
   | T_WORD '(' expressionlist_opt ')' { 
       $$= $yyLex->create(new InvocationNode(array('name' => $1))); 
@@ -560,7 +560,7 @@ staticmember:
 
 expression:
     literal
-  | T_VARIABLE { $1= $yyLex->create(new VariableNode(array('name' => $1))); } chain_opt {
+  | T_VARIABLE { $1= $yyLex->create(new VariableNode($1)); } chain_opt {
       $3 && $1->chained= $3;
     }
   | T_NEW { $p= $yyLex->position; } instancecreation chain_opt { 
@@ -705,8 +705,7 @@ chain:
       $1->offset= $3;
     }
   | T_OBJECT_OPERATOR T_WORD {
-      $$= $yyLex->create(new VariableNode()); 
-      $$->name= $2; 
+      $$= $yyLex->create(new VariableNode($2)); 
     }
   | T_OBJECT_OPERATOR T_WORD '(' { $1= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' { 
       $1->name= $2;
