@@ -210,13 +210,30 @@
         $this->emitAll($op, $try->statements);
       }
       oel_add_begin_catchblock($op); {
-        oel_add_begin_firstcatch($op, $this->resolve($try->handling[0]->type->name), ltrim($try->handling[0]->variable, '$')); {
+      
+        // First catch
+        oel_add_begin_firstcatch(
+          $op, 
+          $this->resolve($try->handling[0]->type->name), 
+          ltrim($try->handling[0]->variable, '$')
+        ); {
           $this->emitAll($op, $try->handling[0]->statements);
         }
         oel_add_end_firstcatch($op);
+        
+        // Additional catches
+        for ($i= 1; $i < sizeof($try->handling); $i++) {
+          oel_add_begin_catch(
+            $op, 
+            $this->resolve($try->handling[$i]->type->name), 
+            ltrim($try->handling[$i]->variable, '$')
+          ); {
+            $this->emitAll($op, $try->handling[$i]->statements);
+          }
+          oel_add_end_catch($op);
+        }
       }
       oel_add_end_catchblock($op);
-      var_dump(oel_get_op_array($op));
     }
 
     /**
