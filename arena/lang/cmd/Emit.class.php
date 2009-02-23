@@ -76,6 +76,7 @@
       $this->out->writeLine('===> Compiled class ', $class);
       
       // {{{ Run - FIXME - this should be done somewhere else! 
+      xp::gc();
       $this->out->writeLine('===> Running ', $class.'::main()');
       eval ($class.'::main($this->args);');
       // }}}
