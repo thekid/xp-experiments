@@ -8,6 +8,7 @@
 
   uses(
     'xp.compiler.emit.Emitter', 
+    'xp.compiler.emit.Strings', 
     'lang.reflect.Modifiers',
     'util.collections.HashTable'
   );
@@ -39,17 +40,7 @@
      * @param   xp.compiler.ast.StringNode str
      */
     protected function emitString($op, StringNode $str) {
-      $string= '';
-      $t= strtok($str->value, '\\');
-      do {
-        switch ($t{0}) {
-          case 'r': $string.= "\n".substr($t, 1); break;
-          case 'n': $string.= "\r".substr($t, 1); break;
-          case 't': $string.= "\t".substr($t, 1); break;
-          default: $string.= '\\'.$t;
-        }
-      } while ($t= strtok('\\'));
-      oel_push_value($op, '\\' == $str->value{0} ? $string : substr($string, 1));
+      oel_push_value($op, Strings::expandEscapesIn($str->value));
     }
 
     /**
