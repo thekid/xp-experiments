@@ -18,11 +18,12 @@
      * @throws  lang.FormatException in case an illegal escape sequence is encountered
      */
     public static function expandEscapesIn($in) {
+      if (0 === ($s= strlen($in))) return $in;
+
       $offset= 0;
       $out= '';
-      $s= strlen($in);
       while (FALSE !== ($p= strpos($in, '\\', $offset))) {
-        $out.= substr($in, 0, $p);
+        $out.= substr($in, $offset, $p- $offset);
         $offset= $p+ 1;
         if ($offset >= $s || '\\' == $in{$offset}) {
           $out.= '\\';
@@ -35,7 +36,7 @@
         } else {
           throw new FormatException('Illegal escape sequence \\'.$in{$offset}.' in '.$in);
         }
-        $offset++;
+        if (++$offset > $s) break;
       }
       return $out.substr($in, $offset);
     }

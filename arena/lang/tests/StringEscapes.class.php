@@ -48,6 +48,15 @@
     }
 
     /**
+     * Test with an empty string
+     *
+     */
+    #[@test]
+    public function emptyString() {
+      $this->assertEquals('', Strings::expandEscapesIn(''));
+    }
+
+    /**
      * Test "\r"
      *
      */
@@ -71,6 +80,24 @@
      */
     #[@test]
     public function backslash() {
+      $this->assertEquals('\\', Strings::expandEscapesIn('\\\\'));
+    }
+
+    /**
+     * Test "\"
+     *
+     */
+    #[@test]
+    public function singleBackslash() {
+      $this->assertEquals('\\', Strings::expandEscapesIn('\\'));
+    }
+
+    /**
+     * Test "\\"
+     *
+     */
+    #[@test]
+    public function backslashInside() {
       $this->assertEquals('Hello\\World', Strings::expandEscapesIn('Hello\\\\World'));
     }
 
@@ -90,6 +117,26 @@
     #[@test]
     public function trailingBackslash() {
       $this->assertEquals('Hello\\', Strings::expandEscapesIn('Hello\\\\'));
+    }
+
+    /**
+     * Test a string consisting only of escapes
+     *
+     */
+    #[@test]
+    public function escapesOnly() {
+      $this->assertEquals("\\\r\n\t", Strings::expandEscapesIn('\\\\\r\n\t'));
+    }
+
+    /**
+     * Test a string consisting only of one escape
+     *
+     */
+    #[@test]
+    public function escapeOnly() {
+      foreach (array('\\\\' => '\\', '\r' => "\r", '\n' => "\n", '\t' => "\t") as $in => $out) {
+        $this->assertEquals($out, Strings::expandEscapesIn($in));
+      }
     }
   }
 ?>
