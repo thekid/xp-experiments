@@ -23,7 +23,7 @@
       $op         = NULL,
       $errors     = array(),
       $class      = array(),
-      $finalizers = array(),
+      $finalizers = array(NULL),
       $types      = NULL;
     
     protected function emitInvocation($op, $inv) {
