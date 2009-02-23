@@ -107,7 +107,7 @@
           oel_push_value($op, $c->offset->value);
           oel_push_dim($op);
         } else if ($c instanceof InvocationNode) {   // DOES NOT WORK!
-          $n= $this->emitAll($op, $c->parameters);
+          $n= $this->emitAll($op, (array)$c->parameters);
           oel_add_call_method($op, $n, $c->name);
           oel_add_begin_variable_parse($op);
         } else {
@@ -284,7 +284,7 @@
     }
 
     /**
-     * Emit foreach statement
+     * Emit foreach loop
      *
      * @param   resource op
      * @param   xp.compiler.ast.ForeachNode loop
@@ -303,7 +303,7 @@
     }
 
     /**
-     * Emit while statement
+     * Emit while loop
      *
      * @param   resource op
      * @param   xp.compiler.ast.WhileNode loop
@@ -315,6 +315,32 @@
         $this->emitAll($op, $loop->statements);
       }
       oel_add_end_while($op);
+    }
+
+    /**
+     * Emit for loop
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ForNode loop
+     */
+    protected function emitFor($op, ForNode $loop) {
+      $this->emitAll($op, $loop->initialization);
+
+      oel_add_begin_while($op);
+      $this->emitAll($op, $loop->condition);
+      oel_add_begin_while_body($op); {
+        foreach ($loop->statements as $i => $statement) {
+          if ($statement instanceof ContinueNode) {
+            $this->emitAll($op, $loop->loop);
+            $this->emitOne($op, $statement);
+          } else {
+            $this->emitOne($op, $statement);
+          }
+        }
+        $this->emitAll($op, $loop->loop);
+      }
+      oel_add_end_while($op);
+      oel_add_free($op);
     }
     
     /**
@@ -534,7 +560,13 @@
       oel_add_free($op);
     }
 
-    protected function emitMethod($op, $method) {
+    /**
+     * Emit a method
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.MethodNode method
+     */
+    protected function emitMethod($op, MethodNode $method) {
       $mop= oel_new_method(
         $op, 
         $method->name, 
@@ -550,11 +582,17 @@
         $this->types[new VariableNode($arg['name'])]= $arg['type'];
       }
 
-      $this->emitAll($mop, $method->body);
+      $method->body && $this->emitAll($mop, $method->body);
       oel_finalize($mop);
     }
 
-    protected function emitConstructor($op, $constructor) {
+    /**
+     * Emit a constructor
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ConstructorNode constructor
+     */
+    protected function emitConstructor($op, ConstructorNode $constructor) {
       $cop= oel_new_method(
         $op, 
         '__construct', 
@@ -573,8 +611,14 @@
       $this->emitAll($cop, $constructor->body);
       oel_finalize($cop);
     }
-      
-    protected function emitClass($op, $declaration) {
+
+    /**
+     * Emit a class declaration
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ClassNode declaration
+     */
+    protected function emitClass($op, ClassNode $declaration) {
     
       // Start
       $parent= $declaration->parent ? $declaration->parent->name : 'lang.Object';
@@ -624,7 +668,7 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Emit a single node
      *
      * @param   resource op
      * @param   xp.compiler.ast.Node node
@@ -634,7 +678,7 @@
       $target= 'emit'.substr(get_class($node), 0, -strlen('Node'));
       if (method_exists($this, $target)) {
         oel_set_source_line($op, $node->position[0]);
-        
+        // DEBUG Console::$err->writeLine('@', $node->position[0], ' Emit ', $node->getClassName(), ' ', $node->hashCode());
         try {
           call_user_func_array(array($this, $target), array($op, $node));
         } catch (Throwable $e) {
@@ -649,13 +693,13 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Emit all given nodes
      *
      * @param   resource op
      * @param   xp.compiler.ast.Node[] nodes
      * @return  int
      */
-    protected function emitAll($op, $nodes) {
+    protected function emitAll($op, array $nodes) {
       $emitted= 0;
       foreach ((array)$nodes as $node) {
         $emitted+= $this->emitOne($op, $node);
