@@ -493,7 +493,13 @@
       $target= 'emit'.substr(get_class($node), 0, -strlen('Node'));
       if (method_exists($this, $target)) {
         oel_set_source_line($op, $node->position[0]);
-        call_user_func_array(array($this, $target), array($op, $node));
+        
+        try {
+          call_user_func_array(array($this, $target), array($op, $node));
+        } catch (Throwable $e) {
+          $this->errors[]= $e->getMessage();
+          return 0;
+        }
         return 1;
       } else {
         $this->errors[]= 'Cannot emit '.xp::stringOf($node);
