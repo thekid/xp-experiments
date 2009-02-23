@@ -12,6 +12,6 @@
    * @purpose  purpose
    */
   class UnaryOpNode extends xp·compiler·ast·Node {
-    
+    public $postfix = FALSE;
   }
 ?>
