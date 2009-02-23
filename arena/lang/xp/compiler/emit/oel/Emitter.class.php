@@ -284,6 +284,16 @@
     }
 
     /**
+     * Emit continue statement
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ContinueNode statement
+     */
+    protected function emitContinue($op, ContinueNode $statement) {
+      oel_add_continue($op);
+    }
+
+    /**
      * Emit foreach loop
      *
      * @param   resource op
@@ -324,20 +334,20 @@
      * @param   xp.compiler.ast.ForNode loop
      */
     protected function emitFor($op, ForNode $loop) {
-      $this->emitAll($op, $loop->initialization);
+      $this->emitAll($op, (array)$loop->initialization);
 
       oel_add_begin_while($op);
-      $this->emitAll($op, $loop->condition);
+      $this->emitAll($op, (array)$loop->condition);
       oel_add_begin_while_body($op); {
         foreach ($loop->statements as $i => $statement) {
           if ($statement instanceof ContinueNode) {
-            $this->emitAll($op, $loop->loop);
+            $this->emitAll($op, (array)$loop->loop);
             $this->emitOne($op, $statement);
           } else {
             $this->emitOne($op, $statement);
           }
         }
-        $this->emitAll($op, $loop->loop);
+        $this->emitAll($op, (array)$loop->loop);
       }
       oel_add_end_while($op);
       oel_add_free($op);
@@ -352,9 +362,9 @@
     protected function emitIf($op, IfNode $if) {
       $this->emitOne($op, $if->condition);
       oel_add_begin_if($op); {
-        $this->emitAll($op, $if->statements);
+        $this->emitAll($op, (array)$if->statements);
       } oel_add_end_if($op); {
-        $this->emitAll($op, $if->otherwise->statements);
+        $this->emitAll($op, (array)$if->otherwise->statements);
       }
       oel_add_end_else($op);
     }
@@ -374,7 +384,7 @@
       if ($ref->member instanceof InvocationNode) {
 
         // Static method call
-        $n= $this->emitAll($op, $ref->member->parameters);
+        $n= $this->emitAll($op, (array)$ref->member->parameters);
         oel_add_call_method_static($op, $n, $ref->member->name, $this->resolve($ref->class->name));
         $ref->free && oel_add_free($op);
       } else if ($ref->member instanceof VariableNode && '$class' === $ref->member->name) {
@@ -460,7 +470,7 @@
       }
 
       oel_add_begin_tryblock($op); {
-        $this->emitAll($op, $try->statements);
+        $this->emitAll($op, (array)$try->statements);
         $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
         
         // FIXME: If no exception is thrown, we hang here forever
@@ -475,7 +485,7 @@
           $this->resolve($try->handling[0]->type->name), 
           ltrim($try->handling[0]->variable, '$')
         ); {
-          $this->emitAll($op, $try->handling[0]->statements);
+          $this->emitAll($op, (array)$try->handling[0]->statements);
           $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
         }
         oel_add_end_firstcatch($op);
@@ -487,7 +497,7 @@
             $this->resolve($try->handling[$i]->type->name), 
             ltrim($try->handling[$i]->variable, '$')
           ); {
-            $this->emitAll($op, $try->handling[$i]->statements);
+            $this->emitAll($op, (array)$try->handling[$i]->statements);
             $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
           }
           oel_add_end_catch($op);
@@ -520,7 +530,7 @@
      * @param   xp.compiler.ast.FinallyNode throw
      */
     protected function emitFinally($op, FinallyNode $finally) {
-      $this->emitAll($op, $finally->statements);
+      $this->emitAll($op, (array)$finally->statements);
     }
 
     /**
@@ -530,7 +540,7 @@
      * @param   xp.compiler.ast.InstanceCreationNode new
      */
     protected function emitInstanceCreation($op, InstanceCreationNode $new) {
-      $n= $this->emitAll($op, $new->parameters);
+      $n= $this->emitAll($op, (array)$new->parameters);
       oel_add_new_object($op, $n, $this->resolve($new->type->name));
 
       oel_add_begin_variable_parse($op);
@@ -608,7 +618,7 @@
         $this->types[new VariableNode($arg['name'])]= $arg['type'];
       }
 
-      $this->emitAll($cop, $constructor->body);
+      $constructor->body && $this->emitAll($cop, $constructor->body);
       oel_finalize($cop);
     }
 
@@ -637,7 +647,7 @@
       }
       
       // Methods
-      $this->emitAll($op, $declaration->body['methods']);
+      $this->emitAll($op, (array)$declaration->body['methods']);
       
       // Finish
       oel_add_end_class_declaration($op);
