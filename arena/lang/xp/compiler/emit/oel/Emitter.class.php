@@ -177,11 +177,15 @@
         // Static member
         oel_add_begin_variable_parse($op);
         oel_push_variable($op, ltrim($ref->member->name, '$'), $ref->class->name);   // without '$'
-        $this->emitChain($op, $ref->member);
         oel_add_end_variable_parse($op);
       } else {
         $this->errors[]= 'Cannot emit class member '.xp::stringOf($ref->member);
+        return;
       }
+
+      oel_add_begin_variable_parse($op);
+      $this->emitChain($op, $ref->member);
+      oel_add_end_variable_parse($op);
     }
 
     protected function emitThrow($op, $throw) {
