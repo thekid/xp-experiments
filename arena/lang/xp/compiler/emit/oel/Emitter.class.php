@@ -121,23 +121,56 @@
      * Emit binary operation node
      *
      * @param   resource op
-     * @param   xp.compiler.ast.BinaryOpNode ref
+     * @param   xp.compiler.ast.BinaryOpNode bin
      */
-    protected function emitBinaryOp($op, BinaryOpNode $node) {
+    protected function emitBinaryOp($op, BinaryOpNode $bin) {
       static $ops= array(
-        '~'   => OEL_BINARY_OP_CONCAT
+        '~'   => OEL_BINARY_OP_CONCAT,
+        '-'   => OEL_BINARY_OP_SUB,
+        '+'   => OEL_BINARY_OP_ADD,
+        '*'   => OEL_BINARY_OP_MUL,
+        '/'   => OEL_BINARY_OP_DIV,
+        '%'   => OEL_BINARY_OP_MOD,
       );
       
-      $this->emitOne($op, $node->rhs);
-      $this->emitOne($op, $node->lhs);
-      oel_add_binary_op($op, $ops[$node->op]);
+      $this->emitOne($op, $bin->rhs);
+      $this->emitOne($op, $bin->lhs);
+      oel_add_binary_op($op, $ops[$bin->op]);
+    }
+
+    /**
+     * Emit unary operation node
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.UnaryOpNode un
+     */
+    protected function emitUnaryOp($op, UnaryOpNode $un) {
+      static $ops= array(
+        '++'   => array(TRUE => OEL_OP_POST_INC, FALSE => OEL_OP_PRE_INC),
+        '--'   => array(TRUE => OEL_OP_POST_DEC, FALSE => OEL_OP_PRE_DEC),
+      );
+      
+      if ('!' === $un->op) {      // FIXME: Use NotNode for this?
+        $this->emitOne($op, $un->expression);
+        oel_add_unary_op($op, OEL_UNARY_OP_BOOL_NOT);
+        return;
+      }
+
+      if (!$un->expression instanceof VariableNode) {
+        $this->errors[]= 'Cannot perform unary '.$un->op.' on '.xp::stringOf($un->expression);
+        return;
+      }
+
+      oel_add_begin_variable_parse($op);
+      oel_push_variable($op, ltrim($un->expression->name, '$'));    // without '$'
+      oel_add_incdec_op($op, $ops[$un->op][$un->postfix]);
     }
 
     /**
      * Emit ternary operator node
      *
      * @param   resource op
-     * @param   xp.compiler.ast.TernaryNode ref
+     * @param   xp.compiler.ast.TernaryNode ternary
      */
     protected function emitTernary($op, TernaryNode $ternary) {
       $this->emitOne($op, $ternary->condition);
@@ -148,7 +181,13 @@
       oel_add_end_tenary_op_false($op);
     }
 
-    protected function emitComparison($op, $cmp) {
+    /**
+     * Emit comparison node
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ComparisonNode cmp
+     */
+    protected function emitComparison($op, ComparisonNode $cmp) {
       static $ops= array(
         '=='   => array(FALSE, OEL_BINARY_OP_IS_EQUAL),
         '!='   => array(FALSE, OEL_BINARY_OP_IS_NOT_EQUAL),
@@ -169,20 +208,47 @@
       oel_add_binary_op($op, $operator[1]);
     }
 
-    protected function emitForeach($op, $foreach) {
-      $this->emitOne($op, $foreach->expression);
+    /**
+     * Emit foreach statement
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ForeachNode loop
+     */
+    protected function emitForeach($op, ForeachNode $loop) {
+      $this->emitOne($op, $loop->expression);
       oel_add_begin_foreach($op); {
         oel_add_begin_variable_parse($op);
-        oel_push_variable($op, ltrim($foreach->assignment, '$'));
+        oel_push_variable($op, ltrim($loop->assignment, '$'));
         oel_push_value($op, NULL);
       }
       oel_add_begin_foreach_body($op); {
-        $this->emitAll($op, $foreach->statements);
+        $this->emitAll($op, $loop->statements);
       }
       oel_add_end_foreach($op);
     }
+
+    /**
+     * Emit while statement
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.WhileNode loop
+     */
+    protected function emitWhile($op, WhileNode $loop) {
+      oel_add_begin_while($op);
+      $this->emitOne($op, $loop->expression);
+      oel_add_begin_while_body($op); {
+        $this->emitAll($op, $loop->statements);
+      }
+      oel_add_end_while($op);
+    }
     
-    protected function emitIf($op, $if) {
+    /**
+     * Emit if statement
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.IfNode if
+     */
+    protected function emitIf($op, IfNode $if) {
       $this->emitOne($op, $if->condition);
       oel_add_begin_if($op); {
         $this->emitAll($op, $if->statements);
