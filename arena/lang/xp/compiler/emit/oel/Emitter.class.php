@@ -194,9 +194,33 @@
         return;
       }
 
-      oel_add_begin_variable_parse($op);
-      $this->emitChain($op, $ref->member);
-      oel_add_end_variable_parse($op);
+      if ($ref->member->chained) {
+        oel_add_begin_variable_parse($op);
+        $this->emitChain($op, $ref->member);
+        oel_add_end_variable_parse($op);
+      }
+    }
+    
+    protected function injectBeforeFirst(&$statements, $marker, $inject) {
+      $si= sizeof($inject);
+      for ($i= 0, $s= sizeof($statements); $i < $s; $i++) {
+        if ($statements[$i]->statements) {    // FIXME: instanceof check?
+          $this->injectBefore($statements[$i]->statements, $marker, $inject);
+        }
+        if ($statements[$i] instanceof $marker) {
+          $statements= array_merge(
+            array_slice($statements, 0, $i),
+            $inject,
+            array_slice($statements, $i)
+          );
+          $i+= $si;
+          $s+= $si;
+          return;
+        }
+      }
+      
+      // Append to end if not found
+      $statements= array_merge($statements, $inject);
     }
 
     /**
@@ -246,7 +270,20 @@
      * @param   xp.compiler.ast.TryNode try
      */
     protected function emitTry($op, TryNode $try) {
+
+      // Check whether a finalization handler is available. If so, because
+      // the underlying runtime does not support this, add statements after
+      // the try block and to all catch blocks
+      $numHandlers= sizeof($try->handling);
+      if ($try->handling[$numHandlers- 1] instanceof FinallyNode) {
+        $finally= array_pop($try->handling);
+        $numHandlers--;
+      } else {
+        $finally= NULL;
+      }
+
       oel_add_begin_tryblock($op); {
+        $finally && $this->injectBeforeFirst($try->statements, 'ReturnNode', $finally->statements);
         $this->emitAll($op, $try->statements);
         
         // FIXME: If no exception is thrown, we hang here forever
@@ -261,17 +298,19 @@
           $this->resolve($try->handling[0]->type->name), 
           ltrim($try->handling[0]->variable, '$')
         ); {
+          $finally && $this->injectBeforeFirst($try->handling[0]->statements, 'ReturnNode', $finally->statements);
           $this->emitAll($op, $try->handling[0]->statements);
         }
         oel_add_end_firstcatch($op);
         
-        // Additional catches   - FIXME: This might contain a FinallyNode
-        for ($i= 1; $i < sizeof($try->handling); $i++) {
+        // Additional catches
+        for ($i= 1; $i < $numHandlers; $i++) {
           oel_add_begin_catch(
             $op, 
             $this->resolve($try->handling[$i]->type->name), 
             ltrim($try->handling[$i]->variable, '$')
           ); {
+            $finally && $this->injectBeforeFirst($try->handling[$i]->statements, 'ReturnNode', $finally->statements);
             $this->emitAll($op, $try->handling[$i]->statements);
           }
           oel_add_end_catch($op);
