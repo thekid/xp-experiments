@@ -204,8 +204,8 @@
     protected function injectBeforeFirst(&$statements, $marker, $inject) {
       $si= sizeof($inject);
       for ($i= 0, $s= sizeof($statements); $i < $s; $i++) {
-        if ($statements[$i]->statements) {    // FIXME: instanceof check?
-          $this->injectBefore($statements[$i]->statements, $marker, $inject);
+        if ($statements[$i]->statements) {    // FIXME: instanceof check? FIXME: if / else
+          $this->injectBeforeFirst($statements[$i]->statements, $marker, $inject);
         }
         if ($statements[$i] instanceof $marker) {
           $statements= array_merge(
