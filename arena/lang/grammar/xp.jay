@@ -404,7 +404,7 @@ statements:
 ;
 
 statement:
-    T_RETURN { $1= $yyLex->create(new ReturnNode()); } expression ';' { 
+    T_RETURN { $1= $yyLex->create(new ReturnNode()); } expression_opt ';' { 
       $$->expression= $3;
     }
   | T_IF { $1= $yyLex->create(new IfNode()); } '(' expression ')' block else_opt {
