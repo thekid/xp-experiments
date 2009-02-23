@@ -32,15 +32,43 @@
       $inv->free && oel_add_free($op);
     }
     
-    protected function emitString($op, $str) {
-      oel_push_value($op, $str->value);
+    /**
+     * Emit strings
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.StringNode str
+     */
+    protected function emitString($op, StringNode $str) {
+      $string= '';
+      $t= strtok($str->value, '\\');
+      do {
+        switch ($t{0}) {
+          case 'r': $string.= "\n".substr($t, 1); break;
+          case 'n': $string.= "\r".substr($t, 1); break;
+          case 't': $string.= "\t".substr($t, 1); break;
+          default: $string.= '\\'.$t;
+        }
+      } while ($t= strtok('\\'));
+      oel_push_value($op, '\\' == $str->value{0} ? $string : substr($string, 1));
     }
 
-    protected function emitNumber($op, $num) {
+    /**
+     * Emit numbers
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.NumberNode num
+     */
+    protected function emitNumber($op, NumberNode $num) {
       oel_push_value($op, (int)$num->value);
     }
     
-    protected function emitVariable($op, $var) {
+    /**
+     * Emit a variable. Implements type overloading
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.VariableNode var
+     */
+    protected function emitVariable($op, VariableNode $var) {
       oel_add_begin_variable_parse($op);
       oel_push_variable($op, ltrim($var->name, '$'));    // without '$'
       
