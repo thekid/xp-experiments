@@ -200,7 +200,47 @@
     }
 
     /**
-     * Emit a try node
+     * Emit a try / catch block
+     * 
+     * Simple form:
+     * <code>
+     *   try {
+     *     // [...statements...]
+     *   } catch (lang.Throwable $e) {
+     *     // [...error handling...]
+     *   }
+     * </code>
+     *
+     * Multiple catches:
+     * <code>
+     *   try {
+     *     // [...statements...]
+     *   } catch (lang.IllegalArgumentException $e) {
+     *     // [...error handling for IAE...]
+     *   } catch (lang.FormatException $e) {
+     *     // [...error handling for FE...]
+     *   }
+     * </code>
+     *
+     * Try/finally without catch:
+     * <code>
+     *   try {
+     *     // [...statements...]
+     *   } finally {
+     *     // [...finalizations...]
+     *   }
+     * </code>
+     *
+     * Try/finally with catch:
+     * <code>
+     *   try {
+     *     // [...statements...]
+     *   } catch (lang.Throwable $e) {
+     *     // [...error handling...]
+     *   } finally {
+     *     // [...finalizations...]
+     *   }
+     * </code>
      *
      * @param   resource op
      * @param   xp.compiler.ast.TryNode try
