@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.ConstantValueNode');
 
   /**
    * (Insert class' description here)
    *
    * @purpose  purpose
    */
-  class NumberNode extends xp·compiler·ast·Node {
+  class NumberNode extends ConstantValueNode {
     
   }
 ?>

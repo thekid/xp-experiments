@@ -118,6 +118,66 @@
     }
     
     /**
+     * Evaluate concatenation
+     *
+     * @param   xp.compiler.ast.ConstantValueNode l
+     * @param   xp.compiler.ast.ConstantValueNode r
+     * @return  xp.compiler.ast.Node result
+     */
+    protected function evalConcat(ConstantValueNode $l, ConstantValueNode $r) {
+      $l->value .= $r->value;
+      return $l;
+    }
+    
+    /**
+     * Evaluate addition
+     *
+     * @param   xp.compiler.ast.ConstantValueNode l
+     * @param   xp.compiler.ast.ConstantValueNode r
+     * @return  xp.compiler.ast.Node result
+     */
+    protected function evalAdd(ConstantValueNode $l, ConstantValueNode $r) {
+      $l->value += $r->value;
+      return $l;
+    }
+
+    /**
+     * Evaluate subtraction
+     *
+     * @param   xp.compiler.ast.ConstantValueNode l
+     * @param   xp.compiler.ast.ConstantValueNode r
+     * @return  xp.compiler.ast.Node result
+     */
+    protected function evalSubtract(ConstantValueNode $l, ConstantValueNode $r) {
+      $l->value -= $r->value;
+      return $l;
+    }
+
+    /**
+     * Evaluate multiplication
+     *
+     * @param   xp.compiler.ast.ConstantValueNode l
+     * @param   xp.compiler.ast.ConstantValueNode r
+     * @return  xp.compiler.ast.Node result
+     */
+    protected function evalMultiply(ConstantValueNode $l, ConstantValueNode $r) {
+      $l->value *= $r->value;
+      return $l;
+    }
+
+    /**
+     * Evaluate division
+     *
+     * @param   xp.compiler.ast.ConstantValueNode l
+     * @param   xp.compiler.ast.ConstantValueNode r
+     * @return  xp.compiler.ast.Node result
+     */
+    protected function evalDivide(ConstantValueNode $l, ConstantValueNode $r) {
+      $l->value /= $r->value;
+      return $l;
+    }
+
+    /**
      * Emit binary operation node
      *
      * @param   resource op
@@ -132,6 +192,21 @@
         '/'   => OEL_BINARY_OP_DIV,
         '%'   => OEL_BINARY_OP_MOD,
       );
+      static $opt= array(
+        '~'   => 'concat',
+        '-'   => 'subtract',
+        '+'   => 'add',
+        '*'   => 'multiply',
+        '/'   => 'divide',
+      );      
+      
+      // Check for optimization possibilities if left- and righthand sides are constant values
+      if (isset($opt[$bin->op]) && $bin->lhs instanceof ConstantValueNode && $bin->rhs instanceof ConstantValueNode) {
+        if (NULL !== ($r= call_user_func_array(array($this, 'eval'.$opt[$bin->op]), array($bin->lhs, $bin->rhs)))) {
+          $this->emitOne($op, $r);
+          return;
+        }
+      }
       
       $this->emitOne($op, $bin->rhs);
       $this->emitOne($op, $bin->lhs);

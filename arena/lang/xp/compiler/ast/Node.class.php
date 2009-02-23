@@ -13,7 +13,8 @@
    */
   abstract class xp·compiler·ast·Node extends Object {
     public
-      $position= array();
+      $position = array(),
+      $free     = FALSE;
 
     /**
      * Constructor
@@ -49,7 +50,7 @@
             if (!$a1[$k]->equals($a2[$k])) return FALSE;
             break;
 
-          case $a1[$k] !== $a2[$k] && '__id' !== $k:
+          case $a1[$k] !== $a2[$k] && '__id' !== $k && 'free' !== $k:
             return FALSE;
         }
       }
