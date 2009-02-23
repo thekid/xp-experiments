@@ -294,6 +294,16 @@
     }
 
     /**
+     * Emit break statement
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.BreakNode statement
+     */
+    protected function emitBreak($op, BreakNode $statement) {
+      oel_add_break($op);
+    }
+
+    /**
      * Emit foreach loop
      *
      * @param   resource op
