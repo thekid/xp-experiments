@@ -20,10 +20,11 @@
    */
   class xp·compiler·emit·oel·Emitter extends Emitter {
     protected 
-      $op     = NULL,
-      $errors = array(),
-      $class  = array(),
-      $types  = NULL;
+      $op         = NULL,
+      $errors     = array(),
+      $class      = array(),
+      $finalizers = array(),
+      $types      = NULL;
     
     protected function emitInvocation($op, $inv) {
       $n= $this->emitAll($op, $inv->parameters);
@@ -78,7 +79,7 @@
      * @param   resource op
      * @param   xp.compiler.ast.Node node
      */
-    protected function emitChain($op, $node) {
+    protected function emitChain($op, xp·compiler·ast·Node $node) {
       $c= $node->chained;
       while (NULL !== $c) {
         if ($c instanceof VariableNode) {
@@ -97,7 +98,13 @@
       }
     }
     
-    protected function emitBinaryOp($op, xp·compiler·ast·Node $node) {
+    /**
+     * Emit binary operation node
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.BinaryOpNode ref
+     */
+    protected function emitBinaryOp($op, BinaryOpNode $node) {
       static $ops= array(
         '~'   => OEL_BINARY_OP_CONCAT
       );
@@ -107,7 +114,13 @@
       oel_add_binary_op($op, $ops[$node->op]);
     }
 
-    protected function emitTernary($op, xp·compiler·ast·Node $ternary) {
+    /**
+     * Emit ternary operator node
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.TernaryNode ref
+     */
+    protected function emitTernary($op, TernaryNode $ternary) {
       $this->emitOne($op, $ternary->condition);
       oel_add_begin_tenary_op($op);                   // FIXME: Name should be te*r*nary
       $this->emitOne($op, $ternary->expression);
@@ -201,28 +214,6 @@
       }
     }
     
-    protected function injectBeforeFirst(&$statements, $marker, $inject) {
-      $si= sizeof($inject);
-      for ($i= 0, $s= sizeof($statements); $i < $s; $i++) {
-        if ($statements[$i]->statements) {    // FIXME: instanceof check? FIXME: if / else
-          $this->injectBeforeFirst($statements[$i]->statements, $marker, $inject);
-        }
-        if ($statements[$i] instanceof $marker) {
-          $statements= array_merge(
-            array_slice($statements, 0, $i),
-            $inject,
-            array_slice($statements, $i)
-          );
-          $i+= $si;
-          $s+= $si;
-          return;
-        }
-      }
-      
-      // Append to end if not found
-      $statements= array_merge($statements, $inject);
-    }
-
     /**
      * Emit a try / catch block
      * 
@@ -276,15 +267,15 @@
       // the try block and to all catch blocks
       $numHandlers= sizeof($try->handling);
       if ($try->handling[$numHandlers- 1] instanceof FinallyNode) {
-        $finally= array_pop($try->handling);
+        array_unshift($this->finalizers, array_pop($try->handling));
         $numHandlers--;
       } else {
-        $finally= NULL;
+        array_unshift($this->finalizers, NULL);
       }
 
       oel_add_begin_tryblock($op); {
-        $finally && $this->injectBeforeFirst($try->statements, 'ReturnNode', $finally->statements);
         $this->emitAll($op, $try->statements);
+        $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
         
         // FIXME: If no exception is thrown, we hang here forever
         oel_add_new_object($op, 0, 'Exception');
@@ -298,8 +289,8 @@
           $this->resolve($try->handling[0]->type->name), 
           ltrim($try->handling[0]->variable, '$')
         ); {
-          $finally && $this->injectBeforeFirst($try->handling[0]->statements, 'ReturnNode', $finally->statements);
           $this->emitAll($op, $try->handling[0]->statements);
+          $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
         }
         oel_add_end_firstcatch($op);
         
@@ -310,8 +301,8 @@
             $this->resolve($try->handling[$i]->type->name), 
             ltrim($try->handling[$i]->variable, '$')
           ); {
-            $finally && $this->injectBeforeFirst($try->handling[$i]->statements, 'ReturnNode', $finally->statements);
             $this->emitAll($op, $try->handling[$i]->statements);
+            $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
           }
           oel_add_end_catch($op);
         }
@@ -321,6 +312,8 @@
         oel_add_end_catch($op);
       }
       oel_add_end_catchblock($op);
+      
+      array_shift($this->finalizers);
     }
 
     /**
@@ -332,6 +325,16 @@
     protected function emitThrow($op, ThrowNode $throw) {
       $this->emitOne($op, $throw->expression);
       oel_add_throw($op);
+    }
+
+    /**
+     * Emit a finallyNode node
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.FinallyNode throw
+     */
+    protected function emitFinally($op, FinallyNode $finally) {
+      $this->emitAll($op, $finally->statements);
     }
 
     /**
@@ -349,7 +352,13 @@
       oel_add_end_variable_parse($op);
     }
     
-    protected function emitAssignment($op, $assign) {
+    /**
+     * Emit an assignment
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.AssignmentNode assign
+     */
+    protected function emitAssignment($op, AssignmentNode $assign) {
       if (!$assign->variable instanceof VariableNode) {
         $this->errors[]= 'Cannot assign to '.xp::stringOf($assign);
         return;
@@ -438,7 +447,6 @@
       array_shift($this->class);
     }
 
-
     /**
      * Emit a return statement
      * <code>
@@ -450,6 +458,7 @@
      * @param   xp.compiler.ast.ReturnNode new
      */
     protected function emitReturn($op, ReturnNode $return) {
+      $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
       $return->expression && $this->emitOne($op, $return->expression);
       oel_add_return($op);
     }
