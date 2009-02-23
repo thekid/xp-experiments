@@ -221,7 +221,7 @@
         }
         oel_add_end_firstcatch($op);
         
-        // Additional catches
+        // Additional catches   - FIXME: This might contain a FinallyNode
         for ($i= 1; $i < sizeof($try->handling); $i++) {
           oel_add_begin_catch(
             $op, 
@@ -295,6 +295,7 @@
       }
 
       $this->emitAll($mop, $method->body);
+      oel_finalize($mop);
     }
 
     protected function emitConstructor($op, $constructor) {
@@ -314,6 +315,7 @@
       }
 
       $this->emitAll($cop, $constructor->body);
+      oel_finalize($cop);
     }
       
     protected function emitClass($op, $declaration) {
