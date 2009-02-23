@@ -160,7 +160,18 @@
       oel_add_end_else($op);
     }
     
-    protected function emitClassMember($op, $ref) {
+    /**
+     * Emit class members, for example:
+     * <code>
+     *   XPClass::forName();    // static method call
+     *   self::$class;          // special "class" member
+     *   self::$instance;       // static member variable
+     * </code>
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ClassMemberNode ref
+     */
+    protected function emitClassMember($op, ClassMemberNode $ref) {
       if ($ref->member instanceof InvocationNode) {
 
         // Static method call
@@ -188,14 +199,47 @@
       oel_add_end_variable_parse($op);
     }
 
-    protected function emitThrow($op, $throw) {
+    /**
+     * Emit a try node
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.TryNode try
+     */
+    protected function emitTry($op, TryNode $try) {
+      oel_add_begin_tryblock($op); {
+        $this->emitAll($op, $try->statements);
+      }
+      oel_add_begin_catchblock($op); {
+        oel_add_begin_firstcatch($op, $this->resolve($try->handling[0]->type->name), ltrim($try->handling[0]->variable, '$')); {
+          $this->emitAll($op, $try->handling[0]->statements);
+        }
+        oel_add_end_firstcatch($op);
+      }
+      oel_add_end_catchblock($op);
+      var_dump(oel_get_op_array($op));
+    }
+
+    /**
+     * Emit a throw node
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ThrowNode throw
+     */
+    protected function emitThrow($op, ThrowNode $throw) {
       $this->emitOne($op, $throw->expression);
       oel_add_throw($op);
     }
 
-    protected function emitInstanceCreation($op, $new) {
+    /**
+     * Emit an instance creation node
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.InstanceCreationNode new
+     */
+    protected function emitInstanceCreation($op, InstanceCreationNode $new) {
       $n= $this->emitAll($op, $new->parameters);
       oel_add_new_object($op, $n, $this->resolve($new->type->name));
+
       oel_add_begin_variable_parse($op);
       $this->emitChain($op, $new);
       oel_add_end_variable_parse($op);
@@ -289,8 +333,18 @@
     }
 
 
-    protected function emitReturn($op, xp·compiler·ast·Node $return) {
-      $this->emitOne($op, $return->expression);
+    /**
+     * Emit a return statement
+     * <code>
+     *   return;                // void return
+     *   return [EXPRESSION];   // returning a value
+     * </code>
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ReturnNode new
+     */
+    protected function emitReturn($op, ReturnNode $return) {
+      $return->expression && $this->emitOne($op, $return->expression);
       oel_add_return($op);
     }
     
