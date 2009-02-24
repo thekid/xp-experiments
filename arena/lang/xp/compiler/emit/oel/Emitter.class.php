@@ -726,6 +726,11 @@
         Modifiers::isStatic($field->modifiers),
         $field->modifiers
       );
+      
+      // TODO: field initialization. For statics, we can use __static(),
+      // for other properties, we need to initialize them in the 
+      // constructor. For constant values, we might as well initialize
+      // them right here
     }
 
     /**
