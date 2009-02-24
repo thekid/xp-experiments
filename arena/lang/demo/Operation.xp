@@ -1,0 +1,25 @@
+public abstract enum Operation {
+  plus {
+    public int evaluate(int $x, int $y) { return $x + $y; }
+  },
+  minus {
+    public int evaluate(int $x, int $y) { return $x - $y; }
+  },
+  times {
+    public int evaluate(int $x, int $y) { return $x * $y; }
+  },
+  divided {
+    public int evaluate(int $x, int $y) { return $x / $y; }
+  };
+
+  public abstract int evaluate(int $x, int $y);
+  
+  public static void main(string[] $args) {
+    $a= $args[0];
+    $b= $args[1];
+
+    foreach ($op in self::values()) {
+      Console::writeLine($a, ' ', $op, ' ', $b, ' = ', $op->evaluate($a, $b));
+    }
+  } 
+}
