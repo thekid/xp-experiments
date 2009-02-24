@@ -44,6 +44,21 @@
     }
 
     /**
+     * Emit an array (a sequence of elements with a zero-based index)
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ArrayNode arr
+     */
+    protected function emitArray($op, ArrayNode $arr) {
+      oel_add_begin_array_init($op);
+      foreach ($arr->values as $value) {
+        $this->emitOne($op, $value);
+        oel_add_array_init_element($op);
+      }
+      oel_add_end_array_init($op);
+    }
+
+    /**
      * Emit numbers
      *
      * @param   resource op
