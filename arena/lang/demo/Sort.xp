@@ -1,0 +1,18 @@
+import util.Comparator;
+
+public class Sort implements Comparator {
+
+  public int compare(int $a, int $b) {
+    return $a - $b;
+  }
+
+  public static void main(string[] $args) {
+    $a= [1, 2, 5, 0, 10];
+
+    util.cmd.Console::writeLine('List: ', implode(' ', $a));
+
+    usort($a, [new self(), 'compare']);
+    
+    util.cmd.Console::writeLine('Sorted: ', implode(' ', $a));
+  }
+}
