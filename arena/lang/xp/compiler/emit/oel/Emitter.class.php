@@ -638,14 +638,25 @@
      * @param   xp.compiler.ast.MethodNode method
      */
     protected function emitMethod($op, MethodNode $method) {
-      $mop= oel_new_method(
-        $op, 
-        $method->name, 
-        FALSE,          // Returns reference
-        Modifiers::isStatic($method->modifiers),
-        $method->modifiers,
-        Modifiers::isFinal($method->modifiers)
-      );
+      if (Modifiers::isAbstract($method->modifiers)) {
+        // FIXME segfault $mop= oel_new_abstract_method(
+        $mop= oel_new_method(
+          $op, 
+          $method->name, 
+          FALSE,          // Returns reference
+          Modifiers::isStatic($method->modifiers),
+          $method->modifiers
+        );
+      } else {
+        $mop= oel_new_method(
+          $op, 
+          $method->name, 
+          FALSE,          // Returns reference
+          Modifiers::isStatic($method->modifiers),
+          $method->modifiers,
+          Modifiers::isFinal($method->modifiers)
+        );
+      }
 
       // Arguments
       foreach ((array)$method->arguments as $i => $arg) {
@@ -733,16 +744,26 @@
      * @param   xp.compiler.ast.EnumNode declaration
      */
     protected function emitEnum($op, EnumNode $declaration) {
-      oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve('lang.Enum'));
+      $abstract= Modifiers::isAbstract($declaration->modifiers);
+      $parent= $declaration->parent ? $declaration->parent->name : 'lang.Enum';
+      if ($abstract) {
+        // FIXME segfault oel_add_begin_abstract_class_declaration($op, $declaration->name->name, $this->resolve($parent));
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
+      } else {
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
+      }
       array_unshift($this->class, $this->resolve($declaration->name->name));
-      
+
+      // Interfaces
       foreach ($declaration->implements as $type) {
         oel_add_implements_interface($op, $this->resolve($type->name));
       }
       
       // Member declaration
+      $classes= array();
       foreach ($declaration->body['members'] as $member) { 
         oel_add_declare_property($op, $member->name, NULL, TRUE, MODIFIER_PUBLIC);
+        $classes[]= $member->body ? $this->class[0].'$'.$member->name : $this->class[0];
       }
       
       // public static self[] values() { return parent::membersOf(__CLASS__) }
@@ -754,10 +775,21 @@
 
       // Methods
       $this->emitAll($op, (array)$declaration->body['methods']);
-      
-      oel_add_end_class_declaration($op);
-      
+
       // Static initializer (FIXME: Should be static function __static)
+      if ($abstract) {      
+        // FIXME segfault oel_add_end_abstract_class_declaration($op);
+        oel_add_end_class_declaration($op);
+        
+        foreach ($declaration->body['members'] as $i => $member) { 
+          oel_add_begin_class_declaration($op, $classes[$i], $this->class[0]);
+          $this->emitAll($op, $member->body['methods']);
+          oel_add_end_class_declaration($op);
+        }
+      } else {      
+        oel_add_end_class_declaration($op);
+      }
+      
       foreach ($declaration->body['members'] as $i => $member) { 
         if ($member->value) {
           $this->emitOne($op, $member->value);
@@ -765,7 +797,8 @@
           oel_push_value($op, $i);
         }
         oel_push_value($op, $member->name);
-        oel_add_new_object($op, 2, $this->class[0]);
+        oel_add_new_object($op, 2, $classes[$i]);
+        
         oel_add_begin_variable_parse($op);
         oel_push_variable($op, $member->name, $this->class[0]);
         oel_add_assign($op);
@@ -783,12 +816,17 @@
      * @param   xp.compiler.ast.ClassNode declaration
      */
     protected function emitClass($op, ClassNode $declaration) {
-    
-      // Start
+      $abstract= Modifiers::isAbstract($declaration->modifiers);
       $parent= $declaration->parent ? $declaration->parent->name : 'lang.Object';
-      oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
+      if ($abstract) {
+        // FIXME segfault oel_add_begin_abstract_class_declaration($op, $declaration->name->name, $this->resolve($parent));
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
+      } else {
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
+      }
       array_unshift($this->class, $this->resolve($declaration->name->name));
 
+      // Interfaces
       foreach ($declaration->implements as $type) {
         oel_add_implements_interface($op, $this->resolve($type->name));
       }
@@ -808,7 +846,12 @@
       $this->emitAll($op, (array)$declaration->body['methods']);
       
       // Finish
-      oel_add_end_class_declaration($op);
+      if ($abstract) {
+        // FIXME segfault oel_add_end_abstract_class_declaration($op);
+        oel_add_end_class_declaration($op);
+      } else {
+        oel_add_end_class_declaration($op);
+      }
       $this->registerClass($op, $this->class[0], $declaration->name->name);
       array_shift($this->class);
     }
