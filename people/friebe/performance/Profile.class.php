@@ -69,16 +69,20 @@
 
       foreach ($this->fixture as $member) {
         with ($t->start()); {
-          $member->run($this->times);
-          $t->stop();
+          try {
+            $member->run($this->times);
+            $t->stop();
+            $result= sprintf(
+              '%.3f seconds for %d calls (%.0f / second)',
+              $t->elapsedTime(), 
+              $this->times,
+              $this->times * (1/ $t->elapsedTime())
+            );              
+          } catch (Throwable $e) {
+            $result= '*** '.$e->getMessage();
+          }
 
-          $this->out->writeLinef(
-            '%s: %.3f seconds for %d calls (%.0f / second)', 
-            $member->name(), 
-            $t->elapsedTime(), 
-            $this->times,
-            $this->times * (1/ $t->elapsedTime())
-          );
+          $this->out->writeLine($member->name(), ': ' , $result);
         }
       }
       $this->out->writeLinef(
