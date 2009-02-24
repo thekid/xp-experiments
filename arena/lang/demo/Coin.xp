@@ -1,6 +1,20 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Coin enumeration
+ * 
+ * @purpose  Demo
+ */
 public enum Coin {
   penny(1), nickel(2), dime(10), quarter(25);
 
+  /**
+   * Return this coin's color
+   *
+   */
   public string color() {
     switch ($this) {
       case self::$penny: return 'copper';
@@ -9,6 +23,10 @@ public enum Coin {
     }
   }
 
+  /**
+   * Return this coin's value in cent
+   *
+   */
   public int value() {
     return $this->ordinal;
   }
