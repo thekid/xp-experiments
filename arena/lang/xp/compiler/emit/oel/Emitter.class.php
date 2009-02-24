@@ -735,15 +735,14 @@
     protected function emitEnum($op, EnumNode $declaration) {
       oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve('lang.Enum'));
       array_unshift($this->class, $this->resolve($declaration->name->name));
-     
+      
+      foreach ($declaration->implements as $type) {
+        oel_add_implements_interface($op, $this->resolve($type->name));
+      }
+      
+      // Member declaration
       foreach ($declaration->body['members'] as $member) { 
-        oel_add_declare_property(
-          $op, 
-          $member->name,
-          NULL,
-          TRUE,
-          MODIFIER_PUBLIC
-        );
+        oel_add_declare_property($op, $member->name, NULL, TRUE, MODIFIER_PUBLIC);
       }
       
       // public static self[] values() { return parent::membersOf(__CLASS__) }
@@ -789,6 +788,10 @@
       $parent= $declaration->parent ? $declaration->parent->name : 'lang.Object';
       oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
       array_unshift($this->class, $this->resolve($declaration->name->name));
+
+      foreach ($declaration->implements as $type) {
+        oel_add_implements_interface($op, $this->resolve($type->name));
+      }
       
       // Fields
       foreach ($declaration->body['fields'] as $node) {
