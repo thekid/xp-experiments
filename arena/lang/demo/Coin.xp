@@ -1,17 +1,21 @@
 public enum Coin {
-  penny, nickel, dime, quarter;
+  penny(1), nickel(2), dime(10), quarter(25);
 
-  public function color() {
+  public string color() {
     switch ($this) {
       case self::$penny: return 'copper';
       case self::$nickel: return 'nickel';
       case self::$dime: case self::$quarter: return 'silver';
     }
   }
+
+  public int value() {
+    return $this->ordinal;
+  }
  
   public static void main(string[] $args) {
     foreach ($coin in Coin::values()) {
-      Console::writeLine('- A ', $coin->name(), '\'s color is ', $coin->color());
+      Console::writeLine('- A ', $coin->name(), '\'s color is ', $coin->color(), ' and it\'s worth ', $coin->value(), '¢');
     }
   } 
 }

@@ -648,7 +648,7 @@
       );
 
       // Arguments
-      foreach ($method->arguments as $i => $arg) {
+      foreach ((array)$method->arguments as $i => $arg) {
         oel_add_receive_arg($mop, $i + 1, substr($arg['name'], 1));  // without '$'
         $this->types[new VariableNode($arg['name'])]= $arg['type'];
       }
@@ -704,6 +704,31 @@
     /**
      * Emit an enum declaration
      *
+     * Basic form:
+     * <code>
+     *   public enum Day { MON, TUE, WED, THU, FRI, SAT, SUN }
+     * </code>
+     *
+     * With values:
+     * <code>
+     *   public enum Coin { penny(1), nickel(2), dime(10), quarter(25) }
+     * </code>
+     *
+     * Abstract:
+     * <code>
+     *   public abstract enum Operation {
+     *     plus {
+     *       public int evaluate(int $x, int $y) { return $x + $y; }
+     *     },
+     *     minus {
+     *       public int evaluate(int $x, int $y) { return $x - $y; }
+     *     };
+     *
+     *     public abstract int evaluate(int $x, int $y);
+     *   }
+     * </code>
+     *
+     * @see     
      * @param   resource op
      * @param   xp.compiler.ast.EnumNode declaration
      */
@@ -735,7 +760,11 @@
       
       // Static initializer (FIXME: Should be static function __static)
       foreach ($declaration->body['members'] as $i => $member) { 
-        oel_push_value($op, $i);
+        if ($member->value) {
+          $this->emitOne($op, $member->value);
+        } else {
+          oel_push_value($op, $i);
+        }
         oel_push_value($op, $member->name);
         oel_add_new_object($op, 2, $this->class[0]);
         oel_add_begin_variable_parse($op);
@@ -794,6 +823,17 @@
     protected function emitReturn($op, ReturnNode $return) {
       $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
       $return->expression && $this->emitOne($op, $return->expression);
+      
+      // Special case when returning variables: Do not end variable parse 
+      // but instead call free on result. Seems weird but has to do with
+      // how variables are internally handled!
+      if ($return->expression instanceof VariableNode) {
+        oel_add_begin_variable_parse($op);
+        oel_push_variable($op, ltrim($return->expression->name, '$'));    // without '$'
+        $this->emitChain($op, $return->expression);
+        oel_add_free($op);
+      }
+      
       oel_add_return($op);
     }
     
@@ -890,7 +930,7 @@
       // Imports. Ensure lang.Enum class is always loaded
       $n= 1;
       oel_push_value($this->op, 'lang.Enum');
-      foreach ($tree->imports as $import) {
+      foreach ((array)$tree->imports as $import) {
         if ('.*' == substr($import->name, -2)) {    // FIXME: Should be instanceof PatternImport?
           foreach (Package::forName(substr($import->name, 0, -2))->getClassNames() as $name) {
             oel_push_value($this->op, $name);
