@@ -682,6 +682,71 @@
       $constructor->body && $this->emitAll($cop, $constructor->body);
       oel_finalize($cop);
     }
+    
+    /**
+     * Emits class registration
+     *
+     * <code>
+     *   xp::$registry['class.'.$name]= $qualified;
+     * </code>
+     *
+     * @param   resource op
+     * @param   string name
+     * @param   string qualified
+     */
+    protected function registerClass($op, $name, $qualified) {
+      oel_push_value($op, 'class.'.$name);
+      oel_push_value($op, $qualified);
+      oel_add_call_method_static($op, 2, 'registry', 'xp');
+      oel_add_free($op);
+    }
+
+    /**
+     * Emit an enum declaration
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.EnumNode declaration
+     */
+    protected function emitEnum($op, EnumNode $declaration) {
+      oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve('lang.Enum'));
+      array_unshift($this->class, $this->resolve($declaration->name->name));
+     
+      foreach ($declaration->body['members'] as $member) { 
+        oel_add_declare_property(
+          $op, 
+          $member->name,
+          NULL,
+          TRUE,
+          MODIFIER_PUBLIC
+        );
+      }
+      
+      // public static self[] values() { return parent::membersOf(__CLASS__) }
+      $vop= oel_new_method($op, 'values', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
+      oel_push_value($vop, $this->class[0]);
+      oel_add_call_method_static($vop, 1, 'membersOf', 'parent');
+      oel_add_return($vop);
+      oel_finalize($vop);
+
+      // Methods
+      $this->emitAll($op, (array)$declaration->body['methods']);
+      
+      oel_add_end_class_declaration($op);
+      
+      // Static initializer (FIXME: Should be static function __static)
+      foreach ($declaration->body['members'] as $i => $member) { 
+        oel_push_value($op, $i);
+        oel_push_value($op, $member->name);
+        oel_add_new_object($op, 2, $this->class[0]);
+        oel_add_begin_variable_parse($op);
+        oel_push_variable($op, $member->name, $this->class[0]);
+        oel_add_assign($op);
+        oel_add_free($op);
+      }      
+      
+      $this->registerClass($op, $this->class[0], $declaration->name->name);
+      array_shift($this->class);
+    }
 
     /**
      * Emit a class declaration
@@ -712,13 +777,7 @@
       
       // Finish
       oel_add_end_class_declaration($op);
-
-      // xp::$registry['class.'.$name]= $qualified;
-      oel_push_value($op, 'class.'.$this->class[0]);
-      oel_push_value($op, $declaration->name->name);
-      oel_add_call_method_static($op, 2, 'registry', 'xp');
-      oel_add_free($op);
-    
+      $this->registerClass($op, $this->class[0], $declaration->name->name);
       array_shift($this->class);
     }
 
@@ -828,8 +887,9 @@
       oel_set_source_file($this->op, $tree->origin);
       oel_set_source_line($this->op, 0);
       
-      // Imports
-      $n= 0;
+      // Imports. Ensure lang.Enum class is always loaded
+      $n= 1;
+      oel_push_value($this->op, 'lang.Enum');
       foreach ($tree->imports as $import) {
         if ('.*' == substr($import->name, -2)) {    // FIXME: Should be instanceof PatternImport?
           foreach (Package::forName(substr($import->name, 0, -2))->getClassNames() as $name) {
