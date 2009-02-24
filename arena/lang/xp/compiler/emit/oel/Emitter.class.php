@@ -623,11 +623,11 @@
       }
 
       $this->emitOne($op, $assign->expression);
+      $this->types[$assign->variable]= $this->typeOf($assign->expression);
 
       oel_add_begin_variable_parse($op);
       oel_push_variable($op, ltrim($assign->variable->name, '$'));    // without '$'
       $this->emitChain($op, $assign->variable);
-
       oel_add_assign($op);    // TODO: depending on $assign->op, use other assignments
       $assign->free && oel_add_free($op);
     }
@@ -777,6 +777,27 @@
         $emitted+= $this->emitOne($op, $node);
       }
       return $emitted;
+    }
+
+    /**
+     * Resolve a class name
+     *
+     * @param   string name
+     * @return  string resolved
+     */
+    protected function typeOf(xp·compiler·ast·Node $node) {
+      if ($node instanceof ArrayNode) {
+        return new TypeName('*[]');     // FIXME: Component type
+      } else if ($node instanceof StringNode) {
+        return new TypeName('string');
+      } else if ($node instanceof NumberNode) {
+        return new TypeName('int');     // FIXME: Floats
+      } else if ($node instanceof VariableNode) {
+        return $this->types[$node];
+      } else {
+        // DEBUG Console::$err->writeLine('Warning: Cannot determine type for '.xp::stringOf($node));
+        return new TypeName(NULL);
+      }
     }
     
     /**
