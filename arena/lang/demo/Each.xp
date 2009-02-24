@@ -11,5 +11,9 @@ public class Each<T> {
     foreach ($value in new self<string>($args)->values) {
       Console::writeLine('- ', $value);
     }
+    for ($i= 0; $i < 10; $i++) {
+      if ($i > 5) continue;
+      Console::writeLine('- ', $i);
+    }
   }  
 }

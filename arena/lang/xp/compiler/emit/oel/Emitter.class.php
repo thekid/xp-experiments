@@ -21,11 +21,12 @@
    */
   class xp·compiler·emit·oel·Emitter extends Emitter {
     protected 
-      $op         = NULL,
-      $errors     = array(),
-      $class      = array(),
-      $finalizers = array(NULL),
-      $types      = NULL;
+      $op           = NULL,
+      $errors       = array(),
+      $class        = array(),
+      $finalizers   = array(NULL),
+      $continuation = array(NULL),
+      $types        = NULL;
     
     protected function emitInvocation($op, $inv) {
       $n= $this->emitAll($op, $inv->parameters);
@@ -307,6 +308,7 @@
      * @param   xp.compiler.ast.ContinueNode statement
      */
     protected function emitContinue($op, ContinueNode $statement) {
+      $this->continuation[0] && $this->emitAll($op, $this->continuation[0]);
       oel_add_continue($op);
     }
 
@@ -363,17 +365,14 @@
     protected function emitFor($op, ForNode $loop) {
       $this->emitAll($op, (array)$loop->initialization);
 
+      array_unshift($this->continuation, $loop->loop);
       oel_add_begin_while($op);
       $this->emitAll($op, (array)$loop->condition);
       oel_add_begin_while_body($op); {
-        foreach ($loop->statements as $i => $statement) {
-          if ($statement instanceof ContinueNode) {
-            $this->emitAll($op, (array)$loop->loop);
-          }
-          $this->emitOne($op, $statement);
-        }
+        $this->emitAll($op, (array)$loop->statements);
         $this->emitAll($op, (array)$loop->loop);
       }
+      array_shift($this->continuation);
       oel_add_end_while($op);
     }
     
