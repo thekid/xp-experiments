@@ -1,0 +1,9 @@
+public enum Coin {
+  penny, nickel, dime, quarter;
+ 
+  public static void main(string[] $args) {
+    foreach ($coin in Coin::values()) {
+      Console::writeLine('- ', $coin->ordinal(), ' ', $coin->name());
+    }
+  } 
+}
