@@ -211,6 +211,7 @@
       $this->emitOne($op, $bin->rhs);
       $this->emitOne($op, $bin->lhs);
       oel_add_binary_op($op, $ops[$bin->op]);
+      $bin->free && oel_add_free($op);
     }
 
     /**
@@ -239,6 +240,7 @@
       oel_add_begin_variable_parse($op);
       oel_push_variable($op, ltrim($un->expression->name, '$'));    // without '$'
       oel_add_incdec_op($op, $ops[$un->op][$un->postfix]);
+      $un->free && oel_add_free($op);
     }
 
     /**
@@ -344,10 +346,7 @@
      * @param   xp.compiler.ast.ForNode loop
      */
     protected function emitFor($op, ForNode $loop) {
-      foreach ($loop->initialization as $init) {
-        $this->emitOne($op, $init);
-        oel_add_free($op);
-      }
+      $this->emitAll($op, (array)$loop->initialization);
 
       oel_add_begin_while($op);
       $this->emitAll($op, (array)$loop->condition);
@@ -355,12 +354,10 @@
         foreach ($loop->statements as $i => $statement) {
           if ($statement instanceof ContinueNode) {
             $this->emitAll($op, (array)$loop->loop);
-            oel_add_free($op);
           }
           $this->emitOne($op, $statement);
         }
         $this->emitAll($op, (array)$loop->loop);
-        oel_add_free($op);
       }
       oel_add_end_while($op);
     }
