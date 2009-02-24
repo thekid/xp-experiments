@@ -377,6 +377,44 @@
       }
       oel_add_end_else($op);
     }
+
+    /**
+     * Emit a switch case
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.CaseNode case
+     */
+    protected function emitCase($op, CaseNode $case) {
+      $this->emitOne($op, $case->expression);
+      oel_add_begin_case($op);
+      $this->emitAll($op, (array)$case->statements);
+      oel_add_end_case($op);
+    }
+
+    /**
+     * Emit the switch default case
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.DefaultNode default
+     */
+    protected function emitDefault($op, DefaultNode $default) {
+      oel_add_begin_default($op);
+      $this->emitAll($op, (array)$default->statements);
+      oel_add_end_default($op);
+    }
+
+    /**
+     * Emit switch statement
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.SwitchNode switch
+     */
+    protected function emitSwitch($op, SwitchNode $switch) {
+      $this->emitOne($op, $switch->expression);
+      oel_add_begin_switch($op);
+      $this->emitAll($op, (array)$switch->cases);
+      oel_add_end_switch($op);
+    }
     
     /**
      * Emit class members, for example:
