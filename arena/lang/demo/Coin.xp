@@ -1,9 +1,17 @@
 public enum Coin {
   penny, nickel, dime, quarter;
+
+  public function color() {
+    switch ($this) {
+      case self::$penny: return 'copper';
+      case self::$nickel: return 'nickel';
+      case self::$dime: case self::$quarter: return 'silver';
+    }
+  }
  
   public static void main(string[] $args) {
     foreach ($coin in Coin::values()) {
-      Console::writeLine('- ', $coin->ordinal(), ' ', $coin->name());
+      Console::writeLine('- A ', $coin->name(), '\'s color is ', $coin->color());
     }
   } 
 }
