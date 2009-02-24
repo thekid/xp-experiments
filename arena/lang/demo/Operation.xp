@@ -8,7 +8,7 @@ public abstract enum Operation {
   times {
     public int evaluate(int $x, int $y) { return $x * $y; }
   },
-  divided {
+  divided_by {
     public int evaluate(int $x, int $y) { return $x / $y; }
   };
 
