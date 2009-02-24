@@ -711,6 +711,22 @@
       oel_add_call_method_static($op, 2, 'registry', 'xp');
       oel_add_free($op);
     }
+    
+    /**
+     * Emit a class field
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ConstructorNode constructor
+     */
+    protected function emitField($op, FieldNode $field) {
+      oel_add_declare_property(
+        $op, 
+        ltrim($field->name, '$'),
+        NULL,           // Initial value
+        Modifiers::isStatic($field->modifiers),
+        $field->modifiers
+      );
+    }
 
     /**
      * Emit an enum declaration
@@ -831,18 +847,8 @@
         oel_add_implements_interface($op, $this->resolve($type->name));
       }
       
-      // Fields
-      foreach ($declaration->body['fields'] as $node) {
-        oel_add_declare_property(
-          $op, 
-          ltrim($node->name, '$'),
-          NULL,           // Initial value
-          Modifiers::isStatic($node->modifiers),
-          $node->modifiers
-        );
-      }
-      
-      // Methods
+      // Members
+      $this->emitAll($op, (array)$declaration->body['fields']);
       $this->emitAll($op, (array)$declaration->body['methods']);
       
       // Finish
