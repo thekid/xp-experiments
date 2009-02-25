@@ -78,7 +78,7 @@
       // {{{ Run - FIXME - this should be done somewhere else! 
       xp::gc();
       $this->out->writeLine('===> Running ', $class.'::main()');
-      eval ($class.'::main($this->args);');
+      call_user_func(array($class, 'main'), $this->args);
       // }}}
     }
   }
