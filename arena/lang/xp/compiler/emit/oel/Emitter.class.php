@@ -24,6 +24,7 @@
       $op           = NULL,
       $errors       = array(),
       $class        = array(),
+      $imports      = array(NULL),
       $used         = array(NULL),
       $finalizers   = array(NULL),
       $metadata     = array(NULL),
@@ -942,7 +943,7 @@
       if ($declaration->body['static']) {
         $sop= oel_new_method($op, '__static', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
         foreach ($declaration->body['static'] as $statements) {
-          $this->emitAll($sop, $statements);
+          $this->emitAll($sop, (array)$statements);
         }
         oel_finalize($sop);
       }
