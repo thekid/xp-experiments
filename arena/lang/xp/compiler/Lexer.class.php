@@ -32,6 +32,7 @@
         'enum'          => Parser::T_ENUM,
         'extends'       => Parser::T_EXTENDS,
         'implements'    => Parser::T_IMPLEMENTS,
+        'instanceof'    => Parser::T_INSTANCEOF,
 
         'operator'      => Parser::T_OPERATOR,
         'throws'        => Parser::T_THROWS,

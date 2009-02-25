@@ -35,6 +35,7 @@
     'xp.compiler.ast.ArrayNode',
     'xp.compiler.ast.MapNode',
     'xp.compiler.ast.ClassMemberNode',
+    'xp.compiler.ast.InstanceOfNode',
     'xp.compiler.ast.ComparisonNode',
     'xp.compiler.ast.BinaryOpNode',
     'xp.compiler.ast.BooleanOpNode',
@@ -50,11 +51,11 @@
   );
 %}
 
-%left ',' '=' '%' '?' ':' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_BOOLEAN_OR T_BOOLEAN_AND
+%left ',' '=' '%' '?' ':' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_BOOLEAN_OR T_BOOLEAN_AND T_INSTANCEOF
 %left '+' '-'
 %left '*' '/'
-%right '[' '!' '~' T_INC T_DEC
-%nonassoc '<' '>' T_SE T_GE T_OBJECT_OPERATOR T_EQUALS T_NOT_EQUALS
+%right '[' '!' '~' T_INC T_DEC 
+%nonassoc '<' '>' T_SE T_GE T_OBJECT_OPERATOR T_EQUALS T_NOT_EQUALS 
 
 %token T_WORD 260
 %token T_STRING 261
@@ -79,6 +80,7 @@
 
 %token T_EXTENDS 310
 %token T_IMPLEMENTS 311
+%token T_INSTANCEOF 312
 
 %token T_OPERATOR 320
 %token T_THROWS 321
@@ -615,11 +617,16 @@ expression:
       $$->rhs= $3; 
       $$->op= '||'; 
     }
-  | expression T_BOOLEAN_AND expression  { 
+  | expression T_BOOLEAN_AND expression { 
       $$= $yyLex->create(new BinaryOpNode()); 
       $$->lhs= $1; 
       $$->rhs= $3; 
       $$->op= '&&'; 
+    }
+  | expression T_INSTANCEOF typename {
+      $$= $yyLex->create(new InstanceOfNode()); 
+      $$->expression= $1; 
+      $$->type= $3; 
     }
 ;
 

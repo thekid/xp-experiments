@@ -28,7 +28,13 @@
       $continuation = array(NULL),
       $types        = NULL;
     
-    protected function emitInvocation($op, $inv) {
+    /**
+     * Emit invocations
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.InvocationNode inv
+     */
+    protected function emitInvocation($op, InvocationNode $inv) {
       $n= $this->emitAll($op, $inv->parameters);
       oel_add_call_function($op, $n, $inv->name);
       $inv->free && oel_add_free($op);
@@ -865,6 +871,18 @@
       }
       $this->registerClass($op, $this->class[0], $declaration->name->name);
       array_shift($this->class);
+    }
+
+    /**
+     * Emit instanceof
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.InstanceOfNode instanceof
+     */
+    protected function emitInstanceOf($op, InstanceOfNode $instanceof) {
+      $this->emitOne($op, $instanceof->expression);
+      oel_add_instanceof($op, $this->resolve($instanceof->type->name));
+      $instanceof->free && oel_add_free($op);
     }
 
     /**
