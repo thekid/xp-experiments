@@ -25,6 +25,7 @@
       $errors       = array(),
       $class        = array(),
       $finalizers   = array(NULL),
+      $metadata     = array(NULL),
       $continuation = array(NULL),
       $types        = NULL;
     
@@ -101,6 +102,7 @@
       
       $this->emitChain($op, $var);
       oel_add_end_variable_parse($op);
+      $var->free && oel_add_free($op);
     }
 
     /**
@@ -252,9 +254,14 @@
         $this->emitOne($op, $un->expression);
         oel_add_unary_op($op, OEL_UNARY_OP_BOOL_NOT);
         return;
-      }
-
-      if (!$un->expression instanceof VariableNode) {
+      } else if ('-' == $un->op) {
+        $this->emitOne($op, new BinaryOpNode(array(
+          'lhs' => $un->expression,
+          'rhs' => new NumberNode(array('value' => -1)),
+          'op'  => '*'
+        )));
+        return;
+      } else if (!$un->expression instanceof VariableNode) {
         $this->errors[]= 'Cannot perform unary '.$un->op.' on '.xp::stringOf($un->expression);
         return;
       }
@@ -335,14 +342,22 @@
      * @param   xp.compiler.ast.ForeachNode loop
      */
     protected function emitForeach($op, ForeachNode $loop) {
-      $this->emitOne($op, $loop->expression);
+
+      // Special case when iterating on variables: Do not end variable parse 
+      if ($loop->expression instanceof VariableNode) {
+        oel_add_begin_variable_parse($op);
+        oel_push_variable($op, ltrim($loop->expression->name, '$'));    // without '$'
+        $this->emitChain($op, $loop->expression);
+      } else {
+        $this->emitOne($op, $loop->expression);
+      }
       oel_add_begin_foreach($op); {
         oel_add_begin_variable_parse($op);
         oel_push_variable($op, ltrim($loop->assignment, '$'));
         oel_push_value($op, NULL);
       }
       oel_add_begin_foreach_body($op); {
-        $this->emitAll($op, $loop->statements);
+        $this->emitAll($op, (array)$loop->statements);
       }
       oel_add_end_foreach($op);
     }
@@ -393,7 +408,7 @@
       oel_add_begin_if($op); {
         $this->emitAll($op, (array)$if->statements);
       } oel_add_end_if($op); {
-        $this->emitAll($op, (array)$if->otherwise->statements);
+        $if->otherwise && $this->emitAll($op, (array)$if->otherwise->statements);
       }
       oel_add_end_else($op);
     }
@@ -453,7 +468,6 @@
         // Static method call
         $n= $this->emitAll($op, (array)$ref->member->parameters);
         oel_add_call_method_static($op, $n, $ref->member->name, $this->resolve($ref->class->name));
-        $ref->free && oel_add_free($op);
       } else if ($ref->member instanceof VariableNode && '$class' === $ref->member->name) {
       
         // Magic "class" member
@@ -475,6 +489,7 @@
         $this->emitChain($op, $ref->member);
         oel_add_end_variable_parse($op);
       }
+      $ref->free && oel_add_free($op);
     }
     
     /**
@@ -644,6 +659,14 @@
      * @param   xp.compiler.ast.MethodNode method
      */
     protected function emitMethod($op, MethodNode $method) {
+      $meta= array(
+        DETAIL_ARGUMENTS    => array(),
+        DETAIL_RETURNS      => $method->returns->name,
+        DETAIL_THROWS       => array(),
+        DETAIL_COMMENT      => '',
+        DETAIL_ANNOTATIONS  => array()
+      );
+
       if (Modifiers::isAbstract($method->modifiers)) {
         // FIXME segfault $mop= oel_new_abstract_method(
         $mop= oel_new_method(
@@ -663,6 +686,26 @@
           Modifiers::isFinal($method->modifiers)
         );
       }
+      
+      // Annotations.
+      foreach ((array)$method->annotations as $annotation) {
+        $params= array();
+        foreach ($annotation->parameters as $name => $value) {
+          if ($value instanceof ClassMemberNode) {    // class literal
+            $params[$name]= $this->resolve($value->class->name);
+          } else if ($value instanceof StringNode) {
+            $params[$name]= $value->value;
+          }
+        }
+
+        if (!$annotation->parameters) {
+          $meta[DETAIL_ANNOTATIONS][$annotation->type]= NULL;
+        } else if (isset($annotation->parameters['default'])) {
+          $meta[DETAIL_ANNOTATIONS][$annotation->type]= $params['default'];
+        } else {
+          $meta[DETAIL_ANNOTATIONS][$annotation->type]= $params;
+        }
+      }
 
       // Arguments
       foreach ((array)$method->arguments as $i => $arg) {
@@ -672,6 +715,7 @@
 
       $method->body && $this->emitAll($mop, $method->body);
       oel_finalize($mop);
+      $this->metadata[0][1][$method->name]= $meta;
     }
 
     /**
@@ -705,6 +749,7 @@
      *
      * <code>
      *   xp::$registry['class.'.$name]= $qualified;
+     *   xp::$registry['details.'.$name]= $meta;
      * </code>
      *
      * @param   resource op
@@ -714,6 +759,11 @@
     protected function registerClass($op, $name, $qualified) {
       oel_push_value($op, 'class.'.$name);
       oel_push_value($op, $qualified);
+      oel_add_call_method_static($op, 2, 'registry', 'xp');
+      oel_add_free($op);
+
+      oel_push_value($op, 'details.'.$name);
+      oel_push_value($op, $this->metadata[0]);
       oel_add_call_method_static($op, 2, 'registry', 'xp');
       oel_add_free($op);
     }
@@ -780,6 +830,7 @@
         oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
       }
       array_unshift($this->class, $this->resolve($declaration->name->name));
+      array_unshift($this->metadata, array(array(), array()));
 
       // Interfaces
       foreach ($declaration->implements as $type) {
@@ -833,6 +884,7 @@
       }      
       
       $this->registerClass($op, $this->class[0], $declaration->name->name);
+      array_shift($this->metadata);
       array_shift($this->class);
     }
 
@@ -852,6 +904,7 @@
         oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
       }
       array_unshift($this->class, $this->resolve($declaration->name->name));
+      array_unshift($this->metadata, array(array(), array()));
 
       // Interfaces
       foreach ($declaration->implements as $type) {
@@ -870,6 +923,7 @@
         oel_add_end_class_declaration($op);
       }
       $this->registerClass($op, $this->class[0], $declaration->name->name);
+      array_shift($this->metadata);
       array_shift($this->class);
     }
 
@@ -923,7 +977,7 @@
       $target= 'emit'.substr(get_class($node), 0, -strlen('Node'));
       if (method_exists($this, $target)) {
         oel_set_source_line($op, $node->position[0]);
-        // DEBUG Console::$err->writeLine('@', $node->position[0], ' Emit ', $node->getClassName(), ' ', $node->hashCode());
+        // DEBUG Console::$err->writeLine('@', $node->position[0], ' Emit ', $node->getClassName(), '<', $node->free, '> ', $node->hashCode());
         try {
           call_user_func_array(array($this, $target), array($op, $node));
         } catch (Throwable $e) {
@@ -966,7 +1020,7 @@
       } else if ($node instanceof NumberNode) {
         return new TypeName('int');     // FIXME: Floats
       } else if ($node instanceof VariableNode) {
-        return $this->types[$node];
+        return $this->types->containsKey($node) ? $this->types[$node] : new TypeName(NULL);
       } else {
         // DEBUG Console::$err->writeLine('Warning: Cannot determine type for '.xp::stringOf($node));
         return new TypeName(NULL);

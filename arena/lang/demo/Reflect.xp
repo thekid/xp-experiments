@@ -4,20 +4,12 @@ public class Reflect {
 
   protected static void dump(lang.XPClass $class) {
     $parent= $class->getParentClass();
-    Console::writeLinef(
-      'class %s%s {',
+    Console::writef(
+      'class %s%s ',
       $class->getName(),
       $parent ? ' extends ' ~ $parent->getName() : ''
     );
-    foreach ($method in $class->getMethods()) {
-      Console::writeLinef(
-        '  - %s %s::%s()', 
-        implode(' ', lang.reflect.Modifiers::namesOf($modifiers)),
-        $method->getDeclaringClass()->getName(),
-        $method->getName()
-      );
-    }
-    Console::writeLine('}');
+    Console::writeLine($class->getMethods());
   }
 
   public static void main(string[] $args) {
