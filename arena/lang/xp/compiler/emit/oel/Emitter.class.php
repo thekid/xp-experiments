@@ -915,6 +915,15 @@
       $this->emitAll($op, (array)$declaration->body['fields']);
       $this->emitAll($op, (array)$declaration->body['methods']);
       
+      // Static initializer
+      if ($declaration->body['static']) {
+        $sop= oel_new_method($op, '__static', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
+        foreach ($declaration->body['static'] as $statements) {
+          $this->emitAll($op, $statements);
+        }
+        oel_finalize($sop);
+      }
+      
       // Finish
       if ($abstract) {
         // FIXME segfault oel_add_end_abstract_class_declaration($op);

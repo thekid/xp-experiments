@@ -75,6 +75,8 @@
       $class= $this->emitter->emit($ast);
       $this->out->writeLine('===> Compiled class ', $class);
       
+      method_exists($class, '__static') && call_user_func(array($class, '__static'));
+
       // {{{ Run - FIXME - this should be done somewhere else! 
       xp::gc();
       $this->out->writeLine('===> Running ', $class.'::main()');
