@@ -12,6 +12,14 @@
    * @purpose  purpose
    */
   class StringNode extends ConstantValueNode {
-    
+
+    /**
+     * Returns a hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return 'xp.string:'.$this->value;
+    }
   }
 ?>
