@@ -19,7 +19,7 @@ public abstract enum Operation {
     $b= $args[1];
 
     foreach ($op in self::values()) {
-      Console::writeLine($a, ' ', $op, ' ', $b, ' = ', $op.evaluate($a, $b));
+      util.cmd.Console::writeLine($a, ' ', $op, ' ', $b, ' = ', $op.evaluate($a, $b));
     }
   } 
 }

@@ -33,7 +33,7 @@ public enum Coin {
  
   public static void main(string[] $args) {
     foreach ($coin in Coin::values()) {
-      Console::writeLine('- A ', $coin.name(), '\'s color is ', $coin.color(), ' and it\'s worth ', $coin.value(), '¢');
+      util.cmd.Console::writeLine('- A ', $coin.name(), '\'s color is ', $coin.color(), ' and it\'s worth ', $coin.value(), '¢');
     }
   } 
 }

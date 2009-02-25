@@ -24,6 +24,7 @@
       $op           = NULL,
       $errors       = array(),
       $class        = array(),
+      $used         = array(NULL),
       $finalizers   = array(NULL),
       $metadata     = array(NULL),
       $continuation = array(NULL),
@@ -821,20 +822,31 @@
      * @param   xp.compiler.ast.EnumNode declaration
      */
     protected function emitEnum($op, EnumNode $declaration) {
-      $abstract= Modifiers::isAbstract($declaration->modifiers);
       $parent= $declaration->parent ? $declaration->parent->name : 'lang.Enum';
+      
+      // Ensure parent class and interfaces are loaded
+      $n= 1;
+      oel_push_value($op, $this->resolve($parent, TRUE, FALSE));
+      foreach ($declaration->implements as $type) {
+        oel_push_value($op, $this->resolve($type->name, TRUE, FALSE));
+        $n++;
+      }
+      oel_add_call_function($op, $n, 'uses');
+      oel_add_free($op);
+
+      $abstract= Modifiers::isAbstract($declaration->modifiers);
       if ($abstract) {
         // FIXME segfault oel_add_begin_abstract_class_declaration($op, $declaration->name->name, $this->resolve($parent));
         oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
       } else {
         oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
       }
-      array_unshift($this->class, $this->resolve($declaration->name->name));
+      array_unshift($this->class, $declaration->name->name);
       array_unshift($this->metadata, array(array(), array()));
 
       // Interfaces
       foreach ($declaration->implements as $type) {
-        oel_add_implements_interface($op, $this->resolve($type->name));
+        oel_add_implements_interface($op, $this->resolve($type->name, FALSE, FALSE));
       }
       
       // Member declaration
@@ -895,20 +907,31 @@
      * @param   xp.compiler.ast.ClassNode declaration
      */
     protected function emitClass($op, ClassNode $declaration) {
-      $abstract= Modifiers::isAbstract($declaration->modifiers);
       $parent= $declaration->parent ? $declaration->parent->name : 'lang.Object';
+    
+      // Ensure parent class and interfaces are loaded
+      $n= 1;
+      oel_push_value($op, $this->resolve($parent, TRUE, FALSE));
+      foreach ($declaration->implements as $type) {
+        oel_push_value($op, $this->resolve($type->name, TRUE, FALSE));
+        $n++;
+      }
+      oel_add_call_function($op, $n, 'uses');
+      oel_add_free($op);
+    
+      $abstract= Modifiers::isAbstract($declaration->modifiers);
       if ($abstract) {
         // FIXME segfault oel_add_begin_abstract_class_declaration($op, $declaration->name->name, $this->resolve($parent));
-        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent, FALSE, FALSE));
       } else {
-        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent, FALSE, FALSE));
       }
-      array_unshift($this->class, $this->resolve($declaration->name->name));
+      array_unshift($this->class, $declaration->name->name);
       array_unshift($this->metadata, array(array(), array()));
 
       // Interfaces
       foreach ($declaration->implements as $type) {
-        oel_add_implements_interface($op, $this->resolve($type->name));
+        oel_add_implements_interface($op, $this->resolve($type->name, FALSE, FALSE));
       }
       
       // Members
@@ -962,13 +985,10 @@
       $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
       
       // Special case when returning variables: Do not end variable parse 
-      // but instead call free on result. Seems weird but has to do with
-      // how variables are internally handled!
       if ($return->expression instanceof VariableNode) {
         oel_add_begin_variable_parse($op);
         oel_push_variable($op, ltrim($return->expression->name, '$'));    // without '$'
         $this->emitChain($op, $return->expression);
-        oel_add_free($op);
       } else if ($return->expression) {
         $this->emitOne($op, $return->expression);
       } else {
@@ -1045,12 +1065,18 @@
      * @param   string name
      * @return  string resolved
      */
-    protected function resolve($name) {
-      if ('self' === $name) {
+    protected function resolve($name, $rq= FALSE, $re= TRUE) {
+      if ('self' === $name || $name === $this->class[0]) {
         return $this->class[0];
+      } else if (strpos($name, '.')) {
+        $qualified= $name;
+      } else if (isset($this->imports[0][$name])) {
+        $qualified= $this->imports[0][$name];
       } else {
-        return xp::reflect($name);
+        $this->errors[]= 'Cannot resolve class '.$name;
       }
+      $re && $this->used[0][$qualified]= TRUE;
+      return $rq ? $qualified : xp::reflect($qualified);
     }
     
     /**
@@ -1068,25 +1094,27 @@
       oel_set_source_file($this->op, $tree->origin);
       oel_set_source_line($this->op, 0);
       
-      // Imports. Ensure lang.Enum class is always loaded
-      $n= 1;
-      oel_push_value($this->op, 'lang.Enum');
+      // Imports
+      array_unshift($this->imports, array());
       foreach ((array)$tree->imports as $import) {
         if ('.*' == substr($import->name, -2)) {    // FIXME: Should be instanceof PatternImport?
           foreach (Package::forName(substr($import->name, 0, -2))->getClassNames() as $name) {
-            oel_push_value($this->op, $name);
-            $n++;
+            $this->imports[0][xp::reflect($name)]= $name;
           }
         } else {
-          oel_push_value($this->op, $import->name);
-          $n++;
+          $this->imports[0][xp::reflect($import->name)]= $import->name;
         }
       }
-      oel_add_call_function($this->op, $n, 'uses');
-      oel_add_free($this->op);
       
       // Declaration
       $this->emitOne($this->op, $tree->declaration);
+
+      // Load used classes
+      foreach ($this->used[0] as $name => $is) {
+        oel_push_value($this->op, $name);
+      }
+      oel_add_call_function($this->op, sizeof($this->used[0]), 'uses');
+      oel_add_free($this->op);
       
       // Check on errors
       if ($this->errors) {
@@ -1095,8 +1123,10 @@
 
       // Finalize
       oel_finalize($this->op);
-      oel_execute($this->op);
+      array_shift($this->imports);
 
+      // Execute and return
+      oel_execute($this->op);
       // DEBUG Reflection::export(new ReflectionClass($tree->declaration->name->name));
       return $tree->declaration->name->name;
     }    
