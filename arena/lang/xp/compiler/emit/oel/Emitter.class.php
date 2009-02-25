@@ -915,11 +915,11 @@
       $this->emitAll($op, (array)$declaration->body['fields']);
       $this->emitAll($op, (array)$declaration->body['methods']);
       
-      // Static initializer
+      // Static initializer blocks (array<Statement[]>)
       if ($declaration->body['static']) {
         $sop= oel_new_method($op, '__static', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
         foreach ($declaration->body['static'] as $statements) {
-          $this->emitAll($op, $statements);
+          $this->emitAll($sop, $statements);
         }
         oel_finalize($sop);
       }
