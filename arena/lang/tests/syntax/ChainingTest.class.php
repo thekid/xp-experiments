@@ -21,14 +21,14 @@
       $this->assertEquals(array($this->create(new VariableNode(
         '$m',
         new InvocationNode(array(
-          'position'       => array(4, 21), 
+          'position'       => array(4, 20), 
           'name'           => 'invoke',
           'parameters'     => array(
-            $this->create(new VariableNode('$args'), array(4, 22))
+            $this->create(new VariableNode('$args'), array(4, 21))
           )
         ))
       ), array(4, 11))), $this->parse('
-        $m->invoke($args);
+        $m.invoke($args);
       '));
     }
 
@@ -41,17 +41,17 @@
       $this->assertEquals(array($this->create(new VariableNode(
         '$l',
         new InvocationNode(array(
-          'position'       => array(4, 27), 
+          'position'       => array(4, 26), 
           'name'           => 'withAppender',
           'parameters'     => NULL,
           'chained'          => new InvocationNode(array(
-            'position'       => array(4, 36), 
+            'position'       => array(4, 34), 
             'name'           => 'debug',
             'parameters'     => NULL,
           ))
         ))
       ), array(4, 11))), $this->parse('
-        $l->withAppender()->debug();
+        $l.withAppender().debug();
       '));
     }
 
@@ -66,12 +66,12 @@
         'type'           => new TypeName('Date'),
         'parameters'     => NULL,
         'chained'        => new InvocationNode(array(
-          'position'       => array(4, 31), 
+          'position'       => array(4, 30), 
           'name'           => 'toString',
           'parameters'     => NULL,
         ))
       ))), $this->parse('
-        new Date()->toString();
+        new Date().toString();
       '));
     }
 
@@ -84,17 +84,17 @@
       $this->assertEquals(array($this->create(new VariableNode(
         '$l',
         new InvocationNode(array(
-          'position'       => array(4, 23), 
+          'position'       => array(4, 22), 
           'name'           => 'elements',
           'parameters'     => NULL,
           'chained'          => new ArrayAccessNode(array(
-            'position'       => array(4, 25), 
-            'offset'         => new NumberNode(array('position' => array(4, 26), 'value' => '0')),
-            'chained'        => $this->create(new VariableNode('name'), array(4, 34)),
+            'position'       => array(4, 24), 
+            'offset'         => new NumberNode(array('position' => array(4, 25), 'value' => '0')),
+            'chained'        => $this->create(new VariableNode('name'), array(4, 32)),
           ))
         ))
       ), array(4, 11))), $this->parse('
-        $l->elements()[0]->name;
+        $l.elements()[0].name;
       '));
     }
 
@@ -112,15 +112,15 @@
           'name'           => 'getInstance',
           'parameters'     => NULL,
           'chained'          => new InvocationNode(array(
-            'position'       => array(4, 43), 
+            'position'       => array(4, 42), 
             'name'           => 'configure',
             'parameters'     => array(
-              new StringNode(array('position' => array(4, 44), 'value' => 'etc'))
+              new StringNode(array('position' => array(4, 43), 'value' => 'etc'))
             ),
           ))
         ))
       ))), $this->parse('
-        Logger::getInstance()->configure("etc");
+        Logger::getInstance().configure("etc");
       '));
     }
   }

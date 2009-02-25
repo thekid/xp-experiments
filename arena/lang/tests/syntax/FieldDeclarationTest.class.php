@@ -133,19 +133,19 @@
           'initialization' => NULL,
         )),
         new PropertyNode(array(
-          'position'   => array(3, 61),
+          'position'   => array(3, 60),
           'modifiers'  => MODIFIER_PUBLIC,
           'name'       => '$name',
           'annotations'=> NULL,
           'get'        => array(new ReturnNode(array(
             'position'   => array(3, 39),
-            'expression' => $this->create(new VariableNode('$this', $this->create(new VariableNode('_name'), array(3, 58))), array(3, 46)),
+            'expression' => $this->create(new VariableNode('$this', $this->create(new VariableNode('_name'), array(3, 57))), array(3, 46)),
           ))),
           'set'        => NULL,
         ))
       ), $this->parse('class Person {
         private string $_name;
-        public property $name get { return $this->_name; };
+        public property $name get { return $this._name; };
       }'));
     }
   }

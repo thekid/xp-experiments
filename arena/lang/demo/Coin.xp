@@ -28,12 +28,12 @@ public enum Coin {
    *
    */
   public int value() {
-    return $this->ordinal;
+    return $this.ordinal;
   }
  
   public static void main(string[] $args) {
     foreach ($coin in Coin::values()) {
-      Console::writeLine('- A ', $coin->name(), '\'s color is ', $coin->color(), ' and it\'s worth ', $coin->value(), '¢');
+      Console::writeLine('- A ', $coin.name(), '\'s color is ', $coin.color(), ' and it\'s worth ', $coin.value(), '¢');
     }
   } 
 }

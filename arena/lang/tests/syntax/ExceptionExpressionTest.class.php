@@ -24,7 +24,7 @@
           $this->create(new VariableNode(
             '$method', 
             new InvocationNode(array(
-              'position'   => array(5, 26),
+              'position'   => array(5, 25),
               'name'       => 'call',
               'parameters' => NULL
             ))
@@ -38,7 +38,7 @@
             'statements' => array($this->create(new VariableNode(
               '$this',
               new InvocationNode(array(
-                'position'   => array(7, 28),
+                'position'   => array(7, 27),
                 'name'       => 'finalize',
                 'parameters' => NULL
               ))
@@ -47,9 +47,9 @@
         )
       ))), $this->parse('
         try {
-          $method->call();
+          $method.call();
         } catch (IllegalArgumentException $e) {
-          $this->finalize();
+          $this.finalize();
         }
       '));
     }
@@ -99,7 +99,7 @@
             'statements' => array($this->create(new VariableNode(
               '$this',
               new InvocationNode(array(
-                'position'   => array(7, 28),
+                'position'   => array(7, 27),
                 'name'       => 'finalize',
                 'parameters' => NULL
               ))
@@ -110,7 +110,7 @@
         try {
           throw new ChainedException("Hello", $e);
         } finally {
-          $this->finalize();
+          $this.finalize();
         }
       '));
     }
@@ -152,12 +152,12 @@
               'expression' => $this->create(new VariableNode(
                 '$e',
                 new InvocationNode(array(
-                  'position'   => array(8, 32),
+                  'position'   => array(8, 31),
                   'name'       => 'getCauses',
                   'parameters' => NULL,
                   'chained'    => new ArrayAccessNode(array(
-                    'position'   => array(8, 34),
-                    'offset'     => new NumberNode(array('position' => array(8, 35), 'value' => '0')),
+                    'position'   => array(8, 33),
+                    'offset'     => new NumberNode(array('position' => array(8, 34), 'value' => '0')),
                   ))
                 ))
               ), array(8, 19))
@@ -175,7 +175,7 @@
           return new util.collections.HashTable<lang.types.String, Object>();
         } catch (IllegalArgumentException $e) {
         } catch (SecurityException $e) {
-          throw $e->getCauses()[0];
+          throw $e.getCauses()[0];
         } catch (Exception $e) {
         }
       '));

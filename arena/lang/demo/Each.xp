@@ -4,11 +4,11 @@ public class Each<T> {
   public T[] $values;
 
   protected __construct(T[] $values) {
-    $this->values= $values;
+    $this.values= $values;
   }
   
   public static void main(string[] $args) {
-    foreach ($value in new self<string>($args)->values) {
+    foreach ($value in new self<string>($args).values) {
       Console::writeLine('- ', $value);
     }
   }  

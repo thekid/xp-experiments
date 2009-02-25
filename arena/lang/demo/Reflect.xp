@@ -3,13 +3,13 @@ import util.cmd.Console;
 public class Reflect {
 
   protected static void dump(lang.XPClass $class) {
-    $parent= $class->getParentClass();
+    $parent= $class.getParentClass();
     Console::writef(
       'class %s%s ',
-      $class->getName(),
-      $parent ? ' extends ' ~ $parent->getName() : ''
+      $class.getName(),
+      $parent ? ' extends ' ~ $parent.getName() : ''
     );
-    Console::writeLine($class->getMethods());
+    Console::writeLine($class.getMethods());
   }
 
   public static void main(string[] $args) {

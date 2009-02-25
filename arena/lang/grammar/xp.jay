@@ -55,7 +55,7 @@
 %left '+' '-'
 %left '*' '/'
 %right '[' '!' '~' T_INC T_DEC 
-%nonassoc '<' '>' T_SE T_GE T_OBJECT_OPERATOR T_EQUALS T_NOT_EQUALS 
+%nonassoc '<' '>' T_SE T_GE '.' T_EQUALS T_NOT_EQUALS 
 
 %token T_WORD 260
 %token T_STRING 261
@@ -118,7 +118,6 @@
 %token T_MUL_EQUAL 406
 %token T_DIV_EQUAL 407
 %token T_MOD_EQUAL 408
-%token T_OBJECT_OPERATOR 409
 %token T_DOUBLE_COLON 410
 %token T_EQUALS 411
 %token T_NOT_EQUALS 412
@@ -718,10 +717,10 @@ chain:
     '[' { $1= $yyLex->create(new ArrayAccessNode()); } expression_opt ']' { 
       $1->offset= $3;
     }
-  | T_OBJECT_OPERATOR T_WORD {
+  | '.' T_WORD {
       $$= $yyLex->create(new VariableNode($2)); 
     }
-  | T_OBJECT_OPERATOR T_WORD '(' { $1= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' { 
+  | '.' T_WORD '(' { $1= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' { 
       $1->name= $2;
       $1->parameters= $5;
     }

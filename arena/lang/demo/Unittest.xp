@@ -5,12 +5,12 @@ public class Unittest {
   protected string $name;
   
   public __construct(string $name) {
-    $this->name= $name;
+    $this.name= $name;
   }
   
   public void assertEquals(any $a, any $b) throws AssertionFailedError {
     if ($a instanceof Generic) {
-      $eq= $a->equals($b);
+      $eq= $a.equals($b);
     } else {
       $eq= $a == $b;
     }
@@ -18,40 +18,40 @@ public class Unittest {
   }
   
   [@test] void addition() {
-    $this->assertEquals(3, 1 + 2);
+    $this.assertEquals(3, 1 + 2);
   }
 
   [@test] void subtract() {
-    $this->assertEquals(0, 1 - 1);
+    $this.assertEquals(0, 1 - 1);
   }
 
   [@test] void multiply() {
-    $this->assertEquals(7, 1 * 7);
+    $this.assertEquals(7, 1 * 7);
   }
 
   [@test] void broken() {
-    $this->assertEquals(-1, 1 + 1);
+    $this.assertEquals(-1, 1 + 1);
   }
 
   [@test] void equality() {
-    $this->assertEquals(new Integer(1), new Integer(1));
+    $this.assertEquals(new Integer(1), new Integer(1));
   }
 
   [@test, @expect('lang.IllegalArgumentException')] void expect() {
-    throw new IllegalArgumentException($this->name);
+    throw new IllegalArgumentException($this.name);
   }
 
   public static void main(string[] $args) {
-    Console::write('Running class ', self::$class->getName(), ' [');
-    foreach ($method in self::$class->getMethods()) {
-      if (!$method->hasAnnotation('test')) continue;
+    Console::write('Running class ', self::$class.getName(), ' [');
+    foreach ($method in self::$class.getMethods()) {
+      if (!$method.hasAnnotation('test')) continue;
       
       try {
-        $method->invoke(new self($method->getName()));
+        $method.invoke(new self($method.getName()));
         Console::write('.');
       } catch (lang.reflect.TargetInvocationException $t) {
-        if ($method->hasAnnotation('expect')) {
-          if (XPClass::forName($method->getAnnotation('expect'))->isInstance($t->getCause())) {
+        if ($method.hasAnnotation('expect')) {
+          if (XPClass::forName($method.getAnnotation('expect')).isInstance($t.getCause())) {
             Console::write('E');
             continue;
           }

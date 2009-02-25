@@ -79,15 +79,15 @@
     #[@test]
     public function toInstanceMember() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 28),
+        'position'      => array(4, 27),
         'variable'      => $this->create(new VariableNode(
           '$class',
-          $this->create(new VariableNode('member'), array(4, 25))
+          $this->create(new VariableNode('member'), array(4, 24))
         ), array(4, 11)),
-        'expression'    => new NumberNode(array('position' => array(4, 27), 'value' => '0')),
+        'expression'    => new NumberNode(array('position' => array(4, 26), 'value' => '0')),
         'op'            => '='
       ))), $this->parse('
-        $class->member= 0;
+        $class.member= 0;
       '));
     }
 
@@ -118,21 +118,21 @@
     #[@test]
     public function toChain() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 51),
+        'position'      => array(4, 49),
         'variable'      => new ClassMemberNode(array(
           'position'      => array(4, 17), 
           'class'         => new TypeName('self'),
           'member'        => $this->create(new VariableNode('$instance', new InvocationNode(array(
-            'position'       => array(4, 39), 
+            'position'       => array(4, 38), 
             'name'           => 'addAppender',
             'parameters'     => NULL,
-            'chained'        => $this->create(new VariableNode('flags'), array(4, 48)),
+            'chained'        => $this->create(new VariableNode('flags'), array(4, 46)),
           ))), array(4, 17))
         )),
-        'expression'    =>  new NumberNode(array('position' => array(4, 50), 'value' => '0')),
+        'expression'    =>  new NumberNode(array('position' => array(4, 48), 'value' => '0')),
         'op'            => '='
       ))), $this->parse('
-        self::$instance->addAppender()->flags= 0;
+        self::$instance.addAppender().flags= 0;
       '));
     }
   }
