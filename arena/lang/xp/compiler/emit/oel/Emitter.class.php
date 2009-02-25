@@ -960,7 +960,6 @@
      */
     protected function emitReturn($op, ReturnNode $return) {
       $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
-      $return->expression && $this->emitOne($op, $return->expression);
       
       // Special case when returning variables: Do not end variable parse 
       // but instead call free on result. Seems weird but has to do with
@@ -970,6 +969,10 @@
         oel_push_variable($op, ltrim($return->expression->name, '$'));    // without '$'
         $this->emitChain($op, $return->expression);
         oel_add_free($op);
+      } else if ($return->expression) {
+        $this->emitOne($op, $return->expression);
+      } else {
+        oel_push_value($op, NULL);
       }
       
       oel_add_return($op);
