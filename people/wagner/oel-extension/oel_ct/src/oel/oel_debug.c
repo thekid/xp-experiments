@@ -1,28 +1,71 @@
 #include "opcodes.20071006.c"
 
+zval *oel_get_zval_from_znode(znode node TSRMLS_DC) {
+    zval *oh_znode;
+
+    MAKE_STD_ZVAL(oh_znode);
+    object_init_ex(oh_znode, php_oel_ce_znode);
+
+    switch (node.op_type) {
+        case IS_CONST:
+        add_property_string(oh_znode, "type", "constant", 1);
+        break;
+
+        case IS_TMP_VAR:
+        add_property_string(oh_znode, "type", "temporary variable", 1);
+        break;
+
+        case IS_VAR:
+        add_property_string(oh_znode, "type", "variable", 1);
+        break;
+
+        case IS_UNUSED:
+        add_property_string(oh_znode, "type", "unused", 1);
+        break;
+
+        case IS_CV:
+        add_property_string(oh_znode, "type", "compiled variable", 1);
+        break;
+    }
+    return oh_znode;
+}
+
 void oel_add_next_index_opline(zval *result_arr, zend_op *opline TSRMLS_DC) {
-    zval *oh_opline, *oh_opcode, *trans_arr, **opcode_mne;
+    zval *oh_opline, *oh_opcode, *oh_result, *oh_op1, *oh_op2, *trans_arr, **opcode_mne;
 
-    MAKE_STD_ZVAL(oh_opcode);
     MAKE_STD_ZVAL(oh_opline);
-    MAKE_STD_ZVAL(trans_arr);
+    object_init_ex(oh_opline, php_oel_ce_opline);
+    add_next_index_zval(result_arr, oh_opline);
 
+    /* build opcode object */
+    MAKE_STD_ZVAL(oh_opcode);
+    object_init_ex(oh_opcode, php_oel_ce_opcode);
+    add_property_long(oh_opcode, "op", opline->opcode);
+    /* fetch mnemonic for opcode */
+    MAKE_STD_ZVAL(trans_arr);
     array_init(trans_arr);
     fill_opcode_translation_array(trans_arr);
     zend_hash_index_find(Z_ARRVAL_P(trans_arr), opline->opcode, (void**)&opcode_mne);
-
-    add_next_index_zval(result_arr, oh_opline);
-
-    object_init_ex(oh_opline, php_oel_ce_opline);
+    add_property_stringl(oh_opcode, "mne", Z_STRVAL_PP(opcode_mne), Z_STRLEN_PP(opcode_mne), 1);
+    zval_dtor(trans_arr);
+    efree(trans_arr);
     add_property_zval(oh_opline, "opcode", oh_opcode);
     Z_SET_REFCOUNT(*oh_opcode, 1);
 
-    object_init_ex(oh_opcode, php_oel_ce_opcode);
-    add_property_long(oh_opcode, "op", opline->opcode);
-    add_property_stringl(oh_opcode, "mne", Z_STRVAL_PP(opcode_mne), Z_STRLEN_PP(opcode_mne), 1);
+    add_property_long(oh_opline, "lineno", opline->lineno);
+    add_property_long(oh_opline, "extended_value", opline->extended_value);
 
-    zval_dtor(trans_arr);
-    efree(trans_arr);
+    oh_op1= oel_get_zval_from_znode(opline->op1);
+    add_property_zval(oh_opline, "op1", oh_op1);
+    Z_SET_REFCOUNT(*oh_op1, 1);
+
+    oh_op2= oel_get_zval_from_znode(opline->op2);
+    add_property_zval(oh_opline, "op2", oh_op2);
+    Z_SET_REFCOUNT(*oh_op2, 1);
+
+    oh_result= oel_get_zval_from_znode(opline->result);
+    add_property_zval(oh_opline, "result", oh_result);
+    Z_SET_REFCOUNT(*oh_result, 1);
 }
 
 PHP_FUNCTION(oel_get_op_array) {

@@ -76,6 +76,7 @@
 
     #define PHP_OEL_CN_OPCODE "OelOpcode"
     #define PHP_OEL_CN_OPLINE "OelOpline"
+    #define PHP_OEL_CN_ZNODE  "OelZnode"
 
     #if ZEND_MODULE_API_NO < 20071006
         #define Z_SET_REFCOUNT(o, v) (o).refcount= (v)

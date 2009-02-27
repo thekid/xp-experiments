@@ -22,6 +22,7 @@ int le_oel_ame;
 
 zend_class_entry *php_oel_ce_opcode;
 zend_class_entry *php_oel_ce_opline;
+zend_class_entry *php_oel_ce_znode;
 
 static function_entry oel_functions[]= {
 
@@ -152,6 +153,10 @@ static function_entry oel_ce_opline_functions[]= {
     {NULL, NULL, NULL}
 };
 
+static function_entry oel_ce_znode_functions[]= {
+    {NULL, NULL, NULL}
+};
+
 PHP_OEL_STACK_SERVICE_FUNCTIONS_HEADER(operand);
 PHP_OEL_STACK_SERVICE_FUNCTIONS_HEADER(token);
 PHP_OEL_STACK_SERVICE_FUNCTIONS_HEADER(extvar);
@@ -202,13 +207,16 @@ ZEND_GET_MODULE(oel)
 
 /* init extension */
 PHP_MINIT_FUNCTION(oel) {
-    zend_class_entry tmp_ce_opcode, tmp_ce_opline;
+    zend_class_entry tmp_ce_opcode, tmp_ce_opline, tmp_ce_znode;
     
     INIT_CLASS_ENTRY(tmp_ce_opcode, PHP_OEL_CN_OPCODE, oel_ce_opcode_functions);
     php_oel_ce_opcode= zend_register_internal_class(&tmp_ce_opcode TSRMLS_CC);
 
     INIT_CLASS_ENTRY(tmp_ce_opline, PHP_OEL_CN_OPLINE, oel_ce_opline_functions);
     php_oel_ce_opline= zend_register_internal_class(&tmp_ce_opline TSRMLS_CC);
+
+    INIT_CLASS_ENTRY(tmp_ce_znode, PHP_OEL_CN_ZNODE, oel_ce_znode_functions);
+    php_oel_ce_znode= zend_register_internal_class(&tmp_ce_znode TSRMLS_CC);
 
     le_oel_oar= zend_register_list_destructors_ex(php_oel_op_array_dtor, NULL, PHP_OEL_OAR_RES_NAME, module_number);
     le_oel_fun= zend_register_list_destructors_ex(NULL, NULL, PHP_OEL_FUN_RES_NAME, module_number);
