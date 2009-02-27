@@ -55,15 +55,15 @@ void oel_add_next_index_opline(zval *result_arr, zend_op *opline TSRMLS_DC) {
     add_property_long(oh_opline, "lineno", opline->lineno);
     add_property_long(oh_opline, "extended_value", opline->extended_value);
 
-    oh_op1= oel_get_zval_from_znode(opline->op1);
+    oh_op1= oel_get_zval_from_znode(opline->op1 TSRMLS_CC);
     add_property_zval(oh_opline, "op1", oh_op1);
     Z_SET_REFCOUNT(*oh_op1, 1);
 
-    oh_op2= oel_get_zval_from_znode(opline->op2);
+    oh_op2= oel_get_zval_from_znode(opline->op2 TSRMLS_CC);
     add_property_zval(oh_opline, "op2", oh_op2);
     Z_SET_REFCOUNT(*oh_op2, 1);
 
-    oh_result= oel_get_zval_from_znode(opline->result);
+    oh_result= oel_get_zval_from_znode(opline->result TSRMLS_CC);
     add_property_zval(oh_opline, "result", oh_result);
     Z_SET_REFCOUNT(*oh_result, 1);
 }
