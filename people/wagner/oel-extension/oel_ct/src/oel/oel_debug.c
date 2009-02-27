@@ -117,3 +117,7 @@ PHP_FUNCTION(oel_get_translation_array) {
     array_init(return_value);
     fill_opcode_translation_array(return_value);
 }
+
+PHP_FUNCTION(oel_get_zend_api_no) {
+    RETURN_LONG(ZEND_MODULE_API_NO);
+}

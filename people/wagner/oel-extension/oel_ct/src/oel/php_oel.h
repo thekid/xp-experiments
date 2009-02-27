@@ -209,6 +209,7 @@
 
     PHP_FUNCTION(oel_get_op_array);
     PHP_FUNCTION(oel_get_translation_array);
+    PHP_FUNCTION(oel_get_zend_api_no);
 
     extern zend_module_entry oel_module_entry;
     #define phpext_oel_ptr &oel_module_entry
