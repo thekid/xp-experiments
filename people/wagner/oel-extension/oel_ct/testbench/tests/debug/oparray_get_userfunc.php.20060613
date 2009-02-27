@@ -1,0 +1,262 @@
+array(8) {
+  [0]=>
+  object(OelOpline)#1 (6) {
+    ["opcode"]=>
+    object(OelOpcode)#2 (2) {
+      ["op"]=>
+      int(63)
+      ["mne"]=>
+      string(4) "RECV"
+    }
+    ["lineno"]=>
+    int(3)
+    ["extended_value"]=>
+    int(0)
+    ["op1"]=>
+    object(OelZnode)#3 (2) {
+      ["type"]=>
+      string(8) "constant"
+      ["value"]=>
+      int(1)
+    }
+    ["op2"]=>
+    object(OelZnode)#4 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+    ["result"]=>
+    object(OelZnode)#5 (1) {
+      ["type"]=>
+      string(17) "compiled variable"
+    }
+  }
+  [1]=>
+  object(OelOpline)#6 (6) {
+    ["opcode"]=>
+    object(OelOpcode)#7 (2) {
+      ["op"]=>
+      int(38)
+      ["mne"]=>
+      string(6) "ASSIGN"
+    }
+    ["lineno"]=>
+    int(4)
+    ["extended_value"]=>
+    int(0)
+    ["op1"]=>
+    object(OelZnode)#8 (1) {
+      ["type"]=>
+      string(17) "compiled variable"
+    }
+    ["op2"]=>
+    object(OelZnode)#9 (1) {
+      ["type"]=>
+      string(17) "compiled variable"
+    }
+    ["result"]=>
+    object(OelZnode)#10 (1) {
+      ["type"]=>
+      string(8) "variable"
+    }
+  }
+  [2]=>
+  object(OelOpline)#11 (6) {
+    ["opcode"]=>
+    object(OelOpcode)#12 (2) {
+      ["op"]=>
+      int(59)
+      ["mne"]=>
+      string(18) "INIT_FCALL_BY_NAME"
+    }
+    ["lineno"]=>
+    int(5)
+    ["extended_value"]=>
+    int(0)
+    ["op1"]=>
+    object(OelZnode)#13 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+    ["op2"]=>
+    object(OelZnode)#14 (1) {
+      ["type"]=>
+      string(17) "compiled variable"
+    }
+    ["result"]=>
+    object(OelZnode)#15 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+  }
+  [3]=>
+  object(OelOpline)#16 (6) {
+    ["opcode"]=>
+    object(OelOpcode)#17 (2) {
+      ["op"]=>
+      int(61)
+      ["mne"]=>
+      string(16) "DO_FCALL_BY_NAME"
+    }
+    ["lineno"]=>
+    int(5)
+    ["extended_value"]=>
+    int(0)
+    ["op1"]=>
+    object(OelZnode)#18 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+    ["op2"]=>
+    object(OelZnode)#19 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+    ["result"]=>
+    object(OelZnode)#20 (1) {
+      ["type"]=>
+      string(8) "variable"
+    }
+  }
+  [4]=>
+  object(OelOpline)#21 (6) {
+    ["opcode"]=>
+    object(OelOpcode)#22 (2) {
+      ["op"]=>
+      int(38)
+      ["mne"]=>
+      string(6) "ASSIGN"
+    }
+    ["lineno"]=>
+    int(5)
+    ["extended_value"]=>
+    int(0)
+    ["op1"]=>
+    object(OelZnode)#23 (1) {
+      ["type"]=>
+      string(17) "compiled variable"
+    }
+    ["op2"]=>
+    object(OelZnode)#24 (1) {
+      ["type"]=>
+      string(8) "variable"
+    }
+    ["result"]=>
+    object(OelZnode)#25 (1) {
+      ["type"]=>
+      string(8) "variable"
+    }
+  }
+  [5]=>
+  object(OelOpline)#26 (6) {
+    ["opcode"]=>
+    object(OelOpcode)#27 (2) {
+      ["op"]=>
+      int(62)
+      ["mne"]=>
+      string(6) "RETURN"
+    }
+    ["lineno"]=>
+    int(6)
+    ["extended_value"]=>
+    int(0)
+    ["op1"]=>
+    object(OelZnode)#28 (1) {
+      ["type"]=>
+      string(17) "compiled variable"
+    }
+    ["op2"]=>
+    object(OelZnode)#29 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+    ["result"]=>
+    object(OelZnode)#30 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+  }
+  [6]=>
+  object(OelOpline)#31 (6) {
+    ["opcode"]=>
+    object(OelOpcode)#32 (2) {
+      ["op"]=>
+      int(62)
+      ["mne"]=>
+      string(6) "RETURN"
+    }
+    ["lineno"]=>
+    int(7)
+    ["extended_value"]=>
+    int(0)
+    ["op1"]=>
+    object(OelZnode)#33 (2) {
+      ["type"]=>
+      string(8) "constant"
+      ["value"]=>
+      NULL
+    }
+    ["op2"]=>
+    object(OelZnode)#34 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+    ["result"]=>
+    object(OelZnode)#35 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+  }
+  [7]=>
+  object(OelOpline)#36 (6) {
+    ["opcode"]=>
+    object(OelOpcode)#37 (2) {
+      ["op"]=>
+      int(149)
+      ["mne"]=>
+      string(16) "HANDLE_EXCEPTION"
+    }
+    ["lineno"]=>
+    int(7)
+    ["extended_value"]=>
+    int(0)
+    ["op1"]=>
+    object(OelZnode)#38 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+    ["op2"]=>
+    object(OelZnode)#39 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+    ["result"]=>
+    object(OelZnode)#40 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+  }
+}

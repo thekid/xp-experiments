@@ -1,0 +1,72 @@
+array(2) {
+  [0]=>
+  object(OelOpline)#1 (6) {
+    ["opcode"]=>
+    object(OelOpcode)#2 (2) {
+      ["op"]=>
+      int(62)
+      ["mne"]=>
+      string(6) "RETURN"
+    }
+    ["lineno"]=>
+    int(4)
+    ["extended_value"]=>
+    int(0)
+    ["op1"]=>
+    object(OelZnode)#3 (2) {
+      ["type"]=>
+      string(8) "constant"
+      ["value"]=>
+      NULL
+    }
+    ["op2"]=>
+    object(OelZnode)#4 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+    ["result"]=>
+    object(OelZnode)#5 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+  }
+  [1]=>
+  object(OelOpline)#6 (6) {
+    ["opcode"]=>
+    object(OelOpcode)#7 (2) {
+      ["op"]=>
+      int(149)
+      ["mne"]=>
+      string(16) "HANDLE_EXCEPTION"
+    }
+    ["lineno"]=>
+    int(4)
+    ["extended_value"]=>
+    int(0)
+    ["op1"]=>
+    object(OelZnode)#8 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+    ["op2"]=>
+    object(OelZnode)#9 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+    ["result"]=>
+    object(OelZnode)#10 (2) {
+      ["type"]=>
+      string(6) "unused"
+      ["value"]=>
+      NULL
+    }
+  }
+}

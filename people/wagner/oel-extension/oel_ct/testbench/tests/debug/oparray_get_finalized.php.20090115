@@ -1,0 +1,26 @@
+array(2) {
+  [0]=>
+  object(OelOpline)#1 (2) {
+    ["opcode"]=>
+    object(OelOpcode)#2 (2) {
+      ["op"]=>
+      int(62)
+      ["mne"]=>
+      string(6) "RETURN"
+    }
+    ["lineno"]=>
+    int(4)
+  }
+  [1]=>
+  object(OelOpline)#3 (2) {
+    ["opcode"]=>
+    object(OelOpcode)#4 (2) {
+      ["op"]=>
+      int(149)
+      ["mne"]=>
+      string(16) "HANDLE_EXCEPTION"
+    }
+    ["lineno"]=>
+    int(4)
+  }
+}
