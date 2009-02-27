@@ -13,25 +13,13 @@ array(2) {
     ["extended_value"]=>
     int(0)
     ["op1"]=>
-    object(OelZnode)#3 (2) {
-      ["type"]=>
-      string(8) "constant"
-      ["value"]=>
-      NULL
+    object(OelZnodeConstant)#3 (0) {
     }
     ["op2"]=>
-    object(OelZnode)#4 (2) {
-      ["type"]=>
-      string(6) "unused"
-      ["value"]=>
-      NULL
+    object(OelZnodeUnused)#4 (0) {
     }
     ["result"]=>
-    object(OelZnode)#5 (2) {
-      ["type"]=>
-      string(6) "unused"
-      ["value"]=>
-      NULL
+    object(OelZnodeUnused)#5 (0) {
     }
   }
   [1]=>
@@ -48,25 +36,13 @@ array(2) {
     ["extended_value"]=>
     int(0)
     ["op1"]=>
-    object(OelZnode)#8 (2) {
-      ["type"]=>
-      string(6) "unused"
-      ["value"]=>
-      NULL
+    object(OelZnodeUnused)#8 (0) {
     }
     ["op2"]=>
-    object(OelZnode)#9 (2) {
-      ["type"]=>
-      string(6) "unused"
-      ["value"]=>
-      NULL
+    object(OelZnodeUnused)#9 (0) {
     }
     ["result"]=>
-    object(OelZnode)#10 (2) {
-      ["type"]=>
-      string(6) "unused"
-      ["value"]=>
-      NULL
+    object(OelZnodeUnused)#10 (0) {
     }
   }
 }
