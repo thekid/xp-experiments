@@ -1,4 +1,4 @@
-array(8) {
+<?php echo (20090115 > oel_get_zend_api_no()) ? "array(8) {\n" : "array(7) {\n"; ?>
   [0]=>
   object(OelOpline)#1 (1) {
     ["opcode"]=>
@@ -69,7 +69,7 @@ array(8) {
       string(6) "RETURN"
     }
   }
-  [7]=>
+<?php if (20090115 > oel_get_zend_api_no()) echo '  [7]=>
   object(OelOpline)#15 (1) {
     ["opcode"]=>
     object(OelOpcode)#16 (2) {
@@ -79,4 +79,5 @@ array(8) {
       string(16) "HANDLE_EXCEPTION"
     }
   }
+'; ?>
 }
