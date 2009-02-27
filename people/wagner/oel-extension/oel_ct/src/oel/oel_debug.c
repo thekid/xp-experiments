@@ -27,15 +27,15 @@ void oel_add_next_index_opline(zval *result_arr, zend_op *opline TSRMLS_DC) {
 
 PHP_FUNCTION(oel_get_op_array) {
     zval              *arg_op_array;
-    php_oel_op_array  *res_op_array;
+    zend_op_array     *dump_op_array;
     zend_op           *opline, *end;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &arg_op_array) == FAILURE) { RETURN_NULL(); }
 
     switch (Z_TYPE_P(arg_op_array)) {
         case IS_RESOURCE: {               /* oel op code array */
+            php_oel_op_array  *res_op_array;
             res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
-            opline= res_op_array->oel_cg.active_op_array->opcodes;
-            end= opline + res_op_array->oel_cg.active_op_array->last;
+            dump_op_array= res_op_array->oel_cg.active_op_array;
             break;
         }
         
@@ -43,19 +43,19 @@ PHP_FUNCTION(oel_get_op_array) {
             char *lcname;
             zend_function *fptr;
 
-	        lcname= zend_str_tolower_dup(Z_STRVAL_P(arg_op_array), Z_STRLEN_P(arg_op_array));
-	        if (zend_hash_find(EG(function_table), lcname, Z_STRLEN_P(arg_op_array) + 1, (void **)&fptr) == FAILURE) {
-		        efree(lcname);
+            lcname= zend_str_tolower_dup(Z_STRVAL_P(arg_op_array), Z_STRLEN_P(arg_op_array));
+            if (zend_hash_find(EG(function_table), lcname, Z_STRLEN_P(arg_op_array) + 1, (void **)&fptr) == FAILURE) {
+                efree(lcname);
                 zend_error(E_WARNING, "Function %s() does not exist", Z_STRVAL_P(arg_op_array));
-		        RETURN_NULL();
-	        }
-	        efree(lcname);
+                RETURN_NULL();
+            }
+            efree(lcname);
             if (fptr->type == ZEND_INTERNAL_FUNCTION) {
                 zend_error(E_WARNING, "Internal function %s() does not have an op array", Z_STRVAL_P(arg_op_array));
-		        RETURN_NULL();
+                RETURN_NULL();
             }
-            opline= fptr->op_array.opcodes;
-            end= opline + fptr->op_array.last;
+
+            dump_op_array= &(fptr->op_array);
             break;
         }
         
@@ -65,7 +65,7 @@ PHP_FUNCTION(oel_get_op_array) {
             zval **class_name, **method_name;
             zend_class_entry **pce;
 
-			if (
+            if (
                 2 != zend_hash_num_elements(Z_ARRVAL_P(arg_op_array)) ||
                 zend_hash_index_find(Z_ARRVAL_P(arg_op_array), 0, (void **) &class_name) == FAILURE ||
                 zend_hash_index_find(Z_ARRVAL_P(arg_op_array), 1, (void **) &method_name) == FAILURE ||
@@ -73,29 +73,28 @@ PHP_FUNCTION(oel_get_op_array) {
                 IS_STRING != Z_TYPE_PP(method_name)
             ) {
                 zend_error(E_WARNING, "Expected an array(string class, string method)");
-		        RETURN_NULL();
+                RETURN_NULL();
             }
             
-		    if (zend_lookup_class(Z_STRVAL_PP(class_name), Z_STRLEN_PP(class_name), &pce TSRMLS_CC) == FAILURE) {
-			    zend_error(E_WARNING, "Class '%s' not found", Z_STRVAL_PP(class_name));
+            if (zend_lookup_class(Z_STRVAL_PP(class_name), Z_STRLEN_PP(class_name), &pce TSRMLS_CC) == FAILURE) {
+                zend_error(E_WARNING, "Class '%s' not found", Z_STRVAL_PP(class_name));
                 RETURN_NULL();
-		    }
+            }
             
             if ((*pce)->type == ZEND_INTERNAL_CLASS) {
                 zend_error(E_WARNING, "Internal class %s() does not have op arrays in methods", (*pce)->name);
-		        RETURN_NULL();
+                RETURN_NULL();
             }
                         
             lcname= zend_str_tolower_dup(Z_STRVAL_PP(method_name), Z_STRLEN_PP(method_name));
-	        if (zend_hash_find(&(*pce)->function_table, lcname, Z_STRLEN_PP(method_name) + 1, (void **)&fptr) == FAILURE) {
-		        efree(lcname);
+            if (zend_hash_find(&(*pce)->function_table, lcname, Z_STRLEN_PP(method_name) + 1, (void **)&fptr) == FAILURE) {
+                efree(lcname);
                 zend_error(E_WARNING, "Method %s::%s() does not exist", (*pce)->name, Z_STRVAL_PP(method_name));
-		        RETURN_NULL();
-	        }
-	        efree(lcname);
+                RETURN_NULL();
+            }
+            efree(lcname);
 
-            opline= fptr->op_array.opcodes;
-            end= opline + fptr->op_array.last;
+            dump_op_array= &(fptr->op_array);
             break;
         }
         
@@ -105,6 +104,8 @@ PHP_FUNCTION(oel_get_op_array) {
         }
     }        
 
+    opline= dump_op_array->opcodes;
+    end= opline + dump_op_array->last;
     array_init(return_value);
     while (opline < end) {
         oel_add_next_index_opline(return_value, opline TSRMLS_CC);
@@ -116,4 +117,3 @@ PHP_FUNCTION(oel_get_translation_array) {
     array_init(return_value);
     fill_opcode_translation_array(return_value);
 }
-
