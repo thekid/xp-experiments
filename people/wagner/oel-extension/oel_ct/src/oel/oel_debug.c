@@ -4,27 +4,26 @@ zval *oel_get_zval_from_znode(znode node TSRMLS_DC) {
     zval *oh_znode;
 
     MAKE_STD_ZVAL(oh_znode);
-    object_init_ex(oh_znode, php_oel_ce_znode);
 
     switch (node.op_type) {
         case IS_CONST:
-        add_property_string(oh_znode, "type", "constant", 1);
+        object_init_ex(oh_znode, php_oel_ce_znode_constant);
         break;
 
         case IS_TMP_VAR:
-        add_property_string(oh_znode, "type", "temporary variable", 1);
+        object_init_ex(oh_znode, php_oel_ce_znode_tmpvar);
         break;
 
         case IS_VAR:
-        add_property_string(oh_znode, "type", "variable", 1);
+        object_init_ex(oh_znode, php_oel_ce_znode_variable);
         break;
 
         case IS_UNUSED:
-        add_property_string(oh_znode, "type", "unused", 1);
+        object_init_ex(oh_znode, php_oel_ce_znode_unused);
         break;
 
         case IS_CV:
-        add_property_string(oh_znode, "type", "compiled variable", 1);
+        object_init_ex(oh_znode, php_oel_ce_znode_compiledvar);
         break;
     }
     return oh_znode;

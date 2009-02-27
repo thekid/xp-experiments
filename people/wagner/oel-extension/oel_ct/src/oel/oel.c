@@ -23,6 +23,11 @@ int le_oel_ame;
 zend_class_entry *php_oel_ce_opcode;
 zend_class_entry *php_oel_ce_opline;
 zend_class_entry *php_oel_ce_znode;
+zend_class_entry *php_oel_ce_znode_unused;
+zend_class_entry *php_oel_ce_znode_constant;
+zend_class_entry *php_oel_ce_znode_tmpvar;
+zend_class_entry *php_oel_ce_znode_variable;
+zend_class_entry *php_oel_ce_znode_compiledvar;
 
 static function_entry oel_functions[]= {
 
@@ -145,17 +150,14 @@ static function_entry oel_functions[]= {
     {NULL, NULL, NULL}
 };
 
-static function_entry oel_ce_opcode_functions[]= {
-    {NULL, NULL, NULL}
-};
-
-static function_entry oel_ce_opline_functions[]= {
-    {NULL, NULL, NULL}
-};
-
-static function_entry oel_ce_znode_functions[]= {
-    {NULL, NULL, NULL}
-};
+static function_entry oel_ce_opcode_functions[]=            {{NULL, NULL, NULL}};
+static function_entry oel_ce_opline_functions[]=            {{NULL, NULL, NULL}};
+static function_entry oel_ce_znode_functions[]=             {{NULL, NULL, NULL}};
+static function_entry oel_ce_znode_unused_functions[]=      {{NULL, NULL, NULL}};
+static function_entry oel_ce_znode_constant_functions[]=    {{NULL, NULL, NULL}};
+static function_entry oel_ce_znode_tmpvar_functions[]=      {{NULL, NULL, NULL}};
+static function_entry oel_ce_znode_variable_functions[]=    {{NULL, NULL, NULL}};
+static function_entry oel_ce_znode_compiledvar_functions[]= {{NULL, NULL, NULL}};
 
 PHP_OEL_STACK_SERVICE_FUNCTIONS_HEADER(operand);
 PHP_OEL_STACK_SERVICE_FUNCTIONS_HEADER(token);
@@ -207,16 +209,40 @@ ZEND_GET_MODULE(oel)
 
 /* init extension */
 PHP_MINIT_FUNCTION(oel) {
-    zend_class_entry tmp_ce_opcode, tmp_ce_opline, tmp_ce_znode;
+    zend_class_entry
+      tmp_ce_opcode,
+      tmp_ce_opline,
+      tmp_ce_znode,
+      tmp_ce_znode_unused,
+      tmp_ce_znode_constant,
+      tmp_ce_znode_tmpvar,
+      tmp_ce_znode_variable,
+      tmp_ce_znode_compiledvar
+    ;
     
-    INIT_CLASS_ENTRY(tmp_ce_opcode, PHP_OEL_CN_OPCODE, oel_ce_opcode_functions);
-    php_oel_ce_opcode= zend_register_internal_class(&tmp_ce_opcode TSRMLS_CC);
+    INIT_CLASS_ENTRY(tmp_ce_opcode,            PHP_OEL_CN_OPCODE,            oel_ce_opcode_functions);
+    INIT_CLASS_ENTRY(tmp_ce_opline,            PHP_OEL_CN_OPLINE,            oel_ce_opline_functions);
+    INIT_CLASS_ENTRY(tmp_ce_znode,             PHP_OEL_CN_ZNODE,             oel_ce_znode_functions);
+    INIT_CLASS_ENTRY(tmp_ce_znode_unused,      PHP_OEL_CN_ZNODE_UNUSED,      oel_ce_znode_unused_functions);
+    INIT_CLASS_ENTRY(tmp_ce_znode_constant,    PHP_OEL_CN_ZNODE_CONSTANT,    oel_ce_znode_constant_functions);
+    INIT_CLASS_ENTRY(tmp_ce_znode_tmpvar,      PHP_OEL_CN_ZNODE_TMPVAR,      oel_ce_znode_tmpvar_functions);
+    INIT_CLASS_ENTRY(tmp_ce_znode_variable,    PHP_OEL_CN_ZNODE_VARIABLE,    oel_ce_znode_variable_functions);
+    INIT_CLASS_ENTRY(tmp_ce_znode_compiledvar, PHP_OEL_CN_ZNODE_COMPILEDVAR, oel_ce_znode_compiledvar_functions);
 
-    INIT_CLASS_ENTRY(tmp_ce_opline, PHP_OEL_CN_OPLINE, oel_ce_opline_functions);
-    php_oel_ce_opline= zend_register_internal_class(&tmp_ce_opline TSRMLS_CC);
+    php_oel_ce_opcode=            zend_register_internal_class(&tmp_ce_opcode TSRMLS_CC);
+    php_oel_ce_opline=            zend_register_internal_class(&tmp_ce_opline TSRMLS_CC);
+    php_oel_ce_znode=             zend_register_internal_class(&tmp_ce_znode TSRMLS_CC);
+    php_oel_ce_znode_unused=      zend_register_internal_class(&tmp_ce_znode_unused TSRMLS_CC);
+    php_oel_ce_znode_constant=    zend_register_internal_class(&tmp_ce_znode_constant TSRMLS_CC);
+    php_oel_ce_znode_tmpvar=      zend_register_internal_class(&tmp_ce_znode_tmpvar TSRMLS_CC);
+    php_oel_ce_znode_variable=    zend_register_internal_class(&tmp_ce_znode_variable TSRMLS_CC);
+    php_oel_ce_znode_compiledvar= zend_register_internal_class(&tmp_ce_znode_compiledvar TSRMLS_CC);
 
-    INIT_CLASS_ENTRY(tmp_ce_znode, PHP_OEL_CN_ZNODE, oel_ce_znode_functions);
-    php_oel_ce_znode= zend_register_internal_class(&tmp_ce_znode TSRMLS_CC);
+    php_oel_ce_znode_unused->parent=      php_oel_ce_znode;
+    php_oel_ce_znode_constant->parent=    php_oel_ce_znode;
+    php_oel_ce_znode_tmpvar->parent=      php_oel_ce_znode;
+    php_oel_ce_znode_variable->parent=    php_oel_ce_znode;
+    php_oel_ce_znode_compiledvar->parent= php_oel_ce_znode;
 
     le_oel_oar= zend_register_list_destructors_ex(php_oel_op_array_dtor, NULL, PHP_OEL_OAR_RES_NAME, module_number);
     le_oel_fun= zend_register_list_destructors_ex(NULL, NULL, PHP_OEL_FUN_RES_NAME, module_number);

@@ -74,9 +74,14 @@
     #define PHP_OEL_RESAFE_CG(o, e, p) (o)->oel_cg.p= CG(p); 
     #define PHP_OEL_RESET_CG(o, e, p)  CG(p)= (e)->cg.p; 
 
-    #define PHP_OEL_CN_OPCODE "OelOpcode"
-    #define PHP_OEL_CN_OPLINE "OelOpline"
-    #define PHP_OEL_CN_ZNODE  "OelZnode"
+    #define PHP_OEL_CN_OPCODE            "OelOpcode"
+    #define PHP_OEL_CN_OPLINE            "OelOpline"
+    #define PHP_OEL_CN_ZNODE             "OelZnode"
+    #define PHP_OEL_CN_ZNODE_UNUSED      "OelZnodeUnused"
+    #define PHP_OEL_CN_ZNODE_CONSTANT    "OelZnodeConstant"
+    #define PHP_OEL_CN_ZNODE_TMPVAR      "OelZnodeTmpvar"
+    #define PHP_OEL_CN_ZNODE_VARIABLE    "OelZnodeVariable"
+    #define PHP_OEL_CN_ZNODE_COMPILEDVAR "OelZnodeCompiledvar"
 
     #if ZEND_MODULE_API_NO < 20071006
         #define Z_SET_REFCOUNT(o, v) (o).refcount= (v)
