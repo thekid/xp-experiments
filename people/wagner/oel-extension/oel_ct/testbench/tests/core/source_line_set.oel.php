@@ -1,4 +1,5 @@
 <?php
+  error_reporting(E_ALL ^ E_WARNING);
 
   $op_a= oel_new_op_array();
   oel_set_source_file($op_a, "Testfile.wll");
