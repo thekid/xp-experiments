@@ -23,7 +23,8 @@
     protected 
       $op           = NULL,
       $errors       = array(),
-      $class        = array(),
+      $class        = array(NULL),
+      $package      = array(NULL),
       $imports      = array(NULL),
       $statics      = array(NULL),
       $used         = array(NULL),
@@ -776,7 +777,7 @@
       oel_add_call_method_static($op, 2, 'registry', 'xp');
       oel_add_free($op);
 
-      oel_push_value($op, 'details.'.$name);
+      oel_push_value($op, 'details.'.$qualified);
       oel_push_value($op, $this->metadata[0]);
       oel_add_call_method_static($op, 2, 'registry', 'xp');
       oel_add_free($op);
@@ -908,7 +909,7 @@
         oel_add_free($op);
       }      
       
-      $this->registerClass($op, $this->class[0], $declaration->name->name);
+      $this->registerClass($op, $this->class[0], ($this->package[0] ? $this->package[0].'.' : '').$declaration->name->name);
       array_shift($this->metadata);
       array_shift($this->class);
     }
@@ -967,7 +968,7 @@
       } else {
         oel_add_end_class_declaration($op);
       }
-      $this->registerClass($op, $this->class[0], $declaration->name->name);
+      $this->registerClass($op, $this->class[0], ($this->package[0] ? $this->package[0].'.' : '').$declaration->name->name);
       array_shift($this->metadata);
       array_shift($this->class);
     }
@@ -1180,6 +1181,7 @@
       // Imports
       array_unshift($this->imports, array());
       array_unshift($this->statics, array());
+      array_unshift($this->package, $tree->package->name);
       $this->emitAll($this->op, (array)$tree->imports);
       
       // Declaration
@@ -1201,6 +1203,7 @@
       oel_finalize($this->op);
       array_shift($this->imports);
       array_shift($this->statics);
+      array_shift($this->package);
 
       // Execute and return
       oel_execute($this->op);
