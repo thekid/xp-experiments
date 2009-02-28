@@ -24,6 +24,7 @@
         'final'         => Parser::T_FINAL,
         'abstract'      => Parser::T_ABSTRACT,
         'inline'        => Parser::T_INLINE,
+        'native'        => Parser::T_NATIVE,
         
         'package'       => Parser::T_PACKAGE,
         'import'        => Parser::T_IMPORT,
