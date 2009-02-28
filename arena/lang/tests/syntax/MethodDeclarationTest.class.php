@@ -161,7 +161,7 @@
         'throws'     => NULL,
         'body'       => NULL
       ))), $this->parse('class Format { 
-        public static string printf(string $format, string* $args) {
+        public static string printf(string $format, string... $args) {
         
         }
       }'));

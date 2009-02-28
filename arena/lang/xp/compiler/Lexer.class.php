@@ -38,8 +38,6 @@
         'operator'      => Parser::T_OPERATOR,
         'throws'        => Parser::T_THROWS,
 
-        'property'      => Parser::T_PROPERTY,
-
         'throw'         => Parser::T_THROW,
         'try'           => Parser::T_TRY,
         'catch'         => Parser::T_CATCH,
@@ -65,6 +63,7 @@
 
     protected static
       $lookahead= array(
+        '.' => array('..' => Parser::T_DOTS),
         '-' => array('-=' => Parser::T_SUB_EQUAL, '--' => Parser::T_DEC),
         '>' => array('>=' => Parser::T_GE),
         '<' => array('<=' => Parser::T_SE),

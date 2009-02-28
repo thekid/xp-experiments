@@ -87,7 +87,7 @@
 %token T_OPERATOR 320
 %token T_THROWS 321
 
-%token T_PROPERTY 330
+%token T_DOTS 330
 
 %token T_VARIABLE 340
 %token T_RETURN 341
@@ -384,7 +384,7 @@ arguments:
 
 argument:
 	typeref T_VARIABLE initialization_opt { $$= array('name' => $2, 'type' => $1); $3 && $$['default']= $3; }
-  | typeref '*' T_VARIABLE { $$= array('name' => $3, 'type' => $1, 'vararg' => TRUE); }
+  | typeref T_DOTS '.' T_VARIABLE { $$= array('name' => $4, 'type' => $1, 'vararg' => TRUE); }
 ;
 
 throws_opt:
