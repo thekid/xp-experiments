@@ -31,6 +31,7 @@
       $finalizers   = array(NULL),
       $metadata     = array(NULL),
       $continuation = array(NULL),
+      $properties   = array(NULL),
       $types        = NULL;
     
     /**
@@ -849,9 +850,72 @@
           oel_finalize($iop);
         }
       } else {
+        foreach ($property->handlers as $name => $statements) {   
+          $this->properties[0][$name][$property->name]= $statements;
+        }
+      }
+    }    
+
+    /**
+     * Emit class properties.
+     *
+     * Creates the equivalent of the following: 
+     * <code>
+     *   public function __get($name) {
+     *     if ('length' === $name) {
+     *       return $this->_length;
+     *     } else if ('chars' === $name) {
+     *       return str_split($this->buffer);
+     *     }
+     *   }
+     * </code>
+     *
+     * @param   resource op
+     * @param   array<string, array<string, xp.compiler.ast.Node[]>> properties
+     */
+    protected function emitProperties($op, array $properties) {
+      static $mangled= "\0name";
       
-        // Property - TODO: Implement via __get / __set
-        $this->errors[]= 'Cannot emit property '.xp::stringOf($property);
+      if ($properties['get']) {
+        $gop= oel_new_method($op, '__get', FALSE, FALSE, MODIFIER_PUBLIC, FALSE);
+        oel_add_receive_arg($gop, 1, $mangled);
+        
+        foreach ($properties['get'] as $name => $statements) {
+          oel_push_value($gop, $name);
+          oel_add_begin_variable_parse($gop);
+          oel_push_variable($gop, $mangled);
+          oel_add_end_variable_parse($gop);
+          oel_add_binary_op($gop, OEL_BINARY_OP_IS_IDENTICAL);
+          oel_add_begin_if($gop); {
+            $this->emitAll($gop, (array)$statements);
+          }
+          oel_add_end_if($gop); 
+        }
+        for ($i= 0, $s= sizeof($properties['get']); $i < $s; $i++) {
+          oel_add_end_else($gop);
+        }
+        oel_finalize($gop);
+      }
+      if ($properties['set']) {
+        $sop= oel_new_method($op, '__set', FALSE, FALSE, MODIFIER_PUBLIC, FALSE);
+        oel_add_receive_arg($sop, 1, $mangled);
+        oel_add_receive_arg($sop, 2, 'value');
+        
+        foreach ($properties['set'] as $name => $statements) {
+          oel_push_value($sop, $name);
+          oel_add_begin_variable_parse($sop);
+          oel_push_variable($sop, $mangled);
+          oel_add_end_variable_parse($sop);
+          oel_add_binary_op($sop, OEL_BINARY_OP_IS_IDENTICAL);
+          oel_add_begin_if($sop); {
+            $this->emitAll($sop, (array)$statements);
+          }
+          oel_add_end_if($sop); 
+        }
+        for ($i= 0, $s= sizeof($properties['set']); $i < $s; $i++) {
+          oel_add_end_else($sop);
+        }
+        oel_finalize($sop);
       }
     }
     
@@ -929,6 +993,7 @@
       }
       array_unshift($this->class, $declaration->name->name);
       array_unshift($this->metadata, array(array(), array()));
+      array_unshift($this->properties, array('get' => array(), 'set' => array()));
 
       // Interfaces
       foreach ($declaration->implements as $type) {
@@ -949,8 +1014,10 @@
       oel_add_return($vop);
       oel_finalize($vop);
 
-      // Methods
+      // Members
+      $this->emitAll($op, (array)$declaration->body['fields']);
       $this->emitAll($op, (array)$declaration->body['methods']);
+      $this->emitProperties($op, $this->properties[0]);
 
       // Static initializer (FIXME: Should be static function __static)
       if ($abstract) {      
@@ -982,6 +1049,7 @@
       }      
       
       $this->registerClass($op, $this->class[0], ($this->package[0] ? $this->package[0].'.' : '').$declaration->name->name);
+      array_shift($this->properties);
       array_shift($this->metadata);
       array_shift($this->class);
     }
@@ -1014,6 +1082,7 @@
       }
       array_unshift($this->class, $declaration->name->name);
       array_unshift($this->metadata, array(array(), array()));
+      array_unshift($this->properties, array());
 
       // Interfaces
       foreach ($declaration->implements as $type) {
@@ -1023,6 +1092,7 @@
       // Members
       $this->emitAll($op, (array)$declaration->body['fields']);
       $this->emitAll($op, (array)$declaration->body['methods']);
+      $this->emitProperties($op, $this->properties[0]);
 
       // Static initializer blocks (array<Statement[]>)
       if ($declaration->body['static']) {
@@ -1041,6 +1111,7 @@
         oel_add_end_class_declaration($op);
       }
       $this->registerClass($op, $this->class[0], ($this->package[0] ? $this->package[0].'.' : '').$declaration->name->name);
+      array_shift($this->properties);
       array_shift($this->metadata);
       array_shift($this->class);
     }

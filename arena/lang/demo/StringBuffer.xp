@@ -2,19 +2,22 @@ package demo;
 
 import native iconv.*;
 import native standard.implode;
+import native standard.str_split;
+import native standard.var_dump;
+import static util.cmd.Console.writeLine;
 
 public class StringBuffer {
   protected string $buffer;
-  public int $length;
+  protected int $_length;
 
   public __construct(string $initial= '') {
     $this.buffer= $initial;
-    $this.length= iconv_strlen($initial, 'utf-8');
+    $this._length= iconv_strlen($initial, 'utf-8');
   }
   
   public self append(string $str) {
     $this.buffer~= $str;
-    $this.length+= iconv_strlen($str, 'utf-8');
+    $this._length+= iconv_strlen($str, 'utf-8');
     return $this;
   }
   
@@ -33,8 +36,17 @@ public class StringBuffer {
       throw new lang.IllegalAccessException('Cannot remove string offsets');
     }
     isset {
-      return $offset >= 0 && $offset < $this.length;
+      return $offset >= 0 && $offset < $this._length;
     }
+  }
+  
+  public int length {
+    get { return $this._length; }
+    set { throw new lang.IllegalAccessException('Cannot set string length'); }
+  }
+
+  public string[] chars {
+    get { return str_split($this.buffer); }
   }
 
   public string toString() {
@@ -43,6 +55,14 @@ public class StringBuffer {
   
   public static void main(string[] $args) {
     $s= self::valueOf($args).append('!');
-    util.cmd.Console::writeLine('String= "', $s, '" (length= ', $s.length, ') [0]= "', $s[0], '"');
+    writeLine('String= "', $s, '" (length= ', $s.length, ') [0]= "', $s[0], '"');
+    
+    try {
+      $s.length= 10;
+    } catch (lang.IllegalAccessException $e) {
+      writeLine('Caught expected ', $e.compoundMessage());
+    }
+
+    writeLine('chars= ', $s.chars);
   }  
 }
