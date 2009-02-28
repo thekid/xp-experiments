@@ -55,6 +55,20 @@
     }
 
     /**
+     * Test single-type import
+     *
+     */
+    #[@test]
+    public function staticImport() {
+      $this->assertEquals(array(new StaticImportNode(array(
+          'position' => array(1, 1),
+          'name'     => 'rdbms.criterion.Restrictions.*'
+        ))), 
+        $this->parse('import static rdbms.criterion.Restrictions.*; public class Test { }')
+      );
+    }
+
+    /**
      * Test multiple imports
      *
      */
