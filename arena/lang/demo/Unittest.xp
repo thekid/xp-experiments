@@ -1,5 +1,6 @@
 import unittest.AssertionFailedError;
 import lang.types.Integer;
+import util.cmd.Console;
 
 public class Unittest {
   protected string $name;
@@ -9,7 +10,7 @@ public class Unittest {
   }
   
   public void assertEquals(any $a, any $b) throws AssertionFailedError {
-    if ($a instanceof Generic) {
+    if ($a instanceof lang.Generic) {
       $eq= $a.equals($b);
     } else {
       $eq= $a == $b;
@@ -38,7 +39,7 @@ public class Unittest {
   }
 
   [@test, @expect('lang.IllegalArgumentException')] void expect() {
-    throw new IllegalArgumentException($this.name);
+    throw new lang.IllegalArgumentException($this.name);
   }
 
   public static void main(string[] $args) {
@@ -51,7 +52,7 @@ public class Unittest {
         Console::write('.');
       } catch (lang.reflect.TargetInvocationException $t) {
         if ($method.hasAnnotation('expect')) {
-          if (XPClass::forName($method.getAnnotation('expect')).isInstance($t.getCause())) {
+          if (lang.XPClass::forName($method.getAnnotation('expect')).isInstance($t.getCause())) {
             Console::write('E');
             continue;
           }
