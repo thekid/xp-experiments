@@ -700,6 +700,32 @@
     protected function emitOperator($op, OperatorNode $operator) {
       $this->errors[]= 'Operator overloading not supported '.xp::stringOf($operator);
     }
+    
+    /**
+     * Emit method arguments
+     *
+     * @param   resource op
+     * @param   array<string, *>[] arguments
+     */
+    protected function emitArguments($op, array $arguments) {
+      foreach ($arguments as $i => $arg) {
+        if (isset($arg['vararg'])) {
+          oel_add_call_function($op, 0, 'func_get_args');
+          if ($i > 0) {
+            oel_push_value($op, 0);
+            oel_push_value($op, $i);
+            oel_add_call_function($op, 3, 'array_splice');
+          }
+          oel_add_begin_variable_parse($op);
+          oel_push_variable($op, substr($arg['name'], 1));          // without '$'
+          oel_add_assign($op);
+          oel_add_free($op);
+          break;
+        }
+        oel_add_receive_arg($op, $i + 1, substr($arg['name'], 1));  // without '$'
+        $this->types[new VariableNode($arg['name'])]= $arg['type'];
+      }
+    }
 
     /**
      * Emit a method
@@ -757,11 +783,7 @@
       }
 
       // Arguments
-      foreach ((array)$method->arguments as $i => $arg) {
-        oel_add_receive_arg($mop, $i + 1, substr($arg['name'], 1));  // without '$'
-        $this->types[new VariableNode($arg['name'])]= $arg['type'];
-      }
-
+      $method->arguments && $this->emitArguments($mop, $method->arguments);
       $method->body && $this->emitAll($mop, $method->body);
       oel_finalize($mop);
       $this->metadata[0][1][$method->name]= $meta;
@@ -784,11 +806,7 @@
       );
 
       // Arguments
-      foreach ($constructor->arguments as $i => $arg) {
-        oel_add_receive_arg($cop, $i + 1, substr($arg['name'], 1));  // without '$'
-        $this->types[new VariableNode($arg['name'])]= $arg['type'];
-      }
-
+      $constructor->arguments && $this->emitArguments($cop, $constructor->arguments);
       $constructor->body && $this->emitAll($cop, $constructor->body);
       oel_finalize($cop);
     }
