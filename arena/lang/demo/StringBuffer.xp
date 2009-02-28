@@ -1,0 +1,45 @@
+package demo;
+
+import native iconv.*;
+import native standard.implode;
+
+public class StringBuffer {
+  protected string $buffer;
+  public int $length;
+
+  public __construct(string $initial= '') {
+    $this.buffer= $initial;
+    $this.length= iconv_strlen($initial, 'utf-8');
+  }
+  
+  public self append(string $str) {
+    $this.buffer= $this.buffer ~ $str;
+    $this.length= $this.length + iconv_strlen($str, 'utf-8');
+    return $this;
+  }
+  
+  public static self valueOf(string[] $in) {
+    return new self(implode(' ', $in));
+  }
+  
+  public string operator[int $offset]() {
+    return iconv_substr($this.buffer, $offset, 1, 'utf-8');
+  }
+
+  public string operator[int $offset](string $v) {
+    throw new lang.IllegalAccessException('Cannot write to string offsets');
+  }
+  
+  public string toString() {
+    return $this.buffer;
+  }
+  
+  // FIXME: Operator syntax?
+  public bool offsetExists(int $offset) { }
+  public bool offsetUnset(int $offset) { }
+
+  public static void main(string[] $args) {
+    $s= self::valueOf($args);
+    util.cmd.Console::writeLine('String= "', $s, '" (length= ', $s.length, ') [0]= "', $s[0], '"');
+  }  
+}
