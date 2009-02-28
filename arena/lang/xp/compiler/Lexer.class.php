@@ -68,6 +68,7 @@
         '-' => array('-=' => Parser::T_SUB_EQUAL, '--' => Parser::T_DEC),
         '>' => array('>=' => Parser::T_GE),
         '<' => array('<=' => Parser::T_SE),
+        '~' => array('~=' => Parser::T_CONCAT_EQUAL),
         '+' => array('+=' => Parser::T_ADD_EQUAL, '++' => Parser::T_INC),
         '*' => array('*=' => Parser::T_MUL_EQUAL),
         '/' => array('/=' => Parser::T_DIV_EQUAL),

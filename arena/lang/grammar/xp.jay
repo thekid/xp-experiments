@@ -53,7 +53,7 @@
   );
 %}
 
-%left ',' '=' '%' '?' ':' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_BOOLEAN_OR T_BOOLEAN_AND T_INSTANCEOF
+%left ',' '=' '%' '?' ':' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_BOOLEAN_OR T_BOOLEAN_AND T_INSTANCEOF T_CONCAT_EQUAL
 %left '+' '-'
 %left '*' '/'
 %right '[' '!' '~' T_INC T_DEC 
@@ -126,6 +126,7 @@
 %token T_DOUBLE_ARROW 413
 %token T_BOOLEAN_OR 414
 %token T_BOOLEAN_AND 415
+%token T_CONCAT_EQUAL 416
 
 %%
 
@@ -678,6 +679,7 @@ assignment:
   | expression T_MUL_EQUAL expression  /* *= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
   | expression T_DIV_EQUAL expression  /* /= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
   | expression T_MOD_EQUAL expression  /* %= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_CONCAT_EQUAL expression  /* ~= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
 ;
 
 comparison:

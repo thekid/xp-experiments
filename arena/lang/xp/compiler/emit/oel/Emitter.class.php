@@ -42,6 +42,7 @@
     protected function emitInvocation($op, InvocationNode $inv) {
       if (!isset($this->statics[0][$inv->name])) {
         $this->errors[]= 'Cannot resolve '.$inv->name;
+        $inv->free || oel_push_value($op, NULL);        // Prevent fatal
         return;
       }
       $ptr= $this->statics[0][$inv->name];
@@ -652,6 +653,15 @@
      * @param   xp.compiler.ast.AssignmentNode assign
      */
     protected function emitAssignment($op, AssignmentNode $assign) {
+      static $ops= array(
+        '~='   => OEL_BINARY_OP_ASSIGN_CONCAT,
+        '-='   => OEL_BINARY_OP_ASSIGN_SUB,
+        '+='   => OEL_BINARY_OP_ASSIGN_ADD,
+        '*='   => OEL_BINARY_OP_ASSIGN_MUL,
+        '/='   => OEL_BINARY_OP_ASSIGN_DIV,
+        '%='   => OEL_BINARY_OP_ASSIGN_MOD,
+      );
+
       if (!$assign->variable instanceof VariableNode) {
         $this->errors[]= 'Cannot assign to '.xp::stringOf($assign);
         return;
@@ -663,8 +673,48 @@
       oel_add_begin_variable_parse($op);
       oel_push_variable($op, ltrim($assign->variable->name, '$'));    // without '$'
       $this->emitChain($op, $assign->variable);
-      oel_add_assign($op);    // TODO: depending on $assign->op, use other assignments
+      
+      isset($ops[$assign->op]) ? oel_add_assign($op, $ops[$assign->op]) : oel_add_assign($op);
       $assign->free && oel_add_free($op);
+    }
+
+    /**
+     * Emit an operator
+     *
+     * <code>
+     *   operator[int $offset]()   // offsetGet($offset)
+     *   operator[int $offset]($v) // offsetSet($offset, $v)
+     * </code>
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.OperatorNode method
+     */
+    protected function emitOperator($op, OperatorNode $operator) {
+      if (is_array($operator->symbol)) {
+        $name= $operator->arguments ? 'offsetSet' : 'offsetGet';
+        $args= array_merge(array($operator->symbol), (array)$operator->arguments);
+      } else {
+        $this->errors[]= 'Operator not supported '.xp::stringOf($operator);
+        return;
+      }
+      
+      $oop= oel_new_method(
+        $op, 
+        $name, 
+        FALSE,          // Returns reference
+        Modifiers::isStatic($operator->modifiers),
+        $operator->modifiers,
+        Modifiers::isFinal($operator->modifiers)
+      );
+      
+      // Arguments
+      foreach ($args as $i => $arg) {
+        oel_add_receive_arg($oop, $i + 1, substr($arg['name'], 1));  // without '$'
+        $this->types[new VariableNode($arg['name'])]= $arg['type'];
+      }
+
+      $operator->body && $this->emitAll($oop, $operator->body);
+      oel_finalize($oop);
     }
 
     /**
@@ -948,10 +998,19 @@
         oel_add_implements_interface($op, $this->resolve($type->name, FALSE, FALSE));
       }
       
+      // Implement builtin magic ArrayAccess interface if index operators 
+      // are existant.
+      foreach ((array)$declaration->body['methods'] as $method) {
+        if ($method instanceof OperatorNode && is_array($method->symbol)) {
+          oel_add_implements_interface($op, 'ArrayAccess');
+          break;
+        }
+      }
+      
       // Members
       $this->emitAll($op, (array)$declaration->body['fields']);
       $this->emitAll($op, (array)$declaration->body['methods']);
-      
+
       // Static initializer blocks (array<Statement[]>)
       if ($declaration->body['static']) {
         $sop= oel_new_method($op, '__static', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
