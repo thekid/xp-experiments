@@ -55,7 +55,7 @@
     }
 
     /**
-     * Test single-type import
+     * Test static import
      *
      */
     #[@test]
@@ -65,6 +65,20 @@
           'name'     => 'rdbms.criterion.Restrictions.*'
         ))), 
         $this->parse('import static rdbms.criterion.Restrictions.*; public class Test { }')
+      );
+    }
+
+    /**
+     * Test native import
+     *
+     */
+    #[@test]
+    public function nativeImport() {
+      $this->assertEquals(array(new NativeImportNode(array(
+          'position' => array(1, 1),
+          'name'     => 'standard.*'
+        ))), 
+        $this->parse('import native standard.*; public class Test { }')
       );
     }
 
