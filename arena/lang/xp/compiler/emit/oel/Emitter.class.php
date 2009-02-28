@@ -656,6 +656,10 @@
 
       $type= $this->resolve($new->type->name);
     
+      // Anonymous instance creation:
+      // - Create unique classname
+      // - Extend parent class if type is a class
+      // - Implement type and extend lang.Object if it's an interface 
       if ($new->body) {
         if (XPClass::forName($this->resolve($new->type->name, TRUE))->isInterface()) {
           $p= array('parent' => new TypeName('lang.Object'), 'implements' => array($new->type));
