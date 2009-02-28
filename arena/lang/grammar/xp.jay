@@ -277,25 +277,29 @@ field:
       $$->name= $3;
       $$->initialization= $4;
     }
-  | decorations T_PROPERTY T_VARIABLE getset getset_opt ';' { $$= $yyLex->create(new PropertyNode());
-      $$->modifiers= $1[0];
-      $$->annotations= $1[1];
-      $$->name= $3;
-      $gs= array_merge(array('get' => NULL, 'set' => NULL), $4, $5);
-      $$->get= $gs['get'];
-      $$->set= $gs['set'];
+  | decorations typeref property '{' getsets '}' {
+      $3->modifiers= $1[0];
+      $3->annotations= $1[1];
+      $3->type= $2;
+      $3->handlers= $5;
+      $$= $3;
     }
 ;
 
-getset_opt:
-    /* empty */    { $$= array(); }
-  | getset
+property:
+    T_WORD { $$= $yyLex->create(new PropertyNode(array('name' => $1))); }
+  | T_WORD '[' arguments ']' { $$= $yyLex->create(new PropertyNode(array('name' => $1, 'arguments' => $3))); }
+;
+
+getsets:
+    getset         { $$= $1; }
+  | getset getsets { $$= array_merge($1, $2); }
 ;
 
 getset:
 	T_WORD T_VARIABLE { $$= array($1 => $2); }
   | T_WORD T_WORD '(' ')' { $$= array($1 => $2); }
-  | T_WORD '{' statements '}' { $$= array($1 => $3); }
+  | T_WORD '{' statements_opt '}' { $$= array($1 => $3); }
 ;
 
 initialization_opt:

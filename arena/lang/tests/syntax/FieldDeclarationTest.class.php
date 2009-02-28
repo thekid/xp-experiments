@@ -74,19 +74,28 @@
           'initialization' => NULL,
         )),
         new PropertyNode(array(
-          'position'   => array(3, 43),
+          'position'   => array(3, 30),
           'modifiers'  => MODIFIER_PUBLIC,
           'annotations'=> NULL,
-          'name'       => '$name',
-          'get'        => '$_name',
-          'set'        => NULL,
+          'type'       => new TypeName('string'),
+          'name'       => 'name',
+          'handlers'   => array(
+            'get' => array(
+              new ReturnNode(array(
+                'position'   => array(3, 38),
+                'expression' => $this->create(new VariableNode(
+                  '$this',
+                  $this->create(new VariableNode('_name'), array(3, 56))
+                ), array(3, 45))
+              ))
+            )
+          )
         ))
       ), $this->parse('class Person {
         private string $_name;
-        public property $name get $_name;
+        public string name { get { return $this._name; } }
       }'));
     }
-
 
     /**
      * Test property declaration
@@ -104,48 +113,78 @@
           'initialization' => NULL,
         )),
         new PropertyNode(array(
-          'position'   => array(3, 57),
+          'position'   => array(3, 30),
           'modifiers'  => MODIFIER_PUBLIC,
           'annotations'=> NULL,
-          'name'       => '$name',
-          'get'        => '$_name',
-          'set'        => 'setName',
+          'type'       => new TypeName('string'),
+          'name'       => 'name',
+          'handlers'   => array(
+            'get' => array(
+              new ReturnNode(array(
+                'position'   => array(4, 19),
+                'expression' => $this->create(new VariableNode(
+                  '$this',
+                  $this->create(new VariableNode('_name'), array(4, 37))
+                ), array(4, 26))
+              ))
+            ),
+            'set' => array(
+              new AssignmentNode(array(
+                'position'   => array(5, 38),
+                'variable'   => $this->create(new VariableNode(
+                  '$this',
+                  $this->create(new VariableNode('_name'), array(5, 30))
+                ), array(5, 19)),
+                'expression' => $this->create(new VariableNode(
+                  '$value'
+                ), array(5, 32)),
+                'op'         => '='
+              ))
+            )
+          )
         ))
       ), $this->parse('class Person {
         private string $_name;
-        public property $name get $_name set setName();
+        public string name { 
+          get { return $this._name; } 
+          set { $this._name= $value; }
+        }
       }'));
     }
 
     /**
-     * Test property declaration
+     * Test indexer property declaration
      *
      */
     #[@test]
-    public function propertyWithGetBlock() {
+    public function indexerProperty() {
       $this->assertEquals(array(
-        new FieldNode(array(
-          'position'   => array(2, 32),
-          'modifiers'  => MODIFIER_PRIVATE,
-          'name'       => '$_name',
-          'annotations'=> NULL,
-          'type'       => new TypeName('string'),
-          'initialization' => NULL,
-        )),
         new PropertyNode(array(
-          'position'   => array(3, 60),
+          'position'   => array(2, 36),
           'modifiers'  => MODIFIER_PUBLIC,
-          'name'       => '$name',
           'annotations'=> NULL,
-          'get'        => array(new ReturnNode(array(
-            'position'   => array(3, 39),
-            'expression' => $this->create(new VariableNode('$this', $this->create(new VariableNode('_name'), array(3, 57))), array(3, 46)),
-          ))),
-          'set'        => NULL,
+          'type'       => new TypeName('T'),
+          'name'       => 'this',
+          'arguments'  => array(
+            array(
+              'name' => '$offset',
+              'type' => new TypeName('int')
+            )
+          ),
+          'handlers'   => array(
+            'get'   => NULL,
+            'set'   => NULL,
+            'isset' => NULL,
+            'unset' => NULL
+          )
         ))
-      ), $this->parse('class Person {
-        private string $_name;
-        public property $name get { return $this._name; };
+      ), $this->parse('class ArrayList {
+        public T this[int $offset] { 
+          get {  } 
+          set {  }
+          isset {  }
+          unset {  }
+        }
       }'));
     }
   }

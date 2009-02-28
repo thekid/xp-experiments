@@ -224,7 +224,7 @@
      * @param   xp.compiler.ast.BinaryOpNode bin
      */
     protected function emitBinaryOp($op, BinaryOpNode $bin) {
-      static $ops= array(
+      static $bop= array(
         '~'   => OEL_BINARY_OP_CONCAT,
         '-'   => OEL_BINARY_OP_SUB,
         '+'   => OEL_BINARY_OP_ADD,
@@ -232,7 +232,11 @@
         '/'   => OEL_BINARY_OP_DIV,
         '%'   => OEL_BINARY_OP_MOD,
       );
-      static $opt= array(
+      static $lop= array(
+        '&&'  => OEL_OP_BOOL_AND,
+        '||'  => OEL_OP_BOOL_OR,
+      );
+      static $optimizable= array(
         '~'   => 'concat',
         '-'   => 'subtract',
         '+'   => 'add',
@@ -241,16 +245,24 @@
       );      
       
       // Check for optimization possibilities if left- and righthand sides are constant values
-      if (isset($opt[$bin->op]) && $bin->lhs instanceof ConstantValueNode && $bin->rhs instanceof ConstantValueNode) {
-        if (NULL !== ($r= call_user_func_array(array($this, 'eval'.$opt[$bin->op]), array($bin->lhs, $bin->rhs)))) {
+      if (isset($optimizable[$bin->op]) && $bin->lhs instanceof ConstantValueNode && $bin->rhs instanceof ConstantValueNode) {
+        if (NULL !== ($r= call_user_func_array(array($this, 'eval'.$optimizable[$bin->op]), array($bin->lhs, $bin->rhs)))) {
           $this->emitOne($op, $r);
           return;
         }
       }
       
-      $this->emitOne($op, $bin->rhs);
-      $this->emitOne($op, $bin->lhs);
-      oel_add_binary_op($op, $ops[$bin->op]);
+      // Check for logical operations. TODO: LogicalOperationNode?
+      if (isset($lop[$bin->op])) {
+        $this->emitOne($op, $bin->lhs);
+        oel_add_begin_logical_op($op, $lop[$bin->op]);
+        $this->emitOne($op, $bin->rhs);
+        oel_add_end_logical_op($op);
+      } else {
+        $this->emitOne($op, $bin->rhs);
+        $this->emitOne($op, $bin->lhs);
+        oel_add_binary_op($op, $bop[$bin->op]);
+      }
       $bin->free && oel_add_free($op);
     }
 
@@ -674,47 +686,18 @@
       oel_push_variable($op, ltrim($assign->variable->name, '$'));    // without '$'
       $this->emitChain($op, $assign->variable);
       
-      isset($ops[$assign->op]) ? oel_add_assign($op, $ops[$assign->op]) : oel_add_assign($op);
+      isset($ops[$assign->op]) ? oel_add_binary_op($op, $ops[$assign->op]) : oel_add_assign($op);
       $assign->free && oel_add_free($op);
     }
 
     /**
      * Emit an operator
      *
-     * <code>
-     *   operator[int $offset]()   // offsetGet($offset)
-     *   operator[int $offset]($v) // offsetSet($offset, $v)
-     * </code>
-     *
      * @param   resource op
      * @param   xp.compiler.ast.OperatorNode method
      */
     protected function emitOperator($op, OperatorNode $operator) {
-      if (is_array($operator->symbol)) {
-        $name= $operator->arguments ? 'offsetSet' : 'offsetGet';
-        $args= array_merge(array($operator->symbol), (array)$operator->arguments);
-      } else {
-        $this->errors[]= 'Operator not supported '.xp::stringOf($operator);
-        return;
-      }
-      
-      $oop= oel_new_method(
-        $op, 
-        $name, 
-        FALSE,          // Returns reference
-        Modifiers::isStatic($operator->modifiers),
-        $operator->modifiers,
-        Modifiers::isFinal($operator->modifiers)
-      );
-      
-      // Arguments
-      foreach ($args as $i => $arg) {
-        oel_add_receive_arg($oop, $i + 1, substr($arg['name'], 1));  // without '$'
-        $this->types[new VariableNode($arg['name'])]= $arg['type'];
-      }
-
-      $operator->body && $this->emitAll($oop, $operator->body);
-      oel_finalize($oop);
+      $this->errors[]= 'Operator overloading not supported '.xp::stringOf($operator);
     }
 
     /**
@@ -832,12 +815,51 @@
       oel_add_call_method_static($op, 2, 'registry', 'xp');
       oel_add_free($op);
     }
+
+    /**
+     * Emit a class property
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.PropertyNode property
+     */
+    protected function emitProperty($op, PropertyNode $property) {
+      if ('this' === $property->name && $property->arguments) {
+
+        // Indexer - fixme: Maybe use IndexerPropertyNode?
+        oel_add_implements_interface($op, 'ArrayAccess');
+        
+        foreach (array(
+          'get'   => array('offsetGet', $property->arguments),
+          'set'   => array('offsetSet', array_merge($property->arguments, array(array('name' => '$value', 'type' => $property->type)))),
+          'isset' => array('offsetExists', $property->arguments),
+          'unset' => array('offsetUnset', $property->arguments),
+        ) as $handler => $def) {
+          $iop= oel_new_method(
+            $op, 
+            $def[0], 
+            FALSE,          // Returns reference
+            FALSE,          // Static
+            $property->modifiers
+          );
+          foreach ($def[1] as $i => $arg) {
+            oel_add_receive_arg($iop, $i + 1, substr($arg['name'], 1));  // without '$'
+            $this->types[new VariableNode($arg['name'])]= $arg['type'];
+          }
+          $this->emitAll($iop, $property->handlers[$handler]);
+          oel_finalize($iop);
+        }
+      } else {
+      
+        // Property - TODO: Implement via __get / __set
+        $this->errors[]= 'Cannot emit property '.xp::stringOf($property);
+      }
+    }
     
     /**
      * Emit a class field
      *
      * @param   resource op
-     * @param   xp.compiler.ast.ConstructorNode constructor
+     * @param   xp.compiler.ast.FieldNode field
      */
     protected function emitField($op, FieldNode $field) {
       oel_add_declare_property(
@@ -996,15 +1018,6 @@
       // Interfaces
       foreach ($declaration->implements as $type) {
         oel_add_implements_interface($op, $this->resolve($type->name, FALSE, FALSE));
-      }
-      
-      // Implement builtin magic ArrayAccess interface if index operators 
-      // are existant.
-      foreach ((array)$declaration->body['methods'] as $method) {
-        if ($method instanceof OperatorNode && is_array($method->symbol)) {
-          oel_add_implements_interface($op, 'ArrayAccess');
-          break;
-        }
       }
       
       // Members
