@@ -5,6 +5,7 @@
     'xp.compiler.ast.PackageNode',
     'xp.compiler.ast.ImportNode',
     'xp.compiler.ast.StaticImportNode',
+    'xp.compiler.ast.NativeImportNode',
     'xp.compiler.ast.AnnotationNode',
     'xp.compiler.ast.ClassNode',
     'xp.compiler.ast.EnumNode',
@@ -158,19 +159,16 @@ imports:
 
 import:
     T_IMPORT { $p= $yyLex->position; } importtype T_WORD '.' importname ';' {
-      if (MODIFIER_STATIC === $3) {
-        $$= new StaticImportNode();
-      } else {
-        $$= new ImportNode();
-      }
-      $$->position= $p;
-      $$->name= $4.'.'.$6;
+      $3->position= $p;
+      $3->name= $4.'.'.$6;
+      $$= $3;
     }
 ;
 
 importtype:
-    /* empty */ 
-  | T_STATIC { $$= MODIFIER_STATIC; }
+    /* empty */ { $$= new ImportNode(); }
+  | T_STATIC    { $$= new StaticImportNode(); }
+  | T_NATIVE    { $$= new NativeImportNode(); }
 ;
 
 importname:
