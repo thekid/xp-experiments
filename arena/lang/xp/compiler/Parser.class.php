@@ -1464,7 +1464,7 @@
       $yyVals[-5+$yyTop]->throws= $yyVals[-1+$yyTop];
       $yyVals[-5+$yyTop]->body= $yyVals[0+$yyTop];
       $yyVal= $yyVals[-5+$yyTop];
-  } break;
+    } break;
 
     case 62:  #line 340 "grammar/xp.jay"
     { $yyVal= array($yyVals[0+$yyTop], $yyVals[-2+$yyTop]); } break;

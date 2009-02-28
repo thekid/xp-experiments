@@ -22,22 +22,25 @@ public class StringBuffer {
     return new self(implode(' ', $in));
   }
   
-  public string operator[int $offset]() {
-    return iconv_substr($this.buffer, $offset, 1, 'utf-8');
+  public string this[int $offset] {
+    get {
+      return iconv_substr($this.buffer, $offset, 1, 'utf-8');
+    }
+    set {
+      throw new lang.IllegalAccessException('Cannot write to string offsets');
+    }
+    unset {
+      throw new lang.IllegalAccessException('Cannot remove string offsets');
+    }
+    isset {
+      return $offset >= 0 && $offset < $this.length;
+    }
   }
 
-  public string operator[int $offset](string $v) {
-    throw new lang.IllegalAccessException('Cannot write to string offsets');
-  }
-  
   public string toString() {
     return $this.buffer;
   }
   
-  // FIXME: Operator syntax?
-  public bool offsetExists(int $offset) { }
-  public bool offsetUnset(int $offset) { }
-
   public static void main(string[] $args) {
     $s= self::valueOf($args);
     util.cmd.Console::writeLine('String= "', $s, '" (length= ', $s.length, ') [0]= "', $s[0], '"');
