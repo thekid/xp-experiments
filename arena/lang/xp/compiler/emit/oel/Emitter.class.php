@@ -25,6 +25,7 @@
       $errors       = array(),
       $class        = array(),
       $imports      = array(NULL),
+      $statics      = array(NULL),
       $used         = array(NULL),
       $finalizers   = array(NULL),
       $metadata     = array(NULL),
@@ -38,8 +39,19 @@
      * @param   xp.compiler.ast.InvocationNode inv
      */
     protected function emitInvocation($op, InvocationNode $inv) {
+      if (!isset($this->statics[0][$inv->name])) {
+        $this->errors[]= 'Cannot resolve '.$inv->name;
+        return;
+      }
+      $ptr= $this->statics[0][$inv->name];
+
+      // Static method call vs. function call
       $n= $this->emitAll($op, $inv->parameters);
-      oel_add_call_function($op, $n, $inv->name);
+      if (TRUE === $ptr) {
+        oel_add_call_function($op, $n, $inv->name);
+      } else {
+        oel_add_call_method_static($op, $n, $inv->name, $this->resolve($ptr));
+      }
       $inv->free && oel_add_free($op);
     }
     
@@ -973,6 +985,76 @@
     }
 
     /**
+     * Emit import
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ImportNode import
+     */
+    protected function emitImport($op, ImportNode $import) {
+      if ('.*' == substr($import->name, -2)) {
+        foreach (Package::forName(substr($import->name, 0, -2))->getClassNames() as $name) {
+          $this->imports[0][xp::reflect($name)]= $name;
+        }
+      } else {
+        $this->imports[0][xp::reflect($import->name)]= $import->name;
+      }
+    }
+
+    /**
+     * Emit native import
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.NativeImportNode import
+     */
+    protected function emitNativeImport($op, NativeImportNode $import) {
+      if ('.*' == substr($import->name, -2)) {
+        $r= new ReflectionExtension(substr($import->name, 0, -2));
+        foreach ($r->getFunctions() as $f) {
+          $this->statics[0][$f->getName()]= TRUE;
+        }
+      } else {
+        $p= strrpos($import->name, '.');
+        $f= substr($import->name, $p+ 1);
+        $r= new ReflectionExtension(substr($import->name, 0, $p));
+        $l= $r->getFunctions();
+        if (!isset($l[$f])) {
+          throw new IllegalArgumentException('Function '.$f.' does not exist in '.$r->getName());
+        }
+        $this->statics[0][$l[$f]->getName()]= TRUE;
+      }
+    }
+    
+    /**
+     * Emit static import
+     *
+     * Given the following:
+     * <code>
+     *   import static rdbms.criterion.Restrictions.*;
+     * </code>
+     *
+     * A call to lessThanOrEqualTo() "function" then resolves to a static
+     * method call to Restrictions::lessThanOrEqualTo()
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.StaticImportNode import
+     */
+    protected function emitStaticImport($op, StaticImportNode $import) {
+      if ('.*' == substr($import->name, -2)) {
+        $name= substr($import->name, 0, -2);
+        $class= XPClass::forName($name);   // TODO: Other sources
+        foreach ($class->getMethods() as $method) {
+          if (!Modifiers::isStatic($method->getModifiers())) continue;
+          $this->statics[0][$method->getName()]= $class->getName();
+        }
+      } else {
+        $p= strrpos($import->name, '.');
+        $class= XPClass::forName(substr($import->name, 0, $p));   // TODO: Other sources
+        $method= $class->getMethod(substr($import->name, $p+ 1));
+        $this->statics[0][$method->getName()]= $class->getName();
+      }
+    }
+
+    /**
      * Emit a return statement
      * <code>
      *   return;                // void return
@@ -1097,15 +1179,8 @@
       
       // Imports
       array_unshift($this->imports, array());
-      foreach ((array)$tree->imports as $import) {
-        if ('.*' == substr($import->name, -2)) {    // FIXME: Should be instanceof PatternImport?
-          foreach (Package::forName(substr($import->name, 0, -2))->getClassNames() as $name) {
-            $this->imports[0][xp::reflect($name)]= $name;
-          }
-        } else {
-          $this->imports[0][xp::reflect($import->name)]= $import->name;
-        }
-      }
+      array_unshift($this->statics, array());
+      $this->emitAll($this->op, (array)$tree->imports);
       
       // Declaration
       $this->emitOne($this->op, $tree->declaration);
@@ -1125,6 +1200,7 @@
       // Finalize
       oel_finalize($this->op);
       array_shift($this->imports);
+      array_shift($this->statics);
 
       // Execute and return
       oel_execute($this->op);

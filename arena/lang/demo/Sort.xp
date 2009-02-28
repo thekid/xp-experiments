@@ -1,4 +1,6 @@
 import util.Comparator;
+import static util.cmd.Console.writeLine;
+import native standard.*;
 
 public class Sort implements Comparator {
 
@@ -9,10 +11,10 @@ public class Sort implements Comparator {
   public static void main(string[] $args) {
     $a= [1, 2, 5, 0, 10];
 
-    util.cmd.Console::writeLine('List: ', implode(' ', $a));
+    writeLine('List: ', implode(' ', $a));
 
     usort($a, [new self(), 'compare']);
     
-    util.cmd.Console::writeLine('Sorted: ', implode(' ', $a));
+    writeLine('Sorted: ', implode(' ', $a));
   }
 }
