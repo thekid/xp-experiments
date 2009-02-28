@@ -32,6 +32,7 @@
       $metadata     = array(NULL),
       $continuation = array(NULL),
       $properties   = array(NULL),
+      $declarations = array(NULL),
       $types        = NULL;
     
     /**
@@ -651,8 +652,27 @@
      * @param   xp.compiler.ast.InstanceCreationNode new
      */
     protected function emitInstanceCreation($op, InstanceCreationNode $new) {
+      static $i= 0;
+
+      $type= $this->resolve($new->type->name);
+    
+      if ($new->body) {
+        if (XPClass::forName($this->resolve($new->type->name, TRUE))->isInterface()) {
+          $p= array('parent' => new TypeName('lang.Object'), 'implements' => array($new->type));
+        } else {
+          $p= array('parent' => $new->type);
+        }
+        
+        $type.= '$'.++$i;
+        $this->declarations[0][]= new ClassNode(array_merge($p, array(
+          'modifiers' => MODIFIER_PUBLIC,
+          'name'      => new TypeName($type),
+          'body'      => $new->body
+        )));
+      }
+    
       $n= $this->emitAll($op, (array)$new->parameters);
-      oel_add_new_object($op, $n, $this->resolve($new->type->name));
+      oel_add_new_object($op, $n, $type);
 
       oel_add_begin_variable_parse($op);
       $this->emitChain($op, $new);
@@ -1342,11 +1362,13 @@
       // Imports
       array_unshift($this->imports, array());
       array_unshift($this->statics, array());
+      array_unshift($this->declarations, array());
       array_unshift($this->package, $tree->package->name);
       $this->emitAll($this->op, (array)$tree->imports);
       
-      // Declaration
+      // Declarations
       $this->emitOne($this->op, $tree->declaration);
+      $this->emitAll($this->op, $this->declarations[0]);
 
       // Load used classes
       foreach ($this->used[0] as $name => $is) {
@@ -1364,6 +1386,7 @@
       oel_finalize($this->op);
       array_shift($this->imports);
       array_shift($this->statics);
+      array_shift($this->declarations);
       array_shift($this->package);
 
       // Execute and return
