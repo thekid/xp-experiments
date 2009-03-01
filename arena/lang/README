@@ -114,7 +114,7 @@ length can be determined by using the <tt>length</tt> pseudo-member.
 
 <code>
   $a= [1, 2, 3];    // same as $a= array(1, 2, 3);
-  $i= $a.length;    // same as $i= sizeof($i);
+  $i= $a.length;    // same as $i= sizeof($a);
 </code>
 
 Class literal
@@ -224,8 +224,98 @@ Members can have methods attached, too:
     minus {
       public int evaluate(int $x, int $y) { return $x - $y; }
     };
-
+    
     public abstract int evaluate(int $x, int $y);
+  }
+</code>
+
+Annotations
+~~~~~~~~~~~
+Also supported for quite a while in the XP Framework are annotations.
+They use "#" one-line comments and are parsed from the class' source when 
+accessed inside the reflection API (see also RFC #0016). The XP language 
+can do without this workaround, of course!
+
+<code>
+  public class ArrayListTest extends unittest.TestCase {
+  
+    [@test] public void emptyList() {
+      $this.assertEquals([], new ArrayList().values);
+    }
+  }
+</code>
+
+Anonymous instance creation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To generate "throw-away" instances the XP framework provides the 
+<tt>newinstance()</tt> functionality, originally described in RFC #0080.
+With the downside of having to declare the class body inside a string
+and the added overhead of runtime evaluation, this feature is now not
+only more elegant to write but classes created this way will also be 
+declared at compile time:
+
+<code>
+  $emptyFiles= new io.collections.iterate.IterationFilter() {
+    public bool accept(io.collections.IOElement $e) {
+      return 0 == $e.size;
+    }
+  };
+</code>
+
+Properties
+~~~~~~~~~~
+Properties are special member variables that instead of directly
+accessing a class field may have methods attached. This way, we can
+create short syntax but still stay flexible if we need to change
+the underlying implementation.
+
+<code>
+  import native standard.strlen;
+  
+  public class String {
+    protected string $buffer;
+    
+    public __construct(string $initial= '') {
+      $this.buffer= $initial;
+    }
+  
+    public string length {
+      get { return strlen($this.buffer); }
+      set { throw new IllegalAccessException('Cannot set string length!'); }
+    }
+    
+    public static void main(string[] $args) {
+      $s= new String('Hello');
+      $l= $s.length;   // 5
+      $s.length= 1;    // *** IllegalAccessException
+    }
+  }
+</code>
+
+Internally, this is implemented by compiling <tt>__get()</tt> and 
+<tt>__set()</tt> interceptors.
+
+Indexers
+~~~~~~~~
+The PHP language allows for userland overloading of array operations
+via the <tt>ArrayAccess</tt> interface and its <tt>offset*</tt> methods.
+This is kind of different from the usual PHP approach with <tt>__</tt>
+"magic" methods - in the XP language, it's the property syntax again:
+
+<code>
+  public class ArrayList<T> {
+    protected T[] $elements;
+  
+    public __construct(T... $initial) {
+      $this.elements= $initial;
+    }
+    
+    public this[int $offset] {
+      get   { return $this.elements[$offset]; }
+      set   { $this.elements[$offset]= $value; }
+      isset { return $offset >= 0 && $offset < $this.elements.length; }
+      unset { throw new IllegalAccessException('Immutable'); }
+    }
   }
 </code>
 
