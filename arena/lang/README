@@ -20,7 +20,6 @@ find inside:
   - xp      : Implementation
 </pre>
 
-
 Prerequisites
 -------------
 You will need the Opcode Engineering Library extension (short: <tt>oel</tt>)
@@ -43,8 +42,8 @@ following section to your <tt>xp.ini</tt>:
 </pre>
 
 
-Introduction
-------------
+Motivation
+----------
 Designing the XP programming language we had the following goals in mind:
 
 * Get rid of the oddities in PHP - alternative syntaxes like if / endif 
@@ -57,6 +56,26 @@ Designing the XP programming language we had the following goals in mind:
   with() blocks.
 * Integrate with the XP Framework's foundation classes.
 * Keep the "change and run" spirit and the ability for rapid development.
+
+Getting started
+---------------
+Like in the XP framework, the entry point is always a class. In their most
+simple form, these classes have a static <tt>main()</tt> method. An example:
+
+<code>
+  public class HelloWorld {
+    public static void main(string[] $args) {
+      util.cmd.Console::writeLine('Hello World!');
+    }
+  }
+</code>
+
+Now you will already start noticing things:
+* The "extends Object" is optional and added by the compiler if omitted.
+* The keyword "function" is gone and replaced by the return type. Because
+  the main() method does not return anything, we use "void".
+* An array type is written as component[]
+* Fully qualified classnames are written with dots.
 
 
 Hacking
