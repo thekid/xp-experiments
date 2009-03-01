@@ -80,13 +80,100 @@ Now you will already start noticing things:
 * The keyword "function" is gone and replaced by the return type. Because
   the main() method does not return anything, we use "void".
 * An array type is written as component[]
-* Variables still have dollar signs.
+* Variables still have dollar signs. This makes it easy to spot them,
+  that's why we've decided to keep this!
 * Fully qualified classnames are written with dots.
-* The object operator is also a dot.
+* The object operator is also a dot (at the same time, the string 
+  concatenation operator is now the tilde, ~).
 
 This is not everything though, to get an impression on the language's
 "look and feel" have a look at the examples in the <tt>demo</tt> 
 subdirectory.
+
+
+Features
+--------
+Alongside with the afforementioned goals here's a an overview of what
+the XP language supports.
+
+Chaining
+~~~~~~~~
+It is now syntactically possible to continue writing after <tt>new</tt>
+and to use array offsets on method return values:
+
+<code>
+  new Date().toString();
+  XPClass::forName($name).getMethods()[0];
+</code>
+
+Array syntax
+~~~~~~~~~~~~
+The <tt>array</tt> keyword from the PHP language has been replaced by
+the shorter form with square brackets. By means of an extension array
+length can be determined by using the <tt>length</tt> pseudo-member.
+
+<code>
+  $a= [1, 2, 3];    // same as $a= array(1, 2, 3);
+  $i= $a.length;    // same as $i= sizeof($i);
+</code>
+
+Class literal
+~~~~~~~~~~~~~
+Every class has a static member called <tt>$class</tt> which will 
+retrieve the <tt>lang.XPClass</tt> object associated with it.
+
+<code>
+  // same as $c= XPClass::forName(xp::nameOf(__CLASS__));
+  $c= self::$class;
+  
+  // same as $c= XPClass::forName('lang.types.String');
+  $c= lang.types.String::$class;
+</code>
+
+Finally: Finally
+~~~~~~~~~~~~~~~~
+Especially for cleaning up - and yes, even in 2009 with the amount of
+memory and computing power we have available - it is still necessary to
+ensure, for example, file handles are properly closed:
+
+<code>
+  $f= new File($name);
+  try {
+    $f->open(FileMode::READ);
+    return $f->read(0xFF);
+  } finally {
+    $f->close();
+  }
+</code>
+
+Imports
+~~~~~~~
+Importing is a compile-time feature to enable to use short versions
+of names but actually mean the longer ones. The "Hello World" example
+from above could be rewritten as follows:
+
+<code>
+  import util.cmd.Console;
+  
+  public class HelloWorld {
+    public static void main(string[] $args) {
+      Console::writeLine(...);
+    }
+  }
+</code>
+
+Also available are static imports which makes writing a line to the
+console even shorter to write:
+
+<code>
+  import static util.cmd.Console.writeLine;
+  
+  public class HelloWorld {
+    public static void main(string[] $args) {
+      writeLine(...);
+    }
+  }
+</code>
 
 
 Hacking
