@@ -138,7 +138,19 @@ supports this feature by adding <tt>...</tt> to the parameter's type:
 </code>
 
 This will make the <tt>format</tt> variable contain the format string and 
-the <tt>values</tt> an array with two values (the length and the class name).
+<tt>values</tt> consist of an array with two values (the length and the 
+class name).
+
+Changed foreach
+~~~~~~~~~~~~~~~
+The <tt>foreach</tt> loop has changed from the form you know it in PHP
+to one inspired by C#.
+
+<code>
+  foreach ($method in $class.getMethods()) {
+    Console::writeLine('- ', $method);
+  }
+</code>
 
 Class literal
 ~~~~~~~~~~~~~
