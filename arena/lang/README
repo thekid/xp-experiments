@@ -1,0 +1,45 @@
+XP Language experiment
+========================================================================
+This is the XP language - a programming language inspired and still close
+to PHP but with the oddities removed, sugar added and a compiler wrapped
+around it.
+
+Overview
+--------
+Here's a list of the subdirectories inside this one and what you will 
+find inside:
+<pre>
+  - tests   : Unittests
+  - cmd     : Utility xpclis
+  - demo    : Examples
+  - grammar : Grammars
+  - xp      : Implementation
+</code>
+
+Prerequisites
+-------------
+You will need the Opcode Engineering Library extension (short: <tt>oel</tt>)
+compiled into PHP. You will find the sourcecode inside the Ruben's experiment
+directory (../../people/wagner/oel-extension).
+
+Building (shown for Windows, almost the same as on Un*x though):
+<pre>
+  $ cd ~/devel/php/php_5_2
+  $ cp -r ~/devel/xp.forge/trunk/experiments/people/wagner/oel-extension/oel_ct/src/oel ext
+  $ cscript /nologo configure.js --enable-oel
+  $ nmake
+</pre>
+
+After the build has succeeded, change the XP runtime by adding the 
+following section to your <tt>xp.ini</tt>:
+<pre>
+  [runtime]
+  oel=F:/cygwin/home/Timm Friebe/devel/php/php_5_2/Release_TS/php.exe
+</pre>
+
+Hacking
+-------
+When changing the grammar file you need to regenerate the parser:
+<pre>
+  $ make grammar
+</pre>
