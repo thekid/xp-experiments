@@ -57,6 +57,10 @@ Designing the XP programming language we had the following goals in mind:
 * Integrate with the XP Framework's foundation classes.
 * Keep the "change and run" spirit and the ability for rapid development.
 
+Generally speaking, we've tried to follow the "less is more" principle and
+tried making the syntax more concise as to what it's doing.
+
+
 Getting started
 ---------------
 Like in the XP framework, the entry point is always a class. In their most
@@ -65,17 +69,24 @@ simple form, these classes have a static <tt>main()</tt> method. An example:
 <code>
   public class HelloWorld {
     public static void main(string[] $args) {
-      util.cmd.Console::writeLine('Hello World!');
+      util.cmd.Console::writeLine('Hello World from ', self::$class.getName(), '!');
     }
   }
 </code>
 
 Now you will already start noticing things:
+* Classes may also have modifiers.
 * The "extends Object" is optional and added by the compiler if omitted.
 * The keyword "function" is gone and replaced by the return type. Because
   the main() method does not return anything, we use "void".
 * An array type is written as component[]
+* Variables still have dollar signs.
 * Fully qualified classnames are written with dots.
+* The object operator is also a dot.
+
+This is not everything though, to get an impression on the language's
+"look and feel" have a look at the examples in the <tt>demo</tt> 
+subdirectory.
 
 
 Hacking
