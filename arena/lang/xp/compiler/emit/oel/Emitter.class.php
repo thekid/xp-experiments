@@ -50,8 +50,13 @@
       $n= 0;
       // DEBUG Console::$err->writeLine('uses(', $types, ')');
       foreach ($types as $type) {
-        oel_push_value($op, $this->resolve($type->name, FALSE)->name());
-        $n++;
+        try {
+          $name= $this->resolve($type->name, FALSE)->name();
+          oel_push_value($op, $name);
+          $n++;
+        } catch (Throwable $e) {
+          $this->errors[]= $e->toString();
+        }      
       }
       oel_add_call_function($op, $n, 'uses');
       oel_add_free($op);
