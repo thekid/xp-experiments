@@ -360,6 +360,19 @@ This is kind of different from the usual PHP approach with <tt>__</tt>
   }
 </code>
 
+Try it!
+-------
+At the moment, it is not yet possible to compile the classes to disk yet.
+This is due to the fact that <tt>oel</tt> only supports this if the 
+<tt>bcompiler</tt> extension is also available. There are plans to change
+this and create an independent serialization functionality for opcode 
+arrays inside <tt>oel</tt>. Thus, for the moment, no compiler exists yet
+and thus the XP sourcecode needs to be compiled and run in one step:
+
+<pre>
+  $ xpcli cmd.Emit demo/Array.xp 
+</pre>
+
 
 Hacking
 -------
