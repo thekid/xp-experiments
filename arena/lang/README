@@ -1,8 +1,12 @@
 XP Language experiment
 ========================================================================
-This is the XP language - a programming language inspired and still close
-to PHP but with the oddities removed, sugar added and a compiler wrapped
-around it.
+This is the XP language - a compiled programming language built on top 
+of the XP Framework and written using it; inspired and still close to PHP 
+but also with elements from the Java and C# worlds. At the same time, this
+experiment also proves how PHP can be used as a platform, with different
+possible input syntaxes generating intermediate code to run inside it, and 
+be able to re-use code written in other syntaxes but also plain old PHP,
+but sharing the XP Framework's foundation classes as a common SDK.
 
 Overview
 --------
@@ -14,7 +18,8 @@ find inside:
   - demo    : Examples
   - grammar : Grammars
   - xp      : Implementation
-</code>
+</pre>
+
 
 Prerequisites
 -------------
@@ -36,6 +41,23 @@ following section to your <tt>xp.ini</tt>:
   [runtime]
   oel=F:/cygwin/home/Timm Friebe/devel/php/php_5_2/Release_TS/php.exe
 </pre>
+
+
+Introduction
+------------
+Designing the XP programming language we had the following goals in mind:
+
+* Get rid of the oddities in PHP - alternative syntaxes like if / endif 
+  for example or "__"-magic.
+* Overcome limitations in the PHP grammar that do not allow chaining at
+  all points like method calls after new() and array access after method
+  calls.
+* Support syntactically what the XP framework has built ontop of PHP:
+  annotations, type-safe enums, return types, thrown exceptions, finallly,
+  with() blocks.
+* Integrate with the XP Framework's foundation classes.
+* Keep the "change and run" spirit and the ability for rapid development.
+
 
 Hacking
 -------
