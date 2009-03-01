@@ -164,7 +164,6 @@ from above could be rewritten as follows:
 
 Also available are static imports which makes writing a line to the
 console even shorter to write:
-
 <code>
   import static util.cmd.Console.writeLine;
   
@@ -172,6 +171,61 @@ console even shorter to write:
     public static void main(string[] $args) {
       writeLine(...);
     }
+  }
+</code>
+
+At the same time, to avoid name clashes with PHP's native functions,
+these also need to be imported:
+<code>
+  import native standard.substr;
+  import native mysql.mysql_connect;
+</code>
+
+To enable rapid prototyping, type import on demand can be used:
+<code>
+  import util.*;
+  import static util.cmd.Console.*;
+  import native sybase_ct.*;
+</code>
+
+Enumerations
+~~~~~~~~~~~~
+The XP framework already offers type-safe enumerations. These were
+originally introduced in RFC #0132 and are now supported with an easier-
+to-type syntax:
+
+<code>
+  public enum Weekday {
+    Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+  }
+</code>
+
+Enumerations may also have methods:
+<code>
+  public enum Coin {
+    penny(1), nickel(2), dime(10), quarter(25);
+    
+    public string color() {
+      switch ($this) {
+        case self::$penny: return 'copper';
+        case self::$nickel: return 'nickel';
+        case self::$dime: case self::$quarter: return 'silver';
+      }
+    }
+  }
+</code>
+
+Members can have methods attached, too:
+<code>
+  public abstract enum Operation {
+    plus {
+      public int evaluate(int $x, int $y) { return $x + $y; }
+    },
+    minus {
+      public int evaluate(int $x, int $y) { return $x - $y; }
+    };
+
+    public abstract int evaluate(int $x, int $y);
   }
 </code>
 
