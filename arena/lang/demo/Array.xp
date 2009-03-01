@@ -1,3 +1,5 @@
+import lang.Delegate;
+
 public class Array<T> {
   protected T[] $elements;
   
@@ -9,7 +11,7 @@ public class Array<T> {
     return $this.elements;
   }
   
-  public void each(lang.Generic<T> $block) {
+  public void each(Delegate $block) {
     // FIXME: assignment needed to prevent "opend token is not of type method"
     foreach ($e in $it= $this.elements) {
       $block.apply($e);
@@ -18,8 +20,8 @@ public class Array<T> {
 
   public static void main(string[] $args) {
     $a= new Array<string>('One', 'Two');
-    $a.each(new lang.Generic<string>() {
-      public function apply(string $e) {
+    $a.each(new lang.Generic() {
+      public void apply(string $e) {
         util.cmd.Console::writeLine('- ', $e);
       }
     });

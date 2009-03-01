@@ -1,5 +1,3 @@
-package demo;
-
 import util.cmd.Console;
 
 public class Reflect {

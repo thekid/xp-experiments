@@ -9,6 +9,9 @@
   uses(
     'xp.compiler.emit.Emitter', 
     'xp.compiler.emit.Strings', 
+    'xp.compiler.emit.TypeReference', 
+    'xp.compiler.emit.TypeReflection', 
+    'xp.compiler.emit.TypeDeclaration', 
     'lang.reflect.Modifiers',
     'util.collections.HashTable'
   );
@@ -34,6 +37,25 @@
       $properties   = array(NULL),
       $declarations = array(NULL),
       $types        = NULL;
+
+    /**
+     * Emit uses statements for a given list of types
+     *
+     * @param   resource op
+     * @param   xp.compiler.types.TypeName[] types
+     */
+    protected function emitUses($op, array $types) {
+      if (!$types) return;
+      
+      $n= 0;
+      // DEBUG Console::$err->writeLine('uses(', $types, ')');
+      foreach ($types as $type) {
+        oel_push_value($op, $this->resolve($type->name, FALSE)->name());
+        $n++;
+      }
+      oel_add_call_function($op, $n, 'uses');
+      oel_add_free($op);
+    }
     
     /**
      * Emit invocations
@@ -54,7 +76,7 @@
       if (TRUE === $ptr) {
         oel_add_call_function($op, $n, $inv->name);
       } else {
-        oel_add_call_method_static($op, $n, $inv->name, $this->resolve($ptr));
+        oel_add_call_method_static($op, $n, $inv->name, $this->resolve($ptr)->literal());
       }
       $inv->free && oel_add_free($op);
     }
@@ -497,11 +519,11 @@
 
         // Static method call
         $n= $this->emitAll($op, (array)$ref->member->parameters);
-        oel_add_call_method_static($op, $n, $ref->member->name, $this->resolve($ref->class->name));
+        oel_add_call_method_static($op, $n, $ref->member->name, $this->resolve($ref->class->name)->literal());
       } else if ($ref->member instanceof VariableNode && '$class' === $ref->member->name) {
       
         // Magic "class" member
-        oel_push_value($op, $this->resolve($ref->class->name));
+        oel_push_value($op, $this->resolve($ref->class->name)->literal());
         oel_add_new_object($op, 1, 'XPClass');
       } else if ($ref->member instanceof VariableNode) {
       
@@ -594,7 +616,7 @@
         // First catch
         oel_add_begin_firstcatch(
           $op, 
-          $this->resolve($try->handling[0]->type->name), 
+          $this->resolve($try->handling[0]->type->name)->literal(), 
           ltrim($try->handling[0]->variable, '$')
         ); {
           $this->emitAll($op, (array)$try->handling[0]->statements);
@@ -606,7 +628,7 @@
         for ($i= 1; $i < $numHandlers; $i++) {
           oel_add_begin_catch(
             $op, 
-            $this->resolve($try->handling[$i]->type->name), 
+            $this->resolve($try->handling[$i]->type->name)->literal(), 
             ltrim($try->handling[$i]->variable, '$')
           ); {
             $this->emitAll($op, (array)$try->handling[$i]->statements);
@@ -660,23 +682,23 @@
       // - Create unique classname
       // - Extend parent class if type is a class
       // - Implement type and extend lang.Object if it's an interface 
-      if ($new->body) {
-        if (XPClass::forName($this->resolve($new->type->name, TRUE))->isInterface()) {
+      if (isset($new->body)) {
+        if (Types::INTERFACE_KIND === $type->kind()) {
           $p= array('parent' => new TypeName('lang.Object'), 'implements' => array($new->type));
         } else {
           $p= array('parent' => $new->type);
         }
         
-        $type.= '$'.++$i;
+        $unique= $type->literal().'$'.++$i;
         $this->declarations[0][]= new ClassNode(array_merge($p, array(
-          'modifiers' => MODIFIER_PUBLIC,
-          'name'      => new TypeName($type),
+          'name'      => new TypeName($unique),
           'body'      => $new->body
         )));
+        $this->types[$unique]= $type= new TypeReference($unique, Types::CLASS_KIND);
       }
     
       $n= $this->emitAll($op, (array)$new->parameters);
-      oel_add_new_object($op, $n, $type);
+      oel_add_new_object($op, $n, $type->literal());
 
       oel_add_begin_variable_parse($op);
       $this->emitChain($op, $new);
@@ -791,7 +813,7 @@
         $params= array();
         foreach ($annotation->parameters as $name => $value) {
           if ($value instanceof ClassMemberNode) {    // class literal
-            $params[$name]= $this->resolve($value->class->name);
+            $params[$name]= $this->resolve($value->class->name)->name();
           } else if ($value instanceof StringNode) {
             $params[$name]= $value->value;
           }
@@ -848,6 +870,8 @@
      * @param   string qualified
      */
     protected function registerClass($op, $name, $qualified) {
+      // DEBUG Console::$err->writeLine('R@', $name, '= ', $qualified);
+
       oel_push_value($op, 'class.'.$name);
       oel_push_value($op, $qualified);
       oel_add_call_method_static($op, 2, 'registry', 'xp');
@@ -918,7 +942,7 @@
     protected function emitProperties($op, array $properties) {
       static $mangled= "\0name";
       
-      if ($properties['get']) {
+      if (isset($properties['get'])) {
         $gop= oel_new_method($op, '__get', FALSE, FALSE, MODIFIER_PUBLIC, FALSE);
         oel_add_receive_arg($gop, 1, $mangled);
         
@@ -938,7 +962,7 @@
         }
         oel_finalize($gop);
       }
-      if ($properties['set']) {
+      if (isset($properties['set'])) {
         $sop= oel_new_method($op, '__set', FALSE, FALSE, MODIFIER_PUBLIC, FALSE);
         oel_add_receive_arg($sop, 1, $mangled);
         oel_add_receive_arg($sop, 2, 'value');
@@ -1014,24 +1038,20 @@
      * @param   xp.compiler.ast.EnumNode declaration
      */
     protected function emitEnum($op, EnumNode $declaration) {
-      $parent= $declaration->parent ? $declaration->parent->name : 'lang.Enum';
+      $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Enum');
       
       // Ensure parent class and interfaces are loaded
-      $n= 1;
-      oel_push_value($op, $this->resolve($parent, TRUE, FALSE));
-      foreach ($declaration->implements as $type) {
-        oel_push_value($op, $this->resolve($type->name, TRUE, FALSE));
-        $n++;
-      }
-      oel_add_call_function($op, $n, 'uses');
-      oel_add_free($op);
+      $this->emitUses($op, array_merge(
+        array($declaration->parent), 
+        (array)$declaration->implements
+      ));
 
       $abstract= Modifiers::isAbstract($declaration->modifiers);
       if ($abstract) {
         // FIXME segfault oel_add_begin_abstract_class_declaration($op, $declaration->name->name, $this->resolve($parent));
-        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent->name)->literal());
       } else {
-        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent));
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent->name)->literal());
       }
       array_unshift($this->class, $declaration->name->name);
       array_unshift($this->metadata, array(array(), array()));
@@ -1039,7 +1059,7 @@
 
       // Interfaces
       foreach ($declaration->implements as $type) {
-        oel_add_implements_interface($op, $this->resolve($type->name, FALSE, FALSE));
+        oel_add_implements_interface($op, $this->resolve($type->name, FALSE)->literal());
       }
       
       // Member declaration
@@ -1097,30 +1117,53 @@
     }
 
     /**
+     * Emit a Interface declaration
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.InterfaceNode declaration
+     */
+    protected function emitInterface($op, InterfaceNode $declaration) {
+      
+      // Ensure parent interfaces are loaded
+      $this->emitUses($op, (array)$declaration->parents);
+
+      oel_add_begin_interface_declaration($op, $declaration->name->name);
+      array_unshift($this->class, $declaration->name->name);
+      array_unshift($this->metadata, array(array(), array()));
+
+      foreach ((array)$declaration->parents as $type) {
+        oel_add_parent_interface($op, $this->resolve($type->name, FALSE)->literal());
+      }
+
+      $this->emitAll($op, (array)$declaration->body['methods']);
+      
+      oel_add_end_interface_declaration($op);
+      $this->registerClass($op, $this->class[0], ($this->package[0] ? $this->package[0].'.' : '').$declaration->name->name);
+      array_shift($this->metadata);
+      array_shift($this->class);
+    }
+
+    /**
      * Emit a class declaration
      *
      * @param   resource op
      * @param   xp.compiler.ast.ClassNode declaration
      */
     protected function emitClass($op, ClassNode $declaration) {
-      $parent= $declaration->parent ? $declaration->parent->name : 'lang.Object';
+      $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Object');
     
       // Ensure parent class and interfaces are loaded
-      $n= 1;
-      oel_push_value($op, $this->resolve($parent, TRUE, FALSE));
-      foreach ($declaration->implements as $type) {
-        oel_push_value($op, $this->resolve($type->name, TRUE, FALSE));
-        $n++;
-      }
-      oel_add_call_function($op, $n, 'uses');
-      oel_add_free($op);
+      $this->emitUses($op, array_merge(
+        array($parent), 
+        (array)$declaration->implements
+      ));
     
       $abstract= Modifiers::isAbstract($declaration->modifiers);
       if ($abstract) {
         // FIXME segfault oel_add_begin_abstract_class_declaration($op, $declaration->name->name, $this->resolve($parent));
-        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent, FALSE, FALSE));
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent->name, FALSE)->literal());
       } else {
-        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent, FALSE, FALSE));
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolve($parent->name, FALSE)->literal());
       }
       array_unshift($this->class, $declaration->name->name);
       array_unshift($this->metadata, array(array(), array()));
@@ -1128,7 +1171,7 @@
 
       // Interfaces
       foreach ($declaration->implements as $type) {
-        oel_add_implements_interface($op, $this->resolve($type->name, FALSE, FALSE));
+        oel_add_implements_interface($op, $this->resolve($type->name, FALSE)->literal());
       }
       
       // Members
@@ -1137,7 +1180,7 @@
       $this->emitProperties($op, $this->properties[0]);
 
       // Static initializer blocks (array<Statement[]>)
-      if ($declaration->body['static']) {
+      if (isset($declaration->body['static'])) {
         $sop= oel_new_method($op, '__static', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
         foreach ($declaration->body['static'] as $statements) {
           $this->emitAll($sop, (array)$statements);
@@ -1166,7 +1209,7 @@
      */
     protected function emitInstanceOf($op, InstanceOfNode $instanceof) {
       $this->emitOne($op, $instanceof->expression);
-      oel_add_instanceof($op, $this->resolve($instanceof->type->name));
+      oel_add_instanceof($op, $this->resolve($instanceof->type->name)->literal());
       $instanceof->free && oel_add_free($op);
     }
 
@@ -1282,7 +1325,7 @@
         try {
           call_user_func_array(array($this, $target), array($op, $node));
         } catch (Throwable $e) {
-          $this->errors[]= $e->getMessage();
+          $this->errors[]= $e->toString();
           return 0;
         }
         return 1;
@@ -1308,10 +1351,10 @@
     }
 
     /**
-     * Resolve a class name
+     * Return a type for a given node
      *
-     * @param   string name
-     * @return  string resolved
+     * @param   xp.compiler.ast.Node node
+     * @return  xp.compiler.types.TypeName
      */
     protected function typeOf(xp·compiler·ast·Node $node) {
       if ($node instanceof ArrayNode) {
@@ -1327,25 +1370,74 @@
         return new TypeName(NULL);
       }
     }
+
+    /**
+     * Locate class file
+     *
+     * @param   string qualified
+     * @return  string uri
+     */
+    protected function locate($qualified) {
+      $name= DIRECTORY_SEPARATOR.strtr($qualified, '.', DIRECTORY_SEPARATOR).'.xp';
+      foreach (xp::$registry['classpath'] as $path) {
+        if (file_exists($uri= $path.$name)) return $uri;
+      }
+      return NULL;
+    }
     
     /**
      * Resolve a class name
      *
      * @param   string name
-     * @return  string resolved
+     * @param   bool register
+     * @return  xp.compiler.emit.Types resolved
      */
-    protected function resolve($name, $rq= FALSE, $re= TRUE) {
+    protected function resolve($name, $register= TRUE) {
       if ('self' === $name || $name === $this->class[0]) {
-        return $this->class[0];
+        return new TypeReference($this->class[0]);
       } else if (strpos($name, '.')) {
         $qualified= $name;
       } else if (isset($this->imports[0][$name])) {
         $qualified= $this->imports[0][$name];
       } else {
         $this->errors[]= 'Cannot resolve class '.$name;
+        return new TypeReference($name, Types::UNKNOWN_KIND);
       }
-      $re && $this->used[0][$qualified]= TRUE;
-      return $rq ? $qualified : xp::reflect($qualified);
+      
+      // Locate class. If the classloader already knows this class,
+      // we can simply use this class. TODO: Use specialized 
+      // JitClassLoader?
+      if (!$this->types->containsKey($qualified)) {
+        if (ClassLoader::getDefault()->providesClass($qualified)) {
+          $this->types[$qualified]= new TypeReflection(XPClass::forName($qualified));
+        } else {
+          if (!($uri= $this->locate($qualified))) {
+            $this->errors[]= 'Cannot find class '.$qualified;
+            return new TypeReference($qualified, Types::UNKNOWN_KIND);;
+          }
+
+          try {
+            $tree= create(new Parser())->parse(new xp·compiler·Lexer(
+              FileUtil::getContents(new File($uri)),
+              $uri
+            ));
+          } catch (ParseException $e) {
+            $this->errors[]= $e->compoundMessage();
+            return NULL;
+          } catch (IOException $e) {
+            $this->errors[]= $e->compoundMessage();
+            return NULL;
+          }
+
+          $this->emit($tree);
+          $this->types[$qualified]= new TypeDeclaration($tree);
+          $register= FALSE;     // Don't register this class as it cannot be written yet
+        }
+        $register && $this->used[0][]= new TypeName($qualified);
+        // DEBUG Console::$err->writeLine('Determined<', $register, '> @ ', $qualified, '= ', $this->types[$qualified]);
+      }
+      
+      return $this->types[$qualified];
     }
     
     /**
@@ -1359,27 +1451,25 @@
       $this->types= new HashTable();
       
       // Create and initialize op array
-      $this->op= oel_new_op_array();
-      oel_set_source_file($this->op, $tree->origin);
-      oel_set_source_line($this->op, 0);
+      $op= oel_new_op_array();
+      oel_set_source_file($op, $tree->origin);
+      oel_set_source_line($op, 0);
       
       // Imports
+      array_unshift($this->used, array());
       array_unshift($this->imports, array());
       array_unshift($this->statics, array());
-      array_unshift($this->declarations, array());
-      array_unshift($this->package, $tree->package->name);
-      $this->emitAll($this->op, (array)$tree->imports);
-      
-      // Declarations
-      $this->emitOne($this->op, $tree->declaration);
-      $this->emitAll($this->op, $this->declarations[0]);
+      array_unshift($this->package, $tree->package ? $tree->package->name : NULL);
+      array_unshift($this->declarations, array($tree->declaration));
+
+      // Import and declarations
+      $this->emitAll($op, (array)$tree->imports);
+      while ($decl= array_pop($this->declarations[0])) {
+        $this->emitOne($op, $decl);
+      }
 
       // Load used classes
-      foreach ($this->used[0] as $name => $is) {
-        oel_push_value($this->op, $name);
-      }
-      oel_add_call_function($this->op, sizeof($this->used[0]), 'uses');
-      oel_add_free($this->op);
+      $this->emitUses($op, $this->used[0]);
       
       // Check on errors
       if ($this->errors) {
@@ -1387,14 +1477,16 @@
       }
 
       // Finalize
-      oel_finalize($this->op);
+      oel_finalize($op);
       array_shift($this->imports);
       array_shift($this->statics);
       array_shift($this->declarations);
       array_shift($this->package);
+      array_shift($this->used);
 
-      // Execute and return
-      oel_execute($this->op);
+      // Execute and return. FIXME: Write to file! But serialization functionality
+      // is missing in oel at the moment.
+      oel_execute($op);
       // DEBUG Reflection::export(new ReflectionClass($tree->declaration->name->name));
       return $tree->declaration->name->name;
     }    
