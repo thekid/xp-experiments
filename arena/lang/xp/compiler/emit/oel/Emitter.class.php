@@ -613,7 +613,8 @@
       }
       oel_add_begin_catchblock($op); {
       
-        // First catch
+        // First catch. FIXME: Case with try / finally, there is not first catch, 
+        // we need to create one!
         oel_add_begin_firstcatch(
           $op, 
           $this->resolve($try->handling[0]->type->name)->literal(), 
