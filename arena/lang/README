@@ -132,7 +132,7 @@ supports this feature by adding <tt>...</tt> to the parameter's type:
     }
     
     public static void main(string[] $args) {
-      Format::sprintf('%d args passed to %s', $args.length, self::$class.getName());
+      self::printf('%d args passed to %s', $args.length, self::$class.getName());
     }
   }
 </code>
