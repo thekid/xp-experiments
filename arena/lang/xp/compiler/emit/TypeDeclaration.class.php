@@ -30,7 +30,7 @@
     public function name() {
       $n= $this->tree->declaration->name->name;
       if ($this->tree->package) {
-        $n= $this->tree->package.'.'.$n;
+        $n= $this->tree->package->name.'.'.$n;
       }
       return $n;
     }
