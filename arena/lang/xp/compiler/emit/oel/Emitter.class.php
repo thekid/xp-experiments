@@ -691,6 +691,9 @@
       if (isset($new->body)) {
         if (Types::INTERFACE_KIND === $type->kind()) {
           $p= array('parent' => new TypeName('lang.Object'), 'implements' => array($new->type));
+        } else if (Types::ENUM_KUND === $type->kind()) {
+          $this->errors[]= 'Cannot create anonymous enums';
+          return;
         } else {
           $p= array('parent' => $new->type);
         }
@@ -698,6 +701,7 @@
         $unique= $type->literal().'$'.++$i;
         $this->declarations[0][]= new ClassNode(array_merge($p, array(
           'name'      => new TypeName($unique),
+          'anonymous' => TRUE,
           'body'      => $new->body
         )));
         $this->types[$unique]= $type= new TypeReference($unique, Types::CLASS_KIND);
@@ -1159,7 +1163,7 @@
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Object');
     
       // Ensure parent class and interfaces are loaded
-      $this->emitUses($op, array_merge(
+      $declaration->anonymous || $this->emitUses($op, array_merge(
         array($parent), 
         (array)$declaration->implements
       ));

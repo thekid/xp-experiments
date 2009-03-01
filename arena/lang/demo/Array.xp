@@ -20,7 +20,7 @@ public class Array<T> {
 
   public static void main(string[] $args) {
     $a= new Array<string>('One', 'Two');
-    $a.each(new lang.Generic() {
+    $a.each(new Delegate() {
       public void apply(string $e) {
         util.cmd.Console::writeLine('- ', $e);
       }
