@@ -9,7 +9,7 @@ public class Unittest {
     $this.name= $name;
   }
   
-  public void assertEquals(any $a, any $b) throws AssertionFailedError {
+  public void assertEquals(var $a, var $b) throws AssertionFailedError {
     if ($a instanceof lang.Generic) {
       $eq= $a.equals($b);
     } else {
