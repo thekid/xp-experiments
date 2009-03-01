@@ -1,16 +1,24 @@
 import lang.Delegate;
 
+/**
+ * Array class demo
+ *
+ */
 public class Array<T> {
   protected T[] $elements;
   
+  /**
+   * Constructor. Accepts varargs
+   * 
+   */
   public __construct(T... $elements) {
     $this.elements= $elements;
   }
   
-  public T[] getElements() {
-    return $this.elements;
-  }
-  
+  /**
+   * Calls a delegate for each element in this array
+   * 
+   */
   public void each(Delegate $block) {
     // FIXME: assignment needed to prevent "opend token is not of type method"
     foreach ($e in $it= $this.elements) {
@@ -18,6 +26,14 @@ public class Array<T> {
     }
   }
 
+  /**
+   * Prints out the following
+   * 
+   * <pre>
+   *   - One
+   *   - Two
+   * </pre>
+   */
   public static void main(string[] $args) {
     $a= new Array<string>('One', 'Two');
     $a.each(new Delegate() {
