@@ -1,9 +1,0 @@
-package io;
-
-/**
- * Used in io.File::open() method
- *
- */
-public enum FileMode {
-  Read, Write, Truncate, Append, Create
-}
