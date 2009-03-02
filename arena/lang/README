@@ -174,10 +174,10 @@ ensure, for example, file handles are properly closed:
 <code>
   $f= new File($name);
   try {
-    $f->open(FileMode::READ);
-    return $f->read(0xFF);
+    $f.open(FileMode::READ);
+    return $f.read(0xFF);
   } finally {
-    $f->close();
+    $f.close();
   }
 </code>
 
@@ -360,6 +360,7 @@ This is kind of different from the usual PHP approach with <tt>__</tt>
   }
 </code>
 
+
 Try it!
 -------
 At the moment, it is not yet possible to compile the classes to disk yet.
@@ -372,7 +373,6 @@ and thus the XP sourcecode needs to be compiled and run in one step:
 <pre>
   $ xpcli cmd.Emit demo/Array.xp 
 </pre>
-
 
 Hacking
 -------
