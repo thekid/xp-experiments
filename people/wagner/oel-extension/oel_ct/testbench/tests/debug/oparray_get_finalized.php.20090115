@@ -13,7 +13,9 @@ array(2) {
     ["extended_value"]=>
     int(0)
     ["op1"]=>
-    object(OelZnodeConstant)#3 (0) {
+    object(OelZnodeConstant)#3 (1) {
+      ["value"]=>
+      NULL
     }
     ["op2"]=>
     object(OelZnodeUnused)#4 (0) {

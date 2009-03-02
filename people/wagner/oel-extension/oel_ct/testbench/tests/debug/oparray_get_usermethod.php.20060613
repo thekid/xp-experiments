@@ -13,13 +13,19 @@ array(8) {
     ["extended_value"]=>
     int(0)
     ["op1"]=>
-    object(OelZnodeConstant)#3 (0) {
+    object(OelZnodeConstant)#3 (1) {
+      ["value"]=>
+      int(1)
     }
     ["op2"]=>
     object(OelZnodeUnused)#4 (0) {
     }
     ["result"]=>
-    object(OelZnodeCompiledvar)#5 (0) {
+    object(OelZnodeCompiledvar)#5 (2) {
+      ["name"]=>
+      string(1) "a"
+      ["type"]=>
+      int(1)
     }
   }
   [1]=>
@@ -36,13 +42,25 @@ array(8) {
     ["extended_value"]=>
     int(0)
     ["op1"]=>
-    object(OelZnodeCompiledvar)#8 (0) {
+    object(OelZnodeCompiledvar)#8 (2) {
+      ["name"]=>
+      string(1) "a"
+      ["type"]=>
+      int(16)
     }
     ["op2"]=>
-    object(OelZnodeCompiledvar)#9 (0) {
+    object(OelZnodeCompiledvar)#9 (2) {
+      ["name"]=>
+      string(1) "b"
+      ["type"]=>
+      int(16)
     }
     ["result"]=>
-    object(OelZnodeVariable)#10 (0) {
+    object(OelZnodeVariable)#10 (2) {
+      ["index"]=>
+      int(0)
+      ["type"]=>
+      int(1)
     }
   }
   [2]=>
@@ -62,7 +80,11 @@ array(8) {
     object(OelZnodeUnused)#13 (0) {
     }
     ["op2"]=>
-    object(OelZnodeCompiledvar)#14 (0) {
+    object(OelZnodeCompiledvar)#14 (2) {
+      ["name"]=>
+      string(3) "baz"
+      ["type"]=>
+      int(0)
     }
     ["result"]=>
     object(OelZnodeUnused)#15 (0) {
@@ -88,7 +110,11 @@ array(8) {
     object(OelZnodeUnused)#19 (0) {
     }
     ["result"]=>
-    object(OelZnodeVariable)#20 (0) {
+    object(OelZnodeVariable)#20 (2) {
+      ["index"]=>
+      int(40)
+      ["type"]=>
+      int(0)
     }
   }
   [4]=>
@@ -105,13 +131,25 @@ array(8) {
     ["extended_value"]=>
     int(0)
     ["op1"]=>
-    object(OelZnodeCompiledvar)#23 (0) {
+    object(OelZnodeCompiledvar)#23 (2) {
+      ["name"]=>
+      string(3) "foo"
+      ["type"]=>
+      int(16)
     }
     ["op2"]=>
-    object(OelZnodeVariable)#24 (0) {
+    object(OelZnodeVariable)#24 (2) {
+      ["index"]=>
+      int(40)
+      ["type"]=>
+      int(8)
     }
     ["result"]=>
-    object(OelZnodeVariable)#25 (0) {
+    object(OelZnodeVariable)#25 (2) {
+      ["index"]=>
+      int(80)
+      ["type"]=>
+      int(1)
     }
   }
   [5]=>
@@ -128,7 +166,11 @@ array(8) {
     ["extended_value"]=>
     int(0)
     ["op1"]=>
-    object(OelZnodeCompiledvar)#28 (0) {
+    object(OelZnodeCompiledvar)#28 (2) {
+      ["name"]=>
+      string(3) "foo"
+      ["type"]=>
+      int(16)
     }
     ["op2"]=>
     object(OelZnodeUnused)#29 (0) {
@@ -151,7 +193,9 @@ array(8) {
     ["extended_value"]=>
     int(0)
     ["op1"]=>
-    object(OelZnodeConstant)#33 (0) {
+    object(OelZnodeConstant)#33 (1) {
+      ["value"]=>
+      NULL
     }
     ["op2"]=>
     object(OelZnodeUnused)#34 (0) {
