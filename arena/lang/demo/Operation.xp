@@ -15,8 +15,8 @@ public abstract enum Operation {
   public abstract int evaluate(int $x, int $y);
   
   public static void main(string[] $args) {
-    $a= $args[0];
-    $b= $args[1];
+    $a= $args[0] ?: 1;
+    $b= $args[1] ?: 2;
 
     foreach ($op in self::values()) {
       util.cmd.Console::writeLine($a, ' ', $op, ' ', $b, ' = ', $op.evaluate($a, $b));

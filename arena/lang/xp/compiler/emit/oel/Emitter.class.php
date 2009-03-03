@@ -349,13 +349,19 @@
     /**
      * Emit ternary operator node
      *
+     * Note: The following two are equivalent:
+     * <code>
+     *   $a= $b ?: $c;
+     *   $a= $b ? $b : $c;
+     * </code>
+     *
      * @param   resource op
      * @param   xp.compiler.ast.TernaryNode ternary
      */
     protected function emitTernary($op, TernaryNode $ternary) {
       $this->emitOne($op, $ternary->condition);
       oel_add_begin_tenary_op($op);                   // FIXME: Name should be te*r*nary
-      $this->emitOne($op, $ternary->expression);
+      $this->emitOne($op, $ternary->expression ? $ternary->expression : $ternary->condition);
       oel_add_end_tenary_op_true($op);
       $this->emitOne($op, $ternary->conditional);
       oel_add_end_tenary_op_false($op);
@@ -1069,7 +1075,7 @@
       
       // Ensure parent class and interfaces are loaded
       $this->emitUses($op, array_merge(
-        array($declaration->parent), 
+        array($parent), 
         (array)$declaration->implements
       ));
 
@@ -1135,7 +1141,7 @@
         oel_push_variable($op, $member->name, $this->class[0]);
         oel_add_assign($op);
         oel_add_free($op);
-      }      
+      }
       
       $this->registerClass($op, $this->class[0], ($this->package[0] ? $this->package[0].'.' : '').$declaration->name->name);
       array_shift($this->properties);

@@ -72,7 +72,12 @@
         $this->err->writeLine('*** ', $e);
         return;
       }
-      $class= $this->emitter->emit($ast);
+      try {
+        $class= $this->emitter->emit($ast);
+      } catch (Throwable $t) {
+        $this->err->writeLine('*** ', $t);
+        return;
+      }
       $this->out->writeLine('===> Compiled class ', $class);
       
       method_exists($class, '__static') && call_user_func(array($class, '__static'));
