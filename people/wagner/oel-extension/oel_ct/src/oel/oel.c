@@ -146,6 +146,7 @@ static function_entry oel_functions[]= {
     PHP_FE(oel_get_op_array, NULL)
     PHP_FE(oel_get_translation_array, NULL)
     PHP_FE(oel_get_zend_api_no, NULL)
+    PHP_FE(oel_get_token_stack_types, NULL)
 
     {NULL, NULL, NULL}
 };

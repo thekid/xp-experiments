@@ -86,7 +86,7 @@ PHP_FUNCTION(oel_get_op_array) {
             dump_op_array= res_op_array->oel_cg.active_op_array;
             break;
         }
-        
+
         case IS_STRING: {                 /* string: lookup user function named accordingly */
             char *lcname;
             zend_function *fptr;
@@ -106,7 +106,7 @@ PHP_FUNCTION(oel_get_op_array) {
             dump_op_array= &(fptr->op_array);
             break;
         }
-        
+
         case IS_ARRAY: {                  /* array(class, method): lookup user method */
             char *lcname;
             zend_function *fptr;
@@ -123,17 +123,17 @@ PHP_FUNCTION(oel_get_op_array) {
                 zend_error(E_WARNING, "Expected an array(string class, string method)");
                 RETURN_NULL();
             }
-            
+
             if (zend_lookup_class(Z_STRVAL_PP(class_name), Z_STRLEN_PP(class_name), &pce TSRMLS_CC) == FAILURE) {
                 zend_error(E_WARNING, "Class '%s' not found", Z_STRVAL_PP(class_name));
                 RETURN_NULL();
             }
-            
+
             if ((*pce)->type == ZEND_INTERNAL_CLASS) {
                 zend_error(E_WARNING, "Internal class %s() does not have op arrays in methods", (*pce)->name);
                 RETURN_NULL();
             }
-                        
+
             lcname= zend_str_tolower_dup(Z_STRVAL_PP(method_name), Z_STRLEN_PP(method_name));
             if (zend_hash_find(&(*pce)->function_table, lcname, Z_STRLEN_PP(method_name) + 1, (void **)&fptr) == FAILURE) {
                 efree(lcname);
@@ -145,12 +145,12 @@ PHP_FUNCTION(oel_get_op_array) {
             dump_op_array= &(fptr->op_array);
             break;
         }
-        
+
         default: {
             zend_error(E_WARNING, "Expected either a resource(oel op code array) or a string");
             RETURN_NULL();
         }
-    }        
+    }
 
     opline= dump_op_array->opcodes;
     end= opline + dump_op_array->last;
@@ -168,4 +168,54 @@ PHP_FUNCTION(oel_get_translation_array) {
 
 PHP_FUNCTION(oel_get_zend_api_no) {
     RETURN_LONG(ZEND_MODULE_API_NO);
+}
+
+PHP_FUNCTION(oel_get_token_stack_types) {
+    zval              *arg_op_array;
+    php_oel_op_array  *res_op_array;
+    php_oel_znode     *stack_element;
+    int                index= 0;
+    char              *token_type;
+
+    array_init(return_value);
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &arg_op_array) == FAILURE) { RETURN_NULL(); }
+    res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
+
+    stack_element= res_op_array->stack_token;
+    while (stack_element) {
+        switch (stack_element->type) {
+            default: token_type= "unknown"; break;
+            case OEL_TYPE_TOKEN_CLASS:           token_type= "OEL_TYPE_TOKEN_CLASS";          break;
+            case OEL_TYPE_TOKEN_ACLASS:          token_type= "OEL_TYPE_TOKEN_ACLASS";         break;
+            case OEL_TYPE_TOKEN_ICLASS:          token_type= "OEL_TYPE_TOKEN_ICLASS";         break;
+            case OEL_TYPE_TOKEN_IF:              token_type= "OEL_TYPE_TOKEN_IF";             break;
+            case OEL_TYPE_TOKEN_ELSE:            token_type= "OEL_TYPE_TOKEN_ELSE";           break;
+            case OEL_TYPE_TOKEN_ELSEIF:          token_type= "OEL_TYPE_TOKEN_ELSEIF";         break;
+            case OEL_TYPE_TOKEN_SWITCH:          token_type= "OEL_TYPE_TOKEN_SWITCH";         break;
+            case OEL_TYPE_TOKEN_SWITCH_CASE:     token_type= "OEL_TYPE_TOKEN_SWITCH_CASE";    break;
+            case OEL_TYPE_TOKEN_SWITCH_DEFAULT:  token_type= "OEL_TYPE_TOKEN_SWITCH_DEFAULT"; break;
+            case OEL_TYPE_TOKEN_LOGIC_AND:       token_type= "OEL_TYPE_TOKEN_LOGIC_AND";      break;
+            case OEL_TYPE_TOKEN_LOGIC_OR:        token_type= "OEL_TYPE_TOKEN_LOGIC_OR";       break;
+            case OEL_TYPE_TOKEN_TENARY1:         token_type= "OEL_TYPE_TOKEN_TENARY1";        break;
+            case OEL_TYPE_TOKEN_TENARY2:         token_type= "OEL_TYPE_TOKEN_TENARY2";        break;
+            case OEL_TYPE_TOKEN_VARIABLE:        token_type= "OEL_TYPE_TOKEN_VARIABLE";       break;
+            case OEL_TYPE_TOKEN_WHILE:           token_type= "OEL_TYPE_TOKEN_WHILE";          break;
+            case OEL_TYPE_TOKEN_WHILE_BODY:      token_type= "OEL_TYPE_TOKEN_WHILE_BODY";     break;
+            case OEL_TYPE_TOKEN_DOWHILE:         token_type= "OEL_TYPE_TOKEN_DOWHILE";        break;
+            case OEL_TYPE_TOKEN_DOWHILE_BODY:    token_type= "OEL_TYPE_TOKEN_DOWHILE_BODY";   break;
+            case OEL_TYPE_TOKEN_FOREACH:         token_type= "OEL_TYPE_TOKEN_FOREACH";        break;
+            case OEL_TYPE_TOKEN_FOREACH_HEAD:    token_type= "OEL_TYPE_TOKEN_FOREACH_HEAD";   break;
+            case OEL_TYPE_TOKEN_ARRAY_INIT:      token_type= "OEL_TYPE_TOKEN_ARRAY_INIT";     break;
+            case OEL_TYPE_TOKEN_ARRAY_STATIC:    token_type= "OEL_TYPE_TOKEN_ARRAY_STATIC";   break;
+            case OEL_TYPE_TOKEN_LIST:            token_type= "OEL_TYPE_TOKEN_LIST";           break;
+            case OEL_TYPE_TOKEN_LIST_INNER:      token_type= "OEL_TYPE_TOKEN_LIST_INNER";     break;
+            case OEL_TYPE_TOKEN_TRY:             token_type= "OEL_TYPE_TOKEN_TRY";            break;
+            case OEL_TYPE_TOKEN_CATCH:           token_type= "OEL_TYPE_TOKEN_CATCH";          break;
+            case OEL_TYPE_TOKEN_CATCH_FIRST:     token_type= "OEL_TYPE_TOKEN_CATCH_FIRST";    break;
+            case OEL_TYPE_TOKEN_CATCH_ADD:       token_type= "OEL_TYPE_TOKEN_CATCH_ADD";      break;
+            case OEL_TYPE_TOKEN_CATCH_LAST:      token_type= "OEL_TYPE_TOKEN_CATCH_LAST";     break;
+        }
+        add_index_string(return_value, index++, token_type, 1);
+        stack_element= stack_element->next_var;
+    }
 }
