@@ -30,6 +30,7 @@
     'xp.compiler.ast.WhileNode',
     'xp.compiler.ast.AssignmentNode',
     'xp.compiler.ast.InvocationNode',
+    'xp.compiler.ast.ConstantNode',
     'xp.compiler.ast.NumberNode',
     'xp.compiler.ast.HexNode',
     'xp.compiler.ast.DecimalNode',
@@ -645,7 +646,7 @@ expression:
 ;
 
 literal:
-    T_WORD { /* XXX Constant, e.g. NULL, FALSE, TRUE */ }
+    T_WORD { $$= $yyLex->create(new ConstantNode()); $$->value= $1; }
   | qualifiedname T_DOUBLE_COLON T_CLASS { /* XXX class literal */ }
   | '[' { $1= $yyLex->create(new ArrayNode()); } expressionlist_opt ']' {
       $1->values= $3;

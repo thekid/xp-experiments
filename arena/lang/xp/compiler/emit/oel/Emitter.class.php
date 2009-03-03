@@ -112,6 +112,23 @@
     }
 
     /**
+     * Emit constants
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ConstantNode num
+     */
+    protected function emitConstant($op, ConstantNode $const) {
+      switch ($const->value) {
+        case 'true': oel_push_value($op, TRUE); break;
+        case 'false': oel_push_value($op, FALSE); break;
+        case 'null': oel_push_value($op, NULL); break;
+
+        // TODO: Warnings?
+        default: oel_push_constant($op, $const->value);
+      }
+    }
+
+    /**
      * Emit numbers
      *
      * @param   resource op
