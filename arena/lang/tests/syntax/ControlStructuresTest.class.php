@@ -39,11 +39,14 @@
         'condition'      => $this->create(new VariableNode('$i'), array(4, 15)),
         'statements'     => array(new ReturnNode(array(
           'position'       => array(4, 19),
-          'expression'     => 'TRUE'
+          'expression'     => new ConstantNode(array(
+            'position'       => array(4, 30),
+            'value'          => 'true'
+          ))
         ))),
         'otherwise'      => NULL, 
       ))), $this->parse('
-        if ($i) return TRUE;
+        if ($i) return true;
       '));
     }
 
