@@ -148,6 +148,10 @@ static function_entry oel_functions[]= {
     PHP_FE(oel_get_zend_api_no, NULL)
     PHP_FE(oel_get_token_stack_types, NULL)
     
+    PHP_FE(oel_read_header, NULL)
+    PHP_FE(oel_read_op_array, NULL)
+    PHP_FE(oel_eof, NULL)
+    
     PHP_FE(oel_write_header, NULL)
     PHP_FE(oel_write_op_array, NULL)
     PHP_FE(oel_write_footer, NULL)

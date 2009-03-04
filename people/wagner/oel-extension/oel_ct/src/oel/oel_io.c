@@ -504,25 +504,83 @@ static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC)
 }
 /* }}} */
 
+/* {{{ deserialization */
+/* }}} */
+
+static int read_oel_header(php_stream *stream, zend_bool quiet TSRMLS_DC)
+{
+    char buf[32]; 
+	unsigned int hi, lo;
+
+    memset(buf, 0, sizeof(buf));
+    php_stream_read(stream, buf, sizeof(buf)- 1);
+
+    if (0 != strncmp(buf, SERIALIZED_HEADER, sizeof(SERIALIZED_HEADER)- 1)) {
+        if (!quiet) {
+            zend_error(E_WARNING, "Header mismatch, have <%s>, expecting <%s>", buf, SERIALIZED_HEADER);
+        }
+        return -1;
+    }
+
+    sscanf(buf, SERIALIZED_HEADER "%u.%u", &hi, &lo);
+    return ((hi & 0xff) << 8) + (lo & 0xff);
+}
+
+/* {{{ proto int oel_read_header(resource stream)
+   Reads an OEL header from a given stream and returns the version */
+PHP_FUNCTION(oel_read_header) {
+    zval              *resource;
+    int               ver;
+    php_stream        *stream;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &resource) == FAILURE) { RETURN_NULL(); }
+    php_stream_from_zval(stream, &resource);
+
+    ver= read_oel_header(stream, 0 TSRMLS_CC);
+    if (-1 == ver) {
+        RETURN_FALSE;
+    }
+    
+    RETVAL_LONG(ver);
+}
+/* }}} */
+
+/* {{{ proto resource oel_read_op_array(resource stream)
+   Reads an OEL op array from a given stream */
+PHP_FUNCTION(oel_read_op_array) {
+
+}
+/* }}} */
+
+/* {{{ proto bool oel_eof(resource stream)
+   Returns whether we're at the end of a given stream */
+PHP_FUNCTION(oel_eof) {
+    zval              *resource;
+
+    php_stream        *stream;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &resource) == FAILURE) { RETURN_NULL(); }
+    php_stream_from_zval(stream, &resource);
+    
+    /* TODO */
+}
+/* }}} */
+
 /* {{{ proto bool oel_write_header(resource stream)
    Writes the OEL header to a given stream */
 PHP_FUNCTION(oel_write_header) {
     zval              *resource;
     char              *tmp;
     int               ver;
-
     php_stream        *stream;
-    unsigned char     buf[8];
-    zend_class_entry  *current_ce;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &resource) == FAILURE) { RETURN_NULL(); }
     php_stream_from_zval(stream, &resource);
     
     ver = SERIALIZED_VERSION;
-    spprintf(&tmp, 1024, SERIALIZED_HEADER "%u.%u", (ver >> 8) & 0xff, ver & 0xff);
-
-    current_ce = NULL;
-    serialize_string(tmp, current_ce, buf, stream TSRMLS_CC);
+    spprintf(&tmp, 32, SERIALIZED_HEADER "%u.%u", (ver >> 8) & 0xff, ver & 0xff);
+    
+    php_stream_write(stream, tmp, 32);
 
     efree(tmp);
     RETURN_TRUE;
