@@ -88,18 +88,18 @@
         'position'      => array(5, 11),
         'type'          => 'Expect',
         'parameters'    => array(
-          array('classes', new ArrayNode(array(
+          'classes' => new ArrayNode(array(
             'position'      => array(3, 22),
             'values'        => array(
               new StringNode(array('position' => array(3, 23), 'value' => 'lang.IllegalArgumentException')),
               new StringNode(array('position' => array(3, 54), 'value' => 'lang.IllegalAccessException')),
             ),
             'type'          => NULL
-          ))),
-          array('code', new NumberNode(array(
+          )),
+          'code'    => new NumberNode(array(
             'position'      => array(4, 22),
             'value'         => '503',
-          ))),
+          )),
         )))
       ), $this->parseMethodWithAnnotations('[@Expect(
         classes => ["lang.IllegalArgumentException", "lang.IllegalAccessException"],
