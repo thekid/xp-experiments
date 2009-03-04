@@ -218,6 +218,10 @@
     PHP_FUNCTION(oel_get_zend_api_no);
     PHP_FUNCTION(oel_get_token_stack_types);
 
+    PHP_FUNCTION(oel_write_header);
+    PHP_FUNCTION(oel_write_op_array);
+    PHP_FUNCTION(oel_write_footer);
+
     extern zend_module_entry oel_module_entry;
     #define phpext_oel_ptr &oel_module_entry
 

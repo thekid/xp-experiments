@@ -14,6 +14,9 @@
 #define SERIALIZED_FUNCTION_ENTRY 3
 #define SERIALIZED_OP_ARRAY 9
 
+#define SERIALIZED_VERSION 0x000e
+#define SERIALIZED_HEADER "OELMZ"
+
 enum {
     SESI_int, 
     SESI_long, 
@@ -35,6 +38,7 @@ static const size_t __se_sizes[] = { 4, 4, 1, 8, 4, 4, 4, 4, 2, 1, 1 };
 #endif
 
 /* {{{ serialization */
+static void serialize_char(char c SERIALIZE_DC);
 static void serialize_stringl(char* string, int len SERIALIZE_DC);
 static void serialize_string(char* string SERIALIZE_DC);
 static void serialize_arg_info(zend_arg_info *arg_info SERIALIZE_DC);
@@ -52,6 +56,11 @@ static void serialize_method(zend_function* function SERIALIZE_DC);
 static void serialize_function(zend_function* function SERIALIZE_DC);
 static void serialize_function_entry(zend_function_entry* entry SERIALIZE_DC);
 static void serialize_property_info(zend_property_info* prop SERIALIZE_DC);
+
+static void serialize_char(char c SERIALIZE_DC)
+{
+    SERIALIZE(c, char);
+}
 
 static void serialize_stringl(char* string, int len SERIALIZE_DC)
 {
@@ -495,14 +504,42 @@ static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC)
 }
 /* }}} */
 
-PHP_FUNCTION(oel_write_op_array) {
-    zval              *arg_op_array, *resource;
-    php_oel_op_array  *res_op_array;
+/* {{{ proto bool oel_write_header(resource stream)
+   Writes the OEL header to a given stream */
+PHP_FUNCTION(oel_write_header) {
+    zval              *resource;
+    char              *tmp;
+    int               ver;
+
     php_stream        *stream;
     unsigned char     buf[8];
     zend_class_entry  *current_ce;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zr", &arg_op_array, &resource) == FAILURE) { RETURN_NULL(); }
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &resource) == FAILURE) { RETURN_NULL(); }
+    php_stream_from_zval(stream, &resource);
+    
+    ver = SERIALIZED_VERSION;
+    spprintf(&tmp, 1024, SERIALIZED_HEADER "%u.%u", (ver >> 8) & 0xff, ver & 0xff);
+
+    current_ce = NULL;
+    serialize_string(tmp, current_ce, buf, stream TSRMLS_CC);
+
+    efree(tmp);
+    RETURN_TRUE;
+}
+/* }}} */
+
+/* {{{ proto bool oel_write_op_array(resource stream, resource op_array)
+   Writes given op array to a given stream */
+PHP_FUNCTION(oel_write_op_array) {
+    zval              *arg_op_array, *resource;
+    php_oel_op_array  *res_op_array;
+
+    php_stream        *stream;
+    unsigned char     buf[8];
+    zend_class_entry  *current_ce;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rz", &resource, &arg_op_array) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
     php_stream_from_zval(stream, &resource);
 
@@ -511,3 +548,22 @@ PHP_FUNCTION(oel_write_op_array) {
 
     RETURN_TRUE;
 }
+/* }}} */
+
+/* {{{ proto bool oel_write_header(resource stream)
+   Writes the OEL footer to a given stream */
+PHP_FUNCTION(oel_write_footer) {
+    zval              *resource;
+
+    php_stream        *stream;
+    unsigned char     buf[8];
+    zend_class_entry  *current_ce;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &resource) == FAILURE) { RETURN_NULL(); }
+    php_stream_from_zval(stream, &resource);
+    
+    current_ce = NULL;
+    serialize_char(0, current_ce, buf, stream TSRMLS_CC);
+    RETURN_TRUE;
+}
+/* }}} */

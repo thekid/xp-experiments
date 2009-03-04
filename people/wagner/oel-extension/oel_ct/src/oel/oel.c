@@ -147,6 +147,10 @@ static function_entry oel_functions[]= {
     PHP_FE(oel_get_translation_array, NULL)
     PHP_FE(oel_get_zend_api_no, NULL)
     PHP_FE(oel_get_token_stack_types, NULL)
+    
+    PHP_FE(oel_write_header, NULL)
+    PHP_FE(oel_write_op_array, NULL)
+    PHP_FE(oel_write_footer, NULL)
 
     {NULL, NULL, NULL}
 };
@@ -667,3 +671,4 @@ static void oel_compile_error(int type, const char *format, ...) {
 #include "oel_procedure.c"
 #include "oel_trycatch.c"
 #include "oel_debug.c"
+#include "oel_io.c"
