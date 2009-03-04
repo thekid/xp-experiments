@@ -365,6 +365,8 @@
       oel_add_end_tenary_op_true($op);
       $this->emitOne($op, $ternary->conditional);
       oel_add_end_tenary_op_false($op);
+      
+      $ternary->free && oel_add_free($op);
     }
 
     /**
