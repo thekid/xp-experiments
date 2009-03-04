@@ -1,6 +1,9 @@
 #define SERIALIZE_DC , zend_class_entry *__se_class, unsigned char __se_buffer[8], php_stream *__se_stream TSRMLS_DC
 #define SERIALIZE_CC , __se_class, __se_buffer, __se_stream TSRMLS_CC
 
+#define UNSERIALIZE_DC , zend_class_entry *__se_class, unsigned char __se_buffer[8], php_stream *__se_stream TSRMLS_DC
+#define UNSERIALIZE_CC , __se_class, __se_buffer, __se_stream TSRMLS_CC
+
 #define SERIALIZE(value, type) \
     memset(__se_buffer, 0, sizeof(__se_buffer)); \
     *((type*)__se_buffer) = value;                \
@@ -8,7 +11,15 @@
 
 #define WRITE(bytes, length) \
     php_stream_write(__se_stream, (char*)bytes, length);
-    
+
+#define DESERIALIZE(value, type) \
+    memset(__se_buffer, 0, sizeof(__se_buffer)); \
+    php_stream_read(__se_stream, __se_buffer, __se_sizes[SESI_##type]); \
+    *(value) = *((type*) __se_buffer); 
+
+#define READ(bytes, length) \
+    php_stream_read(__se_stream, (bytes), length); \
+    (bytes)[length]= '\0';
 
 #define SERIALIZED_CLASS_ENTRY 1
 #define SERIALIZED_FUNCTION_ENTRY 3
@@ -505,11 +516,80 @@ static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC)
 /* }}} */
 
 /* {{{ deserialization */
+static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
+{
+	int i;
+
+    DESERIALIZE(&op_array->type, zend_uchar);       
+}
+
+static void unserialize_string(char **string UNSERIALIZE_DC)
+{
+    int len;
+
+    DESERIALIZE(&len, int);
+    if (-1 == len) {
+        *string = NULL;
+    }
+
+    *string = (char*) emalloc(len + 1);
+    READ(*string, len);
+}
+
+static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
+{
+    DESERIALIZE(&ce->type, char);
+    unserialize_string(&ce->name UNSERIALIZE_CC);
+    DESERIALIZE(&ce->name_length, uint);
+    
+    fprintf(stderr, "Class named %s\n", ce->name);
+}
+
+static void unserialize_oel_op_array(php_oel_op_array* res_op_array UNSERIALIZE_DC)
+{
+    char item;
+    int cont;
+
+    cont = 1;
+    while (cont) {
+        DESERIALIZE(&item, char);
+        switch (item) {
+            case SERIALIZED_CLASS_ENTRY: {
+                zend_class_entry *ce;
+                
+                ce = (zend_class_entry*) emalloc(sizeof(zend_class_entry));
+                unserialize_class_entry(ce UNSERIALIZE_CC);
+                cont = 1;
+                break;
+            }
+            
+            case SERIALIZED_FUNCTION_ENTRY: {
+                fprintf(stderr, "FOUND A FUNCTION\n");
+                /* TODO */
+                cont = 1;
+                break;
+            }
+            
+            case SERIALIZED_OP_ARRAY: {
+                fprintf(stderr, "FOUND <main>\n");
+                unserialize_op_array(res_op_array->oel_cg.active_op_array UNSERIALIZE_CC);
+                cont = 0;
+                break;
+            }
+            
+            default: {
+                fprintf(stderr, "No idea what %c(%d) is\n", item, item);
+                cont = 0;
+                break;
+            }
+        }
+    }
+}
 /* }}} */
 
 static int read_oel_header(php_stream *stream, zend_bool quiet TSRMLS_DC)
 {
-    char buf[32]; 
+    char buf[33]; 
 	unsigned int hi, lo;
 
     memset(buf, 0, sizeof(buf));
@@ -548,21 +628,35 @@ PHP_FUNCTION(oel_read_header) {
 /* {{{ proto resource oel_read_op_array(resource stream)
    Reads an OEL op array from a given stream */
 PHP_FUNCTION(oel_read_op_array) {
+    zval              *resource;
+	php_oel_op_array *res_op_array;
 
+    php_stream        *stream;
+    unsigned char     buf[8];
+    zend_class_entry  *current_ce;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &resource) == FAILURE) { RETURN_NULL(); }
+    php_stream_from_zval(stream, &resource);
+    
+    res_op_array= oel_create_new_op_array(TSRMLS_C);
+    current_ce = NULL;
+    unserialize_oel_op_array(res_op_array, current_ce, buf, stream TSRMLS_CC);
+    ZEND_REGISTER_RESOURCE(return_value, res_op_array, le_oel_oar);
 }
 /* }}} */
 
 /* {{{ proto bool oel_eof(resource stream)
    Returns whether we're at the end of a given stream */
 PHP_FUNCTION(oel_eof) {
-    zval              *resource;
-
-    php_stream        *stream;
+    zval *resource;
+    php_stream *stream;
+    php_oel_op_array *res_op_array;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &resource) == FAILURE) { RETURN_NULL(); }
     php_stream_from_zval(stream, &resource);
-    
-    /* TODO */
+
+    /* XXX */
+    RETURN_TRUE;
 }
 /* }}} */
 
