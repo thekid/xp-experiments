@@ -104,10 +104,13 @@
           'class'         => new TypeName('self'),
           'member'        => $this->create(new VariableNode('$instance'), array(4, 17))
         )),
-        'expression'    => 'NULL',    // FIXME: ConstantNode?
+        'expression'    => new ConstantNode(array(
+          'position'      => array(4, 32), 
+          'value'         => 'null'
+        )),
         'op'            => '='
       ))), $this->parse('
-        self::$instance= NULL;
+        self::$instance= null;
       '));
     }
 
