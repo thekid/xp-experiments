@@ -54,7 +54,8 @@
   );
 %}
 
-%left ',' '=' '%' '?' ':' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_BOOLEAN_OR T_BOOLEAN_AND T_INSTANCEOF T_CONCAT_EQUAL
+%left ',' '=' '%' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_BOOLEAN_OR T_BOOLEAN_AND T_INSTANCEOF T_CONCAT_EQUAL
+%left '?' ':' 
 %left '+' '-'
 %left '*' '/'
 %right '[' '!' '~' T_INC T_DEC 
@@ -364,7 +365,13 @@ annotation:
   | '@' qualifiedname '(' mapliteral ')' { 
       $$= $yyLex->create(new AnnotationNode()); 
       $$->type= $2; 
-      $$->parameters= $4;
+      $$->parameters= array();        // FIXME: Use different rule instead of mapliteral
+      foreach ($4 as $parameter) {
+        if (!$parameter[0] instanceof ConstantValueNode) {
+          throw new ParseException('Illegal member type '.xp::stringOf($parameter[0]));
+        }
+        $$->parameters[$parameter[0]->value]= $parameter[1];
+      }
     }
 ;
 
