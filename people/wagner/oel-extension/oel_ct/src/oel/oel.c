@@ -29,6 +29,12 @@ zend_class_entry *php_oel_ce_znode_tmpvar;
 zend_class_entry *php_oel_ce_znode_variable;
 zend_class_entry *php_oel_ce_znode_compiledvar;
 
+/* {{{ Compiler overrides */
+extern ZEND_API zend_op_array *(*zend_compile_file)(zend_file_handle *file_handle, int type TSRMLS_DC);
+static zend_op_array *(*oel_saved_zend_compile_file)(zend_file_handle *file_handle, int type TSRMLS_DC);
+static zend_op_array *oel_compile_file(zend_file_handle *file_handle, int type TSRMLS_DC);
+/* }}} */
+
 static function_entry oel_functions[]= {
 
     PHP_FE(oel_new_op_array, NULL)
@@ -310,6 +316,10 @@ PHP_MINIT_FUNCTION(oel) {
     REGISTER_LONG_CONSTANT("OEL_OP_TO_OBJECT",                  IS_OBJECT,                CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("OEL_OP_TO_BOOL",                    IS_BOOL,                  CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("OEL_OP_TO_UNSET",                   IS_NULL,                  CONST_CS | CONST_PERSISTENT);
+
+    /* Register us with the Zend compiler */
+    oel_saved_zend_compile_file = zend_compile_file;
+    zend_compile_file = oel_compile_file;
 
     return SUCCESS;
 }
@@ -676,3 +686,4 @@ static void oel_compile_error(int type, const char *format, ...) {
 #include "oel_trycatch.c"
 #include "oel_debug.c"
 #include "oel_io.c"
+#include "oel_compile.c"
