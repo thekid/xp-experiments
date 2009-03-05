@@ -19,6 +19,12 @@
 #ifndef PHP_OEL_COMMON_H
 #define PHP_OEL_COMMON_H
 
+    #define SERIALIZE_DC , zend_class_entry *__se_class, unsigned char __se_buffer[8], php_stream *__se_stream TSRMLS_DC
+    #define SERIALIZE_CC , __se_class, __se_buffer, __se_stream TSRMLS_CC
+
+    #define UNSERIALIZE_DC , zend_class_entry *__se_class, unsigned char __se_buffer[8], php_stream *__se_stream TSRMLS_DC
+    #define UNSERIALIZE_CC , __se_class, __se_buffer, __se_stream TSRMLS_CC
+
     #define PHP_OEL_VERSION "1.0.2"
     #define PHP_OEL_EXTNAME "oel"
     #define PHP_OEL_OAR_RES_NAME "oel op code array"

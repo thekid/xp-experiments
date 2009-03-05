@@ -1,9 +1,3 @@
-#define SERIALIZE_DC , zend_class_entry *__se_class, unsigned char __se_buffer[8], php_stream *__se_stream TSRMLS_DC
-#define SERIALIZE_CC , __se_class, __se_buffer, __se_stream TSRMLS_CC
-
-#define UNSERIALIZE_DC , zend_class_entry *__se_class, unsigned char __se_buffer[8], php_stream *__se_stream TSRMLS_DC
-#define UNSERIALIZE_CC , __se_class, __se_buffer, __se_stream TSRMLS_CC
-
 #define SERIALIZE(value, type) \
     memset(__se_buffer, 0, sizeof(__se_buffer)); \
     *((type*)__se_buffer) = value;                \
@@ -974,6 +968,15 @@ static void unserialize_oel_op_array(php_oel_op_array* res_op_array UNSERIALIZE_
               
                 ce = (zend_class_entry*) emalloc(sizeof(zend_class_entry));
                 unserialize_class_entry(ce UNSERIALIZE_CC);
+
+                zend_hash_update(
+                    res_op_array->oel_cg.class_table,
+                    ce->name, 
+                    ce->name_length, 
+                    &ce, 
+                    sizeof(zend_class_entry *), 
+                    NULL
+                );
                 cont = 1;
                 break;
             }
@@ -1060,6 +1063,7 @@ PHP_FUNCTION(oel_read_op_array) {
     res_op_array= oel_create_new_op_array(TSRMLS_C);
     current_ce = NULL;
     unserialize_oel_op_array(res_op_array, current_ce, buf, stream TSRMLS_CC);
+    oel_finalize_op_array(res_op_array TSRMLS_CC);
     ZEND_REGISTER_RESOURCE(return_value, res_op_array, le_oel_oar);
 }
 /* }}} */
