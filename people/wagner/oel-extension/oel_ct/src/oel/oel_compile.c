@@ -35,6 +35,8 @@ static zend_op_array *oel_compile_file(zend_file_handle *file_handle, int type T
 
         res_op_array= oel_create_new_op_array(TSRMLS_C);
         current_ce = NULL;
+        
+        /* Unserialize op array, finalize it */
         unserialize_oel_op_array(res_op_array, current_ce, buf, stream TSRMLS_CC);
         oel_finalize_op_array(res_op_array TSRMLS_CC);
         

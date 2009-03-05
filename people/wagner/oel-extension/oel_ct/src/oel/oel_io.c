@@ -900,19 +900,23 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
 
     /* Handle parent class */
     UNSERIALIZE(&parent, char);
+    
     ce->parent= NULL;
     if (0 != parent) {
         char* parent_name;
         zend_class_entry **pce;
 
         unserialize_string(&parent_name UNSERIALIZE_CC);
-        if (zend_lookup_class(parent_name, strlen(parent_name), &pce TSRMLS_CC) == FAILURE) {
-            fprintf(stderr, "Cannot find parent %s\n", parent_name);
+        
+        if (zend_lookup_class(parent_name, strlen(parent_name) + 1, &pce TSRMLS_CC) == FAILURE) {
+            zend_error(E_WARNING, "Cannot find %s's parent %s\n", ce->name, parent_name);
         } else {
             ce->parent= *pce;
+            zend_do_inheritance(ce, ce->parent TSRMLS_CC);
         }
+        efree(parent_name);
     }
-    
+
     UNSERIALIZE(&ce->refcount, int);
     UNSERIALIZE(&ce->constants_updated, zend_bool);
     UNSERIALIZE(&ce->ce_flags, zend_uint);
@@ -928,13 +932,17 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
     unserialize_hashtable(&ce->default_static_members, sizeof(zval *), unserialize_zval_ptr, "default_static_members" UNSERIALIZE_CC);
     UNSERIALIZE(&exists, char);
     if (0 != exists) {
+        ALLOC_HASHTABLE(ce->static_members);
         unserialize_hashtable(ce->static_members, sizeof(zval *), unserialize_zval_ptr, "static_members" UNSERIALIZE_CC);
+        zend_hash_destroy(ce->static_members);
+        FREE_HASHTABLE(ce->static_members);
     }
+	ce->static_members = &ce->default_static_members;
+
     UNSERIALIZE(&exists, char);
     unserialize_hashtable(&ce->constants_table, sizeof(zval *), unserialize_zval_ptr, "constants_table" UNSERIALIZE_CC);
     
     UNSERIALIZE(&count, int);
-    
     ce->builtin_functions = NULL;
     if (count > 0) {
         int i;
@@ -965,18 +973,22 @@ static void unserialize_oel_op_array(php_oel_op_array* res_op_array UNSERIALIZE_
         switch (item) {
             case SERIALIZED_CLASS_ENTRY: {
                 zend_class_entry *ce;
+                char *lcname;
               
                 ce = (zend_class_entry*) emalloc(sizeof(zend_class_entry));
                 unserialize_class_entry(ce UNSERIALIZE_CC);
 
-                zend_hash_update(
+                /* Add to op array's class table */
+	            lcname = zend_str_tolower_dup(ce->name, ce->name_length);
+                zend_hash_add(
                     res_op_array->oel_cg.class_table,
-                    ce->name, 
-                    ce->name_length, 
+                    lcname, 
+                    ce->name_length + 1, 
                     &ce, 
-                    sizeof(zend_class_entry *), 
+                    sizeof(zend_class_entry *),
                     NULL
                 );
+                efree(lcname);
                 cont = 1;
                 break;
             }
