@@ -16,7 +16,7 @@
     memset(__se_buffer, 0, sizeof(__se_buffer)); \
     php_stream_read(__se_stream, __se_buffer, __se_sizes[SESI_##type]); \
     *(value) = *((type*) __se_buffer); 
-
+    
 #define READ(bytes, length) \
     php_stream_read(__se_stream, (bytes), length); \
     (bytes)[length]= '\0';
@@ -510,11 +510,13 @@ static void unserialize_arg_info(zend_arg_info* arg_info UNSERIALIZE_DC);
 static void unserialize_op(int id, zend_op *op, zend_op_array *op_array UNSERIALIZE_DC);
 static void unserialize_string(char **string UNSERIALIZE_DC);
 static void unserialize_dtor_func(dtor_func_t* p UNSERIALIZE_DC);
+static void unserialize_method_ptr(zend_function **function UNSERIALIZE_DC);
 static void unserialize_method(zend_function *function UNSERIALIZE_DC);
 static void unserialize_zvalue_value(zvalue_value *value, int type, znode *node UNSERIALIZE_DC);
 static void unserialize_zval(zval *ptr, znode *node UNSERIALIZE_DC);
 static void unserialize_zval_ptr(zval **zval_ptr UNSERIALIZE_DC);
 static void unserialize_property_info(zend_property_info *prop UNSERIALIZE_DC);
+static void unserialize_property_info_ptr(zend_property_info **prop_ptr UNSERIALIZE_DC);
 static void unserialize_hashtable(HashTable* ht, int datasize, void* funcptr, char* name UNSERIALIZE_DC);
 static void unserialize_hashtable_ptr(HashTable** ht, int datasize, void* funcptr, char* name UNSERIALIZE_DC);
 static void unserialize_function_entry(zend_function_entry* entry UNSERIALIZE_DC);
@@ -564,11 +566,6 @@ static void unserialize_znode(znode *node UNSERIALIZE_DC)
 
 static void unserialize_op(int id, zend_op *op, zend_op_array *op_array UNSERIALIZE_DC)
 {
-#if 1
-    fprintf(stderr, "[STACK]: unserialize_op(%d, %p)\n", id, op);
-    fflush(stderr);
-#endif
-
     UNSERIALIZE(&op->opcode, zend_uchar);
     unserialize_znode(&op->result UNSERIALIZE_CC);
     switch (op->opcode)
@@ -597,11 +594,17 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
 
     UNSERIALIZE(&op_array->type, zend_uchar);       
     UNSERIALIZE(&op_array->num_args, int);
+	op_array->arg_info = (zend_arg_info *) ecalloc(op_array->num_args, sizeof(zend_arg_info));
     for (i = 0; i < (int)op_array->num_args; i++) {
         unserialize_arg_info(&op_array->arg_info[i] UNSERIALIZE_CC);
     }
     
     unserialize_string(&op_array->function_name UNSERIALIZE_CC);
+    if (!op_array->function_name) {
+        op_array->function_name = NULL;
+    }
+
+	op_array->refcount = (int*) emalloc(sizeof(zend_uint));
     UNSERIALIZE(&op_array->refcount[0], zend_uint);
     UNSERIALIZE(&op_array->last, zend_uint);
     UNSERIALIZE(&op_array->size, zend_uint);
@@ -632,7 +635,7 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
     /* Handle op array's scope */
     unserialize_string(&scope UNSERIALIZE_CC);
     op_array->scope = NULL;
-    if (*scope) {
+    if (NULL != scope) {
         zend_class_entry **pce;
          
         if (__se_class && 0 == strncmp(__se_class->name, scope, __se_class->name_length)) {
@@ -667,11 +670,6 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
         op_array->try_catch_array = (zend_try_catch_element*) emalloc(op_array->last_try_catch * sizeof(zend_try_catch_element));
         php_stream_read(__se_stream, (char*)op_array->try_catch_array, op_array->last_try_catch * sizeof(zend_try_catch_element));
     }
-
-#if 1
-    fprintf(stderr, "[STACK]: END unserialize_op_array(%p)\n", op_array);
-    fflush(stderr);
-#endif
 }
 
 static void unserialize_string(char **string UNSERIALIZE_DC)
@@ -681,10 +679,10 @@ static void unserialize_string(char **string UNSERIALIZE_DC)
     UNSERIALIZE(&len, int);
     if (-1 == len) {
         *string = NULL;
+    } else {
+        *string = (char*) emalloc(len + 1);
+        READ(*string, len);
     }
-
-    *string = (char*) emalloc(len + 1);
-    READ(*string, len);
 }
 
 static void unserialize_dtor_func(dtor_func_t* p UNSERIALIZE_DC)
@@ -704,22 +702,26 @@ static void unserialize_dtor_func(dtor_func_t* p UNSERIALIZE_DC)
     }
 }
 
+static void unserialize_method_ptr(zend_function **function UNSERIALIZE_DC)
+{
+    *function = (zend_function*) emalloc(sizeof(zend_function));
+    memset(*function, 0, sizeof(zend_function));
+    unserialize_method(*function UNSERIALIZE_CC);
+	if (0xff == (*(function))->type) {
+        efree(*function);
+        *function = NULL;
+	}
+}
+
 static void unserialize_method(zend_function *function UNSERIALIZE_DC)
 {
-    zend_uchar type;
     int special;
     
-    UNSERIALIZE(&type, zend_uchar);
+    UNSERIALIZE(&function->type, zend_uchar);
 
-#if 1
-    fprintf(stderr, "[STACK]: unserialize_method(%p)= %d\n", function, type);
-    fflush(stderr);
-#endif
-
-    if (0xff == type) {
+    if (0xff == function->type) {
         return;
     }
-    function->type = type;
     UNSERIALIZE(&special, int);
 
     switch (special) {
@@ -751,11 +753,6 @@ static void unserialize_method(zend_function *function UNSERIALIZE_DC)
             zend_error(E_RECOVERABLE_ERROR, "Could not unserialize function type %d", function->type);
         }
     }
-
-#if 1
-    fprintf(stderr, "[STACK]: END unserialize_method(%p)= %d\n", function, type);
-    fflush(stderr);
-#endif
 }
 
 static void unserialize_zvalue_value(zvalue_value *value, int type, znode *node UNSERIALIZE_DC)
@@ -821,6 +818,12 @@ static void unserialize_zval_ptr(zval **zval_ptr UNSERIALIZE_DC)
     unserialize_zval(*zval_ptr, NULL UNSERIALIZE_CC);
 }
 
+static void unserialize_property_info_ptr(zend_property_info **prop_ptr UNSERIALIZE_DC)
+{
+    *prop_ptr = (zend_property_info*) emalloc(sizeof(zend_property_info));
+    unserialize_property_info(*prop_ptr UNSERIALIZE_CC);
+}
+
 static void unserialize_property_info(zend_property_info *prop UNSERIALIZE_DC)
 {
     UNSERIALIZE(&prop->flags, zend_uint);
@@ -834,11 +837,6 @@ static void unserialize_hashtable_ptr(HashTable** ht, int datasize, void* funcpt
     char empty;
 
     UNSERIALIZE(&empty, char);
-
-#if 1
-    fprintf(stderr, "[STACK]: unserialize_hashtable_ptr(%p, %d, %p, %s)= %d\n", ht, datasize, funcptr, name, empty);
-    fflush(stderr);
-#endif
 
     if (0 != empty) {
         *ht = (HashTable*) emalloc(sizeof(HashTable));
@@ -856,11 +854,6 @@ static void unserialize_hashtable(HashTable* ht, int datasize, void* funcptr, ch
     int i;
     int persistent;
     void (*unserialize_bucket)(void* UNSERIALIZE_DC);
-
-#if 1
-    fprintf(stderr, "[STACK]: unserialize_hashtable(%p, %d, %p, %s)\n", ht, datasize, funcptr, name);
-    fflush(stderr);
-#endif
 
     unserialize_bucket = (void(*)(void* UNSERIALIZE_DC)) funcptr;
     UNSERIALIZE(&nTableSize, uint);
@@ -881,20 +874,19 @@ static void unserialize_hashtable(HashTable* ht, int datasize, void* funcptr, ch
         unserialize_bucket(&pData UNSERIALIZE_CC);
         
         if (nKeyLength != 0) {
-            if (datasize == sizeof(void*)) {
+            if (datasize == sizeof(void *)) {
                 zend_hash_add(ht, arKey, nKeyLength, &pData, datasize, NULL);
             } else {
                 zend_hash_add(ht, arKey, nKeyLength, pData, datasize, NULL);
             }
+            efree(arKey);
         } else {
-            if (datasize == sizeof(void*)) {
+            if (datasize == sizeof(void *)) {
                 zend_hash_index_update(ht, h, &pData, datasize, NULL);
             } else {
                 zend_hash_index_update(ht, h, pData, datasize, NULL);
             }
         }
-        
-        efree(arKey);
     }
 }
 
@@ -912,11 +904,7 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
     unserialize_string(&ce->name UNSERIALIZE_CC);
     UNSERIALIZE(&ce->name_length, uint);
 
-#if 1
-    fprintf(stderr, "[STACK]: unserialize_class_entry(%p)= %s\n", ce, ce->name);
-    fflush(stderr);
-#endif
-    
+    /* Handle parent class */
     UNSERIALIZE(&parent, char);
     ce->parent= NULL;
     if (0 != parent) {
@@ -937,15 +925,17 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
 
     __se_class= ce;
     UNSERIALIZE(&exists, char);
-    unserialize_hashtable(&ce->function_table, sizeof(zend_function), unserialize_method, "function_table" UNSERIALIZE_CC);
+    unserialize_hashtable(&ce->function_table, sizeof(zend_function), unserialize_method_ptr, "function_table" UNSERIALIZE_CC);
     UNSERIALIZE(&exists, char);
     unserialize_hashtable(&ce->default_properties, sizeof(zval *), unserialize_zval_ptr, "default_properties" UNSERIALIZE_CC);
     UNSERIALIZE(&exists, char);
-    unserialize_hashtable(&ce->properties_info, sizeof(zend_property_info), unserialize_property_info, "properties_info" UNSERIALIZE_CC);
+    unserialize_hashtable(&ce->properties_info, sizeof(zend_property_info), unserialize_property_info_ptr, "properties_info" UNSERIALIZE_CC);
     UNSERIALIZE(&exists, char);
     unserialize_hashtable(&ce->default_static_members, sizeof(zval *), unserialize_zval_ptr, "default_static_members" UNSERIALIZE_CC);
     UNSERIALIZE(&exists, char);
-    unserialize_hashtable(ce->static_members, sizeof(zval *), unserialize_zval_ptr, "static_members" UNSERIALIZE_CC);
+    if (0 != exists) {
+        unserialize_hashtable(ce->static_members, sizeof(zval *), unserialize_zval_ptr, "static_members" UNSERIALIZE_CC);
+    }
     UNSERIALIZE(&exists, char);
     unserialize_hashtable(&ce->constants_table, sizeof(zval *), unserialize_zval_ptr, "constants_table" UNSERIALIZE_CC);
     
@@ -967,11 +957,6 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
         ce->interfaces = emalloc(ce->num_interfaces * sizeof(*ce->interfaces));
     }
 
-#if 1
-    fprintf(stderr, "[STACK]: END unserialize_class_entry(%p)= %s\n", ce, ce->name);
-    fflush(stderr);
-#endif
-
     __se_class= NULL;
 }
 
@@ -988,12 +973,6 @@ static void unserialize_oel_op_array(php_oel_op_array* res_op_array UNSERIALIZE_
                 zend_class_entry *ce;
               
                 ce = (zend_class_entry*) emalloc(sizeof(zend_class_entry));
-
-#if 1
-    fprintf(stderr, "[STACK]: unserialize_class_entry(%p)\n", ce);
-    fflush(stderr);
-#endif
-
                 unserialize_class_entry(ce UNSERIALIZE_CC);
                 cont = 1;
                 break;
@@ -1007,10 +986,6 @@ static void unserialize_oel_op_array(php_oel_op_array* res_op_array UNSERIALIZE_
             }
             
             case SERIALIZED_OP_ARRAY: {
-#if 1
-    fprintf(stderr, "[STACK]: unserialize_op_array(%p)\n", res_op_array->oel_cg.active_op_array);
-    fflush(stderr);
-#endif
                 unserialize_op_array(res_op_array->oel_cg.active_op_array UNSERIALIZE_CC);
                 cont = 0;
                 break;
