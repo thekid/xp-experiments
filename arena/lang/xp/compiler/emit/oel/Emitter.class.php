@@ -137,6 +137,26 @@
     protected function emitNumber($op, NumberNode $num) {
       oel_push_value($op, (int)$num->value);
     }
+
+    /**
+     * Emit decimals
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.DecimalNode num
+     */
+    protected function emitDecimal($op, DecimalNode $num) {
+      oel_push_value($op, (float)$num->value);
+    }
+
+    /**
+     * Emit hex numbers
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.HexNode num
+     */
+    protected function emitHex($op, HexNode $num) {
+      oel_push_value($op, hexdec($num->value));
+    }
     
     /**
      * Emit a variable. Implements type overloading
