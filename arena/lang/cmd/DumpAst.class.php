@@ -36,10 +36,15 @@
      *
      */
     public function run() {
-      $ast= create(new Parser())->parse(new xp·compiler·Lexer(
-        FileUtil::getContents($this->in),
-        $this->in->getURI()
-      ));
+      try {
+        $ast= create(new Parser())->parse(new xp·compiler·Lexer(
+          FileUtil::getContents($this->in),
+          $this->in->getURI()
+        ));
+      } catch (ParseException $e) {
+        $this->err->writeLine('*** Parse error: ', $e->getCause());
+        return;
+      }
       $this->out->writeLine($ast);
     }
   }
