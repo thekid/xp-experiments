@@ -979,19 +979,18 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
     }
 
     __se_class= NULL;
-
+    ce->parent= NULL;
     if (0 != parent) {
         zend_class_entry **pce = NULL;
         if (zend_lookup_class(parent_name, strlen(parent_name), &pce TSRMLS_CC) == FAILURE) {
-            efree(parent_name);
             zend_error(E_RECOVERABLE_ERROR, "Cannot find %s's parent %s\n", ce->name, parent_name);
+            efree(parent_name);
+            return;
         }
 
         efree(parent_name);
         ce->parent= *pce;
         zend_do_inheritance(ce, ce->parent TSRMLS_CC);
-    } else {
-        ce->parent= NULL;
     }
 }
 
