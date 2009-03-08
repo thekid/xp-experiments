@@ -49,11 +49,11 @@
   }
   // }}}
   
-  // {{{ void add_declare_class(resource op, string class, array<string, array> methods) 
+  // {{{ void add_declare_class(resource op, string class, string parent, array<string, array> methods) 
   //     class class { <<methods>> }
-  function add_declare_class($op, $class, $methods) {
+  function add_declare_class($op, $class, $parent= NULL, $methods= array()) {
     echo $class, " {\n";
-    oel_add_begin_class_declaration($op, $class);
+    oel_add_begin_class_declaration($op, $class, $parent);
     
     foreach ($methods as $name => $def) {
       $mop= oel_new_method($op, $name, FALSE, is($def[0], M_STATIC), $def[0], is($def[0], M_FINAL)); {
@@ -91,7 +91,7 @@
     }
 
     case 'class.php': {
-      add_declare_class($op, 'HelloWorld', array(
+      add_declare_class($op, 'HelloWorld', NULL, array(
         'main' => array(M_STATIC | M_PUBLIC, $argv[1], 3, 'add_echoln', array('Hello Class'))
       ));
       oel_add_call_method_static($op, 0, 'main', 'HelloWorld');
