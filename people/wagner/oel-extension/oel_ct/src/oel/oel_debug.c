@@ -73,7 +73,7 @@ void oel_add_next_index_opline(zend_op_array *op_array, zval *result_arr, zend_o
     Z_SET_REFCOUNT(*oh_result, 1);
 }
 
-PHP_FUNCTION(oel_get_op_array) {
+PHP_FUNCTION(oel_export_op_array) {
     zval              *arg_op_array;
     zend_op_array     *dump_op_array;
     zend_op           *opline, *end;

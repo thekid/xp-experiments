@@ -213,7 +213,7 @@
     PHP_FUNCTION(oel_add_end_catchblock);
     PHP_FUNCTION(oel_add_throw);
 
-    PHP_FUNCTION(oel_get_op_array);
+    PHP_FUNCTION(oel_export_op_array);
     PHP_FUNCTION(oel_get_translation_array);
     PHP_FUNCTION(oel_get_zend_api_no);
     PHP_FUNCTION(oel_get_token_stack_types);
