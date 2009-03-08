@@ -5,6 +5,6 @@
     $foo= $baz();
     return $foo;
   }
-  var_dump(oel_get_op_array('userfunction'));
+  var_dump(oel_export_op_array('userfunction'));
 
 ?>
