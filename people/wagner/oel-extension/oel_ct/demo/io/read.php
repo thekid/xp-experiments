@@ -1,4 +1,14 @@
 <?php
+  class Object {
+    public function toString() {
+      return var_export($this, 1);
+    }
+  }
+  
+  interface Comparable {
+    public function compare($a, $b);
+  }
+  
   function oparray_string($ops, $indent= '  ') {
     if (!is_resource($ops)) {
       echo $indent;

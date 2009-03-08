@@ -51,18 +51,28 @@
   
   // {{{ void add_declare_class(resource op, string class, string parent, array<string, array> methods) 
   //     class class { <<methods>> }
-  function add_declare_class($op, $class, $parent= NULL, $methods= array()) {
+  function add_declare_class($op, $class, $parent= NULL, $interfaces= array(), $methods= array()) {
     echo $class, " {\n";
     oel_add_begin_class_declaration($op, $class, $parent);
+    
+    foreach ($interfaces as $interface) {
+      oel_add_implements_interface($op, $interface);
+    }
     
     foreach ($methods as $name => $def) {
       $mop= oel_new_method($op, $name, FALSE, is($def[0], M_STATIC), $def[0], is($def[0], M_FINAL)); {
         oel_set_source_file($mop, $def[1]);
         oel_set_source_line($mop, $def[2]);
-
-        if (sizeof($def) > 3) {
-          array_unshift($def[4], $mop);
-          call_user_func_array($def[3], $def[4]);
+        
+        // Args
+        foreach ($def[3] as $i => $arg) {
+          oel_add_receive_arg($mop, $i + 1, $arg);
+        }
+        
+        // Create body from "closure"
+        if (sizeof($def) > 4) {
+          array_unshift($def[5], $mop);
+          call_user_func_array($def[4], $def[5]);
         }
       }
       oel_finalize($mop);
@@ -82,17 +92,27 @@
 
   switch ($argv[1]) {
     case 'reflect.php': {
-      add_declare_class($op, 'HelloWorld', array(
-        '__construct' => array(M_PRIVATE | M_FINAL, $argv[1], 3),
-        'main'        => array(M_STATIC | M_PUBLIC, $argv[1], 5)
+      add_declare_class($op, 'HelloWorld', 'Object', array(), array(
+        '__construct' => array(M_PRIVATE | M_FINAL, $argv[1], 3, array('param', 'default')),
+        'main'        => array(M_STATIC | M_PUBLIC, $argv[1], 5, array())
       ));
       add_reflection_export($op, 'HelloWorld');
       break;
     }
 
     case 'class.php': {
-      add_declare_class($op, 'HelloWorld', NULL, array(
-        'main' => array(M_STATIC | M_PUBLIC, $argv[1], 3, 'add_echoln', array('Hello Class'))
+      add_declare_class($op, 'HelloWorld', NULL, array(), array(
+        'main' => array(M_STATIC | M_PUBLIC, $argv[1], 3, array(), 'add_echoln', array('Hello Class'))
+      ));
+      oel_add_call_method_static($op, 0, 'main', 'HelloWorld');
+      oel_add_free($op);
+      break;
+    }
+
+    case 'parent.php': {
+      add_declare_class($op, 'HelloWorld', 'Object', array('Comparable'), array(
+        'main'    => array(M_STATIC | M_PUBLIC, $argv[1], 3, array(), 'add_echoln', array('Hello Object')),
+        'compare' => array(M_PUBLIC, $argv[1], 6, array('a', 'b'))
       ));
       oel_add_call_method_static($op, 0, 'main', 'HelloWorld');
       oel_add_free($op);
