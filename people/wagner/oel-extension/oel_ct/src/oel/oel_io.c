@@ -18,6 +18,7 @@
 #define SERIALIZED_CLASS_ENTRY 1
 #define SERIALIZED_FUNCTION_ENTRY 3
 #define SERIALIZED_OP_ARRAY 9
+#define SERIALIZED_OP_END 13
 
 #define SERIALIZED_VERSION 0x000e
 #define SERIALIZED_HEADER "OELMZ"
@@ -490,11 +491,13 @@ static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC)
             opline->opcode= ZEND_NOP;
         }
     }
+
     /* serialize main opcode array */
     SERIALIZE(SERIALIZED_OP_ARRAY, char);
     serialize_op_array(oel_op_array->oel_cg.active_op_array SERIALIZE_CC);
     efree(oel_op_array->oel_cg.active_op_array->opcodes);
     oel_op_array->oel_cg.active_op_array->opcodes= orig_opcodes;
+    SERIALIZE(SERIALIZED_OP_END, char);
 }
 /* }}} */
 
@@ -515,7 +518,7 @@ static void unserialize_hashtable(HashTable* ht, int datasize, void* funcptr, ch
 static void unserialize_hashtable_ptr(HashTable** ht, int datasize, void* funcptr, char* name UNSERIALIZE_DC);
 static void unserialize_function_entry(zend_function_entry* entry UNSERIALIZE_DC);
 static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC);
-static void unserialize_oel_op_array(php_oel_op_array* res_op_array UNSERIALIZE_DC);
+static void unserialize_oel_op_array(php_oel_op_array** res_op_array UNSERIALIZE_DC);
 
 static void unserialize_arg_info(zend_arg_info* arg_info UNSERIALIZE_DC)
 {
@@ -546,15 +549,15 @@ static void unserialize_znode(znode *node UNSERIALIZE_DC)
     switch (node->op_type) 
     {
         case IS_CONST: {
-              unserialize_zval(&node->u.constant, node UNSERIALIZE_CC);
+            unserialize_zval(&node->u.constant, node UNSERIALIZE_CC);
             break;
         }
         
         case IS_VAR: case IS_TMP_VAR: case IS_UNUSED: default: {
             UNSERIALIZE(&node->u.EA.var, zend_uint);
             UNSERIALIZE(&node->u.EA.type, zend_uint);
+            break;
         }
-        break;
     }
 }
 
@@ -570,7 +573,7 @@ static void unserialize_op(int id, zend_op *op, zend_op_array *op_array UNSERIAL
         }
         
         case ZEND_JMPZ: case ZEND_JMPNZ: case ZEND_JMPZ_EX: case ZEND_JMPNZ_EX: {
-            op->op2.u.jmp_addr = op_array ->opcodes + op->op2.u.opline_num;
+            op->op2.u.jmp_addr = op_array->opcodes + op->op2.u.opline_num;
             break;
         }
     }
@@ -664,6 +667,8 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
         op_array->try_catch_array = (zend_try_catch_element*) emalloc(op_array->last_try_catch * sizeof(zend_try_catch_element));
         php_stream_read(__se_stream, (char*)op_array->try_catch_array, op_array->last_try_catch * sizeof(zend_try_catch_element));
     }
+
+    pass_two(op_array TSRMLS_CC);   /* Not sure why we need this */
 }
 
 static void unserialize_string(char **string UNSERIALIZE_DC)
@@ -700,8 +705,9 @@ static void unserialize_method_ptr(zend_function **function UNSERIALIZE_DC)
 {
     *function = (zend_function*) emalloc(sizeof(zend_function));
     memset(*function, 0, sizeof(zend_function));
+    
     unserialize_method(*function UNSERIALIZE_CC);
-	if (0xff == (*(function))->type) {
+	if (0xff == (*function)->type) {
         efree(*function);
         *function = NULL;
 	}
@@ -962,11 +968,13 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
     __se_class= NULL;
 }
 
-static void unserialize_oel_op_array(php_oel_op_array* res_op_array UNSERIALIZE_DC)
+static void unserialize_oel_op_array(php_oel_op_array **res_op_array_ptr UNSERIALIZE_DC)
 {
+    php_oel_op_array *res_op_array;
     char item;
     int cont;
 
+    res_op_array = *res_op_array_ptr;
     cont = 1;
     while (cont) {
         UNSERIALIZE(&item, char);
@@ -994,25 +1002,29 @@ static void unserialize_oel_op_array(php_oel_op_array* res_op_array UNSERIALIZE_
             }
             
             case SERIALIZED_FUNCTION_ENTRY: {
-                fprintf(stderr, "FOUND A FUNCTION\n");
                 /* TODO */
                 cont = 1;
                 break;
             }
             
             case SERIALIZED_OP_ARRAY: {
+                res_op_array->type= OEL_TYPE_OAR_BASE;
                 unserialize_op_array(res_op_array->oel_cg.active_op_array UNSERIALIZE_CC);
-                cont = 0;
+                cont = 1;
                 break;
             }
             
-            case 0: {
+            case SERIALIZED_OP_END: {
+                res_op_array->final = 1;
                 cont = 0;
                 break;
             }
             
             default: {
                 fprintf(stderr, "No idea what %c(%d) is\n", item, item);
+                fflush(stderr);
+                php_oel_destroy_op_array(res_op_array TSRMLS_CC);
+                res_op_array = NULL;
                 cont = 0;
                 break;
             }
@@ -1074,8 +1086,10 @@ PHP_FUNCTION(oel_read_op_array) {
     
     res_op_array= oel_create_new_op_array(TSRMLS_C);
     current_ce = NULL;
-    unserialize_oel_op_array(res_op_array, current_ce, buf, stream TSRMLS_CC);
-    oel_finalize_op_array(res_op_array TSRMLS_CC);
+    unserialize_oel_op_array(&res_op_array, current_ce, buf, stream TSRMLS_CC);
+    if (NULL == res_op_array) {
+        RETURN_NULL();
+    }
     ZEND_REGISTER_RESOURCE(return_value, res_op_array, le_oel_oar);
 }
 /* }}} */
