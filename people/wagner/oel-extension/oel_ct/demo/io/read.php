@@ -1,30 +1,5 @@
 <?php
-  class Object {
-    public function toString() {
-      return var_export($this, 1);
-    }
-  }
-  
-  interface Comparable {
-    public function compare($a, $b);
-  }
-  
-  function oparray_string($ops, $indent= '  ') {
-    if (!is_resource($ops)) {
-      echo $indent;
-      var_dump($ops);
-      return;
-    }
-    foreach (oel_export_op_array($ops) as $opline) {
-      printf(
-        "%s@%-3d: <%03d> %s\n", 
-        $indent,
-        $opline->lineno,
-        $opline->opcode->op,
-        $opline->opcode->mne
-      );
-    }
-  }
+  require('common.inc.php');
   
   // {{{ main
   if (!file_exists($argv[1])) {

@@ -1,4 +1,6 @@
 <?php
+  require('common.inc.php');
+
   if (!isset($argv[1])) $argv[1]= 'hello.php';
   
   define('M_STATIC', ReflectionMethod::IS_STATIC);
@@ -13,23 +15,6 @@
     return ($modifiers & $mod) != 0;
   }
   // }}}
-
-  function oparray_string($ops, $indent= '  ') {
-    if (!is_resource($ops)) {
-      echo $indent;
-      var_dump($ops);
-      return;
-    }
-    foreach (oel_export_op_array($ops) as $opline) {
-      printf(
-        "%s@%-3d: <%03d> %s\n", 
-        $indent,
-        $opline->lineno,
-        $opline->opcode->op,
-        $opline->opcode->mne
-      );
-    }
-  }
 
   // {{{ void add_reflection_export(resource op, string class) 
   //     Reflection::export(new ReflectionClass(class))
@@ -92,9 +77,10 @@
 
   switch ($argv[1]) {
     case 'reflect.php': {
-      add_declare_class($op, 'HelloWorld', 'Object', array(), array(
+      add_declare_class($op, 'HelloWorld', 'Object', array('Comparable'), array(
         '__construct' => array(M_PRIVATE | M_FINAL, $argv[1], 3, array('param', 'default')),
-        'main'        => array(M_STATIC | M_PUBLIC, $argv[1], 5, array())
+        'main'        => array(M_STATIC | M_PUBLIC, $argv[1], 5, array()),
+        'compare'     => array(M_PUBLIC, $argv[1], 6, array('a', 'b'))
       ));
       add_reflection_export($op, 'HelloWorld');
       break;
@@ -110,8 +96,18 @@
     }
 
     case 'parent.php': {
-      add_declare_class($op, 'HelloWorld', 'Object', array('Comparable'), array(
-        'main'    => array(M_STATIC | M_PUBLIC, $argv[1], 3, array(), 'add_echoln', array('Hello Object')),
+      add_declare_class($op, 'HelloWorld', 'Object', array(), array(
+        'main'    => array(M_STATIC | M_PUBLIC, $argv[1], 3, array(), 'add_echoln', array('Hello Parent')),
+        'compare' => array(M_PUBLIC, $argv[1], 6, array('a', 'b'))
+      ));
+      oel_add_call_method_static($op, 0, 'main', 'HelloWorld');
+      oel_add_free($op);
+      break;
+    }
+
+    case 'interface.php': {
+      add_declare_class($op, 'HelloWorld', NULL, array('Comparable'), array(
+        'main'    => array(M_STATIC | M_PUBLIC, $argv[1], 3, array(), 'add_echoln', array('Hello Interface')),
         'compare' => array(M_PUBLIC, $argv[1], 6, array('a', 'b'))
       ));
       oel_add_call_method_static($op, 0, 'main', 'HelloWorld');
