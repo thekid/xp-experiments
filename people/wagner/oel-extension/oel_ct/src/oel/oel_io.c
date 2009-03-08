@@ -458,6 +458,11 @@ static void serialize_class_entry(zend_class_entry *ce, char *force_parent_name,
     __se_class= NULL;
 }
 
+#define MARK_UNUSED(zn)     \
+    zn.op_type = IS_UNUSED; \
+    zn.u.EA.var = 0;        \
+    zn.u.EA.type = 0;       
+
 static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC) 
 {
     int i;
@@ -481,6 +486,9 @@ static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC)
             SERIALIZE(SERIALIZED_CLASS_ENTRY, char);
             serialize_class_entry(*ce, NULL, 0 SERIALIZE_CC);
             opline->opcode= ZEND_NOP;
+            MARK_UNUSED(opline->result);
+            MARK_UNUSED(opline->op1);
+            MARK_UNUSED(opline->op2);
         } else if (opline->opcode == ZEND_DECLARE_FUNCTION) {
             if (FAILURE == zend_hash_find(oel_op_array->oel_cg.function_table, opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, (void **)&fe)) {
                 zend_error(E_COMPILE_ERROR, "Error - Can't find function %s", opline->op2.u.constant.value.str.val);
@@ -489,6 +497,9 @@ static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC)
             SERIALIZE(SERIALIZED_FUNCTION_ENTRY, char)
             serialize_function(fe SERIALIZE_CC);
             opline->opcode= ZEND_NOP;
+            MARK_UNUSED(opline->result);
+            MARK_UNUSED(opline->op1);
+            MARK_UNUSED(opline->op2);
         }
     }
 
