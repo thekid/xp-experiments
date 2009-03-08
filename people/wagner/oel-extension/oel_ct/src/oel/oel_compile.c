@@ -1,5 +1,5 @@
 /* Forward declarations */
-static void unserialize_oel_op_array(php_oel_op_array* res_op_array UNSERIALIZE_DC);
+static void unserialize_oel_op_array(php_oel_op_array** res_op_array UNSERIALIZE_DC);
 static int read_oel_header(php_stream *stream, zend_bool quiet TSRMLS_DC);
 
 /* {{{ include() override */
@@ -37,8 +37,7 @@ static zend_op_array *oel_compile_file(zend_file_handle *file_handle, int type T
         current_ce = NULL;
         
         /* Unserialize op array, finalize it */
-        unserialize_oel_op_array(res_op_array, current_ce, buf, stream TSRMLS_CC);
-        oel_finalize_op_array(res_op_array TSRMLS_CC);
+        unserialize_oel_op_array(&res_op_array, current_ce, buf, stream TSRMLS_CC);
         
         /* Prepare for execution */
         zend_hash_merge(EG(function_table), res_op_array->oel_cg.function_table, NULL, NULL, sizeof(zend_function),    0);
