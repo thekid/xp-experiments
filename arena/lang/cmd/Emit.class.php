@@ -73,20 +73,12 @@
         return;
       }
       try {
-        $class= $this->emitter->emit($ast);
+        $file= $this->emitter->emit($ast);
       } catch (Throwable $t) {
         $this->err->writeLine('*** ', $t);
         return;
       }
-      $this->out->writeLine('===> Compiled class ', $class);
-      
-      method_exists($class, '__static') && call_user_func(array($class, '__static'));
-
-      // {{{ Run - FIXME - this should be done somewhere else! 
-      xp::gc();
-      $this->out->writeLine('===> Running ', $class.'::main()');
-      call_user_func(array($class, 'main'), $this->args);
-      // }}}
+      $this->out->writeLine('===> Wrote ', $file);
     }
   }
 ?>

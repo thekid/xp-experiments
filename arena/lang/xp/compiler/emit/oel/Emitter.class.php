@@ -1499,7 +1499,7 @@
      * Entry point
      *
      * @param   xp.compiler.ast.ParseTree tree
-     * @return  string class name
+     * @return  io.File the written file
      */
     public function emit(ParseTree $tree) {
       $this->errors= array();
@@ -1538,12 +1538,20 @@
       array_shift($this->declarations);
       array_shift($this->package);
       array_shift($this->used);
-
-      // Execute and return. FIXME: Write to file! But serialization functionality
-      // is missing in oel at the moment.
+      
+      // FIXME: This is necessary so class parents are set
       oel_execute($op);
-      // DEBUG Reflection::export(new ReflectionClass($tree->declaration->name->name));
-      return $tree->declaration->name->name;
+      
+      // Write. TODO: Use a filemanager / compilationtarget-thing of some sort!
+      $f= new File(str_replace('.xp', xp::CLASS_FILE_EXT, $tree->origin));
+      $f->open(FILE_MODE_WRITE);
+      with ($fd= $f->getHandle()); {
+        oel_write_header($fd);
+        oel_write_op_array($fd, $op);
+      }
+      $f->close();
+      
+      return $f;
     }    
   }
 ?>

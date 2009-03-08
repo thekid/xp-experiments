@@ -23,7 +23,22 @@
   class Opcodes extends Command {
     protected
       $class= NULL;
-      
+    
+    protected function classFrom(File $file) {
+      $uri= $file->getURI();
+      $path= dirname($uri);
+      $paths= array_flip(array_map('realpath', xp::$registry['classpath']));
+      $class= NULL;
+      while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
+        if (isset($paths[$path])) {
+          return XPClass::forName(strtr(substr($uri, strlen($path)+ 1, -10), DIRECTORY_SEPARATOR, '.'));
+        }
+
+        $path= substr($path, 0, $pos); 
+      }
+      throw new IllegalArgumentException('Cannot determine class from "'.$in.'"');
+    }
+    
     /**
      * Set input
      *
@@ -32,25 +47,12 @@
     #[@arg(position= 0)]
     public function setIn($in) {
       if (strstr($in, '.xp')) {
-        $this->class= new XPClass(create(new xp·compiler·emit·oel·Emitter())->emit(create(new Parser())->parse(new xp·compiler·Lexer(
+        $this->class= $this->classFrom(create(new xp·compiler·emit·oel·Emitter())->emit(create(new Parser())->parse(new xp·compiler·Lexer(
           FileUtil::getContents(new File($in)),
           $in
         ))));
       } else if (strstr($in, xp::CLASS_FILE_EXT)) {
-        $file= new File($in);
-        $uri= $file->getURI();
-        $path= dirname($uri);
-        $paths= array_flip(array_map('realpath', xp::$registry['classpath']));
-        $class= NULL;
-        while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
-          if (isset($paths[$path])) {
-            $this->class= XPClass::forName(strtr(substr($uri, strlen($path)+ 1, -10), DIRECTORY_SEPARATOR, '.'));
-            return;
-          }
-
-          $path= substr($path, 0, $pos); 
-        }
-        throw new IllegalArgumentException('Cannot determine class from "'.$in.'"');
+        $this->class= $this->classFrom(new File($in));
       } else {
         $this->class= XPClass::forName($in);
       }
