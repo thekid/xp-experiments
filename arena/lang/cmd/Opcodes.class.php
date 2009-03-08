@@ -75,7 +75,7 @@
         if (!$this->class->equals($method->getDeclaringClass())) continue;
 
         $this->out->writeLine('== ', $method, '()');
-        foreach (oel_get_op_array(array($this->class->getName(), $method->getName())) as $opLine) {
+        foreach (oel_export_op_array(array($this->class->getName(), $method->getName())) as $opLine) {
           // var_dump($opLine);
           $this->out->writeLinef(
             '@%3d: <%3d> %-24s %3s (%-12s, %-12s) -> %s',
