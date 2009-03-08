@@ -608,10 +608,6 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
     }
     
     unserialize_string(&op_array->function_name UNSERIALIZE_CC);
-    if (!op_array->function_name) {
-        op_array->function_name = NULL;
-    }
-
 	op_array->refcount = (int*) emalloc(sizeof(zend_uint));
     UNSERIALIZE(&op_array->refcount[0], zend_uint);
     UNSERIALIZE(&op_array->last, zend_uint);
@@ -884,19 +880,23 @@ static void unserialize_hashtable(HashTable* ht, int datasize, void* funcptr, ch
         unserialize_string(&arKey UNSERIALIZE_CC);
         unserialize_bucket(&pData UNSERIALIZE_CC);
         
-        if (nKeyLength != 0) {
-            if (datasize == sizeof(void *)) {
-                zend_hash_add(ht, arKey, nKeyLength, &pData, datasize, NULL);
+        if (NULL != pData) {
+            if (nKeyLength != 0) {
+                if (datasize == sizeof(void *)) {
+                    zend_hash_add(ht, arKey, nKeyLength, &pData, datasize, NULL);
+                } else {
+                    zend_hash_add(ht, arKey, nKeyLength, pData, datasize, NULL);
+                }
+                efree(arKey);
             } else {
-                zend_hash_add(ht, arKey, nKeyLength, pData, datasize, NULL);
+                if (datasize == sizeof(void *)) {
+                    zend_hash_index_update(ht, h, &pData, datasize, NULL);
+                } else {
+                    zend_hash_index_update(ht, h, pData, datasize, NULL);
+                }
             }
-            efree(arKey);
         } else {
-            if (datasize == sizeof(void *)) {
-                zend_hash_index_update(ht, h, &pData, datasize, NULL);
-            } else {
-                zend_hash_index_update(ht, h, pData, datasize, NULL);
-            }
+            efree(arKey);
         }
     }
 }
@@ -909,31 +909,17 @@ static void unserialize_function_entry(zend_function_entry* entry UNSERIALIZE_DC
 static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
 {
     char parent, exists;
+    char* parent_name;
     int count;
     
     UNSERIALIZE(&ce->type, char);
     unserialize_string(&ce->name UNSERIALIZE_CC);
     UNSERIALIZE(&ce->name_length, uint);
-
-    /* Handle parent class */
     UNSERIALIZE(&parent, char);
-    
-    ce->parent= NULL;
     if (0 != parent) {
-        char* parent_name;
-        zend_class_entry **pce;
-
         unserialize_string(&parent_name UNSERIALIZE_CC);
-        
-        if (zend_lookup_class(parent_name, strlen(parent_name) + 1, &pce TSRMLS_CC) == FAILURE) {
-            zend_error(E_WARNING, "Cannot find %s's parent %s\n", ce->name, parent_name);
-        } else {
-            ce->parent= *pce;
-            zend_do_inheritance(ce, ce->parent TSRMLS_CC);
-        }
-        efree(parent_name);
     }
-
+        
     UNSERIALIZE(&ce->refcount, int);
     UNSERIALIZE(&ce->constants_updated, zend_bool);
     UNSERIALIZE(&ce->ce_flags, zend_uint);
@@ -977,6 +963,20 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
     }
 
     __se_class= NULL;
+
+    if (0 != parent) {
+        zend_class_entry **pce = NULL;
+        if (zend_lookup_class(parent_name, strlen(parent_name), &pce TSRMLS_CC) == FAILURE) {
+            efree(parent_name);
+            zend_error(E_RECOVERABLE_ERROR, "Cannot find %s's parent %s\n", ce->name, parent_name);
+        }
+
+        efree(parent_name);
+        ce->parent= *pce;
+        zend_do_inheritance(ce, ce->parent TSRMLS_CC);
+    } else {
+        ce->parent= NULL;
+    }
 }
 
 static void unserialize_oel_op_array(php_oel_op_array **res_op_array_ptr UNSERIALIZE_DC)
