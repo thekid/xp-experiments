@@ -14,6 +14,23 @@
   }
   // }}}
 
+  function oparray_string($ops, $indent= '  ') {
+    if (!is_resource($ops)) {
+      echo $indent;
+      var_dump($ops);
+      return;
+    }
+    foreach (oel_export_op_array($ops) as $opline) {
+      printf(
+        "%s@%-3d: <%03d> %s\n", 
+        $indent,
+        $opline->lineno,
+        $opline->opcode->op,
+        $opline->opcode->mne
+      );
+    }
+  }
+
   // {{{ void add_reflection_export(resource op, string class) 
   //     Reflection::export(new ReflectionClass(class))
   function add_reflection_export($op, $class) {
@@ -35,6 +52,7 @@
   // {{{ void add_declare_class(resource op, string class, array<string, array> methods) 
   //     class class { <<methods>> }
   function add_declare_class($op, $class, $methods) {
+    echo $class, " {\n";
     oel_add_begin_class_declaration($op, $class);
     
     foreach ($methods as $name => $def) {
@@ -48,8 +66,12 @@
         }
       }
       oel_finalize($mop);
+      
+      echo '  ::', $name, "() {\n", oparray_string($mop, '    '), "  }\n";
     }
     oel_add_end_class_declaration($op);
+    
+    echo "}\n";
   }
   // }}}
 
@@ -83,6 +105,7 @@
   }
 
   oel_finalize($op);
+  echo "<main> {\n", oparray_string($op), "}\n";
   
   $fd= fopen($argv[1], 'wb');
   oel_write_header($fd);
