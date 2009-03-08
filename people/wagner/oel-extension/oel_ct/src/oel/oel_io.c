@@ -458,15 +458,20 @@ static void serialize_class_entry(zend_class_entry *ce, char *force_parent_name,
     __se_class= NULL;
 }
 
-#define MARK_UNUSED(zn)     \
-    zn.op_type = IS_UNUSED; \
-    zn.u.EA.var = 0;        \
-    zn.u.EA.type = 0;       
+#define MARK_UNUSED(op)                     \
+    memset(&op, 0, sizeof(znode));          \
+    SET_UNUSED(op);                         \
+
+#define NOP(opline)                         \
+    opline->opcode = ZEND_NOP;              \
+    MARK_UNUSED(opline->op1);               \
+    MARK_UNUSED(opline->op2);               \
+    SET_UNUSED(opline->result);             \
 
 static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC) 
 {
     int i;
-    zend_op *opline, *orig_opcodes;
+    zend_op *opline, *fetch, *orig_opcodes;
     zend_function *fe= NULL;
     zend_class_entry **ce= NULL;
 
@@ -478,17 +483,30 @@ static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC)
     /* NOP out class and function declarations */
     for (i= 0; i < (int)oel_op_array->oel_cg.active_op_array->last; i++) {
         opline= oel_op_array->oel_cg.active_op_array->opcodes + i;
-        if (opline->opcode == ZEND_DECLARE_CLASS || opline->opcode == ZEND_DECLARE_INHERITED_CLASS) {
+        if (opline->opcode == ZEND_FETCH_CLASS) {
+            fetch = opline;
+        } else if (opline->opcode == ZEND_DECLARE_CLASS) {
             if (FAILURE == zend_hash_find(oel_op_array->oel_cg.class_table, opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, (void **)&ce)) {
                 zend_error(E_COMPILE_ERROR, "Missing class information for %s", opline->op2.u.constant.value.str.val);
                 return;
             }
             SERIALIZE(SERIALIZED_CLASS_ENTRY, char);
             serialize_class_entry(*ce, NULL, 0 SERIALIZE_CC);
-            opline->opcode= ZEND_NOP;
-            MARK_UNUSED(opline->result);
+
+            opline->opcode = ZEND_FETCH_CLASS;
             MARK_UNUSED(opline->op1);
-            MARK_UNUSED(opline->op2);
+        } else if (opline->opcode == ZEND_DECLARE_INHERITED_CLASS) {
+            if (FAILURE == zend_hash_find(oel_op_array->oel_cg.class_table, opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, (void **)&ce)) {
+                zend_error(E_COMPILE_ERROR, "Missing class information for %s", opline->op2.u.constant.value.str.val);
+                return;
+            }
+            
+            SERIALIZE(SERIALIZED_CLASS_ENTRY, char);
+            serialize_class_entry(*ce, fetch->op2.u.constant.value.str.val, fetch->op2.u.constant.value.str.len SERIALIZE_CC);
+            
+            NOP(fetch);
+            opline->opcode = ZEND_FETCH_CLASS;
+            MARK_UNUSED(opline->op1);
         } else if (opline->opcode == ZEND_DECLARE_FUNCTION) {
             if (FAILURE == zend_hash_find(oel_op_array->oel_cg.function_table, opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, (void **)&fe)) {
                 zend_error(E_COMPILE_ERROR, "Error - Can't find function %s", opline->op2.u.constant.value.str.val);
@@ -496,10 +514,8 @@ static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC)
             }
             SERIALIZE(SERIALIZED_FUNCTION_ENTRY, char)
             serialize_function(fe SERIALIZE_CC);
-            opline->opcode= ZEND_NOP;
-            MARK_UNUSED(opline->result);
-            MARK_UNUSED(opline->op1);
-            MARK_UNUSED(opline->op2);
+            
+            NOP(opline);
         }
     }
 
@@ -602,13 +618,13 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
 
     UNSERIALIZE(&op_array->type, zend_uchar);       
     UNSERIALIZE(&op_array->num_args, int);
-	op_array->arg_info = (zend_arg_info *) ecalloc(op_array->num_args, sizeof(zend_arg_info));
+    op_array->arg_info = (zend_arg_info *) ecalloc(op_array->num_args, sizeof(zend_arg_info));
     for (i = 0; i < (int)op_array->num_args; i++) {
         unserialize_arg_info(&op_array->arg_info[i] UNSERIALIZE_CC);
     }
     
     unserialize_string(&op_array->function_name UNSERIALIZE_CC);
-	op_array->refcount = (int*) emalloc(sizeof(zend_uint));
+    op_array->refcount = (int*) emalloc(sizeof(zend_uint));
     UNSERIALIZE(&op_array->refcount[0], zend_uint);
     UNSERIALIZE(&op_array->last, zend_uint);
     UNSERIALIZE(&op_array->size, zend_uint);
@@ -714,10 +730,10 @@ static void unserialize_method_ptr(zend_function **function UNSERIALIZE_DC)
     memset(*function, 0, sizeof(zend_function));
     
     unserialize_method(*function UNSERIALIZE_CC);
-	if (0xff == (*function)->type) {
+    if (0xff == (*function)->type) {
         efree(*function);
         *function = NULL;
-	}
+    }
 }
 
 static void unserialize_method(zend_function *function UNSERIALIZE_DC)
@@ -940,7 +956,7 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
         zend_hash_destroy(ce->static_members);
         FREE_HASHTABLE(ce->static_members);
     }
-	ce->static_members = &ce->default_static_members;
+    ce->static_members = &ce->default_static_members;
 
     UNSERIALIZE(&exists, char);
     unserialize_hashtable(&ce->constants_table, sizeof(zval *), unserialize_zval_ptr, "constants_table" UNSERIALIZE_CC);
@@ -998,7 +1014,7 @@ static void unserialize_oel_op_array(php_oel_op_array **res_op_array_ptr UNSERIA
                 unserialize_class_entry(ce UNSERIALIZE_CC);
 
                 /* Add to op array's class table */
-	            lcname = zend_str_tolower_dup(ce->name, ce->name_length);
+                lcname = zend_str_tolower_dup(ce->name, ce->name_length);
                 zend_hash_add(
                     res_op_array->oel_cg.class_table,
                     lcname, 
