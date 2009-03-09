@@ -460,7 +460,7 @@ static void serialize_class_entry(zend_class_entry *ce SERIALIZE_DC)
 static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC) 
 {
     int i;
-    zend_op *opline, *fetch, *orig_opcodes;
+    zend_op *opline, *orig_opcodes;
     zend_function *fe= NULL;
     zend_class_entry **ce= NULL;
 
