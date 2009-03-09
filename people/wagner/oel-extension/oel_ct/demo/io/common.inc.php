@@ -1,5 +1,9 @@
 <?php
-  class Object {
+  interface Generic {
+    public function toString();
+  }
+  
+  class Object implements Generic {
     public function toString() {
       return var_export($this, 1);
     }
@@ -18,6 +22,7 @@
     foreach (oel_export_op_array($ops) as $opline) {
       switch ($opline->opcode->mne) {
         case 'FETCH_CLASS': $details= array($opline->op2->value); break;
+        case 'DECLARE_CLASS': $details= array($opline->op2->value); break;
         case 'DECLARE_INHERITED_CLASS': $details= array($opline->op2->value); break;
         case 'INIT_STATIC_METHOD_CALL': $details= array($opline->op2->value); break;
         case 'INIT_FCALL_BY_NAME': $details= array($opline->op2->value); break;

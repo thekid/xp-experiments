@@ -82,6 +82,7 @@
         'main'        => array(M_STATIC | M_PUBLIC, $argv[1], 5, array()),
         'compare'     => array(M_PUBLIC, $argv[1], 6, array('a', 'b'))
       ));
+      oel_set_source_line($op, 3);
       add_reflection_export($op, 'HelloWorld');
       break;
     }
@@ -90,6 +91,7 @@
       add_declare_class($op, 'HelloWorld', NULL, array(), array(
         'main' => array(M_STATIC | M_PUBLIC, $argv[1], 3, array(), 'add_echoln', array('Hello Class'))
       ));
+      oel_set_source_line($op, 5);
       oel_add_call_method_static($op, 0, 'main', 'HelloWorld');
       oel_add_free($op);
       break;
@@ -98,8 +100,9 @@
     case 'parent.php': {
       add_declare_class($op, 'HelloWorld', 'Object', array(), array(
         'main'    => array(M_STATIC | M_PUBLIC, $argv[1], 3, array(), 'add_echoln', array('Hello Parent')),
-        'compare' => array(M_PUBLIC, $argv[1], 6, array('a', 'b'))
+        'compare' => array(M_PUBLIC, $argv[1], 5, array('a', 'b'))
       ));
+      oel_set_source_line($op, 7);
       oel_add_call_method_static($op, 0, 'main', 'HelloWorld');
       oel_add_free($op);
       break;
@@ -108,8 +111,9 @@
     case 'interface.php': {
       add_declare_class($op, 'HelloWorld', NULL, array('Comparable'), array(
         'main'    => array(M_STATIC | M_PUBLIC, $argv[1], 3, array(), 'add_echoln', array('Hello Interface')),
-        'compare' => array(M_PUBLIC, $argv[1], 6, array('a', 'b'))
+        'compare' => array(M_PUBLIC, $argv[1], 5, array('a', 'b'))
       ));
+      oel_set_source_line($op, 7);
       oel_add_call_method_static($op, 0, 'main', 'HelloWorld');
       oel_add_free($op);
       break;
