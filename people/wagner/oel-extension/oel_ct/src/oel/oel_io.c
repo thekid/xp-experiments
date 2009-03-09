@@ -1001,6 +1001,7 @@ static void unserialize_oel_op_array(php_oel_op_array **res_op_array_ptr UNSERIA
             
             case SERIALIZED_OP_ARRAY: {
                 res_op_array->type= OEL_TYPE_OAR_BASE;
+                res_op_array->merged = 0;
                 unserialize_op_array(res_op_array->oel_cg.active_op_array UNSERIALIZE_CC);
                 cont = 1;
                 break;
