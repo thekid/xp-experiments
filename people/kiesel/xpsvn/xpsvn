@@ -64,6 +64,12 @@ case $COMMAND in
     echo "  -v: enable verbose output"
     echo "  -d: enable debug output"
     echo
+    echo "* xpsvn switch <tagname>"
+    echo "  Checks out the given tag"
+    echo
+    echo "* xpsvn finalize <tagname>"
+    echo "  Clears the checked out project"
+    echo
     echo "* xpsvn go <tagname>"
     echo "  Opens a sub-shell in the tag-directory for the given tag"
     echo

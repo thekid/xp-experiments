@@ -5,24 +5,24 @@
 
 repositoryBase () {
   local $BASE
-  BASE=$(realpath . | ${SED} -r "s#/(trunk|tags|branches)(/)?.*##")
+  BASE=$(realpath .)
   
-  if [ -z "$BASE" ]; then
-    echo "Unable to determine repository base. Do you have a proper checkout?" >&2;
-    return 1;
-  fi
-  
-  if [ ! -e "$BASE"/trunk -o ! -e "$BASE"/tags ]; then
-    echo "trunk or tags directory does not exist, this is a prerequisite." >&2;
-    return 1;
-  fi
-  
+  while [ -d "$BASE/../.svn" ]; do
+    if [ -d "$BASE/../.svn" ] ; then
+      BASE=$(realpath "$BASE/..")
+    fi
+  done
   echo $BASE
 }
 
 repositoryUrl () {
   local REPO=$1
   svn info $1 | grep '^URL:' | cut -d ' ' -f 2 | ${SED} -r "s#/(trunk|tags|branches)(/)?.*##"
+}
+
+repositoryRoot () {
+  local REPO=$1
+  svn info $1 | grep '^Repository Root:' | cut -d ' ' -f 2
 }
 
 fetchTarget() {
