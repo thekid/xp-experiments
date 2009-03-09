@@ -3,8 +3,9 @@
 # $Id$
 #
 
-cd "$(tmpTagDir)"/current-tag
+assertHaveActiveTag
 
+cd "$(tmpTagDir)"/current-tag
 echo -n "===> Current status in " ; pwd
 svn status
 

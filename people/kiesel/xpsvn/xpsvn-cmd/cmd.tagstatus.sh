@@ -14,8 +14,10 @@ while getopts 'v' COMMAND_LINE_ARGUMENT ; do
 done
 shift $(($OPTIND - 1))
 
+assertHaveActiveTag
+
 cd $(tmpTagDir)/current-tag
+
 echo -n "Status on: "
 svn info . | grep ^URL: | cut -d ' ' -f 2
-
 svn status $OPTS

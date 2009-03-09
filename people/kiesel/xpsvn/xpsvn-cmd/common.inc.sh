@@ -49,7 +49,7 @@ fetchTarget() {
 
 assertHaveActiveTag() {
   if [ ! -d "$(tmpTagDir)"/current-tag ]; then
-    echo "You do not have an active tag. Aborting."
+    echo "You do not have an active tag, check out with xpsvn open <tagname>. Aborting."
     exit 1;
   fi
 }

@@ -91,8 +91,8 @@ while getopts 'uc' COMMAND_LINE_ARGUMENT ; do
 done
 shift $(($OPTIND - 1))
 
-# FIXME
-# $(assertHaveActiveTag)
+# Assert we have an active tag checked out
+assertHaveActiveTag
 
 while [ ! -z $1 ]; do
   TARGET=$(fetchTarget $1)

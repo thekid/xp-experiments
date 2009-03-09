@@ -3,5 +3,7 @@
 # $Id$
 #
 
+assertHaveActiveTag
+
 cd $(tmpTagDir)/current-tag
 svn diff

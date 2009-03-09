@@ -12,4 +12,9 @@ if [ ! -d "$TAGDIR" ]; then
   mkdir -p "$TAGDIR";
 fi
 
-svn co $(repositoryRoot .)/tags/$1 "$TAGDIR"/current-tag
+if [ -d "$TAGDIR"/current-tag ]; then
+  echo "Cannot open tag $TAG, as you still have a tag checked out. Aborting."
+  exit 1;
+fi
+
+svn co $(repositoryRoot)/tags/$1 "$TAGDIR"/current-tag
