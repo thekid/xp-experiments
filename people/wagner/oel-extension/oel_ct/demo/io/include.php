@@ -1,4 +1,6 @@
 <?php
+  require('common.inc.php');
+
   echo '===> ', $argv[1], "\n";
-  var_dump(include(basename($argv[1])));
+  var_dump(include($argv[1]));
 ?>

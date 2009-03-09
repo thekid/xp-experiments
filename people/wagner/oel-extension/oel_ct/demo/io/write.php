@@ -75,7 +75,7 @@
   oel_set_source_file($op, $argv[1]);
   oel_set_source_line($op, 1);
 
-  switch ($argv[1]) {
+  switch (basename($argv[1])) {
     case 'reflect.php': {
       add_declare_class($op, 'HelloWorld', 'Object', array('Comparable'), array(
         '__construct' => array(M_PRIVATE | M_FINAL, $argv[1], 3, array('param', 'default')),
