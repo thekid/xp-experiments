@@ -15,6 +15,8 @@ done
 shift $(($OPTIND - 1))
 
 RETCODE=1
+REPOROOT=$(repositoryRoot)
+
 while [ ! -z $1 ]; do
   TARGET=$1
   if [ -z $TARGET ]; then
@@ -27,15 +29,14 @@ while [ ! -z $1 ]; do
   RELTARGET=$(relativeTarget $TARGET)
   [ -z $RELTARGET ] && exit 1;
 
-  [ $VERBOSE ] && echo "Searching file $TARGET..."
+  [ $VERBOSE ] && echo "Searching file $RELTARGET..."
 
-  for i in `ls "$REPOBASE"/tags/`; do
-    if [ -d "$REPOBASE"/tags/$i ]; then
-      if [ -e "$REPOBASE"/tags/$i/$RELTARGET ]; then
-        rev=`svn info "$REPOBASE"/tags/$i/$RELTARGET|grep "Last Changed Rev:"|cut -d ' ' -f 4`
-        echo "$i (revision $rev)";
-        RETCODE=0
-      fi
+  for i in `svn ls $REPOROOT/tags/ | tr '/' ' '`; do
+    svn ls $REPOROOT/tags/$i/$RELTARGET 1>/dev/null 2>/dev/null
+    if [ $? -eq 0 ]; then
+      rev=$(fetchFileRevision "$REPOROOT"/tags/$i/$RELTARGET)
+      echo "$i (revision $rev)";
+      RETCODE=0
     fi
   done
   
