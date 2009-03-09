@@ -492,9 +492,7 @@ static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC)
             }
             SERIALIZE(SERIALIZED_CLASS_ENTRY, char);
             serialize_class_entry(*ce, NULL, 0 SERIALIZE_CC);
-
-            opline->opcode = ZEND_FETCH_CLASS;
-            MARK_UNUSED(opline->op1);
+            serialize_stringl(opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len SERIALIZE_CC);
         } else if (opline->opcode == ZEND_DECLARE_INHERITED_CLASS) {
             if (FAILURE == zend_hash_find(oel_op_array->oel_cg.class_table, opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, (void **)&ce)) {
                 zend_error(E_COMPILE_ERROR, "Missing class information for %s", opline->op2.u.constant.value.str.val);
@@ -503,10 +501,7 @@ static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC)
             
             SERIALIZE(SERIALIZED_CLASS_ENTRY, char);
             serialize_class_entry(*ce, fetch->op2.u.constant.value.str.val, fetch->op2.u.constant.value.str.len SERIALIZE_CC);
-            
-            NOP(fetch);
-            opline->opcode = ZEND_FETCH_CLASS;
-            MARK_UNUSED(opline->op1);
+            serialize_stringl(opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len SERIALIZE_CC);
         } else if (opline->opcode == ZEND_DECLARE_FUNCTION) {
             if (FAILURE == zend_hash_find(oel_op_array->oel_cg.function_table, opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, (void **)&fe)) {
                 zend_error(E_COMPILE_ERROR, "Error - Can't find function %s", opline->op2.u.constant.value.str.val);
@@ -514,8 +509,6 @@ static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC)
             }
             SERIALIZE(SERIALIZED_FUNCTION_ENTRY, char)
             serialize_function(fe SERIALIZE_CC);
-            
-            NOP(opline);
         }
     }
 
@@ -533,6 +526,7 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC);
 static void unserialize_arg_info(zend_arg_info* arg_info UNSERIALIZE_DC);
 static void unserialize_op(int id, zend_op *op, zend_op_array *op_array UNSERIALIZE_DC);
 static void unserialize_string(char **string UNSERIALIZE_DC);
+static void unserialize_stringl(char **string, int *len UNSERIALIZE_DC);
 static void unserialize_dtor_func(dtor_func_t* p UNSERIALIZE_DC);
 static void unserialize_method_ptr(zend_function **function UNSERIALIZE_DC);
 static void unserialize_method(zend_function *function UNSERIALIZE_DC);
@@ -704,6 +698,17 @@ static void unserialize_string(char **string UNSERIALIZE_DC)
     } else {
         *string = (char*) emalloc(len + 1);
         READ(*string, len);
+    }
+}
+
+static void unserialize_stringl(char **string, int *len UNSERIALIZE_DC)
+{
+    UNSERIALIZE(len, int);
+    if (-1 == *len) {
+        *string = NULL;
+    } else {
+        *string = (char*) emalloc(*len + 1);
+        READ(*string, *len);
     }
 }
 
@@ -990,7 +995,6 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
 
         efree(parent_name);
         ce->parent= *pce;
-        zend_do_inheritance(ce, ce->parent TSRMLS_CC);
     }
 }
 
@@ -1008,16 +1012,17 @@ static void unserialize_oel_op_array(php_oel_op_array **res_op_array_ptr UNSERIA
             case SERIALIZED_CLASS_ENTRY: {
                 zend_class_entry *ce;
                 char *lcname;
+                int lcname_len;
               
                 ce = (zend_class_entry*) emalloc(sizeof(zend_class_entry));
                 unserialize_class_entry(ce UNSERIALIZE_CC);
+                unserialize_stringl(&lcname, &lcname_len UNSERIALIZE_CC);
 
                 /* Add to op array's class table */
-                lcname = zend_str_tolower_dup(ce->name, ce->name_length);
                 zend_hash_add(
                     res_op_array->oel_cg.class_table,
                     lcname, 
-                    ce->name_length + 1, 
+                    lcname_len, 
                     &ce, 
                     sizeof(zend_class_entry *),
                     NULL
