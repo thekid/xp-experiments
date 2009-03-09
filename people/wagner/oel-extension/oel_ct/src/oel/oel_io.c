@@ -57,7 +57,7 @@ static void serialize_znode(znode *node SERIALIZE_DC);
 static void serialize_op(int id, zend_op *op, zend_op_array *op_array SERIALIZE_DC);
 static void serialize_op_array(zend_op_array *op_array SERIALIZE_DC);
 static void serialize_zval_ptr(zval** zval_ptr SERIALIZE_DC);
-static void serialize_class_entry(zend_class_entry* ce, char *force_parent_name, int force_parent_len SERIALIZE_DC);
+static void serialize_class_entry(zend_class_entry* ce SERIALIZE_DC);
 static void serialize_method(zend_function* function SERIALIZE_DC);
 static void serialize_function(zend_function* function SERIALIZE_DC);
 static void serialize_function_entry(zend_function_entry* entry SERIALIZE_DC);
@@ -409,24 +409,13 @@ static void serialize_function(zend_function* function SERIALIZE_DC)
 }
 
 
-static void serialize_class_entry(zend_class_entry *ce, char *force_parent_name, int force_parent_len SERIALIZE_DC) 
+static void serialize_class_entry(zend_class_entry *ce SERIALIZE_DC) 
 {
     int i, count;
 
     SERIALIZE(ce->type, char);
     serialize_stringl(ce->name, ce->name_length SERIALIZE_CC);
     SERIALIZE(ce->name_length, uint);
-
-    if (NULL != ce->parent) {
-        SERIALIZE(1, char);
-        serialize_stringl(ce->parent->name, ce->parent->name_length SERIALIZE_CC);
-    } else if (force_parent_len > 0) {
-        SERIALIZE(1, char);
-        serialize_stringl(force_parent_name, force_parent_len SERIALIZE_CC);
-    } else {
-        SERIALIZE(0, char);
-    }
-    
     SERIALIZE(ce->refcount, int);
     SERIALIZE(ce->constants_updated, zend_bool);
     SERIALIZE(ce->ce_flags, zend_uint);
@@ -483,24 +472,13 @@ static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC)
     /* NOP out class and function declarations */
     for (i= 0; i < (int)oel_op_array->oel_cg.active_op_array->last; i++) {
         opline= oel_op_array->oel_cg.active_op_array->opcodes + i;
-        if (opline->opcode == ZEND_FETCH_CLASS) {
-            fetch = opline;
-        } else if (opline->opcode == ZEND_DECLARE_CLASS) {
+        if (opline->opcode == ZEND_DECLARE_CLASS || opline->opcode == ZEND_DECLARE_INHERITED_CLASS) {
             if (FAILURE == zend_hash_find(oel_op_array->oel_cg.class_table, opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, (void **)&ce)) {
                 zend_error(E_COMPILE_ERROR, "Missing class information for %s", opline->op2.u.constant.value.str.val);
                 return;
             }
             SERIALIZE(SERIALIZED_CLASS_ENTRY, char);
-            serialize_class_entry(*ce, NULL, 0 SERIALIZE_CC);
-            serialize_stringl(opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len SERIALIZE_CC);
-        } else if (opline->opcode == ZEND_DECLARE_INHERITED_CLASS) {
-            if (FAILURE == zend_hash_find(oel_op_array->oel_cg.class_table, opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, (void **)&ce)) {
-                zend_error(E_COMPILE_ERROR, "Missing class information for %s", opline->op2.u.constant.value.str.val);
-                return;
-            }
-            
-            SERIALIZE(SERIALIZED_CLASS_ENTRY, char);
-            serialize_class_entry(*ce, fetch->op2.u.constant.value.str.val, fetch->op2.u.constant.value.str.len SERIALIZE_CC);
+            serialize_class_entry(*ce SERIALIZE_CC);
             serialize_stringl(opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len SERIALIZE_CC);
         } else if (opline->opcode == ZEND_DECLARE_FUNCTION) {
             if (FAILURE == zend_hash_find(oel_op_array->oel_cg.function_table, opline->op1.u.constant.value.str.val, opline->op1.u.constant.value.str.len, (void **)&fe)) {
@@ -509,6 +487,7 @@ static void serialize_oel_op_array(php_oel_op_array  *oel_op_array SERIALIZE_DC)
             }
             SERIALIZE(SERIALIZED_FUNCTION_ENTRY, char)
             serialize_function(fe SERIALIZE_CC);
+            /* TODO: Key? */
         }
     }
 
@@ -929,18 +908,12 @@ static void unserialize_function_entry(zend_function_entry* entry UNSERIALIZE_DC
 
 static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
 {
-    char parent, exists;
-    char* parent_name;
+    char exists;
     int count;
     
     UNSERIALIZE(&ce->type, char);
     unserialize_string(&ce->name UNSERIALIZE_CC);
     UNSERIALIZE(&ce->name_length, uint);
-    UNSERIALIZE(&parent, char);
-    if (0 != parent) {
-        unserialize_string(&parent_name UNSERIALIZE_CC);
-    }
-        
     UNSERIALIZE(&ce->refcount, int);
     UNSERIALIZE(&ce->constants_updated, zend_bool);
     UNSERIALIZE(&ce->ce_flags, zend_uint);
@@ -984,18 +957,6 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
     }
 
     __se_class= NULL;
-    ce->parent= NULL;
-    if (0 != parent) {
-        zend_class_entry **pce = NULL;
-        if (zend_lookup_class(parent_name, strlen(parent_name), &pce TSRMLS_CC) == FAILURE) {
-            zend_error(E_RECOVERABLE_ERROR, "Cannot find %s's parent %s\n", ce->name, parent_name);
-            efree(parent_name);
-            return;
-        }
-
-        efree(parent_name);
-        ce->parent= *pce;
-    }
 }
 
 static void unserialize_oel_op_array(php_oel_op_array **res_op_array_ptr UNSERIALIZE_DC)
