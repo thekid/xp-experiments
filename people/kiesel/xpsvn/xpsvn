@@ -25,8 +25,12 @@ case $COMMAND in
     . "$DIRNAME"/xpsvn-cmd/cmd.list-tags.sh
     ;;
     
-  switch)
-    . "$DIRNAME"/xpsvn-cmd/cmd.switch.sh
+  open)
+    . "$DIRNAME"/xpsvn-cmd/cmd.open.sh
+    ;;
+  
+  close)
+    . "$DIRNAME"/xpsvn-cmd/cmd.close.sh
     ;;
     
   find)
@@ -76,10 +80,10 @@ case $COMMAND in
     echo "  -v: enable verbose output"
     echo "  -d: enable debug output"
     echo
-    echo "* xpsvn switch <tagname>"
+    echo "* xpsvn open <tagname>"
     echo "  Checks out the given tag"
     echo
-    echo "* xpsvn finalize <tagname>"
+    echo "* xpsvn close <tagname>"
     echo "  Clears the checked out project"
     echo
     echo "* xpsvn go <tagname>"

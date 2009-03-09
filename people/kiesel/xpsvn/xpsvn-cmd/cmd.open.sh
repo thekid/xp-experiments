@@ -3,7 +3,7 @@
 # $Id$
 #
 
-TAGDIR=~/.xpsvn/tag
+TAGDIR=$(tmpTagDir)
 TAG=$1
 
 [ -z $TAG ] && exit 1

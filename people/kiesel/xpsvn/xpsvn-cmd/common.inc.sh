@@ -47,16 +47,11 @@ fetchTarget() {
   echo $REAL;
 }
 
-fetchTag() {
-  local TAG=$1
-  
-  if [ -z $TAG -o ! -e "$REPOBASE"/tags/$TAG ]; then
-    echo "Invalid tag name specified: $TAG" >&2;
-    return 1;
+assertHaveActiveTag() {
+  if [ ! -d "$(tmpTagDir)"/current-tag ]; then
+    echo "You do not have an active tag. Aborting."
+    exit 1;
   fi
-  
-  echo $TAG
-  return 0
 }
 
 fetchFileRevision() {

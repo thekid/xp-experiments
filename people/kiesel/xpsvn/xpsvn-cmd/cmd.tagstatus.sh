@@ -15,7 +15,7 @@ done
 shift $(($OPTIND - 1))
 
 cd $(tmpTagDir)/current-tag
-echo -n "---> Status on: "
+echo -n "Status on: "
 svn info . | grep ^URL: | cut -d ' ' -f 2
 
 svn status $OPTS

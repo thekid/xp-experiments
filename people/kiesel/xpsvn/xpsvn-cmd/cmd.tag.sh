@@ -30,7 +30,7 @@ recursiveCopy() {
   if [ ! -e "$TARGETBASE"/$ITEM ]; then
   
     # New, so "svn copy" from repository (URL -> WC)
-    [ $DEBUG ] && echo "svn copy "$REPOROOT"/trunk/$ITEM "$TARGETBASE"/$ITEM";
+    [ $DEBUG ] && echo "svn copy "$REPOBASE"/$ITEM "$TARGETBASE"/$ITEM";
     [ "yes" = $ONLY_EXISTING ] && {
       echo "Skipping $ITEM, because it does not exist in tag";
       return;
@@ -50,11 +50,11 @@ recursiveCopy() {
     
     # If source and target are in the same repository, svn copy the file
     if [ "$REPOURL" = $(repositoryUrl "$SOURCEBASE"/$ITEM) ]; then
-      [ $DEBUG ] && echo "svn copy $(fetchFileURL "$REPOBASE"/trunk/$ITEM) "$TARGETBASE"/$ITEM";
-      svn copy $(fetchFileURL "$REPOBASE"/trunk/$ITEM) "$TARGETBASE"/$ITEM;
+      [ $DEBUG ] && echo "svn copy $(fetchFileURL "$REPOBASE"/$ITEM) "$TARGETBASE"/$ITEM";
+      svn copy $(fetchFileURL "$REPOBASE"/$ITEM) "$TARGETBASE"/$ITEM;
     else
-      [ $DEBUG ] && echo "svn export $(fetchFileURL "$REPOBASE"/trunk/$ITEM) "$TARGETBASE"/$ITEM";
-      svn export $(fetchFileURL "$REPOBASE"/trunk/$ITEM) "$TARGETBASE"/$ITEM;
+      [ $DEBUG ] && echo "svn export $(fetchFileURL "$REPOBASE"/$ITEM) "$TARGETBASE"/$ITEM";
+      svn export $(fetchFileURL "$REPOBASE"/$ITEM) "$TARGETBASE"/$ITEM;
       svn add "$TARGETBASE"/$ITEM;
     fi
     
@@ -91,19 +91,17 @@ while getopts 'uc' COMMAND_LINE_ARGUMENT ; do
 done
 shift $(($OPTIND - 1))
 
-
-TAG=$(fetchTag $1)
-[ -z $TAG ] && exit 1
-shift 1
+# FIXME
+# $(assertHaveActiveTag)
 
 while [ ! -z $1 ]; do
   TARGET=$(fetchTarget $1)
   [ -z "$TARGET" ] && exit 1
 
   RELTARGET=$(relativeTarget "$TARGET")
-  recursiveCopy "$REPOBASE"/trunk "$REPOBASE"/tags/$TAG $RELTARGET
+  recursiveCopy "$REPOBASE" $(tmpTagDir)/current-tag $RELTARGET
   
   shift 1
 done
 
-cd "$REPOBASE"/tags/$TAG && svn status
+cd $(tmpTagDir)/current-tag && svn status
