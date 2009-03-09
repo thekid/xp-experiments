@@ -12,7 +12,12 @@ repositoryBase () {
       BASE=$(realpath "$BASE/..")
     fi
   done
+  
   echo $BASE
+}
+
+tmpTagDir () {
+  echo "$HOME/.xpsvn/tag"
 }
 
 repositoryUrl () {
@@ -22,7 +27,7 @@ repositoryUrl () {
 
 repositoryRoot () {
   local REPO=$1
-  svn info $1 | grep '^Repository Root:' | cut -d ' ' -f 2
+  svn info $1 | grep '^Repository Root:' | cut -d ' ' -f 3
 }
 
 fetchTarget() {

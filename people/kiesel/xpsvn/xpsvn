@@ -21,8 +21,20 @@ shift 1 2>/dev/null;
 trap exitHandler EXIT
 
 case $COMMAND in
+  list-tags)
+    . "$DIRNAME"/xpsvn-cmd/cmd.list-tags.sh
+    ;;
+    
+  switch)
+    . "$DIRNAME"/xpsvn-cmd/cmd.switch.sh
+    ;;
+    
   find)
     . "$DIRNAME"/xpsvn-cmd/cmd.find.sh
+    ;;
+    
+  list-tags)
+    . "$DIRNAME"/xpsvn-cmd/cmd.list-tags.sh
     ;;
 
   tag)

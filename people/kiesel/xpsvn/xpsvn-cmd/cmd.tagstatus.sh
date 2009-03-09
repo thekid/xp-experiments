@@ -14,8 +14,8 @@ while getopts 'v' COMMAND_LINE_ARGUMENT ; do
 done
 shift $(($OPTIND - 1))
 
-TAG=$(fetchTag $1)
-[ -z $TAG ] && exit 1
+cd $(tmpTagDir)/current-tag
+echo -n "---> Status on: "
+svn info . | grep ^URL: | cut -d ' ' -f 2
 
-cd "$REPOBASE"/tags/$TAG
 svn status $OPTS
