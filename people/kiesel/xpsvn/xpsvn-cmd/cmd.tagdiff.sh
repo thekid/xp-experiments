@@ -3,9 +3,5 @@
 # $Id$
 #
 
-
-TAG=$(fetchTag $1)
-[ -z $TAG ] && exit 1
-
-cd "$REPOBASE"/tags/$TAG
+cd $(tmpTagDir)/current-tag
 svn diff

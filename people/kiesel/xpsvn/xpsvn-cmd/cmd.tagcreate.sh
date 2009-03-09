@@ -5,13 +5,12 @@
 
 TAG=$1
 
-# Make sure tag does not yet exist
-[ -z $TAG ] && exit 1;
-[ -d "$REPOBASE"/tags/$TAG ] && {
-  echo "A tag with the name $TAG already exists.";
+svn ls $(repositoryRoot)/tags/$TAG 2&>1 >/dev/null
+if [ $? -eq 0 ]; then
+  echo "Tag does already exist. Aborting.";
   exit 1;
-}
+fi
 
 # Now create...
 echo "===> Creating directory structure for tag $TAG ..."
-svn mkdir "$REPOBASE"/tags/$TAG
+svn mkdir "$(repositoryRoot)"/tags/$TAG
