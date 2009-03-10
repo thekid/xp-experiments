@@ -425,7 +425,6 @@ static void serialize_class_entry(zend_class_entry *ce SERIALIZE_DC)
     serialize_hashtable(&ce->default_properties, serialize_zval_ptr SERIALIZE_CC);
     serialize_hashtable(&ce->properties_info, serialize_property_info SERIALIZE_CC);
     serialize_hashtable(&ce->default_static_members, serialize_zval_ptr SERIALIZE_CC);
-    serialize_hashtable(ce->static_members, serialize_zval_ptr SERIALIZE_CC);   /* Static members */
     serialize_hashtable(&ce->constants_table, serialize_zval_ptr SERIALIZE_CC);
 
     /* Builtin fucntions */
@@ -837,6 +836,10 @@ static void unserialize_property_info(zend_property_info *prop UNSERIALIZE_DC)
     unserialize_string(&prop->name UNSERIALIZE_CC);
     UNSERIALIZE(&prop->name_length, uint);
     UNSERIALIZE(&prop->h, ulong);
+    
+    /* TODO: (un-)serialize these */
+	prop->doc_comment = NULL;
+	prop->doc_comment_len = 0;
 }
 
 static void unserialize_hashtable_ptr(HashTable** ht, int datasize, void* funcptr, char* name UNSERIALIZE_DC)
@@ -901,6 +904,174 @@ static void unserialize_hashtable(HashTable* ht, int datasize, void* funcptr, ch
     }
 }
 
+#define RETURN_IF_NOT_EXISTANT      \
+    {                               \
+        char exists;                \
+        UNSERIALIZE(&exists, char); \
+        if (exists == 0) return;    \
+    }                               \
+
+/* TODO: Don't serialize these for non-generic hashmaps - see unserialize_ce_* */
+#define UNSERIALIZE_HASHTABLE_SIZE(nNumOfElements)      \
+    {                                                   \
+        uint nTableSize;                                \
+        dtor_func_t pDtor;                              \
+        int persistent;                                 \
+                                                        \
+        UNSERIALIZE(&nTableSize, uint);                 \
+        unserialize_dtor_func(&pDtor UNSERIALIZE_CC);   \
+        UNSERIALIZE(&nNumOfElements, uint);             \
+        UNSERIALIZE(&persistent, int);                  \
+    }
+    
+
+#define foreach(ht, nNumOfElements, element, code)      \
+    {                                                   \
+        int i;                                          \
+        for (i = 0; i < (int)nNumOfElements; i++) {     \
+            element;                                    \
+            code                                        \
+        }                                               \
+    }                                                   \
+
+static void unserialize_ce_function_table(zend_class_entry* ce UNSERIALIZE_DC)
+{
+    uint nNumOfElements;
+
+    RETURN_IF_NOT_EXISTANT;
+    
+    /* Create function_table entries with zend_function * entries
+     * inside - see do_bind_function() in zend_compile.c
+     */
+    UNSERIALIZE_HASHTABLE_SIZE(nNumOfElements);
+    foreach (ce->function_table, nNumOfElements, zend_function *function, {
+        ulong h;
+        uint nKeyLength;
+        char *arKey;
+
+        UNSERIALIZE(&h, ulong);
+        UNSERIALIZE(&nKeyLength, uint);
+        unserialize_string(&arKey UNSERIALIZE_CC);
+        unserialize_method_ptr(&function UNSERIALIZE_CC);
+        
+        if (NULL != function) {
+            zend_hash_add(&ce->function_table, arKey, nKeyLength, function, sizeof(zend_function), NULL);
+            (*function->op_array.refcount)++;     /* TODO: Not sure if this is needed */
+            function->op_array.static_variables = NULL; 
+        }
+        efree(arKey);
+    })
+}
+
+static void unserialize_ce_default_properties(zend_class_entry* ce UNSERIALIZE_DC)
+{
+    uint nNumOfElements;
+
+    RETURN_IF_NOT_EXISTANT;
+    
+    /* Create default_properties entries with zval ** entries
+     * inside
+     */
+    UNSERIALIZE_HASHTABLE_SIZE(nNumOfElements);
+    foreach (ce->default_properties, nNumOfElements, zval *property, {
+        ulong h;
+        uint nKeyLength;
+        char *arKey;
+
+        UNSERIALIZE(&h, ulong);
+        UNSERIALIZE(&nKeyLength, uint);
+        unserialize_string(&arKey UNSERIALIZE_CC);
+        unserialize_zval_ptr(&property UNSERIALIZE_CC);
+        
+        if (NULL != property) {
+            zend_hash_quick_update(&ce->default_properties, arKey, nKeyLength, h, &property, sizeof(zval *), NULL);
+        }
+        efree(arKey);
+    })
+}
+
+static void unserialize_ce_default_static_members(zend_class_entry* ce UNSERIALIZE_DC)
+{
+    uint nNumOfElements;
+
+    RETURN_IF_NOT_EXISTANT;
+    
+    /* Create static_members entries with zval ** entries
+     * inside
+     */
+    UNSERIALIZE_HASHTABLE_SIZE(nNumOfElements);
+    foreach (ce->default_static_members, nNumOfElements, zval *property, {
+        ulong h;
+        uint nKeyLength;
+        char *arKey;
+
+        UNSERIALIZE(&h, ulong);
+        UNSERIALIZE(&nKeyLength, uint);
+        unserialize_string(&arKey UNSERIALIZE_CC);
+        unserialize_zval_ptr(&property UNSERIALIZE_CC);
+        
+        if (NULL != property) {
+            zend_hash_quick_update(&ce->default_static_members, arKey, nKeyLength, h, &property, sizeof(zval *), NULL);
+        }
+        efree(arKey);
+    })
+}
+
+static void unserialize_ce_property_info(zend_class_entry* ce UNSERIALIZE_DC)
+{
+    uint nNumOfElements;
+
+    RETURN_IF_NOT_EXISTANT;
+    
+    /* Create properties_info entries with zend_property_info * entries
+     * inside - see zend_declare_property_ex() in zend_compile.c
+     */
+    UNSERIALIZE_HASHTABLE_SIZE(nNumOfElements);
+    foreach (ce->properties_info, nNumOfElements, zend_property_info *property_info, {
+        ulong h;
+        uint nKeyLength;
+        char *arKey;
+
+        UNSERIALIZE(&h, ulong);
+        UNSERIALIZE(&nKeyLength, uint);
+        unserialize_string(&arKey UNSERIALIZE_CC);
+        unserialize_property_info_ptr(&property_info UNSERIALIZE_CC);
+        
+        if (NULL != property_info) {
+            property_info->ce = ce;
+            zend_hash_add(&ce->properties_info, arKey, nKeyLength, property_info, sizeof(zend_property_info), NULL);
+        }
+        efree(arKey);
+    })
+}
+
+static void unserialize_ce_constants_table(zend_class_entry* ce UNSERIALIZE_DC)
+{
+    uint nNumOfElements;
+
+    RETURN_IF_NOT_EXISTANT;
+    
+    /* Create static_members entries with zval ** entries
+     * inside
+     */
+    UNSERIALIZE_HASHTABLE_SIZE(nNumOfElements);
+    foreach (ce->constants_table, nNumOfElements, zval *property, {
+        ulong h;
+        uint nKeyLength;
+        char *arKey;
+
+        UNSERIALIZE(&h, ulong);
+        UNSERIALIZE(&nKeyLength, uint);
+        unserialize_string(&arKey UNSERIALIZE_CC);
+        unserialize_zval_ptr(&property UNSERIALIZE_CC);
+        
+        if (NULL != property) {
+            zend_hash_quick_update(&ce->constants_table, arKey, nKeyLength, h, &property, sizeof(zval *), NULL);
+        }
+        efree(arKey);
+    })
+}
+
 static void unserialize_function_entry(zend_function_entry* entry UNSERIALIZE_DC)
 {
     /* TODO */
@@ -910,37 +1081,35 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
 {
     char exists;
     int count;
+    HashTable temp;
+
+    zend_initialize_class_data(ce, 1 TSRMLS_CC);
+    
+    /* TODO: (un)serialize these */
+    ce->filename = NULL;
+    ce->line_start = 0;
+    ce->line_end = 0;
+	ce->doc_comment = NULL;
+	ce->doc_comment_len = 0;
     
     UNSERIALIZE(&ce->type, char);
     unserialize_string(&ce->name UNSERIALIZE_CC);
     UNSERIALIZE(&ce->name_length, uint);
+
     UNSERIALIZE(&ce->refcount, int);
     UNSERIALIZE(&ce->constants_updated, zend_bool);
     UNSERIALIZE(&ce->ce_flags, zend_uint);
 
     __se_class= ce;
-    UNSERIALIZE(&exists, char);
-    unserialize_hashtable(&ce->function_table, sizeof(zend_function), unserialize_method_ptr, "function_table" UNSERIALIZE_CC);
-    UNSERIALIZE(&exists, char);
-    unserialize_hashtable(&ce->default_properties, sizeof(zval *), unserialize_zval_ptr, "default_properties" UNSERIALIZE_CC);
-    UNSERIALIZE(&exists, char);
-    unserialize_hashtable(&ce->properties_info, sizeof(zend_property_info), unserialize_property_info_ptr, "properties_info" UNSERIALIZE_CC);
-    UNSERIALIZE(&exists, char);
-    unserialize_hashtable(&ce->default_static_members, sizeof(zval *), unserialize_zval_ptr, "default_static_members" UNSERIALIZE_CC);
-    UNSERIALIZE(&exists, char);
-    if (0 != exists) {
-        ALLOC_HASHTABLE(ce->static_members);
-        unserialize_hashtable(ce->static_members, sizeof(zval *), unserialize_zval_ptr, "static_members" UNSERIALIZE_CC);
-        zend_hash_destroy(ce->static_members);
-        FREE_HASHTABLE(ce->static_members);
-    }
-    ce->static_members = &ce->default_static_members;
-
-    UNSERIALIZE(&exists, char);
-    unserialize_hashtable(&ce->constants_table, sizeof(zval *), unserialize_zval_ptr, "constants_table" UNSERIALIZE_CC);
     
+    unserialize_ce_function_table(ce UNSERIALIZE_CC);
+    unserialize_ce_default_properties(ce UNSERIALIZE_CC);
+    unserialize_ce_property_info(ce UNSERIALIZE_CC);
+    unserialize_ce_default_static_members(ce UNSERIALIZE_CC);
+    unserialize_ce_constants_table(ce UNSERIALIZE_CC);
+
     UNSERIALIZE(&count, int);
-    ce->builtin_functions = NULL;
+    /* ce->builtin_functions = NULL; */
     if (count > 0) {
         int i;
 
@@ -953,9 +1122,11 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
 
     UNSERIALIZE(&ce->num_interfaces, zend_uint);
     if (ce->num_interfaces) {
-        ce->interfaces = emalloc(ce->num_interfaces * sizeof(*ce->interfaces));
+        ce->interfaces= (zend_class_entry **) emalloc(ce->num_interfaces * sizeof(zend_class_entry *));
+    } else {
+        ce->interfaces= NULL;
     }
-
+    ce->parent= NULL;
     __se_class= NULL;
 }
 
