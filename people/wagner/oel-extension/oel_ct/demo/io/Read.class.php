@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('Comparable');
+
   class Read extends Object {
 
     private static function dumpOps($ops, $indent= '  ') {
