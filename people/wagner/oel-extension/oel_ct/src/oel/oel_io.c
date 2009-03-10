@@ -627,6 +627,7 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
     /* Handle op array's scope */
     unserialize_string(&scope UNSERIALIZE_CC);
     op_array->scope = NULL;
+    op_array->prototype = NULL;
     if (NULL != scope) {
         zend_class_entry **pce;
          
@@ -956,8 +957,6 @@ static void unserialize_ce_function_table(zend_class_entry* ce UNSERIALIZE_DC)
         
         if (NULL != function) {
             zend_hash_add(&ce->function_table, arKey, nKeyLength, function, sizeof(zend_function), NULL);
-            (*function->op_array.refcount)++;     /* TODO: Not sure if this is needed */
-            function->op_array.static_variables = NULL; 
         }
         efree(arKey);
     })
@@ -1079,9 +1078,7 @@ static void unserialize_function_entry(zend_function_entry* entry UNSERIALIZE_DC
 
 static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
 {
-    char exists;
     int count;
-    HashTable temp;
 
     zend_initialize_class_data(ce, 1 TSRMLS_CC);
     
