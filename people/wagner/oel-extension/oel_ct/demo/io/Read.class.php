@@ -25,7 +25,7 @@
           $opline->lineno,
           $opline->opcode->op,
           $opline->opcode->mne,
-          $details ? '['.implode(', ', $details).']' : ''
+          $details ? '['.str_replace("\n", "\n".$indent, implode(', ', array_map(array('xp', 'stringOf'), $details))).']' : ''
         );
       }
     }
