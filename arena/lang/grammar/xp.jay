@@ -576,7 +576,7 @@ instancecreation:
 
 staticmember:
     T_WORD { 
-      /* TBI: Constant */ 
+      $$= $yyLex->create(new ConstantNode()); $$->value= $1;
     }
   | T_VARIABLE { 
       $$= $yyLex->create(new VariableNode($1)); 
