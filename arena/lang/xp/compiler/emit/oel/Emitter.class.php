@@ -581,8 +581,14 @@
         oel_add_begin_variable_parse($op);
         oel_push_variable($op, ltrim($ref->member->name, '$'), $ref->class->name);   // without '$'
         oel_add_end_variable_parse($op);
+      } else if ($ref->member instanceof ConstantNode) {
+      
+        // Class constant
+        oel_push_constant($op, $node->value, $this->resolve($ref->class->name)->name());
+      
       } else {
         $this->errors[]= 'Cannot emit class member '.xp::stringOf($ref->member);
+        oel_push_value($op, NULL);
         return;
       }
 
@@ -869,7 +875,7 @@
         foreach ($annotation->parameters as $name => $value) {
           if ($value instanceof ClassMemberNode) {    // class literal
             $params[$name]= $this->resolve($value->class->name)->name();
-          } else if ($value instanceof StringNode) {
+          } else if ($value instanceof ConstantValueNode) {
             $params[$name]= $value->value;
           }
         }
@@ -1448,27 +1454,32 @@
      * @return  xp.compiler.emit.Types resolved
      */
     protected function resolve($name, $register= TRUE) {
+      $cl= ClassLoader::getDefault();
+      
       if ('self' === $name || $name === $this->class[0]) {
         return new TypeReference($this->class[0]);
+      } else if ('parent' === $name || 'xp' === $name) {
+        return new TypeReference($name, Types::UNKNOWN_KIND);
       } else if (strpos($name, '.')) {
         $qualified= $name;
       } else if (isset($this->imports[0][$name])) {
         $qualified= $this->imports[0][$name];
+      } else if ($cl->providesClass('lang.'.$name)) {
+        $qualified= 'lang.'.$name;
       } else {
-        $this->errors[]= 'Cannot resolve class '.$name;
-        return new TypeReference($name, Types::UNKNOWN_KIND);
+        $qualified= ($this->package[0] ? $this->package[0].'.' : '').$name;
       }
       
       // Locate class. If the classloader already knows this class,
       // we can simply use this class. TODO: Use specialized 
       // JitClassLoader?
       if (!$this->types->containsKey($qualified)) {
-        if (ClassLoader::getDefault()->providesClass($qualified)) {
+        if ($cl->providesClass($qualified)) {
           $this->types[$qualified]= new TypeReflection(XPClass::forName($qualified));
         } else {
           if (!($uri= $this->locate($qualified))) {
             $this->errors[]= 'Cannot find class '.$qualified;
-            return new TypeReference($qualified, Types::UNKNOWN_KIND);;
+            return new TypeReference($qualified, Types::UNKNOWN_KIND);
           }
 
           try {
@@ -1540,7 +1551,7 @@
       array_shift($this->used);
       
       // FIXME: This is necessary so class parents are set
-      oel_execute($op);
+      // oel_execute($op);
       
       // Write. TODO: Use a filemanager / compilationtarget-thing of some sort!
       $f= new File(str_replace('.xp', xp::CLASS_FILE_EXT, $tree->origin));

@@ -89,21 +89,21 @@
         'type'          => 'Expect',
         'parameters'    => array(
           'classes' => new ArrayNode(array(
-            'position'      => array(3, 22),
+            'position'      => array(3, 21),
             'values'        => array(
-              new StringNode(array('position' => array(3, 23), 'value' => 'lang.IllegalArgumentException')),
-              new StringNode(array('position' => array(3, 54), 'value' => 'lang.IllegalAccessException')),
+              new StringNode(array('position' => array(3, 22), 'value' => 'lang.IllegalArgumentException')),
+              new StringNode(array('position' => array(3, 53), 'value' => 'lang.IllegalAccessException')),
             ),
             'type'          => NULL
           )),
           'code'    => new NumberNode(array(
-            'position'      => array(4, 22),
+            'position'      => array(4, 21),
             'value'         => '503',
           )),
         )))
       ), $this->parseMethodWithAnnotations('[@Expect(
-        classes => ["lang.IllegalArgumentException", "lang.IllegalAccessException"],
-        code    => 503
+        classes = ["lang.IllegalArgumentException", "lang.IllegalAccessException"],
+        code    = 503
       )]'));
     }
 
