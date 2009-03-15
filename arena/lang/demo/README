@@ -518,8 +518,8 @@ into the compiler?
   public override bool equal(Generic $cmp) { ... }
 </code>
 
-In
-~~
+In and ranges
+~~~~~~~~~~~~~
 As <tt>in</tt> already is a keyword (used in <tt>foreach</tt>), we might 
 as well reuse it for other purposes:
 
@@ -530,8 +530,6 @@ as well reuse it for other purposes:
 This was suggested in RFC #0001 (back in 2003!) but declined. As syntax,
 however, this does look kind of nice.
 
-Ranges
-~~~~~~
 Completing the above would be ranges:
 
 <code>
