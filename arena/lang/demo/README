@@ -296,7 +296,7 @@ The <tt>[]</tt> operator is an "add" operation, e.g.
 <tt>$vector[]= new String('Hello');</tt>. 
 
 <code>
-  // Variant a: In indexer property:
+  // Variant a: In indexer property {{{
   public this[int $offset] {
     get   { return $this.elements[$offset]; }
     set   { $this.elements[$offset]= $value; }
@@ -304,8 +304,9 @@ The <tt>[]</tt> operator is an "add" operation, e.g.
     isset { return $offset >= 0 && $offset < $this.elements.length; }
     unset { throw new IllegalAccessException('Immutable'); }
   }
+  // }}}
   
-  // Variant b: Special property
+  // Variant b: Special property {{{
   public this[] {
     set   { $this.elements[]= $value; }
   }
@@ -313,6 +314,7 @@ The <tt>[]</tt> operator is an "add" operation, e.g.
   public this[int $offset] {
     // ...
   }
+  // }}}
 </code>
 
 NULL-safe object operator
@@ -332,14 +334,14 @@ Besides an idea to wrap all primitives in wrapper classes and compile
 a primitive-cast / auto-(un-)boxing mechansim, we could simply stay with
 them and add a possibility to "objectify" them:
 
-Examples:
+Example:
 <code>
   $s= 'Hello';
   $s.length();            // 5, PHP: strlen($a);
   $s.replace('e', 'a');   // Hallo
 </code>
 
-The definition could be done by a manner similar to C#'s extension methods:
+The definition could be done in a manner similar to C#'s extension methods:
 <code>
   import native standard.strlen;
   import native standard.str_replace;
@@ -362,5 +364,134 @@ This would make, at compile time, the above the eqivalent of:
   StringExtension::replace($s, 'e', 'a');
 </code>
 
-Still to be discussed would be how to create extension properties, like <tt>$s.length;</tt>.
+Together with inlining capabilities, this would not even mean a performance
+impact.
 
+Still to be discussed would be how to create extension properties, like 
+<tt>$list.length</tt>.
+
+Closures
+~~~~~~~~
+PHP 5.3 offers closures by using a block after the <tt>function</tt> keyword,
+before that, one was able to create a function at runtime by calling
+<tt>create_function()</tt> and passing in the function body in a string.
+
+<code>
+  $a= [1, 2, 3];
+  
+  // Usage variants {{{
+  $a.each(void($e) { Console::writeLine('- ', $e); });
+  $a.each(function($e) { Console::writeLine('- ', $e); });
+  $a.each(void{ $e => Console::writeLine('- ', $e); });
+  $a.each({ $e -> Console::writeLine('- ', $e); });
+  // }}}
+  
+  // Declaration variants {{{
+  public void each(void(var){} $closure) { ... }
+  public void each(void{} $closure) { ... }
+  public void each({var} $closure) { ... }
+  public void each(function(var) $closure) { ... }
+  public void each(Closure $closure) { ... }
+  // }}}
+  
+  // Invocation variants {{{
+  $a($e);
+  $a.invoke([$e]);
+  }}}
+</code>
+
+See also:
+* http://groovy.codehaus.org/Closures
+* http://wiki.php.net/rfc/closures
+* http://www.javac.info/
+* http://gafter.blogspot.com/2006/09/closures-for-java-version-01.html
+
+Statement creation
+~~~~~~~~~~~~~~~~~~
+Together with closure syntax, userland statements could be created:
+
+Using statement:
+<code>
+  // Usage:
+  using (new FileInputStream($fi), new FileOutputStream($fo)) { $in, $out =>
+    $out.write($in.read());
+  }
+  
+  // Declaration
+  void using(Closeable... $args) use (void(var...){} $block) {
+    try {
+      $block.invoke($args);
+    } finally {
+      foreach ($closeable in $args) {
+        $closeable.close();
+      }
+    }
+  }
+</code>
+
+See also:
+* http://gafter.blogspot.com/2008/03/closures-control-abstraction-method.html
+* http://www.python.org/dev/peps/pep-0343/
+* http://experiments.xp-forge.net/xml/browse?arena,five3,lambda
+
+Type unions
+~~~~~~~~~~~
+Discussed in the Java world for Java 7 is a feature that improves exception
+handling.
+
+<code>
+  try {
+    $this.importFileToDatabase();
+  } catch (SQLException | IOException $e) {
+    $cat.error('During import: ', $e);
+    throw $e;
+  }
+</code>
+
+See http://docs.google.com/Doc?id=ddb3zt39_76dtz7bsg2&hl=en
+
+The idea here would be to use this "type union" feature in parameter type
+declaration also:
+
+<code>
+  public void dump(Object | String $arg) {
+    // ...
+  }
+</code>
+
+See also http://wiki.ecmascript.org/doku.php?id=clarification:type_system#union_types
+
+Granted, there are not many use-cases I can think of that this would be 
+useful in.
+
+Design patterns as syntax
+~~~~~~~~~~~~~~~~~~~~~~~~~
+At the moment, there are three different class types: <tt>class</tt>, 
+<tt>interface</tt> and <tt>enum</tt>. In other languages, we can also
+find <tt>struct</tt> (C#) and <tt>aspect</tt> (AspectJ and others).
+
+Why isn't there:
+<code>
+  // Singleton design pattern
+  singleton Logger { }
+  
+  // Observer pattern
+  observer Log {
+    public void update(Observable $obj, Object $arg) {
+      // ...
+    }
+  }
+
+  // Template method pattern  
+  public static template void doGet(Request $r, Response $r);
+</code>
+
+...and couldn't there also be:
+<code>
+  gtk.application FileManager { }
+  scriptlet.state Home { }
+</code>
+
+See also:
+* http://en.wikipedia.org/wiki/Design_pattern_(computer_science)
+* http://groovy.codehaus.org/Compile-time+Metaprogramming+-+AST+Transformations
