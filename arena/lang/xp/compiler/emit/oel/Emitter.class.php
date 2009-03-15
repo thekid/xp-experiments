@@ -829,7 +829,17 @@
           oel_add_free($op);
           break;
         }
-        oel_add_receive_arg($op, $i + 1, substr($arg['name'], 1));  // without '$'
+        
+        if (isset($arg['default'])) {
+          oel_add_receive_arg(
+            $op,
+            $i + 1,
+            substr($arg['name'], 1),
+            eval('return '.$arg['default']->value.';')              // HACK!
+          );
+        } else {
+          oel_add_receive_arg($op, $i + 1, substr($arg['name'], 1));
+        }
         $this->types[new VariableNode($arg['name'])]= $arg['type'];
       }
     }
