@@ -565,3 +565,15 @@ the time, the <tt>yield</tt> statement could help:
 See also:
 * http://blogs.msdn.com/jfoscoding/archive/2006/03/31/565559.aspx
 * http://docs.python.org/reference/simple_stmts.html#the-yield-statement
+
+
+Brainstorming
+-------------
+Inspirational material:
+
+* http://www.digitalmars.com/d/2.0/version.html - Conditional compilation
+* http://www.digitalmars.com/d/2.0/dbc.html - Contracts
+* http://groovy.codehaus.org/Regular+Expressions - Regex literals
+* http://www.ecmascript.org/es4/spec/overview.pdf - ECMAScript 4
+* http://code.msdn.microsoft.com/csharpfuture - C# 4.0
+
