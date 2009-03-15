@@ -490,6 +490,7 @@ Why isn't there:
 <code>
   gtk.application FileManager { }
   scriptlet.state Home { }
+  unittest FileTest { }
 </code>
 
 See also:
@@ -516,3 +517,51 @@ into the compiler?
   public deprecated string changeDir(string $name) { ... }
   public override bool equal(Generic $cmp) { ... }
 </code>
+
+In
+~~
+As <tt>in</tt> already is a keyword (used in <tt>foreach</tt>), we might 
+as well reuse it for other purposes:
+
+<code>
+  if ($a in [1, 2, 3]) { ... }    // PHP: if (in_array($a, array(1, 2, 3)))
+</code>
+
+This was suggested in RFC #0001 (back in 2003!) but declined. As syntax,
+however, this does look kind of nice.
+
+Ranges
+~~~~~~
+Completing the above would be ranges:
+
+<code>
+  $a= [1..10];                    // PHP: $a= range(1, 10);
+  $b= $a[2..5];                   // PHP: $b= array_slice($a, 2, 5);
+  $c[1..5]= 'Hello';              // PHP: $c= array_fill(1, 5, 'Hello');
+</code>
+
+Yield statement
+~~~~~~~~~~~~~~~
+To work easily with iterators and instead of copying arrays around all 
+the time, the <tt>yield</tt> statement could help:
+
+<code>
+  public class Numbers {
+    protected int[] $list = [ 1, 2, 3, 4 ];
+    
+    public Enumerable<int> even() {
+      foreach ($i in $this.list) {
+        if ($i % 2 == 0) yield return $i;
+      }
+    }
+  }
+  
+  $n= new Numbers();
+  foreach ($i in $n.even()) {
+    Console::writeLine($i);
+  }
+</code>
+
+See also:
+* http://blogs.msdn.com/jfoscoding/archive/2006/03/31/565559.aspx
+* http://docs.python.org/reference/simple_stmts.html#the-yield-statement
