@@ -495,3 +495,24 @@ Why isn't there:
 See also:
 * http://en.wikipedia.org/wiki/Design_pattern_(computer_science)
 * http://groovy.codehaus.org/Compile-time+Metaprogramming+-+AST+Transformations
+
+Annotation definition
+~~~~~~~~~~~~~~~~~~~~~
+With the same aspect in mind, shouldn't annotation definitions be written as:
+
+<code>
+  annotation Test {
+  
+  }
+</code>
+...instead of extending <tt>lang.Annotation</tt>?
+
+Attributes
+~~~~~~~~~~
+Instead of using annotations, should certain attributes be integrated 
+into the compiler?
+
+<code>
+  public deprecated string changeDir(string $name) { ... }
+  public override bool equal(Generic $cmp) { ... }
+</code>
