@@ -855,7 +855,7 @@
         DETAIL_ARGUMENTS    => array(),
         DETAIL_RETURNS      => $method->returns->name,
         DETAIL_THROWS       => array(),
-        DETAIL_COMMENT      => '',
+        DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$method->comment),
         DETAIL_ANNOTATIONS  => array()
       );
 
@@ -1266,10 +1266,16 @@
       } else {
         oel_add_end_class_declaration($op);
       }
+      
+      $this->metadata[0]['class']= array(
+        DETAIL_COMMENT => preg_replace('/\n\s+\* ?/', "\n", "\n ".$declaration->comment)
+      );
+      
       $this->registerClass($op, $this->class[0], ($this->package[0] ? $this->package[0].'.' : '').$declaration->name->name);
       array_shift($this->properties);
       array_shift($this->metadata);
       array_shift($this->class);
+      
     }
 
     /**

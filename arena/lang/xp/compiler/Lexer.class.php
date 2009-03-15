@@ -84,7 +84,8 @@
     
           
     private
-      $ahead = NULL;
+      $ahead   = NULL,
+      $comment = NULL;
 
     /**
      * Constructor
@@ -106,6 +107,7 @@
      */
     public function create($n) {
       $n->position= $this->position;
+      if ($this->comment) $n->comment= $this->comment;
       return $n;
     }
   
@@ -162,11 +164,13 @@
             $this->position[0]++;
             continue;
           } else if ('*' === $ahead) {    // Multi-line comment
+            $this->comment= '';
             do { 
               $t= $this->tokenizer->nextToken('/'); 
               $l= substr_count($t, "\n");
               $this->position[1]= strlen($t) + ($l ? 1 : $this->position[1]);
               $this->position[0]+= $l;
+              $this->comment.= $t;
             } while ('*' !== $t{strlen($t)- 1});
             $this->tokenizer->nextToken('/');
             continue;
