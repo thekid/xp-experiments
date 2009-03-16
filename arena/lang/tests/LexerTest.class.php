@@ -31,9 +31,18 @@
      * @return  array<int, string>[] tokens
      */
     protected function tokensOf($in) {
-      for ($l= $this->newLexer($in), $tokens= array(); $l->advance(); ) {
-        $tokens[]= array($l->token, $l->value);
-      }
+      $l= $this->newLexer($in);
+      $tokens= array();
+      do {
+        try {
+          if ($r= $l->advance()) {
+            $tokens[]= array($l->token, $l->value);
+          }
+        } catch (Throwable $e) {
+          $tokens[]= array($e->getClassName(), $e->getMessage());
+          $r= FALSE;
+        }
+      } while ($r);
       return $tokens;
     }
   
@@ -61,6 +70,29 @@
       $this->assertEquals(array(Parser::T_VARIABLE, '$a'), $t[0]);
       $this->assertEquals(array(Parser::T_INC, '++'), $t[1]);
       $this->assertEquals(array(59, ';'), $t[2]);
+    }
+
+    /**
+     * Test parsing a doc-comment
+     *
+     */
+    #[@test]
+    public function docComment() {
+      $t= $this->tokensOf('
+        /**
+         * Doc-Comment
+         *
+         * @see http://example.com
+         */  
+        public void init() { }
+      ');
+      $this->assertEquals(array(Parser::T_PUBLIC, 'public'), $t[0]);
+      $this->assertEquals(array(Parser::T_WORD, 'void'), $t[1]);
+      $this->assertEquals(array(Parser::T_WORD, 'init'), $t[2]);
+      $this->assertEquals(array(40, '('), $t[3]);
+      $this->assertEquals(array(41, ')'), $t[4]);
+      $this->assertEquals(array(123, '{'), $t[5]);
+      $this->assertEquals(array(125, '}'), $t[6]);
     }
 
     /**
@@ -133,6 +165,29 @@
       $this->assertEquals(array(Parser::T_VARIABLE, '$s'), $t[0]);
       $this->assertEquals(array(61, '='), $t[1]);
       $this->assertEquals(array(Parser::T_STRING, '\'Hello\', he said'), $t[2]);
+    }
+
+    /**
+     * Test string at end
+     *
+     */
+    #[@test]
+    public function stringAsLastToken() {
+      $t= $this->tokensOf('"Hello World"');
+      $this->assertEquals(1, sizeof($t));
+      $this->assertEquals(array(Parser::T_STRING, 'Hello World'), $t[0]);
+    }
+
+    /**
+     * Test parsing an unterminated string
+     *
+     */
+    #[@test]
+    public function unterminatedString() {
+      $t= $this->tokensOf('$s= "The end');
+      $this->assertEquals(array(Parser::T_VARIABLE, '$s'), $t[0]);
+      $this->assertEquals(array(61, '='), $t[1]);
+      $this->assertEquals(array('lang.IllegalStateException', 'Unterminated string literal'), $t[2]);
     }
   }
 ?>
