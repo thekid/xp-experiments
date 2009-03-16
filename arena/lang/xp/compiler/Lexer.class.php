@@ -159,9 +159,11 @@
               $this->value= substr($this->value, 0, -1).$this->tokenizer->nextToken($token{0});
               continue;
             } 
-            $this->tokenizer->nextToken($token{0});
+            if ($token{0} !== $this->tokenizer->nextToken($token{0})) {
+              throw new IllegalStateException('Unterminated string literal');
+            }
             break;
-          } while ($this->tokenizer->hasMoreTokens());
+          } while ($hasMore= $this->tokenizer->hasMoreTokens());
         } else if ('$' === $token{0}) {
           $this->token= Parser::T_VARIABLE;
           $this->value= $token;
