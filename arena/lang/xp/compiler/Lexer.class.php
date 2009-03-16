@@ -4,7 +4,14 @@
  * $Id$ 
  */
 
-  uses('text.StringTokenizer', 'xp.compiler.Parser', 'text.parser.generic.AbstractLexer');
+  uses(
+    'text.Tokenizer', 
+    'text.StringTokenizer', 
+    'text.StreamTokenizer', 
+    'io.streams.InputStream',
+    'xp.compiler.Parser', 
+    'text.parser.generic.AbstractLexer'
+  );
   
   $package= 'xp.compiler';
 
@@ -90,11 +97,15 @@
     /**
      * Constructor
      *
-     * @param   string input
+     * @param   var input either a string or an InputStream
      * @param   string source
      */
     public function __construct($input, $source) {
-      $this->tokenizer= new StringTokenizer($input."\0", self::DELIMITERS, TRUE);
+      if ($input instanceof InputStream) {
+        $this->tokenizer= new StreamTokenizer($input, self::DELIMITERS, TRUE);
+      } else {
+        $this->tokenizer= new StringTokenizer($input, self::DELIMITERS, TRUE);
+      }
       $this->fileName= $source;
       $this->position= array(1, 1);   // Y, X
     }
@@ -118,6 +129,7 @@
      */
     public function advance() {
       do {
+        $hasMore= $this->tokenizer->hasMoreTokens();
         if ($this->ahead) {
           $token= $this->ahead;
           $this->ahead= NULL;
@@ -222,7 +234,7 @@
       } while (1);
       
       // fprintf(STDERR, "@ %d,%d: %d `%s`\n", $this->position[0], $this->position[1], $this->token, $this->value);
-      return $this->tokenizer->hasMoreTokens();
+      return $hasMore;
     }
   }
 ?>
