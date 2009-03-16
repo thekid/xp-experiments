@@ -69,6 +69,24 @@
     echo "}\n";
   }
   // }}}
+  
+  // {{{ void add_parameters(resource op, var[] params) 
+  //     Adds function call parameters by using temporary variables
+  function add_parameters($op, $params) {
+    foreach ($params as $i => $param) {
+      oel_push_value($op, $param);
+      oel_add_begin_variable_parse($op);
+      oel_push_variable($op, '$__arg'.$i);
+      oel_add_assign($op);
+      oel_add_free($op);
+    }
+    foreach ($params as $i => $param) {
+      oel_add_begin_variable_parse($op);
+      oel_push_variable($op, '$__arg'.$i);
+      oel_add_end_variable_parse($op);
+    }
+  }
+  // }}}
 
   // {{{ main
   $op= oel_new_op_array();
@@ -118,9 +136,17 @@
       oel_add_free($op);
       break;
     }
+
+    case 'call.php': {
+      add_parameters($op, array(1, 2, 3, 4, 5));
+      oel_add_call_function($op, 5, 'var_dump');
+      oel_add_free($op);
+      break;
+    }
     
     case 'hello.php': {
       add_echoln($op, 'Hello World');
+      break;
     }
   }
 
