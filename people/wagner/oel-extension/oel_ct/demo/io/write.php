@@ -143,6 +143,47 @@
       oel_add_free($op);
       break;
     }
+
+    case 'chain.php': {
+
+      // new XPClass('Object')->_reflect->getMethod(strtr('Equals', 'E', 'e')->getName()[0]
+      oel_add_begin_static_method_call($op, 'stringOf', 'xp'); {
+      
+        oel_add_begin_new_object($op, 'XPClass'); {
+          oel_push_value($op, 'Object');
+          oel_add_pass_param($op, 1);
+        } oel_add_end_new_object($op, 1);
+        
+        // Chain {{{
+        oel_add_begin_variable_parse($op); {
+          oel_push_property($op, '_reflect');
+
+          oel_add_begin_method_call($op, 'getMethod'); {
+            oel_push_value($op, 'Equals');
+            oel_push_value($op, 'E');
+            oel_push_value($op, 'e');
+            oel_add_call_function($op, 3, 'strtr');
+
+            oel_add_pass_param($op, 1);
+          } oel_add_end_method_call($op, 1);
+
+          oel_add_begin_method_call($op, 'getName'); {
+            // (no args)
+          } oel_add_end_method_call($op, 0);
+          
+          oel_push_value($op, 0);
+          oel_push_dim($op);
+
+        } oel_add_end_variable_parse($op);
+        /// }}}
+
+        oel_add_pass_param($op, 1);
+      } oel_add_end_static_method_call($op, 1);
+      
+      oel_add_echo($op);
+      
+      break;
+    }
     
     case 'hello.php': {
       add_echoln($op, 'Hello World');
