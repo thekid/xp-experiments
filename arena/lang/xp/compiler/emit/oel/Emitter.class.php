@@ -206,13 +206,8 @@
       
       oel_add_begin_variable_parse($op);
       oel_push_variable($op, ltrim($var->name, '$'));    // without '$'
+      $this->emitChain($op, $var);
       oel_add_end_variable_parse($op);
-      
-      if ($var->chained) {
-        oel_add_begin_variable_parse($op);
-        $this->emitChain($op, $var);
-        oel_add_end_variable_parse($op);
-      }
       $var->free && oel_add_free($op);
     }
 
