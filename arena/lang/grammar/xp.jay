@@ -20,6 +20,7 @@
     'xp.compiler.ast.InstanceCreationNode',
     'xp.compiler.ast.VariableNode',
     'xp.compiler.ast.ArrayAccessNode',
+    'xp.compiler.ast.CastNode',
     'xp.compiler.ast.TryNode',
     'xp.compiler.ast.CatchNode',
     'xp.compiler.ast.ThrowNode',
@@ -58,8 +59,8 @@
 %left '?' ':'
 %left '+' '-'
 %left '*' '/'
-%right '[' '!' '~' T_INC T_DEC 
-%nonassoc '<' '>' T_SE T_GE '.' T_EQUALS T_NOT_EQUALS 
+%right '[' '!' '~' T_INC T_DEC T_AS
+%nonassoc '<' '>' T_SE T_GE '.' T_EQUALS T_NOT_EQUALS
 
 %token T_WORD 260
 %token T_STRING 261
@@ -90,6 +91,7 @@
 %token T_THROWS 321
 
 %token T_DOTS 330
+%token T_AS 331
 
 %token T_VARIABLE 340
 %token T_RETURN 341
@@ -612,6 +614,9 @@ expression:
       $$= $2;
     }
   | '(' expression ')' { $$= $2; }
+  | expression T_AS typeref { 
+      $$= $yyLex->create(new CastNode(array('type' => $3, 'expression' => $1))); 
+    }
   | assignment { 
       $$= $yyLex->create(new AssignmentNode($1)); 
     }

@@ -52,6 +52,7 @@
         
         'return'        => Parser::T_RETURN,
         'new'           => Parser::T_NEW,
+        'as'            => Parser::T_AS,
         
         'for'           => Parser::T_FOR,
         'foreach'       => Parser::T_FOREACH,

@@ -134,7 +134,7 @@
      * Emit constants
      *
      * @param   resource op
-     * @param   xp.compiler.ast.ConstantNode num
+     * @param   xp.compiler.ast.ConstantNode const
      */
     protected function emitConstant($op, ConstantNode $const) {
       switch ($const->value) {
@@ -145,6 +145,24 @@
         // TODO: Warnings?
         default: oel_push_constant($op, $const->value);
       }
+    }
+
+    /**
+     * Emit casts
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.CastNode cast
+     */
+    protected function emitCast($op, CastNode $cast) {
+      oel_add_begin_function_call($op, 'cast'); {
+        $this->emitOne($op, $cast->expression);
+        oel_add_pass_param($op, 1);
+    
+        oel_push_value($op, $this->resolve($cast->type->name)->name());
+        oel_add_pass_param($op, 2);
+      }
+      oel_add_end_function_call($op, 2);
+      $cast->free && oel_add_free($op);
     }
 
     /**
