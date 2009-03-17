@@ -513,7 +513,7 @@ PHP_FUNCTION(oel_add_end_static_method_call) {
     oel_stack_push_operand(res_op_array, result TSRMLS_CC);
     
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_end_function_call(func_name, result, parameter_count, 1, 1 TSRMLS_CC);
+    zend_do_end_function_call(NULL, result, parameter_count, 1, 1 TSRMLS_CC);
     zend_do_extended_fcall_end(TSRMLS_C);
     result->u.EA.type= ZEND_PARSED_FUNCTION_CALL;
     oel_env_restore(res_op_array, env TSRMLS_CC);
@@ -536,7 +536,7 @@ PHP_FUNCTION(oel_add_end_function_call) {
     oel_stack_push_operand(res_op_array, result TSRMLS_CC);
     
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_end_function_call(func_name, result, parameter_count, 1, 1 TSRMLS_CC);
+    zend_do_end_function_call(func_name, result, parameter_count, 0, 1 TSRMLS_CC);
     zend_do_extended_fcall_end(TSRMLS_C);
     result->u.EA.type= ZEND_PARSED_FUNCTION_CALL;
     oel_env_restore(res_op_array, env TSRMLS_CC);
