@@ -111,6 +111,16 @@ static function_entry oel_functions[]= {
     PHP_FE(oel_add_call_method_name_static, NULL)
     PHP_FE(oel_add_new_object, NULL)
 
+    PHP_FE(oel_add_begin_new_object, NULL)
+    PHP_FE(oel_add_begin_method_call, NULL)
+    PHP_FE(oel_add_begin_static_method_call, NULL)
+    PHP_FE(oel_add_begin_function_call, NULL)
+    PHP_FE(oel_add_pass_param, NULL)
+    PHP_FE(oel_add_end_new_object, NULL)
+    PHP_FE(oel_add_end_method_call, NULL)
+    PHP_FE(oel_add_end_static_method_call, NULL)
+    PHP_FE(oel_add_end_function_call, NULL)
+
     PHP_FE(oel_add_begin_class_declaration, NULL)
     PHP_FE(oel_add_end_class_declaration, NULL)
     PHP_FE(oel_add_begin_abstract_class_declaration, NULL)

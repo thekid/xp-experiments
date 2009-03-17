@@ -175,6 +175,16 @@
     PHP_FUNCTION(oel_add_call_method_name_static);
     PHP_FUNCTION(oel_add_new_object);
 
+    PHP_FUNCTION(oel_add_begin_new_object);
+    PHP_FUNCTION(oel_add_begin_method_call);
+    PHP_FUNCTION(oel_add_begin_static_method_call);
+    PHP_FUNCTION(oel_add_begin_function_call);
+    PHP_FUNCTION(oel_add_pass_param);
+    PHP_FUNCTION(oel_add_end_new_object);
+    PHP_FUNCTION(oel_add_end_method_call);
+    PHP_FUNCTION(oel_add_end_static_method_call);
+    PHP_FUNCTION(oel_add_end_function_call);
+
     PHP_FUNCTION(oel_add_begin_class_declaration);
     PHP_FUNCTION(oel_add_end_class_declaration);
     PHP_FUNCTION(oel_add_begin_abstract_class_declaration);
