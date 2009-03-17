@@ -55,7 +55,7 @@
 %}
 
 %left ',' '=' '%' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_BOOLEAN_OR T_BOOLEAN_AND T_INSTANCEOF T_CONCAT_EQUAL
-%left '?' ':' 
+%left '?' ':'
 %left '+' '-'
 %left '*' '/'
 %right '[' '!' '~' T_INC T_DEC 
@@ -656,24 +656,26 @@ expression:
 literal:
     T_WORD { $$= $yyLex->create(new ConstantNode()); $$->value= $1; }
   | qualifiedname T_DOUBLE_COLON T_CLASS { /* XXX class literal */ }
-  | '[' { $1= $yyLex->create(new ArrayNode()); } expressionlist_opt ']' {
-      $1->values= $3;
-      $1->type= NULL;   // XXX anytype?
-    }
-  | '{' mapliteral_opt '}' {
-      $$= $yyLex->create(new MapNode());
-      $$->elements= $2;
-      $$->type= NULL;   // XXX anytype?
-    }
+  | '[' { $p= $yyLex->position; } map_or_list ']' { $3->position= $p; $3->type= NULL; $$= $3; }
   | T_NUMBER { $$= $yyLex->create(new NumberNode()); $$->value= $1; }
   | T_HEX { $$= $yyLex->create(new HexNode()); $$->value= $1; }
   | T_DECIMAL { $$= $yyLex->create(new DecimalNode()); $$->value= $1; }
   | T_STRING { $$= $yyLex->create(new StringNode()); $$->value= $1; }
 ;
 
-mapliteral_opt:
-    /* empty */ { $$= NULL; }
-  | mapliteral
+map_or_list:
+    /* empty */ { 
+      $$= $yyLex->create(new ArrayNode(array('values' => NULL)));
+    }
+  | ':' {
+      $$= $yyLex->create(new MapNode(array('elements' => NULL)));
+    }
+  | expressionlist {
+      $$= $yyLex->create(new ArrayNode(array('values' => $1)));
+    }
+  | mapliteral {
+      $$= $yyLex->create(new MapNode(array('elements' => $1)));
+    }
 ;
 
 mapliteral:
@@ -682,7 +684,7 @@ mapliteral:
 ;
 
 mapentry:
-    expression T_DOUBLE_ARROW expression { $$= array($1, $3); }
+    expression ':' expression { $$= array($1, $3); }
 ;
 
 assignment:
