@@ -144,6 +144,25 @@
       break;
     }
 
+    case 'static.php': {
+      oel_add_begin_static_method_call($op, 'write', 'Console'); {
+        oel_push_value($op, 'Class name= [');
+        oel_add_pass_param($op, 1);
+
+        oel_add_begin_static_method_call($op, 'forName', 'XPClass'); {
+          oel_push_value($op, 'lang.reflect.TargetInvocationException');
+          oel_add_pass_param($op, 1);
+        } oel_add_end_static_method_call($op, 1);
+        oel_add_pass_param($op, 2);
+        
+        oel_push_value($op, ']'."\n");
+        oel_add_pass_param($op, 3);
+        
+      } oel_add_end_static_method_call($op, 3);
+      oel_add_free($op);
+      break;
+    }
+
     case 'chain.php': {
 
       // new XPClass('Object')->_reflect->getMethod(strtr('Equals', 'E', 'e')->getName()[0]
@@ -181,7 +200,6 @@
       } oel_add_end_static_method_call($op, 1);
       
       oel_add_echo($op);
-      
       break;
     }
     
