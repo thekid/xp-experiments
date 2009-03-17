@@ -25,8 +25,11 @@
         case 'DECLARE_CLASS': $details= array($opline->op2->value); break;
         case 'DECLARE_INHERITED_CLASS': $details= array($opline->op2->value); break;
         case 'INIT_STATIC_METHOD_CALL': $details= array($opline->op2->value); break;
+        case 'INIT_METHOD_CALL': $details= array($opline->op2->value); break;
         case 'INIT_FCALL_BY_NAME': $details= array($opline->op2->value); break;
         case 'SEND_VAL': $details= array($opline->extended_value, $opline->op1->value); break;
+        case 'FETCH_OBJ_R': $details= array($opline->op2->value); break;
+        case 'FETCH_DIM_R': $details= array($opline->op2->value); break;
         default: $details= NULL; // var_dump($opline);
       }
       printf(
