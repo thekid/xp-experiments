@@ -49,17 +49,33 @@
       
       $n= 0;
       // DEBUG Console::$err->writeLine('uses(', $types, ')');
+      oel_add_begin_function_call($op, 'uses');
       foreach ($types as $type) {
         try {
           $name= $this->resolve($type->name, FALSE)->name();
           oel_push_value($op, $name);
-          $n++;
+          oel_add_pass_param($op, ++$n);
         } catch (Throwable $e) {
           $this->errors[]= $e->toString();
         }      
       }
-      oel_add_call_function($op, $n, 'uses');
+      oel_add_end_function_call($op, $n);
       oel_add_free($op);
+    }
+    
+    /**
+     * Emit parameters
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.Node[] params
+     * @return  int
+     */
+    protected function emitParameters($op, array $params) {
+      foreach ($params as $i => $param) {
+        $this->emitOne($op, $param);
+        oel_add_pass_param($op, $i + 1);
+      }
+      return sizeof($params);
     }
     
     /**
@@ -77,11 +93,14 @@
       $ptr= $this->statics[0][$inv->name];
 
       // Static method call vs. function call
-      $n= $this->emitAll($op, $inv->parameters);
       if (TRUE === $ptr) {
-        oel_add_call_function($op, $n, $inv->name);
+        oel_add_begin_function_call($op, $inv->name);
+        $n= $this->emitParameters($op, (array)$inv->parameters);
+        oel_add_end_function_call($op, $n);
       } else {
-        oel_add_call_method_static($op, $n, $inv->name, $this->resolve($ptr)->literal());
+        oel_add_begin_static_method_call($op, $inv->name, $this->resolve($ptr)->literal());
+        $n= $this->emitParameters($op, (array)$inv->parameters);
+        oel_add_end_static_method_call($op, $n);
       }
       $inv->free && oel_add_free($op);
     }
@@ -165,8 +184,6 @@
      * @param   xp.compiler.ast.VariableNode var
      */
     protected function emitVariable($op, VariableNode $var) {
-      oel_add_begin_variable_parse($op);
-      oel_push_variable($op, ltrim($var->name, '$'));    // without '$'
       
       // Type overloading: 
       // * $array->length := sizeof($array)
@@ -176,14 +193,26 @@
           $var->chained instanceof VariableNode &&
           'length' == $var->chained->name 
         ) {
-          oel_add_end_variable_parse($op);
-          oel_add_call_function($op, 1, 'sizeof');
+          oel_add_begin_function_call($op, 'sizeof'); {
+            oel_add_begin_variable_parse($op);
+            oel_push_variable($op, ltrim($var->name, '$'));    // without '$'
+            oel_add_end_variable_parse($op);
+            oel_add_pass_param($op, 1);
+          }
+          oel_add_end_function_call($op, 1);
           return;
         }
       }
       
-      $this->emitChain($op, $var);
+      oel_add_begin_variable_parse($op);
+      oel_push_variable($op, ltrim($var->name, '$'));    // without '$'
       oel_add_end_variable_parse($op);
+      
+      if ($var->chained) {
+        oel_add_begin_variable_parse($op);
+        $this->emitChain($op, $var);
+        oel_add_end_variable_parse($op);
+      }
       $var->free && oel_add_free($op);
     }
 
@@ -192,12 +221,12 @@
      * 
      * Examples:
      * <code>
-     *   $a->property->value;
-     *   $a->method()->value;
+     *   $a.property.value;
+     *   $a.method().value;
      *   $a[0];
-     *   func()->length;
-     *   new Date()->toString();
-     *   $class->getMethods()[0];
+     *   func().length;
+     *   new Date().toString();
+     *   $class.getMethods()[0];
      * </code>
      * ...or any combination of these.
      *
@@ -212,10 +241,10 @@
         } else if ($c instanceof ArrayAccessNode) {
           oel_push_value($op, $c->offset->value);
           oel_push_dim($op);
-        } else if ($c instanceof InvocationNode) {   // DOES NOT WORK!
-          $n= $this->emitAll($op, (array)$c->parameters);
-          oel_add_call_method($op, $n, $c->name);
-          oel_add_begin_variable_parse($op);
+        } else if ($c instanceof InvocationNode) {
+          oel_add_begin_method_call($op, $c->name);
+          $n= $this->emitParameters($op, (array)$c->parameters);
+          oel_add_end_method_call($op, $n);
         } else {
           $this->errors[]= 'Unknown chained element '.xp::stringOf($c);
         }
@@ -568,13 +597,15 @@
       if ($ref->member instanceof InvocationNode) {
 
         // Static method call
-        $n= $this->emitAll($op, (array)$ref->member->parameters);
-        oel_add_call_method_static($op, $n, $ref->member->name, $this->resolve($ref->class->name)->literal());
+        oel_add_begin_static_method_call($op, $ref->member->name, $this->resolve($ref->class->name)->literal());
+        $n= $this->emitParameters($op, (array)$ref->member->parameters);
+        oel_add_end_static_method_call($op, $n);
       } else if ($ref->member instanceof VariableNode && '$class' === $ref->member->name) {
       
         // Magic "class" member
-        oel_push_value($op, $this->resolve($ref->class->name)->literal());
-        oel_add_new_object($op, 1, 'XPClass');
+        oel_add_begin_new_object($op, 'XPClass');
+        $n= $this->emitParameters($op, array(new StringNode(array('value' => $this->resolve($ref->class->name)->literal()))));
+        oel_add_end_new_object($op, $n);
       } else if ($ref->member instanceof VariableNode) {
       
         // Static member
@@ -582,10 +613,9 @@
         oel_push_variable($op, ltrim($ref->member->name, '$'), $ref->class->name);   // without '$'
         oel_add_end_variable_parse($op);
       } else if ($ref->member instanceof ConstantNode) {
-      
+
         // Class constant
-        oel_push_constant($op, $node->value, $this->resolve($ref->class->name)->name());
-      
+        oel_push_constant($op, $ref->member->value, $this->resolve($ref->class->name)->literal());
       } else {
         $this->errors[]= 'Cannot emit class member '.xp::stringOf($ref->member);
         oel_push_value($op, NULL);
@@ -733,13 +763,16 @@
     protected function emitInstanceCreation($op, InstanceCreationNode $new) {
       static $i= 0;
 
-      $type= $this->resolve($new->type->name);
-    
       // Anonymous instance creation:
+      //
       // - Create unique classname
       // - Extend parent class if type is a class
       // - Implement type and extend lang.Object if it's an interface 
+      //
+      // Do not register type name from new(), it will be added by 
+      // emitClass() during declaration emittance.
       if (isset($new->body)) {
+        $type= $this->resolve($new->type->name, FALSE);
         if (Types::INTERFACE_KIND === $type->kind()) {
           $p= array('parent' => new TypeName('lang.Object'), 'implements' => array($new->type));
         } else if (Types::ENUM_KUND === $type->kind()) {
@@ -752,18 +785,22 @@
         $unique= $type->literal().'$'.++$i;
         $this->declarations[0][]= new ClassNode(array_merge($p, array(
           'name'      => new TypeName($unique),
-          'anonymous' => TRUE,
           'body'      => $new->body
         )));
         $this->types[$unique]= $type= new TypeReference($unique, Types::CLASS_KIND);
+      } else {
+        $type= $this->resolve($new->type->name);
       }
-    
-      $n= $this->emitAll($op, (array)$new->parameters);
-      oel_add_new_object($op, $n, $type->literal());
+      
+      oel_add_begin_new_object($op, $type->literal());
+      $n= $this->emitParameters($op, (array)$new->parameters);
+      oel_add_end_new_object($op, $n);
 
-      oel_add_begin_variable_parse($op);
-      $this->emitChain($op, $new);
-      oel_add_end_variable_parse($op);
+      if ($new->chained) {
+        oel_add_begin_variable_parse($op);
+        $this->emitChain($op, $new);
+        oel_add_end_variable_parse($op);
+      }
     }
     
     /**
@@ -817,11 +854,22 @@
     protected function emitArguments($op, array $arguments) {
       foreach ($arguments as $i => $arg) {
         if (isset($arg['vararg'])) {
-          oel_add_call_function($op, 0, 'func_get_args');
           if ($i > 0) {
-            oel_push_value($op, 0);
-            oel_push_value($op, $i);
-            oel_add_call_function($op, 3, 'array_splice');
+            oel_add_begin_function_call($op, 'array_splice'); {
+              oel_push_value($op, 0);
+              oel_add_pass_param($op, 1);
+
+              oel_push_value($op, $i);
+              oel_add_pass_param($op, 2);
+
+              oel_add_begin_function_call($op, 'func_get_args');
+              oel_add_end_function_call($op, 0);
+              oel_add_pass_param($op, 3);
+            }
+            oel_add_end_function_call($op, 3);
+          } else {
+            oel_add_begin_function_call($op, 'func_get_args');
+            oel_add_end_function_call($op, 0);
           }
           oel_add_begin_variable_parse($op);
           oel_push_variable($op, substr($arg['name'], 1));          // without '$'
@@ -943,14 +991,24 @@
     protected function registerClass($op, $name, $qualified) {
       // DEBUG Console::$err->writeLine('R@', $name, '= ', $qualified);
 
-      oel_push_value($op, 'class.'.$name);
-      oel_push_value($op, $qualified);
-      oel_add_call_method_static($op, 2, 'registry', 'xp');
+      oel_add_begin_static_method_call($op, 'registry', 'xp'); {
+        oel_push_value($op, 'class.'.$name);
+        oel_add_pass_param($op, 1);
+      
+        oel_push_value($op, $qualified);
+        oel_add_pass_param($op, 2);
+      }
+      oel_add_end_static_method_call($op, 2);
       oel_add_free($op);
 
-      oel_push_value($op, 'details.'.$qualified);
-      oel_push_value($op, $this->metadata[0]);
-      oel_add_call_method_static($op, 2, 'registry', 'xp');
+      oel_add_begin_static_method_call($op, 'registry', 'xp'); {
+        oel_push_value($op, 'details.'.$qualified);
+        oel_add_pass_param($op, 1);
+      
+        oel_push_value($op, $this->metadata[0]);
+        oel_add_pass_param($op, 2);
+      }
+      oel_add_end_static_method_call($op, 2);
       oel_add_free($op);
     }
 
@@ -1142,8 +1200,12 @@
       
       // public static self[] values() { return parent::membersOf(__CLASS__) }
       $vop= oel_new_method($op, 'values', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
-      oel_push_value($vop, $this->class[0]);
-      oel_add_call_method_static($vop, 1, 'membersOf', 'parent');
+      
+      oel_add_begin_static_method_call($vop, 'membersOf', 'parent'); {
+        oel_push_value($vop, $this->class[0]);
+        oel_add_pass_param($vop, 1);
+      }
+      oel_add_end_static_method_call($vop, 1);
       oel_add_return($vop);
       oel_finalize($vop);
 
@@ -1167,13 +1229,18 @@
       }
       
       foreach ($declaration->body['members'] as $i => $member) { 
-        if ($member->value) {
-          $this->emitOne($op, $member->value);
-        } else {
-          oel_push_value($op, $i);
+        oel_add_begin_new_object($op, $classes[$i]); {
+          if ($member->value) {
+            $this->emitOne($op, $member->value);
+          } else {
+            oel_push_value($op, $i);
+          }
+          oel_add_pass_param($op, 1);
+
+          oel_push_value($op, $member->name);
+          oel_add_pass_param($op, 2);
         }
-        oel_push_value($op, $member->name);
-        oel_add_new_object($op, 2, $classes[$i]);
+        oel_add_end_new_object($op, 2);
         
         oel_add_begin_variable_parse($op);
         oel_push_variable($op, $member->name, $this->class[0]);
@@ -1224,7 +1291,7 @@
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Object');
     
       // Ensure parent class and interfaces are loaded
-      $declaration->anonymous || $this->emitUses($op, array_merge(
+      $this->emitUses($op, array_merge(
         array($parent), 
         (array)$declaration->implements
       ));
@@ -1372,14 +1439,25 @@
      */
     protected function emitReturn($op, ReturnNode $return) {
       $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
-      
-      // Special case when returning variables: Do not end variable parse 
-      if ($return->expression instanceof VariableNode) {
-        oel_add_begin_variable_parse($op);
-        oel_push_variable($op, ltrim($return->expression->name, '$'));    // without '$'
-        $this->emitChain($op, $return->expression);
-      } else if ($return->expression) {
+
+      // Return expression as "$R= [EXPRESSION]; return $R;"
+      //
+      // This saves us from handling ZEND_PARSED_STATIC_MEMBER (self::$x)
+      // ZEND_PARSED_VARIABLE ($x) or ZEND_PARSED_MEMBER ($this->x) in
+      // special ways but self::$x->getClass() not.
+      // 
+      // See oel_core.c / oel_add_return
+      if ($return->expression) {
+        $t= $return->hashCode();
+        
         $this->emitOne($op, $return->expression);
+        oel_add_begin_variable_parse($op);
+        oel_push_variable($op, $t);
+        oel_add_assign($op);
+        oel_add_free($op);
+        
+        oel_add_begin_variable_parse($op);
+        oel_push_variable($op, $t);
       } else {
         oel_push_value($op, NULL);
       }
