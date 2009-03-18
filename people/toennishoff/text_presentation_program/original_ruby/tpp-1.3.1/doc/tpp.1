@@ -1,0 +1,65 @@
+.TH  TPP "1" "April 2007" "tpp 1.3.1" "User Commands"
+.SH NAME
+TPP - Text Presentation Program
+.SH SYNOPSIS
+.B tpp  
+<\fIOPTIONS\fR> <\fIFILE\fR>
+.SH DESCRIPTION
+.PP
+Tpp stands for text presentation program and is an ncurses-based
+presentation tool. The presentation can be written with your favorite
+editor in a simple description format and then shown on any text
+terminal that is supported by ncurses - ranging from an old VT100 to the
+Linux framebuffer to an xterm.
+
+It supports color, various output modes, sliding in text, command prompt, 
+LaTeX conversion and more.
+.SH OPTIONS
+.TP
+-h/--help display help
+.TP
+-l output.tex input.tpp converts tpp slides into tex 
+.TP
+-v/--version display version number
+
+.SH KEYS
+.TP
+space
+display next entry within page
+.TP
+space, cursor-down, cursor-right
+display next page
+.TP
+b, cursor-up, cursor-left 
+display previous page
+.TP
+q, Q 
+quit tpp
+.TP
+j, J
+jump directly to page
+.TP
+s, S
+jump to the start page
+.TP
+e, E
+jump to the last page
+.TP
+c, C
+start command line
+.PP
+.SH WRITING PRESENTATIONS 
+The tpp presentation formats consists of normal text lines and special
+commands. Special commands are contained in lines that begin with "--"
+and the command name.
+
+See /usr/share/doc/tpp/README for complete list of command names, and 
+/usr/share/doc/tpp/examples for TPP presentation examples, including
+presentation slides that have been in real-life presentations.
+
+.SH VIM SYNTAX FILE
+In /usr/share/doc/tpp/contrib you'll find a syntax file for the vim editor.
+See /usr/share/doc/tpp/README for installation instructions.
+
+.SH AUTHOR CONTACT 
+Tpp was written by Nico Golde <nico@ngolde.de> and Andreas Krennmair <ak@synflood.at>
