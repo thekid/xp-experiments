@@ -13,7 +13,8 @@ TODO:
   - Add platform independence (add different console output library for windows)
   - use internal iterator __next__ for Page class
   - make docstrings compatible to PyDoc
-
+  - write unittests for every class
+  
 
 CHANGELOG:
   V 0.1 17.03.2009:
@@ -407,8 +408,50 @@ class TppVisualizer
   end
 '''
 
+class TppVisualizer:
+  '''
+    Implements a generic visualizer from which all other visualizers need to be 
+    derived. If Ruby supported abstract methods, all the do_* methods would be 
+    abstract.
+    Wording comment
+  '''
 
-'''
+  def split_lines(text,width):
+    '''
+      Splits a line into several lines, where each of the result lines is at most 
+      _width_ characters long, caring about word boundaries, and returns an array 
+      of strings.
+    '''
+    lines= list()
+    
+    if (text):
+      while (text.length > 0):
+        i= width
+        # text length is OK -> add it to array and stop splitting
+        if (text.length <= i):
+          lines.append(text)
+          text= ""
+        else:
+          # search for word boundary (space actually)
+          while (i > 0 and text[i] != ' '):
+            i-= 1
+
+          # if we can't find any space character, simply cut it off at the maximum width
+          if (i == 0):
+            i = width
+          
+          # extract line
+          x = text[0..i-1]
+          # remove extracted line
+          text = text[i+1..-1]
+          # added line to array
+          lines.append(x)
+    
+    return lines
+  # end of split lines
+
+
+  '''
   def do_footer(footer_text)
     $stderr.puts "Error: TppVisualizer#do_footer has been called directly."
     Kernel.exit(1)
@@ -434,7 +477,30 @@ class TppVisualizer
     $stderr.puts "Error: TppVisualizer#do_heading has been called directly."
     Kernel.exit(1)
   end
+  '''
 
+  def do_footer(footer_text):
+    print "Error: TppVisualizer.do_footer has been called directly."
+    sys.exit(1)
+
+  def do_header(header_text):
+    print "Error: TppVisualizer.do_header has been called directly."
+    sys.exit(1)
+
+  def do_refresh():
+    print "Error: TppVisualizer.do_refresh has been called directly."
+    sys.exit(1)
+
+  def new_page():
+    print "Error: TppVisualizer.new_page has been called directly."
+    sys.exit(1)
+
+  def do_heading(text):
+    print "Error: TppVisualizer.do_heading has been called directly."
+    sys.exit(1)
+
+
+  '''
   def do_withborder
     $stderr.puts "Error: TppVisualizer#do_withborder has been called directly."
     Kernel.exit(1)
@@ -464,7 +530,34 @@ class TppVisualizer
     $stderr.puts "Error: TppVisualizer#do_exec has been called directly."
     Kernel.exit(1)
   end
+  '''
 
+  def do_withborder():
+    print "Error: TppVisualizer#do_withborder has been called directly."
+    sys.exit(1)
+
+  def do_horline():
+    print "Error: TppVisualizer#do_horline has been called directly."
+    sys.exit(1)
+
+  def do_color(text):
+    print "Error: TppVisualizer#do_color has been called directly."
+    sys.exit(1)
+
+  def do_center(text):
+    print "Error: TppVisualizer#do_center has been called directly."
+    sys.exit(1)
+
+  def do_right(text):
+    print "Error: TppVisualizer#do_right has been called directly."
+    sys.exit(1)
+
+  def do_exec(cmdline):
+    print "Error: TppVisualizer#do_exec has been called directly."
+    sys.exit(1)
+
+
+  '''
   def do_wait
     $stderr.puts "Error: TppVisualizer#do_wait has been called directly."
     Kernel.exit(1)
@@ -494,7 +587,35 @@ class TppVisualizer
     $stderr.puts "Error: TppVisualizer#do_sleep has been called directly."
     Kernel.exit(1)
   end
+  '''
 
+
+  def do_wait():
+    print "Error: TppVisualizer#do_wait has been called directly."
+    sys.exit(1)
+
+  def do_beginoutput():
+    print "Error: TppVisualizer#do_beginoutput has been called directly."
+    sys.exit(1)
+
+  def do_beginshelloutput():
+    print "Error: TppVisualizer#do_beginshelloutput has been called directly."
+    sys.exit(1)
+
+  def do_endoutput():
+    print "Error: TppVisualizer#do_endoutput has been called directly."
+    sys.exit(1)
+
+  def do_endshelloutput():
+    print "Error: TppVisualizer#do_endshelloutput has been called directly."
+    sys.exit(1)
+
+  def do_sleep(time2sleep):
+    print "Error: TppVisualizer#do_sleep has been called directly."
+    sys.exit(1)
+
+
+  '''
   def do_boldon
     $stderr.puts "Error: TppVisualizer#do_boldon has been called directly."
     Kernel.exit(1)
@@ -529,7 +650,9 @@ class TppVisualizer
     $stderr.puts "Error: TppVisualizer#do_beginslideleft has been called directly."
     Kernel.exit(1)
   end
+  '''
 
+  '''
   def do_endslide
     $stderr.puts "Error: TppVisualizer#do_endslide has been called directly."
     Kernel.exit(1)
