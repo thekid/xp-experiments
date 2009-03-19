@@ -23,10 +23,11 @@ the shorter form with square brackets. By means of an extension array
 length can be determined by using the <tt>length</tt> pseudo-member.
 
 <code>
-  $a= [1, 2, 3];          // same as $a= array(1, 2, 3);
-  $i= $a.length;          // same as $i= sizeof($a);
+  $a= [1, 2, 3];           // same as $a= array(1, 2, 3);
+  $i= $a.length;           // same as $i= sizeof($a);
   
-  $a= [ 'key' : 'value']; // same as $a= array('key' => 'value');
+  $a= [ 'key' : 'value' ]; // same as $a= array('key' => 'value');
+  $a= [ : ];               // empty map
 </code>
 
 Varargs syntax
