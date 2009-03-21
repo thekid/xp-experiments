@@ -1,7 +1,7 @@
 <?php
   uses('lang.Primitive');
   
-  class Creator extends Object {
+  class TestCreator extends Object {
   
     protected static function writeComment() {
       $args= func_get_args();
