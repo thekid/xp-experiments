@@ -30,8 +30,6 @@
         'static'        => xp搾ompiler新yntax搆hp感arser::T_STATIC,
         'final'         => xp搾ompiler新yntax搆hp感arser::T_FINAL,
         'abstract'      => xp搾ompiler新yntax搆hp感arser::T_ABSTRACT,
-        'inline'        => xp搾ompiler新yntax搆hp感arser::T_INLINE,
-        'native'        => xp搾ompiler新yntax搆hp感arser::T_NATIVE,
         
         'class'         => xp搾ompiler新yntax搆hp感arser::T_CLASS,
         'interface'     => xp搾ompiler新yntax搆hp感arser::T_INTERFACE,
@@ -86,7 +84,7 @@
       );
 
     const 
-      DELIMITERS = " |&?!.:;,@%~=<>(){}[]#+-*/\"'\r\n\t";
+      DELIMITERS = " |&?!.:;,@%~=<>(){}[]#+-*/\"\\'\r\n\t";
     
           
     private
