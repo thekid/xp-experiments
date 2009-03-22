@@ -18,9 +18,14 @@ all:
 	@echo "Generator: <$(GEN)>"
 
 grammar:
-	@echo "---> Generating grammar"
-	@sh "$(GEN)" grammar/xp.jay php5 "xp·compiler·syntax·xp·" > xp/compiler/syntax/xp/Parser.class.php
-	@echo "===> Done, exit code $$?"
+	@echo "===> Generating grammar"
+	@for i in `ls grammar/*.jay` ; do \
+	  TYPE=`basename $$i .jay` ; \
+	  echo "---> $$TYPE:" ; \
+	  echo -n "     >> " ; sh "$(GEN)" $$i php5 "xp·compiler·syntax·$$TYPE·" > xp/compiler/syntax/$$TYPE/Parser.class.php ; \
+	  echo "     >> Exit code $$?" ; \
+    done
+	@echo "===> Done"
 
 test:
 	@echo "---> Running tests"
