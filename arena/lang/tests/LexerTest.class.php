@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'xp.compiler.Lexer'
+    'xp.compiler.syntax.xp.Lexer'
   );
 
   /**
@@ -53,9 +53,9 @@
     #[@test]
     public function classDeclaration() {
       $t= $this->tokensOf('public class Point { }');
-      $this->assertEquals(array(Parser::T_PUBLIC, 'public'), $t[0]);
-      $this->assertEquals(array(Parser::T_CLASS, 'class'), $t[1]);
-      $this->assertEquals(array(Parser::T_WORD, 'Point'), $t[2]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_PUBLIC, 'public'), $t[0]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_CLASS, 'class'), $t[1]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_WORD, 'Point'), $t[2]);
       $this->assertEquals(array(123, '{'), $t[3]);
       $this->assertEquals(array(125, '}'), $t[4]);
     }
@@ -67,8 +67,8 @@
     #[@test]
     public function commentAtEnd() {
       $t= $this->tokensOf('$a++; // HACK');
-      $this->assertEquals(array(Parser::T_VARIABLE, '$a'), $t[0]);
-      $this->assertEquals(array(Parser::T_INC, '++'), $t[1]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_VARIABLE, '$a'), $t[0]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_INC, '++'), $t[1]);
       $this->assertEquals(array(59, ';'), $t[2]);
     }
 
@@ -86,9 +86,9 @@
          */  
         public void init() { }
       ');
-      $this->assertEquals(array(Parser::T_PUBLIC, 'public'), $t[0]);
-      $this->assertEquals(array(Parser::T_WORD, 'void'), $t[1]);
-      $this->assertEquals(array(Parser::T_WORD, 'init'), $t[2]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_PUBLIC, 'public'), $t[0]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_WORD, 'void'), $t[1]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_WORD, 'init'), $t[2]);
       $this->assertEquals(array(40, '('), $t[3]);
       $this->assertEquals(array(41, ')'), $t[4]);
       $this->assertEquals(array(123, '{'), $t[5]);
@@ -102,9 +102,9 @@
     #[@test]
     public function dqString() {
       $t= $this->tokensOf('$s= "Hello World";');
-      $this->assertEquals(array(Parser::T_VARIABLE, '$s'), $t[0]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_VARIABLE, '$s'), $t[0]);
       $this->assertEquals(array(61, '='), $t[1]);
-      $this->assertEquals(array(Parser::T_STRING, 'Hello World'), $t[2]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_STRING, 'Hello World'), $t[2]);
     }
 
     /**
@@ -114,9 +114,9 @@
     #[@test]
     public function emptyDqString() {
       $t= $this->tokensOf('$s= "";');
-      $this->assertEquals(array(Parser::T_VARIABLE, '$s'), $t[0]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_VARIABLE, '$s'), $t[0]);
       $this->assertEquals(array(61, '='), $t[1]);
-      $this->assertEquals(array(Parser::T_STRING, ''), $t[2]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_STRING, ''), $t[2]);
     }
 
     /**
@@ -126,9 +126,9 @@
     #[@test]
     public function dqStringWithEscapes() {
       $t= $this->tokensOf('$s= "\"Hello\", he said";');
-      $this->assertEquals(array(Parser::T_VARIABLE, '$s'), $t[0]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_VARIABLE, '$s'), $t[0]);
       $this->assertEquals(array(61, '='), $t[1]);
-      $this->assertEquals(array(Parser::T_STRING, '"Hello", he said'), $t[2]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_STRING, '"Hello", he said'), $t[2]);
     }
 
     /**
@@ -138,9 +138,9 @@
     #[@test]
     public function sqString() {
       $t= $this->tokensOf('$s= \'Hello World\';');
-      $this->assertEquals(array(Parser::T_VARIABLE, '$s'), $t[0]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_VARIABLE, '$s'), $t[0]);
       $this->assertEquals(array(61, '='), $t[1]);
-      $this->assertEquals(array(Parser::T_STRING, 'Hello World'), $t[2]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_STRING, 'Hello World'), $t[2]);
     }
 
     /**
@@ -150,9 +150,9 @@
     #[@test]
     public function emptySqString() {
       $t= $this->tokensOf('$s= \'\';');
-      $this->assertEquals(array(Parser::T_VARIABLE, '$s'), $t[0]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_VARIABLE, '$s'), $t[0]);
       $this->assertEquals(array(61, '='), $t[1]);
-      $this->assertEquals(array(Parser::T_STRING, ''), $t[2]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_STRING, ''), $t[2]);
     }
 
     /**
@@ -162,9 +162,9 @@
     #[@test]
     public function sqStringWithEscapes() {
       $t= $this->tokensOf('$s= \'\\\'Hello\\\', he said\';');
-      $this->assertEquals(array(Parser::T_VARIABLE, '$s'), $t[0]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_VARIABLE, '$s'), $t[0]);
       $this->assertEquals(array(61, '='), $t[1]);
-      $this->assertEquals(array(Parser::T_STRING, '\'Hello\', he said'), $t[2]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_STRING, '\'Hello\', he said'), $t[2]);
     }
 
     /**
@@ -175,7 +175,7 @@
     public function stringAsLastToken() {
       $t= $this->tokensOf('"Hello World"');
       $this->assertEquals(1, sizeof($t));
-      $this->assertEquals(array(Parser::T_STRING, 'Hello World'), $t[0]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_STRING, 'Hello World'), $t[0]);
     }
 
     /**
@@ -185,7 +185,7 @@
     #[@test]
     public function unterminatedString() {
       $t= $this->tokensOf('$s= "The end');
-      $this->assertEquals(array(Parser::T_VARIABLE, '$s'), $t[0]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_VARIABLE, '$s'), $t[0]);
       $this->assertEquals(array(61, '='), $t[1]);
       $this->assertEquals(array('lang.IllegalStateException', 'Unterminated string literal'), $t[2]);
     }

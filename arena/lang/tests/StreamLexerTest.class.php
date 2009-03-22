@@ -19,7 +19,7 @@
      * @return  xp.compiler.Lexer
      */
     protected function newLexer($in) {
-      return new xp·compiler·Lexer(new MemoryInputStream($in), $this->name);
+      return new xp·compiler·syntax·xp·Lexer(new MemoryInputStream($in), $this->name);
     }
   }
 ?>
