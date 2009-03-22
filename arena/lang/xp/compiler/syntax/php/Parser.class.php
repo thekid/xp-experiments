@@ -1286,7 +1286,7 @@
     { $yyVal= $yyLex->create(new FieldNode());
       $yyVal->modifiers= $yyVals[-2+$yyTop][0];
       $yyVal->annotations= $yyVals[-2+$yyTop][1];
-      $yyVal->type= NULL;
+      $yyVal->type= new TypeName('var');
       $yyVal->name= $yyVals[-1+$yyTop];
       $yyVal->initialization= $yyVals[0+$yyTop];
     } break;
@@ -1388,7 +1388,7 @@
     { $yyVal= array('name' => $yyVals[-1+$yyTop], 'type' => $yyVals[-2+$yyTop]); $yyVals[0+$yyTop] && $yyVal['default']= $yyVals[0+$yyTop]; } break;
 
     case 57:  #line 331 "grammar/php.jay"
-    { $yyVal= array('name' => $yyVals[-1+$yyTop], 'type' => NULL); $yyVals[0+$yyTop] && $yyVal['default']= $yyVals[0+$yyTop]; } break;
+    { $yyVal= array('name' => $yyVals[-1+$yyTop], 'type' => new TypeName('var')); $yyVals[0+$yyTop] && $yyVal['default']= $yyVals[0+$yyTop]; } break;
 
     case 58:  #line 335 "grammar/php.jay"
     { $yyVal= NULL; } break;

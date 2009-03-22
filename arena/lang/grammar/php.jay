@@ -241,7 +241,7 @@ field:
     decorations T_VARIABLE initialization_opt { $$= $yyLex->create(new FieldNode());
       $$->modifiers= $1[0];
       $$->annotations= $1[1];
-      $$->type= NULL;
+      $$->type= new TypeName('var');
       $$->name= $2;
       $$->initialization= $3;
     }
@@ -328,7 +328,7 @@ arguments:
 
 argument:
 	typeref T_VARIABLE initialization_opt { $$= array('name' => $2, 'type' => $1); $3 && $$['default']= $3; }
-  | T_VARIABLE initialization_opt { $$= array('name' => $1, 'type' => NULL); $2 && $$['default']= $2; }
+  | T_VARIABLE initialization_opt { $$= array('name' => $1, 'type' => new TypeName('var')); $2 && $$['default']= $2; }
 ;
 
 throws_opt:
