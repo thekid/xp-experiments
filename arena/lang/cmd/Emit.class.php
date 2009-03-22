@@ -7,8 +7,8 @@
     'util.cmd.Command',
     'io.File',
     'io.FileUtil',
-    'xp.compiler.Lexer',
-    'xp.compiler.Parser',
+    'xp.compiler.syntax.xp.Lexer',
+    'xp.compiler.syntax.xp.Parser',
     'xp.compiler.emit.oel.Emitter'
   );
 
@@ -64,7 +64,7 @@
      */
     public function run() {
       try {
-        $ast= create(new Parser())->parse(new xp·compiler·Lexer(
+        $ast= create(new xp·compiler·syntax·xp·Parser())->parse(new xp·compiler·syntax·xp·Lexer(
           FileUtil::getContents($this->in),
           $this->in->getURI()
         ));

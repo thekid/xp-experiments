@@ -6,8 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'xp.compiler.Lexer',
-    'xp.compiler.Parser'
+    'xp.compiler.syntax.xp.Lexer',
+    'xp.compiler.syntax.xp.Parser'
   );
 
   /**
@@ -23,7 +23,7 @@
      * @return  xp.compiler.Node
      */
     protected function parse($src) {
-      return create(new Parser())->parse(new xp·compiler·Lexer($src, '<string:'.$this->name.'>'))->declaration;
+      return create(new xp·compiler·syntax·xp·Parser())->parse(new xp·compiler·syntax·xp·Lexer($src, '<string:'.$this->name.'>'))->declaration;
     }
 
     /**

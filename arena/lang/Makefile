@@ -18,5 +18,5 @@ all:
 
 grammar:
 	@echo "---> Generating grammar"
-	@sh "$(GEN)" grammar/xp.jay php5 "" > xp/compiler/Parser.class.php
+	@sh "$(GEN)" grammar/xp.jay php5 "xp·compiler·syntax·xp·" > xp/compiler/syntax/xp/Parser.class.php
 	@echo "===> Done, exit code $$?"

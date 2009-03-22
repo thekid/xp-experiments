@@ -1,4 +1,6 @@
 %{
+  $package= 'xp.compiler.syntax.xp';
+  
   uses(
     'xp.compiler.types.TypeName',
     'xp.compiler.ast.ParseTree',

@@ -4,16 +4,16 @@
  * $Id$ 
  */
 
+  $package= 'xp.compiler.syntax.xp';
+
   uses(
     'text.Tokenizer', 
     'text.StringTokenizer', 
     'text.StreamTokenizer', 
     'io.streams.InputStream',
-    'xp.compiler.Parser', 
+    'xp.compiler.syntax.xp.Parser', 
     'text.parser.generic.AbstractLexer'
   );
-  
-  $package= 'xp.compiler';
 
   /**
    * Lexer for XP language
@@ -21,70 +21,70 @@
    * @see      xp://text.parser.generic.AbstractLexer
    * @purpose  Lexer
    */
-  class xp搾ompiler微exer extends AbstractLexer {
+  class xp搾ompiler新yntax暖p微exer extends AbstractLexer {
     protected static
       $keywords  = array(
-        'public'        => Parser::T_PUBLIC,
-        'private'       => Parser::T_PRIVATE,
-        'protected'     => Parser::T_PROTECTED,
-        'static'        => Parser::T_STATIC,
-        'final'         => Parser::T_FINAL,
-        'abstract'      => Parser::T_ABSTRACT,
-        'inline'        => Parser::T_INLINE,
-        'native'        => Parser::T_NATIVE,
+        'public'        => xp搾ompiler新yntax暖p感arser::T_PUBLIC,
+        'private'       => xp搾ompiler新yntax暖p感arser::T_PRIVATE,
+        'protected'     => xp搾ompiler新yntax暖p感arser::T_PROTECTED,
+        'static'        => xp搾ompiler新yntax暖p感arser::T_STATIC,
+        'final'         => xp搾ompiler新yntax暖p感arser::T_FINAL,
+        'abstract'      => xp搾ompiler新yntax暖p感arser::T_ABSTRACT,
+        'inline'        => xp搾ompiler新yntax暖p感arser::T_INLINE,
+        'native'        => xp搾ompiler新yntax暖p感arser::T_NATIVE,
         
-        'package'       => Parser::T_PACKAGE,
-        'import'        => Parser::T_IMPORT,
-        'class'         => Parser::T_CLASS,
-        'interface'     => Parser::T_INTERFACE,
-        'enum'          => Parser::T_ENUM,
-        'extends'       => Parser::T_EXTENDS,
-        'implements'    => Parser::T_IMPLEMENTS,
-        'instanceof'    => Parser::T_INSTANCEOF,
+        'package'       => xp搾ompiler新yntax暖p感arser::T_PACKAGE,
+        'import'        => xp搾ompiler新yntax暖p感arser::T_IMPORT,
+        'class'         => xp搾ompiler新yntax暖p感arser::T_CLASS,
+        'interface'     => xp搾ompiler新yntax暖p感arser::T_INTERFACE,
+        'enum'          => xp搾ompiler新yntax暖p感arser::T_ENUM,
+        'extends'       => xp搾ompiler新yntax暖p感arser::T_EXTENDS,
+        'implements'    => xp搾ompiler新yntax暖p感arser::T_IMPLEMENTS,
+        'instanceof'    => xp搾ompiler新yntax暖p感arser::T_INSTANCEOF,
 
-        'operator'      => Parser::T_OPERATOR,
-        'throws'        => Parser::T_THROWS,
+        'operator'      => xp搾ompiler新yntax暖p感arser::T_OPERATOR,
+        'throws'        => xp搾ompiler新yntax暖p感arser::T_THROWS,
 
-        'throw'         => Parser::T_THROW,
-        'try'           => Parser::T_TRY,
-        'catch'         => Parser::T_CATCH,
-        'finally'       => Parser::T_FINALLY,
+        'throw'         => xp搾ompiler新yntax暖p感arser::T_THROW,
+        'try'           => xp搾ompiler新yntax暖p感arser::T_TRY,
+        'catch'         => xp搾ompiler新yntax暖p感arser::T_CATCH,
+        'finally'       => xp搾ompiler新yntax暖p感arser::T_FINALLY,
         
-        'return'        => Parser::T_RETURN,
-        'new'           => Parser::T_NEW,
-        'as'            => Parser::T_AS,
+        'return'        => xp搾ompiler新yntax暖p感arser::T_RETURN,
+        'new'           => xp搾ompiler新yntax暖p感arser::T_NEW,
+        'as'            => xp搾ompiler新yntax暖p感arser::T_AS,
         
-        'for'           => Parser::T_FOR,
-        'foreach'       => Parser::T_FOREACH,
-        'in'            => Parser::T_IN,
-        'do'            => Parser::T_DO,
-        'while'         => Parser::T_WHILE,
-        'break'         => Parser::T_BREAK,
-        'continue'      => Parser::T_CONTINUE,
+        'for'           => xp搾ompiler新yntax暖p感arser::T_FOR,
+        'foreach'       => xp搾ompiler新yntax暖p感arser::T_FOREACH,
+        'in'            => xp搾ompiler新yntax暖p感arser::T_IN,
+        'do'            => xp搾ompiler新yntax暖p感arser::T_DO,
+        'while'         => xp搾ompiler新yntax暖p感arser::T_WHILE,
+        'break'         => xp搾ompiler新yntax暖p感arser::T_BREAK,
+        'continue'      => xp搾ompiler新yntax暖p感arser::T_CONTINUE,
 
-        'if'            => Parser::T_IF,
-        'else'          => Parser::T_ELSE,
-        'switch'        => Parser::T_SWITCH,
-        'case'          => Parser::T_CASE,
-        'default'       => Parser::T_DEFAULT,
+        'if'            => xp搾ompiler新yntax暖p感arser::T_IF,
+        'else'          => xp搾ompiler新yntax暖p感arser::T_ELSE,
+        'switch'        => xp搾ompiler新yntax暖p感arser::T_SWITCH,
+        'case'          => xp搾ompiler新yntax暖p感arser::T_CASE,
+        'default'       => xp搾ompiler新yntax暖p感arser::T_DEFAULT,
       );
 
     protected static
       $lookahead= array(
-        '.' => array('..' => Parser::T_DOTS),
-        '-' => array('-=' => Parser::T_SUB_EQUAL, '--' => Parser::T_DEC),
-        '>' => array('>=' => Parser::T_GE),
-        '<' => array('<=' => Parser::T_SE),
-        '~' => array('~=' => Parser::T_CONCAT_EQUAL),
-        '+' => array('+=' => Parser::T_ADD_EQUAL, '++' => Parser::T_INC),
-        '*' => array('*=' => Parser::T_MUL_EQUAL),
-        '/' => array('/=' => Parser::T_DIV_EQUAL),
-        '%' => array('%=' => Parser::T_MOD_EQUAL),
-        '=' => array('==' => Parser::T_EQUALS, '=>' => Parser::T_DOUBLE_ARROW),
-        '!' => array('!=' => Parser::T_NOT_EQUALS),
-        ':' => array('::' => Parser::T_DOUBLE_COLON),
-        '|' => array('||' => Parser::T_BOOLEAN_OR),
-        '&' => array('&&' => Parser::T_BOOLEAN_AND),
+        '.' => array('..' => xp搾ompiler新yntax暖p感arser::T_DOTS),
+        '-' => array('-=' => xp搾ompiler新yntax暖p感arser::T_SUB_EQUAL, '--' => xp搾ompiler新yntax暖p感arser::T_DEC),
+        '>' => array('>=' => xp搾ompiler新yntax暖p感arser::T_GE),
+        '<' => array('<=' => xp搾ompiler新yntax暖p感arser::T_SE),
+        '~' => array('~=' => xp搾ompiler新yntax暖p感arser::T_CONCAT_EQUAL),
+        '+' => array('+=' => xp搾ompiler新yntax暖p感arser::T_ADD_EQUAL, '++' => xp搾ompiler新yntax暖p感arser::T_INC),
+        '*' => array('*=' => xp搾ompiler新yntax暖p感arser::T_MUL_EQUAL),
+        '/' => array('/=' => xp搾ompiler新yntax暖p感arser::T_DIV_EQUAL),
+        '%' => array('%=' => xp搾ompiler新yntax暖p感arser::T_MOD_EQUAL),
+        '=' => array('==' => xp搾ompiler新yntax暖p感arser::T_EQUALS, '=>' => xp搾ompiler新yntax暖p感arser::T_DOUBLE_ARROW),
+        '!' => array('!=' => xp搾ompiler新yntax暖p感arser::T_NOT_EQUALS),
+        ':' => array('::' => xp搾ompiler新yntax暖p感arser::T_DOUBLE_COLON),
+        '|' => array('||' => xp搾ompiler新yntax暖p感arser::T_BOOLEAN_OR),
+        '&' => array('&&' => xp搾ompiler新yntax暖p感arser::T_BOOLEAN_AND),
       );
 
     const 
@@ -148,7 +148,7 @@
         
         $this->position[1]+= strlen($this->value);
         if ("'" === $token{0} || '"' === $token{0}) {
-          $this->token= Parser::T_STRING;
+          $this->token= xp搾ompiler新yntax暖p感arser::T_STRING;
           $this->value= '';
           do {
             if ($token{0} === ($t= $this->tokenizer->nextToken($token{0}))) {
@@ -166,7 +166,7 @@
             break;
           } while ($hasMore= $this->tokenizer->hasMoreTokens());
         } else if ('$' === $token{0}) {
-          $this->token= Parser::T_VARIABLE;
+          $this->token= xp搾ompiler新yntax暖p感arser::T_VARIABLE;
           $this->value= $token;
         } else if (isset(self::$keywords[$token])) {
           $this->token= self::$keywords[$token];
@@ -215,10 +215,10 @@
             if (!ctype_digit($decimal)) {
               throw new FormatException('Illegal decimal number "'.$token.$ahead.$decimal.'"');
             }
-            $this->token= Parser::T_DECIMAL;
+            $this->token= xp搾ompiler新yntax暖p感arser::T_DECIMAL;
             $this->value= $token.$ahead.$decimal;
           } else {
-            $this->token= Parser::T_NUMBER;
+            $this->token= xp搾ompiler新yntax暖p感arser::T_NUMBER;
             $this->value= $token;
             $this->ahead= $ahead;
           }
@@ -226,10 +226,10 @@
           if (!ctype_xdigit(substr($token, 2))) {
             throw new FormatException('Illegal hex number "'.$token.'"');
           }
-          $this->token= Parser::T_NUMBER;
+          $this->token= xp搾ompiler新yntax暖p感arser::T_NUMBER;
           $this->value= $token;
         } else {
-          $this->token= Parser::T_WORD;
+          $this->token= xp搾ompiler新yntax暖p感arser::T_WORD;
           $this->value= $token;
         }
         

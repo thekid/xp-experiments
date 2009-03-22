@@ -6,8 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'xp.compiler.Lexer',
-    'xp.compiler.Parser',
+    'xp.compiler.syntax.xp.Lexer',
+    'xp.compiler.syntax.xp.Parser',
     'xp.compiler.ast.Node'
   );
 
@@ -24,7 +24,7 @@
      * @return  xp.compiler.Node[]
      */
     protected function parse($src) {
-      return create(new Parser())->parse(new xp·compiler·Lexer('class Container {
+      return create(new xp·compiler·syntax·xp·Parser())->parse(new xp·compiler·syntax·xp·Lexer('class Container {
         public void method() {
           '.$src.'
         }

@@ -8,8 +8,8 @@
     'util.cmd.Command',
     'io.File',
     'io.FileUtil',
-    'xp.compiler.Lexer',
-    'xp.compiler.Parser',
+    'xp.compiler.syntax.xp.Lexer',
+    'xp.compiler.syntax.xp.Parser',
     'xp.compiler.emit.oel.Emitter'
   );
 
@@ -47,7 +47,7 @@
     #[@arg(position= 0)]
     public function setIn($in) {
       if (strstr($in, '.xp')) {
-        $this->class= $this->classFrom(create(new xp·compiler·emit·oel·Emitter())->emit(create(new Parser())->parse(new xp·compiler·Lexer(
+        $this->class= $this->classFrom(create(new xp·compiler·emit·oel·Emitter())->emit(create(new xp·compiler·syntax·xp·Parser())->parse(new xp·compiler·syntax·xp·Lexer(
           FileUtil::getContents(new File($in)),
           $in
         ))));
