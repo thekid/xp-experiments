@@ -13,5 +13,13 @@
    */
   class MethodNode extends xp·compiler·ast·Node {
     
+    /**
+     * Returns a hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return 'xp.inv:'.$this->name.'()';
+    }
   }
 ?>
