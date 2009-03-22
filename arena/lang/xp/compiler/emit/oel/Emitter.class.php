@@ -440,7 +440,9 @@
     protected function emitComparison($op, ComparisonNode $cmp) {
       static $ops= array(
         '=='   => array(FALSE, OEL_BINARY_OP_IS_EQUAL),
+        '==='  => array(FALSE, OEL_BINARY_OP_IS_IDENTICAL),
         '!='   => array(FALSE, OEL_BINARY_OP_IS_NOT_EQUAL),
+        '!=='  => array(FALSE, OEL_BINARY_OP_IS_NOT_IDENTICAL),
         '<='   => array(FALSE, OEL_BINARY_OP_IS_SMALLER_OR_EQUAL),
         '<'    => array(FALSE, OEL_BINARY_OP_IS_SMALLER),
         '>='   => array(TRUE, OEL_BINARY_OP_IS_SMALLER_OR_EQUAL),
@@ -1661,7 +1663,7 @@
       // oel_execute($op);
       
       // Write. TODO: Use a filemanager / compilationtarget-thing of some sort!
-      $f= new File(str_replace('.xp', xp::CLASS_FILE_EXT, $tree->origin));
+      $f= new File(basename(str_replace('.xp', xp::CLASS_FILE_EXT, $tree->origin)));
       $f->open(FILE_MODE_WRITE);
       with ($fd= $f->getHandle()); {
         oel_write_header($fd);
