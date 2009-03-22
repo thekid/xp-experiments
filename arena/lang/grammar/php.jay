@@ -76,14 +76,10 @@
 %token T_STATIC 283
 %token T_FINAL 284
 %token T_ABSTRACT 285
-%token T_NATIVE 286
-%token T_INLINE 287
 
 %token T_CLASS 300
 %token T_INTERFACE 301
-%token T_ENUM 302
 %token T_PACKAGE 303
-%token T_IMPORT 304
 
 %token T_EXTENDS 310
 %token T_IMPLEMENTS 311
@@ -178,7 +174,7 @@ uselist:
 
 qualifiedname:
     T_WORD
-  | T_WORD '.' qualifiedname { $$= $1.'.'.$3; }
+  | T_WORD '\\' qualifiedname { $$= $1.'.'.$3; }
 ;
 // }}}
 
@@ -734,8 +730,6 @@ modifier:
   | T_STATIC    { $$= MODIFIER_STATIC; }
   | T_ABSTRACT  { $$= MODIFIER_ABSTRACT; }
   | T_FINAL     { $$= MODIFIER_FINAL; }
-  | T_NATIVE    { $$= MODIFIER_NATIVE; }
-  | T_INLINE    { $$= MODIFIER_INLINE; }
 ;
 // }}}
 
