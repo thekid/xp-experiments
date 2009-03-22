@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('tests.LexerTest', 'io.streams.MemoryInputStream');
+  uses('tests.syntax.xp.LexerTest', 'io.streams.MemoryInputStream');
 
   /**
    * Tests the lexer tokenizing a stream
@@ -16,7 +16,7 @@
      * Creates a lexer instance
      *
      * @param   string in
-     * @return  xp.compiler.Lexer
+     * @return  xp.compiler.syntax.xp.Lexer
      */
     protected function newLexer($in) {
       return new xp·compiler·syntax·xp·Lexer(new MemoryInputStream($in), $this->name);

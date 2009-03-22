@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('tests.LexerTest');
+  uses('tests.syntax.xp.LexerTest');
 
   /**
    * Tests the lexer tokenizing string input
@@ -16,7 +16,7 @@
      * Creates a lexer instance
      *
      * @param   string in
-     * @return  xp.compiler.Lexer
+     * @return  xp.compiler.syntax.xp.Lexer
      */
     protected function newLexer($in) {
       return new xp·compiler·syntax·xp·Lexer($in, $this->name);

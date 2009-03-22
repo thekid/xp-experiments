@@ -12,7 +12,7 @@
   /**
    * TestCase
    *
-   * @see      xp://xp.compiler.Lexer
+   * @see      xp://xp.compiler.syntax.xp.Lexer
    */
   abstract class LexerTest extends TestCase {
 
@@ -20,7 +20,7 @@
      * Creates a lexer instance
      *
      * @param   string in
-     * @return  xp.compiler.Lexer
+     * @return  xp.compiler.syntax.xp.Lexer
      */
     protected abstract function newLexer($in);
   
