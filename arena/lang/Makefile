@@ -13,10 +13,16 @@ all:
 	@echo "Generate parser from grammar"
 	@echo "============================"
 	@echo "Usage: $(MAKE) grammar"
+	@echo "Usage: $(MAKE) test [FLAGS=-v]"
 	@echo
 	@echo "Generator: <$(GEN)>"
 
 grammar:
 	@echo "---> Generating grammar"
 	@sh "$(GEN)" grammar/xp.jay php5 "xp·compiler·syntax·xp·" > xp/compiler/syntax/xp/Parser.class.php
+	@echo "===> Done, exit code $$?"
+
+test:
+	@echo "---> Running tests"
+	unittest tests.** $(FLAGS)
 	@echo "===> Done, exit code $$?"
