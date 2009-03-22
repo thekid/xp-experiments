@@ -192,7 +192,7 @@ qualifiedname:
 
 // {{{ Class, enum and interface declarations
 declaration:
-    decorations T_CLASS { $2= $yyLex->create(new ClassNode()); } typename classparents_opt implements_opt '{' classbody '}' {
+    decorations T_CLASS { $2= $yyLex->create(new ClassNode(), TRUE); } typename classparents_opt implements_opt '{' classbody '}' {
       $2->modifiers= $1[0];
       $2->annotations= $1[1];
       $2->name= $4;
@@ -201,7 +201,7 @@ declaration:
       $2->body= $8;
       $$= $2;
     }
-  | decorations T_ENUM { $2= $yyLex->create(new EnumNode()); } typename classparents_opt implements_opt '{' enumbody '}' {
+  | decorations T_ENUM { $2= $yyLex->create(new EnumNode(), TRUE); } typename classparents_opt implements_opt '{' enumbody '}' {
       $2->modifiers= $1[0];
       $2->annotations= $1[1];
       $2->name= $4;
@@ -210,7 +210,7 @@ declaration:
       $2->body= $8;
       $$= $2;
     }
-  | decorations T_INTERFACE { $2= $yyLex->create(new InterfaceNode()); } typename interfaceparents_opt '{' classbody '}' {
+  | decorations T_INTERFACE { $2= $yyLex->create(new InterfaceNode(), TRUE); } typename interfaceparents_opt '{' classbody '}' {
       $2->modifiers= $1[0];
       $2->annotations= $1[1];
       $2->name= $4;
@@ -316,7 +316,7 @@ initialization_opt:
 
 // {{{ Methods and operators
 method:
-    decorations typeref T_WORD '(' { $4= $yyLex->create(new MethodNode()); } arguments_opt ')' throws_opt methodbody {
+    decorations typeref T_WORD '(' { $4= $yyLex->create(new MethodNode(), TRUE); } arguments_opt ')' throws_opt methodbody {
       $4->modifiers= $1[0];
       $4->annotations= $1[1];
       $4->returns= $2;
@@ -326,7 +326,7 @@ method:
       $4->body= $9;
       $$= $4;
     }
-  | decorations T_WORD '(' { if ('__construct' == $2) $3= $yyLex->create(new ConstructorNode()); } arguments_opt ')' throws_opt methodbody {
+  | decorations T_WORD '(' { if ('__construct' == $2) $3= $yyLex->create(new ConstructorNode(), TRUE); } arguments_opt ')' throws_opt methodbody {
       $3->modifiers= $1[0];
       $3->annotations= $1[1];
       $3->arguments= $5;
@@ -334,7 +334,7 @@ method:
       $3->body= $8;
       $$= $3;
     }
-  | decorations typeref T_OPERATOR operator '(' { $5= $yyLex->create(new OperatorNode()); } arguments_opt ')' throws_opt methodbody {
+  | decorations typeref T_OPERATOR operator '(' { $5= $yyLex->create(new OperatorNode(), TRUE); } arguments_opt ')' throws_opt methodbody {
       $5->modifiers= $1[0];
       $5->annotations= $1[1];
       $5->returns= $2;

@@ -115,11 +115,15 @@
      * Create a new node 
      *
      * @param   xp.compiler.ast.Node
+     * @param   bool comment default FALSE whether to pass comment
      * @return  xp.compiler.ast.Node
      */
-    public function create($n) {
+    public function create($n, $comment= FALSE) {
       $n->position= $this->position;
-      if ($this->comment) $n->comment= $this->comment;
+      if ($comment && $this->comment) {
+        $n->comment= $this->comment;
+        $this->comment= NULL;
+      }
       return $n;
     }
   

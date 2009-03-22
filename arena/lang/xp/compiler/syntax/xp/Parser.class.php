@@ -1294,7 +1294,7 @@
     { $yyVal= $yyVals[-2+$yyTop].'.'.$yyVals[0+$yyTop]; } break;
 
     case 19:  #line 195 "grammar/xp.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new ClassNode()); } break;
+    { $yyVals[0+$yyTop]= $yyLex->create(new ClassNode(), TRUE); } break;
 
     case 20:  #line 195 "grammar/xp.jay"
     {
@@ -1308,7 +1308,7 @@
     } break;
 
     case 21:  #line 204 "grammar/xp.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new EnumNode()); } break;
+    { $yyVals[0+$yyTop]= $yyLex->create(new EnumNode(), TRUE); } break;
 
     case 22:  #line 204 "grammar/xp.jay"
     {
@@ -1322,7 +1322,7 @@
     } break;
 
     case 23:  #line 213 "grammar/xp.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new InterfaceNode()); } break;
+    { $yyVals[0+$yyTop]= $yyLex->create(new InterfaceNode(), TRUE); } break;
 
     case 24:  #line 213 "grammar/xp.jay"
     {
@@ -1451,7 +1451,7 @@
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
     case 58:  #line 319 "grammar/xp.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new MethodNode()); } break;
+    { $yyVals[0+$yyTop]= $yyLex->create(new MethodNode(), TRUE); } break;
 
     case 59:  #line 319 "grammar/xp.jay"
     {
@@ -1466,7 +1466,7 @@
     } break;
 
     case 60:  #line 329 "grammar/xp.jay"
-    { if ('__construct' == $yyVals[-1+$yyTop]) $yyVals[0+$yyTop]= $yyLex->create(new ConstructorNode()); } break;
+    { if ('__construct' == $yyVals[-1+$yyTop]) $yyVals[0+$yyTop]= $yyLex->create(new ConstructorNode(), TRUE); } break;
 
     case 61:  #line 329 "grammar/xp.jay"
     {
@@ -1479,7 +1479,7 @@
     } break;
 
     case 62:  #line 337 "grammar/xp.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new OperatorNode()); } break;
+    { $yyVals[0+$yyTop]= $yyLex->create(new OperatorNode(), TRUE); } break;
 
     case 63:  #line 337 "grammar/xp.jay"
     {
