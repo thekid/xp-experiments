@@ -37,18 +37,15 @@
         'implements'    => xp搾ompiler新yntax搆hp感arser::T_IMPLEMENTS,
         'instanceof'    => xp搾ompiler新yntax搆hp感arser::T_INSTANCEOF,
 
-        'operator'      => xp搾ompiler新yntax搆hp感arser::T_OPERATOR,
-        'throws'        => xp搾ompiler新yntax搆hp感arser::T_THROWS,
-
         'throw'         => xp搾ompiler新yntax搆hp感arser::T_THROW,
         'try'           => xp搾ompiler新yntax搆hp感arser::T_TRY,
         'catch'         => xp搾ompiler新yntax搆hp感arser::T_CATCH,
-        'finally'       => xp搾ompiler新yntax搆hp感arser::T_FINALLY,
         
         'return'        => xp搾ompiler新yntax搆hp感arser::T_RETURN,
         'new'           => xp搾ompiler新yntax搆hp感arser::T_NEW,
         'as'            => xp搾ompiler新yntax搆hp感arser::T_AS,
         'array'         => xp搾ompiler新yntax搆hp感arser::T_ARRAY,
+        'function'      => xp搾ompiler新yntax搆hp感arser::T_FUNCTION,
         
         'for'           => xp搾ompiler新yntax搆hp感arser::T_FOR,
         'foreach'       => xp搾ompiler新yntax搆hp感arser::T_FOREACH,
