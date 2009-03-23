@@ -12,6 +12,7 @@
     'text.StreamTokenizer', 
     'io.streams.InputStream',
     'xp.compiler.syntax.xp.Parser', 
+    'xp.compiler.emit.Strings', 
     'text.parser.generic.AbstractLexer'
   );
 
@@ -169,6 +170,9 @@
             }
             break;
           } while ($hasMore= $this->tokenizer->hasMoreTokens());
+          if ('"' === $token{0}) {
+            $this->value= Strings::expandEscapesIn($this->value);
+          }
         } else if ('$' === $token{0}) {
           $this->token= xp·compiler·syntax·xp·Parser::T_VARIABLE;
           $this->value= $token;

@@ -8,7 +8,6 @@
 
   uses(
     'xp.compiler.emit.Emitter', 
-    'xp.compiler.emit.Strings', 
     'xp.compiler.emit.TypeReference', 
     'xp.compiler.emit.TypeReflection', 
     'xp.compiler.emit.TypeDeclaration', 
@@ -112,7 +111,7 @@
      * @param   xp.compiler.ast.StringNode str
      */
     protected function emitString($op, StringNode $str) {
-      oel_push_value($op, Strings::expandEscapesIn($str->value));
+      oel_push_value($op, $str->value);
     }
 
     /**
@@ -945,7 +944,7 @@
       // Annotations.
       foreach ((array)$method->annotations as $annotation) {
         $params= array();
-        foreach ($annotation->parameters as $name => $value) {
+        foreach ((array)$annotation->parameters as $name => $value) {
           if ($value instanceof ClassMemberNode) {    // class literal
             $params[$name]= $this->resolve($value->class->name)->name();
           } else if ($value instanceof ConstantValueNode) {
