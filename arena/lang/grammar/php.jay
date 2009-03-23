@@ -57,12 +57,13 @@
   );
 %}
 
+%left '(' ')'
 %left ',' '=' '%' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_BOOLEAN_OR T_BOOLEAN_AND T_INSTANCEOF T_CONCAT_EQUAL
 %left '?' ':'
 %left '+' '-'
 %left '*' '/'
 %right '[' '!' '~' T_INC T_DEC T_AS
-%nonassoc '<' '>' T_SE T_GE '.' T_EQUALS T_NOT_EQUALS
+%nonassoc '<' '>' T_SE T_GE '.' T_EQUALS T_NOT_EQUALS 
 
 %token T_WORD 260
 %token T_STRING 261
@@ -515,9 +516,6 @@ expression:
       $$= $2;
     }
   | '(' expression ')' { $$= $2; }
-  | '(' typeref ')' expression {
-      $$= $yyLex->create(new CastNode(array('type' => $2, 'expression' => $4))); 
-    }
   | assignment { 
       $$= $yyLex->create(new AssignmentNode($1)); 
     }
@@ -556,6 +554,9 @@ expression:
       $$= $yyLex->create(new InstanceOfNode()); 
       $$->expression= $1; 
       $$->type= $3; 
+    }
+  | '(' typeref ')' expression {
+      $$= $yyLex->create(new CastNode(array('type' => $2, 'expression' => $4))); 
     }
 ;
 

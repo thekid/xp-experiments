@@ -12,14 +12,17 @@ GEN?=$(XP)/$(USE_XP)/ports/technologies/opt/jay/generate.sh
 all:
 	@echo "Generate parser from grammar"
 	@echo "============================"
-	@echo "Usage: $(MAKE) grammar"
-	@echo "Usage: $(MAKE) test [FLAGS=-v]"
+	@echo "Usage:"
+	@echo "- $(MAKE) grammar.*"
+	@echo "- $(MAKE) grammar.[NAME]"
+	@echo "- $(MAKE) test [FLAGS=-v]"
 	@echo
-	@echo "Generator: <$(GEN)>"
+	@echo "Generator:"
+	@echo "<$(GEN)>"
 
-grammar:
+grammar.%:
 	@echo "===> Generating grammar"
-	@for i in `ls grammar/*.jay` ; do \
+	@for i in `ls grammar/$*.jay` ; do \
 	  TYPE=`basename $$i .jay` ; \
 	  echo "---> $$TYPE:" ; \
 	  echo -n "     >> " ; sh "$(GEN)" $$i php5 "xp·compiler·syntax·$$TYPE·" > xp/compiler/syntax/$$TYPE/Parser.class.php ; \
