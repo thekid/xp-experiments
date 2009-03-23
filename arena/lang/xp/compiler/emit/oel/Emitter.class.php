@@ -137,7 +137,7 @@
      * @param   xp.compiler.ast.ConstantNode const
      */
     protected function emitConstant($op, ConstantNode $const) {
-      switch ($const->value) {
+      switch (strtolower($const->value)) {
         case 'true': oel_push_value($op, TRUE); break;
         case 'false': oel_push_value($op, FALSE); break;
         case 'null': oel_push_value($op, NULL); break;
@@ -1396,19 +1396,18 @@
      */
     protected function emitNativeImport($op, NativeImportNode $import) {
       if ('.*' == substr($import->name, -2)) {
-        $r= new ReflectionExtension(substr($import->name, 0, -2));
-        foreach ($r->getFunctions() as $f) {
-          $this->statics[0][$f->getName()]= TRUE;
+        foreach (get_extension_funcs(substr($import->name, 0, -2)) as $f) {
+          $this->statics[0][$f]= TRUE;
         }
       } else {
         $p= strrpos($import->name, '.');
         $f= substr($import->name, $p+ 1);
-        $r= new ReflectionExtension(substr($import->name, 0, $p));
-        $l= $r->getFunctions();
-        if (!isset($l[$f])) {
-          throw new IllegalArgumentException('Function '.$f.' does not exist in '.$r->getName());
+        $e= substr($import->name, 0, $p);
+        $l= get_extension_funcs($e);
+        if (!in_array($f, $l)) {
+          throw new IllegalArgumentException('Function '.$f.' does not exist in '.$e);
         }
-        $this->statics[0][$l[$f]->getName()]= TRUE;
+        $this->statics[0][$f]= TRUE;
       }
     }
     
