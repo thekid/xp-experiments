@@ -182,7 +182,7 @@
         if (FALSE !== strpos(" \n\r\t", $token)) {
           continue;
         } else if ("'" === $token{0} || '"' === $token{0}) {
-          $this->token= xp搾ompiler新yntax暖p感arser::T_STRING;
+          $this->token= xp搾ompiler新yntax搆hp感arser::T_STRING;
           $this->value= '';
           do {
             if ($token{0} === ($t= $this->nextToken($token{0}))) {
@@ -207,7 +207,7 @@
             }
           }
         } else if ('$' === $token{0}) {
-          $this->token= xp搾ompiler新yntax暖p感arser::T_VARIABLE;
+          $this->token= xp搾ompiler新yntax搆hp感arser::T_VARIABLE;
           $this->value= $token;
         } else if (isset(self::$keywords[$token])) {
           $this->token= self::$keywords[$token];
@@ -251,10 +251,10 @@
             if (!ctype_digit($decimal)) {
               $this->raise('lang.FormatException', 'Illegal decimal number <'.$token.$ahead.$decimal.'>');
             }
-            $this->token= xp搾ompiler新yntax暖p感arser::T_DECIMAL;
+            $this->token= xp搾ompiler新yntax搆hp感arser::T_DECIMAL;
             $this->value= $token.$ahead.$decimal;
           } else {
-            $this->token= xp搾ompiler新yntax暖p感arser::T_NUMBER;
+            $this->token= xp搾ompiler新yntax搆hp感arser::T_NUMBER;
             $this->value= $token;
             $this->pushBack($ahead);
           }
@@ -262,10 +262,10 @@
           if (!ctype_xdigit(substr($token, 2))) {
             $this->raise('lang.FormatException', 'Illegal hex number <'.$token.'>');
           }
-          $this->token= xp搾ompiler新yntax暖p感arser::T_HEX;
+          $this->token= xp搾ompiler新yntax搆hp感arser::T_HEX;
           $this->value= $token;
         } else {
-          $this->token= xp搾ompiler新yntax暖p感arser::T_WORD;
+          $this->token= xp搾ompiler新yntax搆hp感arser::T_WORD;
           $this->value= $token;
         }
         
