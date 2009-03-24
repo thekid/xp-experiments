@@ -86,7 +86,6 @@
     
           
     private
-      $ahead   = NULL,
       $comment = NULL;
 
     /**
@@ -133,12 +132,7 @@
     public function advance() {
       do {
         $hasMore= $this->tokenizer->hasMoreTokens();
-        if ($this->ahead) {
-          $token= $this->ahead;
-          $this->ahead= NULL;
-        } else {
-          $token= $this->tokenizer->nextToken(self::DELIMITERS);
-        }
+        $token= $this->tokenizer->nextToken(self::DELIMITERS);
         
         // Check for whitespace
         if (FALSE !== strpos(" \n\r\t", $token)) {
@@ -197,7 +191,7 @@
           } else {
             $this->token= ord($token);
             $this->value= $token;
-            $this->ahead= $ahead;
+            $this->tokenizer->pushBack($ahead);
           }
         } else if (isset(self::$lookahead[$token])) {
           $ahead= $this->tokenizer->nextToken(self::DELIMITERS);
@@ -208,7 +202,7 @@
           } else {
             $this->token= ord($token);
             $this->value= $token;
-            $this->ahead= $ahead;
+            $this->tokenizer->pushBack($ahead);
           }
         } else if (FALSE !== strpos(self::DELIMITERS, $token) && 1 == strlen($token)) {
           $this->token= ord($token);
@@ -225,7 +219,7 @@
           } else {
             $this->token= xp·compiler·syntax·php·Parser::T_NUMBER;
             $this->value= $token;
-            $this->ahead= $ahead;
+            $this->tokenizer->pushBack($ahead);
           }
         } else if ('0' === $token{0} && 'x' === @$token{1}) {
           if (!ctype_xdigit(substr($token, 2))) {
