@@ -21,13 +21,13 @@
       $this->assertEquals(array($this->create(new VariableNode(
         '$m',
         new InvocationNode(array(
-          'position'       => array(4, 20), 
+          'position'       => array(4, 18), 
           'name'           => 'invoke',
           'parameters'     => array(
-            $this->create(new VariableNode('$args'), array(4, 21))
+            $this->create(new VariableNode('$args'), array(4, 19))
           )
         ))
-      ), array(4, 11))), $this->parse('
+      ), array(4, 9))), $this->parse('
         $m.invoke($args);
       '));
     }
@@ -41,16 +41,16 @@
       $this->assertEquals(array($this->create(new VariableNode(
         '$l',
         new InvocationNode(array(
-          'position'       => array(4, 26), 
+          'position'       => array(4, 24), 
           'name'           => 'withAppender',
           'parameters'     => NULL,
           'chained'          => new InvocationNode(array(
-            'position'       => array(4, 34), 
+            'position'       => array(4, 32), 
             'name'           => 'debug',
             'parameters'     => NULL,
           ))
         ))
-      ), array(4, 11))), $this->parse('
+      ), array(4, 9))), $this->parse('
         $l.withAppender().debug();
       '));
     }
@@ -62,11 +62,11 @@
     #[@test]
     public function chainedAfterNew() {
       $this->assertEquals(array(new InstanceCreationNode(array(
-        'position'       => array(4, 11), 
+        'position'       => array(4, 9), 
         'type'           => new TypeName('Date'),
         'parameters'     => NULL,
         'chained'        => new InvocationNode(array(
-          'position'       => array(4, 30), 
+          'position'       => array(4, 28), 
           'name'           => 'toString',
           'parameters'     => NULL,
         ))
@@ -84,16 +84,16 @@
       $this->assertEquals(array($this->create(new VariableNode(
         '$l',
         new InvocationNode(array(
-          'position'       => array(4, 22), 
+          'position'       => array(4, 20), 
           'name'           => 'elements',
           'parameters'     => NULL,
           'chained'          => new ArrayAccessNode(array(
-            'position'       => array(4, 24), 
-            'offset'         => new NumberNode(array('position' => array(4, 25), 'value' => '0')),
-            'chained'        => $this->create(new VariableNode('name'), array(4, 32)),
+            'position'       => array(4, 22), 
+            'offset'         => new NumberNode(array('position' => array(4, 23), 'value' => '0')),
+            'chained'        => $this->create(new VariableNode('name'), array(4, 30)),
           ))
         ))
-      ), array(4, 11))), $this->parse('
+      ), array(4, 9))), $this->parse('
         $l.elements()[0].name;
       '));
     }
@@ -105,17 +105,17 @@
     #[@test]
     public function chainedAfterStaticMethod() {
       $this->assertEquals(array(new ClassMemberNode(array(
-        'position'       => array(4, 19), 
+        'position'       => array(4, 17),
         'class'          => new TypeName('Logger'),
         'member'         => new InvocationNode(array(
-          'position'       => array(4, 31), 
+          'position'       => array(4, 29), 
           'name'           => 'getInstance',
           'parameters'     => NULL,
           'chained'          => new InvocationNode(array(
-            'position'       => array(4, 42), 
+            'position'       => array(4, 40), 
             'name'           => 'configure',
             'parameters'     => array(
-              new StringNode(array('position' => array(4, 43), 'value' => 'etc'))
+              new StringNode(array('position' => array(4, 41), 'value' => 'etc'))
             ),
           ))
         ))

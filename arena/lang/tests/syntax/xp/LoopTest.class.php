@@ -19,22 +19,22 @@
     #[@test]
     public function forLoop() {
       $this->assertEquals(array(new ForNode(array(
-        'position'       => array(4, 11),
+        'position'       => array(4, 9),
         'initialization' => array(new AssignmentNode(array(
-          'position'       => array(4, 21),
-          'variable'       => $this->create(new VariableNode('$i'), array(4, 16)),
-          'expression'     => new NumberNode(array('position' => array(4, 20), 'value' => '0')),
+          'position'       => array(4, 19),
+          'variable'       => $this->create(new VariableNode('$i'), array(4, 14)),
+          'expression'     => new NumberNode(array('position' => array(4, 18), 'value' => '0')),
           'op'             => '='
         ))),
         'condition'      => array(new ComparisonNode(array(
-          'position'      => array(4, 28),
-          'lhs'           => $this->create(new VariableNode('$i'), array(4, 23)),
-          'rhs'           => new NumberNode(array('position' => array(4, 28), 'value' => '1000')),
+          'position'      => array(4, 26),
+          'lhs'           => $this->create(new VariableNode('$i'), array(4, 21)),
+          'rhs'           => new NumberNode(array('position' => array(4, 26), 'value' => '1000')),
           'op'            => '<'
         ))),
         'loop'           => array(new UnaryOpNode(array(
-          'position'      => array(4, 36),
-          'expression'    => $this->create(new VariableNode('$i'), array(4, 34)),
+          'position'      => array(4, 34),
+          'expression'    => $this->create(new VariableNode('$i'), array(4, 32)),
           'op'            => '++',
           'postfix'       => TRUE
         ))),
@@ -51,8 +51,8 @@
     #[@test]
     public function foreachLoop() {
       $this->assertEquals(array(new ForeachNode(array(
-        'position'      => array(4, 11),
-        'expression'    => $this->create(new VariableNode('$list'), array(4, 30)),
+        'position'      => array(4, 9),
+        'expression'    => $this->create(new VariableNode('$list'), array(4, 28)),
         'assignment'    => '$value',
         'statements'    => NULL, 
       ))), $this->parse('
@@ -67,16 +67,16 @@
     #[@test]
     public function whileLoop() {
       $this->assertEquals(array(new WhileNode(array(
-        'position'      => array(4, 11),
+        'position'      => array(4, 9),
         'expression'    => new ComparisonNode(array(
-          'position'      => array(4, 25),
+          'position'      => array(4, 23),
           'lhs'           => new UnaryOpNode(array(
-            'position'      => array(4, 20),
-            'expression'    => $this->create(new VariableNode('$i'), array(4, 18)),
+            'position'      => array(4, 18),
+            'expression'    => $this->create(new VariableNode('$i'), array(4, 16)),
             'op'            => '++',
             'postfix'       => TRUE
           )),
-          'rhs'           => new NumberNode(array('position' => array(4, 25), 'value' => '10000')),
+          'rhs'           => new NumberNode(array('position' => array(4, 23), 'value' => '10000')),
           'op'            => '<'
         )),
         'statements'    => NULL, 
@@ -92,16 +92,16 @@
     #[@test]
     public function doLoop() {
       $this->assertEquals(array(new DoNode(array(
-        'position'      => array(4, 11),
+        'position'      => array(4, 9),
         'expression'    => new ComparisonNode(array(
-          'position'      => array(4, 32),
+          'position'      => array(4, 30),
           'lhs'           => new UnaryOpNode(array(
-            'position'      => array(4, 27),
-            'expression'    => $this->create(new VariableNode('$i'), array(4, 25)),
+            'position'      => array(4, 25),
+            'expression'    => $this->create(new VariableNode('$i'), array(4, 23)),
             'op'            => '++',
             'postfix'       => TRUE
           )),
-          'rhs'           => new NumberNode(array('position' => array(4, 32), 'value' => '10000')),
+          'rhs'           => new NumberNode(array('position' => array(4, 30), 'value' => '10000')),
           'op'            => '<'
         )),
         'statements'    => NULL, 

@@ -107,7 +107,7 @@
         $this->tokenizer= new StringTokenizer($input, self::DELIMITERS, TRUE);
       }
       $this->fileName= $source;
-      $this->position= array(1, 1);   // Y, X
+      $this->position= $this->forward= array(1, 1);   // Y, X
     }
 
     /**
@@ -125,6 +125,51 @@
       }
       return $n;
     }
+
+    /**
+     * Get next token and recalculate position
+     *
+     * @param   string delim default self::DELIMITERS
+     * @return  string token
+     */
+    protected function nextToken($delim= self::DELIMITERS) {
+      $t= $this->tokenizer->nextToken($delim);
+      $l= substr_count($t, "\n");
+      if ($l > 0) {
+        $this->forward[0]+= $l;
+        $this->forward[1]= strlen($t) - strrpos($t, "\n");
+      } else {
+        $this->forward[1]+= strlen($t);
+      }
+      return $t;
+    }
+    
+    /**
+     * Push back token and recalculate position
+     *
+     * @param   string token
+     */
+    protected function pushBack($t) {
+      $l= substr_count($t, "\n");
+      if ($l > 0) {
+        $this->forward[0]-= $l;
+        $this->forward[1]= strlen($t) - strrpos($t, "\n");
+      } else {
+        $this->forward[1]-= strlen($t);
+      }
+      $this->tokenizer->pushBack($t);
+    }
+    
+    /**
+     * Throws an error, appending the starting position to the message
+     *
+     * @param   string class
+     * @param   string message
+     * @throws  lang.Throwable
+     */
+    protected function raise($class, $message) {
+      raise($class, $message.' starting at line '.$this->position[0].', offset '.$this->position[1]);
+    }
   
     /**
      * Advance this 
@@ -132,39 +177,37 @@
      * @return  bool
      */
     public function advance() {
-      do {
-        $hasMore= $this->tokenizer->hasMoreTokens();
-        $token= $this->tokenizer->nextToken(self::DELIMITERS);
+      while ($hasMore= $this->tokenizer->hasMoreTokens()) {
+        $this->position= $this->forward;
+        $token= $this->nextToken();
         
-        // Check for whitespace
+        // Check for whitespace-only
         if (FALSE !== strpos(" \n\r\t", $token)) {
-          $l= substr_count($token, "\n");
-          $this->position[1]= strlen($token) + ($l ? 1 : $this->position[1]);
-          $this->position[0]+= $l;
           continue;
-        }
-        
-        $this->position[1]+= strlen($this->value);
-        if ("'" === $token{0} || '"' === $token{0}) {
+        } else if ("'" === $token{0} || '"' === $token{0}) {
           $this->token= xp搾ompiler新yntax暖p感arser::T_STRING;
           $this->value= '';
           do {
-            if ($token{0} === ($t= $this->tokenizer->nextToken($token{0}))) {
+            if ($token{0} === ($t= $this->nextToken($token{0}))) {
               // Empty string, e.g. "" or ''
               break;
             }
             $this->value.= $t;
             if ('\\' === $this->value{strlen($this->value)- 1}) {
-              $this->value= substr($this->value, 0, -1).$this->tokenizer->nextToken($token{0});
+              $this->value= substr($this->value, 0, -1).$this->nextToken($token{0});
               continue;
             } 
-            if ($token{0} !== $this->tokenizer->nextToken($token{0})) {
-              throw new IllegalStateException('Unterminated string literal');
+            if ($token{0} !== $this->nextToken($token{0})) {
+              $this->raise('lang.IllegalStateException', 'Unterminated string literal');
             }
             break;
           } while ($hasMore= $this->tokenizer->hasMoreTokens());
           if ('"' === $token{0}) {
-            $this->value= Strings::expandEscapesIn($this->value);
+            try {
+              $this->value= Strings::expandEscapesIn($this->value);
+            } catch (FormatException $e) {
+              $this->raise('lang.FormatException', $e->getMessage());
+            }
           }
         } else if ('$' === $token{0}) {
           $this->token= xp搾ompiler新yntax暖p感arser::T_VARIABLE;
@@ -173,30 +216,25 @@
           $this->token= self::$keywords[$token];
           $this->value= $token;
         } else if ('/' === $token{0}) {
-          $ahead= $this->tokenizer->nextToken(self::DELIMITERS);
+          $ahead= $this->nextToken();
           if ('/' === $ahead) {           // Single-line comment
-            $this->tokenizer->nextToken("\n");
-            $this->position[1]= 1;
-            $this->position[0]++;
+            $this->nextToken("\n");
             continue;
           } else if ('*' === $ahead) {    // Multi-line comment
             $this->comment= '';
             do { 
-              $t= $this->tokenizer->nextToken('/'); 
-              $l= substr_count($t, "\n");
-              $this->position[1]= strlen($t) + ($l ? 1 : $this->position[1]);
-              $this->position[0]+= $l;
+              $t= $this->nextToken('/'); 
               $this->comment.= $t;
             } while ('*' !== $t{strlen($t)- 1});
-            $this->tokenizer->nextToken('/');
+            $this->nextToken('/');
             continue;
           } else {
             $this->token= ord($token);
             $this->value= $token;
-            $this->tokenizer->pushBack($ahead);
+            $this->pushBack($ahead);
           }
         } else if (isset(self::$lookahead[$token])) {
-          $ahead= $this->tokenizer->nextToken(self::DELIMITERS);
+          $ahead= $this->nextToken();
           $combined= $token.$ahead;
           if (isset(self::$lookahead[$token][$combined])) {
             $this->token= self::$lookahead[$token][$combined];
@@ -204,30 +242,30 @@
           } else {
             $this->token= ord($token);
             $this->value= $token;
-            $this->tokenizer->pushBack($ahead);
+            $this->pushBack($ahead);
           }
         } else if (FALSE !== strpos(self::DELIMITERS, $token) && 1 == strlen($token)) {
           $this->token= ord($token);
           $this->value= $token;
         } else if (ctype_digit($token)) {
-          $ahead= $this->tokenizer->nextToken(self::DELIMITERS);
+          $ahead= $this->nextToken();
           if ('.' === $ahead{0}) {
-            $decimal= $this->tokenizer->nextToken(self::DELIMITERS);
+            $decimal= $this->nextToken();
             if (!ctype_digit($decimal)) {
-              throw new FormatException('Illegal decimal number "'.$token.$ahead.$decimal.'"');
+              $this->raise('lang.FormatException', 'Illegal decimal number <'.$token.$ahead.$decimal.'>');
             }
             $this->token= xp搾ompiler新yntax暖p感arser::T_DECIMAL;
             $this->value= $token.$ahead.$decimal;
           } else {
             $this->token= xp搾ompiler新yntax暖p感arser::T_NUMBER;
             $this->value= $token;
-            $this->tokenizer->pushBack($ahead);
+            $this->pushBack($ahead);
           }
         } else if ('0' === $token{0} && 'x' === @$token{1}) {
           if (!ctype_xdigit(substr($token, 2))) {
-            throw new FormatException('Illegal hex number "'.$token.'"');
+            $this->raise('lang.FormatException', 'Illegal hex number <'.$token.'>');
           }
-          $this->token= xp搾ompiler新yntax暖p感arser::T_NUMBER;
+          $this->token= xp搾ompiler新yntax暖p感arser::T_HEX;
           $this->value= $token;
         } else {
           $this->token= xp搾ompiler新yntax暖p感arser::T_WORD;
@@ -235,9 +273,9 @@
         }
         
         break;
-      } while (1);
+      }
       
-      // fprintf(STDERR, "@ %d,%d: %d `%s`\n", $this->position[0], $this->position[1], $this->token, $this->value);
+      // DEBUG fprintf(STDERR, "@ %3d,%3d: %d `%s`\n", $this->position[1], $this->position[0], $this->token, addcslashes($this->value, "\0..\17"));
       return -1 === $this->token ? FALSE : $hasMore;
     }
   }

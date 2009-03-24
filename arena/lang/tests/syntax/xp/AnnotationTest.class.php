@@ -45,7 +45,7 @@
     #[@test]
     public function simpleAnnotation() {
       $this->assertEquals(array(new AnnotationNode(array(
-        'position'      => array(2, 17),
+        'position'      => array(2, 15),
         'type'          => 'Test'
       ))), $this->parseMethodWithAnnotations('[@Test]'));
     }
@@ -57,7 +57,7 @@
     #[@test]
     public function simpleAnnotationWithBrackets() {
       $this->assertEquals(array(new AnnotationNode(array(
-        'position'      => array(2, 18),
+        'position'      => array(2, 16),
         'type'          => 'Test'
       ))), $this->parseMethodWithAnnotations('[@Test()]'));
     }
@@ -72,7 +72,7 @@
         'position'      => array(2, 49),
         'type'          => 'Expect',
         'parameters'    => array('default' => new StringNode(array(
-          'position'      => array(2, 20),
+          'position'      => array(2, 18),
           'value'         => 'lang.IllegalArgumentException'
         )))
       ))), $this->parseMethodWithAnnotations('[@Expect("lang.IllegalArgumentException")]'));
@@ -85,19 +85,19 @@
     #[@test]
     public function annotationWithValues() {
       $this->assertEquals(array(new AnnotationNode(array(
-        'position'      => array(5, 11),
+        'position'      => array(5, 7),
         'type'          => 'Expect',
         'parameters'    => array(
           'classes' => new ArrayNode(array(
-            'position'      => array(3, 21),
+            'position'      => array(3, 19),
             'values'        => array(
-              new StringNode(array('position' => array(3, 22), 'value' => 'lang.IllegalArgumentException')),
+              new StringNode(array('position' => array(3, 20), 'value' => 'lang.IllegalArgumentException')),
               new StringNode(array('position' => array(3, 53), 'value' => 'lang.IllegalAccessException')),
             ),
             'type'          => NULL
           )),
           'code'    => new NumberNode(array(
-            'position'      => array(4, 21),
+            'position'      => array(4, 19),
             'value'         => '503',
           )),
         )))
@@ -114,8 +114,8 @@
     #[@test]
     public function multipleAnnotations() {
       $this->assertEquals(array(
-        new AnnotationNode(array('position' => array(2, 22), 'type' => 'WebMethod')),
-        new AnnotationNode(array('position' => array(2, 35), 'type' => 'Deprecated')),
+        new AnnotationNode(array('position' => array(2, 20), 'type' => 'WebMethod')),
+        new AnnotationNode(array('position' => array(2, 33), 'type' => 'Deprecated')),
       ), $this->parseMethodWithAnnotations('[@WebMethod, @Deprecated]'));
     }
   }

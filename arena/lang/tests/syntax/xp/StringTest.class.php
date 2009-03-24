@@ -4,32 +4,14 @@
  * $Id$
  */
 
-  uses(
-    'unittest.TestCase',
-    'xp.compiler.syntax.xp.Lexer',
-    'xp.compiler.syntax.xp.Parser'
-  );
+  uses('tests.syntax.xp.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class StringTest extends TestCase {
+  class StringTest extends ParserTestCase {
   
-    /**
-     * Parse method source and return statements inside this method.
-     *
-     * @param   string src
-     * @return  xp.compiler.Node[]
-     */
-    protected function parse($src) {
-      return create(new xp·compiler·syntax·xp·Parser())->parse(new xp·compiler·syntax·xp·Lexer('class Container {
-        public void method() {
-          '.$src.'
-        }
-      }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->body;
-    }
-
     /**
      * Test empty strings
      *
@@ -37,7 +19,7 @@
     #[@test]
     public function emptyStrings() {
       $this->assertEquals(array(
-        new StringNode(array('position' => array(3, 13), 'value' => '')),
+        new StringNode(array('position' => array(3, 11), 'value' => '')),
         new StringNode(array('position' => array(3, 15), 'value' => '')),
       ), $this->parse('""; \'\';'));
     }
@@ -49,7 +31,7 @@
     #[@test]
     public function doubleQuotedString() {
       $this->assertEquals(array(new StringNode(array(
-        'position'      => array(4, 11),
+        'position'      => array(4, 9),
         'value'         => 'Hello World',
       ))), $this->parse('
         "Hello World";
@@ -63,7 +45,7 @@
     #[@test]
     public function doubleQuotedStringWithEscapes() {
       $this->assertEquals(array(new StringNode(array(
-        'position'      => array(4, 11),
+        'position'      => array(4, 9),
         'value'         => '"Hello", he said',
       ))), $this->parse('
         "\"Hello\", he said";
@@ -77,7 +59,7 @@
     #[@test]
     public function singleQuotedString() {
       $this->assertEquals(array(new StringNode(array(
-        'position'      => array(4, 11),
+        'position'      => array(4, 9),
         'value'         => 'Hello World',
       ))), $this->parse("
         'Hello World';
@@ -91,7 +73,7 @@
     #[@test]
     public function singleQuotedStringWithEscapes() {
       $this->assertEquals(array(new StringNode(array(
-        'position'      => array(4, 11),
+        'position'      => array(4, 9),
         'value'         => "Timm's e-mail address",
       ))), $this->parse("
         'Timm\'s e-mail address';
@@ -105,7 +87,7 @@
     #[@test]
     public function multiLineString() {
       $this->assertEquals(array(new StringNode(array(
-        'position'      => array(4, 11),
+        'position'      => array(4, 9),
         'value'         => 'This
          is 
          a

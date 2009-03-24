@@ -89,13 +89,13 @@
     #[@test]
     public function multipleImports() {
       $this->assertEquals(array(new ImportNode(array(
-          'position' => array(2, 12),
+          'position' => array(2, 11),
           'name'     => 'util.collections.*'
         )), new ImportNode(array(
-          'position' => array(3, 13),   // XXX Why is this 13 vs. 12 for the first?
+          'position' => array(3, 11),
           'name'     => 'util.Date'
         )), new ImportNode(array(
-          'position' => array(4, 13),   // XXX -"-
+          'position' => array(4, 11),
           'name'     => 'unittest.*'
         ))), 
         $this->parse('

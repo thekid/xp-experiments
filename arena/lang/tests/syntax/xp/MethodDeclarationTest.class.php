@@ -33,7 +33,7 @@
     #[@test]
     public function toStringMethod() {
       $this->assertEquals(array(new MethodNode(array(
-        'position'   => array(2, 33),
+        'position'   => array(2, 31),
         'modifiers'  => MODIFIER_PUBLIC,
         'annotations'=> NULL,
         'name'       => 'toString',
@@ -53,7 +53,7 @@
     #[@test]
     public function equalsMethod() {
       $this->assertEquals(array(new MethodNode(array(
-        'position'   => array(2, 29),
+        'position'   => array(2, 27),
         'modifiers'  => MODIFIER_PUBLIC,
         'annotations'=> NULL,
         'name'       => 'equals',
@@ -76,7 +76,7 @@
     #[@test]
     public function abstractMethod() {
       $this->assertEquals(array(new MethodNode(array(
-        'position'   => array(2, 40),
+        'position'   => array(2, 38),
         'modifiers'  => MODIFIER_PUBLIC | MODIFIER_ABSTRACT,
         'annotations'=> NULL,
         'name'       => 'setTrace',
@@ -99,7 +99,7 @@
     #[@test]
     public function interfaceMethod() {
       $this->assertEquals(array(new MethodNode(array(
-        'position'   => array(2, 31),
+        'position'   => array(2, 29),
         'modifiers'  => MODIFIER_PUBLIC,
         'annotations'=> NULL,
         'name'       => 'compareTo',
@@ -122,7 +122,7 @@
     #[@test]
     public function staticMethod() {
       $this->assertEquals(array(new MethodNode(array(
-        'position'   => array(2, 43),
+        'position'   => array(2, 41),
         'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
         'annotations'=> NULL,
         'name'       => 'loadClass',
@@ -145,7 +145,7 @@
     #[@test]
     public function printfMethod() {
       $this->assertEquals(array(new MethodNode(array(
-        'position'   => array(2, 38),
+        'position'   => array(2, 36),
         'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
         'annotations'=> NULL,
         'name'       => 'printf',
@@ -174,7 +174,7 @@
     #[@test]
     public function addAllMethod() {
       $this->assertEquals(array(new MethodNode(array(
-        'position'   => array(2, 29),
+        'position'   => array(2, 27),
         'modifiers'  => MODIFIER_PUBLIC,
         'annotations'=> NULL,
         'name'       => 'addAll',
@@ -197,7 +197,7 @@
     #[@test]
     public function plusOperator() {
       $this->assertEquals(array(new OperatorNode(array(
-        'position'   => array(2, 41),
+        'position'   => array(2, 39),
         'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
         'annotations'=> NULL,
         'symbol'     => '+',

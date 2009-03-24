@@ -19,30 +19,30 @@
     #[@test]
     public function singleCatch() {
       $this->assertEquals(array(new TryNode(array(
-        'position'   => array(4, 15),
+        'position'   => array(4, 13),
         'statements' => array(
           $this->create(new VariableNode(
             '$method', 
             new InvocationNode(array(
-              'position'   => array(5, 25),
+              'position'   => array(5, 23),
               'name'       => 'call',
               'parameters' => NULL
             ))
-          ), array(5, 13))
+          ), array(5, 11))
         ), 
         'handling'   => array(
           new CatchNode(array(
-            'position'   => array(6, 13),
+            'position'   => array(6, 11),
             'type'       => new TypeName('IllegalArgumentException'),
             'variable'   => '$e',
             'statements' => array($this->create(new VariableNode(
               '$this',
               new InvocationNode(array(
-                'position'   => array(7, 27),
+                'position'   => array(7, 25),
                 'name'       => 'finalize',
                 'parameters' => NULL
               ))
-            ), array(7, 13))), 
+            ), array(7, 11))), 
           ))
         )
       ))), $this->parse('
@@ -61,9 +61,9 @@
     #[@test]
     public function singleThrow() {
       $this->assertEquals(array(new ThrowNode(array(
-        'position'   => array(4, 11),
+        'position'   => array(4, 9),
         'expression' => new InstanceCreationNode(array(
-          'position'   => array(4, 17),
+          'position'   => array(4, 15),
           'type'       => new TypeName('IllegalStateException'),
           'parameters' => NULL
         ))
@@ -79,15 +79,15 @@
     #[@test]
     public function singleFinally() {
       $this->assertEquals(array(new TryNode(array(
-        'position'   => array(4, 15),
+        'position'   => array(4, 13),
         'statements' => array(
           new ThrowNode(array(
-            'position'   => array(5, 13),
+            'position'   => array(5, 11),
             'expression' => new InstanceCreationNode(array(
-              'position'   => array(5, 19),
+              'position'   => array(5, 17),
               'type'       => new TypeName('ChainedException'),
               'parameters' => array(
-                $this->create(new StringNode(array('value' => 'Hello')), array(5, 40)),
+                $this->create(new StringNode(array('value' => 'Hello')), array(5, 38)),
                 $this->create(new VariableNode('$e'), array(5, 47)),
               )
             ))
@@ -95,15 +95,15 @@
         ), 
         'handling'   => array(
           new FinallyNode(array(
-            'position'   => array(6, 13),
+            'position'   => array(6, 11),
             'statements' => array($this->create(new VariableNode(
               '$this',
               new InvocationNode(array(
-                'position'   => array(7, 27),
+                'position'   => array(7, 25),
                 'name'       => 'finalize',
                 'parameters' => NULL
               ))
-            ), array(7, 13))), 
+            ), array(7, 11))), 
           ))
         )
       ))), $this->parse('
@@ -122,12 +122,12 @@
     #[@test]
     public function multipleCatches() {
       $this->assertEquals(array(new TryNode(array(
-        'position'   => array(4, 15),
+        'position'   => array(4, 13),
         'statements' => array(
           new ReturnNode(array(
-            'position'   => array(5, 13),
+            'position'   => array(5, 11),
             'expression' => new InstanceCreationNode(array(
-              'position'   => array(5, 20),
+              'position'   => array(5, 18),
               'type'       => new TypeName('util.collections.HashTable', array(
                 new TypeName('lang.types.String'), 
                 new TypeName('Object')
@@ -138,33 +138,33 @@
         ), 
         'handling'   => array(
           new CatchNode(array(
-            'position'   => array(6, 13),
+            'position'   => array(6, 11),
             'type'       => new TypeName('IllegalArgumentException'),
             'variable'   => '$e',
             'statements' => NULL, 
           )),
           new CatchNode(array(
-            'position'   => array(7, 13),
+            'position'   => array(7, 11),
             'type'       => new TypeName('SecurityException'),
             'variable'   => '$e',
             'statements' => array(new ThrowNode(array(
-              'position'   => array(8, 13),
+              'position'   => array(8, 11),
               'expression' => $this->create(new VariableNode(
                 '$e',
                 new InvocationNode(array(
-                  'position'   => array(8, 31),
+                  'position'   => array(8, 29),
                   'name'       => 'getCauses',
                   'parameters' => NULL,
                   'chained'    => new ArrayAccessNode(array(
-                    'position'   => array(8, 33),
-                    'offset'     => new NumberNode(array('position' => array(8, 34), 'value' => '0')),
+                    'position'   => array(8, 31),
+                    'offset'     => new NumberNode(array('position' => array(8, 32), 'value' => '0')),
                   ))
                 ))
-              ), array(8, 19))
+              ), array(8, 17))
             ))), 
           )),
           new CatchNode(array(
-            'position'   => array(9, 13),
+            'position'   => array(9, 11),
             'type'       => new TypeName('Exception'),
             'variable'   => '$e',
             'statements' => NULL, 

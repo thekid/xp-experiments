@@ -19,9 +19,9 @@
     #[@test]
     public function equality() {
       $this->assertEquals(array(new ComparisonNode(array(
-        'position'      => array(4, 17),
-        'lhs'           => $this->create(new VariableNode('$i'), array(4, 11)),
-        'rhs'           => new NumberNode(array('position' => array(4, 17), 'value' => '10')),
+        'position'      => array(4, 15),
+        'lhs'           => $this->create(new VariableNode('$i'), array(4, 9)),
+        'rhs'           => new NumberNode(array('position' => array(4, 15), 'value' => '10')),
         'op'            => '=='
       ))), $this->parse('
         $i == 10;
@@ -35,9 +35,9 @@
     #[@test]
     public function unEquality() {
       $this->assertEquals(array(new ComparisonNode(array(
-        'position'      => array(4, 17),
-        'lhs'           => $this->create(new VariableNode('$i'), array(4, 11)),
-        'rhs'           => new NumberNode(array('position' => array(4, 17), 'value' => '10')),
+        'position'      => array(4, 15),
+        'lhs'           => $this->create(new VariableNode('$i'), array(4, 9)),
+        'rhs'           => new NumberNode(array('position' => array(4, 15), 'value' => '10')),
         'op'            => '!='
       ))), $this->parse('
         $i != 10;
@@ -51,9 +51,9 @@
     #[@test]
     public function smallerThan() {
       $this->assertEquals(array(new ComparisonNode(array(
-        'position'      => array(4, 16),
-        'lhs'           => $this->create(new VariableNode('$i'), array(4, 11)),
-        'rhs'           => new NumberNode(array('position' => array(4, 16), 'value' => '10')),
+        'position'      => array(4, 14),
+        'lhs'           => $this->create(new VariableNode('$i'), array(4, 9)),
+        'rhs'           => new NumberNode(array('position' => array(4, 14), 'value' => '10')),
         'op'            => '<'
       ))), $this->parse('
         $i < 10;
@@ -67,9 +67,9 @@
     #[@test]
     public function smallerThanOrEqualTo() {
       $this->assertEquals(array(new ComparisonNode(array(
-        'position'      => array(4, 17),
-        'lhs'           => $this->create(new VariableNode('$i'), array(4, 11)),
-        'rhs'           => new NumberNode(array('position' => array(4, 17), 'value' => '10')),
+        'position'      => array(4, 15),
+        'lhs'           => $this->create(new VariableNode('$i'), array(4, 9)),
+        'rhs'           => new NumberNode(array('position' => array(4, 15), 'value' => '10')),
         'op'            => '<='
       ))), $this->parse('
         $i <= 10;
@@ -83,9 +83,9 @@
     #[@test]
     public function greaterThan() {
       $this->assertEquals(array(new ComparisonNode(array(
-        'position'      => array(4, 16),
-        'lhs'           => $this->create(new VariableNode('$i'), array(4, 11)),
-        'rhs'           => new NumberNode(array('position' => array(4, 16), 'value' => '10')),
+        'position'      => array(4, 14),
+        'lhs'           => $this->create(new VariableNode('$i'), array(4, 9)),
+        'rhs'           => new NumberNode(array('position' => array(4, 14), 'value' => '10')),
         'op'            => '>'
       ))), $this->parse('
         $i > 10;
@@ -99,9 +99,9 @@
     #[@test]
     public function greaterThanOrEqualTo() {
       $this->assertEquals(array(new ComparisonNode(array(
-        'position'      => array(4, 17),
-        'lhs'           => $this->create(new VariableNode('$i'), array(4, 11)),
-        'rhs'           => new NumberNode(array('position' => array(4, 17), 'value' => '10')),
+        'position'      => array(4, 15),
+        'lhs'           => $this->create(new VariableNode('$i'), array(4, 9)),
+        'rhs'           => new NumberNode(array('position' => array(4, 15), 'value' => '10')),
         'op'            => '>='
       ))), $this->parse('
         $i >= 10;

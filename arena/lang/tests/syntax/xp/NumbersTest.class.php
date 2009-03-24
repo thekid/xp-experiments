@@ -4,32 +4,14 @@
  * $Id$
  */
 
-  uses(
-    'unittest.TestCase',
-    'xp.compiler.syntax.xp.Lexer',
-    'xp.compiler.syntax.xp.Parser'
-  );
+  uses('tests.syntax.xp.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class NumbersTest extends TestCase {
+  class NumbersTest extends ParserTestCase {
   
-    /**
-     * Parse method source and return statements inside this method.
-     *
-     * @param   string src
-     * @return  xp.compiler.Node[]
-     */
-    protected function parse($src) {
-      return create(new xp·compiler·syntax·xp·Parser())->parse(new xp·compiler·syntax·xp·Lexer('class Container {
-        public void method() {
-          '.$src.'
-        }
-      }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->body;
-    }
-
     /**
      * Test integer
      *
@@ -37,7 +19,7 @@
     #[@test]
     public function integerNumber() {
       $this->assertEquals(array(new NumberNode(array(
-        'position'      => array(4, 11),
+        'position'      => array(4, 9),
         'value'         => '1',
       ))), $this->parse('
         1;
@@ -51,9 +33,9 @@
     #[@test]
     public function negativeIntegerNumber() {
       $this->assertEquals(array(new UnaryOpNode(array(
-        'position'      => array(4, 13),
+        'position'      => array(4, 11),
         'expression'    => new NumberNode(array(
-          'position'      => array(4, 12),
+          'position'      => array(4, 10),
           'value'         => '1',
         )),
         'op'            => '-'
@@ -69,7 +51,7 @@
     #[@test]
     public function decimalNumber() {
       $this->assertEquals(array(new DecimalNode(array(
-        'position'      => array(4, 11),
+        'position'      => array(4, 9),
         'value'         => '1.0',
       ))), $this->parse('
         1.0;
@@ -83,7 +65,7 @@
     #[@test]
     public function hexNumber() {
       $this->assertEquals(array(new HexNode(array(
-        'position'      => array(4, 11),
+        'position'      => array(4, 9),
         'value'         => '0xFF',
       ))), $this->parse('
         0xFF;
