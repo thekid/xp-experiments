@@ -90,7 +90,6 @@
 
     const 
       DELIMITERS = " |&?!.:;,@%~=<>(){}[]#+-*/\"'\r\n\t";
-    
           
     private
       $comment = NULL;
