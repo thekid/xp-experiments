@@ -122,12 +122,29 @@
      */
     protected function emitArray($op, ArrayNode $arr) {
       oel_add_begin_array_init($op);
-      foreach ($arr->values as $value) {
+      foreach ((array)$arr->values as $value) {
         $this->emitOne($op, $value);
         oel_add_array_init_element($op);
       }
       oel_add_end_array_init($op);
     }
+
+    /**
+     * Emit a map (a key/value pair dictionary)
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.MapNode map
+     */
+    protected function emitMap($op, MapNode $map) {
+      oel_add_begin_array_init($op);
+      foreach ((array)$map->values as $pair) {
+        $this->emitOne($op, $pair[0]);
+        $this->emitOne($op, $pair[1]);
+        oel_add_array_init_key_element($op);
+      }
+      oel_add_end_array_init($op);
+    }
+
 
     /**
      * Emit constants
@@ -495,6 +512,16 @@
     }
 
     /**
+     * Emit noop
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.NoopNode statement
+     */
+    protected function emitNoop($op, NoopNode $statement) {
+      // NOOP
+    }
+
+    /**
      * Emit foreach loop
      *
      * @param   resource op
@@ -519,6 +546,21 @@
         $this->emitAll($op, (array)$loop->statements);
       }
       oel_add_end_foreach($op);
+    }
+
+    /**
+     * Emit do ... while loop
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.DoNode loop
+     */
+    protected function emitDo($op, DoNode $loop) {
+      oel_add_begin_dowhile($op); {
+        $this->emitAll($op, $loop->statements);
+      }
+      oel_add_end_dowhile_body($op);
+      $this->emitOne($op, $loop->expression);
+      oel_add_end_dowhile($op);
     }
 
     /**
@@ -1409,7 +1451,7 @@
      */
     protected function emitNativeImport($op, NativeImportNode $import) {
       if ('.*' == substr($import->name, -2)) {
-        foreach (get_extension_funcs(substr($import->name, 0, -2)) as $f) {
+        foreach ((array)get_extension_funcs(substr($import->name, 0, -2)) as $f) {
           $this->statics[0][$f]= TRUE;
         }
       } else {
@@ -1642,12 +1684,21 @@
       oel_set_source_file($op, $tree->origin);
       oel_set_source_line($op, 0);
       
-      // Imports
       array_unshift($this->used, array());
       array_unshift($this->imports, array());
-      array_unshift($this->statics, array());
       array_unshift($this->package, $tree->package ? $tree->package->name : NULL);
       array_unshift($this->declarations, array($tree->declaration));
+      
+      // Functions from lang.base.php
+      array_unshift($this->statics, array(
+        'newinstance' => TRUE,
+        'with'        => TRUE,
+        'create'      => TRUE,
+        'raise'       => TRUE,
+        'delete'      => TRUE,
+        'cast'        => TRUE,
+        'is'          => TRUE,
+      ));
 
       // Import and declarations
       $this->emitAll($op, (array)$tree->imports);
