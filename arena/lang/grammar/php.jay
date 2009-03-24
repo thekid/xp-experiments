@@ -51,7 +51,8 @@
     'xp.compiler.ast.BreakNode',
     'xp.compiler.ast.ContinueNode',
     'xp.compiler.ast.IfNode',
-    'xp.compiler.ast.ElseNode'
+    'xp.compiler.ast.ElseNode',
+    'xp.compiler.ast.NoopNode'
   );
 %}
 
@@ -162,13 +163,11 @@ uses_opt:
 ;
 
 uses:
-    use { $$= array($1); }
-  | use uses { $$= array_merge(array($1), $2); }
-;
-
-use:
     T_WORD '(' uselist ')' ';' {
-      foreach ($3 as $class) { $$= $yyLex->create(new ImportNode(array('name' => $class))); }
+      $$= array();
+      foreach ($3 as $class) { 
+        $$[]= $yyLex->create(new ImportNode(array('name' => $class))); 
+      }
     }
 ;
 
@@ -338,8 +337,8 @@ statements_opt:
 ;
 
 statements:
-    statement { $$= array($1); }
-  | statement statements { $$= array_merge(array($1), $2); }
+    block { $$= $1; }
+  | block statements { $$= array_merge($1, $2); }
 ;
 
 statement:
@@ -397,7 +396,7 @@ statement:
       $1->expression= $3;
     }
   | expression ';' { $1->free= TRUE; }
-  | ';'
+  | ';' { $$= $yyLex->create(new NoopNode()); }
 ;
 
 cases_opt:
@@ -553,8 +552,11 @@ expression:
       $$->expression= $1; 
       $$->type= $3; 
     }
-  | '(' typeref ')' expression {
-      $$= $yyLex->create(new CastNode(array('type' => $2, 'expression' => $4))); 
+  | '(' T_WORD ')' expression {
+      $$= $yyLex->create(new CastNode(array('type' => new TypeName($2), 'expression' => $4))); 
+    }
+  | '(' T_ARRAY ')' expression {
+      $$= $yyLex->create(new CastNode(array('type' => new TypeName('var[]'), 'expression' => $4))); 
     }
 ;
 
