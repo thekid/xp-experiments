@@ -28,7 +28,6 @@
   class xp·compiler·emit·oel·Emitter extends Emitter {
     protected 
       $op           = NULL,
-      $errors       = array(),
       $class        = array(NULL),
       $package      = array(NULL),
       $imports      = array(NULL),
@@ -65,7 +64,7 @@
       if (!$types) return;
       
       $n= 0;
-      // DEBUG Console::$err->writeLine('uses(', $types, ')');
+      $this->cat && $this->cat->info('uses(', $types, ')');
       oel_add_begin_function_call($op, 'uses');
       foreach ($types as $type) {
         try {
@@ -1080,8 +1079,6 @@
      * @param   string qualified
      */
     protected function registerClass($op, $name, $qualified) {
-      // DEBUG Console::$err->writeLine('R@', $name, '= ', $qualified);
-
       oel_add_begin_static_method_call($op, 'registry', 'xp'); {
         oel_push_value($op, 'class.'.$name);
         oel_add_pass_param($op, 1);
@@ -1561,18 +1558,15 @@
       $target= 'emit'.substr(get_class($node), 0, -strlen('Node'));
       if (method_exists($this, $target)) {
         oel_set_source_line($op, $node->position[0]);
-        // DEBUG Console::$err->writeLine('@', $node->position[0], ' Emit ', $node->getClassName(), '<', $node->free, '> ', $node->hashCode());
+        $this->cat && $this->cat->debug('@', $node->position[0], ' Emit ', $node->getClassName(), '<', $node->free, '> ', $node->hashCode());
         try {
           call_user_func_array(array($this, $target), array($op, $node));
         } catch (Throwable $e) {
-        
-          // STATUS_INTERNAL_SERVER_ERROR
           $this->error('0500', $e->toString(), $node);
           return 0;
         }
         return 1;
       } else {
-        // STATUS_UNPROCESSABLE_ENTITY
         $this->error('0422', 'Cannot emit '.$node->getClassName(), $node);
         return 0;
       }
@@ -1609,8 +1603,8 @@
       } else if ($node instanceof VariableNode) {
         return $this->types->containsKey($node) ? $this->types[$node] : new TypeName(NULL);
       } else {
-        // DEBUG Console::$err->writeLine('Warning: Cannot determine type for '.xp::stringOf($node));
-        return new TypeName(NULL);
+        $this->cat && $this->cat->warn('Warning: Cannot determine type for '.xp::stringOf($node));
+        return new TypeName('var');
       }
     }
 
@@ -1706,42 +1700,9 @@
           $register= FALSE;     // Don't register this class as it cannot be written yet
         }
         $register && $this->used[0][]= new TypeName($qualified);
-        // DEBUG Console::$err->writeLine('Determined<', $register, '> @ ', $qualified, '= ', $this->types[$qualified]);
       }
       
       return $this->types[$qualified];
-    }
-    
-    /**
-     * Raise an error
-     *
-     * @param   string code
-     * @param   string message
-     * @param   xp.compiler.ast.Node context
-     */
-    protected function error($code, $message, xp·compiler·ast·Node $context= NULL) {
-      if ($context) {               // Use given context node
-        $pos= $context->position;
-      } else {                      // Try to determine last context node from backtrace
-        $pos= array(0, 0);
-        foreach (create(new Throwable(NULL))->getStackTrace() as $element) {
-          if (
-            'emit' == substr($element->method, 0, 4) &&
-            sizeof($element->args) > 1 &&
-            $element->args[1] instanceof xp·compiler·ast·Node
-          ) {
-            $pos= $element->args[1]->position;
-            break;
-          }
-        }
-      }
-      $this->errors[]= sprintf(
-        '[%4s] %s at line %d, offset %d',
-        $code,
-        $message,
-        $pos[0],
-        $pos[1]
-      );
     }
     
     /**
