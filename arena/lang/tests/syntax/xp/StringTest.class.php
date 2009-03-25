@@ -19,8 +19,8 @@
     #[@test]
     public function emptyStrings() {
       $this->assertEquals(array(
-        new StringNode(array('position' => array(3, 11), 'value' => '')),
-        new StringNode(array('position' => array(3, 15), 'value' => '')),
+        new StringNode(array('position' => array(3, 13), 'value' => '')),
+        new StringNode(array('position' => array(3, 17), 'value' => '')),
       ), $this->parse('""; \'\';'));
     }
 
