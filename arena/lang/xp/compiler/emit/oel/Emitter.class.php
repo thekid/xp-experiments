@@ -85,9 +85,12 @@
      */
     protected function emitInvocation($op, InvocationNode $inv) {
       if (!isset($this->statics[0][$inv->name])) {
-        $this->errors[]= 'Cannot resolve '.$inv->name;
-        $inv->free || oel_push_value($op, NULL);        // Prevent fatal
-        return;
+        if (!($resolved= $this->resolveStatic($inv->name))) {
+          $this->errors[]= 'Cannot resolve '.$inv->name;
+          $inv->free || oel_push_value($op, NULL);        // Prevent fatal
+          return;
+        }
+        $this->statics[0][$inv->name]= $resolved;         // Cache information
       }
       $ptr= $this->statics[0][$inv->name];
 
@@ -137,7 +140,7 @@
      */
     protected function emitMap($op, MapNode $map) {
       oel_add_begin_array_init($op);
-      foreach ((array)$map->values as $pair) {
+      foreach ((array)$map->elements as $pair) {
         $this->emitOne($op, $pair[0]);
         $this->emitOne($op, $pair[1]);
         oel_add_array_init_key_element($op);
@@ -1451,9 +1454,7 @@
      */
     protected function emitNativeImport($op, NativeImportNode $import) {
       if ('.*' == substr($import->name, -2)) {
-        foreach ((array)get_extension_funcs(substr($import->name, 0, -2)) as $f) {
-          $this->statics[0][$f]= TRUE;
-        }
+        $this->statics[0][0][substr($import->name, 0, -2)]= TRUE;
       } else {
         $p= strrpos($import->name, '.');
         $f= substr($import->name, $p+ 1);
@@ -1481,16 +1482,13 @@
      * @param   xp.compiler.ast.StaticImportNode import
      */
     protected function emitStaticImport($op, StaticImportNode $import) {
+
+      // TODO: Query other sources, e.g. compilation unit
       if ('.*' == substr($import->name, -2)) {
-        $name= substr($import->name, 0, -2);
-        $class= XPClass::forName($name);   // TODO: Other sources
-        foreach ($class->getMethods() as $method) {
-          if (!Modifiers::isStatic($method->getModifiers())) continue;
-          $this->statics[0][$method->getName()]= $class->getName();
-        }
+        $this->statics[0][0][substr($import->name, 0, -2)]= XPClass::forName($name);
       } else {
         $p= strrpos($import->name, '.');
-        $class= XPClass::forName(substr($import->name, 0, $p));   // TODO: Other sources
+        $class= XPClass::forName(substr($import->name, 0, $p));
         $method= $class->getMethod(substr($import->name, $p+ 1));
         $this->statics[0][$method->getName()]= $class->getName();
       }
@@ -1610,6 +1608,27 @@
     }
     
     /**
+     * Resolve a static call
+     *
+     * @param   string name
+     * @return  var
+     */
+    protected function resolveStatic($name) {
+      foreach ($this->statics[0][0] as $lookup => $type) {
+        if (TRUE === $type) {
+          $l= get_extension_funcs($lookup);
+          if (in_array($name, $l)) return TRUE;
+        } else {
+          foreach ($type->getMethods() as $method) {
+            if (!Modifiers::isStatic($method->getModifiers())) continue;
+            return $class->getName();
+          }
+        }
+      }
+      return NULL;
+    }
+    
+    /**
      * Resolve a class name
      *
      * @param   string name
@@ -1691,6 +1710,7 @@
       
       // Functions from lang.base.php
       array_unshift($this->statics, array(
+        0             => array(),
         'newinstance' => TRUE,
         'with'        => TRUE,
         'create'      => TRUE,
