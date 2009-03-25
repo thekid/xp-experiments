@@ -103,7 +103,7 @@
     protected function emitInvocation($op, InvocationNode $inv) {
       if (!isset($this->statics[0][$inv->name])) {
         if (!($resolved= $this->resolveStatic($inv->name))) {
-          $this->error('R001', 'Cannot resolve '.$inv->name.'()', $inv);
+          $this->error('T501', 'Cannot resolve '.$inv->name.'()', $inv);
           $inv->free || oel_push_value($op, NULL);        // Prevent fatal
           return;
         }
@@ -1558,7 +1558,13 @@
       $target= 'emit'.substr(get_class($node), 0, -strlen('Node'));
       if (method_exists($this, $target)) {
         oel_set_source_line($op, $node->position[0]);
-        $this->cat && $this->cat->debug('@', $node->position[0], ' Emit ', $node->getClassName(), '<', $node->free, '> ', $node->hashCode());
+        $this->cat && $this->cat->debugf(
+          '@%-3d Emit %s(free= %d): %s',
+          $node->position[0], 
+          $node->getClassName(), 
+          $node->free, 
+          $node->hashCode()
+        );
         try {
           call_user_func_array(array($this, $target), array($op, $node));
         } catch (Throwable $e) {
@@ -1697,7 +1703,7 @@
             $this->error('P424', $e->compoundMessage());
             $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
           } catch (ParseException $e) {
-            $this->error('P400', $e->compoundMessage());
+            $this->error('P400', $e->getCause()->compoundMessage());
             $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
           } catch (ClassNotFoundException $e) {
             $this->error('T404', $e->compoundMessage());
@@ -1779,9 +1785,6 @@
 
       // Finalize
       oel_finalize($op);
-      
-      // FIXME: This is necessary so class parents are set
-      // oel_execute($op);
       
       // Write. TODO: Use a filemanager / compilationtarget-thing of some sort!
       $f= new File(basename(str_replace('.xp', xp::CLASS_FILE_EXT, $tree->origin)));
