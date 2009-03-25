@@ -486,7 +486,6 @@ statement:
       $1->expression= $3;
     }
   | expression ';' { $1->free= TRUE; }
-  | ';'
 ;
 
 cases_opt:
