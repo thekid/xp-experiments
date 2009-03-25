@@ -24,11 +24,15 @@
      * @return  xp.compiler.Node[]
      */
     protected function parse($src) {
-      return create(new xp搾ompiler新yntax暖p感arser())->parse(new xp搾ompiler新yntax暖p微exer('class Container {
-        public void method() {
-          '.$src.'
-        }
-      }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->body;
+      try {
+        return create(new xp搾ompiler新yntax暖p感arser())->parse(new xp搾ompiler新yntax暖p微exer('class Container {
+          public void method() {
+            '.$src.'
+          }
+        }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->body;
+      } catch (ParseException $e) {
+        throw $e->getCause();
+      }
     }
 
     /**
