@@ -54,21 +54,21 @@
      * Called when parsing fails
      *
      * @param   io.File src
-     * @param   lang.Throwable reason
+     * @param   text.parser.generic.ParseException reason
      */
-    public function parsingFailed(File $src, Throwable $reason) {
+    public function parsingFailed(File $src, ParseException $reason) {
       $this->writer->write('P');
       $this->failed++;
-      $this->failures[$src->getURI()]= $reason;
+      $this->failures[$src->getURI()]= $reason->getCause();
     }
 
     /**
      * Called when emitting fails
      *
      * @param   io.File src
-     * @param   lang.Throwable reason
+     * @param   lang.FormatException reason
      */
-    public function emittingFailed(File $src, Throwable $reason) {
+    public function emittingFailed(File $src, FormatException $reason) {
       $this->writer->write('E');
       $this->failed++;
       $this->failures[$src->getURI()]= $reason;
