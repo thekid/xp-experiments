@@ -76,7 +76,7 @@
      * Test "1.a" raises a parser exception
      *
      */
-    #[@test, @expect('text.parser.generic.ParseException')]
+    #[@test, @expect('lang.FormatException')]
     public function illegalDecimalCharAfterDot() {
       $this->parse('1.a');
     }
@@ -85,7 +85,7 @@
      * Test "1.-" raises a parser exception
      *
      */
-    #[@test, @expect('text.parser.generic.ParseException')]
+    #[@test, @expect('lang.FormatException')]
     public function illegalDecimalMinusAfterDot() {
       $this->parse('0.-');
     }
@@ -94,7 +94,7 @@
      * Test "0xZ" raises a parser exception
      *
      */
-    #[@test, @expect('text.parser.generic.ParseException')]
+    #[@test, @expect('lang.FormatException')]
     public function illegalHexZ() {
       $this->parse('0xZ');
     }
@@ -103,7 +103,7 @@
      * Test "0x" raises a parser exception
      *
      */
-    #[@test, @expect('text.parser.generic.ParseException')]
+    #[@test, @expect('lang.FormatException')]
     public function illegalHexMissingAfterX() {
       $this->parse('0x');
     }
