@@ -11,6 +11,10 @@
     'xp.compiler.emit.TypeReference', 
     'xp.compiler.emit.TypeReflection', 
     'xp.compiler.emit.TypeDeclaration', 
+    'xp.compiler.syntax.php.Lexer',
+    'xp.compiler.syntax.php.Parser',
+    'xp.compiler.syntax.xp.Lexer',
+    'xp.compiler.syntax.xp.Parser',
     'lang.reflect.Modifiers',
     'util.collections.HashTable'
   );
@@ -36,6 +40,20 @@
       $properties   = array(NULL),
       $declarations = array(NULL),
       $types        = NULL;
+    
+    protected static 
+      $syntaxes     = array();
+    
+    static function __static() {
+      self::$syntaxes['class.php']= array(
+        'parser' => new xp搾ompiler新yntax搆hp感arser(),
+        'lexer'  => XPClass::forName('xp.compiler.syntax.php.Lexer')
+      );
+      self::$syntaxes['xp']= array(
+        'parser' => new xp搾ompiler新yntax暖p感arser(),
+        'lexer'  => XPClass::forName('xp.compiler.syntax.xp.Lexer')
+      );
+    }
 
     /**
      * Emit uses statements for a given list of types
@@ -55,7 +73,7 @@
           oel_push_value($op, $name);
           oel_add_pass_param($op, ++$n);
         } catch (Throwable $e) {
-          $this->errors[]= $e->toString();
+          $this->error('0424', $e->toString());
         }      
       }
       oel_add_end_function_call($op, $n);
@@ -86,7 +104,7 @@
     protected function emitInvocation($op, InvocationNode $inv) {
       if (!isset($this->statics[0][$inv->name])) {
         if (!($resolved= $this->resolveStatic($inv->name))) {
-          $this->errors[]= 'Cannot resolve '.$inv->name;
+          $this->error('R001', 'Cannot resolve '.$inv->name.'()', $inv);
           $inv->free || oel_push_value($op, NULL);        // Prevent fatal
           return;
         }
@@ -292,7 +310,7 @@
           $n= $this->emitParameters($op, (array)$c->parameters);
           oel_add_end_method_call($op, $n);
         } else {
-          $this->errors[]= 'Unknown chained element '.xp::stringOf($c);
+          $this->error('C404', 'Unknown chained element '.xp::stringOf($c), $c);
         }
         $c= $c->chained;
       }
@@ -431,7 +449,7 @@
         )));
         return;
       } else if (!$un->expression instanceof VariableNode) {
-        $this->errors[]= 'Cannot perform unary '.$un->op.' on '.xp::stringOf($un->expression);
+        $this->error('U400', 'Cannot perform unary '.$un->op.' on '.$un->getClassName(), $un);
         return;
       }
 
@@ -690,7 +708,7 @@
         // Class constant
         oel_push_constant($op, $ref->member->value, $this->resolve($ref->class->name)->literal());
       } else {
-        $this->errors[]= 'Cannot emit class member '.xp::stringOf($ref->member);
+        $this->error('M405', 'Cannot emit class member '.xp::stringOf($ref->member), $ref);
         oel_push_value($op, NULL);
         return;
       }
@@ -849,7 +867,7 @@
         if (Types::INTERFACE_KIND === $type->kind()) {
           $p= array('parent' => new TypeName('lang.Object'), 'implements' => array($new->type));
         } else if (Types::ENUM_KUND === $type->kind()) {
-          $this->errors[]= 'Cannot create anonymous enums';
+          $this->error('C405', 'Cannot create anonymous enums', $new);
           return;
         } else {
           $p= array('parent' => $new->type);
@@ -893,7 +911,7 @@
       );
 
       if (!$assign->variable instanceof VariableNode) {
-        $this->errors[]= 'Cannot assign to '.xp::stringOf($assign);
+        $this->error('A400', 'Cannot assign to '.$assign->getClassName(), $assign);
         return;
       }
 
@@ -915,7 +933,7 @@
      * @param   xp.compiler.ast.OperatorNode method
      */
     protected function emitOperator($op, OperatorNode $operator) {
-      $this->errors[]= 'Operator overloading not supported '.xp::stringOf($operator);
+      $this->errors('F501', 'Operator overloading not supported', $operator);
     }
     
     /**
@@ -1547,12 +1565,15 @@
         try {
           call_user_func_array(array($this, $target), array($op, $node));
         } catch (Throwable $e) {
-          $this->errors[]= $e->toString();
+        
+          // STATUS_INTERNAL_SERVER_ERROR
+          $this->error('0500', $e->toString(), $node);
           return 0;
         }
         return 1;
       } else {
-        $this->errors[]= 'Cannot emit '.xp::stringOf($node);
+        // STATUS_UNPROCESSABLE_ENTITY
+        $this->error('0422', 'Cannot emit '.$node->getClassName(), $node);
         return 0;
       }
     }
@@ -1594,17 +1615,25 @@
     }
 
     /**
-     * Locate class file
+     * Parse class
      *
      * @param   string qualified
-     * @return  string uri
+     * @return  xp.compiler.ast.ParseTree tree
+     * @throws  lang.ClassNotFoundException
      */
-    protected function locate($qualified) {
-      $name= DIRECTORY_SEPARATOR.strtr($qualified, '.', DIRECTORY_SEPARATOR).'.xp';
+    protected function parse($qualified) {
+      $name= DIRECTORY_SEPARATOR.strtr($qualified, '.', DIRECTORY_SEPARATOR);
       foreach (xp::$registry['classpath'] as $path) {
-        if (file_exists($uri= $path.$name)) return $uri;
+        foreach (self::$syntaxes as $ext => $syntax) {
+          if (!file_exists($uri= $path.$name.'.'.$ext)) continue;
+          
+          return $syntax['parser']->parse($syntax['lexer']->newInstance(
+            new FileInputStream(new File($uri)),
+            $uri
+          ));
+        }
       }
-      return NULL;
+      throw new ClassNotFoundException('Cannot find class '.$qualified);
     }
     
     /**
@@ -1659,22 +1688,17 @@
         if ($cl->providesClass($qualified)) {
           $this->types[$qualified]= new TypeReflection(XPClass::forName($qualified));
         } else {
-          if (!($uri= $this->locate($qualified))) {
-            $this->errors[]= 'Cannot find class '.$qualified;
-            return new TypeReference($qualified, Types::UNKNOWN_KIND);
-          }
-
           try {
-            $tree= create(new Parser())->parse(new xp搾ompiler微exer(
-              FileUtil::getContents(new File($uri)),
-              $uri
-            ));
+            $tree= $this->parse($qualified);
           } catch (ParseException $e) {
-            $this->errors[]= $e->compoundMessage();
-            return NULL;
+            $this->error('P400', $e->compoundMessage());
+            return new TypeReference($qualified, Types::UNKNOWN_KIND);
+          } catch (ClassNotFoundException $e) {
+            $this->error('C404', $e->compoundMessage());
+            return new TypeReference($qualified, Types::UNKNOWN_KIND);
           } catch (IOException $e) {
-            $this->errors[]= $e->compoundMessage();
-            return NULL;
+            $this->error('0507', $e->compoundMessage());
+            return new TypeReference($qualified, Types::UNKNOWN_KIND);
           }
 
           $this->emit($tree);
@@ -1686,6 +1710,38 @@
       }
       
       return $this->types[$qualified];
+    }
+    
+    /**
+     * Raise an error
+     *
+     * @param   string code
+     * @param   string message
+     * @param   xp.compiler.ast.Node context
+     */
+    protected function error($code, $message, xp搾ompiler戢st意ode $context= NULL) {
+      if ($context) {               // Use given context node
+        $pos= $context->position;
+      } else {                      // Try to determine last context node from backtrace
+        $pos= array(0, 0);
+        foreach (create(new Throwable(NULL))->getStackTrace() as $element) {
+          if (
+            'emit' == substr($element->method, 0, 4) &&
+            sizeof($element->args) > 1 &&
+            $element->args[1] instanceof xp搾ompiler戢st意ode
+          ) {
+            $pos= $element->args[1]->position;
+            break;
+          }
+        }
+      }
+      $this->errors[]= sprintf(
+        '[%4s] %s at line %d, offset %d',
+        $code,
+        $message,
+        $pos[0],
+        $pos[1]
+      );
     }
     
     /**
