@@ -12,6 +12,8 @@
    * @purpose  purpose
    */
   class InvocationNode extends xp·compiler·ast·Node {
-    public $parameters = array();
+    public 
+      $chained    = NULL,
+      $parameters = array();
   }
 ?>

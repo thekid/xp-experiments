@@ -7,11 +7,12 @@
   uses('xp.compiler.ast.Node');
 
   /**
-   * (Insert class' description here)
+   * Represents an annotation
    *
    * @purpose  purpose
    */
   class AnnotationNode extends xp·compiler·ast·Node {
-    
+    public 
+      $parameters= array();
   }
 ?>

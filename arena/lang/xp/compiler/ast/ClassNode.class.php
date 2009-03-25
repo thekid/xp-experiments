@@ -12,6 +12,5 @@
    * @purpose  purpose
    */
   class ClassNode extends xp·compiler·ast·Node {
-    
   }
 ?>

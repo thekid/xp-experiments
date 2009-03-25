@@ -13,7 +13,7 @@
    */
   abstract class xp·compiler·ast·Node extends Object {
     public
-      $position = array(),
+      $position = array(0, 0),
       $free     = FALSE;
 
     /**

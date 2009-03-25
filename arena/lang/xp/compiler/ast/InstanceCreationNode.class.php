@@ -12,6 +12,8 @@
    * @purpose  purpose
    */
   class InstanceCreationNode extends xp·compiler·ast·Node {
+    public 
+      $chained    = NULL;
     
   }
 ?>
