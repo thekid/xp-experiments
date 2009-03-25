@@ -8,6 +8,7 @@
 
   uses(
     'io.File',
+    'xp.compiler.Syntax',
     'io.streams.FileInputStream',
     'xp.compiler.emit.oel.Emitter',
     'xp.compiler.DefaultListener',
@@ -109,18 +110,8 @@
       $status= array();
       foreach ($files as $file) {
         $listener->compilationStarted($file);
-        $ext= $file->getExtension();
         try {
-          if (!isset($syntaxes[$ext])) {
-            $syntaxes[$ext]= array(
-              'parser' => $syntax->getPackage($ext)->loadClass('Parser')->newInstance(),
-              'lexer'  => $syntax->getPackage($ext)->loadClass('Lexer')
-            );
-          }
-          $ast= $syntaxes[$ext]['parser']->parse($syntaxes[$ext]['lexer']->newInstance(
-            new FileInputStream($file),
-            $file->getURI()
-          ));
+          $ast= Syntax::forName($file->getExtension())->parse(new FileInputStream($file), $file->getURI());
           $r= $emitter->emit($ast);
           $listener->compilationSucceeded($file, $r);
         } catch (ParseException $e) {

@@ -6,6 +6,7 @@
 
   uses(
     'util.cmd.Command',
+    'xp.compiler.Syntax',
     'io.File',
     'io.streams.FileInputStream'
   );
@@ -21,27 +22,6 @@
       $syntax   = NULL;
 
     /**
-     * Returns a parser object
-     *
-     * @param   lang.reflect.Package p
-     * @return  text.parser.generic.AbstractParser
-     */
-    protected function parser(Package $p) {
-      return $p->loadClass('Parser')->newInstance();
-    }
-
-    /**
-     * Returns a lexer object
-     *
-     * @param   lang.reflect.Package p
-     * @param   io.File in
-     * @return  text.parser.generic.AbstractLexer
-     */
-    protected function lexer(Package $p, File $in) {
-      return $p->loadClass('Lexer')->newInstance(new FileInputStream($in), $in->getURI());
-    }
-      
-    /**
      * Set file to parse
      *
      * @param   string in
@@ -49,7 +29,10 @@
     #[@arg(position= 0)]
     public function setIn($in) {
       $this->in= new File($in);
-      $this->syntax= Package::forName('xp.compiler.syntax')->getPackage($this->in->getExtension());
+      if (!$this->in->exists()) {
+        throw new FileNotFoundException($in);
+      }
+      $this->syntax= Syntax::forName($this->in->getExtension());
     }
 
     /**
@@ -58,14 +41,7 @@
      */
     public function run() {
       try {
-        $ast= create($this->parser($this->syntax))->parse($this->lexer($this->syntax, $this->in));
-      } catch (ClassNotFoundException $e) {
-        $this->err->writeLinef(
-          '*** Cannot parse "%s" files: %s', 
-          $this->in->getExtension(),
-          $e->compoundMessage()
-        );
-        return;
+        $ast= $this->syntax->parse(new FileInputStream($this->in), $this->in->getURI());
       } catch (ParseException $e) {
         $this->err->writeLinef(
           '*** Parse error: %s', 
