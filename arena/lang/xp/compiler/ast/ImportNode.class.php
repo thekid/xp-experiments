@@ -12,6 +12,15 @@
    * @purpose  purpose
    */
   class ImportNode extends xp·compiler·ast·Node {
-    
+    public $name= '';
+
+    /**
+     * Returns a hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return 'xp.import:'.$this->name;
+    }
   }
 ?>
