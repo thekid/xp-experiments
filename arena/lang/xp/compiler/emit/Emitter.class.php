@@ -12,8 +12,11 @@
    * @see      xp://xp.compiler.ast.Node
    */
   abstract class Emitter extends Object implements Traceable {
-    protected $cat = NULL;
-    protected $errors = array();
+    protected $cat= NULL;
+    protected $messages= array(
+      'warnings' => array(),
+      'errors'   => array()
+    );
     
     /**
      * Emit a parse tree
@@ -22,15 +25,16 @@
      * @return  
      */
     public abstract function emit(ParseTree $tree);
-
+    
     /**
-     * Raise an error
+     * Format a message
      *
      * @param   string code
      * @param   string message
      * @param   xp.compiler.ast.Node context
+     * @return  string
      */
-    protected function error($code, $message, xp·compiler·ast·Node $context= NULL) {
+    protected function format($code, $message, xp·compiler·ast·Node $context= NULL) {
       if ($context) {               // Use given context node
         $pos= $context->position;
       } else {                      // Try to determine last context node from backtrace
@@ -47,16 +51,39 @@
         }
       }
       
-      $message= sprintf(
+      return sprintf(
         '[%4s] %s at line %d, offset %d',
         $code,
         $message,
         $pos[0],
         $pos[1]
       );
-      
+    }
+    
+    /**
+     * Issue a warning
+     *
+     * @param   string code
+     * @param   string message
+     * @param   xp.compiler.ast.Node context
+     */
+    protected function warn($code, $message, xp·compiler·ast·Node $context= NULL) {
+      $message= $this->format($code, $message, $context);
+      $this->cat && $this->cat->warn($message);
+      $this->messages['warnings'][]= $message;
+    }
+
+    /**
+     * Raise an error
+     *
+     * @param   string code
+     * @param   string message
+     * @param   xp.compiler.ast.Node context
+     */
+    protected function error($code, $message, xp·compiler·ast·Node $context= NULL) {
+      $message= $this->format($code, $message, $context);
       $this->cat && $this->cat->error($message);
-      $this->errors[]= $message;
+      $this->messages['errors'][]= $message;
     }
     
     

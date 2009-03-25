@@ -64,7 +64,7 @@
       if (!$types) return;
       
       $n= 0;
-      $this->cat && $this->cat->info('uses(', $types, ')');
+      $this->cat && $this->cat->debug('uses(', $types, ')');
       oel_add_begin_function_call($op, 'uses');
       foreach ($types as $type) {
         try {
@@ -232,7 +232,7 @@
      * @param   xp.compiler.ast.DecimalNode num
      */
     protected function emitDecimal($op, DecimalNode $num) {
-      oel_push_value($op, (float)$num->value);
+      oel_push_value($op, (double)$num->value);
     }
 
     /**
@@ -1599,11 +1599,17 @@
       } else if ($node instanceof StringNode) {
         return new TypeName('string');
       } else if ($node instanceof NumberNode) {
-        return new TypeName('int');     // FIXME: Floats
+        return new TypeName('int');
+      } else if ($node instanceof DecimalNode) {
+        return new TypeName('double');
+      } else if ($node instanceof HexNode) {
+        return new TypeName('int');
       } else if ($node instanceof VariableNode) {
         return $this->types->containsKey($node) ? $this->types[$node] : new TypeName(NULL);
+      } else if ($node instanceof InstanceCreationNode) {
+        return $node->type;
       } else {
-        $this->cat && $this->cat->warn('Warning: Cannot determine type for '.xp::stringOf($node));
+        $this->warn('T300', 'Cannot determine type for '.$node->getClassName(), $node);
         return new TypeName('var');
       }
     }
@@ -1682,21 +1688,26 @@
         if ($cl->providesClass($qualified)) {
           $this->types[$qualified]= new TypeReflection(XPClass::forName($qualified));
         } else {
+          $messages= $this->messages;
           try {
             $tree= $this->parse($qualified);
+            $this->emit($tree);
+            $t= new TypeDeclaration($tree);
+          } catch (FormatException $e) {
+            $this->error('P424', $e->compoundMessage());
+            $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
           } catch (ParseException $e) {
             $this->error('P400', $e->compoundMessage());
-            return new TypeReference($qualified, Types::UNKNOWN_KIND);
+            $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
           } catch (ClassNotFoundException $e) {
-            $this->error('C404', $e->compoundMessage());
-            return new TypeReference($qualified, Types::UNKNOWN_KIND);
+            $this->error('T404', $e->compoundMessage());
+            $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
           } catch (IOException $e) {
             $this->error('0507', $e->compoundMessage());
-            return new TypeReference($qualified, Types::UNKNOWN_KIND);
+            $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
           }
-
-          $this->emit($tree);
-          $this->types[$qualified]= new TypeDeclaration($tree);
+          $this->messages= array_merge($messages, $this->messages);
+          $this->types[$qualified]= $t;
           $register= FALSE;     // Don't register this class as it cannot be written yet
         }
         $register && $this->used[0][]= new TypeName($qualified);
@@ -1712,8 +1723,11 @@
      * @return  io.File the written file
      */
     public function emit(ParseTree $tree) {
-      $this->errors= array();
       $this->types= new HashTable();
+      $this->messages= array(
+        'warnings' => array(),
+        'errors'   => array()
+      );
       
       // Create and initialize op array
       $op= oel_new_op_array();
@@ -1745,19 +1759,26 @@
 
       // Load used classes
       $this->emitUses($op, $this->used[0]);
-      
-      // Check on errors
-      if ($this->errors) {
-        throw new FormatException(xp::stringOf($this->errors));
-      }
 
-      // Finalize
-      oel_finalize($op);
       array_shift($this->imports);
       array_shift($this->statics);
       array_shift($this->declarations);
       array_shift($this->package);
       array_shift($this->used);
+      
+      // Check on errors
+      $this->cat && $this->cat->infof(
+        '== %s: %d error(s), %d warning(s) ==', 
+        basename($tree->origin), 
+        sizeof($this->messages['errors']), 
+        sizeof($this->messages['warnings'])
+      );
+      if ($this->messages['errors']) {
+        throw new FormatException('Errors emitting '.$tree->origin.': '.xp::stringOf($this->messages));
+      }
+
+      // Finalize
+      oel_finalize($op);
       
       // FIXME: This is necessary so class parents are set
       // oel_execute($op);
