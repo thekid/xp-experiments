@@ -978,11 +978,11 @@
           oel_add_receive_arg(
             $op,
             $i + 1,
-            substr($arg['name'], 1),
+            $arg['name'],
             eval('return '.$arg['default']->value.';')              // HACK!
           );
         } else {
-          oel_add_receive_arg($op, $i + 1, substr($arg['name'], 1));
+          oel_add_receive_arg($op, $i + 1, $arg['name']);
         }
         $this->types[new VariableNode($arg['name'])]= $arg['type'];
       }
