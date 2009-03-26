@@ -559,8 +559,14 @@
       }
       oel_add_begin_foreach($op); {
         oel_add_begin_variable_parse($op);
-        oel_push_variable($op, ltrim($loop->assignment, '$'));
-        oel_push_value($op, NULL);
+        oel_push_variable($op, ltrim($loop->assignment['value'], '$'));
+        
+        if ($loop->assignment['key']) {
+          oel_add_begin_variable_parse($op);
+          oel_push_variable($op, ltrim($loop->assignment['key'], '$'));
+        } else {
+          oel_push_value($op, NULL);
+        }
       }
       oel_add_begin_foreach_body($op); {
         $this->emitAll($op, (array)$loop->statements);

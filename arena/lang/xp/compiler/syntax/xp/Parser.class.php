@@ -1582,7 +1582,7 @@
     case 101:  #line 461 "grammar/xp.jay"
     {
       $yyVals[-7+$yyTop]->expression= $yyVals[-2+$yyTop];
-      $yyVals[-7+$yyTop]->assignment= $yyVals[-4+$yyTop];
+      $yyVals[-7+$yyTop]->assignment= array('value' => $yyVals[-4+$yyTop]);
       $yyVals[-7+$yyTop]->statements= $yyVals[0+$yyTop];
     } break;
 

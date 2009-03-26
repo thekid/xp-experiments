@@ -53,7 +53,7 @@
       $this->assertEquals(array(new ForeachNode(array(
         'position'      => array(4, 9),
         'expression'    => $this->create(new VariableNode('$list'), array(4, 28)),
-        'assignment'    => '$value',
+        'assignment'    => array('value' => '$value'),
         'statements'    => NULL, 
       ))), $this->parse('
         foreach ($value in $list) { }

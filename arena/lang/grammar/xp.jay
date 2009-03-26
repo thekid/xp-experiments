@@ -460,7 +460,7 @@ statement:
     }
   | T_FOREACH { $1= $yyLex->create(new ForeachNode()); } '(' T_VARIABLE T_IN expression ')' block {
       $1->expression= $6;
-      $1->assignment= $4;
+      $1->assignment= array('value' => $4);
       $1->statements= $8;
     }
   | T_WHILE { $1= $yyLex->create(new WhileNode()); } '(' expression ')' block {

@@ -367,7 +367,7 @@ statement:
       $1->condition= $6;
       $1->statements= $10;
     }
-  | T_FOREACH { $1= $yyLex->create(new ForeachNode()); } '(' expression T_AS T_VARIABLE ')' block {
+  | T_FOREACH { $1= $yyLex->create(new ForeachNode()); } '(' expression T_AS foreachassign ')' block {
       $1->expression= $4;
       $1->assignment= $6;
       $1->statements= $8;
@@ -396,6 +396,11 @@ statement:
     }
   | expression ';' { $1->free= TRUE; }
   | ';' { $$= $yyLex->create(new NoopNode()); }
+;
+
+foreachassign:
+    T_VARIABLE { $$= array('key' => NULL, 'value' => $1); }
+  | T_VARIABLE T_DOUBLE_ARROW T_VARIABLE { $$= array('key' => $1, 'value' => $3); }
 ;
 
 cases_opt:
