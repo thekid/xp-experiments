@@ -1,7 +1,7 @@
 <?php
   namespace util;
 
-  use operation::Success;
+  use \operation\Success;
   
   class Date {
   
@@ -9,7 +9,7 @@
       return new TimeZone();
     }
 
-    public function setTimeZone(util::TimeZone $tz) {
+    public function setTimeZone(\util\TimeZone $tz) {
       return new Success();
     }
   }
