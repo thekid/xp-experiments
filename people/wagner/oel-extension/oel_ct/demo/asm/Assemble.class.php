@@ -25,7 +25,7 @@
     const ARGUMENTS   = 1;
 
     /**
-     * (Insert method's description here)
+     * Set file to parse
      *
      * @param   string name
      */
