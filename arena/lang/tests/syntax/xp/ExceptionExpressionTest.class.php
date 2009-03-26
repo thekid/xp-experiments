@@ -22,7 +22,7 @@
         'position'   => array(4, 13),
         'statements' => array(
           $this->create(new VariableNode(
-            '$method', 
+            'method', 
             new InvocationNode(array(
               'position'   => array(5, 23),
               'name'       => 'call',
@@ -34,9 +34,9 @@
           new CatchNode(array(
             'position'   => array(6, 11),
             'type'       => new TypeName('IllegalArgumentException'),
-            'variable'   => '$e',
+            'variable'   => 'e',
             'statements' => array($this->create(new VariableNode(
-              '$this',
+              'this',
               new InvocationNode(array(
                 'position'   => array(7, 25),
                 'name'       => 'finalize',
@@ -88,7 +88,7 @@
               'type'       => new TypeName('ChainedException'),
               'parameters' => array(
                 $this->create(new StringNode(array('value' => 'Hello')), array(5, 38)),
-                $this->create(new VariableNode('$e'), array(5, 47)),
+                $this->create(new VariableNode('e'), array(5, 47)),
               )
             ))
           ))
@@ -97,7 +97,7 @@
           new FinallyNode(array(
             'position'   => array(6, 11),
             'statements' => array($this->create(new VariableNode(
-              '$this',
+              'this',
               new InvocationNode(array(
                 'position'   => array(7, 25),
                 'name'       => 'finalize',
@@ -140,17 +140,17 @@
           new CatchNode(array(
             'position'   => array(6, 11),
             'type'       => new TypeName('IllegalArgumentException'),
-            'variable'   => '$e',
+            'variable'   => 'e',
             'statements' => NULL, 
           )),
           new CatchNode(array(
             'position'   => array(7, 11),
             'type'       => new TypeName('SecurityException'),
-            'variable'   => '$e',
+            'variable'   => 'e',
             'statements' => array(new ThrowNode(array(
               'position'   => array(8, 11),
               'expression' => $this->create(new VariableNode(
-                '$e',
+                'e',
                 new InvocationNode(array(
                   'position'   => array(8, 29),
                   'name'       => 'getCauses',
@@ -166,7 +166,7 @@
           new CatchNode(array(
             'position'   => array(9, 11),
             'type'       => new TypeName('Exception'),
-            'variable'   => '$e',
+            'variable'   => 'e',
             'statements' => NULL, 
           ))
         )

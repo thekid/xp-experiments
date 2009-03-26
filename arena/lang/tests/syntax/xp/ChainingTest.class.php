@@ -19,12 +19,12 @@
     #[@test]
     public function methodCall() {
       $this->assertEquals(array($this->create(new VariableNode(
-        '$m',
+        'm',
         new InvocationNode(array(
           'position'       => array(4, 18), 
           'name'           => 'invoke',
           'parameters'     => array(
-            $this->create(new VariableNode('$args'), array(4, 19))
+            $this->create(new VariableNode('args'), array(4, 19))
           )
         ))
       ), array(4, 9))), $this->parse('
@@ -39,7 +39,7 @@
     #[@test]
     public function chainedMethodCalls() {
       $this->assertEquals(array($this->create(new VariableNode(
-        '$l',
+        'l',
         new InvocationNode(array(
           'position'       => array(4, 24), 
           'name'           => 'withAppender',
@@ -82,7 +82,7 @@
     #[@test]
     public function arrayOffsetOnMethod() {
       $this->assertEquals(array($this->create(new VariableNode(
-        '$l',
+        'l',
         new InvocationNode(array(
           'position'       => array(4, 20), 
           'name'           => 'elements',

@@ -263,7 +263,7 @@
         ) {
           oel_add_begin_function_call($op, 'sizeof'); {
             oel_add_begin_variable_parse($op);
-            oel_push_variable($op, ltrim($var->name, '$'));    // without '$'
+            oel_push_variable($op, $var->name);
             oel_add_end_variable_parse($op);
             oel_add_pass_param($op, 1);
           }
@@ -273,7 +273,7 @@
       }
       
       oel_add_begin_variable_parse($op);
-      oel_push_variable($op, ltrim($var->name, '$'));    // without '$'
+      oel_push_variable($op, $var->name);
       $this->emitChain($op, $var);
       oel_add_end_variable_parse($op);
       $var->free && oel_add_free($op);
@@ -453,7 +453,7 @@
       }
 
       oel_add_begin_variable_parse($op);
-      oel_push_variable($op, ltrim($un->expression->name, '$'));    // without '$'
+      oel_push_variable($op, $un->expression->name);
       oel_add_incdec_op($op, $ops[$un->op][$un->postfix]);
       $un->free && oel_add_free($op);
     }
@@ -552,18 +552,18 @@
       // Special case when iterating on variables: Do not end variable parse 
       if ($loop->expression instanceof VariableNode) {
         oel_add_begin_variable_parse($op);
-        oel_push_variable($op, ltrim($loop->expression->name, '$'));    // without '$'
+        oel_push_variable($op, $loop->expression->name);
         $this->emitChain($op, $loop->expression);
       } else {
         $this->emitOne($op, $loop->expression);
       }
       oel_add_begin_foreach($op); {
         oel_add_begin_variable_parse($op);
-        oel_push_variable($op, ltrim($loop->assignment['value'], '$'));
+        oel_push_variable($op, $loop->assignment['value']);
         
         if ($loop->assignment['key']) {
           oel_add_begin_variable_parse($op);
-          oel_push_variable($op, ltrim($loop->assignment['key'], '$'));
+          oel_push_variable($op, $loop->assignment['key']);
         } else {
           oel_push_value($op, NULL);
         }
@@ -706,7 +706,7 @@
       
         // Static member
         oel_add_begin_variable_parse($op);
-        oel_push_variable($op, ltrim($ref->member->name, '$'), $ref->class->name);   // without '$'
+        oel_push_variable($op, $ref->member->name, $ref->class->name);
         oel_add_end_variable_parse($op);
       } else if ($ref->member instanceof ConstantNode) {
 
@@ -800,7 +800,7 @@
         oel_add_begin_firstcatch(
           $op, 
           $this->resolve($try->handling[0]->type->name)->literal(), 
-          ltrim($try->handling[0]->variable, '$')
+          $try->handling[0]->variable
         ); {
           $this->emitAll($op, (array)$try->handling[0]->statements);
           $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
@@ -812,7 +812,7 @@
           oel_add_begin_catch(
             $op, 
             $this->resolve($try->handling[$i]->type->name)->literal(), 
-            ltrim($try->handling[$i]->variable, '$')
+            $try->handling[$i]->variable
           ); {
             $this->emitAll($op, (array)$try->handling[$i]->statements);
             $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
@@ -924,7 +924,7 @@
       $this->types[$assign->variable]= $this->typeOf($assign->expression);
 
       oel_add_begin_variable_parse($op);
-      oel_push_variable($op, ltrim($assign->variable->name, '$'));    // without '$'
+      oel_push_variable($op, $assign->variable->name);
       $this->emitChain($op, $assign->variable);
       
       isset($ops[$assign->op]) ? oel_add_binary_op($op, $ops[$assign->op]) : oel_add_assign($op);
@@ -968,7 +968,7 @@
             oel_add_end_function_call($op, 0);
           }
           oel_add_begin_variable_parse($op);
-          oel_push_variable($op, substr($arg['name'], 1));          // without '$'
+          oel_push_variable($op, $arg['name']);
           oel_add_assign($op);
           oel_add_free($op);
           break;
@@ -1132,7 +1132,7 @@
             $property->modifiers
           );
           foreach ($def[1] as $i => $arg) {
-            oel_add_receive_arg($iop, $i + 1, substr($arg['name'], 1));  // without '$'
+            oel_add_receive_arg($iop, $i + 1, $arg['name']);
             $this->types[new VariableNode($arg['name'])]= $arg['type'];
           }
           $this->emitAll($iop, $property->handlers[$handler]);
@@ -1217,7 +1217,7 @@
     protected function emitField($op, FieldNode $field) {
       oel_add_declare_property(
         $op, 
-        ltrim($field->name, '$'),
+        $field->name,
         NULL,           // Initial value
         Modifiers::isStatic($field->modifiers),
         $field->modifiers

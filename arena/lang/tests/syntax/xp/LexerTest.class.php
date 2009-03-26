@@ -67,7 +67,7 @@
     #[@test]
     public function commentAtEnd() {
       $t= $this->tokensOf('$a++; // HACK');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$a', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 'a', array(1, 1)), $t[0]);
       $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_INC, '++', array(1, 3)), $t[1]);
       $this->assertEquals(array(59, ';', array(1, 5)), $t[2]);
     }
@@ -102,7 +102,7 @@
     #[@test]
     public function dqString() {
       $t= $this->tokensOf('$s= "Hello World";');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$s', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 's', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_STRING, 'Hello World', array(1, 5)), $t[2]);
       $this->assertEquals(array(59, ';', array(1, 18)), $t[3]);
@@ -115,7 +115,7 @@
     #[@test]
     public function emptyDqString() {
       $t= $this->tokensOf('$s= "";');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$s', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 's', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_STRING, '', array(1, 5)), $t[2]);
       $this->assertEquals(array(59, ';', array(1, 7)), $t[3]);
@@ -128,7 +128,7 @@
     #[@test]
     public function multiLineDqString() {
       $t= $this->tokensOf('$s= "'."\n\n".'";');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$s', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 's', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_STRING, "\n\n", array(1, 5)), $t[2]);
       $this->assertEquals(array(59, ';', array(3, 2)), $t[3]);
@@ -141,7 +141,7 @@
     #[@test]
     public function dqStringWithEscapes() {
       $t= $this->tokensOf('$s= "\"Hello\", he said";');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$s', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 's', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_STRING, '"Hello", he said', array(1, 5)), $t[2]);
       $this->assertEquals(array(59, ';', array(1, 25)), $t[3]);
@@ -155,7 +155,7 @@
     public function escapeSequences() {
       foreach (array('r' => "\r", 'n' => "\n", 't' => "\t", '\\' => "\\") as $escape => $expanded) {
         $t= $this->tokensOf('$s= "{\\'.$escape.'}";');
-        $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$s', array(1, 1)), $t[0]);
+        $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 's', array(1, 1)), $t[0]);
         $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
         $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_STRING, '{'.$expanded.'}', array(1, 5)), $t[2], $escape);
         $this->assertEquals(array(59, ';', array(1, 11)), $t[3]);
@@ -169,7 +169,7 @@
     #[@test]
     public function illegalEscapeSequence() {
       $t= $this->tokensOf('$s= "Hell\ü";');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$s', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 's', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array('lang.FormatException', 'Illegal escape sequence \\ü in Hell\\ü starting at line 1, offset 5'), $t[2]);
     }
@@ -181,7 +181,7 @@
     #[@test]
     public function sqString() {
       $t= $this->tokensOf('$s= \'Hello World\';');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$s', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 's', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_STRING, 'Hello World', array(1, 5)), $t[2]);
       $this->assertEquals(array(59, ';', array(1, 18)), $t[3]);
@@ -194,7 +194,7 @@
     #[@test]
     public function emptySqString() {
       $t= $this->tokensOf('$s= \'\';');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$s', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 's', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_STRING, '', array(1, 5)), $t[2]);
       $this->assertEquals(array(59, ';', array(1, 7)), $t[3]);
@@ -207,7 +207,7 @@
     #[@test]
     public function multiLineSqString() {
       $t= $this->tokensOf('$s= \''."\n\n".'\';');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$s', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 's', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_STRING, "\n\n", array(1, 5)), $t[2]);
       $this->assertEquals(array(59, ';', array(3, 2)), $t[3]);
@@ -220,7 +220,7 @@
     #[@test]
     public function sqStringWithEscapes() {
       $t= $this->tokensOf('$s= \'\\\'Hello\\\', he said\';');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$s', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 's', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_STRING, '\'Hello\', he said', array(1, 5)), $t[2]);
       $this->assertEquals(array(59, ';', array(1, 25)), $t[3]);
@@ -244,7 +244,7 @@
     #[@test]
     public function unterminatedString() {
       $t= $this->tokensOf('$s= "The end');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$s', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 's', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array('lang.IllegalStateException', 'Unterminated string literal starting at line 1, offset 5'), $t[2]);
     }
@@ -256,7 +256,7 @@
     #[@test]
     public function decimalNumber() {
       $t= $this->tokensOf('$i= 1.0;');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$i', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 'i', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_DECIMAL, '1.0', array(1, 5)), $t[2]);
       $this->assertEquals(array(59, ';', array(1, 8)), $t[3]);
@@ -269,7 +269,7 @@
     #[@test]
     public function illegalDecimalNumber() {
       $t= $this->tokensOf('$i= 1.a;');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$i', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 'i', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array('lang.FormatException', 'Illegal decimal number <1.a> starting at line 1, offset 5'), $t[2]);
     }
@@ -281,7 +281,7 @@
     #[@test]
     public function hexNumber() {
       $t= $this->tokensOf('$i= 0xFF;');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$i', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 'i', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_HEX, '0xFF', array(1, 5)), $t[2]);
       $this->assertEquals(array(59, ';', array(1, 9)), $t[3]);
@@ -294,7 +294,7 @@
     #[@test]
     public function illegalHexNumber() {
       $t= $this->tokensOf('$i= 0xZ;');
-      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, '$i', array(1, 1)), $t[0]);
+      $this->assertEquals(array(xp·compiler·syntax·xp·Parser::T_VARIABLE, 'i', array(1, 1)), $t[0]);
       $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
       $this->assertEquals(array('lang.FormatException', 'Illegal hex number <0xZ> starting at line 1, offset 5'), $t[2]);
     }

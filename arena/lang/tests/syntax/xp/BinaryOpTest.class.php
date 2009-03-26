@@ -20,7 +20,7 @@
     public function addition() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'position'      => array(4, 16),
-        'lhs'           => $this->create(new VariableNode('$i'), array(4, 9)),
+        'lhs'           => $this->create(new VariableNode('i'), array(4, 9)),
         'rhs'           => new NumberNode(array('position' => array(4, 14), 'value' => '10')),
         'op'            => '+'
       ))), $this->parse('
@@ -36,7 +36,7 @@
     public function subtraction() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'position'      => array(4, 16),
-        'lhs'           => $this->create(new VariableNode('$i'), array(4, 9)),
+        'lhs'           => $this->create(new VariableNode('i'), array(4, 9)),
         'rhs'           => new NumberNode(array('position' => array(4, 14), 'value' => '10')),
         'op'            => '-'
       ))), $this->parse('
@@ -52,7 +52,7 @@
     public function multiplication() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'position'      => array(4, 16),
-        'lhs'           => $this->create(new VariableNode('$i'), array(4, 9)),
+        'lhs'           => $this->create(new VariableNode('i'), array(4, 9)),
         'rhs'           => new NumberNode(array('position' => array(4, 14), 'value' => '10')),
         'op'            => '*'
       ))), $this->parse('
@@ -68,7 +68,7 @@
     public function division() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'position'      => array(4, 16),
-        'lhs'           => $this->create(new VariableNode('$i'), array(4, 9)),
+        'lhs'           => $this->create(new VariableNode('i'), array(4, 9)),
         'rhs'           => new NumberNode(array('position' => array(4, 14), 'value' => '10')),
         'op'            => '/'
       ))), $this->parse('
@@ -85,7 +85,7 @@
     public function modulo() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'position'      => array(4, 16),
-        'lhs'           => $this->create(new VariableNode('$i'), array(4, 9)),
+        'lhs'           => $this->create(new VariableNode('i'), array(4, 9)),
         'rhs'           => new NumberNode(array('position' => array(4, 14), 'value' => '10')),
         'op'            => '%'
       ))), $this->parse('

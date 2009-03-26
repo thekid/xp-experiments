@@ -59,7 +59,7 @@
         'name'       => 'equals',
         'returns'    => new TypeName('bool'),
         'arguments'  => array(array(
-          'name' => '$cmp',
+          'name' => 'cmp',
           'type' => new TypeName('Object')
         )),
         'throws'     => NULL,
@@ -82,7 +82,7 @@
         'name'       => 'setTrace',
         'returns'    => new TypeName('void'),
         'arguments'  => array(array(
-          'name' => '$cat',
+          'name' => 'cat',
           'type' => new TypeName('util.log.LogCategory')
         )),
         'throws'     => NULL,
@@ -105,7 +105,7 @@
         'name'       => 'compareTo',
         'returns'    => new TypeName('int'),
         'arguments'  => array(array(
-          'name' => '$other',
+          'name' => 'other',
           'type' => new TypeName('Object')
         )),
         'throws'     => NULL,
@@ -128,7 +128,7 @@
         'name'       => 'loadClass',
         'returns'    => new TypeName('Class', array(new TypeName('T'))),
         'arguments'  => array(array(
-          'name' => '$name',
+          'name' => 'name',
           'type' => new TypeName('string')
         )),
         'throws'     => array(new TypeName('ClassNotFoundException'), new TypeName('SecurityException')),
@@ -151,10 +151,10 @@
         'name'       => 'printf',
         'returns'    => new TypeName('string'),
         'arguments'  => array(array(
-          'name'   => '$format',
+          'name'   => 'format',
           'type'   => new TypeName('string')
         ), array(
-          'name'   => '$args',
+          'name'   => 'args',
           'type'   => new TypeName('string'),
           'vararg' => TRUE
         )), 
@@ -180,7 +180,7 @@
         'name'       => 'addAll',
         'returns'    => new TypeName('void'),
         'arguments'  => array(array(
-          'name'   => '$elements',
+          'name'   => 'elements',
           'type'   => new TypeName('T[]')      // XXX FIXME this is probably not a good representation
         )), 
         'throws'     => NULL,
@@ -203,10 +203,10 @@
         'symbol'     => '+',
         'returns'    => new TypeName('self'),
         'arguments'  => array(array(
-          'name' => '$a',
+          'name' => 'a',
           'type' => new TypeName('self')
         ), array(
-          'name' => '$b',
+          'name' => 'b',
           'type' => new TypeName('self')
         )),
         'throws'     => NULL,

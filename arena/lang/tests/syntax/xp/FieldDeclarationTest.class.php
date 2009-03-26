@@ -32,7 +32,7 @@
         'position'   => array(2, 28),
         'modifiers'  => MODIFIER_PUBLIC,
         'annotations'=> NULL,
-        'name'       => '$name',
+        'name'       => 'name',
         'type'       => new TypeName('string'),
         'initialization' => NULL,
       ))), $this->parse('class Person { 
@@ -50,7 +50,7 @@
         'position'   => array(2, 44),
         'modifiers'  => MODIFIER_PRIVATE | MODIFIER_STATIC,
         'annotations'=> NULL,
-        'name'       => '$instance',
+        'name'       => 'instance',
         'type'       => new TypeName('self'),
         'initialization' => new ConstantNode(array(
           'position'   => array(2, 44),
@@ -72,7 +72,7 @@
           'position'   => array(2, 30),
           'modifiers'  => MODIFIER_PRIVATE,
           'annotations'=> NULL,
-          'name'       => '$_name',
+          'name'       => '_name',
           'type'       => new TypeName('string'),
           'initialization' => NULL,
         )),
@@ -87,7 +87,7 @@
               new ReturnNode(array(
                 'position'   => array(3, 36),
                 'expression' => $this->create(new VariableNode(
-                  '$this',
+                  'this',
                   $this->create(new VariableNode('_name'), array(3, 54))
                 ), array(3, 43))
               ))
@@ -111,7 +111,7 @@
           'position'   => array(2, 30),
           'modifiers'  => MODIFIER_PRIVATE,
           'annotations'=> NULL,
-          'name'       => '$_name',
+          'name'       => '_name',
           'type'       => new TypeName('string'),
           'initialization' => NULL,
         )),
@@ -126,7 +126,7 @@
               new ReturnNode(array(
                 'position'   => array(4, 17),
                 'expression' => $this->create(new VariableNode(
-                  '$this',
+                  'this',
                   $this->create(new VariableNode('_name'), array(4, 35))
                 ), array(4, 24))
               ))
@@ -135,11 +135,11 @@
               new AssignmentNode(array(
                 'position'   => array(5, 36),
                 'variable'   => $this->create(new VariableNode(
-                  '$this',
+                  'this',
                   $this->create(new VariableNode('_name'), array(5, 28))
                 ), array(5, 17)),
                 'expression' => $this->create(new VariableNode(
-                  '$value'
+                  'value'
                 ), array(5, 30)),
                 'op'         => '='
               ))
@@ -170,7 +170,7 @@
           'name'       => 'this',
           'arguments'  => array(
             array(
-              'name' => '$offset',
+              'name' => 'offset',
               'type' => new TypeName('int')
             )
           ),

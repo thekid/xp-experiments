@@ -20,7 +20,7 @@
     public function negation() {
       $this->assertEquals(array(new UnaryOpNode(array(
         'position'      => array(4, 12),
-        'expression'    => $this->create(new VariableNode('$i'), array(4, 10)),
+        'expression'    => $this->create(new VariableNode('i'), array(4, 10)),
         'op'            => '!'
       ))), $this->parse('
         !$i;
@@ -35,7 +35,7 @@
     public function complement() {
       $this->assertEquals(array(new UnaryOpNode(array(
         'position'      => array(4, 12),
-        'expression'    => $this->create(new VariableNode('$i'), array(4, 10)),
+        'expression'    => $this->create(new VariableNode('i'), array(4, 10)),
         'op'            => '~'
       ))), $this->parse('
         ~$i;
@@ -50,7 +50,7 @@
     public function increment() {
       $this->assertEquals(array(new UnaryOpNode(array(
         'position'      => array(4, 13),
-        'expression'    => $this->create(new VariableNode('$i'), array(4, 11)),
+        'expression'    => $this->create(new VariableNode('i'), array(4, 11)),
         'op'            => '++'
       ))), $this->parse('
         ++$i;
@@ -65,7 +65,7 @@
     public function decrement() {
       $this->assertEquals(array(new UnaryOpNode(array(
         'position'      => array(4, 13),
-        'expression'    => $this->create(new VariableNode('$i'), array(4, 11)),
+        'expression'    => $this->create(new VariableNode('i'), array(4, 11)),
         'op'            => '--'
       ))), $this->parse('
         --$i;
