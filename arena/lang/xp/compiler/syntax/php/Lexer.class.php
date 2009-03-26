@@ -210,7 +210,7 @@
           }
         } else if ('$' === $token{0}) {
           $this->token= xp·compiler·syntax·php·Parser::T_VARIABLE;
-          $this->value= $token;
+          $this->value= substr($token, 1);
         } else if (isset(self::$keywords[$token])) {
           $this->token= self::$keywords[$token];
           $this->value= $token;
