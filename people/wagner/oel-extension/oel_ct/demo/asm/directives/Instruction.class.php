@@ -22,7 +22,10 @@
       $free,
       $assign,
       $beginvar,
-      $endvar;
+      $endvar,
+      $begincall,
+      $endcall,
+      $pass;
     
     static function __static() {
       self::$noop= newinstance(__CLASS__, array(0, 'noop'), '{
@@ -87,6 +90,27 @@
         
         public function emit($op, $args) {
           oel_add_end_variable_parse($op);
+        }
+      }');
+      self::$begincall= newinstance(__CLASS__, array(9, 'begincall'), '{
+        static function __static() { }
+        
+        public function emit($op, $args) {
+          oel_add_begin_function_call($op, $args[0]);
+        }
+      }');
+      self::$endcall= newinstance(__CLASS__, array(10, 'endcall'), '{
+        static function __static() { }
+        
+        public function emit($op, $args) {
+          oel_add_end_function_call($op, $args[0]);
+        }
+      }');
+      self::$pass= newinstance(__CLASS__, array(11, 'pass'), '{
+        static function __static() { }
+        
+        public function emit($op, $args) {
+          oel_add_pass_param($op, $args[0]);
         }
       }');
     }
