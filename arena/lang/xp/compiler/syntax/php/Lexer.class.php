@@ -32,6 +32,8 @@
         'final'         => xp搾ompiler新yntax搆hp感arser::T_FINAL,
         'abstract'      => xp搾ompiler新yntax搆hp感arser::T_ABSTRACT,
         
+        'use'           => xp搾ompiler新yntax搆hp感arser::T_USE,
+        'namespace'     => xp搾ompiler新yntax搆hp感arser::T_NAMESPACE,
         'class'         => xp搾ompiler新yntax搆hp感arser::T_CLASS,
         'interface'     => xp搾ompiler新yntax搆hp感arser::T_INTERFACE,
         'extends'       => xp搾ompiler新yntax搆hp感arser::T_EXTENDS,

@@ -79,11 +79,13 @@
 
 %token T_CLASS 300
 %token T_INTERFACE 301
-%token T_PACKAGE 303
 
 %token T_EXTENDS 310
 %token T_IMPLEMENTS 311
 %token T_INSTANCEOF 312
+
+%token T_NAMESPACE 320
+%token T_USE 321
 
 %token T_AS 331
 %token T_OBJECT_OPERATOR 332
@@ -152,8 +154,8 @@ start:
 // {{{ Packages, imports
 package_opt:
     /* empty */
-  | T_VARIABLE { $1= $yyLex->create(new PackageNode()); } '=' T_STRING ';' {
-    $1->name= $3;
+  | T_NAMESPACE qualifiedname ';' { 
+    $1= $yyLex->create(new PackageNode(array('name' => $2)));
   }
 ;
 
@@ -163,17 +165,14 @@ uses_opt:
 ;
 
 uses:
-    T_WORD '(' uselist ')' ';' {
-      $$= array();
-      foreach ($3 as $class) { 
-        $$[]= $yyLex->create(new ImportNode(array('name' => $class))); 
-      }
-    }
+    use { $$= array($1); }
+  | uses use { $$= array_merge($1, array($2)); }
 ;
 
-uselist:
-	T_STRING { $$= array($1); }
-  | T_STRING ',' uselist { $$= array_merge(array($1), $3); }
+use:
+    T_USE qualifiedname ';' {
+      $$= $yyLex->create(new ImportNode(array('name' => $2))); 
+    }
 ;
 
 qualifiedname:
