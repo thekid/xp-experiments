@@ -10,7 +10,7 @@
 #include "ext/standard/php_string.h"
 #include "ext/standard/basic_functions.h"
 #include "zend_exceptions.h"
-
+#include "zend_vm.h"
 #include "php.h"
 #include "php_oel.h"
 

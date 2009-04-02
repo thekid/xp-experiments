@@ -20,8 +20,9 @@
 #define SERIALIZED_OP_ARRAY 9
 #define SERIALIZED_OP_END 13
 
-#define SERIALIZED_VERSION 0x000e
+#define SERIALIZED_VERSION 0x0100
 #define SERIALIZED_HEADER "OELMZ"
+#define SERIALIZED_HEADER_LENGTH 48
 
 enum {
     SESI_int, 
@@ -564,6 +565,10 @@ static void unserialize_op(int id, zend_op *op, zend_op_array *op_array UNSERIAL
 {
     UNSERIALIZE(&op->opcode, zend_uchar);
     unserialize_znode(&op->result UNSERIALIZE_CC);
+    unserialize_znode(&op->op1 UNSERIALIZE_CC);
+    unserialize_znode(&op->op2 UNSERIALIZE_CC);
+    ZEND_VM_SET_OPCODE_HANDLER(op);
+    
     switch (op->opcode)
     {
         case ZEND_JMP: {
@@ -576,8 +581,7 @@ static void unserialize_op(int id, zend_op *op, zend_op_array *op_array UNSERIAL
             break;
         }
     }
-    unserialize_znode(&op->op1 UNSERIALIZE_CC);
-    unserialize_znode(&op->op2 UNSERIALIZE_CC);
+    
     UNSERIALIZE(&op->extended_value, ulong);
     UNSERIALIZE(&op->lineno, uint);
 }
@@ -663,8 +667,6 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
         op_array->try_catch_array = (zend_try_catch_element*) emalloc(op_array->last_try_catch * sizeof(zend_try_catch_element));
         php_stream_read(__se_stream, (char*)op_array->try_catch_array, op_array->last_try_catch * sizeof(zend_try_catch_element));
     }
-
-    pass_two(op_array TSRMLS_CC);   /* Not sure why we need this */
 }
 
 static void unserialize_string(char **string UNSERIALIZE_DC)
@@ -1105,8 +1107,9 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
     unserialize_ce_default_static_members(ce UNSERIALIZE_CC);
     unserialize_ce_constants_table(ce UNSERIALIZE_CC);
 
+    ce->static_members = &ce->default_static_members;
+
     UNSERIALIZE(&count, int);
-    /* ce->builtin_functions = NULL; */
     if (count > 0) {
         int i;
 
@@ -1115,6 +1118,8 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
         for (i = 0; i < count; i++) {
             unserialize_function_entry(&ce->builtin_functions[i] UNSERIALIZE_CC);
         }
+    } else {
+        ce->builtin_functions = NULL;
     }
 
     UNSERIALIZE(&ce->num_interfaces, zend_uint);
@@ -1196,11 +1201,11 @@ static void unserialize_oel_op_array(php_oel_op_array **res_op_array_ptr UNSERIA
 
 static int read_oel_header(php_stream *stream, zend_bool quiet TSRMLS_DC)
 {
-    char buf[33]; 
+    char buf[SERIALIZED_HEADER_LENGTH]; 
     unsigned int hi, lo;
 
     memset(buf, 0, sizeof(buf));
-    php_stream_read(stream, buf, sizeof(buf)- 1);
+    php_stream_read(stream, buf, SERIALIZED_HEADER_LENGTH);
 
     if (0 != strncmp(buf, SERIALIZED_HEADER, sizeof(SERIALIZED_HEADER)- 1)) {
         if (!quiet) {
@@ -1273,16 +1278,16 @@ PHP_FUNCTION(oel_eof) {
 PHP_FUNCTION(oel_write_header) {
     zval              *resource;
     char              *tmp;
-    int               ver;
+    int               ver, len;
     php_stream        *stream;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &resource) == FAILURE) { RETURN_NULL(); }
     php_stream_from_zval(stream, &resource);
     
     ver = SERIALIZED_VERSION;
-    spprintf(&tmp, 32, SERIALIZED_HEADER "%u.%u", (ver >> 8) & 0xff, ver & 0xff);
-    
-    php_stream_write(stream, tmp, 32);
+    len = spprintf(&tmp, SERIALIZED_HEADER_LENGTH, SERIALIZED_HEADER "%u.%u<?php __HALT_COMPILER();", (ver >> 8) & 0xff, ver & 0xff);
+    memset(tmp + len, 0, SERIALIZED_HEADER_LENGTH - len);
+    php_stream_write(stream, tmp, SERIALIZED_HEADER_LENGTH);
 
     efree(tmp);
     RETURN_TRUE;
