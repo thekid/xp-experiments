@@ -38,6 +38,7 @@
       $continuation = array(NULL),
       $properties   = array(NULL),
       $declarations = array(NULL),
+      $origins      = array(NULL),
       $types        = NULL;
     
     protected static 
@@ -1027,6 +1028,7 @@
           Modifiers::isFinal($method->modifiers)
         );
       }
+      oel_set_source_file($mop, $this->origins[0]);
       
       // Annotations.
       foreach ((array)$method->annotations as $annotation) {
@@ -1070,6 +1072,7 @@
         $constructor->modifiers,
         Modifiers::isFinal($constructor->modifiers)
       );
+      oel_set_source_file($cop, $this->origins[0]);
 
       // Arguments
       $constructor->arguments && $this->emitArguments($cop, $constructor->arguments);
@@ -1136,6 +1139,7 @@
             FALSE,          // Static
             $property->modifiers
           );
+          oel_set_source_file($iop, $this->origins[0]);
           foreach ($def[1] as $i => $arg) {
             oel_add_receive_arg($iop, $i + 1, $arg['name']);
             $this->types[new VariableNode($arg['name'])]= $arg['type'];
@@ -1172,6 +1176,7 @@
       
       if (isset($properties['get'])) {
         $gop= oel_new_method($op, '__get', FALSE, FALSE, MODIFIER_PUBLIC, FALSE);
+        oel_set_source_file($gop, $this->origins[0]);
         oel_add_receive_arg($gop, 1, $mangled);
         
         foreach ($properties['get'] as $name => $statements) {
@@ -1192,6 +1197,7 @@
       }
       if (isset($properties['set'])) {
         $sop= oel_new_method($op, '__set', FALSE, FALSE, MODIFIER_PUBLIC, FALSE);
+        oel_set_source_file($sop, $this->origins[0]);
         oel_add_receive_arg($sop, 1, $mangled);
         oel_add_receive_arg($sop, 2, 'value');
         
@@ -1299,7 +1305,7 @@
       
       // public static self[] values() { return parent::membersOf(__CLASS__) }
       $vop= oel_new_method($op, 'values', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
-      
+      oel_set_source_file($vop, $this->origins[0]);
       oel_add_begin_static_method_call($vop, 'membersOf', 'parent'); {
         oel_push_value($vop, $this->class[0]);
         oel_add_pass_param($vop, 1);
@@ -1419,6 +1425,7 @@
       // Static initializer blocks (array<Statement[]>)
       if (isset($declaration->body['static'])) {
         $sop= oel_new_method($op, '__static', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
+        oel_set_source_file($sop, $this->origins[0]);
         foreach ($declaration->body['static'] as $statements) {
           $this->emitAll($sop, (array)$statements);
         }
@@ -1750,6 +1757,7 @@
       oel_set_source_file($op, $tree->origin);
       oel_set_source_line($op, 0);
       
+      array_unshift($this->origins, $tree->origin);
       array_unshift($this->used, array());
       array_unshift($this->imports, array());
       array_unshift($this->package, $tree->package ? $tree->package->name : NULL);
@@ -1781,6 +1789,7 @@
       array_shift($this->declarations);
       array_shift($this->package);
       array_shift($this->used);
+      array_shift($this->origins);
       
       // Check on errors
       $this->cat && $this->cat->infof(
