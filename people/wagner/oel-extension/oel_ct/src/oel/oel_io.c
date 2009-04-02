@@ -12,8 +12,7 @@
     *(value) = *((type*) __se_buffer); 
     
 #define READ(bytes, length) \
-    php_stream_read(__se_stream, (bytes), length); \
-    (bytes)[length]= '\0';
+    php_stream_read(__se_stream, (char*)bytes, length); \
 
 #define SERIALIZED_CLASS_ENTRY 1
 #define SERIALIZED_FUNCTION_ENTRY 3
@@ -287,7 +286,7 @@ static void serialize_op_array(zend_op_array *op_array SERIALIZE_DC)
     SERIALIZE(op_array->T, zend_uint);
     SERIALIZE(op_array->last_brk_cont, zend_uint);
     SERIALIZE(op_array->current_brk_cont, zend_uint);
-
+    
     if (op_array->brk_cont_array != NULL) {
         SERIALIZE(1, char);
         WRITE(op_array->brk_cont_array, op_array->last_brk_cont * sizeof(zend_brk_cont_element));
@@ -592,6 +591,10 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
     char brk;
     char *scope;
 
+    /* TBD: (un-)serialize these? */
+    op_array->doc_comment = NULL;
+    op_array->doc_comment_len = 0;
+
     UNSERIALIZE(&op_array->type, zend_uchar);       
     UNSERIALIZE(&op_array->num_args, int);
     op_array->arg_info = (zend_arg_info *) ecalloc(op_array->num_args, sizeof(zend_arg_info));
@@ -620,7 +623,7 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
     UNSERIALIZE(&brk, char);
     if (0 != brk) {
         op_array->brk_cont_array = (zend_brk_cont_element*)emalloc(op_array->last_brk_cont * sizeof(zend_brk_cont_element));
-        php_stream_read(__se_stream, (char*)op_array->brk_cont_array, op_array->last_brk_cont * sizeof(zend_brk_cont_element));
+        READ(op_array->brk_cont_array, op_array->last_brk_cont * sizeof(zend_brk_cont_element));
     }
     unserialize_hashtable_ptr(&op_array->static_variables, sizeof(zval *), unserialize_zval_ptr, "op_array->static_variables" UNSERIALIZE_CC);
 
@@ -665,7 +668,7 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
     UNSERIALIZE(&op_array->last_try_catch, int);
     if (op_array->last_try_catch > 0) {
         op_array->try_catch_array = (zend_try_catch_element*) emalloc(op_array->last_try_catch * sizeof(zend_try_catch_element));
-        php_stream_read(__se_stream, (char*)op_array->try_catch_array, op_array->last_try_catch * sizeof(zend_try_catch_element));
+        READ(op_array->try_catch_array, op_array->last_try_catch * sizeof(zend_try_catch_element));
     }
 }
 
@@ -679,6 +682,7 @@ static void unserialize_string(char **string UNSERIALIZE_DC)
     } else {
         *string = (char*) emalloc(len + 1);
         READ(*string, len);
+        (*string)[len] = '\0';
     }
 }
 
@@ -690,6 +694,7 @@ static void unserialize_stringl(char **string, int *len UNSERIALIZE_DC)
     } else {
         *string = (char*) emalloc(*len + 1);
         READ(*string, *len);
+        (*string)[*len] = '\0';
     }
 }
 
@@ -840,9 +845,9 @@ static void unserialize_property_info(zend_property_info *prop UNSERIALIZE_DC)
     UNSERIALIZE(&prop->name_length, uint);
     UNSERIALIZE(&prop->h, ulong);
     
-    /* TODO: (un-)serialize these */
-	prop->doc_comment = NULL;
-	prop->doc_comment_len = 0;
+    /* TBD: (un-)serialize these */
+    prop->doc_comment = NULL;
+    prop->doc_comment_len = 0;
 }
 
 static void unserialize_hashtable_ptr(HashTable** ht, int datasize, void* funcptr, char* name UNSERIALIZE_DC)
@@ -1088,8 +1093,10 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
     ce->filename = NULL;
     ce->line_start = 0;
     ce->line_end = 0;
-	ce->doc_comment = NULL;
-	ce->doc_comment_len = 0;
+
+    /* TBD: (un-)serialize these? */
+    ce->doc_comment = NULL;
+    ce->doc_comment_len = 0;
     
     UNSERIALIZE(&ce->type, char);
     unserialize_string(&ce->name UNSERIALIZE_CC);
