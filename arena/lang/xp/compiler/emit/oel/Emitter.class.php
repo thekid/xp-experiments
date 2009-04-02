@@ -253,8 +253,12 @@
      */
     protected function emitVariable($op, VariableNode $var) {
       
+      // TBD: import static Console::* -> $out?
+      
       // Type overloading: 
-      // * $array->length := sizeof($array)
+      // * $array.length := sizeof($array)
+      //
+      // FIXME: Type extension methods
       if ($this->types->containsKey($var)) {
         if (
           $this->types[$var]->isArray() && 
@@ -302,7 +306,7 @@
         if ($c instanceof VariableNode) {
           oel_push_property($op, $c->name);
         } else if ($c instanceof ArrayAccessNode) {
-          oel_push_value($op, $c->offset->value);
+          $this->emitOne($op, $c->offset);
           oel_push_dim($op);
         } else if ($c instanceof InvocationNode) {
           oel_add_begin_method_call($op, $c->name);
@@ -549,11 +553,11 @@
      */
     protected function emitForeach($op, ForeachNode $loop) {
 
-      // Special case when iterating on variables: Do not end variable parse 
-      if ($loop->expression instanceof VariableNode) {
+      // Special case when iterating on variables without chain: 
+      // Do not end variable parse 
+      if ($loop->expression instanceof VariableNode && !$loop->expression->chained) {
         oel_add_begin_variable_parse($op);
         oel_push_variable($op, $loop->expression->name);
-        $this->emitChain($op, $loop->expression);
       } else {
         $this->emitOne($op, $loop->expression);
       }
@@ -696,7 +700,7 @@
         oel_add_begin_static_method_call($op, $ref->member->name, $this->resolve($ref->class->name)->literal());
         $n= $this->emitParameters($op, (array)$ref->member->parameters);
         oel_add_end_static_method_call($op, $n);
-      } else if ($ref->member instanceof VariableNode && '$class' === $ref->member->name) {
+      } else if ($ref->member instanceof VariableNode && 'class' === $ref->member->name) {
       
         // Magic "class" member
         oel_add_begin_new_object($op, 'XPClass');
@@ -1506,7 +1510,7 @@
 
       // TODO: Query other sources, e.g. compilation unit
       if ('.*' == substr($import->name, -2)) {
-        $this->statics[0][0][substr($import->name, 0, -2)]= XPClass::forName($name);
+        $this->statics[0][0][substr($import->name, 0, -2)]= XPClass::forName(substr($import->name, 0, -2));
       } else {
         $p= strrpos($import->name, '.');
         $class= XPClass::forName(substr($import->name, 0, $p));
@@ -1608,6 +1612,8 @@
     protected function typeOf(xp·compiler·ast·Node $node) {
       if ($node instanceof ArrayNode) {
         return new TypeName('*[]');     // FIXME: Component type
+      } else if ($node instanceof MapNode) {
+        return new TypeName('[*:*]');   // FIXME: Component type
       } else if ($node instanceof StringNode) {
         return new TypeName('string');
       } else if ($node instanceof NumberNode) {
@@ -1649,21 +1655,18 @@
     }
     
     /**
-     * Resolve a static call
+     * Resolve a static call. Return TRUE if the target is a function
+     * (e.g. key()), the class name if it's a static method (Map::key()).
      *
      * @param   string name
      * @return  var
      */
     protected function resolveStatic($name) {
       foreach ($this->statics[0][0] as $lookup => $type) {
-        if (TRUE === $type) {
-          $l= get_extension_funcs($lookup);
-          if (in_array($name, $l)) return TRUE;
-        } else {
-          foreach ($type->getMethods() as $method) {
-            if (!Modifiers::isStatic($method->getModifiers())) continue;
-            return $class->getName();
-          }
+        if (TRUE === $type && in_array($name, get_extension_funcs($lookup))) {
+          return TRUE;
+        } else if ($type->hasMethod($name) && Modifiers::isStatic($type->getMethod($name)->getModifiers())) {
+          return $type->getName();
         }
       }
       return NULL;
