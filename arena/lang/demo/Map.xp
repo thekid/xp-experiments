@@ -1,0 +1,12 @@
+import native standard.array_keys;
+import static util.cmd.Console.*;
+
+public class Map {
+
+  public static void main(string[] $args) {
+    $a= [ 'three' : 3 ];
+    foreach ($key in array_keys($a)) {
+      writeLine($key, ' => ', $a[$key]);
+    }
+  }
+}
