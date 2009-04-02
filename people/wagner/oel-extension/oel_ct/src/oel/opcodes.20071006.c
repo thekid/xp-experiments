@@ -119,6 +119,7 @@ void fill_opcode_translation_array(zval *op_tras_arr) {
     add_index_string(op_tras_arr, 134, "POST_INC_OBJ", 1);
     add_index_string(op_tras_arr, 135, "POST_DEC_OBJ", 1);
     add_index_string(op_tras_arr, 136, "ASSIGN_OBJ", 1);
+    add_index_string(op_tras_arr, 137, "ZEND_OP_DATA", 1);
     add_index_string(op_tras_arr, 138, "INSTANCEOF", 1);
     add_index_string(op_tras_arr, 139, "DECLARE_CLASS", 1);
     add_index_string(op_tras_arr, 140, "DECLARE_INHERITED_CLASS", 1);
