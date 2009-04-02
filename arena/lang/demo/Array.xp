@@ -20,8 +20,7 @@ public class Array<T> {
    * 
    */
   public void each(Delegate $block) {
-    // FIXME: assignment needed to prevent "opend token is not of type method"
-    foreach ($e in $it= $this.elements) {
+    foreach ($e in $this.elements) {
       $block.apply($e);
     }
   }
