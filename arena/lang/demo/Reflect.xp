@@ -13,6 +13,6 @@ public class Reflect {
   }
 
   public static void main(string[] $args) {
-    self::dump(self::$class);
+    self::dump(self::class);
   }
 }

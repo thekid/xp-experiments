@@ -685,9 +685,10 @@
     /**
      * Emit class members, for example:
      * <code>
-     *   XPClass::forName();    // static method call
-     *   self::$class;          // special "class" member
-     *   self::$instance;       // static member variable
+     *   XPClass::forName();        // static method call
+     *   lang.types.String::class;  // special "class" member
+     *   Tokens::T_STRING;          // class constant
+     *   self::$instance;           // static member variable
      * </code>
      *
      * @param   resource op
@@ -700,18 +701,18 @@
         oel_add_begin_static_method_call($op, $ref->member->name, $this->resolve($ref->class->name)->literal());
         $n= $this->emitParameters($op, (array)$ref->member->parameters);
         oel_add_end_static_method_call($op, $n);
-      } else if ($ref->member instanceof VariableNode && 'class' === $ref->member->name) {
-      
-        // Magic "class" member
-        oel_add_begin_new_object($op, 'XPClass');
-        $n= $this->emitParameters($op, array(new StringNode(array('value' => $this->resolve($ref->class->name)->literal()))));
-        oel_add_end_new_object($op, $n);
       } else if ($ref->member instanceof VariableNode) {
       
         // Static member
         oel_add_begin_variable_parse($op);
         oel_push_variable($op, $ref->member->name, $ref->class->name);
         oel_add_end_variable_parse($op);
+      } else if ($ref->member instanceof ConstantNode && 'class' === $ref->member->value) {
+        
+        // Magic "class" member
+        oel_add_begin_new_object($op, 'XPClass');
+        $n= $this->emitParameters($op, array(new StringNode(array('value' => $this->resolve($ref->class->name)->literal()))));
+        oel_add_end_new_object($op, $n);
       } else if ($ref->member instanceof ConstantNode) {
 
         // Class constant

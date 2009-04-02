@@ -105,7 +105,7 @@
     #[@test]
     public function chainedAfterStaticMethod() {
       $this->assertEquals(array(new ClassMemberNode(array(
-        'position'       => array(4, 17),
+        'position'       => array(4, 15),
         'class'          => new TypeName('Logger'),
         'member'         => new InvocationNode(array(
           'position'       => array(4, 29), 

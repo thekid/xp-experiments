@@ -45,7 +45,7 @@ supports this feature by adding <tt>...</tt> to the parameter's type:
     }
     
     public static void main(string[] $args) {
-      self::printf('%d args passed to %s', $args.length, self::$class.getName());
+      self::printf('%d args passed to %s', $args.length, self::class.getName());
     }
   }
 </code>
@@ -72,7 +72,7 @@ retrieve the <tt>lang.XPClass</tt> object associated with it.
 
 <code>
   // same as $c= XPClass::forName(xp::nameOf(__CLASS__));
-  $c= self::$class;
+  $c= self::class;
   
   // same as $c= XPClass::forName('lang.types.String');
   $c= lang.types.String::$class;

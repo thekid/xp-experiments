@@ -580,16 +580,19 @@ instancecreation:
 ;
 
 staticmember:
-    T_WORD { 
-      $$= $yyLex->create(new ConstantNode()); $$->value= $1;
-    }
-  | T_VARIABLE { 
+    T_VARIABLE { 
       $$= $yyLex->create(new VariableNode($1)); 
     }
   | T_WORD '(' expressionlist_opt ')' { 
       $$= $yyLex->create(new InvocationNode(array('name' => $1))); 
       $$->parameters= $3;
     }
+  | T_WORD {
+      $$= $yyLex->create(new ConstantNode(array('value' => $1))); 
+    }
+  | T_CLASS {
+      $$= $yyLex->create(new ConstantNode(array('value' => $1))); 
+    }  
 ;
 
 expression:
@@ -660,7 +663,6 @@ expression:
 
 literal:
     T_WORD { $$= $yyLex->create(new ConstantNode()); $$->value= $1; }
-  | qualifiedname T_DOUBLE_COLON T_CLASS { /* XXX class literal */ }
   | '[' { $p= $yyLex->position; } map_or_list ']' { $3->position= $p; $3->type= NULL; $$= $3; }
   | T_NUMBER { $$= $yyLex->create(new NumberNode()); $$->value= $1; }
   | T_HEX { $$= $yyLex->create(new HexNode()); $$->value= $1; }

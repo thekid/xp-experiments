@@ -100,7 +100,7 @@
       $this->assertEquals(array(new AssignmentNode(array(
         'position'      => array(4, 30),
         'variable'      => new ClassMemberNode(array(
-          'position'      => array(4, 15), 
+          'position'      => array(4, 13), 
           'class'         => new TypeName('self'),
           'member'        => $this->create(new VariableNode('instance'), array(4, 15))
         )),
@@ -123,7 +123,7 @@
       $this->assertEquals(array(new AssignmentNode(array(
         'position'      => array(4, 47),
         'variable'      => new ClassMemberNode(array(
-          'position'      => array(4, 15), 
+          'position'      => array(4, 13), 
           'class'         => new TypeName('self'),
           'member'        => $this->create(new VariableNode('instance', new InvocationNode(array(
             'position'       => array(4, 36), 
