@@ -595,6 +595,9 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
     op_array->doc_comment = NULL;
     op_array->doc_comment_len = 0;
 
+    op_array->line_start = 0;
+    op_array->line_end = 0;
+
     UNSERIALIZE(&op_array->type, zend_uchar);       
     UNSERIALIZE(&op_array->num_args, int);
     op_array->arg_info = (zend_arg_info *) ecalloc(op_array->num_args, sizeof(zend_arg_info));
