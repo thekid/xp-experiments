@@ -31,7 +31,16 @@
      * @return  bool
      */
     public function isArray() {
-      return '[]' == substr($this->name, -2);
+      return '[]' === substr($this->name, -2);
+    }
+
+    /**
+     * Return whether this type is a map
+     *
+     * @return  bool
+     */
+    public function isMap() {
+      return '[' === $this->name{0} && ']' === $this->name{strlen($this->name)- 1};
     }
 
     /**
