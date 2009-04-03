@@ -44,12 +44,16 @@
      *
      * @param   io.File src
      * @param   io.File compiled
+     * @param   string[] messages
      */
-    public function compilationSucceeded(File $src, File $compiled) {
+    public function compilationSucceeded(File $src, File $compiled, array $messages= array()) {
       $this->writer->write('.');
       $this->succeeded++;
+      if (!empty($messages)) {
+        $this->messages[$src->getURI()]= $messages;
+      }
     }
-
+    
     /**
      * Called when parsing fails
      *
@@ -59,7 +63,7 @@
     public function parsingFailed(File $src, ParseException $reason) {
       $this->writer->write('P');
       $this->failed++;
-      $this->failures[$src->getURI()]= $reason->getCause();
+      $this->messages[$src->getURI()]= $reason->getCause()->compoundMessage();
     }
 
     /**
@@ -71,7 +75,7 @@
     public function emittingFailed(File $src, FormatException $reason) {
       $this->writer->write('E');
       $this->failed++;
-      $this->failures[$src->getURI()]= $reason;
+      $this->messages[$src->getURI()]= $reason->compoundMessage();
     }
 
     /**
@@ -83,7 +87,7 @@
     public function compilationFailed(File $src, Throwable $reason) {
       $this->writer->write('F');
       $this->failed++;
-      $this->failures[$src->getURI()]= $reason;
+      $this->messages[$src->getURI()]= $reason->compoundMessage();
     }
 
     /**
@@ -105,9 +109,9 @@
       $this->writer->writeLine(']');
       $this->writer->writeLine();
       
-      if ($this->failed > 0) {
-        foreach ($this->failures as $uri => $reason) {
-          $this->writer->writeLine('* ', basename($uri), ': ', $reason->compoundMessage());
+      if (!empty($this->messages)) {
+        foreach ($this->messages as $uri => $message) {
+          $this->writer->writeLine('* ', basename($uri), ': ', $message);
           $this->writer->writeLine();
         }
       }

@@ -86,6 +86,18 @@
       $this->messages['errors'][]= $message;
     }
     
+    /**
+     * Get a list of all messages
+     *
+     * @return  string[] messages
+     */
+    public function messages() {
+      $r= array();
+      foreach ($this->messages as $type => $messages) {
+        $r+= $messages;
+      }
+      return $r;
+    }
     
     /**
      * Set a trace for debugging

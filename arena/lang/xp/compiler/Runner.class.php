@@ -113,7 +113,7 @@
         try {
           $ast= Syntax::forName($file->getExtension())->parse(new FileInputStream($file), $file->getURI());
           $r= $emitter->emit($ast);
-          $listener->compilationSucceeded($file, $r);
+          $listener->compilationSucceeded($file, $r, $emitter->messages());
         } catch (ParseException $e) {
           $listener->parsingFailed($file, $e);
         } catch (FormatException $e) {

@@ -1001,6 +1001,10 @@
      * @param   xp.compiler.ast.MethodNode method
      */
     protected function emitMethod($op, MethodNode $method) {
+      if (!$method->comment && !strstr($this->class[0], '$')) {
+        $this->warn('D201', 'No api doc for '.$this->class[0].'::'.$method->name.'()', $method);
+      }
+    
       $meta= array(
         DETAIL_ARGUMENTS    => array(),
         DETAIL_RETURNS      => $method->returns->name,
