@@ -4,9 +4,11 @@
  */
 
 /**
- * Coin enumeration
+ * Coin enumeration. Shows off:
  * 
- * @purpose  Demo
+ * <ul>
+ *   <li>Enum syntax</li>
+ * </ul>
  */
 public enum Coin {
   penny(1), nickel(2), dime(10), quarter(25);
@@ -31,6 +33,10 @@ public enum Coin {
     return $this.ordinal;
   }
  
+  /**
+   * Entry point
+   *
+   */
   public static void main(string[] $args) {
     foreach ($coin in Coin::values()) {
       util.cmd.Console::writeLine('- A ', $coin.name(), '\'s color is ', $coin.color(), ' and it\'s worth ', $coin.value(), '¢');

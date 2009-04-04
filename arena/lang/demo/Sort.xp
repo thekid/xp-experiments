@@ -1,13 +1,35 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
 import util.Comparator;
 import static util.cmd.Console.writeLine;
 import native standard.*;
 
+/**
+ * Sort demo. Shows off:
+ *
+ * <ul>
+ *   <li>Using native functions - here: usort()</li>
+ *   <li>Static imports</li>
+ * </ul>
+ */
 public class Sort implements Comparator {
 
+  /**
+   * Compare two values - callback for usort()
+   *
+   * @see   php://usort
+   */
   public int compare(int $a, int $b) {
     return $a - $b;
   }
 
+  /**
+   * Entry point method
+   *
+   */
   public static void main(string[] $args) {
     $a= [1, 2, 5, 0, 10];
 

@@ -1,0 +1,23 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Fatal demo. Shows off
+ *
+ * <ul>
+ *   <li>Fatal errors and their origin</li>
+ * </ul>
+ */
+public class Fatal {
+
+  /**
+   * Entry point
+   *
+   */
+  public static void main(string[] $args) {
+    $a= NULL;
+    $a.invoke();
+  }
+}

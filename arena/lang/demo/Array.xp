@@ -1,8 +1,19 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
 import lang.Delegate;
 
 /**
- * Array class demo
+ * Array class demo. Shows off:
  *
+ * <ul>
+ *   <li>Generic syntax</li>
+ *   <li>Anonymous instance creation</li>
+ *   <li>Varargs syntax</li>
+ *   <li>New foreach</li>
+ * </ul>
  */
 public class Array<T> {
   protected T[] $elements;

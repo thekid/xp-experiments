@@ -1,7 +1,24 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
 import util.cmd.Console;
 
+/**
+ * Reflection demo. Shows off:
+ *
+ * <ul>
+ *   <li>Class literal</li>
+ *   <li>XP Language Classes and reflection</li>
+ * </ul>
+ */
 public class Reflect {
 
+  /**
+   * Dump a given class object
+   *
+   */
   protected static void dump(lang.XPClass $class) {
     $parent= $class.getParentClass();
     Console::writef(
@@ -12,6 +29,10 @@ public class Reflect {
     Console::writeLine($class.getMethods());
   }
 
+  /**
+   * Entry point
+   *
+   */
   public static void main(string[] $args) {
     self::dump(self::class);
   }
