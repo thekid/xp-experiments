@@ -41,20 +41,6 @@
       $origins      = array(NULL),
       $types        = NULL;
     
-    protected static 
-      $syntaxes     = array();
-    
-    static function __static() {
-      self::$syntaxes['class.php']= array(
-        'parser' => new xp搾ompiler新yntax搆hp感arser(),
-        'lexer'  => XPClass::forName('xp.compiler.syntax.php.Lexer')
-      );
-      self::$syntaxes['xp']= array(
-        'parser' => new xp搾ompiler新yntax暖p感arser(),
-        'lexer'  => XPClass::forName('xp.compiler.syntax.xp.Lexer')
-      );
-    }
-
     /**
      * Emit uses statements for a given list of types
      *
@@ -1068,6 +1054,10 @@
      * @param   xp.compiler.ast.ConstructorNode constructor
      */
     protected function emitConstructor($op, ConstructorNode $constructor) {
+      if (!$constructor->comment && !strstr($this->class[0], '$')) {
+        $this->warn('D201', 'No api doc for '.$this->class[0].'\'s constructor', $constructor);
+      }
+
       $cop= oel_new_method(
         $op, 
         '__construct', 
@@ -1397,6 +1387,9 @@
      * @param   xp.compiler.ast.ClassNode declaration
      */
     protected function emitClass($op, ClassNode $declaration) {
+      if (!$declaration->comment) {
+        $this->warn('D201', 'No api doc for class '.$declaration->name->name, $declaration);
+      }
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Object');
     
       // Ensure parent class and interfaces are loaded
@@ -1638,6 +1631,8 @@
         return $this->types->containsKey($node) ? $this->types[$node] : new TypeName(NULL);
       } else if ($node instanceof InstanceCreationNode) {
         return $node->type;
+      } else if ($node instanceof ComparisonNode) {
+        return new TypeName('bool');
       } else {
         $this->warn('T300', 'Cannot determine type for '.$node->getClassName(), $node);
         return new TypeName('var');
@@ -1654,13 +1649,9 @@
     protected function parse($qualified) {
       $name= DIRECTORY_SEPARATOR.strtr($qualified, '.', DIRECTORY_SEPARATOR);
       foreach (xp::$registry['classpath'] as $path) {
-        foreach (self::$syntaxes as $ext => $syntax) {
+        foreach (Syntax::available() as $ext => $syntax) {
           if (!file_exists($uri= $path.$name.'.'.$ext)) continue;
-          
-          return $syntax['parser']->parse($syntax['lexer']->newInstance(
-            new FileInputStream(new File($uri)),
-            $uri
-          ));
+          return $syntax->parse(new FileInputStream(new File($uri)), $uri);
         }
       }
       throw new ClassNotFoundException('Cannot find class '.$qualified);
