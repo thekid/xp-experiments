@@ -39,6 +39,15 @@
       }
       return self::$syntaxes[$syntax];
     }
+
+    /**
+     * Retrieve a list of available syntaxes
+     *
+     * @return  array<string, xp.compiler.Syntax>
+     */
+    public static function available() {
+      return self::$syntaxes;
+    }
     
     /**
      * Parse
