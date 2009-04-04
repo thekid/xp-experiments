@@ -18,7 +18,7 @@
       $failed    = 0,
       $succeeded = 0,
       $timer     = NULL,
-      $failures  = array();
+      $messages  = array();
     
     /**
      * (Insert method's description here)
@@ -98,6 +98,7 @@
       $this->failed= $this->succeeded= $this->started= 0;
       $this->writer->write('[');
       $this->timer->start();
+      $this->messages= array();
     }
     
     /**
