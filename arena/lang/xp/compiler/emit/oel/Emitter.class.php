@@ -780,10 +780,6 @@
       oel_add_begin_tryblock($op); {
         $this->emitAll($op, (array)$try->statements);
         $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
-        
-        // FIXME: If no exception is thrown, we hang here forever
-        oel_add_new_object($op, 0, 'Exception');
-        oel_add_throw($op);
       }
       oel_add_begin_catchblock($op); {
       
@@ -811,10 +807,6 @@
           }
           oel_add_end_catch($op);
         }
-        
-        // FIXME: Catch exception which ensures we exit the try block
-        oel_add_begin_catch($op, 'Exception', '__e');
-        oel_add_end_catch($op);
       }
       oel_add_end_catchblock($op);
       
