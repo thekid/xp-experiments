@@ -889,6 +889,8 @@
         $this->emitChain($op, $new);
         oel_add_end_variable_parse($op);
       }
+      
+      $new->free && oel_add_free($op);
     }
     
     /**
