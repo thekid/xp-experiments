@@ -86,7 +86,7 @@
         $this->out->writeLinef(
           '%s@%-3d: <%03d> %s %s', 
           $indent,
-          -1, // $opline->lineno,
+          $opline->lineno,
           $opline->opcode->op,
           $opline->opcode->mne,
           $details ? '['.str_replace("\n", "\n".$indent, implode(', ', array_map(array('xp', 'stringOf'), $details))).']' : ''
