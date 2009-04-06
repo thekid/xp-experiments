@@ -22,7 +22,8 @@
    */
   class Opcodes extends Command {
     protected
-      $class= NULL;
+      $class   = NULL,
+      $verbose = FALSE;
     
     protected function classFrom(File $file) {
       $uri= $file->getURI();
@@ -58,16 +59,42 @@
       }
     }
     
-    /**
-     * Returns a string representation of an oel znode object
-     *
-     * @param   php.OelZnode op
-     * @return  string
-     */
-    protected function stringOf(OelZnode $z) {
-      return substr(get_class($z), strlen('OelZnode'));
+    #[@arg]
+    public function setVerbose() {
+      $this->verbose= TRUE;
     }
-
+    
+    /**
+     * Dumps a string representation of an op array
+     *
+     * @param   resource ops
+     */
+    private function dumpOps($ops, $indent= '  ') {
+      foreach (oel_export_op_array($ops) as $opline) {
+        switch ($opline->opcode->mne) {
+          case 'FETCH_CLASS': $details= array($opline->op2->value); break;
+          case 'DECLARE_CLASS': $details= array($opline->op2->value); break;
+          case 'DECLARE_INHERITED_CLASS': $details= array($opline->op2->value); break;
+          case 'INIT_STATIC_METHOD_CALL': $details= array($opline->op2->value); break;
+          case 'INIT_METHOD_CALL': $details= array($opline->op2->value); break;
+          case 'INIT_FCALL_BY_NAME': $details= array($opline->op2->value); break;
+          case 'SEND_VAL': $details= array($opline->extended_value, $opline->op1->value); break;
+          case 'FETCH_OBJ_R': $details= array($opline->op2->value); break;
+          case 'FETCH_DIM_R': $details= array($opline->op2->value); break;
+          default: $details= NULL; // var_dump($opline);
+        }
+        $this->out->writeLinef(
+          '%s@%-3d: <%03d> %s %s', 
+          $indent,
+          -1, // $opline->lineno,
+          $opline->opcode->op,
+          $opline->opcode->mne,
+          $details ? '['.str_replace("\n", "\n".$indent, implode(', ', array_map(array('xp', 'stringOf'), $details))).']' : ''
+        );
+        $this->verbose && $this->out->writeLine($indent, xp::stringOf($opline, $indent));
+      }
+    }
+    
     /**
      * Main runner method
      *
@@ -77,19 +104,7 @@
         if (!$this->class->equals($method->getDeclaringClass())) continue;
 
         $this->out->writeLine('== ', $method, '()');
-        foreach (oel_export_op_array(array($this->class->getName(), $method->getName())) as $opLine) {
-          // var_dump($opLine);
-          $this->out->writeLinef(
-            '@%3d: <%3d> %-24s %3s (%-12s, %-12s) -> %s',
-            $opLine->lineno,
-            $opLine->opcode->op,
-            $opLine->opcode->mne,
-            $opLine->extended_value ? '*'.$opLine->extended_value : '',
-            $this->stringOf($opLine->op1),
-            $this->stringOf($opLine->op2),
-            $this->stringOf($opLine->result)
-          );
-        }
+        $this->dumpOps(array($this->class->getName(), $method->getName()));
       }
     }
   }
