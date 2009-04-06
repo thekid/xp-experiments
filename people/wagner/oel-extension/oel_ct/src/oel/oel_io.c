@@ -590,15 +590,11 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
     int i;
     char brk;
     char *scope;
+    zend_uchar type;
 
-    /* TBD: (un-)serialize these? */
-    op_array->doc_comment = NULL;
-    op_array->doc_comment_len = 0;
+    UNSERIALIZE(&type, zend_uchar);       
+    init_op_array(op_array, type, INITIAL_OP_ARRAY_SIZE);
 
-    op_array->line_start = 0;
-    op_array->line_end = 0;
-
-    UNSERIALIZE(&op_array->type, zend_uchar);       
     UNSERIALIZE(&op_array->num_args, int);
     op_array->arg_info = (zend_arg_info *) ecalloc(op_array->num_args, sizeof(zend_arg_info));
     for (i = 0; i < (int)op_array->num_args; i++) {
@@ -606,7 +602,6 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
     }
     
     unserialize_string(&op_array->function_name UNSERIALIZE_CC);
-    op_array->refcount = (int*) emalloc(sizeof(zend_uint));
     UNSERIALIZE(&op_array->refcount[0], zend_uint);
     UNSERIALIZE(&op_array->last, zend_uint);
     UNSERIALIZE(&op_array->size, zend_uint);
