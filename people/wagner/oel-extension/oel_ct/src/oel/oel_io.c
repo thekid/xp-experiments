@@ -593,7 +593,7 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
     zend_uchar type;
 
     UNSERIALIZE(&type, zend_uchar);       
-    init_op_array(op_array, type, INITIAL_OP_ARRAY_SIZE);
+    init_op_array(op_array, type, INITIAL_OP_ARRAY_SIZE TSRMLS_CC);
 
     UNSERIALIZE(&op_array->num_args, int);
     op_array->arg_info = (zend_arg_info *) ecalloc(op_array->num_args, sizeof(zend_arg_info));
