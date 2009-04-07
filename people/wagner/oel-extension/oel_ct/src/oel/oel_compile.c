@@ -15,7 +15,7 @@ static zend_op_array *oel_compile_file(zend_file_handle *file_handle, int type T
     }
 
     /* Open file */    
-    stream = php_stream_open_wrapper(filename, "rb", ENFORCE_SAFE_MODE | USE_PATH | IGNORE_URL_WIN | STREAM_OPEN_FOR_INCLUDE, &(file_handle->opened_path));
+    stream = php_stream_open_wrapper(filename, "rb", ENFORCE_SAFE_MODE | USE_PATH | IGNORE_URL_WIN | STREAM_OPEN_FOR_INCLUDE, NULL);
     if (!stream) {
         return NULL;
     }
