@@ -325,13 +325,30 @@ method:
       $4->body= $9;
       $$= $4;
     }
-  | decorations T_WORD '(' { if ('__construct' == $2) $3= $yyLex->create(new ConstructorNode(), TRUE); } arguments_opt ')' throws_opt methodbody {
-      $3->modifiers= $1[0];
-      $3->annotations= $1[1];
-      $3->arguments= $5;
-      $3->throws= $7;
-      $3->body= $8;
-      $$= $3;
+  | decorations T_WORD '(' { $p= $yyLex->position; } arguments_opt ')' throws_opt methodbody {
+      // Assert only certain methods are allowed here. This could be done by making
+      // __construct and friends keywords - or this way!
+      switch ($2) {
+        case '__construct': $$= $yyLex->create(new ConstructorNode(), TRUE); break;
+        default: $this->error(
+          E_ERROR, 
+          sprintf(
+            'Method "%s" requires a return type at %s, line %d (offset %d)',
+            $2,
+            $yyLex->fileName,
+            $p[0],
+            $p[1]
+          ), 
+          array('__construct')
+        );
+        $$= $yyLex->create(new MethodNode(), TRUE);
+      }
+      $$->position= $p;
+      $$->modifiers= $1[0];
+      $$->annotations= $1[1];
+      $$->arguments= $5;
+      $$->throws= $7;
+      $$->body= $8;
     }
   | decorations typeref T_OPERATOR operator '(' { $5= $yyLex->create(new OperatorNode(), TRUE); } arguments_opt ')' throws_opt methodbody {
       $5->modifiers= $1[0];
@@ -751,13 +768,18 @@ chain:
     '[' { $1= $yyLex->create(new ArrayAccessNode()); } expression_opt ']' { 
       $1->offset= $3;
     }
-  | '.' T_WORD {
+  | '.' member {
       $$= $yyLex->create(new VariableNode($2)); 
     }
   | '.' T_WORD '(' { $1= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' { 
       $1->name= $2;
       $1->parameters= $5;
     }
+;
+
+member:
+    T_WORD
+  | T_IN
 ;
 // }}}
 
