@@ -215,5 +215,14 @@
         public static self operator + (self $a, self $b) { }
       }'));
     }
+
+    /**
+     * Test missing return type yields a parse error
+     *
+     */
+    #[@test, @expect('text.parser.generic.ParseException')]
+    public function missingReturnType() {
+      $this->parse('class Broken { public run() { }}');
+    }
   }
 ?>
