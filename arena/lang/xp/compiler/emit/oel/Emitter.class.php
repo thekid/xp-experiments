@@ -38,6 +38,7 @@
       $continuation = array(NULL),
       $properties   = array(NULL),
       $declarations = array(NULL),
+      $inits        = array(NULL),
       $origins      = array(NULL),
       $types        = NULL;
     
@@ -855,7 +856,7 @@
         $type= $this->resolve($new->type->name, FALSE);
         if (Types::INTERFACE_KIND === $type->kind()) {
           $p= array('parent' => new TypeName('lang.Object'), 'implements' => array($new->type));
-        } else if (Types::ENUM_KUND === $type->kind()) {
+        } else if (Types::ENUM_KIND === $type->kind()) {
           $this->error('C405', 'Cannot create anonymous enums', $new);
           return;
         } else {
@@ -901,17 +902,21 @@
         '%='   => OEL_BINARY_OP_ASSIGN_MOD,
       );
 
-      if (!$assign->variable instanceof VariableNode) {
-        $this->error('A400', 'Cannot assign to '.$assign->getClassName(), $assign);
-        return;
-      }
-
       $this->emitOne($op, $assign->expression);
       $this->types[$assign->variable]= $this->typeOf($assign->expression);
 
-      oel_add_begin_variable_parse($op);
-      oel_push_variable($op, $assign->variable->name);
-      $this->emitChain($op, $assign->variable);
+      // Special case for variables: Do not end variable parse
+      if ($assign->variable instanceof VariableNode) {
+        oel_add_begin_variable_parse($op);
+        oel_push_variable($op, $assign->variable->name);
+        $this->emitChain($op, $assign->variable);
+      } else if ($assign->variable instanceof ClassMemberNode && $assign->variable->member instanceof VariableNode) {
+        oel_add_begin_variable_parse($op);
+        oel_push_variable($op, $assign->variable->member->name, $this->resolve($assign->variable->class->name)->literal());
+        $this->emitChain($op, $assign->variable);
+      } else {
+        $this->emitOne($op, $assign->variable);
+      }
       
       isset($ops[$assign->op]) ? oel_add_binary_op($op, $ops[$assign->op]) : oel_add_assign($op);
       $assign->free && oel_add_free($op);
@@ -1064,6 +1069,17 @@
 
       // Arguments
       $constructor->arguments && $this->emitArguments($cop, $constructor->arguments);
+      if ($this->inits[0][FALSE]) {
+        foreach ($this->inits[0][FALSE] as $field) {
+          $this->emitOne($cop, new AssignmentNode(array(
+            'variable'   => new VariableNode('this', new VariableNode($field->name)),
+            'expression' => $field->initialization,
+            'free'       => TRUE,
+            'op'         => '=',
+          )));
+        }
+        unset($this->inits[0][FALSE]);
+      }
       $constructor->body && $this->emitAll($cop, $constructor->body);
       oel_finalize($cop);
     }
@@ -1214,18 +1230,19 @@
      * @param   xp.compiler.ast.FieldNode field
      */
     protected function emitField($op, FieldNode $field) {
+      $static= Modifiers::isStatic($field->modifiers);
       oel_add_declare_property(
         $op, 
         $field->name,
         NULL,           // Initial value
-        Modifiers::isStatic($field->modifiers),
+        $static,
         $field->modifiers
       );
       
-      // TODO: field initialization. For statics, we can use __static(),
-      // for other properties, we need to initialize them in the 
-      // constructor. For constant values, we might as well initialize
-      // them right here
+      // FIXME: Only add this to init stack if initial value is not a
+      // constant. For the other cases, use the "initial value" parameter
+      // to oel_add_declare_property.
+      $field->initialization && $this->inits[0][$static][]= $field;
     }
 
     /**
@@ -1260,6 +1277,10 @@
      * @param   xp.compiler.ast.EnumNode declaration
      */
     protected function emitEnum($op, EnumNode $declaration) {
+      if (!$declaration->comment) {
+        $this->warn('D201', 'No api doc for enum '.$declaration->name->name, $declaration);
+      }
+
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Enum');
       
       // Ensure parent class and interfaces are loaded
@@ -1354,7 +1375,10 @@
      * @param   xp.compiler.ast.InterfaceNode declaration
      */
     protected function emitInterface($op, InterfaceNode $declaration) {
-      
+      if (!$declaration->comment) {
+        $this->warn('D201', 'No api doc for interface '.$declaration->name->name, $declaration);
+      }
+
       // Ensure parent interfaces are loaded
       $this->emitUses($op, (array)$declaration->parents);
 
@@ -1381,7 +1405,7 @@
      * @param   xp.compiler.ast.ClassNode declaration
      */
     protected function emitClass($op, ClassNode $declaration) {
-      if (!$declaration->comment) {
+      if (!$declaration->comment && !strstr($declaration->name->name, '$')) {
         $this->warn('D201', 'No api doc for class '.$declaration->name->name, $declaration);
       }
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Object');
@@ -1402,6 +1426,7 @@
       array_unshift($this->class, $declaration->name->name);
       array_unshift($this->metadata, array(array(), array()));
       array_unshift($this->properties, array());
+      array_unshift($this->inits, array(FALSE => array(), TRUE => array()));
 
       // Interfaces
       foreach ($declaration->implements as $type) {
@@ -1414,13 +1439,54 @@
       $this->emitProperties($op, $this->properties[0]);
 
       // Static initializer blocks (array<Statement[]>)
-      if (isset($declaration->body['static'])) {
+      if (isset($declaration->body['static']) || $this->inits[0][TRUE]) {
         $sop= oel_new_method($op, '__static', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
         oel_set_source_file($sop, $this->origins[0]);
-        foreach ($declaration->body['static'] as $statements) {
+        foreach ($this->inits[0][TRUE] as $field) {
+          $this->emitOne($sop, new AssignmentNode(array(
+            'variable'   => new ClassMemberNode(array('class' => new TypeName('self'), 'member' => new VariableNode($field->name))),
+            'expression' => $field->initialization,
+            'free'       => TRUE,
+            'op'         => '=',
+          )));
+        }
+        foreach ((array)$declaration->body['static'] as $statements) {
           $this->emitAll($sop, (array)$statements);
         }
         oel_finalize($sop);
+      }
+      
+      // Generate a constructor if initializations are available.
+      // They will have already been emitted if a constructor exists!
+      if ($this->inits[0][FALSE]) {
+        $this->statics[0]['func_get_args']= TRUE;
+        $this->statics[0]['call_user_func_array']= TRUE;
+        $this->emitOne($op, new ConstructorNode(array(
+          'modifiers'    => MODIFIER_PUBLIC,
+          'arguments'    => NULL,
+          'annotations'  => NULL,
+          'body'         => array(
+            new AssignmentNode(array(
+              'variable'   => new VariableNode('__a'),
+              'expression' => new InvocationNode(array('name' => 'func_get_args')),
+              'free'       => TRUE,
+              'op'         => '='
+            )),
+            new InvocationNode(array(
+              'name'       => 'call_user_func_array',
+              'parameters' => array(
+                new ArrayNode(array('values' => array(
+                  new StringNode(array('value' => 'parent')),
+                  new StringNode(array('value' => '__construct')),
+                ))), 
+                new VariableNode('__a')
+              ),
+              'free'       => TRUE
+            ))
+          ),
+          'comment'      => '(Generated)',
+          'position'     => $declaration->position
+        )));
       }
       
       // Finish
@@ -1439,7 +1505,7 @@
       array_shift($this->properties);
       array_shift($this->metadata);
       array_shift($this->class);
-      
+      array_shift($this->inits);      
     }
 
     /**
@@ -1662,7 +1728,7 @@
       foreach ($this->statics[0][0] as $lookup => $type) {
         if (TRUE === $type && in_array($name, get_extension_funcs($lookup))) {
           return TRUE;
-        } else if ($type->hasMethod($name) && Modifiers::isStatic($type->getMethod($name)->getModifiers())) {
+        } else if ($type instanceof XPClass && $type->hasMethod($name) && Modifiers::isStatic($type->getMethod($name)->getModifiers())) {
           return $type->getName();
         }
       }
