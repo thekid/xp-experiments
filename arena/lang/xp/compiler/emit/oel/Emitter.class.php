@@ -1098,6 +1098,13 @@
         unset($this->inits[0][FALSE]);
       }
       $constructor->body && $this->emitAll($cop, $constructor->body);
+      $this->metadata[0][1]['__construct']= array(
+        DETAIL_ARGUMENTS    => array(),
+        DETAIL_RETURNS      => NULL,
+        DETAIL_THROWS       => array(),
+        DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$constructor->comment),
+        DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$constructor->annotations)
+      );
       oel_finalize($cop);
     }
     
