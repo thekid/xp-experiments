@@ -942,7 +942,7 @@
     protected function emitOperator($op, OperatorNode $operator) {
       $this->errors('F501', 'Operator overloading not supported', $operator);
     }
-    
+
     /**
      * Emit method arguments
      *
@@ -991,6 +991,34 @@
     }
 
     /**
+     * Create annotations meta data
+     *
+     * @param   xp.compiler.ast.AnnotationNode[]
+     * @return  array<string, var> annotations
+     */
+    protected function annotationsAsMetadata(array $annotations) {
+      foreach ($annotations as $annotation) {
+        $params= array();
+        foreach ((array)$annotation->parameters as $name => $value) {
+          if ($value instanceof ClassMemberNode) {    // class literal
+            $params[$name]= $this->resolve($value->class->name)->name();
+          } else if ($value instanceof ConstantValueNode) {
+            $params[$name]= $value->value;
+          }
+        }
+
+        if (!$annotation->parameters) {
+          $annotations[$annotation->type]= NULL;
+        } else if (isset($annotation->parameters['default'])) {
+          $annotations[$annotation->type]= $params['default'];
+        } else {
+          $annotations[$annotation->type]= $params;
+        }
+      }
+      return $annotations;
+    }    
+
+    /**
      * Emit a method
      *
      * @param   resource op
@@ -1001,14 +1029,6 @@
         $this->warn('D201', 'No api doc for '.$this->class[0].'::'.$method->name.'()', $method);
       }
     
-      $meta= array(
-        DETAIL_ARGUMENTS    => array(),
-        DETAIL_RETURNS      => $method->returns->name,
-        DETAIL_THROWS       => array(),
-        DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$method->comment),
-        DETAIL_ANNOTATIONS  => array()
-      );
-
       if (Modifiers::isAbstract($method->modifiers)) {
         // FIXME segfault $mop= oel_new_abstract_method(
         $mop= oel_new_method(
@@ -1029,32 +1049,17 @@
         );
       }
       oel_set_source_file($mop, $this->origins[0]);
-      
-      // Annotations.
-      foreach ((array)$method->annotations as $annotation) {
-        $params= array();
-        foreach ((array)$annotation->parameters as $name => $value) {
-          if ($value instanceof ClassMemberNode) {    // class literal
-            $params[$name]= $this->resolve($value->class->name)->name();
-          } else if ($value instanceof ConstantValueNode) {
-            $params[$name]= $value->value;
-          }
-        }
 
-        if (!$annotation->parameters) {
-          $meta[DETAIL_ANNOTATIONS][$annotation->type]= NULL;
-        } else if (isset($annotation->parameters['default'])) {
-          $meta[DETAIL_ANNOTATIONS][$annotation->type]= $params['default'];
-        } else {
-          $meta[DETAIL_ANNOTATIONS][$annotation->type]= $params;
-        }
-      }
-
-      // Arguments
       $method->arguments && $this->emitArguments($mop, $method->arguments);
       $method->body && $this->emitAll($mop, $method->body);
+      $this->metadata[0][1][$method->name]= array(
+        DETAIL_ARGUMENTS    => array(),
+        DETAIL_RETURNS      => $method->returns->name,
+        DETAIL_THROWS       => array(),
+        DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$method->comment),
+        DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$method->annotations)
+      );
       oel_finalize($mop);
-      $this->metadata[0][1][$method->name]= $meta;
     }
 
     /**
