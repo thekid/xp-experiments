@@ -997,6 +997,7 @@
      * @return  array<string, var> annotations
      */
     protected function annotationsAsMetadata(array $annotations) {
+      $meta= array();
       foreach ($annotations as $annotation) {
         $params= array();
         foreach ((array)$annotation->parameters as $name => $value) {
@@ -1008,14 +1009,14 @@
         }
 
         if (!$annotation->parameters) {
-          $annotations[$annotation->type]= NULL;
+          $meta[$annotation->type]= NULL;
         } else if (isset($annotation->parameters['default'])) {
-          $annotations[$annotation->type]= $params['default'];
+          $meta[$annotation->type]= $params['default'];
         } else {
-          $annotations[$annotation->type]= $params;
+          $meta[$annotation->type]= $params;
         }
       }
-      return $annotations;
+      return $meta;
     }    
 
     /**
