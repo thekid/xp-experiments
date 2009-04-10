@@ -1,0 +1,188 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+package net.xp_lang.unittest;
+
+import unittest.TestCase;
+import lang.reflect.Proxy;
+import util.XPIterator;
+import lang.reflect.InvocationHandler;
+
+import native standard.in_array;
+import native standard.substr;
+import native standard.strtolower;
+import native standard.sizeof;
+
+/**
+ * Tests the Proxy class
+ *
+ * @see      xp://lang.reflect.Proxy
+ * @purpose  Unit test
+ */
+public class ProxyTest extends TestCase {
+  public InvocationHandler $handler= new InvocationHandler() {
+    public array $invocations;
+
+    public var invoke(Proxy $proxy, string $method, var[] $args) { 
+      $this.invocations[$method ~ '_' ~ sizeof($args)]= $args;
+    }
+  };
+    
+  protected static XPClass $iteratorClass= util.XPIterator::class;
+  protected static XPClass $observerClass= util.Observer::class;
+
+  /**
+   * Setup method 
+   *
+   */
+  public void setUp() {
+    $this.handler.invocations= [:];
+  }
+
+  /**
+   * Helper method which returns a proxy instance for a given list of
+   * interfaces, using the default classloader and the handler defined
+   * in setUp()
+   *
+   */
+  protected Proxy proxyInstanceFor(XPClass[] $interfaces) {
+    return Proxy::newProxyInstance(
+      ClassLoader::getDefault(),
+      $interfaces, 
+      $this.handler
+    );
+  }
+
+  /**
+   * Helper method which returns a proxy class for a given list of
+   * interfaces, using the default classloader and the handler defined
+   * in setUp()
+   *
+   */
+  protected XPClass<Proxy> proxyClassFor(XPClass[] $interfaces) {
+    return Proxy::getProxyClass(
+      ClassLoader::getDefault(),
+      $interfaces,
+      $this.handler
+    );
+  }
+
+  /**
+   * Tests Proxy classes are prefixed to make them unique. The prefix
+   * is a constant defined in the Proxy class.
+   *
+   */
+  [@test]
+  public void proxyClassNamesGetPrefixed() {
+    $class= $this.proxyClassFor([self::$iteratorClass]);
+    $this.assertTrue(new lang.types.String($class.getName()).startsWith(PROXY_PREFIX));
+  }
+
+  /**
+   * Tests calling getProxyClass() twice with the same interface list
+   * will result in the same proxy class
+   *
+   */
+  [@test]
+  public void classesEqualForSameInterfaceList() {
+    $c1= $this.proxyClassFor([self::$iteratorClass]);
+    $c2= $this.proxyClassFor([self::$iteratorClass]);
+    $c3= $this.proxyClassFor([self::$iteratorClass, self::$observerClass]);
+
+    $this.assertEquals($c1, $c2);
+    $this.assertNotEquals($c1, $c3);
+  }
+
+  /**
+   * Tests Proxy implements the interface(s) passed
+   *
+   */
+  [@test]
+  public void iteratorInterfaceIsImplemented() {
+    $interfaces= $this.proxyClassFor([self::$iteratorClass]).getInterfaces();
+    $this.assertEquals(2, sizeof($interfaces));
+    $this.assertEquals(self::$iteratorClass, $interfaces[1]);
+  }
+
+  /**
+   * Tests Proxy implements the interface(s) passed
+   *
+   */
+  [@test]
+  public void allInterfacesAreImplemented() {
+    $interfaces= $this.proxyClassFor([self::$iteratorClass, self::$observerClass]).getInterfaces();
+    $this.assertEquals(3, sizeof($interfaces));
+    $this.assertTrue(in_array(self::$iteratorClass, $interfaces));
+    $this.assertTrue(in_array(self::$observerClass, $interfaces));
+  }
+
+  /**
+   * Tests Proxy implements all Iterator methods
+   *
+   */
+  [@test]
+  public void iteratorMethods() {
+    $expected= [
+      'hashcode', 'equals', 'getclassname', 'getclass', 'tostring', // lang.Object
+      'getproxyclass', 'newproxyinstance',                          // lang.reflect.Proxy
+      'hasnext', 'next'                                             // util.XPIterator
+    ];
+
+    $methods= $this.proxyClassFor([self::$iteratorClass]).getMethods();
+
+    $this.assertEquals(sizeof($expected), sizeof($methods));
+    foreach ($method in $methods) {
+      $this.assertTrue(
+        in_array(strtolower($method.getName()), $expected), 
+        'Unexpected method "' ~ $method.getName() ~ '"'
+      );
+    }
+  }
+
+  /**
+   * Tests util.Iterator::next() invocation without arguments
+   *
+   */
+  [@test]
+  public void iteratorNextInvoked() {
+    $proxy= $this.proxyInstanceFor([self::$iteratorClass]);
+    $proxy.next();
+    $this.assertEquals([], $this.handler.invocations['next_0']);
+  }
+
+  /**
+   * Tests proxies can not be created for classes, only for interfaces
+   *
+   */
+  [@test, @expect('lang.IllegalArgumentException')]
+  public void cannotCreateProxiesForClasses() {
+    $this.proxyInstanceFor([Object::class]);
+  }
+
+  /**
+   * Check that implementing two interfaces that declare a common
+   * method does not issue a fatal error.
+   *
+   */
+  [@test]
+  public void allowDoubledInterfaceMethod() {
+    $this.proxyInstanceFor([
+      self::$iteratorClass,
+      ClassLoader::defineInterface('util.NewIterator', 'util.XPIterator')
+    ]);
+  }
+
+  /**
+   * Check that overloaded methods are correctly built.
+   *
+   */
+  [@test]
+  public void overloadedMethod() {
+    $proxy= $this.proxyInstanceFor([net.xp_framework.unittest.reflection.OverloadedInterface::class]);
+    $proxy.overloaded('foo');
+    $proxy.overloaded('foo', 'bar');
+    $this.assertEquals(['foo'], $this.handler.invocations['overloaded_1']);
+    $this.assertEquals(['foo', 'bar'], $this.handler.invocations['overloaded_2']);
+  }    
+}
