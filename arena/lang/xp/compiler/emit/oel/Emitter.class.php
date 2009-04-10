@@ -766,6 +766,7 @@
      * @param   xp.compiler.ast.TryNode try
      */
     protected function emitTry($op, TryNode $try) {
+      static $mangled= "\0e";
 
       // Check whether a finalization handler is available. If so, because
       // the underlying runtime does not support this, add statements after
@@ -777,6 +778,18 @@
       } else {
         array_unshift($this->finalizers, NULL);
       }
+      
+      // If no handlers are left, create a simple catch-all-and-rethrow
+      // handler
+      if (0 == $numHandlers) {
+        $first= new CatchNode(array(
+          'type'       => new TypeName('lang.Throwable'),
+          'variable'   => $mangled,
+          'statements' => array(new ThrowNode(array('expression' => new VariableNode($mangled))))
+        ));
+      } else {
+        $first= $try->handling[0];
+      }
 
       oel_add_begin_tryblock($op); {
         $this->emitAll($op, (array)$try->statements);
@@ -784,14 +797,9 @@
       }
       oel_add_begin_catchblock($op); {
       
-        // First catch. FIXME: Case with try / finally, there is not first catch, 
-        // we need to create one!
-        oel_add_begin_firstcatch(
-          $op, 
-          $this->resolve($try->handling[0]->type->name)->literal(), 
-          $try->handling[0]->variable
-        ); {
-          $this->emitAll($op, (array)$try->handling[0]->statements);
+        // First catch.
+        oel_add_begin_firstcatch($op, $this->resolve($first->type->name)->literal(), $first->variable); {
+          $this->emitAll($op, (array)$first->statements);
           $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
         }
         oel_add_end_firstcatch($op);
