@@ -435,7 +435,7 @@
         $this->emitOne($op, $un->expression);
         oel_add_unary_op($op, OEL_UNARY_OP_BOOL_NOT);
         return;
-      } else if ('-' == $un->op) {
+      } else if ('-' === $un->op) {
         $this->emitOne($op, new BinaryOpNode(array(
           'lhs' => $un->expression,
           'rhs' => new NumberNode(array('value' => -1)),
