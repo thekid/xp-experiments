@@ -23,9 +23,8 @@ public class StringOfTest extends TestCase {
    *   TestString(6) { String }
    * </pre>
    *
-   * @return  lang.Object
    */
-  protected void testStringInstance() {
+  protected Object testStringInstance() {
     return new Object() {
       public void toString() {
         return "TestString(6) { String }";
