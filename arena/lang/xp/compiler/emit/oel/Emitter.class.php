@@ -166,8 +166,11 @@
         case 'false': oel_push_value($op, FALSE); break;
         case 'null': oel_push_value($op, NULL); break;
 
-        // TODO: Warnings?
-        default: oel_push_constant($op, $const->value);
+        // Issue a warning
+        default: {
+          $this->warn('T203', 'Global constants ('.$const->value.') are discouraged', $const);
+          oel_push_constant($op, $const->value);
+        }
       }
     }
 
