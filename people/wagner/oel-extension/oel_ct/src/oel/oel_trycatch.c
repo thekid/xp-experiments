@@ -156,7 +156,7 @@ PHP_FUNCTION(oel_add_end_catchblock) {
     try_token=         oel_stack_pop_token(res_op_array TSRMLS_CC);
 
     env= oel_env_prepare(res_op_array TSRMLS_CC);
-    zend_do_mark_last_catch(first_catch_token, add_catch_token TSRMLS_CC);
+    zend_do_mark_last_catch(first_catch_token, last_catch_token TSRMLS_CC);
     oel_env_restore(res_op_array, env TSRMLS_CC);
 }
 

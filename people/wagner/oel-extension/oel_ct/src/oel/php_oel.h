@@ -50,6 +50,10 @@
     #define OEL_TYPE_TOKEN_CATCH_FIRST    32
     #define OEL_TYPE_TOKEN_CATCH_ADD      33
     #define OEL_TYPE_TOKEN_CATCH_LAST     34
+    #define OEL_TYPE_TOKEN_PROC_NEW       35
+    #define OEL_TYPE_TOKEN_PROC_METH      36
+    #define OEL_TYPE_TOKEN_PROC_METH_STAT 37
+    #define OEL_TYPE_TOKEN_PROC_FUNC      38
 
     #define PHP_OEL_STACK_SERVICE_FUNCTIONS(v)                                                                                                                                      \
     static void   oel_stack_push_##v(php_oel_op_array *res_op_array, znode *node TSRMLS_DC)      { oel_stack_push(               #v, &(res_op_array->stack_##v), node TSRMLS_CC); } \
