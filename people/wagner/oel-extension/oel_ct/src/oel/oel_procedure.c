@@ -405,8 +405,9 @@ PHP_FUNCTION(oel_add_begin_method_call) {
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
     if (!oel_token_isa(res_op_array TSRMLS_CC, 1, OEL_TYPE_TOKEN_VARIABLE)) oel_compile_error(E_ERROR, "oel_add_begin_method_call expecting a variable");
+#ifdef RUBEN_THIS_SHOULD_REALLY_BE_HERE_0
     oel_stack_pop_token(res_op_array TSRMLS_CC);
-
+#endif
     object= oel_stack_pop_operand(res_op_array TSRMLS_CC);
     func_name= oel_create_extvar(res_op_array TSRMLS_CC);
     ZVAL_STRINGL(&func_name->u.constant, arg_func_name, arg_func_name_len, 1);
