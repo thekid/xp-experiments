@@ -239,6 +239,8 @@ array(135) {
   string(12) "POST_DEC_OBJ"
   [136]=>
   string(10) "ASSIGN_OBJ"
+  [137]=>
+  string(12) "ZEND_OP_DATA"
   [138]=>
   string(10) "INSTANCEOF"
   [139]=>
