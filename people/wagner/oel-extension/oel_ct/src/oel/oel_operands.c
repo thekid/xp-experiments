@@ -5,7 +5,10 @@ PHP_FUNCTION(oel_add_receive_arg) {
     znode             *result, *offset, *varname, *initialization, *class_type;
     char              *arg_varname, *arg_class= NULL, op, pass_by_reference;
     zend_ulong         arg_varname_len, arg_class_len= 0, arg_ref= 0, arg_offset;
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rls|z!sb", &arg_op_array, &arg_offset, &arg_varname, &arg_varname_len, &arg_initialization, &arg_class, &arg_class_len, &arg_ref) == FAILURE) { RETURN_NULL(); }
+    zend_bool          arg_optional;
+
+    arg_optional= 0;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rls|bzsb", &arg_op_array, &arg_offset, &arg_varname, &arg_varname_len, &arg_optional, &arg_initialization, &arg_class, &arg_class_len, &arg_ref) == FAILURE) { RETURN_NULL(); }
     res_op_array= oel_fetch_op_array(arg_op_array TSRMLS_CC);
 
     result=  oel_create_extvar(res_op_array TSRMLS_CC);
@@ -15,7 +18,7 @@ PHP_FUNCTION(oel_add_receive_arg) {
     ZVAL_STRINGL(&(varname->u.constant), arg_varname, arg_varname_len, 1);
     op= (arg_initialization) ? ZEND_RECV_INIT : ZEND_RECV;
     initialization= NULL;
-    if (arg_initialization) {
+    if (arg_optional) {
         initialization= oel_create_extvar(res_op_array TSRMLS_CC);
         ZVAL_ZVAL(&(initialization->u.constant), arg_initialization, 1, 0);
     }
