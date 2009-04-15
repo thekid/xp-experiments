@@ -94,7 +94,7 @@ public class Unittest {
    *
    */
   public static void main(string[] $args) {
-    Console::write('Running class ', self::class.getName(), ' [');
+    Console::write('Running class ', self::class, ' [');
     foreach ($method in self::class.getMethods()) {
       if (!$method.hasAnnotation('test')) continue;
       
