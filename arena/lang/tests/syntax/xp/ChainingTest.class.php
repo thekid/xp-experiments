@@ -89,7 +89,7 @@
           'parameters'     => NULL,
           'chained'          => new ArrayAccessNode(array(
             'position'       => array(4, 22), 
-            'offset'         => new NumberNode(array('position' => array(4, 23), 'value' => '0')),
+            'offset'         => new IntegerNode(array('position' => array(4, 23), 'value' => '0')),
             'chained'        => $this->create(new VariableNode('name'), array(4, 30)),
           ))
         ))

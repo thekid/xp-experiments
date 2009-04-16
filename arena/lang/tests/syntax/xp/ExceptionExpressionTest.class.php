@@ -157,7 +157,7 @@
                   'parameters' => NULL,
                   'chained'    => new ArrayAccessNode(array(
                     'position'   => array(8, 31),
-                    'offset'     => new NumberNode(array('position' => array(8, 32), 'value' => '0')),
+                    'offset'     => new IntegerNode(array('position' => array(8, 32), 'value' => '0')),
                   ))
                 ))
               ), array(8, 17))

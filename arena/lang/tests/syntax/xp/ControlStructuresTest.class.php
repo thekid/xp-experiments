@@ -39,10 +39,7 @@
         'condition'      => $this->create(new VariableNode('i'), array(4, 13)),
         'statements'     => array(new ReturnNode(array(
           'position'       => array(4, 17),
-          'expression'     => new ConstantNode(array(
-            'position'       => array(4, 28),
-            'value'          => 'true'
-          ))
+          'expression'     => $this->create(new BooleanNode(TRUE), array(4, 28)),
         ))),
         'otherwise'      => NULL, 
       ))), $this->parse('
@@ -80,7 +77,7 @@
         'condition'      => new BinaryOpNode(array(
           'position'       => array(4, 19),
           'lhs'            => $this->create(new VariableNode('i'), array(4, 13)),
-          'rhs'            => new NumberNode(array('position' => array(4, 18), 'value' => '3')),
+          'rhs'            => new IntegerNode(array('position' => array(4, 18), 'value' => '3')),
           'op'             => '%'
         )),
         'statements'     => NULL, 
@@ -91,7 +88,7 @@
             'condition'      => new BinaryOpNode(array(
               'position'       => array(4, 40),
               'lhs'            => $this->create(new VariableNode('i'), array(4, 34)),
-              'rhs'            => new NumberNode(array('position' => array(4, 39), 'value' => '2')),
+              'rhs'            => new IntegerNode(array('position' => array(4, 39), 'value' => '2')),
               'op'             => '%'
             )),
             'statements'     => NULL, 
@@ -133,7 +130,7 @@
         'cases'          => array(
           new CaseNode(array(
             'position'       => array(5, 11),
-            'expression'     => new NumberNode(array('position' => array(5, 16), 'value' => '0')),
+            'expression'     => new IntegerNode(array('position' => array(5, 16), 'value' => '0')),
             'statements'     => array(
               new StringNode(array('position' => array(5, 19), 'value' => 'no entries')),
               new BreakNode(array('position' => array(5, 33)))
@@ -141,7 +138,7 @@
           )),
           new CaseNode(array(
             'position'       => array(6, 11),
-            'expression'     => new NumberNode(array('position' => array(6, 16), 'value' => '1')),
+            'expression'     => new IntegerNode(array('position' => array(6, 16), 'value' => '1')),
             'statements'     => array(
               new StringNode(array('position' => array(6, 19), 'value' => 'one entry')),
               new BreakNode(array('position' => array(6, 32)))

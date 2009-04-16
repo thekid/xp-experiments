@@ -96,7 +96,7 @@
             ),
             'type'          => NULL
           )),
-          'code'    => new NumberNode(array(
+          'code'    => new IntegerNode(array(
             'position'      => array(4, 19),
             'value'         => '503',
           )),

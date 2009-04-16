@@ -7,9 +7,8 @@
   uses('xp.compiler.ast.ConstantValueNode');
 
   /**
-   * (Insert class' description here)
+   * Represents a string literal
    *
-   * @purpose  purpose
    */
   class StringNode extends ConstantValueNode {
 
@@ -20,6 +19,15 @@
      */
     public function hashCode() {
       return 'xp.string:'.$this->value;
+    }
+
+    /**
+     * Resolve this node's value.
+     *
+     * @return  var
+     */
+    public function resolve() {
+      return (string)$this->value;
     }
   }
 ?>

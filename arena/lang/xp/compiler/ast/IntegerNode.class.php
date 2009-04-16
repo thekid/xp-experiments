@@ -4,13 +4,14 @@
  * $Id$
  */
 
-  uses('xp.compiler.ast.NumberNode');
+  uses('xp.compiler.ast.NaturalNode');
 
   /**
-   * Represents a decimal literal
+   * Represents an integer literal
    *
+   * @see   xp://xp.compiler.ast.NaturalNode
    */
-  class DecimalNode extends NumberNode {
+  class IntegerNode extends NaturalNode {
 
     /**
      * Resolve this node's value.
@@ -18,7 +19,7 @@
      * @return  var
      */
     public function resolve() {
-      return (double)$this->value;
+      return (int)$this->value;
     }
   }
 ?>

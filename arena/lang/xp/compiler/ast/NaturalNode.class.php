@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  uses('xp.compiler.ast.ConstantValueNode');
+  uses('xp.compiler.ast.NumberNode');
 
   /**
-   * Represents a number literal
+   * Represents a natural number
    *
    * @see   xp://xp.compiler.ast.IntegerNode
    * @see   xp://xp.compiler.ast.HexNode
    */
-  abstract class NumberNode extends ConstantValueNode {
+  abstract class NaturalNode extends NumberNode {
 
   }
 ?>

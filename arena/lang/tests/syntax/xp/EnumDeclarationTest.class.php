@@ -61,25 +61,25 @@
             new EnumMemberNode(array(
               'position'  => array(2, 14), 
               'name'      => 'penny', 
-              'value'     => new NumberNode(array('position' => array(2, 15), 'value' => '1')),
+              'value'     => new IntegerNode(array('position' => array(2, 15), 'value' => '1')),
               'body'      => NULL
             )),
             new EnumMemberNode(array(
               'position'  => array(2, 25), 
               'name'      => 'nickel', 
-              'value'     => new NumberNode(array('position' => array(2, 26), 'value' => '2')),
+              'value'     => new IntegerNode(array('position' => array(2, 26), 'value' => '2')),
               'body'      => NULL
             )),
             new EnumMemberNode(array(
               'position'  => array(2, 34), 
               'name'      => 'dime', 
-              'value'     => new NumberNode(array('position' => array(2, 35), 'value' => '10')),
+              'value'     => new IntegerNode(array('position' => array(2, 35), 'value' => '10')),
               'body'      => NULL
             )),
             new EnumMemberNode(array(
               'position'  => array(2, 47), 
               'name'      => 'quarter', 
-              'value'     => new NumberNode(array('position' => array(2, 48), 'value' => '25')),
+              'value'     => new IntegerNode(array('position' => array(2, 48), 'value' => '25')),
               'body'      => NULL
             )),
           ),

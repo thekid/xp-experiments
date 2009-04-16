@@ -21,7 +21,7 @@
       $this->assertEquals(array(new ComparisonNode(array(
         'position'      => array(4, 15),
         'lhs'           => $this->create(new VariableNode('i'), array(4, 9)),
-        'rhs'           => new NumberNode(array('position' => array(4, 15), 'value' => '10')),
+        'rhs'           => new IntegerNode(array('position' => array(4, 15), 'value' => '10')),
         'op'            => '=='
       ))), $this->parse('
         $i == 10;
@@ -37,7 +37,7 @@
       $this->assertEquals(array(new ComparisonNode(array(
         'position'      => array(4, 15),
         'lhs'           => $this->create(new VariableNode('i'), array(4, 9)),
-        'rhs'           => new NumberNode(array('position' => array(4, 15), 'value' => '10')),
+        'rhs'           => new IntegerNode(array('position' => array(4, 15), 'value' => '10')),
         'op'            => '!='
       ))), $this->parse('
         $i != 10;
@@ -53,7 +53,7 @@
       $this->assertEquals(array(new ComparisonNode(array(
         'position'      => array(4, 14),
         'lhs'           => $this->create(new VariableNode('i'), array(4, 9)),
-        'rhs'           => new NumberNode(array('position' => array(4, 14), 'value' => '10')),
+        'rhs'           => new IntegerNode(array('position' => array(4, 14), 'value' => '10')),
         'op'            => '<'
       ))), $this->parse('
         $i < 10;
@@ -69,7 +69,7 @@
       $this->assertEquals(array(new ComparisonNode(array(
         'position'      => array(4, 15),
         'lhs'           => $this->create(new VariableNode('i'), array(4, 9)),
-        'rhs'           => new NumberNode(array('position' => array(4, 15), 'value' => '10')),
+        'rhs'           => new IntegerNode(array('position' => array(4, 15), 'value' => '10')),
         'op'            => '<='
       ))), $this->parse('
         $i <= 10;
@@ -85,7 +85,7 @@
       $this->assertEquals(array(new ComparisonNode(array(
         'position'      => array(4, 14),
         'lhs'           => $this->create(new VariableNode('i'), array(4, 9)),
-        'rhs'           => new NumberNode(array('position' => array(4, 14), 'value' => '10')),
+        'rhs'           => new IntegerNode(array('position' => array(4, 14), 'value' => '10')),
         'op'            => '>'
       ))), $this->parse('
         $i > 10;
@@ -101,7 +101,7 @@
       $this->assertEquals(array(new ComparisonNode(array(
         'position'      => array(4, 15),
         'lhs'           => $this->create(new VariableNode('i'), array(4, 9)),
-        'rhs'           => new NumberNode(array('position' => array(4, 15), 'value' => '10')),
+        'rhs'           => new IntegerNode(array('position' => array(4, 15), 'value' => '10')),
         'op'            => '>='
       ))), $this->parse('
         $i >= 10;

@@ -7,10 +7,19 @@
   uses('xp.compiler.ast.ConstantValueNode');
 
   /**
-   * Represents a constant
+   * Represents a boolean literal
    *
    */
-  class ConstantNode extends ConstantValueNode {
+  class BooleanNode extends ConstantValueNode {
+
+    /**
+     * Constructor
+     *
+     * @param   var value
+     */
+    public function __construct($value= NULL) {
+      $this->value= $value;
+    }
 
     /**
      * Returns a hashcode
@@ -18,7 +27,7 @@
      * @return  string
      */
     public function hashCode() {
-      return 'xp.const:'.xp::stringOf($this->value);
+      return 'xp.bool:'.xp::stringOf($this->value);
     }
 
     /**
@@ -27,12 +36,7 @@
      * @return  var
      */
     public function resolve() {
-      if (!defined($this->value)) {
-
-        // FIXME: Lookup also in some kind of compilation context
-        throw new IllegalStateException('Undefined constant '.$this->value);
-      }
-      return constant($this->value);
+      return (bool)$this->value;
     }
   }
 ?>

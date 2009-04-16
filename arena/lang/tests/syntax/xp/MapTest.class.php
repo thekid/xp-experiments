@@ -37,15 +37,15 @@
         'position'      => array(4, 9),
         'elements'      => array(
           array(
-            new NumberNode(array('position' => array(4, 11), 'value' => '1')),
+            new IntegerNode(array('position' => array(4, 11), 'value' => '1')),
             new StringNode(array('position' => array(4, 15), 'value' => 'one')),
           ),
           array(
-            new NumberNode(array('position' => array(4, 22), 'value' => '2')),
+            new IntegerNode(array('position' => array(4, 22), 'value' => '2')),
             new StringNode(array('position' => array(4, 26), 'value' => 'two')),
           ),
           array(
-            new NumberNode(array('position' => array(4, 33), 'value' => '3')),
+            new IntegerNode(array('position' => array(4, 33), 'value' => '3')),
             new StringNode(array('position' => array(4, 37), 'value' => 'three')),
           ),
         ),

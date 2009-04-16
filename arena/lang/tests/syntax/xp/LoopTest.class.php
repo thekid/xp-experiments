@@ -23,13 +23,13 @@
         'initialization' => array(new AssignmentNode(array(
           'position'       => array(4, 19),
           'variable'       => $this->create(new VariableNode('i'), array(4, 14)),
-          'expression'     => new NumberNode(array('position' => array(4, 18), 'value' => '0')),
+          'expression'     => new IntegerNode(array('position' => array(4, 18), 'value' => '0')),
           'op'             => '='
         ))),
         'condition'      => array(new ComparisonNode(array(
           'position'      => array(4, 26),
           'lhs'           => $this->create(new VariableNode('i'), array(4, 21)),
-          'rhs'           => new NumberNode(array('position' => array(4, 26), 'value' => '1000')),
+          'rhs'           => new IntegerNode(array('position' => array(4, 26), 'value' => '1000')),
           'op'            => '<'
         ))),
         'loop'           => array(new UnaryOpNode(array(
@@ -76,7 +76,7 @@
             'op'            => '++',
             'postfix'       => TRUE
           )),
-          'rhs'           => new NumberNode(array('position' => array(4, 23), 'value' => '10000')),
+          'rhs'           => new IntegerNode(array('position' => array(4, 23), 'value' => '10000')),
           'op'            => '<'
         )),
         'statements'    => NULL, 
@@ -101,7 +101,7 @@
             'op'            => '++',
             'postfix'       => TRUE
           )),
-          'rhs'           => new NumberNode(array('position' => array(4, 30), 'value' => '10000')),
+          'rhs'           => new IntegerNode(array('position' => array(4, 30), 'value' => '10000')),
           'op'            => '<'
         )),
         'statements'    => NULL, 

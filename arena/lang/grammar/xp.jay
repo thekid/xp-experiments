@@ -32,10 +32,12 @@
     'xp.compiler.ast.AssignmentNode',
     'xp.compiler.ast.InvocationNode',
     'xp.compiler.ast.ConstantNode',
-    'xp.compiler.ast.NumberNode',
+    'xp.compiler.ast.IntegerNode',
     'xp.compiler.ast.HexNode',
     'xp.compiler.ast.DecimalNode',
     'xp.compiler.ast.StringNode',
+    'xp.compiler.ast.BooleanNode',
+    'xp.compiler.ast.NullNode',
     'xp.compiler.ast.ArrayNode',
     'xp.compiler.ast.MapNode',
     'xp.compiler.ast.ClassMemberNode',
@@ -679,9 +681,14 @@ expression:
 ;
 
 literal:
-    T_WORD { $$= $yyLex->create(new ConstantNode()); $$->value= $1; }
+    T_WORD { switch ($1) {
+      case 'true': $$= $yyLex->create(new BooleanNode(TRUE)); break;
+      case 'false': $$= $yyLex->create(new BooleanNode(FALSE)); break;
+      case 'null': $$= $yyLex->create(new NullNode()); break;
+      default: $$= $yyLex->create(new ConstantNode(array('value' => $1))); break;
+    }}
   | '[' { $p= $yyLex->position; } map_or_list ']' { $3->position= $p; $3->type= NULL; $$= $3; }
-  | T_NUMBER { $$= $yyLex->create(new NumberNode()); $$->value= $1; }
+  | T_NUMBER { $$= $yyLex->create(new IntegerNode()); $$->value= $1; }
   | T_HEX { $$= $yyLex->create(new HexNode()); $$->value= $1; }
   | T_DECIMAL { $$= $yyLex->create(new DecimalNode()); $$->value= $1; }
   | T_STRING { $$= $yyLex->create(new StringNode()); $$->value= $1; }

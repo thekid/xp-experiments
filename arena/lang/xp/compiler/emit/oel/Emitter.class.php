@@ -15,6 +15,7 @@
     'xp.compiler.syntax.php.Parser',
     'xp.compiler.syntax.xp.Lexer',
     'xp.compiler.syntax.xp.Parser',
+    'xp.compiler.optimize.BinaryOptimization',
     'lang.reflect.Modifiers',
     'util.collections.HashTable'
   );
@@ -39,8 +40,11 @@
       $properties   = array(NULL),
       $declarations = array(NULL),
       $inits        = array(NULL),
-      $origins      = array(NULL),
-      $types        = NULL;
+      $origins      = array(NULL);
+    
+    protected
+      $types          = NULL,
+      $optimizations  = NULL;
     
     /**
      * Emit uses statements for a given list of types
@@ -119,7 +123,7 @@
      * @param   xp.compiler.ast.StringNode str
      */
     protected function emitString($op, StringNode $str) {
-      oel_push_value($op, $str->value);
+      oel_push_value($op, $str->resolve());
     }
 
     /**
@@ -153,7 +157,26 @@
       oel_add_end_array_init($op);
     }
 
+    /**
+     * Emit booleans
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.BooleanNode const
+     */
+    protected function emitBoolean($op, BooleanNode $const) {
+      oel_push_value($op, $const->resolve());
+    }
 
+    /**
+     * Emit null
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.NullNode const
+     */
+    protected function emitNull($op, NullNode $const) {
+      oel_push_value($op, NULL);
+    }
+    
     /**
      * Emit constants
      *
@@ -161,16 +184,12 @@
      * @param   xp.compiler.ast.ConstantNode const
      */
     protected function emitConstant($op, ConstantNode $const) {
-      switch (strtolower($const->value)) {
-        case 'true': oel_push_value($op, TRUE); break;
-        case 'false': oel_push_value($op, FALSE); break;
-        case 'null': oel_push_value($op, NULL); break;
-
-        // Issue a warning
-        default: {
-          $this->warn('T203', 'Global constants ('.$const->value.') are discouraged', $const);
-          oel_push_constant($op, $const->value);
-        }
+      $this->warn('T203', 'Global constants ('.$const->value.') are discouraged', $const);
+      try {
+        oel_push_value($op, $const->resolve());
+      } catch (IllegalStateException $e) {
+        $this->warn('T201', 'Constant lookup for '.$const->value.' deferred until runtime', $const);
+        oel_push_constant($op, $const->value);
       }
     }
 
@@ -207,13 +226,13 @@
     }
 
     /**
-     * Emit numbers
+     * Emit integers
      *
      * @param   resource op
-     * @param   xp.compiler.ast.NumberNode num
+     * @param   xp.compiler.ast.IntegerNode num
      */
-    protected function emitNumber($op, NumberNode $num) {
-      oel_push_value($op, (int)$num->value);
+    protected function emitInteger($op, IntegerNode $num) {
+      oel_push_value($op, $num->resolve());
     }
 
     /**
@@ -223,7 +242,7 @@
      * @param   xp.compiler.ast.DecimalNode num
      */
     protected function emitDecimal($op, DecimalNode $num) {
-      oel_push_value($op, (double)$num->value);
+      oel_push_value($op, $num->resolve());
     }
 
     /**
@@ -233,7 +252,7 @@
      * @param   xp.compiler.ast.HexNode num
      */
     protected function emitHex($op, HexNode $num) {
-      oel_push_value($op, hexdec($num->value));
+      oel_push_value($op, $num->resolve());
     }
     
     /**
@@ -309,66 +328,6 @@
         $c= $c->chained;
       }
     }
-    
-    /**
-     * Evaluate concatenation
-     *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
-     * @return  xp.compiler.ast.Node result
-     */
-    protected function evalConcat(ConstantValueNode $l, ConstantValueNode $r) {
-      $l->value .= $r->value;
-      return $l;
-    }
-    
-    /**
-     * Evaluate addition
-     *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
-     * @return  xp.compiler.ast.Node result
-     */
-    protected function evalAdd(ConstantValueNode $l, ConstantValueNode $r) {
-      $l->value += $r->value;
-      return $l;
-    }
-
-    /**
-     * Evaluate subtraction
-     *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
-     * @return  xp.compiler.ast.Node result
-     */
-    protected function evalSubtract(ConstantValueNode $l, ConstantValueNode $r) {
-      $l->value -= $r->value;
-      return $l;
-    }
-
-    /**
-     * Evaluate multiplication
-     *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
-     * @return  xp.compiler.ast.Node result
-     */
-    protected function evalMultiply(ConstantValueNode $l, ConstantValueNode $r) {
-      $l->value *= $r->value;
-      return $l;
-    }
-
-    /**
-     * Evaluate division
-     *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
-     * @return  xp.compiler.ast.Node result
-     */
-    protected function evalDivide(ConstantValueNode $l, ConstantValueNode $r) {
-      $l->value /= $r->value;
-      return $l;
-    }
 
     /**
      * Emit binary operation node
@@ -389,21 +348,6 @@
         '&&'  => OEL_OP_BOOL_AND,
         '||'  => OEL_OP_BOOL_OR,
       );
-      static $optimizable= array(
-        '~'   => 'concat',
-        '-'   => 'subtract',
-        '+'   => 'add',
-        '*'   => 'multiply',
-        '/'   => 'divide',
-      );      
-      
-      // Check for optimization possibilities if left- and righthand sides are constant values
-      if (isset($optimizable[$bin->op]) && $bin->lhs instanceof ConstantValueNode && $bin->rhs instanceof ConstantValueNode) {
-        if (NULL !== ($r= call_user_func_array(array($this, 'eval'.$optimizable[$bin->op]), array($bin->lhs, $bin->rhs)))) {
-          $this->emitOne($op, $r);
-          return;
-        }
-      }
       
       // Check for logical operations. TODO: LogicalOperationNode?
       if (isset($lop[$bin->op])) {
@@ -977,15 +921,37 @@
         }
         
         if (isset($arg['default'])) {
+          if ($arg['default'] instanceof Resolveable) {
+            $init= $arg['default']->resolve();
+            $resolveable= TRUE;
+          } else {
+            $init= NULL;
+            $resolveable= FALSE;
+          }
           oel_add_receive_arg(
-            $op,
+            $op, 
             $i + 1,
             $arg['name'],
-            eval('return '.$arg['default']->value.';')              // HACK!
+            TRUE,           // optional
+            $init
           );
+          if (!$resolveable) {
+            $this->emitOne($op, $arg['default']);
+            oel_add_begin_variable_parse($op);
+            oel_push_variable($op, $arg['name']);
+            oel_add_assign($op);
+            oel_add_free($op);
+          }
         } else {
-          oel_add_receive_arg($op, $i + 1, $arg['name']);
+          oel_add_receive_arg(
+            $op, 
+            $i + 1,
+            $arg['name'],
+            FALSE           // optional
+          );
         }
+        
+        // FIXME: Emit type hint if type is a class, interface or enum
         $this->types[new VariableNode($arg['name'])]= $arg['type'];
       }
     }
@@ -1003,8 +969,8 @@
         foreach ((array)$annotation->parameters as $name => $value) {
           if ($value instanceof ClassMemberNode) {    // class literal
             $params[$name]= $this->resolve($value->class->name)->name();
-          } else if ($value instanceof ConstantValueNode) {
-            $params[$name]= $value->value;
+          } else if ($value instanceof Resolveable) {
+            $params[$name]= $value->resolve();
           }
         }
 
@@ -1255,18 +1221,23 @@
      */
     protected function emitField($op, FieldNode $field) {
       $static= Modifiers::isStatic($field->modifiers);
+      
+      if (!$field->initialization) {
+        $init= NULL;
+      } else if ($field->initialization instanceof Resolveable) {
+        $init= $field->initialization->resolve();
+      } else {    // Need to initialize these later
+        $init= NULL;
+        $this->inits[0][$static][]= $field;
+      }
+
       oel_add_declare_property(
         $op, 
         $field->name,
-        NULL,           // Initial value
+        $init,
         $static,
         $field->modifiers
       );
-      
-      // FIXME: Only add this to init stack if initial value is not a
-      // constant. For the other cases, use the "initial value" parameter
-      // to oel_add_declare_property.
-      $field->initialization && $this->inits[0][$static][]= $field;
     }
 
     /**
@@ -1654,6 +1625,13 @@
      * @return  int
      */
     protected function emitOne($op, xp·compiler·ast·Node $node) {
+    
+      // Check for optimizations
+      if ($this->optimizations[$node->getClass()]) {
+        $node= $this->optimizations[$node->getClass()]->optimize($node);
+      }
+    
+      // Search emission method
       $target= 'emit'.substr(get_class($node), 0, -strlen('Node'));
       if (method_exists($this, $target)) {
         oel_set_source_line($op, $node->position[0]);
@@ -1826,6 +1804,8 @@
      */
     public function emit(ParseTree $tree) {
       $this->types= new HashTable();
+      $this->optimizations= new HashTable();
+      $this->optimizations[XPClass::forName('xp.compiler.ast.BinaryOpNode')]= new BinaryOptimization();
       $this->messages= array(
         'warnings' => array(),
         'errors'   => array()

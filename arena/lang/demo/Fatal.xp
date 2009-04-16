@@ -3,6 +3,8 @@
  * $Id$
  */
 
+import native standard.var_dump;
+
 /**
  * Fatal demo. Shows off
  *
@@ -17,7 +19,7 @@ public class Fatal {
    *
    */
   public static void main(string[] $args) {
-    $a= NULL;
+    $a= null;
     $a.invoke();
   }
 }

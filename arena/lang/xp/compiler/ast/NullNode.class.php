@@ -7,10 +7,10 @@
   uses('xp.compiler.ast.ConstantValueNode');
 
   /**
-   * Represents a constant
+   * Represents the null literal
    *
    */
-  class ConstantNode extends ConstantValueNode {
+  class NullNode extends ConstantValueNode {
 
     /**
      * Returns a hashcode
@@ -18,7 +18,7 @@
      * @return  string
      */
     public function hashCode() {
-      return 'xp.const:'.xp::stringOf($this->value);
+      return 'xp.null';
     }
 
     /**
@@ -27,12 +27,7 @@
      * @return  var
      */
     public function resolve() {
-      if (!defined($this->value)) {
-
-        // FIXME: Lookup also in some kind of compilation context
-        throw new IllegalStateException('Undefined constant '.$this->value);
-      }
-      return constant($this->value);
+      return NULL;
     }
   }
 ?>

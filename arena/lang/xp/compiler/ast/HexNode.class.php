@@ -4,14 +4,22 @@
  * $Id$
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.NaturalNode');
 
   /**
-   * (Insert class' description here)
+   * Represents a hex literal
    *
-   * @purpose  purpose
+   * @see   xp://xp.compiler.ast.NaturalNode
    */
-  class HexNode extends xp·compiler·ast·Node {
+  class HexNode extends NaturalNode {
     
+    /**
+     * Resolve this node's value.
+     *
+     * @return  var
+     */
+    public function resolve() {
+      return hexdec($this->value);
+    }
   }
 ?>

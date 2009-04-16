@@ -51,9 +51,9 @@
       $this->assertEquals(array(new ArrayNode(array(
         'position'      => array(4, 9),
         'values'        => array(
-          new NumberNode(array('position' => array(4, 10), 'value' => '1')),
-          new NumberNode(array('position' => array(4, 13), 'value' => '2')),
-          new NumberNode(array('position' => array(4, 16), 'value' => '3')),
+          new IntegerNode(array('position' => array(4, 10), 'value' => '1')),
+          new IntegerNode(array('position' => array(4, 13), 'value' => '2')),
+          new IntegerNode(array('position' => array(4, 16), 'value' => '3')),
         ),
         'type'          => NULL,
       ))), $this->parse('
@@ -70,9 +70,9 @@
       $this->assertEquals(array(new ArrayNode(array(
         'position'      => array(4, 9),
         'values'        => array(
-          new NumberNode(array('position' => array(4, 20), 'value' => '1')),
-          new NumberNode(array('position' => array(4, 23), 'value' => '2')),
-          new NumberNode(array('position' => array(4, 26), 'value' => '3')),
+          new IntegerNode(array('position' => array(4, 20), 'value' => '1')),
+          new IntegerNode(array('position' => array(4, 23), 'value' => '2')),
+          new IntegerNode(array('position' => array(4, 26), 'value' => '3')),
         ),
         'type'          => new TypeName('int'),
       ))), $this->parse('

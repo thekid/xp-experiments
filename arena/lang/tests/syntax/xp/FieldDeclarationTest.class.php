@@ -52,12 +52,9 @@
         'annotations'=> NULL,
         'name'       => 'instance',
         'type'       => new TypeName('self'),
-        'initialization' => new ConstantNode(array(
-          'position'   => array(2, 44),
-          'value'      => 'NULL'
-        ))
+        'initialization' => $this->create(new NullNode(), array(2, 44))
       ))), $this->parse('class Logger { 
-        private static self $instance= NULL;
+        private static self $instance= null;
       }'));
     }
 

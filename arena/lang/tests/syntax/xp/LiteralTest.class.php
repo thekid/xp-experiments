@@ -46,7 +46,7 @@
      */
     #[@test]
     public function numberLiteral() {
-      $this->assertEquals(array(new NumberNode(array(
+      $this->assertEquals(array(new IntegerNode(array(
         'position'      => array(4, 9),
         'value'         => '1',
       ))), $this->parse("
@@ -83,6 +83,42 @@
     }
 
     /**
+     * Test true
+     *
+     */
+    #[@test]
+    public function booleanTrueLiteral() {
+      $this->assertEquals(
+        array($this->create(new BooleanNode(TRUE), array(3, 17))),
+        $this->parse('true;')
+      );
+    }
+
+    /**
+     * Test true
+     *
+     */
+    #[@test]
+    public function booleanFalseLiteral() {
+      $this->assertEquals(
+        array($this->create(new BooleanNode(FALSE), array(3, 18))),
+        $this->parse('false;')
+      );
+    }
+
+    /**
+     * Test null
+     *
+     */
+    #[@test]
+    public function nullLiteral() {
+      $this->assertEquals(
+        array($this->create(new NullNode(), array(3, 17))),
+        $this->parse('null;')
+      );
+    }
+
+    /**
      * Test array
      *
      */
@@ -91,11 +127,11 @@
       $this->assertEquals(array(new ArrayNode(array(
         'position'      => array(4, 9),
         'values'        => array(
-          new NumberNode(array(
+          new IntegerNode(array(
             'position'      => array(4, 10),
             'value'         => '1',
           )),
-          new NumberNode(array(
+          new IntegerNode(array(
             'position'      => array(4, 13),
             'value'         => '2',
           )),
@@ -119,7 +155,7 @@
             'position'      => array(4, 11),
             'value'         => 'one',
           )),
-          new NumberNode(array(
+          new IntegerNode(array(
             'position'      => array(4, 19),
             'value'         => '1',
           )),
@@ -154,11 +190,11 @@
       $this->assertEquals(array(new ArrayNode(array(
         'position'      => array(4, 9),
         'values'        => array(
-          new NumberNode(array(
+          new IntegerNode(array(
             'position'      => array(4, 10),
             'value'         => '1',
           )),
-          new NumberNode(array(
+          new IntegerNode(array(
             'position'      => array(4, 13),
             'value'         => '2',
           )),

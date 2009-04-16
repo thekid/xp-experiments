@@ -18,7 +18,7 @@
      */
     #[@test]
     public function integerNumber() {
-      $this->assertEquals(array(new NumberNode(array(
+      $this->assertEquals(array(new IntegerNode(array(
         'position'      => array(4, 9),
         'value'         => '1',
       ))), $this->parse('
@@ -34,7 +34,7 @@
     public function negativeIntegerNumber() {
       $this->assertEquals(array(new UnaryOpNode(array(
         'position'      => array(4, 11),
-        'expression'    => new NumberNode(array(
+        'expression'    => new IntegerNode(array(
           'position'      => array(4, 10),
           'value'         => '1',
         )),

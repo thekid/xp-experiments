@@ -21,7 +21,7 @@
       $this->assertEquals(array(new AssignmentNode(array(
         'position'      => array(4, 14),
         'variable'      => $this->create(new VariableNode('i'), array(4, 9)),
-        'expression'    => new NumberNode(array('position' => array(4, 13), 'value' => '0')),
+        'expression'    => new IntegerNode(array('position' => array(4, 13), 'value' => '0')),
         'op'            => '='
       ))), $this->parse('
         $i= 0;
@@ -40,10 +40,10 @@
           'i',
           new ArrayAccessNode(array(
             'position'      => array(4, 11), 
-            'offset'        => new NumberNode(array('position' => array(4, 12), 'value' => '0')),
+            'offset'        => new IntegerNode(array('position' => array(4, 12), 'value' => '0')),
           ))
         ), array(4, 9)),
-        'expression'    => new NumberNode(array('position' => array(4, 16), 'value' => '0')),
+        'expression'    => new IntegerNode(array('position' => array(4, 16), 'value' => '0')),
         'op'            => '='
       ))), $this->parse('
         $i[0]= 0;
@@ -65,7 +65,7 @@
             'offset'        => NULL,
           ))
         ), array(4, 9)),
-        'expression'    => new NumberNode(array('position' => array(4, 15), 'value' => '0')),
+        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '0')),
         'op'            => '='
       ))), $this->parse('
         $i[]= 0;
@@ -84,7 +84,7 @@
           'class',
           $this->create(new VariableNode('member'), array(4, 22))
         ), array(4, 9)),
-        'expression'    => new NumberNode(array('position' => array(4, 24), 'value' => '0')),
+        'expression'    => new IntegerNode(array('position' => array(4, 24), 'value' => '0')),
         'op'            => '='
       ))), $this->parse('
         $class.member= 0;
@@ -104,10 +104,7 @@
           'class'         => new TypeName('self'),
           'member'        => $this->create(new VariableNode('instance'), array(4, 15))
         )),
-        'expression'    => new ConstantNode(array(
-          'position'      => array(4, 30), 
-          'value'         => 'null'
-        )),
+        'expression'    => $this->create(new NullNode(), array(4, 30)),
         'op'            => '='
       ))), $this->parse('
         self::$instance= null;
@@ -132,7 +129,7 @@
             'chained'        => $this->create(new VariableNode('flags'), array(4, 44)),
           ))), array(4, 15))
         )),
-        'expression'    =>  new NumberNode(array('position' => array(4, 46), 'value' => '0')),
+        'expression'    =>  new IntegerNode(array('position' => array(4, 46), 'value' => '0')),
         'op'            => '='
       ))), $this->parse('
         self::$instance.addAppender().flags= 0;
