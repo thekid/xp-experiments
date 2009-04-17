@@ -939,14 +939,7 @@
             }
           }
         }
-        oel_add_receive_arg(
-          $op, 
-          $i + 1,
-          $arg['name'],
-          $optional,
-          $init
-        );
-        
+        oel_add_receive_arg($op, $i + 1, $arg['name'], $optional, $init);
         if ($optional && !$resolveable) {
           $this->emitOne($op, $arg['default']);
           oel_add_begin_variable_parse($op);
