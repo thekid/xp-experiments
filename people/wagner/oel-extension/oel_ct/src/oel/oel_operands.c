@@ -16,12 +16,15 @@ PHP_FUNCTION(oel_add_receive_arg) {
     ZVAL_LONG(&(offset->u.constant), arg_offset);
     varname= oel_create_extvar(res_op_array TSRMLS_CC);
     ZVAL_STRINGL(&(varname->u.constant), arg_varname, arg_varname_len, 1);
-    op= (arg_initialization) ? ZEND_RECV_INIT : ZEND_RECV;
+
+    /* Optional vs. required args */
+    op= (arg_optional) ? ZEND_RECV_INIT : ZEND_RECV;
     initialization= NULL;
     if (arg_optional) {
         initialization= oel_create_extvar(res_op_array TSRMLS_CC);
         ZVAL_ZVAL(&(initialization->u.constant), arg_initialization, 1, 0);
     }
+
     class_type= oel_create_extvar(res_op_array TSRMLS_CC);
     if (arg_class_len == 0) class_type->op_type= IS_UNUSED;
     else ZVAL_STRINGL(&(class_type->u.constant), arg_class, arg_class_len, 1);
