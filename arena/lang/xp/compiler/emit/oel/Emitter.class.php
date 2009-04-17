@@ -382,7 +382,7 @@
       } else if ('-' === $un->op) {
         $this->emitOne($op, new BinaryOpNode(array(
           'lhs' => $un->expression,
-          'rhs' => new NumberNode(array('value' => -1)),
+          'rhs' => new IntegerNode(array('value' => -1)),
           'op'  => '*'
         )));
         return;
@@ -920,35 +920,39 @@
           break;
         }
         
-        if (isset($arg['default'])) {
-          if ($arg['default'] instanceof Resolveable) {
-            $init= $arg['default']->resolve();
-            $resolveable= TRUE;
-          } else {
-            $init= NULL;
-            $resolveable= FALSE;
-          }
-          oel_add_receive_arg(
-            $op, 
-            $i + 1,
-            $arg['name'],
-            TRUE,           // optional
-            $init
-          );
-          if (!$resolveable) {
-            $this->emitOne($op, $arg['default']);
-            oel_add_begin_variable_parse($op);
-            oel_push_variable($op, $arg['name']);
-            oel_add_assign($op);
-            oel_add_free($op);
-          }
+        // For default args, emit an RECV_INIT opcode if the default value is
+        // resolveable at compile time (this opcode only takes "static" values
+        // as initialization). If it isn't, create a ZEND_RECV opcode and an
+        // ASSIGN opcode right after it, assigning the argument to the default.
+        $init= NULL;
+        $resolveable= FALSE;
+        if (!isset($arg['default'])) {
+          $optional= FALSE;
         } else {
-          oel_add_receive_arg(
-            $op, 
-            $i + 1,
-            $arg['name'],
-            FALSE           // optional
-          );
+          $optional= TRUE;
+          if ($arg['default'] instanceof Resolveable) {
+            try {
+              $init= $arg['default']->resolve();
+              $resolveable= TRUE;
+            } catch (IllegalStateException $e) {
+              // Not resolvable
+            }
+          }
+        }
+        oel_add_receive_arg(
+          $op, 
+          $i + 1,
+          $arg['name'],
+          $optional,
+          $init
+        );
+        
+        if ($optional && !$resolveable) {
+          $this->emitOne($op, $arg['default']);
+          oel_add_begin_variable_parse($op);
+          oel_push_variable($op, $arg['name']);
+          oel_add_assign($op);
+          oel_add_free($op);
         }
         
         // FIXME: Emit type hint if type is a class, interface or enum
