@@ -30,6 +30,7 @@
     protected 
       $op           = NULL,
       $class        = array(NULL),
+      $method       = array(NULL),
       $package      = array(NULL),
       $imports      = array(NULL),
       $statics      = array(NULL),
@@ -1012,10 +1013,16 @@
           Modifiers::isFinal($method->modifiers)
         );
       }
+      
+      // Begin
       oel_set_source_file($mop, $this->origins[0]);
+      array_unshift($this->method, $method);
 
+      // Arguments, body
       $method->arguments && $this->emitArguments($mop, $method->arguments);
       $method->body && $this->emitAll($mop, $method->body);
+      
+      // Finalize
       $this->metadata[0][1][$method->name]= array(
         DETAIL_ARGUMENTS    => array(),
         DETAIL_RETURNS      => $method->returns->name,
@@ -1024,6 +1031,7 @@
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$method->annotations)
       );
       oel_finalize($mop);
+      array_shift($this->method);
     }
 
     /**
@@ -1045,9 +1053,12 @@
         $constructor->modifiers,
         Modifiers::isFinal($constructor->modifiers)
       );
+      
+      // Begin
       oel_set_source_file($cop, $this->origins[0]);
+      array_unshift($this->method, $constructor);
 
-      // Arguments
+      // Arguments, initializations, body
       $constructor->arguments && $this->emitArguments($cop, $constructor->arguments);
       if ($this->inits[0][FALSE]) {
         foreach ($this->inits[0][FALSE] as $field) {
@@ -1061,6 +1072,8 @@
         unset($this->inits[0][FALSE]);
       }
       $constructor->body && $this->emitAll($cop, $constructor->body);
+      
+      // Finalize
       $this->metadata[0][1]['__construct']= array(
         DETAIL_ARGUMENTS    => array(),
         DETAIL_RETURNS      => NULL,
@@ -1069,6 +1082,7 @@
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$constructor->annotations)
       );
       oel_finalize($cop);
+      array_shift($this->method);
     }
     
     /**
@@ -1588,7 +1602,7 @@
      */
     protected function emitReturn($op, ReturnNode $return) {
       $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
-
+      
       // Return expression as "$R= [EXPRESSION]; return $R;"
       //
       // This saves us from handling ZEND_PARSED_STATIC_MEMBER (self::$x)
@@ -1597,6 +1611,11 @@
       // 
       // See oel_core.c / oel_add_return
       if ($return->expression) {
+        if (NULL === $this->method[0]->returns) {
+          $this->warn('T101', 'Returning expression from '.$this->method[0]->getClassName(), $return);
+        } else if ('void' === $this->method[0]->returns->name) {
+          $this->warn('T101', 'Returning expression from method '.$this->method[0]->name.'() with void return type', $return);
+        }
         $t= $return->hashCode();
         
         $this->emitOne($op, $return->expression);
