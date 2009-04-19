@@ -32,7 +32,7 @@
     public abstract function literal();
 
     /**
-     * Returns literal for use in code
+     * Returns type kind (one of the *_KIND constants).
      *
      * @return  string
      */
