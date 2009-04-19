@@ -317,8 +317,12 @@
         if ($c instanceof VariableNode) {
           oel_push_property($op, $c->name);
         } else if ($c instanceof ArrayAccessNode) {
-          $this->emitOne($op, $c->offset);
-          oel_push_dim($op);
+          if ($c->offset) {
+            $this->emitOne($op, $c->offset);
+            oel_push_dim($op);
+          } else {
+            oel_push_new_dim($op);
+          }
         } else if ($c instanceof InvocationNode) {
           oel_add_begin_method_call($op, $c->name);
           $n= $this->emitParameters($op, (array)$c->parameters);
