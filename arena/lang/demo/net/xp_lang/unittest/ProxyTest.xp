@@ -22,7 +22,7 @@ import native standard.sizeof;
  */
 public class ProxyTest extends TestCase {
   public InvocationHandler $handler= new InvocationHandler() {
-    public array $invocations;
+    public var $invocations;
 
     public var invoke(Proxy $proxy, string $method, var[] $args) { 
       $this.invocations[$method ~ '_' ~ sizeof($args)]= $args;

@@ -26,7 +26,7 @@ public class StringOfTest extends TestCase {
    */
   protected Object testStringInstance() {
     return new Object() {
-      public void toString() {
+      public string toString() {
         return "TestString(6) { String }";
       }
     };

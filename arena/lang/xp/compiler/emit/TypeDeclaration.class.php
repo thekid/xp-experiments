@@ -11,15 +11,15 @@
    *
    */
   class TypeDeclaration extends Types {
-    protected $name= '';
+    protected $declaration= NULL;
     
     /**
      * Constructor
      *
-     * @param   string name
+     * @param   string declaration
      */
-    public function __construct(ParseTree $tree) {
-      $this->tree= $tree;
+    public function __construct(xp·compiler·ast·Node $declaration) {
+      $this->declaration= $declaration;
     }
     
     /**
@@ -28,7 +28,7 @@
      * @return  string
      */
     public function name() {
-      $n= $this->tree->declaration->name->name;
+      $n= $this->declaration->name->name;
       if ($this->tree->package) {
         $n= $this->tree->package->name.'.'.$n;
       }
@@ -41,7 +41,7 @@
      * @return  string
      */
     public function literal() {
-      return $this->tree->declaration->name->name;
+      return $this->declaration->name->name;
     }
 
     /**
@@ -50,12 +50,89 @@
      * @return  string
      */
     public function kind() {
-      switch ($decl= $this->tree->declaration) {
+      switch ($decl= $this->declaration) {
         case $decl instanceof ClassNode: return parent::CLASS_KIND;
         case $decl instanceof InterfaceNode: return parent::INTERFACE_KIND;
         case $decl instanceof EnumNode: return parent::ENUM_KIND;
         default: return parent::UNKNOWN_KIND;
       }
+    }
+
+    /**
+     * Returns a method by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasMethod($name) {
+      foreach ($this->declaration->body['methods'] as $member) {
+        if ($member instanceof MethodNode && $member->name === $name) return TRUE;
+      }
+      return FALSE;
+    }
+    
+    /**
+     * Returns a method by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.emit.Method
+     */
+    public function getMethod($name) {
+      foreach ($this->declaration->body['methods'] as $member) {
+        if ($member instanceof MethodNode && $member->name === $name) {
+          $m= new xp·compiler·emit·Method();
+          $m->name= $member->name;
+          $m->returns= $member->returns;
+          $m->modifiers= $member->modifiers;
+          foreach ($member->parameters as $p) {
+            $m->parameters[]= $p->type;
+          }
+          $m->holder= $this;
+          return $m;
+        }
+      }
+      return NULL;
+    }
+
+    /**
+     * Returns a field by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasField($name) {
+      foreach ($this->declaration->body['fields'] as $member) {
+        if ($member instanceof FieldNode && $member->name === $name) return TRUE;
+      }
+      return FALSE;
+    }
+    
+    /**
+     * Returns a field by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.emit.Field
+     */
+    public function getField($name) {
+      foreach ($this->declaration->body['fields'] as $member) {
+        if ($member instanceof FieldNode && $member->name === $name) {
+          $f= new xp·compiler·emit·Field();
+          $f->name= $member->name;
+          $f->type= $member->type;
+          $f->holder= $this;
+          return $f;
+        }
+      }
+      return NULL;
+    }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */    
+    public function toString() {
+      return $this->getClassName().'@('.$this->declaration->name->toString().')';
     }
   }
 ?>

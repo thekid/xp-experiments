@@ -4,6 +4,7 @@
  */
 
 import lang.types.ArrayList;
+import lang.Iterable;
 import util.cmd.Console;
 
 /**
@@ -16,7 +17,7 @@ import util.cmd.Console;
  */
 public class Init {
   protected static XPClass<Iterable> $arrayClass = ArrayList::class;
-  protected Iterable $elements = self::$arrayClass.newInstance(1, 2, 3);
+  protected Iterable<int> $elements = self::$arrayClass.newInstance(1, 2, 3);
   protected string $name = null;
   
   /**

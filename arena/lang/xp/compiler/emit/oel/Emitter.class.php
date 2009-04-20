@@ -110,9 +110,10 @@
         $n= $this->emitParameters($op, (array)$inv->parameters);
         oel_add_end_function_call($op, $n);
       } else {
-        oel_add_begin_static_method_call($op, $inv->name, $this->resolve($ptr)->literal());
+        oel_add_begin_static_method_call($op, $ptr->name(), $ptr->holder->literal());
         $n= $this->emitParameters($op, (array)$inv->parameters);
         oel_add_end_static_method_call($op, $n);
+        $this->types[$inv]= $ptr->returns;
       }
       $inv->free && oel_add_free($op);
     }
@@ -313,25 +314,80 @@
      */
     protected function emitChain($op, xp·compiler·ast·Node $node) {
       $c= $node->chained;
+      
+      $type= $this->typeOf($node, TRUE);
+      if ($type->isVoid() || $type->isArray() || $type->isMap() || $type->isPrimitive() || $type->isVariable()) {
+        $ptr= NULL;   // Do not perform checks now
+      } else {
+        $ptr= $this->resolve($type->name);
+      }
       while (NULL !== $c) {
         if ($c instanceof VariableNode) {
+          if ($ptr) {
+            if (!$ptr->hasField($c->name)) {
+              $this->warn('T305', 'Cannot resolve member '.$c->name.' in type '.$ptr->toString(), $c);
+            } else {
+              $f= $ptr->getField($c->name);
+              $type= $f->type;
+              if (!$type || $type->isVoid() || $type->isArray() || $type->isMap() || $type->isPrimitive() || $type->isVariable()) {
+                $ptr= NULL;   // Do not perform checks now
+              } else {
+                $ptr= $this->resolve($f->type->name);
+              }
+            }
+          }
+          
           oel_push_property($op, $c->name);
         } else if ($c instanceof ArrayAccessNode) {
+          if ($type->isArray()) {
+            $type= $type->arrayComponentType();
+          } else if ($type->isMap()) {
+            $type= NULL;  // FIXME: valueComponentType()
+          } else if (0) {
+            $type= NULL;  // FIXME: ArrayAccess overloading on objects
+          } else {
+            $this->warn('T305', 'Using array access on non-array or map '.$type->toString(), $c);
+            $type= NULL;
+          }
+          if (!$type || $type->isVoid() || $type->isArray() || $type->isMap() || $type->isPrimitive() || $type->isVariable()) {
+            $ptr= NULL;   // Do not perform checks now
+          } else {
+            $ptr= $this->resolve($type->name);
+          }
+          
           if ($c->offset) {
             $this->emitOne($op, $c->offset);
             oel_push_dim($op);
           } else {
             oel_push_new_dim($op);
           }
+          $ptr= NULL;
         } else if ($c instanceof InvocationNode) {
+          if ($ptr) {
+            if (!$ptr->hasMethod($c->name)) {
+              $this->warn('T305', 'Cannot resolve '.$c->name.'() in type '.$ptr->toString(), $c);
+            } else {
+              $m= $ptr->getMethod($c->name);
+              $type= $m->returns;
+              if (!$type || $type->isVoid() || $type->isArray() || $type->isMap() || $type->isPrimitive() || $type->isVariable()) {
+                $ptr= NULL;   // Do not perform checks now
+              } else {
+                $ptr= $this->resolve($m->returns->name);
+              }
+            }
+          }
+          
           oel_add_begin_method_call($op, $c->name);
           $n= $this->emitParameters($op, (array)$c->parameters);
           oel_add_end_method_call($op, $n);
         } else {
           $this->error('C404', 'Unknown chained element '.xp::stringOf($c), $c);
+          $ptr= NULL;   // Do not perform checks now
         }
         $c= $c->chained;
       }
+
+      return $type ? $type : new TypeName('void');
     }
 
     /**
@@ -501,11 +557,27 @@
       } else {
         $this->emitOne($op, $loop->expression);
       }
+      
+      // Assign type. TODO: Depending on what the expression returns, this might
+      // be something different!
+      $t= $this->typeOf($loop->expression);
+      if ($t->isArray()) {
+        $it= $t->arrayComponentType();
+      } else if ($t->isVariable()) {
+        $it= new TypeName('var');
+      } else if ('lang.Iterable' === $this->resolve($t->name)->name()) {
+        $it= isset($t->components[0]) ? $t->components[0] : new TypeName('var');
+      } else {
+        $this->warn('T300', 'Illegal type '.$t->toString().' for loop expression '.$loop->expression->getClassName().'['.$loop->expression->hashCode().']', $loop);
+        $it= new TypeName('var');
+      }
+      $this->types[new VariableNode($loop->assignment['value'])]= $it;
+
       oel_add_begin_foreach($op); {
         oel_add_begin_variable_parse($op);
         oel_push_variable($op, $loop->assignment['value']);
         
-        if ($loop->assignment['key']) {
+        if (isset($loop->assignment['key'])) {
           oel_add_begin_variable_parse($op);
           oel_push_variable($op, $loop->assignment['key']);
         } else {
@@ -635,28 +707,44 @@
      * @param   xp.compiler.ast.ClassMemberNode ref
      */
     protected function emitClassMember($op, ClassMemberNode $ref) {
+      $ptr= $this->resolve($ref->class->name);
       if ($ref->member instanceof InvocationNode) {
-
+      
         // Static method call
-        oel_add_begin_static_method_call($op, $ref->member->name, $this->resolve($ref->class->name)->literal());
+        if (!$ptr->hasMethod($ref->member->name)) {
+          $this->warn('T305', 'Cannot resolve '.$ref->member->name.'() in type '.$ptr->toString(), $ref);
+        } else {
+          $m= $ptr->getMethod($ref->member->name);
+          $this->types[$ref->member]= $m->returns;
+        }
+
+        oel_add_begin_static_method_call($op, $ref->member->name, $ptr->literal());
         $n= $this->emitParameters($op, (array)$ref->member->parameters);
         oel_add_end_static_method_call($op, $n);
       } else if ($ref->member instanceof VariableNode) {
       
         // Static member
+        if (!$ptr->hasField($ref->member->name)) {
+          $this->warn('T305', 'Cannot resolve '.$ref->member->name.' in type '.$ptr->toString(), $ref);
+        } else {
+          $f= $ptr->getField($ref->member->name);
+          $this->types[$ref->member]= $f->type;
+        }
+
         oel_add_begin_variable_parse($op);
-        oel_push_variable($op, $ref->member->name, $ref->class->name);
+        oel_push_variable($op, $ref->member->name, $ptr->literal());
         oel_add_end_variable_parse($op);
       } else if ($ref->member instanceof ConstantNode && 'class' === $ref->member->value) {
         
         // Magic "class" member
         oel_add_begin_new_object($op, 'XPClass');
-        $n= $this->emitParameters($op, array(new StringNode(array('value' => $this->resolve($ref->class->name)->literal()))));
+        $n= $this->emitParameters($op, array(new StringNode(array('value' => $ptr->literal()))));
         oel_add_end_new_object($op, $n);
+        $this->types[$ref->member]= new TypeName('XPClass');
       } else if ($ref->member instanceof ConstantNode) {
 
         // Class constant
-        oel_push_constant($op, $ref->member->value, $this->resolve($ref->class->name)->literal());
+        oel_push_constant($op, $ref->member->value, $ptr->literal());
       } else {
         $this->error('M405', 'Cannot emit class member '.xp::stringOf($ref->member), $ref);
         oel_push_value($op, NULL);
@@ -665,9 +753,12 @@
 
       if ($ref->member->chained) {
         oel_add_begin_variable_parse($op);
-        $this->emitChain($op, $ref->member);
+        $this->types[$ref]= $this->emitChain($op, $ref->member);
         oel_add_end_variable_parse($op);
+      } else if ($this->types[$ref->member]) {
+        $this->types[$ref]= $this->types[$ref->member];
       }
+
       $ref->free && oel_add_free($op);
     }
     
@@ -741,6 +832,7 @@
         ));
       } else {
         $first= $try->handling[0];
+        $this->types[new VariableNode($first->variable)]= $first->type;
       }
 
       oel_add_begin_tryblock($op); {
@@ -763,6 +855,7 @@
             $this->resolve($try->handling[$i]->type->name)->literal(), 
             $try->handling[$i]->variable
           ); {
+            $this->types[$try->handling[$i]->variable]= $this->resolve($try->handling[$i]->type->name);
             $this->emitAll($op, (array)$try->handling[$i]->statements);
             $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
           }
@@ -823,14 +916,17 @@
           $p= array('parent' => $new->type);
         }
         
-        $unique= $type->literal().'$'.++$i;
-        $this->declarations[0][]= new ClassNode(array_merge($p, array(
-          'name'      => new TypeName($unique),
+        $unique= new TypeName($type->name().'$'.++$i);
+        $decl= new ClassNode(array_merge($p, array(
+          'name'      => $unique,
           'body'      => $new->body
         )));
-        $this->types[$unique]= $type= new TypeReference($unique, Types::CLASS_KIND);
+        $this->declarations[0][]= $decl;
+        $this->types[$new]= $unique;
+        $this->types[$unique->name]= $type= new TypeDeclaration($decl);
       } else {
         $type= $this->resolve($new->type->name);
+        $this->types[$new]= $new->type;
       }
       
       oel_add_begin_new_object($op, $type->literal());
@@ -839,7 +935,7 @@
 
       if ($new->chained) {
         oel_add_begin_variable_parse($op);
-        $this->emitChain($op, $new);
+        $this->types[$new]= $this->emitChain($op, $new);
         oel_add_end_variable_parse($op);
       }
       
@@ -1016,6 +1112,9 @@
           $method->modifiers,
           Modifiers::isFinal($method->modifiers)
         );
+        if (!Modifiers::isStatic($method->modifiers)) {
+          $this->types[new VariableNode('this')]= new TypeName($this->class[0]);
+        }
       }
       
       // Begin
@@ -1059,6 +1158,7 @@
       );
       
       // Begin
+      $this->types[new VariableNode('this')]= new TypeName($this->class[0]);
       oel_set_source_file($cop, $this->origins[0]);
       array_unshift($this->method, $constructor);
 
@@ -1585,12 +1685,11 @@
 
       // TODO: Query other sources, e.g. compilation unit
       if ('.*' == substr($import->name, -2)) {
-        $this->statics[0][0][substr($import->name, 0, -2)]= XPClass::forName(substr($import->name, 0, -2));
+        $this->statics[0][0][substr($import->name, 0, -2)]= $this->resolve(substr($import->name, 0, -2));
       } else {
         $p= strrpos($import->name, '.');
-        $class= XPClass::forName(substr($import->name, 0, $p));
-        $method= $class->getMethod(substr($import->name, $p+ 1));
-        $this->statics[0][$method->getName()]= $class->getName();
+        $method= $this->resolve(substr($import->name, 0, $p))->getMethod(substr($import->name, $p+ 1));
+        $this->statics[0][$method->name()]= $method;
       }
     }
 
@@ -1615,10 +1714,12 @@
       // 
       // See oel_core.c / oel_add_return
       if ($return->expression) {
-        if (NULL === $this->method[0]->returns) {
-          $this->warn('T101', 'Returning expression from '.$this->method[0]->getClassName(), $return);
-        } else if ('void' === $this->method[0]->returns->name) {
-          $this->warn('T101', 'Returning expression from method '.$this->method[0]->name.'() with void return type', $return);
+        if ($this->method[0]) {
+          if (NULL === $this->method[0]->returns) {
+            $this->warn('T101', 'Returning expression from '.$this->method[0]->getClassName(), $return);
+          } else if ('void' === $this->method[0]->returns->name) {
+            $this->warn('T101', 'Returning expression from method '.$this->method[0]->name.'() with void return type', $return);
+          }
         }
         $t= $return->hashCode();
         
@@ -1696,29 +1797,36 @@
      * @param   xp.compiler.ast.Node node
      * @return  xp.compiler.types.TypeName
      */
-    protected function typeOf(xp·compiler·ast·Node $node) {
+    protected function typeOf(xp·compiler·ast·Node $node, $single= FALSE) {
       if ($node instanceof ArrayNode) {
         return new TypeName('*[]');     // FIXME: Component type
       } else if ($node instanceof MapNode) {
         return new TypeName('[*:*]');   // FIXME: Component type
       } else if ($node instanceof StringNode) {
         return new TypeName('string');
-      } else if ($node instanceof NumberNode) {
+      } else if ($node instanceof IntegerNode) {
+        return new TypeName('int');
+      } else if ($node instanceof HexNode) {
         return new TypeName('int');
       } else if ($node instanceof DecimalNode) {
         return new TypeName('double');
       } else if ($node instanceof HexNode) {
         return new TypeName('int');
-      } else if ($node instanceof VariableNode) {
-        return $this->types->containsKey($node) ? $this->types[$node] : new TypeName(NULL);
-      } else if ($node instanceof InstanceCreationNode) {
-        return $node->type;
+      } else if ($node instanceof NullNode) {
+        return new TypeName('lang.Object');
+      } else if ($node instanceof BooleanNode) {
+        return new TypeName('bool');
       } else if ($node instanceof ComparisonNode) {
         return new TypeName('bool');
-      } else {
-        $this->warn('T300', 'Cannot determine type for '.$node->getClassName(), $node);
-        return new TypeName('var');
+      } else if ($single) {
+        $lookup= clone $node;
+        $lookup->chained= NULL;
+        if ($this->types->containsKey($lookup)) return $this->types[$lookup];
+      } else if ($this->types->containsKey($node)) {
+        return $this->types[$node];
       }
+      $this->warn('T300', 'Cannot determine type for '.$node->getClassName().'['.$node->hashCode().']', $node);
+      return new TypeName('var');
     }
 
     /**
@@ -1741,7 +1849,8 @@
     
     /**
      * Resolve a static call. Return TRUE if the target is a function
-     * (e.g. key()), the class name if it's a static method (Map::key()).
+     * (e.g. key()), a xp.compiler.emit.Method instance if it's a static 
+     * method (Map::key()).
      *
      * @param   string name
      * @return  var
@@ -1750,8 +1859,9 @@
       foreach ($this->statics[0][0] as $lookup => $type) {
         if (TRUE === $type && in_array($name, get_extension_funcs($lookup))) {
           return TRUE;
-        } else if ($type instanceof XPClass && $type->hasMethod($name) && Modifiers::isStatic($type->getMethod($name)->getModifiers())) {
-          return $type->getName();
+        } else if ($type instanceof Types && $type->hasMethod($name)) {
+          $m= $type->getMethod($name);
+          if (Modifiers::isStatic($m->modifiers)) return $m;
         }
       }
       return NULL;
@@ -1765,10 +1875,14 @@
      * @return  xp.compiler.emit.Types resolved
      */
     protected function resolve($name, $register= TRUE) {
+      if (!is_string($name)) {
+        throw new IllegalArgumentException('Cannot resolve '.xp::stringOf($name));
+      }
+      
       $cl= ClassLoader::getDefault();
       
       if ('self' === $name || $name === $this->class[0]) {
-        return new TypeReference($this->class[0]);
+        return new TypeDeclaration($this->declarations[0][0]);
       } else if ('parent' === $name || 'xp' === $name) {
         return new TypeReference($name, Types::UNKNOWN_KIND);
       } else if (strpos($name, '.')) {
@@ -1792,7 +1906,7 @@
           try {
             $tree= $this->parse($qualified);
             $this->emit($tree);
-            $t= new TypeDeclaration($tree);
+            $t= new TypeDeclaration($tree->declaration);
           } catch (FormatException $e) {
             $this->error('P424', $e->compoundMessage());
             $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
@@ -1856,8 +1970,9 @@
 
       // Import and declarations
       $this->emitAll($op, (array)$tree->imports);
-      while ($decl= array_pop($this->declarations[0])) {
-        $this->emitOne($op, $decl);
+      while ($this->declarations[0]) {
+        $this->emitOne($op, current($this->declarations[0]));
+        array_shift($this->declarations[0]);
       }
 
       // Load used classes

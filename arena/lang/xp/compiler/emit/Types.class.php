@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('xp.compiler.emit.Method', 'xp.compiler.emit.Field');
+
   /**
    * Abstract base class
    *
@@ -37,5 +39,37 @@
      * @return  string
      */
     public abstract function kind();
+
+    /**
+     * Returns a method by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public abstract function hasMethod($name);
+    
+    /**
+     * Returns a method by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.emit.Method
+     */
+    public abstract function getMethod($name);
+
+    /**
+     * Returns a field by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public abstract function hasField($name);
+    
+    /**
+     * Returns a field by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.emit.Field
+     */
+    public abstract function getField($name);
   }
 ?>

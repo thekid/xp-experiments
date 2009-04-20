@@ -12,5 +12,14 @@
    */
   abstract class ConstantValueNode extends xp·compiler·ast·Node implements Resolveable {
     public $value = NULL;
+
+    /**
+     * Returns a hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return $this->value;
+    }
   }
 ?>

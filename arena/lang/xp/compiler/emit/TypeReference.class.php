@@ -48,7 +48,65 @@
      * @return  string
      */
     public function kind() {
-      return $this->kund;
+      return $this->kind;
+    }
+
+    /**
+     * Returns a method by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasMethod($name) {
+      return TRUE;
+    }
+    
+    /**
+     * Returns a method by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.emit.Method
+     */
+    public function getMethod($name) {
+      $m= new xp·compiler·emit·Method();
+      $m->name= $name;
+      $m->returns= new TypeName('var');
+      $m->parameters= array();
+      $m->holder= $this;
+      return $m;
+    }
+
+    /**
+     * Returns a field by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasField($name) {
+      return TRUE;
+    }
+    
+    /**
+     * Returns a field by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.emit.Field
+     */
+    public function getField($name) {
+      $m= new xp·compiler·emit·Field();
+      $m->name= $name;
+      $m->type= new TypeName('var');
+      $m->holder= $this;
+      return $m;
+    }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */    
+    public function toString() {
+      return $this->getClassName().'@(*->'.$this->name.')';
     }
   }
 ?>
