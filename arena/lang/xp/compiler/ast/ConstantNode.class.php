@@ -18,7 +18,7 @@
      * @return  string
      */
     public function hashCode() {
-      return 'xp.const:'.xp::stringOf($this->value);
+      return $this->value;
     }
 
     /**
