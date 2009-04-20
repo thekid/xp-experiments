@@ -15,5 +15,19 @@
     public 
       $chained    = NULL;
     
+    /**
+     * Returns a hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      $s= 'new '.$this->type->name;
+      $c= $this->chained;
+      while (NULL !== $c) {
+        $s.= '.'.$c->hashCode();
+        $c= $c->chained;
+      }
+      return $s;
+    }
   }
 ?>

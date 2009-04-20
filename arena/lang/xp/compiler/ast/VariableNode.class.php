@@ -32,7 +32,13 @@
      * @return  string
      */
     public function hashCode() {
-      return 'xp.var:'.$this->name;
+      $s= '$'.$this->name;
+      $c= $this->chained;
+      while (NULL !== $c) {
+        $s.= '.'.$c->hashCode();
+        $c= $c->chained;
+      }
+      return $s;
     }
   }
 ?>
