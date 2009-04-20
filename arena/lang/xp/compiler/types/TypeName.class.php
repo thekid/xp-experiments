@@ -12,7 +12,10 @@
   class TypeName extends Object {
     public
       $name       = '',
-      $components = array();   
+      $components = array();
+    
+    public static
+      $primitives = array('int', 'double', 'bool', 'string');
     
     /**
      * (Insert method's description here)
@@ -32,6 +35,42 @@
      */
     public function isArray() {
       return '[]' === substr($this->name, -2);
+    }
+
+    /**
+     * Return array component type
+     *
+     * @return  bool
+     */
+    public function arrayComponentType() {
+      return new self(substr($this->name, 0, -2));
+    }
+
+    /**
+     * Return whether this type is a primitive type
+     *
+     * @return  bool
+     */
+    public function isPrimitive() {
+      return in_array($this->name, self::$primitives);
+    }
+
+    /**
+     * Return whether this type is a variable type
+     *
+     * @return  bool
+     */
+    public function isVariable() {
+      return 'var' === $this->name;
+    }
+
+    /**
+     * Return whether this type is a void type
+     *
+     * @return  bool
+     */
+    public function isVoid() {
+      return 'void' === $this->name;
     }
 
     /**
