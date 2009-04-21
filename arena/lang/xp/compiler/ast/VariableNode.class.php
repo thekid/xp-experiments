@@ -12,18 +12,15 @@
    */
   class VariableNode extends xp·compiler·ast·Node {
     public
-      $name    = '',
-      $chained = NULL;
+      $name    = '';
     
     /**
      * Constructor
      *
      * @param   string name
-     * @param   xp.compiler.ast.Node chained
      */
-    public function __construct($name= '', xp·compiler·ast·Node $chained= NULL) {
+    public function __construct($name= '') {
       $this->name= $name;
-      $this->chained= $chained;
     }
     
     /**
@@ -32,13 +29,7 @@
      * @return  string
      */
     public function hashCode() {
-      $s= '$'.$this->name;
-      $c= $this->chained;
-      while (NULL !== $c) {
-        $s.= '.'.$c->hashCode();
-        $c= $c->chained;
-      }
-      return $s;
+      return '$'.$this->name;
     }
   }
 ?>

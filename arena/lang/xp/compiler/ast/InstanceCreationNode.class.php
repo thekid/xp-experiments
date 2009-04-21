@@ -12,8 +12,6 @@
    * @purpose  purpose
    */
   class InstanceCreationNode extends xp·compiler·ast·Node {
-    public 
-      $chained    = NULL;
     
     /**
      * Returns a hashcode
@@ -21,13 +19,7 @@
      * @return  string
      */
     public function hashCode() {
-      $s= 'new '.$this->type->name;
-      $c= $this->chained;
-      while (NULL !== $c) {
-        $s.= '.'.$c->hashCode();
-        $c= $c->chained;
-      }
-      return $s;
+      return 'new '.$this->type->name;
     }
   }
 ?>

@@ -21,7 +21,7 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Emits sourcecode using the OEL (Opcode Engineering Library).
    *
    * @ext      oel
    * @see      xp://xp.compiler.ast.Node
@@ -264,130 +264,137 @@
      * @param   xp.compiler.ast.VariableNode var
      */
     protected function emitVariable($op, VariableNode $var) {
-      
-      // TBD: import static Console::* -> $out?
-      
-      // Type overloading: 
-      // * $array.length := sizeof($array)
-      //
-      // FIXME: Type extension methods
-      if ($this->types->containsKey($var)) {
-        if (
-          $this->types[$var]->isArray() && 
-          $var->chained instanceof VariableNode &&
-          'length' == $var->chained->name 
-        ) {
-          oel_add_begin_function_call($op, 'sizeof'); {
-            oel_add_begin_variable_parse($op);
-            oel_push_variable($op, $var->name);
-            oel_add_end_variable_parse($op);
-            oel_add_pass_param($op, 1);
-          }
-          oel_add_end_function_call($op, 1);
-          return;
-        }
-      }
-      
       oel_add_begin_variable_parse($op);
       oel_push_variable($op, $var->name);
-      $this->emitChain($op, $var);
-      oel_add_end_variable_parse($op);
+
+      // If variable is used in read context, do not end variable parse
+      $var->read || oel_add_end_variable_parse($op);
       $var->free && oel_add_free($op);
+    }
+
+    /**
+     * Emit an array access. Helper to emitChain()
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ArrayAccessNode access
+     * @param   xp.compiler.types.TypeName type
+     * @return  xp.compiler.types.TypeName resulting type
+     */
+    protected function emitArrayAccess($op, ArrayAccessNode $access, TypeName $type) {
+      $result= TypeName::$VAR;
+      if ($type->isArray()) {
+        $result= $type->arrayComponentType();
+      } else if ($type->isMap()) {
+        // OK, TODO: Further verification
+      } else if ($type->isClass()) {
+        // Check for this[] indexer property
+      } else if ($type->isVariable()) {
+        $this->warn('T203', 'Array access (var)'.$access->hashCode().' verification deferred until runtime', $accesss);
+      } else {
+        $this->warn('T305', 'Using array-access on unsupported type '.$type->toString(), $access);
+      }
+      
+      if ($access->offset) {
+        $this->emitOne($op, $access->offset);
+        oel_push_dim($op);
+      } else {
+        oel_push_new_dim($op);
+      }
+      return $result;
+    }
+
+    /**
+     * Emit a member access. Helper to emitChain()
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.VariableNode access
+     * @param   xp.compiler.types.TypeName type
+     * @return  xp.compiler.types.TypeName resulting type
+     */
+    protected function emitMemberAccess($op, VariableNode $access, TypeName $type) {
+      $result= TypeName::$VAR;
+      if ($type->isClass()) {
+        $ptr= $this->resolve($type->name);
+        if ($ptr->hasField($access->name)) {
+          $result= $ptr->getField($access->name)->type;
+        } else {
+          $this->warn('T201', 'No such field .'.$access->name.' in '.$type->toString(), $accesss);
+        }
+      } else if ($type->isVariable()) {
+        $this->warn('T203', 'Member access (var).'.$access->name.' verification deferred until runtime', $accesss);
+      } else {
+        $this->warn('T305', 'Using member access on unsupported type '.$type->toString(), $access);
+      }
+
+      oel_push_property($op, $access->name);
+      return $result;
+    }
+
+    /**
+     * Emit a member call. Helper to emitChain()
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.InvocationNode access
+     * @param   xp.compiler.types.TypeName type
+     * @return  xp.compiler.types.TypeName resulting type
+     */
+    protected function emitMemberCall($op, InvocationNode $access, TypeName $type) {
+      $result= TypeName::$VAR;
+      if ($type->isClass()) {
+        $ptr= $this->resolve($type->name);
+        if ($ptr->hasMethod($access->name)) {
+          $result= $ptr->getMethod($access->name)->returns;
+        } else {
+          $this->warn('T201', 'No such method .'.$access->name.'() in '.$type->toString(), $accesss);
+        }
+      } else if ($type->isVariable()) {
+        $this->warn('T203', 'Member call (var).'.$access->name.'() verification deferred until runtime', $accesss);
+      } else {
+        $this->warn('T305', 'Using member calls on unsupported type '.$type->toString(), $access);
+      }
+
+      oel_add_begin_method_call($op, $access->name);
+      $n= $this->emitParameters($op, (array)$access->parameters);
+      oel_add_end_method_call($op, $n);
+      return $result;
     }
 
     /**
      * Emit a chain
      * 
-     * Examples:
-     * <code>
-     *   $a.property.value;
-     *   $a.method().value;
-     *   $a[0];
-     *   func().length;
-     *   new Date().toString();
-     *   $class.getMethods()[0];
-     * </code>
-     * ...or any combination of these.
-     *
      * @param   resource op
-     * @param   xp.compiler.ast.Node node
+     * @param   xp.compiler.ast.ChainNode chain
      */
-    protected function emitChain($op, xp·compiler·ast·Node $node) {
-      $c= $node->chained;
+    public function emitChain($op, ChainNode $chain) {
+      oel_add_begin_variable_parse($op);
       
-      $type= $this->typeOf($node, TRUE);
-      if ($type->isVoid() || $type->isArray() || $type->isMap() || $type->isPrimitive() || $type->isVariable()) {
-        $ptr= NULL;   // Do not perform checks now
+      // TODO: Investigate if we can't do without this special case
+      if ($chain->elements[0] instanceof VariableNode) {
+        oel_push_variable($op, $chain->elements[0]->name);
       } else {
-        $ptr= $this->resolve($type->name);
+        $this->emitOne($op, $chain->elements[0]);
       }
-      while (NULL !== $c) {
+      
+      // Emit chain members
+      $t= $this->typeOf($chain->elements[0]);
+      for ($i= 1; $i < sizeof($chain->elements); $i++) {
+        $c= $chain->elements[$i];
+        
         if ($c instanceof VariableNode) {
-          if ($ptr) {
-            if (!$ptr->hasField($c->name)) {
-              $this->warn('T305', 'Cannot resolve member '.$c->name.' in type '.$ptr->toString(), $c);
-            } else {
-              $f= $ptr->getField($c->name);
-              $type= $f->type;
-              if (!$type || $type->isVoid() || $type->isArray() || $type->isMap() || $type->isPrimitive() || $type->isVariable()) {
-                $ptr= NULL;   // Do not perform checks now
-              } else {
-                $ptr= $this->resolve($f->type->name);
-              }
-            }
-          }
-          
-          oel_push_property($op, $c->name);
+          $t= $this->emitMemberAccess($op, $c, $t);
         } else if ($c instanceof ArrayAccessNode) {
-          if ($type->isArray()) {
-            $type= $type->arrayComponentType();
-          } else if ($type->isMap()) {
-            $type= NULL;  // FIXME: valueComponentType()
-          } else if (0) {
-            $type= NULL;  // FIXME: ArrayAccess overloading on objects
-          } else {
-            $this->warn('T305', 'Using array access on non-array or map '.$type->toString(), $c);
-            $type= NULL;
-          }
-          if (!$type || $type->isVoid() || $type->isArray() || $type->isMap() || $type->isPrimitive() || $type->isVariable()) {
-            $ptr= NULL;   // Do not perform checks now
-          } else {
-            $ptr= $this->resolve($type->name);
-          }
-          
-          if ($c->offset) {
-            $this->emitOne($op, $c->offset);
-            oel_push_dim($op);
-          } else {
-            oel_push_new_dim($op);
-          }
-          $ptr= NULL;
+          $t= $this->emitArrayAccess($op, $c, $t);
         } else if ($c instanceof InvocationNode) {
-          if ($ptr) {
-            if (!$ptr->hasMethod($c->name)) {
-              $this->warn('T305', 'Cannot resolve '.$c->name.'() in type '.$ptr->toString(), $c);
-            } else {
-              $m= $ptr->getMethod($c->name);
-              $type= $m->returns;
-              if (!$type || $type->isVoid() || $type->isArray() || $type->isMap() || $type->isPrimitive() || $type->isVariable()) {
-                $ptr= NULL;   // Do not perform checks now
-              } else {
-                $ptr= $this->resolve($m->returns->name);
-              }
-            }
-          }
-          
-          oel_add_begin_method_call($op, $c->name);
-          $n= $this->emitParameters($op, (array)$c->parameters);
-          oel_add_end_method_call($op, $n);
-        } else {
-          $this->error('C404', 'Unknown chained element '.xp::stringOf($c), $c);
-          $ptr= NULL;   // Do not perform checks now
+          $t= $this->emitMemberCall($op, $c, $t);
         }
-        $c= $c->chained;
       }
-
-      return $type ? $type : new TypeName('void');
+      
+      // Record type
+      $this->types[$chain]= $t;
+      
+      // If chain is used in read context, do not end variable parse
+      $chain->read || oel_add_end_variable_parse($op);
+      $chain->free && oel_add_free($op);
     }
 
     /**
@@ -733,7 +740,7 @@
 
         oel_add_begin_variable_parse($op);
         oel_push_variable($op, $ref->member->name, $ptr->literal());
-        oel_add_end_variable_parse($op);
+        $ref->read || oel_add_end_variable_parse($op);
       } else if ($ref->member instanceof ConstantNode && 'class' === $ref->member->value) {
         
         // Magic "class" member
@@ -749,14 +756,6 @@
         $this->error('M405', 'Cannot emit class member '.xp::stringOf($ref->member), $ref);
         oel_push_value($op, NULL);
         return;
-      }
-
-      if ($ref->member->chained) {
-        oel_add_begin_variable_parse($op);
-        $this->types[$ref]= $this->emitChain($op, $ref->member);
-        oel_add_end_variable_parse($op);
-      } else if ($this->types[$ref->member]) {
-        $this->types[$ref]= $this->types[$ref->member];
       }
 
       $ref->free && oel_add_free($op);
@@ -933,12 +932,6 @@
       $n= $this->emitParameters($op, (array)$new->parameters);
       oel_add_end_new_object($op, $n);
 
-      if ($new->chained) {
-        oel_add_begin_variable_parse($op);
-        $this->types[$new]= $this->emitChain($op, $new);
-        oel_add_end_variable_parse($op);
-      }
-      
       $new->free && oel_add_free($op);
     }
     
@@ -960,19 +953,8 @@
 
       $this->emitOne($op, $assign->expression);
       $this->types[$assign->variable]= $this->typeOf($assign->expression);
-
-      // Special case for variables: Do not end variable parse
-      if ($assign->variable instanceof VariableNode) {
-        oel_add_begin_variable_parse($op);
-        oel_push_variable($op, $assign->variable->name);
-        $this->emitChain($op, $assign->variable);
-      } else if ($assign->variable instanceof ClassMemberNode && $assign->variable->member instanceof VariableNode) {
-        oel_add_begin_variable_parse($op);
-        oel_push_variable($op, $assign->variable->member->name, $this->resolve($assign->variable->class->name)->literal());
-        $this->emitChain($op, $assign->variable);
-      } else {
-        $this->emitOne($op, $assign->variable);
-      }
+      $assign->variable->read= TRUE;
+      $this->emitOne($op, $assign->variable);
       
       isset($ops[$assign->op]) ? oel_add_binary_op($op, $ops[$assign->op]) : oel_add_assign($op);
       $assign->free && oel_add_free($op);
@@ -1167,7 +1149,7 @@
       if ($this->inits[0][FALSE]) {
         foreach ($this->inits[0][FALSE] as $field) {
           $this->emitOne($cop, new AssignmentNode(array(
-            'variable'   => new VariableNode('this', new VariableNode($field->name)),
+            'variable'   => new ChainNode(array(new VariableNode('this'), new VariableNode($field->name))),
             'expression' => $field->initialization,
             'free'       => TRUE,
             'op'         => '=',
@@ -1746,7 +1728,7 @@
      * @return  int
      */
     protected function emitOne($op, xp·compiler·ast·Node $node) {
-    
+          
       // Check for optimizations
       if ($this->optimizations[$node->getClass()]) {
         $node= $this->optimizations[$node->getClass()]->optimize($node);

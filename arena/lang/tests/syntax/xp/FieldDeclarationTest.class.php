@@ -81,14 +81,13 @@
           'name'       => 'name',
           'handlers'   => array(
             'get' => array(
-              new ReturnNode(array(
-                'position'   => array(3, 36),
-                'expression' => $this->create(new VariableNode(
-                  'this',
-                  $this->create(new VariableNode('_name'), array(3, 54))
-                ), array(3, 43))
-              ))
-            )
+              $this->create(new ReturnNode(array(
+                'expression' => $this->create(new ChainNode(array(
+                  0 => $this->create(new VariableNode('this'), array(3, 43)),
+                  1 => $this->create(new VariableNode('_name'), array(3, 54))
+                )), array(3, 54))
+              )), array(3, 36))
+            ),
           )
         ))
       ), $this->parse('class Person {
@@ -120,26 +119,22 @@
           'name'       => 'name',
           'handlers'   => array(
             'get' => array(
-              new ReturnNode(array(
-                'position'   => array(4, 17),
-                'expression' => $this->create(new VariableNode(
-                  'this',
-                  $this->create(new VariableNode('_name'), array(4, 35))
-                ), array(4, 24))
-              ))
+              $this->create(new ReturnNode(array(
+                'expression' => $this->create(new ChainNode(array(
+                  0 => $this->create(new VariableNode('this'), array(4, 24)),
+                  1 => $this->create(new VariableNode('_name'), array(4, 35))
+                )), array(4, 35))
+              )), array(4, 17))
             ),
             'set' => array(
-              new AssignmentNode(array(
-                'position'   => array(5, 36),
-                'variable'   => $this->create(new VariableNode(
-                  'this',
-                  $this->create(new VariableNode('_name'), array(5, 28))
-                ), array(5, 17)),
-                'expression' => $this->create(new VariableNode(
-                  'value'
-                ), array(5, 30)),
+              $this->create(new AssignmentNode(array(
+                'variable'   => $this->create(new ChainNode(array(
+                  0 => $this->create(new VariableNode('this'), array(5, 17)),
+                  1 => $this->create(new VariableNode('_name'), array(5, 28))
+                )), array(5, 28)),
+                'expression' => $this->create(new VariableNode('value'), array(5, 30)),
                 'op'         => '='
-              ))
+              )), array(5, 36))
             )
           )
         ))

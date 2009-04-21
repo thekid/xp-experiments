@@ -19,13 +19,7 @@
      * @return  string
      */
     public function hashCode() {
-      $s= $this->class->name.'::'.$this->member->hashCode();
-      $c= $this->chained;
-      while (NULL !== $c) {
-        $s.= '.'.$c->hashCode();
-        $c= $c->chained;
-      }
-      return $s;
+      return $this->class->name.'::'.$this->member->hashCode();
     }
   }
 ?>

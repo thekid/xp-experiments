@@ -14,8 +14,12 @@
       $name       = '',
       $components = array();
     
-    public static
-      $primitives = array('int', 'double', 'bool', 'string');
+    public static $primitives = array('int', 'double', 'bool', 'string');
+    public static $VAR;
+    
+    static function __static() {
+      self::$VAR= new self('var');
+    }
     
     /**
      * (Insert method's description here)
@@ -26,6 +30,15 @@
     public function __construct($name, $components= array()) {
       $this->name= $name;
       $this->components= $components;
+    }
+
+    /**
+     * Return whether this type is an array type
+     *
+     * @return  bool
+     */
+    public function isClass() {
+      return !$this->isArray() && !$this->isMap() && !$this->isVariable() && !$this->isVoid() && !$this->isPrimitive();
     }
     
     /**

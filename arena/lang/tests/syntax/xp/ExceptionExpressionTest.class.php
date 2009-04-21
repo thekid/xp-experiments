@@ -20,29 +20,19 @@
     public function singleCatch() {
       $this->assertEquals(array(new TryNode(array(
         'position'   => array(4, 13),
-        'statements' => array(
-          $this->create(new VariableNode(
-            'method', 
-            new InvocationNode(array(
-              'position'   => array(5, 23),
-              'name'       => 'call',
-              'parameters' => NULL
-            ))
-          ), array(5, 11))
-        ), 
+        'statements' => array($this->create(new ChainNode(array(
+          0 => $this->create(new VariableNode('method'), array(5, 11)),
+          1 => $this->create(new InvocationNode(array('name' => 'call', 'parameters' => NULL)), array(5, 23)),
+        )), array(5, 25))), 
         'handling'   => array(
           new CatchNode(array(
             'position'   => array(6, 11),
             'type'       => new TypeName('IllegalArgumentException'),
             'variable'   => 'e',
-            'statements' => array($this->create(new VariableNode(
-              'this',
-              new InvocationNode(array(
-                'position'   => array(7, 25),
-                'name'       => 'finalize',
-                'parameters' => NULL
-              ))
-            ), array(7, 11))), 
+            'statements' => array($this->create(new ChainNode(array(
+              0 => $this->create(new VariableNode('this'), array(7, 11)),
+              1 => $this->create(new InvocationNode(array('name' => 'finalize', 'parameters' => NULL)), array(7, 25)),
+            )), array(7, 27))), 
           ))
         )
       ))), $this->parse('
@@ -96,14 +86,10 @@
         'handling'   => array(
           new FinallyNode(array(
             'position'   => array(6, 11),
-            'statements' => array($this->create(new VariableNode(
-              'this',
-              new InvocationNode(array(
-                'position'   => array(7, 25),
-                'name'       => 'finalize',
-                'parameters' => NULL
-              ))
-            ), array(7, 11))), 
+            'statements' => array($this->create(new ChainNode(array(
+              0 => $this->create(new VariableNode('this'), array(7, 11)),
+              1 => $this->create(new InvocationNode(array('name' => 'finalize', 'parameters' => NULL)), array(7, 25)),
+            )), array(7, 27))), 
           ))
         )
       ))), $this->parse('
@@ -149,18 +135,7 @@
             'variable'   => 'e',
             'statements' => array(new ThrowNode(array(
               'position'   => array(8, 11),
-              'expression' => $this->create(new VariableNode(
-                'e',
-                new InvocationNode(array(
-                  'position'   => array(8, 29),
-                  'name'       => 'getCauses',
-                  'parameters' => NULL,
-                  'chained'    => new ArrayAccessNode(array(
-                    'position'   => array(8, 31),
-                    'offset'     => new IntegerNode(array('position' => array(8, 32), 'value' => '0')),
-                  ))
-                ))
-              ), array(8, 17))
+              'expression' => $this->create(new VariableNode('e'), array(8, 17))
             ))), 
           )),
           new CatchNode(array(
@@ -175,7 +150,7 @@
           return new util.collections.HashTable<lang.types.String, Object>();
         } catch (IllegalArgumentException $e) {
         } catch (SecurityException $e) {
-          throw $e.getCauses()[0];
+          throw $e;
         } catch (Exception $e) {
         }
       '));

@@ -22,7 +22,7 @@ public class HelloWorld {
    */
   public static void main(string[] $args) {
     $now= new Date().toString('Y-m-d');
-    if ($args.length) {
+    if ($args[0]) {
       Console::writeLine('Hello ', $args[0], ' @ ', $now);
     } else {
       Console::writeLine('Hello World @ ', $now);
