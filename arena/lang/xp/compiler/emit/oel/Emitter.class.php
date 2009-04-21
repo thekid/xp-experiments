@@ -225,6 +225,8 @@
         }
         oel_add_end_function_call($op, 2);
       }
+      
+      $this->types[$cast]= $cast->type;
       $cast->free && oel_add_free($op);
     }
 
