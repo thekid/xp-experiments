@@ -1780,19 +1780,15 @@
      */
     protected function typeOf(xp·compiler·ast·Node $node) {
       if ($node instanceof ArrayNode) {
-        return new TypeName('*[]');     // FIXME: Component type
+        return new TypeName('var[]');     // FIXME: Component type
       } else if ($node instanceof MapNode) {
-        return new TypeName('[*:*]');   // FIXME: Component type
+        return new TypeName('[var:var]');   // FIXME: Component type
       } else if ($node instanceof StringNode) {
         return new TypeName('string');
-      } else if ($node instanceof IntegerNode) {
-        return new TypeName('int');
-      } else if ($node instanceof HexNode) {
+      } else if ($node instanceof NaturalNode) {
         return new TypeName('int');
       } else if ($node instanceof DecimalNode) {
         return new TypeName('double');
-      } else if ($node instanceof HexNode) {
-        return new TypeName('int');
       } else if ($node instanceof NullNode) {
         return new TypeName('lang.Object');
       } else if ($node instanceof BooleanNode) {
