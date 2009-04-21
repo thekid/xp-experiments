@@ -901,30 +901,30 @@
       // Do not register type name from new(), it will be added by 
       // emitClass() during declaration emittance.
       if (isset($new->body)) {
-        $type= $this->resolve($new->type->name, FALSE);
-        if (Types::INTERFACE_KIND === $type->kind()) {
+        $parent= $this->resolve($new->type->name, FALSE);
+        if (Types::INTERFACE_KIND === $parent->kind()) {
           $p= array('parent' => new TypeName('lang.Object'), 'implements' => array($new->type));
-        } else if (Types::ENUM_KIND === $type->kind()) {
+        } else if (Types::ENUM_KIND === $parent->kind()) {
           $this->error('C405', 'Cannot create anonymous enums', $new);
           return;
         } else {
           $p= array('parent' => $new->type);
         }
         
-        $unique= new TypeName($type->name().'$'.++$i);
+        $unique= new TypeName($parent->name().'$'.++$i);
         $decl= new ClassNode(array_merge($p, array(
           'name'      => $unique,
           'body'      => $new->body
         )));
         $this->declarations[0][]= $decl;
         $this->types[$new]= $unique;
-        $this->types[$unique->name]= $type= new TypeDeclaration($decl);
+        $this->types[$unique->name]= $ptr= new TypeDeclaration($decl, $parent);
       } else {
-        $type= $this->resolve($new->type->name);
+        $ptr= $this->resolve($new->type->name);
         $this->types[$new]= $new->type;
       }
       
-      oel_add_begin_new_object($op, $type->literal());
+      oel_add_begin_new_object($op, $ptr->literal());
       $n= $this->emitParameters($op, (array)$new->parameters);
       oel_add_end_new_object($op, $n);
 
@@ -996,6 +996,7 @@
           oel_push_variable($op, $arg['name']);
           oel_add_assign($op);
           oel_add_free($op);
+          $this->types[new VariableNode($arg['name'])]= $arg['type'];
           break;
         }
         
@@ -1208,6 +1209,7 @@
      * @param   xp.compiler.ast.PropertyNode property
      */
     protected function emitProperty($op, PropertyNode $property) {
+      $this->types[new VariableNode('this')]= new TypeName($this->class[0]);
       if ('this' === $property->name && $property->arguments) {
 
         // Indexer - fixme: Maybe use IndexerPropertyNode?
@@ -1261,6 +1263,7 @@
     protected function emitProperties($op, array $properties) {
       static $mangled= "\0name";
       
+      $this->types[new VariableNode('this')]= new TypeName($this->class[0]);
       if (isset($properties['get'])) {
         $gop= oel_new_method($op, '__get', FALSE, FALSE, MODIFIER_PUBLIC, FALSE);
         oel_set_source_file($gop, $this->origins[0]);
@@ -1854,7 +1857,18 @@
       $cl= ClassLoader::getDefault();
       
       if ('self' === $name || $name === $this->class[0]) {
-        return new TypeDeclaration($this->declarations[0][0]);
+        switch ($decl= $this->declarations[0][0]) {
+          case $decl instanceof ClassNode: 
+            $t= new TypeDeclaration($decl, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Object'));
+            break;
+          case $decl instanceof EnumNode:
+            $t= new TypeDeclaration($decl, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Enum'));
+            break;
+          case $decl instanceof InterfaceNode:
+            $t= new TypeDeclaration($decl, NULL);
+            break;
+        }
+        return $t;
       } else if ('parent' === $name || 'xp' === $name) {
         return new TypeReference($name, Types::UNKNOWN_KIND);
       } else if (strpos($name, '.')) {
@@ -1878,7 +1892,17 @@
           try {
             $tree= $this->parse($qualified);
             $this->emit($tree);
-            $t= new TypeDeclaration($tree->declaration);
+            switch ($decl= $tree->declaration) {
+              case $decl instanceof ClassNode: 
+                $t= new TypeDeclaration($decl, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Object'));
+                break;
+              case $decl instanceof EnumNode:
+                $t= new TypeDeclaration($decl, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Enum'));
+                break;
+              case $decl instanceof InterfaceNode:
+                $t= new TypeDeclaration($decl, NULL);
+                break;
+            }
           } catch (FormatException $e) {
             $this->error('P424', $e->compoundMessage());
             $t= new TypeReference($qualified, Types::UNKNOWN_KIND);

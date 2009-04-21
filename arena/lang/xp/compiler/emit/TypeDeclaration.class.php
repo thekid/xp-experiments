@@ -12,14 +12,17 @@
    */
   class TypeDeclaration extends Types {
     protected $declaration= NULL;
+    protected $parent= NULL;
     
     /**
      * Constructor
      *
      * @param   string declaration
+     * @param   xp.compiler.emit.Types parent
      */
-    public function __construct(xp·compiler·ast·Node $declaration) {
+    public function __construct(xp·compiler·ast·Node $declaration, Types $parent= NULL) {
       $this->declaration= $declaration;
+      $this->parent= $parent;
     }
     
     /**
@@ -68,7 +71,7 @@
       foreach ($this->declaration->body['methods'] as $member) {
         if ($member instanceof MethodNode && $member->name === $name) return TRUE;
       }
-      return FALSE;
+      return $this->parent ? $this->parent->hasMethod($name) : FALSE;
     }
     
     /**
@@ -91,7 +94,7 @@
           return $m;
         }
       }
-      return NULL;
+      return $this->parent ? $this->parent->getMethod($name) : FALSE;
     }
 
     /**
@@ -104,7 +107,7 @@
       foreach ($this->declaration->body['fields'] as $member) {
         if ($member instanceof FieldNode && $member->name === $name) return TRUE;
       }
-      return FALSE;
+      return $this->parent ? $this->parent->hasField($name) : FALSE;
     }
     
     /**
@@ -123,7 +126,7 @@
           return $f;
         }
       }
-      return NULL;
+      return $this->parent ? $this->parent->getField($name) : FALSE;
     }
 
     /**
