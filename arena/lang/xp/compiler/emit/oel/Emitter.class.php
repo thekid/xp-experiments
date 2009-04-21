@@ -722,7 +722,7 @@
           $this->warn('T305', 'Cannot resolve '.$ref->member->name.'() in type '.$ptr->toString(), $ref);
         } else {
           $m= $ptr->getMethod($ref->member->name);
-          $this->types[$ref->member]= $m->returns;
+          $this->types[$ref]= $m->returns;
         }
 
         oel_add_begin_static_method_call($op, $ref->member->name, $ptr->literal());
@@ -735,7 +735,7 @@
           $this->warn('T305', 'Cannot resolve '.$ref->member->name.' in type '.$ptr->toString(), $ref);
         } else {
           $f= $ptr->getField($ref->member->name);
-          $this->types[$ref->member]= $f->type;
+          $this->types[$ref]= $f->type;
         }
 
         oel_add_begin_variable_parse($op);
@@ -747,7 +747,7 @@
         oel_add_begin_new_object($op, 'XPClass');
         $n= $this->emitParameters($op, array(new StringNode(array('value' => $ptr->literal()))));
         oel_add_end_new_object($op, $n);
-        $this->types[$ref->member]= new TypeName('XPClass');
+        $this->types[$ref]= new TypeName('XPClass');
       } else if ($ref->member instanceof ConstantNode) {
 
         // Class constant
