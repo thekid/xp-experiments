@@ -104,7 +104,7 @@
         if (!$this->class->equals($method->getDeclaringClass())) continue;
 
         $this->out->writeLine('== ', $method, '()');
-        $this->dumpOps(array($this->class->getName(), $method->getName()));
+        $this->dumpOps(array($this->class->getSimpleName(), $method->getName()));
       }
     }
   }
