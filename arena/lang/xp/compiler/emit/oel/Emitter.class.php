@@ -1664,8 +1664,6 @@
      * @param   xp.compiler.ast.StaticImportNode import
      */
     protected function emitStaticImport($op, StaticImportNode $import) {
-
-      // TODO: Query other sources, e.g. compilation unit
       if ('.*' == substr($import->name, -2)) {
         $this->statics[0][0][substr($import->name, 0, -2)]= $this->resolve(substr($import->name, 0, -2));
       } else {
