@@ -378,6 +378,14 @@
       $t= $this->typeOf($chain->elements[0]);
       for ($i= 1; $i < sizeof($chain->elements); $i++) {
         $c= $chain->elements[$i];
+
+        $this->cat && $this->cat->debugf(
+          '@%-3d Emit %s(free= %d): %s',
+          $c->position[0], 
+          $c->getClassName(), 
+          $c->free, 
+          $c->hashCode()
+        );
         
         if ($c instanceof VariableNode) {
           $t= $this->emitMemberAccess($op, $c, $t);
