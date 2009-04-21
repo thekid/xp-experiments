@@ -367,16 +367,12 @@
      * @param   xp.compiler.ast.ChainNode chain
      */
     public function emitChain($op, ChainNode $chain) {
-      oel_add_begin_variable_parse($op);
       
-      // TODO: Investigate if we can't do without this special case
-      if ($chain->elements[0] instanceof VariableNode) {
-        oel_push_variable($op, $chain->elements[0]->name);
-      } else {
-        $this->emitOne($op, $chain->elements[0]);
-      }
+      // Emit first node
+      $this->emitOne($op, $chain->elements[0]);
       
       // Emit chain members
+      oel_add_begin_variable_parse($op);
       $t= $this->typeOf($chain->elements[0]);
       for ($i= 1; $i < sizeof($chain->elements); $i++) {
         $c= $chain->elements[$i];
