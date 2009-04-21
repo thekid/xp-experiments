@@ -68,6 +68,8 @@
       // Correct old usages of the return type name
       if ('mixed' === $t || '*' === $t || NULL === $t || 'resource' === $t) {
         $t= 'var';
+      } else if (0 == strncmp($t, 'array', 5)) {
+        $t= '*[]';
       }
 
       $m= new xp·compiler·emit·Method();
