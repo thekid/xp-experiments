@@ -111,18 +111,27 @@
     }
     
     /**
-     * Returns a compound type name
+     * Helper for compoundName() and toString()
      *
      * @return  string
      */
-    protected function compoundTypeName(self $type) {
+    protected function compoundNameOf(self $type) {
       if (!$type->components) return $type->name;
 
       $s= $type->name.'<';
       foreach ($type->components as $c) {
-        $s.= $this->compoundTypeName($c).', ';
+        $s.= $this->compoundNameOf($c).', ';
       }
       return substr($s, 0, -2).'>';
+    }
+    
+    /**
+     * Returns a compound type name
+     *
+     * @return  string
+     */
+    public function compoundName() {
+      return $this->compoundNameOf($this);
     }
     
     /**
@@ -131,7 +140,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->compoundTypeName($this).')';
+      return $this->getClassName().'('.$this->compoundNameOf($this).')';
     }
   }
 ?>
