@@ -109,6 +109,7 @@
         oel_add_begin_function_call($op, $inv->name);
         $n= $this->emitParameters($op, (array)$inv->parameters);
         oel_add_end_function_call($op, $n);
+        $this->types[$inv]= TypeName::$VAR;
       } else {
         oel_add_begin_static_method_call($op, $ptr->name(), $ptr->holder->literal());
         $n= $this->emitParameters($op, (array)$inv->parameters);
@@ -570,12 +571,12 @@
       if ($t->isArray()) {
         $it= $t->arrayComponentType();
       } else if ($t->isVariable()) {
-        $it= new TypeName('var');
+        $it= TypeName::$VAR;
       } else if ('lang.Iterable' === $this->resolve($t->name)->name()) {
-        $it= isset($t->components[0]) ? $t->components[0] : new TypeName('var');
+        $it= isset($t->components[0]) ? $t->components[0] : TypeName::$VAR;;
       } else {
         $this->warn('T300', 'Illegal type '.$t->toString().' for loop expression '.$loop->expression->getClassName().'['.$loop->expression->hashCode().']', $loop);
-        $it= new TypeName('var');
+        $it= TypeName::$VAR;
       }
       $this->types[new VariableNode($loop->assignment['value'])]= $it;
 
@@ -1803,7 +1804,7 @@
         return $this->types[$node];
       }
       $this->warn('T300', 'Cannot determine type for '.$node->getClassName().'['.$node->hashCode().']', $node);
-      return new TypeName('var');
+      return TypeName::$VAR;
     }
 
     /**
