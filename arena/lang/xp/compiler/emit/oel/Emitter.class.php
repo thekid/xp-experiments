@@ -319,7 +319,7 @@
         if ($ptr->hasField($access->name)) {
           $result= $ptr->getField($access->name)->type;
         } else {
-          $this->warn('T201', 'No such field .'.$access->name.' in '.$type->toString(), $accesss);
+          $this->warn('T201', 'No such field '.$access->name.' in '.$type->toString(), $accesss);
         }
       } else if ($type->isVariable()) {
         $this->warn('T203', 'Member access (var).'.$access->name.' verification deferred until runtime', $accesss);
@@ -346,7 +346,7 @@
         if ($ptr->hasMethod($access->name)) {
           $result= $ptr->getMethod($access->name)->returns;
         } else {
-          $this->warn('T201', 'No such method .'.$access->name.'() in '.$type->toString(), $accesss);
+          $this->warn('T201', 'No such method '.$access->name.'() in '.$type->compoundName(), $accesss);
         }
       } else if ($type->isVariable()) {
         $this->warn('T203', 'Member call (var).'.$access->name.'() verification deferred until runtime', $accesss);
