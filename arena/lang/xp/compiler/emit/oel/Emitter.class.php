@@ -556,9 +556,8 @@
      */
     protected function emitForeach($op, ForeachNode $loop) {
 
-      // Special case when iterating on variables without chain: 
-      // Do not end variable parse 
-      if ($loop->expression instanceof VariableNode && !$loop->expression->chained) {
+      // Special case when iterating on variables: Do not end variable parse 
+      if ($loop->expression instanceof VariableNode) {
         oel_add_begin_variable_parse($op);
         oel_push_variable($op, $loop->expression->name);
       } else {
@@ -1779,7 +1778,7 @@
      * @param   xp.compiler.ast.Node node
      * @return  xp.compiler.types.TypeName
      */
-    protected function typeOf(xp·compiler·ast·Node $node, $single= FALSE) {
+    protected function typeOf(xp·compiler·ast·Node $node) {
       if ($node instanceof ArrayNode) {
         return new TypeName('*[]');     // FIXME: Component type
       } else if ($node instanceof MapNode) {
@@ -1800,10 +1799,6 @@
         return new TypeName('bool');
       } else if ($node instanceof ComparisonNode) {
         return new TypeName('bool');
-      } else if ($single) {
-        $lookup= clone $node;
-        $lookup->chained= NULL;
-        if ($this->types->containsKey($lookup)) return $this->types[$lookup];
       } else if ($this->types->containsKey($node)) {
         return $this->types[$node];
       }
