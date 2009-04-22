@@ -16,6 +16,19 @@
       $declaration;
 
     /**
+     * Constructor
+     *
+     * @param   string package
+     * @param   xp.compiler.ast.Node[] imports
+     * @param   xp.compiler.ast.Node declaration
+     */
+    public function __construct($package= '', $imports= array(), xp·compiler·ast·Node $declaration= NULL) {
+      $this->package= $package;
+      $this->imports= $imports;
+      $this->declaration= $declaration;
+    }
+
+    /**
      * Creates a string representation of this node.
      *
      * @return  string

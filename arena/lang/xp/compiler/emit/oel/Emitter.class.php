@@ -929,7 +929,7 @@
         )));
         $this->declarations[0][]= $decl;
         $this->types[$new]= $unique;
-        $this->types[$unique->name]= $ptr= new TypeDeclaration($decl, $parent);
+        $this->types[$unique->name]= $ptr= new TypeDeclaration(new ParseTree(NULL, array(), $decl), $parent);
       } else {
         $ptr= $this->resolve($new->type->name);
         $this->types[$new]= $new->type;
@@ -1866,16 +1866,16 @@
       if ('self' === $name || $name === $this->class[0]) {
         switch ($decl= $this->declarations[0][0]) {
           case $decl instanceof ClassNode: 
-            $t= new TypeDeclaration($decl, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Object'));
+            $parent= $this->resolve($decl->parent ? $decl->parent->name : 'lang.Object');
             break;
           case $decl instanceof EnumNode:
-            $t= new TypeDeclaration($decl, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Enum'));
+            $parent= $this->resolve($decl->parent ? $decl->parent->name : 'lang.Enum');
             break;
           case $decl instanceof InterfaceNode:
-            $t= new TypeDeclaration($decl, NULL);
+            $parent= NULL;
             break;
         }
-        return $t;
+        return new TypeDeclaration(new ParseTree($this->package[0], $this->imports[0], $decl), $parent);
       } else if ('parent' === $name || 'xp' === $name) {
         return new TypeReference($name, Types::UNKNOWN_KIND);
       } else if (strpos($name, '.')) {
@@ -1901,13 +1901,13 @@
             $this->emit($tree);
             switch ($decl= $tree->declaration) {
               case $decl instanceof ClassNode: 
-                $t= new TypeDeclaration($decl, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Object'));
+                $t= new TypeDeclaration($tree, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Object'));
                 break;
               case $decl instanceof EnumNode:
-                $t= new TypeDeclaration($decl, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Enum'));
+                $t= new TypeDeclaration($tree, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Enum'));
                 break;
               case $decl instanceof InterfaceNode:
-                $t= new TypeDeclaration($decl, NULL);
+                $t= new TypeDeclaration($tree, NULL);
                 break;
             }
           } catch (FormatException $e) {

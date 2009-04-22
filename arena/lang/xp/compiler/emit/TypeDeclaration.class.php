@@ -11,17 +11,17 @@
    *
    */
   class TypeDeclaration extends Types {
-    protected $declaration= NULL;
+    protected $tree= NULL;
     protected $parent= NULL;
     
     /**
      * Constructor
      *
-     * @param   string declaration
+     * @param   xp.compiler.ast.ParseTree tree
      * @param   xp.compiler.emit.Types parent
      */
-    public function __construct(xp·compiler·ast·Node $declaration, Types $parent= NULL) {
-      $this->declaration= $declaration;
+    public function __construct(ParseTree $tree, Types $parent= NULL) {
+      $this->tree= $tree;
       $this->parent= $parent;
     }
     
@@ -31,7 +31,7 @@
      * @return  string
      */
     public function name() {
-      $n= $this->declaration->name->name;
+      $n= $this->tree->declaration->name->name;
       if ($this->tree->package) {
         $n= $this->tree->package->name.'.'.$n;
       }
@@ -44,7 +44,7 @@
      * @return  string
      */
     public function literal() {
-      return $this->declaration->name->name;
+      return $this->tree->declaration->name->name;
     }
 
     /**
@@ -53,7 +53,7 @@
      * @return  string
      */
     public function kind() {
-      switch ($decl= $this->declaration) {
+      switch ($decl= $this->tree->declaration) {
         case $decl instanceof ClassNode: return parent::CLASS_KIND;
         case $decl instanceof InterfaceNode: return parent::INTERFACE_KIND;
         case $decl instanceof EnumNode: return parent::ENUM_KIND;
@@ -68,7 +68,7 @@
      * @return  bool
      */
     public function hasMethod($name) {
-      foreach ($this->declaration->body['methods'] as $member) {
+      foreach ($this->tree->declaration->body['methods'] as $member) {
         if ($member instanceof MethodNode && $member->name === $name) return TRUE;
       }
       return $this->parent ? $this->parent->hasMethod($name) : FALSE;
@@ -81,7 +81,7 @@
      * @return  xp.compiler.emit.Method
      */
     public function getMethod($name) {
-      foreach ($this->declaration->body['methods'] as $member) {
+      foreach ($this->tree->declaration->body['methods'] as $member) {
         if ($member instanceof MethodNode && $member->name === $name) {
           $m= new xp·compiler·emit·Method();
           $m->name= $member->name;
@@ -104,7 +104,7 @@
      * @return  bool
      */
     public function hasField($name) {
-      foreach ($this->declaration->body['fields'] as $member) {
+      foreach ($this->tree->declaration->body['fields'] as $member) {
         if ($member instanceof FieldNode && $member->name === $name) return TRUE;
       }
       return $this->parent ? $this->parent->hasField($name) : FALSE;
@@ -117,7 +117,7 @@
      * @return  xp.compiler.emit.Field
      */
     public function getField($name) {
-      foreach ($this->declaration->body['fields'] as $member) {
+      foreach ($this->tree->declaration->body['fields'] as $member) {
         if ($member instanceof FieldNode && $member->name === $name) {
           $f= new xp·compiler·emit·Field();
           $f->name= $member->name;
@@ -135,7 +135,7 @@
      * @return  string
      */    
     public function toString() {
-      return $this->getClassName().'@('.$this->declaration->name->toString().')';
+      return $this->getClassName().'@('.$this->tree->declaration->name->toString().')';
     }
   }
 ?>
