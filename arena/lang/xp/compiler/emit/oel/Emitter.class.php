@@ -11,6 +11,7 @@
     'xp.compiler.emit.TypeReference', 
     'xp.compiler.emit.TypeReflection', 
     'xp.compiler.emit.TypeDeclaration', 
+    'xp.compiler.emit.oel.Result', 
     'xp.compiler.syntax.php.Lexer',
     'xp.compiler.syntax.php.Parser',
     'xp.compiler.syntax.xp.Lexer',
@@ -2001,16 +2002,7 @@
       // Finalize
       oel_finalize($op);
       
-      // Write. TODO: Use a filemanager / compilationtarget-thing of some sort!
-      $f= new File(str_replace(strstr(basename($tree->origin), '.'), xp::CLASS_FILE_EXT, $tree->origin));
-      $f->open(FILE_MODE_WRITE);
-      with ($fd= $f->getHandle()); {
-        oel_write_header($fd);
-        oel_write_op_array($fd, $op);
-      }
-      $f->close();
-      $this->cat && $this->cat->debug($f);
-      return $f;
+      return new xp·compiler·emit·oel·Result($op);
     }    
   }
 ?>

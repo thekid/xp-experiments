@@ -10,6 +10,7 @@
     'io.File',
     'xp.compiler.Syntax',
     'io.streams.FileInputStream',
+    'io.streams.FileOutputStream',
     'xp.compiler.emit.oel.Emitter',
     'xp.compiler.DefaultListener',
     'util.log.Logger',
@@ -110,10 +111,16 @@
       $status= array();
       foreach ($files as $file) {
         $listener->compilationStarted($file);
+        $target= new File($file->getPath(), str_replace(
+          strstr($file->getFileName(), '.'), 
+          xp::CLASS_FILE_EXT, 
+          $file->getFileName())
+        );
         try {
           $ast= Syntax::forName($file->getExtension())->parse(new FileInputStream($file), $file->getURI());
           $r= $emitter->emit($ast);
-          $listener->compilationSucceeded($file, $r, $emitter->messages());
+          $r->writeTo(new FileOutputStream($target));
+          $listener->compilationSucceeded($file, $target, $emitter->messages());
         } catch (ParseException $e) {
           $listener->parsingFailed($file, $e);
         } catch (FormatException $e) {
