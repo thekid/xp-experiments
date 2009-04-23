@@ -613,7 +613,7 @@
      */
     protected function emitDo($op, DoNode $loop) {
       oel_add_begin_dowhile($op); {
-        $this->emitAll($op, $loop->statements);
+        $this->emitAll($op, (array)$loop->statements);
       }
       oel_add_end_dowhile_body($op);
       $this->emitOne($op, $loop->expression);
@@ -630,7 +630,7 @@
       oel_add_begin_while($op);
       $this->emitOne($op, $loop->expression);
       oel_add_begin_while_body($op); {
-        $this->emitAll($op, $loop->statements);
+        $this->emitAll($op, (array)$loop->statements);
       }
       oel_add_end_while($op);
     }
