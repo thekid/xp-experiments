@@ -36,5 +36,16 @@
         oel_write_op_array($fd, $this->op);
       }
     }
+
+    /**
+     * Execute with a given environment settings
+     *
+     * @param   array<string, var> env
+     * @return  var
+     */    
+    public function executeWith(array $env= array()) {
+      oel_execute($this->op);
+      // call static initializer
+    }
   }
 ?>
