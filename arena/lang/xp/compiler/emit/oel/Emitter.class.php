@@ -45,6 +45,7 @@
       $origins      = array(NULL);
     
     protected
+      $manager        = NULL,
       $types          = NULL,
       $optimizations  = NULL;
     
@@ -1812,24 +1813,6 @@
     }
 
     /**
-     * Parse class
-     *
-     * @param   string qualified
-     * @return  xp.compiler.ast.ParseTree tree
-     * @throws  lang.ClassNotFoundException
-     */
-    protected function parse($qualified) {
-      $name= DIRECTORY_SEPARATOR.strtr($qualified, '.', DIRECTORY_SEPARATOR);
-      foreach (xp::$registry['classpath'] as $path) {
-        foreach (Syntax::available() as $ext => $syntax) {
-          if (!file_exists($uri= $path.$name.'.'.$ext)) continue;
-          return $syntax->parse(new FileInputStream(new File($uri)), $uri);
-        }
-      }
-      throw new ClassNotFoundException('Cannot find class '.$qualified);
-    }
-    
-    /**
      * Resolve a static call. Return TRUE if the target is a function
      * (e.g. key()), a xp.compiler.emit.Method instance if it's a static 
      * method (Map::key()).
@@ -1897,8 +1880,9 @@
         } else {
           $messages= $this->messages;
           try {
-            $tree= $this->parse($qualified);
-            $this->emit($tree);
+            $tree= $this->manager->parseClass($qualified);
+            $this->manager->write($this->emit($tree, $this->manager), $this->manager->getTarget($tree));
+            
             switch ($decl= $tree->declaration) {
               case $decl instanceof ClassNode: 
                 $t= new TypeDeclaration($tree, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Object'));
@@ -1925,7 +1909,6 @@
           }
           $this->messages= array_merge($messages, $this->messages);
           $this->types[$qualified]= $t;
-          $register= FALSE;     // Don't register this class as it cannot be written yet
         }
         $register && $this->used[0][]= new TypeName($qualified);
       }
@@ -1939,8 +1922,9 @@
      * @param   xp.compiler.ast.ParseTree tree
      * @return  io.File the written file
      */
-    public function emit(ParseTree $tree) {
+    public function emit(ParseTree $tree, FileManager $manager) {
       $this->types= new HashTable();
+      $this->manager= $manager;
       $this->optimizations= new HashTable();
       $this->optimizations[XPClass::forName('xp.compiler.ast.BinaryOpNode')]= new BinaryOptimization();
       $this->messages= array(

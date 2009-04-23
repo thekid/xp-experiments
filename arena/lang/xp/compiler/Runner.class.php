@@ -8,11 +8,10 @@
 
   uses(
     'io.File',
-    'xp.compiler.Syntax',
-    'io.streams.FileInputStream',
-    'io.streams.FileOutputStream',
+    'xp.compiler.Compiler',
     'xp.compiler.emit.oel.Emitter',
-    'xp.compiler.DefaultListener',
+    'xp.compiler.diagnostic.DefaultListener',
+    'xp.compiler.io.FileManager',
     'util.log.Logger',
     'util.log.LogAppender'
   );
@@ -71,9 +70,7 @@
     public static function main(array $args) {
       if (empty($args)) self::showUsage();
       
-      $emitter= new xp·compiler·emit·oel·Emitter();
-      $syntax= Package::forName('xp.compiler.syntax');
-      $syntaxes= array();
+      $c= new Compiler();
       
       // Handle arguments
       $files= array();
@@ -94,7 +91,7 @@
               Console::$err->writeLine("  ", implode(" ", array_map(array($this, "varSource"), $args)));
             }
           }');
-          $emitter->setTrace(Logger::getInstance()->getCategory()->withAppender($appender, $levels));
+          $c->setTrace(Logger::getInstance()->getCategory()->withAppender($appender, $levels));
         } else {
           $files[]= new File($args[$i]);
         }
@@ -107,30 +104,7 @@
       }
       
       // Compile files
-      $listener->runStarted();
-      $status= array();
-      foreach ($files as $file) {
-        $listener->compilationStarted($file);
-        $target= new File($file->getPath(), str_replace(
-          strstr($file->getFileName(), '.'), 
-          xp::CLASS_FILE_EXT, 
-          $file->getFileName())
-        );
-        try {
-          $ast= Syntax::forName($file->getExtension())->parse(new FileInputStream($file), $file->getURI());
-          $r= $emitter->emit($ast);
-          $r->writeTo(new FileOutputStream($target));
-          $listener->compilationSucceeded($file, $target, $emitter->messages());
-        } catch (ParseException $e) {
-          $listener->parsingFailed($file, $e);
-        } catch (FormatException $e) {
-          $listener->emittingFailed($file, $e);
-        } catch (Throwable $e) {
-          $listener->compilationFailed($file, $e);
-        }
-      }
-      $listener->runFinished();
-      exit(0);
+      $c->compile($files, $listener, new FileManager(), new xp·compiler·emit·oel·Emitter());
     }
   }
 ?>

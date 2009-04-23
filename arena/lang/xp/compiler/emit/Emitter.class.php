@@ -24,7 +24,7 @@
      * @param   xp.compiler.ast.ParseTree tree
      * @return  
      */
-    public abstract function emit(ParseTree $tree);
+    public abstract function emit(ParseTree $tree, FileManager $manager);
     
     /**
      * Format a message

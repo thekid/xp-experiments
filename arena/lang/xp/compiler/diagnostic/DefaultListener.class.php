@@ -4,14 +4,18 @@
  * $Id$ 
  */
 
-  uses('io.streams.OutputStreamWriter', 'util.profiling.Timer');
+  uses(
+    'io.streams.OutputStreamWriter', 
+    'util.profiling.Timer', 
+    'xp.compiler.diagnostic.DiagnosticListener'
+  );
 
   /**
-   * (Insert class' description here)
+   * Default DiagnosticListener implementation
    *
-   * @purpose  purpose
+   * @see   xp://xp.compiler.diagnostic.DiagnosticListener
    */
-  class DefaultListener extends Object {
+  class DefaultListener extends Object implements DiagnosticListener {
     protected
       $writer    = NULL,
       $started   = 0,
