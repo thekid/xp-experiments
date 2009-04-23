@@ -1075,6 +1075,20 @@
     }    
 
     /**
+     * Create parameters meta data
+     *
+     * @param   array<string, *>[] arguments
+     * @return  array<string, var> metadata
+     */
+    protected function parametersAsMetadata(array $parameters) {
+      $meta= array();
+      foreach ($parameters as $i => $param) {
+        $meta[$i]= $param['type']->compoundName();
+      }
+      return $meta;
+    }    
+
+    /**
      * Emit a method
      *
      * @param   resource op
@@ -1118,7 +1132,7 @@
       
       // Finalize
       $this->metadata[0][1][$method->name]= array(
-        DETAIL_ARGUMENTS    => array(),
+        DETAIL_ARGUMENTS    => $this->parametersAsMetadata((array)$method->arguments),
         DETAIL_RETURNS      => $method->returns->name,
         DETAIL_THROWS       => array(),
         DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$method->comment),
@@ -1170,7 +1184,7 @@
       
       // Finalize
       $this->metadata[0][1]['__construct']= array(
-        DETAIL_ARGUMENTS    => array(),
+        DETAIL_ARGUMENTS    => $this->parametersAsMetadata((array)$method->arguments),
         DETAIL_RETURNS      => NULL,
         DETAIL_THROWS       => array(),
         DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$constructor->comment),
