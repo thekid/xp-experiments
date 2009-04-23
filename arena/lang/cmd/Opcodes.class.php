@@ -4,19 +4,11 @@
  * $Id$
  */
 
-  uses(
-    'util.cmd.Command',
-    'io.File',
-    'io.FileUtil',
-    'xp.compiler.syntax.xp.Lexer',
-    'xp.compiler.syntax.xp.Parser',
-    'xp.compiler.emit.oel.Emitter'
-  );
+  uses('util.cmd.Command', 'io.File');
 
   /**
    * Dumps opcodes
    *
-   * @ext      oel
    * @see      xp://xp.compiler.Parser
    * @purpose  Utility
    */
@@ -25,6 +17,12 @@
       $class   = NULL,
       $verbose = FALSE;
     
+    /**
+     * Determine class object from a given file by searching the class path.
+     *
+     * @param   io.File file
+     * @return  lang.XPClass
+     */
     protected function classFrom(File $file) {
       $uri= $file->getURI();
       $path= dirname($uri);
@@ -47,18 +45,17 @@
      */
     #[@arg(position= 0)]
     public function setIn($in) {
-      if (strstr($in, '.xp')) {
-        $this->class= $this->classFrom(create(new xp·compiler·emit·oel·Emitter())->emit(create(new xp·compiler·syntax·xp·Parser())->parse(new xp·compiler·syntax·xp·Lexer(
-          FileUtil::getContents(new File($in)),
-          $in
-        ))));
-      } else if (strstr($in, xp::CLASS_FILE_EXT)) {
+      if (strstr($in, xp::CLASS_FILE_EXT)) {
         $this->class= $this->classFrom(new File($in));
       } else {
         $this->class= XPClass::forName($in);
       }
     }
     
+    /**
+     * Set whether to be verbose
+     *
+     */
     #[@arg]
     public function setVerbose() {
       $this->verbose= TRUE;
@@ -67,7 +64,7 @@
     /**
      * Dumps a string representation of an op array
      *
-     * @param   resource ops
+     * @param   var ops
      */
     private function dumpOps($ops, $indent= '  ') {
       foreach (oel_export_op_array($ops) as $opline) {
