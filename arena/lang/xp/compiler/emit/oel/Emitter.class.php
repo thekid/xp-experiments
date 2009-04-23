@@ -964,13 +964,13 @@
         // Unwrap $a= $b= 1 to $b= 1; $a= $b;
         $this->emitAssignment($op, new AssignmentNode(array(
           'variable'   => clone $assign->variable->expression,
-          'expression' => clone $assign->expression,
+          'expression' => $assign->expression,
           'op'         => $assign->variable->op,
           'free'       => $assign->free
         )));
         $this->emitAssignment($op, new AssignmentNode(array(
-          'variable'   => clone $assign->variable->variable,
-          'expression' => clone $assign->variable->expression,
+          'variable'   => $assign->variable->variable,
+          'expression' => $assign->variable->expression,
           'op'         => $assign->op,
           'free'       => $assign->free
         )));
