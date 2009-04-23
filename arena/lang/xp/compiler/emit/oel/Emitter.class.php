@@ -959,13 +959,30 @@
         '%='   => OEL_BINARY_OP_ASSIGN_MOD,
       );
 
-      $this->emitOne($op, $assign->expression);
-      $this->types[$assign->variable]= $this->typeOf($assign->expression);
-      $assign->variable->read= TRUE;
-      $this->emitOne($op, $assign->variable);
+      if ($assign->variable instanceof AssignmentNode) {
+
+        // Unwrap $a= $b= 1 to $b= 1; $a= $b;
+        $this->emitAssignment($op, new AssignmentNode(array(
+          'variable'   => clone $assign->variable->expression,
+          'expression' => clone $assign->expression,
+          'op'         => $assign->variable->op,
+          'free'       => $assign->free
+        )));
+        $this->emitAssignment($op, new AssignmentNode(array(
+          'variable'   => clone $assign->variable->variable,
+          'expression' => clone $assign->variable->expression,
+          'op'         => $assign->op,
+          'free'       => $assign->free
+        )));
+      } else {
+        $this->emitOne($op, $assign->expression);
+        $this->types[$assign->variable]= $this->typeOf($assign->expression);
+        $assign->variable->read= TRUE;
+        $this->emitOne($op, $assign->variable);
       
-      isset($ops[$assign->op]) ? oel_add_binary_op($op, $ops[$assign->op]) : oel_add_assign($op);
-      $assign->free && oel_add_free($op);
+        isset($ops[$assign->op]) ? oel_add_binary_op($op, $ops[$assign->op]) : oel_add_assign($op);
+        $assign->free && oel_add_free($op);
+      }
     }
 
     /**
