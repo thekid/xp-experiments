@@ -51,6 +51,18 @@
     }
 
     /**
+     * Test declaring an interface with properties.
+     *
+     * TODO: This should throw a CompilationException
+     */
+    #[@test, @expects('lang.FormatException')]
+    public function interfacesMayNotHaveProperties() {
+      $this->define('interface', 'WithProperty', '{
+        public int property { get { return 0; } }
+      }');
+    }
+
+    /**
      * Test declaring a method inside an interface with body
      *
      * TODO: This should throw a CompilationException
