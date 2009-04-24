@@ -1517,7 +1517,7 @@
         $this->warn('D201', 'No api doc for interface '.$declaration->name->name, $declaration);
       }
       if (isset($declaration->body['fields'])) {
-        $this->error('I403', 'Interfaces may not have field declarations', $field);
+        $this->error('I403', 'Interfaces may not have field declarations', $declaration);
         return;
       }
 
