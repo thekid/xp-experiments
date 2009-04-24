@@ -66,7 +66,7 @@
     }
 
     /**
-     * Test
+     * Test static initializer block
      *
      */
     #[@test]
@@ -78,7 +78,27 @@
           self::$instance= new self();
         }
       }');
-      $this->assertEquals('StaticInitializer', $class->getField('instance')->get(NULL)->getClassName());
+      $this->assertClass($class->getField('instance')->get(NULL), $class->getName());
+    }
+
+    /**
+     * Test member initialization to complex expressions.
+     *
+     */
+    #[@test]
+    public function memberInitialization() {
+      $class= $this->define('class', 'Initialization', '{
+        public static XPClass $arrayClass = lang.types.ArrayList::class;
+        public lang.types.ArrayList $elements = self::$arrayClass.newInstance(1, 2, 3);
+      }');
+      $this->assertClass($class->getField('arrayClass')->get(NULL), 'lang.XPClass');
+      
+      // FIXME: The constructor calls "parent::__construct()" via call_user_func_array()
+      // internally which works perfectly but causes a warning to be issued
+      with ($instance= @$class->newInstance(), $elements= $class->getField('elements')->get($instance)); {
+        $this->assertClass($elements, 'lang.types.ArrayList');
+        $this->assertEquals(new ArrayList(1, 2, 3), $elements);
+      }
     }
   }
 ?>
