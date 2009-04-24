@@ -49,5 +49,19 @@
         public int $field = 0;
       }');
     }
+
+    /**
+     * Test declaring a method inside an interface with body
+     *
+     * TODO: This should throw a CompilationException
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function interfaceMethodsMayNotContainBody() {
+      $this->define('interface', 'WithMethod', '{
+        public int method() {
+          return 0;
+        }
+      }');
+    }
   }
 ?>
