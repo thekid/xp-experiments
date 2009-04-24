@@ -49,19 +49,20 @@
      * @return  var
      */
     protected function run($src) {
-      return $this->define(ucfirst($this->name).'·'.($this->counter++), '{ public void run() { '.$src.' }}')->newInstance()->run();
+      return $this->define('class', ucfirst($this->name).'·'.($this->counter++), '{ public void run() { '.$src.' }}')->newInstance()->run();
     }
     
     /**
      * Define class from a given name and source
      *
+     * @param   string type
      * @param   string class
      * @param   string src
      * @return  lang.XPClass
      */
-    protected function define($class, $src) {
+    protected function define($type, $class, $src) {
       $r= self::$emitter->emit(
-        self::$syntax->parse(new MemoryInputStream('public class '.$class.' '.$src)), 
+        self::$syntax->parse(new MemoryInputStream('public '.$type.' '.$class.' '.$src)), 
         self::$manager
       );
       xp::gc();
