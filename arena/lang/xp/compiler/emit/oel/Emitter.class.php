@@ -1358,7 +1358,7 @@
      * @param   resource op
      * @param   xp.compiler.ast.FieldNode field
      */
-    protected function emitField($op, FieldNode $field) {
+    protected function emitField($op, FieldNode $field) {    
       $static= Modifiers::isStatic($field->modifiers);
       
       if (!$field->initialization) {
@@ -1511,6 +1511,10 @@
     protected function emitInterface($op, InterfaceNode $declaration) {
       if (!$declaration->comment) {
         $this->warn('D201', 'No api doc for interface '.$declaration->name->name, $declaration);
+      }
+      if (isset($declaration->body['fields'])) {
+        $this->error('I403', 'Interfaces may not have field declarations', $field);
+        return;
       }
 
       // Ensure parent interfaces are loaded
