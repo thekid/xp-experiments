@@ -55,7 +55,7 @@
      *
      * TODO: This should throw a CompilationException
      */
-    #[@test, @expects('lang.FormatException')]
+    #[@test, @expect('lang.FormatException')]
     public function interfacesMayNotHaveProperties() {
       $this->define('interface', 'WithProperty', '{
         public int property { get { return 0; } }
