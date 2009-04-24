@@ -43,30 +43,6 @@
     }
 
     /**
-     * Test declaring an interface
-     *
-     */
-    #[@test]
-    public function comparableInterface() {
-      $class= $this->define('interface', 'Comparable', '{
-        public int compareTo(Generic $in);
-      }');
-      $this->assertEquals('Comparable', $class->getName());
-      $this->assertTrue($class->isInterface());
-      
-      with ($method= $class->getMethod('compareTo')); {
-        $this->assertEquals('compareTo', $method->getName());
-        $this->assertEquals(MODIFIER_PUBLIC | MODIFIER_ABSTRACT, $method->getModifiers());
-        $this->assertEquals(Primitive::$INTEGER, $method->getReturnType());
-        
-        with ($params= $method->getParameters()); {
-          $this->assertEquals(1, sizeof($params));
-          $this->assertEquals(XPClass::forName('lang.Generic'), $params[0]->getType());
-        }
-      }
-    }
-
-    /**
      * Test declaring an enum
      *
      */
