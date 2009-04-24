@@ -1115,6 +1115,10 @@
       if (!$method->comment && !strstr($this->class[0], '$')) {
         $this->warn('D201', 'No api doc for '.$this->class[0].'::'.$method->name.'()', $method);
       }
+      if ($this->declarations[0][0] instanceof InterfaceNode && $method->body) {
+        $this->error('I403', 'Interface methods may not have a body', $method);
+        return;
+      }
     
       if (Modifiers::isAbstract($method->modifiers)) {
         // FIXME segfault $mop= oel_new_abstract_method(
