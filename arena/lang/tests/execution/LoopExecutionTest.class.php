@@ -103,23 +103,5 @@
     public function emptyForLoop() {
       $this->assertEquals(0, $this->run('for ($s= 3; $s; $s--) { } return $s;'));
     }
-
-    /**
-     * Test foreach
-     *
-     */
-    #[@test, @expect('text.parser.generic.ParseException')]
-    public function foreachLoopWithoutBody() {
-      $this->run('foreach ($a in [1]);');
-    }
-
-    /**
-     * Test while
-     *
-     */
-    #[@test, @expect('text.parser.generic.ParseException')]
-    public function forLoopWithoutBody() {
-      $this->run('for ($i= 0; $i < 1; $i++);');
-    }
   }
 ?>

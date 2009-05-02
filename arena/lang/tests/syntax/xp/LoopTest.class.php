@@ -86,7 +86,7 @@
     }
 
     /**
-     * Test foreach loop
+     * Test do...while loop
      *
      */
     #[@test]
@@ -108,6 +108,34 @@
       ))), $this->parse('
         do { } while ($i++ < 10000);
       '));
+    }
+
+
+    /**
+     * Test while
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function whileLoopWithoutBody() {
+      $this->parse('$a= 0; while ($a--);');
+    }
+
+    /**
+     * Test foreach
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function foreachLoopWithoutBody() {
+      $this->parse('foreach ($a in [1]);');
+    }
+
+    /**
+     * Test while
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function forLoopWithoutBody() {
+      $this->parse('for ($i= 0; $i < 1; $i++);');
     }
   }
 ?>
