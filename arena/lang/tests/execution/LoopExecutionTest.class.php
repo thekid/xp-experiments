@@ -66,7 +66,7 @@
     public function doLoop() {
       $this->assertEquals(array(1, 2, 3), $this->run('
         $r= []; $s= 1;
-        do { $r[]= $s++; } while ($s < 4)
+        do { $r[]= $s++; } while ($s < 4);
         return $r;
       '));
     }
@@ -76,8 +76,8 @@
      *
      */
     #[@test]
-    public function emptydoLoop() {
-      $this->assertEquals(-1, $this->run('$s= 3; do { } while ($s--) return $s;'));
+    public function emptyDoLoop() {
+      $this->assertEquals(-1, $this->run('$s= 3; do { } while ($s--); return $s;'));
     }
 
     /**

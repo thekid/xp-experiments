@@ -106,7 +106,7 @@
         )),
         'statements'    => NULL, 
       ))), $this->parse('
-        do { } while ($i++ < 10000)
+        do { } while ($i++ < 10000);
       '));
     }
   }
