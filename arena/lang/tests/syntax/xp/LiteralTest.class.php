@@ -55,6 +55,42 @@
     }
 
     /**
+     * Test negative number
+     *
+     */
+    #[@test]
+    public function negativeInt() {
+      $this->assertEquals(array(new UnaryOpNode(array(
+        'position'      => array(4, 11),
+        'expression'    => new IntegerNode(array(
+          'position'      => array(4, 10),
+          'value'         => '1',
+        )),
+        'op'            => '-'
+      ))), $this->parse("
+        -1;
+      "));
+    }
+
+    /**
+     * Test negative number
+     *
+     */
+    #[@test]
+    public function negativeDecimal() {
+      $this->assertEquals(array(new UnaryOpNode(array(
+        'position'      => array(4, 13),
+        'expression'    => new DecimalNode(array(
+          'position'      => array(4, 10),
+          'value'         => '1.0',
+        )),
+        'op'            => '-'
+      ))), $this->parse("
+        -1.0;
+      "));
+    }
+
+    /**
      * Test hex
      *
      */
