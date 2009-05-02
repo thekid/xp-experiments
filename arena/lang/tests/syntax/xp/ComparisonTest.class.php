@@ -13,7 +13,7 @@
   class ComparisonTest extends ParserTestCase {
   
     /**
-     * Test equality comparison
+     * Test equality comparison <tt>$i == 10</tt>
      *
      */
     #[@test]
@@ -25,6 +25,26 @@
         'op'            => '=='
       ))), $this->parse('
         $i == 10;
+      '));
+    }
+
+    /**
+     * Test equality comparison <tt>-10 == $i</tt>
+     *
+     */
+    #[@test]
+    public function equalityToNegativeLhs() {
+      $this->assertEquals(array(new ComparisonNode(array(
+        'position'      => array(4, 18),
+        'lhs'           => new UnaryOpNode(array(
+          'position'      => array(4, 18),
+          'expression'    => new IntegerNode(array('position' => array(4, 16), 'value' => '10')),
+          'op'            => '-'
+        )),
+        'rhs'           => $this->create(new VariableNode('i'), array(4, 9)),
+        'op'            => '=='
+      ))), $this->parse('
+        -10 == $i;
       '));
     }
 
