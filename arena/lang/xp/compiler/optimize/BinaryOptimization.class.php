@@ -4,11 +4,21 @@
  * $Id$ 
  */
 
+  uses(
+    'xp.compiler.ast.StringNode',
+    'xp.compiler.ast.IntegerNode',
+    'xp.compiler.ast.DecimalNode',
+    'xp.compiler.ast.NumberNode',
+    'xp.compiler.ast.NaturalNode',
+    'xp.compiler.ast.ConstantValueNode',
+    'xp.compiler.ast.BinaryOpNode',
+    'xp.compiler.ast.Resolveable'
+  );
+
   /**
-   * (Insert class' description here)
+   * Optimizes binary operations
    *
-   * @see      reference
-   * @purpose  purpose
+   * @test     xp://tests.optimization.BinaryOptimizationTest
    */
   class BinaryOptimization extends Object {
     protected static $optimizable= array(
