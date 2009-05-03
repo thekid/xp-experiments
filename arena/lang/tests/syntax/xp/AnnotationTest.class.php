@@ -4,17 +4,13 @@
  * $Id$
  */
 
-  uses(
-    'unittest.TestCase',
-    'xp.compiler.syntax.xp.Lexer',
-    'xp.compiler.syntax.xp.Parser'
-  );
+  uses('tests.syntax.xp.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class AnnotationTest extends TestCase {
+  class AnnotationTest extends ParserTestCase {
   
     /**
      * Parse method annotations and return annotations
@@ -54,12 +50,9 @@
      * Test simple annotation (Test)
      *
      */
-    #[@test]
+    #[@test, @expect('text.parser.generic.ParseException')]
     public function simpleAnnotationWithBrackets() {
-      $this->assertEquals(array(new AnnotationNode(array(
-        'position'      => array(2, 16),
-        'type'          => 'Test'
-      ))), $this->parseMethodWithAnnotations('[@Test()]'));
+      $this->parseMethodWithAnnotations('[@Test()]');
     }
 
     /**
@@ -67,7 +60,7 @@
      *
      */
     #[@test]
-    public function annotationWithDefaultValue() {
+    public function annotationWithStringValue() {
       $this->assertEquals(array(new AnnotationNode(array(
         'position'      => array(2, 49),
         'type'          => 'Expect',
@@ -79,7 +72,136 @@
     }
 
     /**
-     * Test annotation with key/value pairs (Expect(classes => [...], code => 503))
+     * Test annotation with default value (Limit(5)))
+     *
+     */
+    #[@test]
+    public function annotationWithIntegerValue() {
+      $this->assertEquals(array(new AnnotationNode(array(
+        'position'      => array(2, 18),
+        'type'          => 'Limit',
+        'parameters'    => array('default' => new IntegerNode(array(
+          'position'      => array(2, 17),
+          'value'         => '5'
+        )))
+      ))), $this->parseMethodWithAnnotations('[@Limit(5)]'));
+    }
+
+    /**
+     * Test annotation with default value (Limit(0x5)))
+     *
+     */
+    #[@test]
+    public function annotationWithHexValue() {
+      $this->assertEquals(array(new AnnotationNode(array(
+        'position'      => array(2, 20),
+        'type'          => 'Limit',
+        'parameters'    => array('default' => new HexNode(array(
+          'position'      => array(2, 17),
+          'value'         => '0x5'
+        )))
+      ))), $this->parseMethodWithAnnotations('[@Limit(0x5)]'));
+    }
+
+    /**
+     * Test annotation with default value (Limit(5.0)))
+     *
+     */
+    #[@test]
+    public function annotationWithDecimalValue() {
+      $this->assertEquals(array(new AnnotationNode(array(
+        'position'      => array(2, 20),
+        'type'          => 'Limit',
+        'parameters'    => array('default' => new DecimalNode(array(
+          'position'      => array(2, 17),
+          'value'         => '5.0'
+        )))
+      ))), $this->parseMethodWithAnnotations('[@Limit(5.0)]'));
+    }
+
+    /**
+     * Test annotation with default value (Limit(null)))
+     *
+     */
+    #[@test]
+    public function annotationWithNullValue() {
+      $this->assertEquals(array(new AnnotationNode(array(
+        'position'      => array(2, 21),
+        'type'          => 'Limit',
+        'parameters'    => array('default' => new NullNode(array(
+          'position'      => array(2, 21),
+        )))
+      ))), $this->parseMethodWithAnnotations('[@Limit(null)]'));
+    }
+
+    /**
+     * Test annotation with default value (Limit(true)))
+     *
+     */
+    #[@test]
+    public function annotationWithTrueValue() {
+      $this->assertEquals(array(new AnnotationNode(array(
+        'position'      => array(2, 21),
+        'type'          => 'Limit',
+        'parameters'    => array('default' => $this->create(new BooleanNode(TRUE), array(2, 21)))
+      ))), $this->parseMethodWithAnnotations('[@Limit(true)]'));
+    }
+
+    /**
+     * Test annotation with default value (Limit(false)))
+     *
+     */
+    #[@test]
+    public function annotationWithFalseValue() {
+      $this->assertEquals(array(new AnnotationNode(array(
+        'position'      => array(2, 22),
+        'type'          => 'Limit',
+        'parameters'    => array('default' => $this->create(new BooleanNode(FALSE), array(2, 22)))
+      ))), $this->parseMethodWithAnnotations('[@Limit(false)]'));
+    }
+
+    /**
+     * Test annotation with default value (Restrict(["Admin", "Root"]))
+     *
+     */
+    #[@test]
+    public function annotationWithArrayValue() {
+      $this->assertEquals(array(new AnnotationNode(array(
+        'position'      => array(2, 37),
+        'type'          => 'Restrict',
+        'parameters'    => array('default' => new ArrayNode(array(
+          'position'      => array(2, 20),
+          'values'        => array(
+            new StringNode(array('position' => array(2, 21), 'value' => 'Admin')),
+            new StringNode(array('position' => array(2, 30), 'value' => 'Root')),
+          ),
+          'type'          => NULL
+        )))
+      ))), $this->parseMethodWithAnnotations('[@Restrict(["Admin", "Root"])]'));
+    }
+
+    /**
+     * Test annotation with default value (Restrict(["Role" : "Root"]))
+     *
+     */
+    #[@test]
+    public function annotationWithMapValue() {
+      $this->assertEquals(array(new AnnotationNode(array(
+        'position'      => array(2, 37),
+        'type'          => 'Restrict',
+        'parameters'    => array('default' => new MapNode(array(
+          'position'      => array(2, 20),
+          'elements'      => array(array(
+            new StringNode(array('position' => array(2, 21), 'value' => 'Role')),
+            new StringNode(array('position' => array(2, 30), 'value' => 'Root')),
+          )),
+          'type'          => NULL
+        )))
+      ))), $this->parseMethodWithAnnotations('[@Restrict(["Role" : "Root"])]'));
+    }
+
+    /**
+     * Test annotation with key/value pairs (Expect(classes = [...], code = 503))
      *
      */
     #[@test]

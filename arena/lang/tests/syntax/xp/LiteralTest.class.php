@@ -221,23 +221,26 @@
      * Test array
      *
      */
-    #[@test, @ignore('Not sure whether we want this')]
+    #[@test]
     public function chainingAfterArrayLiteral() {
-      $this->assertEquals(array(new ArrayNode(array(
-        'position'      => array(4, 9),
-        'values'        => array(
-          new IntegerNode(array(
-            'position'      => array(4, 10),
-            'value'         => '1',
-          )),
-          new IntegerNode(array(
-            'position'      => array(4, 13),
-            'value'         => '2',
-          )),
-        ),
-        'type'          => NULL
-      ))), $this->parse("
-        [1, 2].length;
+      $this->assertEquals(array($this->create(new ChainNode(array(
+        0 => new ArrayNode(array(
+          'position'      => array(4, 9),
+          'values'        => array(
+            new IntegerNode(array(
+              'position'      => array(4, 10),
+              'value'         => '1',
+            )),
+            new IntegerNode(array(
+              'position'      => array(4, 13),
+              'value'         => '2',
+            )),
+          ),
+          'type'          => NULL
+        )),
+        1 => $this->create(new VariableNode('array'), array(4, 21))
+      )), array(4, 21))), $this->parse("
+        [1, 2].array;
       "));
     }
   }
