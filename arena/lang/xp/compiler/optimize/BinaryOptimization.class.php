@@ -27,6 +27,7 @@
       '+'   => 'add',
       '*'   => 'multiply',
       '/'   => 'divide',
+      '%'   => 'modulo'
     );      
 
     
@@ -102,6 +103,21 @@
     protected function evalDivide(ConstantValueNode $l, ConstantValueNode $r) {
       if ($l instanceof NumberNode && $r instanceof NumberNode) {
         return new DecimalNode(array('value' => $l->resolve() / $r->resolve()));
+      } else {
+        return NULL;  // Not optimizable
+      }
+    }
+
+    /**
+     * Evaluate modulo
+     *
+     * @param   xp.compiler.ast.ConstantValueNode l
+     * @param   xp.compiler.ast.ConstantValueNode r
+     * @return  xp.compiler.ast.Node result
+     */
+    protected function evalModulo(ConstantValueNode $l, ConstantValueNode $r) {
+      if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
+        return new IntegerNode(array('value' => $l->resolve() % $r->resolve()));
       } else {
         return NULL;  // Not optimizable
       }

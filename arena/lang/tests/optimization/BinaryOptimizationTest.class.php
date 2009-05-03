@@ -80,6 +80,19 @@
     }
 
     /**
+     * Test modulo division on integers
+     *
+     */
+    #[@test]
+    public function modIntegers() {
+      $this->assertEquals(new IntegerNode(array('value' => 1)), $this->fixture->optimize(new BinaryOpNode(array(
+        'lhs' => new IntegerNode(array('value' => 4)), 
+        'rhs' => new IntegerNode(array('value' => 3)), 
+        'op'  => '%'
+      ))));
+    }
+
+    /**
      * Test adding decimals
      *
      */
@@ -184,56 +197,56 @@
     }
 
     /**
-     * Test adding integers
+     * Test adding strings
      *
      */
     #[@test]
     public function addStrings() {
       $o= new BinaryOpNode(array(
-        'lhs' => new StringNode(array('value' => 'Hello')), 
-        'rhs' => new StringNode(array('value' => ' World')), 
+        'lhs' => new StringNode(array('value' => 'a')), 
+        'rhs' => new StringNode(array('value' => 'b')), 
         'op'  => '+'
       ));
       $this->assertEquals($o, $this->fixture->optimize($o));
     }
 
     /**
-     * Test subtracting integers
+     * Test subtracting strings
      *
      */
     #[@test]
     public function subtractStrings() {
       $o= new BinaryOpNode(array(
-        'lhs' => new StringNode(array('value' => 'Hello')), 
-        'rhs' => new StringNode(array('value' => ' World')), 
+        'lhs' => new StringNode(array('value' => 'a')), 
+        'rhs' => new StringNode(array('value' => 'b')), 
         'op'  => '-'
       ));
       $this->assertEquals($o, $this->fixture->optimize($o));
     }
 
     /**
-     * Test multiplying integers
+     * Test multiplying strings
      *
      */
     #[@test]
     public function multiplyStrings() {
       $o= new BinaryOpNode(array(
-        'lhs' => new StringNode(array('value' => 'Hello')), 
-        'rhs' => new StringNode(array('value' => ' World')), 
+        'lhs' => new StringNode(array('value' => 'a')), 
+        'rhs' => new StringNode(array('value' => 'b')), 
         'op'  => '*'
       ));
       $this->assertEquals($o, $this->fixture->optimize($o));
     }
 
     /**
-     * Test dividing integers
+     * Test dividing strings
      *
      */
     #[@test]
     public function divideStrings() {
       $o= new BinaryOpNode(array(
-        'lhs' => new StringNode(array('value' => 'Hello')), 
-        'rhs' => new StringNode(array('value' => ' World')), 
+        'lhs' => new StringNode(array('value' => 'a')), 
+        'rhs' => new StringNode(array('value' => 'b')), 
         'op'  => '/'
       ));
       $this->assertEquals($o, $this->fixture->optimize($o));
