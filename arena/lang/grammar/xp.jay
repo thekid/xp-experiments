@@ -146,8 +146,11 @@
 %token T_BOOLEAN_OR 414
 %token T_BOOLEAN_AND 415
 %token T_CONCAT_EQUAL 416
-%token T_SHR 417
-%token T_SHL 418
+%token T_OR_EQUAL 417
+%token T_AND_EQUAL 418
+%token T_XOR_EQUAL 419
+%token T_SHR 420
+%token T_SHL 421
 
 %%
 
@@ -746,13 +749,18 @@ mapentry:
 ;
 
 assignment:
-    expression '=' expression          /* =  */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
-  | expression T_ADD_EQUAL expression  /* += */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
-  | expression T_SUB_EQUAL expression  /* -= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
-  | expression T_MUL_EQUAL expression  /* *= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
-  | expression T_DIV_EQUAL expression  /* /= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
-  | expression T_MOD_EQUAL expression  /* %= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
-  | expression T_CONCAT_EQUAL expression  /* ~= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+    expression '=' expression             /* =  */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_ADD_EQUAL expression     /* += */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_SUB_EQUAL expression     /* -= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_MUL_EQUAL expression     /* *= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_DIV_EQUAL expression     /* /= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_MOD_EQUAL expression     /* %= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_CONCAT_EQUAL expression  /* ~= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_AND_EQUAL expression     /* &= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_OR_EQUAL expression      /* |= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_XOR_EQUAL expression     /* ^= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_SHR '=' expression       /* >>= */ { $$= array('variable' => $1, 'expression' => $4, 'op' => $2.$3); }
+  | expression T_SHL '=' expression       /* <<= */ { $$= array('variable' => $1, 'expression' => $4, 'op' => $2.$3); }
 ;
 
 comparison:

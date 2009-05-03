@@ -29,6 +29,182 @@
     }
 
     /**
+     * Test assigning to a variable via "+="
+     *
+     */
+    #[@test]
+    public function addAssign() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'position'      => array(4, 16),
+        'variable'      => $this->create(new VariableNode('i'), array(4, 9)),
+        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '1')),
+        'op'            => '+='
+      ))), $this->parse('
+        $i += 1;
+      '));
+    }
+
+    /**
+     * Test assigning to a variable via "-="
+     *
+     */
+    #[@test]
+    public function subAssign() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'position'      => array(4, 16),
+        'variable'      => $this->create(new VariableNode('i'), array(4, 9)),
+        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '1')),
+        'op'            => '-='
+      ))), $this->parse('
+        $i -= 1;
+      '));
+    }
+
+    /**
+     * Test assigning to a variable via "-="
+     *
+     */
+    #[@test]
+    public function mulAssign() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'position'      => array(4, 16),
+        'variable'      => $this->create(new VariableNode('i'), array(4, 9)),
+        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '2')),
+        'op'            => '*='
+      ))), $this->parse('
+        $i *= 2;
+      '));
+    }
+
+    /**
+     * Test assigning to a variable via "/="
+     *
+     */
+    #[@test]
+    public function divAssign() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'position'      => array(4, 16),
+        'variable'      => $this->create(new VariableNode('i'), array(4, 9)),
+        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '2')),
+        'op'            => '/='
+      ))), $this->parse('
+        $i /= 2;
+      '));
+    }
+
+    /**
+     * Test assigning to a variable via "%="
+     *
+     */
+    #[@test]
+    public function modAssign() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'position'      => array(4, 16),
+        'variable'      => $this->create(new VariableNode('i'), array(4, 9)),
+        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '2')),
+        'op'            => '%='
+      ))), $this->parse('
+        $i %= 2;
+      '));
+    }
+
+    /**
+     * Test assigning to a variable via "~="
+     *
+     */
+    #[@test]
+    public function concatAssign() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'position'      => array(4, 18),
+        'variable'      => $this->create(new VariableNode('s'), array(4, 9)),
+        'expression'    => new StringNode(array('position' => array(4, 15), 'value' => '.')),
+        'op'            => '~='
+      ))), $this->parse('
+        $s ~= ".";
+      '));
+    }
+
+    /**
+     * Test assigning to a variable via ">>="
+     *
+     */
+    #[@test]
+    public function shiftRightAssign() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'position'      => array(4, 17),
+        'variable'      => $this->create(new VariableNode('s'), array(4, 9)),
+        'expression'    => new IntegerNode(array('position' => array(4, 16), 'value' => '2')),
+        'op'            => '>>='
+      ))), $this->parse('
+        $s >>= 2;
+      '));
+    }
+
+    /**
+     * Test assigning to a variable via "<<="
+     *
+     */
+    #[@test]
+    public function shiftLeftAssign() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'position'      => array(4, 17),
+        'variable'      => $this->create(new VariableNode('s'), array(4, 9)),
+        'expression'    => new IntegerNode(array('position' => array(4, 16), 'value' => '2')),
+        'op'            => '<<='
+      ))), $this->parse('
+        $s <<= 2;
+      '));
+    }
+
+    /**
+     * Test assigning to a variable via "|="
+     *
+     */
+    #[@test]
+    public function orAssign() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'position'      => array(4, 16),
+        'variable'      => $this->create(new VariableNode('s'), array(4, 9)),
+        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '2')),
+        'op'            => '|='
+      ))), $this->parse('
+        $s |= 2;
+      '));
+    }
+
+    /**
+     * Test assigning to a variable via "&="
+     *
+     */
+    #[@test]
+    public function andAssign() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'position'      => array(4, 16),
+        'variable'      => $this->create(new VariableNode('s'), array(4, 9)),
+        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '2')),
+        'op'            => '&='
+      ))), $this->parse('
+        $s &= 2;
+      '));
+    }
+
+    /**
+     * Test assigning to a variable via "|="
+     *
+     */
+    #[@test]
+    public function xorAssign() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'position'      => array(4, 16),
+        'variable'      => $this->create(new VariableNode('s'), array(4, 9)),
+        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '2')),
+        'op'            => '^='
+      ))), $this->parse('
+        $s ^= 2;
+      '));
+    }
+
+    /**
      * Test assigning to a variable with array offset
      *
      */
