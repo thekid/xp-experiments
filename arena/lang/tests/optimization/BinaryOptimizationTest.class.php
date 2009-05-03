@@ -9,11 +9,12 @@
     'xp.compiler.optimize.Optimizations',
     'xp.compiler.optimize.BinaryOptimization',
     'xp.compiler.ast.IntegerNode',
-    'xp.compiler.ast.DecimalNode'
+    'xp.compiler.ast.DecimalNode',
+    'xp.compiler.ast.StringNode'
   );
 
   /**
-   * TestCase
+   * TestCase for binary operations
    *
    * @see      xp://xp.compiler.optimize.BinaryOptimization
    */
@@ -203,7 +204,7 @@
      *
      */
     #[@test]
-    public function addStrings() {
+    public function addStringsNotOptimized() {
       $o= new BinaryOpNode(array(
         'lhs' => new StringNode(array('value' => 'a')), 
         'rhs' => new StringNode(array('value' => 'b')), 
@@ -217,7 +218,7 @@
      *
      */
     #[@test]
-    public function subtractStrings() {
+    public function subtractStringsNotOptimized() {
       $o= new BinaryOpNode(array(
         'lhs' => new StringNode(array('value' => 'a')), 
         'rhs' => new StringNode(array('value' => 'b')), 
@@ -231,7 +232,7 @@
      *
      */
     #[@test]
-    public function multiplyStrings() {
+    public function multiplyStringsNotOptimized() {
       $o= new BinaryOpNode(array(
         'lhs' => new StringNode(array('value' => 'a')), 
         'rhs' => new StringNode(array('value' => 'b')), 
@@ -245,7 +246,7 @@
      *
      */
     #[@test]
-    public function divideStrings() {
+    public function divideStringsNotOptimized() {
       $o= new BinaryOpNode(array(
         'lhs' => new StringNode(array('value' => 'a')), 
         'rhs' => new StringNode(array('value' => 'b')), 
