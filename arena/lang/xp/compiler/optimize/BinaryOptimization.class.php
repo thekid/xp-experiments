@@ -10,9 +10,8 @@
     'xp.compiler.ast.DecimalNode',
     'xp.compiler.ast.NumberNode',
     'xp.compiler.ast.NaturalNode',
-    'xp.compiler.ast.ConstantValueNode',
-    'xp.compiler.ast.BinaryOpNode',
     'xp.compiler.ast.Resolveable',
+    'xp.compiler.ast.BinaryOpNode',
     'xp.compiler.optimize.Optimization'
   );
 
@@ -39,22 +38,22 @@
     /**
      * Evaluate concatenation
      *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
+     * @param   xp.compiler.ast.Resolveable l
+     * @param   xp.compiler.ast.Resolveable r
      * @return  xp.compiler.ast.Node result
      */
-    protected function evalConcat(ConstantValueNode $l, ConstantValueNode $r) {
+    protected function evalConcat(Resolveable $l, Resolveable $r) {
       return new StringNode(array('value' => $l->resolve().$r->resolve()));
     }
     
     /**
      * Evaluate addition
      *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
+     * @param   xp.compiler.ast.Resolveable l
+     * @param   xp.compiler.ast.Resolveable r
      * @return  xp.compiler.ast.Node result
      */
-    protected function evalAdd(ConstantValueNode $l, ConstantValueNode $r) {
+    protected function evalAdd(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
         return new IntegerNode(array('value' => $l->resolve() + $r->resolve()));
       } else if (($l instanceof DecimalNode && $r instanceof NumberNode) || ($l instanceof NumberNode && $r instanceof DecimalNode)) {
@@ -67,11 +66,11 @@
     /**
      * Evaluate subtraction
      *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
+     * @param   xp.compiler.ast.Resolveable l
+     * @param   xp.compiler.ast.Resolveable r
      * @return  xp.compiler.ast.Node result
      */
-    protected function evalSubtract(ConstantValueNode $l, ConstantValueNode $r) {
+    protected function evalSubtract(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
         return new IntegerNode(array('value' => $l->resolve() - $r->resolve()));
       } else if (($l instanceof DecimalNode && $r instanceof NumberNode) || ($l instanceof NumberNode && $r instanceof DecimalNode)) {
@@ -84,11 +83,11 @@
     /**
      * Evaluate multiplication
      *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
+     * @param   xp.compiler.ast.Resolveable l
+     * @param   xp.compiler.ast.Resolveable r
      * @return  xp.compiler.ast.Node result
      */
-    protected function evalMultiply(ConstantValueNode $l, ConstantValueNode $r) {
+    protected function evalMultiply(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
         return new IntegerNode(array('value' => $l->resolve() * $r->resolve()));
       } else if (($l instanceof DecimalNode && $r instanceof NumberNode) || ($l instanceof NumberNode && $r instanceof DecimalNode)) {
@@ -101,11 +100,11 @@
     /**
      * Evaluate division
      *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
+     * @param   xp.compiler.ast.Resolveable l
+     * @param   xp.compiler.ast.Resolveable r
      * @return  xp.compiler.ast.Node result
      */
-    protected function evalDivide(ConstantValueNode $l, ConstantValueNode $r) {
+    protected function evalDivide(Resolveable $l, Resolveable $r) {
       if ($l instanceof NumberNode && $r instanceof NumberNode) {
         return new DecimalNode(array('value' => $l->resolve() / $r->resolve()));
       } else {
@@ -116,11 +115,11 @@
     /**
      * Evaluate modulo
      *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
+     * @param   xp.compiler.ast.Resolveable l
+     * @param   xp.compiler.ast.Resolveable r
      * @return  xp.compiler.ast.Node result
      */
-    protected function evalModulo(ConstantValueNode $l, ConstantValueNode $r) {
+    protected function evalModulo(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
         return new IntegerNode(array('value' => $l->resolve() % $r->resolve()));
       } else {
@@ -131,11 +130,11 @@
     /**
      * Evaluate shift right
      *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
+     * @param   xp.compiler.ast.Resolveable l
+     * @param   xp.compiler.ast.Resolveable r
      * @return  xp.compiler.ast.Node result
      */
-    protected function evalShr(ConstantValueNode $l, ConstantValueNode $r) {
+    protected function evalShr(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
         return new IntegerNode(array('value' => $l->resolve() >> $r->resolve()));
       } else {
@@ -146,11 +145,11 @@
     /**
      * Evaluate shift left
      *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
+     * @param   xp.compiler.ast.Resolveable l
+     * @param   xp.compiler.ast.Resolveable r
      * @return  xp.compiler.ast.Node result
      */
-    protected function evalShl(ConstantValueNode $l, ConstantValueNode $r) {
+    protected function evalShl(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
         return new IntegerNode(array('value' => $l->resolve() << $r->resolve()));
       } else {
@@ -161,11 +160,11 @@
     /**
      * Evaluate and ("&")
      *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
+     * @param   xp.compiler.ast.Resolveable l
+     * @param   xp.compiler.ast.Resolveable r
      * @return  xp.compiler.ast.Node result
      */
-    protected function evalAnd(ConstantValueNode $l, ConstantValueNode $r) {
+    protected function evalAnd(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
         return new IntegerNode(array('value' => $l->resolve() & $r->resolve()));
       } else {
@@ -176,11 +175,11 @@
     /**
      * Evaluate or ("|")
      *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
+     * @param   xp.compiler.ast.Resolveable l
+     * @param   xp.compiler.ast.Resolveable r
      * @return  xp.compiler.ast.Node result
      */
-    protected function evalOr(ConstantValueNode $l, ConstantValueNode $r) {
+    protected function evalOr(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
         return new IntegerNode(array('value' => $l->resolve() | $r->resolve()));
       } else {
@@ -191,11 +190,11 @@
     /**
      * Evaluate xor ("^")
      *
-     * @param   xp.compiler.ast.ConstantValueNode l
-     * @param   xp.compiler.ast.ConstantValueNode r
+     * @param   xp.compiler.ast.Resolveable l
+     * @param   xp.compiler.ast.Resolveable r
      * @return  xp.compiler.ast.Node result
      */
-    protected function evalXOr(ConstantValueNode $l, ConstantValueNode $r) {
+    protected function evalXOr(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
         return new IntegerNode(array('value' => $l->resolve() ^ $r->resolve()));
       } else {
