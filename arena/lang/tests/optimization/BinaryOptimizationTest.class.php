@@ -122,6 +122,45 @@
     }
 
     /**
+     * Test "|" on integers
+     *
+     */
+    #[@test]
+    public function orIntegers() {
+      $this->assertEquals(new IntegerNode(array('value' => 5)), $this->fixture->optimize(new BinaryOpNode(array(
+        'lhs' => new IntegerNode(array('value' => 4)), 
+        'rhs' => new IntegerNode(array('value' => 1)), 
+        'op'  => '|'
+      ))));
+    }
+
+    /**
+     * Test "^" on integers
+     *
+     */
+    #[@test]
+    public function xorIntegers() {
+      $this->assertEquals(new IntegerNode(array('value' => 5)), $this->fixture->optimize(new BinaryOpNode(array(
+        'lhs' => new IntegerNode(array('value' => 4)), 
+        'rhs' => new IntegerNode(array('value' => 1)), 
+        'op'  => '^'
+      ))));
+    }
+
+    /**
+     * Test "&" on integers
+     *
+     */
+    #[@test]
+    public function andIntegers() {
+      $this->assertEquals(new IntegerNode(array('value' => 0)), $this->fixture->optimize(new BinaryOpNode(array(
+        'lhs' => new IntegerNode(array('value' => 4)), 
+        'rhs' => new IntegerNode(array('value' => 1)), 
+        'op'  => '&'
+      ))));
+    }
+
+    /**
      * Test adding decimals
      *
      */

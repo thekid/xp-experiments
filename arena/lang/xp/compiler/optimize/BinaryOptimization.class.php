@@ -31,6 +31,9 @@
       '%'   => 'modulo',
       '<<'  => 'shl',
       '>>'  => 'shr',
+      '&'   => 'and',
+      '|'   => 'or',
+      '^'   => 'xor'
     );      
     
     /**
@@ -150,6 +153,51 @@
     protected function evalShl(ConstantValueNode $l, ConstantValueNode $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
         return new IntegerNode(array('value' => $l->resolve() << $r->resolve()));
+      } else {
+        return NULL;  // Not optimizable
+      }
+    }
+
+    /**
+     * Evaluate and ("&")
+     *
+     * @param   xp.compiler.ast.ConstantValueNode l
+     * @param   xp.compiler.ast.ConstantValueNode r
+     * @return  xp.compiler.ast.Node result
+     */
+    protected function evalAnd(ConstantValueNode $l, ConstantValueNode $r) {
+      if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
+        return new IntegerNode(array('value' => $l->resolve() & $r->resolve()));
+      } else {
+        return NULL;  // Not optimizable
+      }
+    }
+
+    /**
+     * Evaluate or ("|")
+     *
+     * @param   xp.compiler.ast.ConstantValueNode l
+     * @param   xp.compiler.ast.ConstantValueNode r
+     * @return  xp.compiler.ast.Node result
+     */
+    protected function evalOr(ConstantValueNode $l, ConstantValueNode $r) {
+      if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
+        return new IntegerNode(array('value' => $l->resolve() | $r->resolve()));
+      } else {
+        return NULL;  // Not optimizable
+      }
+    }
+
+    /**
+     * Evaluate xor ("^")
+     *
+     * @param   xp.compiler.ast.ConstantValueNode l
+     * @param   xp.compiler.ast.ConstantValueNode r
+     * @return  xp.compiler.ast.Node result
+     */
+    protected function evalXOr(ConstantValueNode $l, ConstantValueNode $r) {
+      if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
+        return new IntegerNode(array('value' => $l->resolve() ^ $r->resolve()));
       } else {
         return NULL;  // Not optimizable
       }
