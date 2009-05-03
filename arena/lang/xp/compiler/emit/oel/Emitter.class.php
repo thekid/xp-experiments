@@ -46,8 +46,7 @@
     
     protected
       $manager        = NULL,
-      $types          = NULL,
-      $optimizations  = NULL;
+      $types          = NULL;
     
     /**
      * Emit uses statements for a given list of types
@@ -1772,15 +1771,11 @@
      * Emit a single node
      *
      * @param   resource op
-     * @param   xp.compiler.ast.Node node
+     * @param   xp.compiler.ast.Node in
      * @return  int
      */
-    protected function emitOne($op, xp·compiler·ast·Node $node) {
-          
-      // Check for optimizations
-      if ($this->optimizations[$node->getClass()]) {
-        $node= $this->optimizations[$node->getClass()]->optimize($node);
-      }
+    protected function emitOne($op, xp·compiler·ast·Node $in) {
+      $node= $this->optimizations->optimize($in);
     
       // Search emission method
       $target= 'emit'.substr(get_class($node), 0, -strlen('Node'));
@@ -1964,8 +1959,6 @@
     public function emit(ParseTree $tree, FileManager $manager) {
       $this->types= new HashTable();
       $this->manager= $manager;
-      $this->optimizations= new HashTable();
-      $this->optimizations[XPClass::forName('xp.compiler.ast.BinaryOpNode')]= new BinaryOptimization();
       $this->messages= array(
         'warnings' => array(),
         'errors'   => array()

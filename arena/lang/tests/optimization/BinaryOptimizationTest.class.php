@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'xp.compiler.optimize.Optimizations',
     'xp.compiler.optimize.BinaryOptimization',
     'xp.compiler.ast.IntegerNode',
     'xp.compiler.ast.DecimalNode'
@@ -24,7 +25,8 @@
      *
      */
     public function setUp() {
-      $this->fixture= new BinaryOptimization();
+      $this->fixture= new Optimizations();
+      $this->fixture->add(XPClass::forName('xp.compiler.ast.BinaryOpNode'), new BinaryOptimization());
     }
     
     /**
@@ -262,6 +264,23 @@
         'lhs' => new StringNode(array('value' => 'Hello')), 
         'rhs' => new StringNode(array('value' => ' World')), 
         'op'  => '~'
+      ))));
+    }
+
+    /**
+     * Test optimizing a more complex binary operation (1 + 2 * 3)
+     *
+     */
+    #[@test]
+    public function optimizeComplex() {
+      $this->assertEquals(new IntegerNode(array('value' => 7)), $this->fixture->optimize(new BinaryOpNode(array(
+        'lhs' => new IntegerNode(array('value' => 1)), 
+        'rhs' => new BinaryOpNode(array(
+          'lhs' => new IntegerNode(array('value' => 2)), 
+          'rhs' => new IntegerNode(array('value' => 3)), 
+          'op'  => '*'
+        )),
+        'op'  => '+'
       ))));
     }
   }

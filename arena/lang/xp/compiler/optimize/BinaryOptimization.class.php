@@ -12,7 +12,8 @@
     'xp.compiler.ast.NaturalNode',
     'xp.compiler.ast.ConstantValueNode',
     'xp.compiler.ast.BinaryOpNode',
-    'xp.compiler.ast.Resolveable'
+    'xp.compiler.ast.Resolveable',
+    'xp.compiler.optimize.Optimization'
   );
 
   /**
@@ -20,7 +21,7 @@
    *
    * @test     xp://tests.optimization.BinaryOptimizationTest
    */
-  class BinaryOptimization extends Object {
+  class BinaryOptimization extends Object implements Optimization {
     protected static $optimizable= array(
       '~'   => 'concat',
       '-'   => 'subtract',
@@ -29,7 +30,6 @@
       '/'   => 'divide',
       '%'   => 'modulo'
     );      
-
     
     /**
      * Evaluate concatenation
@@ -127,20 +127,22 @@
      * Optimize a given node
      *
      * @param   xp.compiler.ast.Node in
+     * @param   xp.compiler.optimize.Optimizations optimizations
      * @param   xp.compiler.ast.Node optimized
      */
-    public function optimize(xp·compiler·ast·Node $in) {
+    public function optimize(xp·compiler·ast·Node $in, Optimizations $optimizations) {
+      if (isset(self::$optimizable[$in->op])) {
+        $lhs= $optimizations->optimize($in->lhs);
+        $rhs= $optimizations->optimize($in->rhs);
       
-      // Check for optimization possibilities if left- and righthand sides can be resolved
-      // FIXME: 1 + 2 + 3; will create Add(Add(Number(1), Add(Number(2)), Number(3))
-      // and thus the right-hand side is not a Resolveable (but could be).
-      if (isset(self::$optimizable[$in->op]) && $in->lhs instanceof Resolveable && $in->rhs instanceof Resolveable) {
-        try {
-          $r= call_user_func_array(array($this, 'eval'.self::$optimizable[$in->op]), array($in->lhs, $in->rhs));
-        } catch (XPException $e) {
-          $r= NULL;
+        if ($lhs instanceof Resolveable && $rhs instanceof Resolveable) {
+          try {
+            $r= call_user_func_array(array($this, 'eval'.self::$optimizable[$in->op]), array($lhs, $rhs));
+          } catch (XPException $e) {
+            $r= NULL;
+          }
+          if (NULL !== $r) return $r;
         }
-        if (NULL !== $r) return $r;
       }
 
       return $in;

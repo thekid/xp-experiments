@@ -4,7 +4,13 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.ast.Node', 'xp.compiler.ast.ParseTree', 'util.log.Traceable');
+  uses(
+    'xp.compiler.ast.Node', 
+    'xp.compiler.ast.ParseTree', 
+    'xp.compiler.optimize.Optimizations',
+    'xp.compiler.optimize.BinaryOptimization',
+    'util.log.Traceable'
+  );
 
   /**
    * (Insert class' description here)
@@ -17,6 +23,16 @@
       'warnings' => array(),
       'errors'   => array()
     );
+    protected $optimizations= NULL;
+
+    /**
+     * Constructor.
+     *
+     */
+    public function __construct() {
+      $this->optimizations= new Optimizations();
+      $this->optimizations->add(XPClass::forName('xp.compiler.ast.BinaryOpNode'), new BinaryOptimization());
+    }
     
     /**
      * Emit a parse tree
