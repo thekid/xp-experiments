@@ -27,7 +27,7 @@
           'op'             => '='
         ))),
         'condition'      => array(new ComparisonNode(array(
-          'position'      => array(4, 26),
+          'position'      => array(4, 30),
           'lhs'           => $this->create(new VariableNode('i'), array(4, 21)),
           'rhs'           => new IntegerNode(array('position' => array(4, 26), 'value' => '1000')),
           'op'            => '<'
@@ -69,7 +69,7 @@
       $this->assertEquals(array(new WhileNode(array(
         'position'      => array(4, 9),
         'expression'    => new ComparisonNode(array(
-          'position'      => array(4, 23),
+          'position'      => array(4, 28),
           'lhs'           => new UnaryOpNode(array(
             'position'      => array(4, 18),
             'expression'    => $this->create(new VariableNode('i'), array(4, 16)),
@@ -94,7 +94,7 @@
       $this->assertEquals(array(new DoNode(array(
         'position'      => array(4, 9),
         'expression'    => new ComparisonNode(array(
-          'position'      => array(4, 30),
+          'position'      => array(4, 35),
           'lhs'           => new UnaryOpNode(array(
             'position'      => array(4, 25),
             'expression'    => $this->create(new VariableNode('i'), array(4, 23)),
