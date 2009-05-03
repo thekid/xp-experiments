@@ -18,6 +18,7 @@
   /**
    * Optimizes binary operations
    *
+   * @see      http://en.wikipedia.org/wiki/Constant_folding
    * @test     xp://tests.optimization.BinaryOptimizationTest
    */
   class BinaryOptimization extends Object implements Optimization {
