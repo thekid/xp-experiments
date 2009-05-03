@@ -96,6 +96,32 @@
     }
 
     /**
+     * Test shift right on integers
+     *
+     */
+    #[@test]
+    public function shrIntegers() {
+      $this->assertEquals(new IntegerNode(array('value' => 2)), $this->fixture->optimize(new BinaryOpNode(array(
+        'lhs' => new IntegerNode(array('value' => 4)), 
+        'rhs' => new IntegerNode(array('value' => 1)), 
+        'op'  => '>>'
+      ))));
+    }
+
+    /**
+     * Test shift left on integers
+     *
+     */
+    #[@test]
+    public function shlIntegers() {
+      $this->assertEquals(new IntegerNode(array('value' => 32)), $this->fixture->optimize(new BinaryOpNode(array(
+        'lhs' => new IntegerNode(array('value' => 4)), 
+        'rhs' => new IntegerNode(array('value' => 3)), 
+        'op'  => '<<'
+      ))));
+    }
+
+    /**
      * Test adding decimals
      *
      */
