@@ -59,7 +59,7 @@
 %}
 
 %left ','
-%left '=' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_CONCAT_EQUAL T_MOD_EQUAL
+%left '=' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_CONCAT_EQUAL T_MOD_EQUAL T_SHR T_SHL
 %left '?' ':'
 %left T_BOOLEAN_OR
 %left T_BOOLEAN_AND
@@ -146,6 +146,8 @@
 %token T_BOOLEAN_OR 414
 %token T_BOOLEAN_AND 415
 %token T_CONCAT_EQUAL 416
+%token T_SHR 417
+%token T_SHL 418
 
 %%
 
@@ -769,6 +771,11 @@ binary_operation:
   | expression '/' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
   | expression '%' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
   | expression '~' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression '|' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression '&' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression '^' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression T_SHR expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression T_SHL expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
 ;
 
 unary_prefix_operation:
