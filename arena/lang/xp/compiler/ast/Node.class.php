@@ -38,6 +38,8 @@
       if (sizeof($a1) != sizeof($a2)) return FALSE;
 
       foreach (array_keys((array)$a1) as $k) {
+        if ('position' === $k || 'free' === $k || '__id' === $k) continue;
+
         switch (TRUE) {
           case !array_key_exists($k, $a2): 
             return FALSE;
@@ -50,7 +52,7 @@
             if (!$a1[$k]->equals($a2[$k])) return FALSE;
             break;
 
-          case $a1[$k] !== $a2[$k] && '__id' !== $k && 'free' !== $k:
+          case $a1[$k] !== $a2[$k]:
             return FALSE;
         }
       }
