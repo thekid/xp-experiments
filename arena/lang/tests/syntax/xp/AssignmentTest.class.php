@@ -19,13 +19,10 @@
     #[@test]
     public function toVariable() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 14),
-        'variable'      => $this->create(new VariableNode('i'), array(4, 9)),
-        'expression'    => new IntegerNode(array('position' => array(4, 13), 'value' => '0')),
+        'variable'      => new VariableNode('i'),
+        'expression'    => new IntegerNode(array('value' => '0')),
         'op'            => '='
-      ))), $this->parse('
-        $i= 0;
-      '));
+      ))), $this->parse('$i= 0;'));
     }
 
     /**
@@ -35,13 +32,10 @@
     #[@test]
     public function addAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 16),
-        'variable'      => $this->create(new VariableNode('i'), array(4, 9)),
-        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '1')),
+        'variable'      => new VariableNode('i'),
+        'expression'    => new IntegerNode(array('value' => '1')),
         'op'            => '+='
-      ))), $this->parse('
-        $i += 1;
-      '));
+      ))), $this->parse('$i += 1;'));
     }
 
     /**
@@ -51,13 +45,10 @@
     #[@test]
     public function subAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 16),
-        'variable'      => $this->create(new VariableNode('i'), array(4, 9)),
-        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '1')),
+        'variable'      => new VariableNode('i'),
+        'expression'    => new IntegerNode(array('value' => '1')),
         'op'            => '-='
-      ))), $this->parse('
-        $i -= 1;
-      '));
+      ))), $this->parse('$i -= 1;'));
     }
 
     /**
@@ -67,13 +58,10 @@
     #[@test]
     public function mulAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 16),
-        'variable'      => $this->create(new VariableNode('i'), array(4, 9)),
-        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '2')),
+        'variable'      => new VariableNode('i'),
+        'expression'    => new IntegerNode(array('value' => '2')),
         'op'            => '*='
-      ))), $this->parse('
-        $i *= 2;
-      '));
+      ))), $this->parse('$i *= 2;'));
     }
 
     /**
@@ -83,13 +71,10 @@
     #[@test]
     public function divAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 16),
-        'variable'      => $this->create(new VariableNode('i'), array(4, 9)),
-        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '2')),
+        'variable'      => new VariableNode('i'),
+        'expression'    => new IntegerNode(array('value' => '2')),
         'op'            => '/='
-      ))), $this->parse('
-        $i /= 2;
-      '));
+      ))), $this->parse('$i /= 2;'));
     }
 
     /**
@@ -99,13 +84,10 @@
     #[@test]
     public function modAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 16),
-        'variable'      => $this->create(new VariableNode('i'), array(4, 9)),
-        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '2')),
+        'variable'      => new VariableNode('i'),
+        'expression'    => new IntegerNode(array('value' => '2')),
         'op'            => '%='
-      ))), $this->parse('
-        $i %= 2;
-      '));
+      ))), $this->parse('$i %= 2;'));
     }
 
     /**
@@ -115,13 +97,10 @@
     #[@test]
     public function concatAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 18),
-        'variable'      => $this->create(new VariableNode('s'), array(4, 9)),
-        'expression'    => new StringNode(array('position' => array(4, 15), 'value' => '.')),
+        'variable'      => new VariableNode('s'),
+        'expression'    => new StringNode(array('value' => '.')),
         'op'            => '~='
-      ))), $this->parse('
-        $s ~= ".";
-      '));
+      ))), $this->parse('$s ~= ".";'));
     }
 
     /**
@@ -131,13 +110,10 @@
     #[@test]
     public function shiftRightAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 17),
-        'variable'      => $this->create(new VariableNode('s'), array(4, 9)),
-        'expression'    => new IntegerNode(array('position' => array(4, 16), 'value' => '2')),
+        'variable'      => new VariableNode('s'),
+        'expression'    => new IntegerNode(array('value' => '2')),
         'op'            => '>>='
-      ))), $this->parse('
-        $s >>= 2;
-      '));
+      ))), $this->parse('$s >>= 2;'));
     }
 
     /**
@@ -147,13 +123,10 @@
     #[@test]
     public function shiftLeftAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 17),
-        'variable'      => $this->create(new VariableNode('s'), array(4, 9)),
-        'expression'    => new IntegerNode(array('position' => array(4, 16), 'value' => '2')),
+        'variable'      => new VariableNode('s'),
+        'expression'    => new IntegerNode(array('value' => '2')),
         'op'            => '<<='
-      ))), $this->parse('
-        $s <<= 2;
-      '));
+      ))), $this->parse('$s <<= 2;'));
     }
 
     /**
@@ -163,13 +136,10 @@
     #[@test]
     public function orAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 16),
-        'variable'      => $this->create(new VariableNode('s'), array(4, 9)),
-        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '2')),
+        'variable'      => new VariableNode('s'),
+        'expression'    => new IntegerNode(array('value' => '2')),
         'op'            => '|='
-      ))), $this->parse('
-        $s |= 2;
-      '));
+      ))), $this->parse('$s |= 2;'));
     }
 
     /**
@@ -179,13 +149,10 @@
     #[@test]
     public function andAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 16),
-        'variable'      => $this->create(new VariableNode('s'), array(4, 9)),
-        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '2')),
+        'variable'      => new VariableNode('s'),
+        'expression'    => new IntegerNode(array('value' => '2')),
         'op'            => '&='
-      ))), $this->parse('
-        $s &= 2;
-      '));
+      ))), $this->parse('$s &= 2;'));
     }
 
     /**
@@ -195,13 +162,10 @@
     #[@test]
     public function xorAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 16),
-        'variable'      => $this->create(new VariableNode('s'), array(4, 9)),
-        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '2')),
+        'variable'      => new VariableNode('s'),
+        'expression'    => new IntegerNode(array('value' => '2')),
         'op'            => '^='
-      ))), $this->parse('
-        $s ^= 2;
-      '));
+      ))), $this->parse('$s ^= 2;'));
     }
 
     /**
@@ -211,18 +175,15 @@
     #[@test]
     public function toArrayOffset() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 17),
-        'variable'      => $this->create(new ChainNode(array(
-          0 => $this->create(new VariableNode('i'), array(4, 9)),
-          1 => $this->create(new ArrayAccessNode(array(
-            'offset' => $this->create(new IntegerNode(array('value' => '0')), array(4, 12))
-          )), array(4, 11)),
-        )), array(4, 14)),
-        'expression'    => new IntegerNode(array('position' => array(4, 16), 'value' => '0')),
+        'variable'      => new ChainNode(array(
+          0 => new VariableNode('i'),
+          1 => new ArrayAccessNode(array(
+            'offset' => new IntegerNode(array('value' => '0'))
+          )),
+        )),
+        'expression'    => new IntegerNode(array('value' => '0')),
         'op'            => '='
-      ))), $this->parse('
-        $i[0]= 0;
-      '));
+      ))), $this->parse('$i[0]= 0;'));
     }
 
     /**
@@ -232,16 +193,13 @@
     #[@test]
     public function appendToArray() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 16),
-        'variable'      => $this->create(new ChainNode(array(
-          0 => $this->create(new VariableNode('i'), array(4, 9)),
-          1 => $this->create(new ArrayAccessNode(array('offset' => NULL)), array(4, 11)),
-        )), array(4, 13)),
-        'expression'    => new IntegerNode(array('position' => array(4, 15), 'value' => '0')),
+        'variable'      => new ChainNode(array(
+          0 => new VariableNode('i'),
+          1 => new ArrayAccessNode(array('offset' => NULL)),
+        )),
+        'expression'    => new IntegerNode(array('value' => '0')),
         'op'            => '='
-      ))), $this->parse('
-        $i[]= 0;
-      '));
+      ))), $this->parse('$i[]= 0;'));
     }
 
     /**
@@ -251,16 +209,13 @@
     #[@test]
     public function toInstanceMember() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 25),
-        'variable'      => $this->create(new ChainNode(array(
-          0 => $this->create(new VariableNode('class'), array(4, 9)),
-          1 => $this->create(new VariableNode('member'), array(4, 22))
-        )), array(4, 22)),
-        'expression'    => new IntegerNode(array('position' => array(4, 24), 'value' => '0')),
+        'variable'      => new ChainNode(array(
+          0 => new VariableNode('class'), 
+          1 => new VariableNode('member'),
+        )),
+        'expression'    => new IntegerNode(array('value' => '0')),
         'op'            => '='
-      ))), $this->parse('
-        $class.member= 0;
-      '));
+      ))), $this->parse('$class.member= 0;'));
     }
 
     /**
@@ -270,17 +225,13 @@
     #[@test]
     public function toClassMember() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 30),
         'variable'      => new ClassMemberNode(array(
-          'position'      => array(4, 13), 
           'class'         => new TypeName('self'),
-          'member'        => $this->create(new VariableNode('instance'), array(4, 15))
+          'member'        => new VariableNode('instance')
         )),
-        'expression'    => $this->create(new NullNode(), array(4, 30)),
+        'expression'    => new NullNode(),
         'op'            => '='
-      ))), $this->parse('
-        self::$instance= null;
-      '));
+      ))), $this->parse('self::$instance= null;'));
     }
 
     /**
@@ -290,20 +241,17 @@
     #[@test]
     public function toChain() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'position'      => array(4, 47),
-        'variable'      => $this->create(new ChainNode(array(
-          0 => $this->create(new ClassMemberNode(array(
+        'variable'      => new ChainNode(array(
+          0 => new ClassMemberNode(array(
             'class'     => new TypeName('self'), 
-            'member'    => $this->create(new VariableNode('instance'), array(4, 15))
-          )), array(4, 13)),
-          1 => $this->create(new InvocationNode(array('name' => 'addAppender', 'parameters' => NULL)), array(4, 36)),
-          2 => $this->create(new VariableNode('flags'), array(4, 44))
-        )), array(4, 44)),
-        'expression'    =>  new IntegerNode(array('position' => array(4, 46), 'value' => '0')),
+            'member'    => new VariableNode('instance'),
+          )),
+          1 => new InvocationNode(array('name' => 'addAppender', 'parameters' => NULL)),
+          2 => new VariableNode('flags')
+        )),
+        'expression'    =>  new IntegerNode(array('value' => '0')),
         'op'            => '='
-      ))), $this->parse('
-        self::$instance.addAppender().flags= 0;
-      '));
+      ))), $this->parse('self::$instance.addAppender().flags= 0;'));
     }
   }
 ?>

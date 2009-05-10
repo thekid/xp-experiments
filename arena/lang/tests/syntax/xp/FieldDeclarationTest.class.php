@@ -29,7 +29,6 @@
     #[@test]
     public function publicField() {
       $this->assertEquals(array(new FieldNode(array(
-        'position'   => array(2, 28),
         'modifiers'  => MODIFIER_PUBLIC,
         'annotations'=> NULL,
         'name'       => 'name',
@@ -47,12 +46,11 @@
     #[@test]
     public function privateStaticField() {
       $this->assertEquals(array(new FieldNode(array(
-        'position'   => array(2, 44),
-        'modifiers'  => MODIFIER_PRIVATE | MODIFIER_STATIC,
-        'annotations'=> NULL,
-        'name'       => 'instance',
-        'type'       => new TypeName('self'),
-        'initialization' => $this->create(new NullNode(), array(2, 44))
+        'modifiers'       => MODIFIER_PRIVATE | MODIFIER_STATIC,
+        'annotations'     => NULL,
+        'name'            => 'instance',
+        'type'            => new TypeName('self'),
+        'initialization'  => new NullNode()
       ))), $this->parse('class Logger { 
         private static self $instance= null;
       }'));
@@ -66,7 +64,6 @@
     public function readOnlyProperty() {
       $this->assertEquals(array(
         new FieldNode(array(
-          'position'   => array(2, 30),
           'modifiers'  => MODIFIER_PRIVATE,
           'annotations'=> NULL,
           'name'       => '_name',
@@ -74,19 +71,18 @@
           'initialization' => NULL,
         )),
         new PropertyNode(array(
-          'position'   => array(3, 28),
           'modifiers'  => MODIFIER_PUBLIC,
           'annotations'=> NULL,
           'type'       => new TypeName('string'),
           'name'       => 'name',
           'handlers'   => array(
             'get' => array(
-              $this->create(new ReturnNode(array(
-                'expression' => $this->create(new ChainNode(array(
-                  0 => $this->create(new VariableNode('this'), array(3, 43)),
-                  1 => $this->create(new VariableNode('_name'), array(3, 54))
-                )), array(3, 54))
-              )), array(3, 36))
+              new ReturnNode(array(
+                'expression' => new ChainNode(array(
+                  0 => new VariableNode('this'),
+                  1 => new VariableNode('_name')
+                ))
+              ))
             ),
           )
         ))
@@ -104,7 +100,6 @@
     public function readWriteProperty() {
       $this->assertEquals(array(
         new FieldNode(array(
-          'position'   => array(2, 30),
           'modifiers'  => MODIFIER_PRIVATE,
           'annotations'=> NULL,
           'name'       => '_name',
@@ -112,29 +107,28 @@
           'initialization' => NULL,
         )),
         new PropertyNode(array(
-          'position'   => array(3, 28),
           'modifiers'  => MODIFIER_PUBLIC,
           'annotations'=> NULL,
           'type'       => new TypeName('string'),
           'name'       => 'name',
           'handlers'   => array(
             'get' => array(
-              $this->create(new ReturnNode(array(
-                'expression' => $this->create(new ChainNode(array(
-                  0 => $this->create(new VariableNode('this'), array(4, 24)),
-                  1 => $this->create(new VariableNode('_name'), array(4, 35))
-                )), array(4, 35))
-              )), array(4, 17))
+              new ReturnNode(array(
+                'expression' => new ChainNode(array(
+                  0 => new VariableNode('this'),
+                  1 => new VariableNode('_name')
+                ))
+              ))
             ),
             'set' => array(
-              $this->create(new AssignmentNode(array(
-                'variable'   => $this->create(new ChainNode(array(
-                  0 => $this->create(new VariableNode('this'), array(5, 17)),
-                  1 => $this->create(new VariableNode('_name'), array(5, 28))
-                )), array(5, 28)),
-                'expression' => $this->create(new VariableNode('value'), array(5, 30)),
+              new AssignmentNode(array(
+                'variable'   => new ChainNode(array(
+                  0 => new VariableNode('this'),
+                  1 => new VariableNode('_name')
+                )),
+                'expression' => new VariableNode('value'),
                 'op'         => '='
-              )), array(5, 36))
+              ))
             )
           )
         ))
@@ -155,7 +149,6 @@
     public function indexerProperty() {
       $this->assertEquals(array(
         new PropertyNode(array(
-          'position'   => array(2, 34),
           'modifiers'  => MODIFIER_PUBLIC,
           'annotations'=> NULL,
           'type'       => new TypeName('T'),

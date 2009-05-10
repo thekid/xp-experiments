@@ -29,14 +29,14 @@
     #[@test]
     public function emtpyClass() {
       $this->assertEquals(
-        $this->create(new ClassNode(
+        new ClassNode(
           0,                          // Modifiers
           NULL,                       // Annotations
           new TypeName('Empty'),      // Name
           NULL,                       // Parent
           array(),                    // Implements
           NULL                        // Body
-        ), array(1, 1)), 
+        ), 
         $this->parse('class Empty { }')
       );
     }
@@ -48,17 +48,16 @@
     #[@test]
     public function annotatedClass() {
       $this->assertEquals(
-        $this->create(new ClassNode(
+        new ClassNode(
           0,
           array(new AnnotationNode(array(
-            'position'   => array(1, 13),
             'type'       => 'Deprecated'
           ))),
           new TypeName('Empty'),
           NULL,
           array(),
           NULL
-        ), array(1, 15)), 
+        ), 
         $this->parse('[@Deprecated] class Empty { }')
       );
     }
@@ -70,14 +69,14 @@
     #[@test]
     public function classWithParentClass() {
       $this->assertEquals(
-        $this->create(new ClassNode(
+        new ClassNode(
           0,
           NULL,
           new TypeName('Class'),
           new TypeName('lang.Object'),
           array(),
           NULL
-        ), array(1, 1)), 
+        ), 
         $this->parse('class Class extends lang.Object { }')
       );
     }
@@ -89,14 +88,14 @@
     #[@test]
     public function classWithInterface() {
       $this->assertEquals(
-        $this->create(new ClassNode(
+        new ClassNode(
           0,
           NULL,
           new TypeName('HttpConnection'),
           NULL,
           array(new TypeName('Traceable')),
           NULL
-        ), array(1, 1)), 
+        ), 
         $this->parse('class HttpConnection implements Traceable { }')
       );
     }
@@ -108,14 +107,14 @@
     #[@test]
     public function classWithInterfaces() {
       $this->assertEquals(
-        $this->create(new ClassNode(
+        new ClassNode(
           0,
           NULL,
           new TypeName('Math'),
           NULL,
           array(new TypeName('util.Observer'), new TypeName('Traceable')),
           NULL
-        ), array(1, 1)), 
+        ), 
         $this->parse('class Math implements util.Observer, Traceable { }')
       );
     }
@@ -127,14 +126,14 @@
     #[@test]
     public function classWithParentClassAndInterface() {
       $this->assertEquals(
-        $this->create(new ClassNode(
+        new ClassNode(
           0,
           NULL,
           new TypeName('Integer'),
           new TypeName('Number'),
           array(new TypeName('Observer')),
           NULL
-        ), array(1, 1)), 
+        ), 
         $this->parse('class Integer extends Number implements Observer { }')
       );
     }
@@ -146,14 +145,14 @@
     #[@test]
     public function publicClass() {
       $this->assertEquals(
-        $this->create(new ClassNode(
+        new ClassNode(
           MODIFIER_PUBLIC,
           NULL,
           new TypeName('Class'),
           NULL,
           array(),
           NULL
-        ), array(1, 8)), 
+        ), 
         $this->parse('public class Class { }')
       );
     }
@@ -165,14 +164,14 @@
     #[@test]
     public function abstractClass() {
       $this->assertEquals(
-        $this->create(new ClassNode(
+        new ClassNode(
           MODIFIER_PUBLIC | MODIFIER_ABSTRACT,
           NULL,
           new TypeName('Base'),
           NULL,
           array(),
           NULL
-        ), array(1, 17)), 
+        ), 
         $this->parse('public abstract class Base { }')
       );
     }
@@ -184,14 +183,14 @@
     #[@test]
     public function genericClass() {
       $this->assertEquals(
-        $this->create(new ClassNode(
+        new ClassNode(
           0,
           NULL,
           new TypeName('Class', array(new TypeName('T'))),
           NULL,
           array(),
           NULL
-        ), array(1, 1)), 
+        ), 
         $this->parse('class Class<T> { }')
       );
     }
@@ -203,14 +202,14 @@
     #[@test]
     public function hashTableClass() {
       $this->assertEquals(
-        $this->create(new ClassNode(
+        new ClassNode(
           0,
           NULL,
           new TypeName('HashTable', array(new TypeName('K'), new TypeName('V'))),
           NULL,
           array(new TypeName('Map', array(new TypeName('K'), new TypeName('V')))),
           NULL
-        ), array(1, 1)), 
+        ), 
         $this->parse('class HashTable<K, V> implements Map<K, V> { }')
       );
     }
@@ -222,13 +221,13 @@
     #[@test]
     public function emtpyInterface() {
       $this->assertEquals(
-        $this->create(new InterfaceNode(
+        new InterfaceNode(
           0,
           NULL,
           new TypeName('Empty'),
           NULL,
           NULL
-        ), array(1, 1)), 
+        ), 
         $this->parse('interface Empty { }')
       );
     }
@@ -240,13 +239,13 @@
     #[@test]
     public function genericInterface() {
       $this->assertEquals(
-        $this->create(new InterfaceNode(
+        new InterfaceNode(
           0,
           NULL,
           new TypeName('Filter', array(new TypeName('T'))),
           NULL,
           NULL
-        ), array(1, 1)), 
+        ), 
         $this->parse('interface Filter<T> { }')
       );
     }
@@ -258,13 +257,13 @@
     #[@test]
     public function twoComponentGenericInterface() {
       $this->assertEquals(
-        $this->create(new InterfaceNode(
+        new InterfaceNode(
           0,
           NULL,
           new TypeName('Map', array(new TypeName('K'), new TypeName('V'))),
           NULL,
           NULL
-        ), array(1, 1)), 
+        ), 
         $this->parse('interface Map<K, V> { }')
       );
     }
@@ -276,13 +275,13 @@
     #[@test]
     public function interfaceWithParent() {
       $this->assertEquals(
-        $this->create(new InterfaceNode(
+        new InterfaceNode(
           0,
           NULL,
           new TypeName('Debuggable'),
           array(new TypeName('util.log.Traceable')),
           NULL
-        ), array(1, 1)), 
+        ), 
         $this->parse('interface Debuggable extends util.log.Traceable { }')
       );
     }
@@ -294,13 +293,13 @@
     #[@test]
     public function interfaceWithParents() {
       $this->assertEquals(
-        $this->create(new InterfaceNode(
+        new InterfaceNode(
           0,
           NULL,
           new TypeName('Debuggable'),
           array(new TypeName('Traceable'), new TypeName('Observer', array(new TypeName('T')))),
           NULL
-        ), array(1, 1)), 
+        ), 
         $this->parse('interface Debuggable extends Traceable, Observer<T> { }')
       );
     }
@@ -312,7 +311,6 @@
     #[@test]
     public function emtpyEnum() {
       $this->assertEquals(new EnumNode(array(
-        'position'   => array(1, 1),
         'modifiers'  => 0,
         'annotations'=> NULL,
         'name'       => new TypeName('Days'),
@@ -329,7 +327,6 @@
     #[@test]
     public function abstractEnum() {
       $this->assertEquals(new EnumNode(array(
-        'position'   => array(1, 10),
         'modifiers'  => MODIFIER_ABSTRACT,
         'annotations'=> NULL,
         'name'       => new TypeName('Days'),

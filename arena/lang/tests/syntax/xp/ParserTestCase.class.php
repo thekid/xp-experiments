@@ -34,17 +34,5 @@
         throw $e->getCause();
       }
     }
-
-    /**
-     * Create a node at a given position
-     *
-     * @param   xp.compiler.ast.Node n
-     * @param   int[2] pos
-     * @return  xp.compiler.ast.Node
-     */
-    protected function create(xp·compiler·ast·Node $n, $pos) {
-      $n->position= $pos;
-      return $n;
-    }
   }
 ?>

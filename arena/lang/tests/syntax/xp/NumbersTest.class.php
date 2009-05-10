@@ -18,12 +18,10 @@
      */
     #[@test]
     public function integerNumber() {
-      $this->assertEquals(array(new IntegerNode(array(
-        'position'      => array(4, 9),
-        'value'         => '1',
-      ))), $this->parse('
-        1;
-      '));
+      $this->assertEquals(
+        array(new IntegerNode(array('value' => '1'))),
+        $this->parse('1;')
+      );
     }
 
     /**
@@ -32,16 +30,13 @@
      */
     #[@test]
     public function negativeIntegerNumber() {
-      $this->assertEquals(array(new UnaryOpNode(array(
-        'position'      => array(4, 11),
-        'expression'    => new IntegerNode(array(
-          'position'      => array(4, 10),
-          'value'         => '1',
-        )),
-        'op'            => '-'
-      ))), $this->parse('
-        -1;
-      '));
+      $this->assertEquals(
+        array(new UnaryOpNode(array(
+          'expression'    => new IntegerNode(array('value' => '1')),
+          'op'            => '-'
+        ))), 
+        $this->parse('-1;')
+      );
     }
 
     /**
@@ -50,12 +45,10 @@
      */
     #[@test]
     public function decimalNumber() {
-      $this->assertEquals(array(new DecimalNode(array(
-        'position'      => array(4, 9),
-        'value'         => '1.0',
-      ))), $this->parse('
-        1.0;
-      '));
+      $this->assertEquals(
+        array(new DecimalNode(array('value' => '1.0'))),
+        $this->parse('1.0;')
+      );
     }
 
     /**
@@ -64,12 +57,10 @@
      */
     #[@test]
     public function hexNumber() {
-      $this->assertEquals(array(new HexNode(array(
-        'position'      => array(4, 9),
-        'value'         => '0xFF',
-      ))), $this->parse('
-        0xFF;
-      '));
+      $this->assertEquals(
+        array(new HexNode(array('value' => '0xFF'))),
+        $this->parse('0xFF;')
+      );
     }
 
     /**

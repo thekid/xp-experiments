@@ -33,7 +33,6 @@
     #[@test]
     public function singleTypeImport() {
       $this->assertEquals(array(new ImportNode(array(
-          'position' => array(1, 1),
           'name'     => 'util.collections.HashTable'
         ))), 
         $this->parse('import util.collections.HashTable; public class Test { }')
@@ -47,7 +46,6 @@
     #[@test]
     public function typeImportOnDemand() {
       $this->assertEquals(array(new ImportNode(array(
-          'position' => array(1, 1),
           'name'     => 'util.collections.*'
         ))), 
         $this->parse('import util.collections.*; public class Test { }')
@@ -61,7 +59,6 @@
     #[@test]
     public function staticImport() {
       $this->assertEquals(array(new StaticImportNode(array(
-          'position' => array(1, 1),
           'name'     => 'rdbms.criterion.Restrictions.*'
         ))), 
         $this->parse('import static rdbms.criterion.Restrictions.*; public class Test { }')
@@ -75,7 +72,6 @@
     #[@test]
     public function nativeImport() {
       $this->assertEquals(array(new NativeImportNode(array(
-          'position' => array(1, 1),
           'name'     => 'standard.*'
         ))), 
         $this->parse('import native standard.*; public class Test { }')
@@ -89,13 +85,10 @@
     #[@test]
     public function multipleImports() {
       $this->assertEquals(array(new ImportNode(array(
-          'position' => array(2, 11),
           'name'     => 'util.collections.*'
         )), new ImportNode(array(
-          'position' => array(3, 11),
           'name'     => 'util.Date'
         )), new ImportNode(array(
-          'position' => array(4, 11),
           'name'     => 'unittest.*'
         ))), 
         $this->parse('

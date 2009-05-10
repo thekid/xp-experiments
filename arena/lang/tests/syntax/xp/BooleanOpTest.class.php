@@ -19,13 +19,10 @@
     #[@test]
     public function booleanOr() {
       $this->assertEquals(array(new BooleanOpNode(array(
-        'position'      => array(4, 17),
-        'lhs'           => $this->create(new VariableNode('a'), array(4, 9)),
-        'rhs'           => $this->create(new VariableNode('b'), array(4, 15)),
+        'lhs'           => new VariableNode('a'),
+        'rhs'           => new VariableNode('b'),
         'op'            => '||'
-      ))), $this->parse('
-        $a || $b;
-      '));
+      ))), $this->parse('$a || $b;'));
     }
 
     /**
@@ -35,13 +32,10 @@
     #[@test]
     public function booleanAnd() {
       $this->assertEquals(array(new BooleanOpNode(array(
-        'position'      => array(4, 17),
-        'lhs'           => $this->create(new VariableNode('a'), array(4, 9)),
-        'rhs'           => $this->create(new VariableNode('b'), array(4, 15)),
+        'lhs'           => new VariableNode('a'),
+        'rhs'           => new VariableNode('b'),
         'op'            => '&&'
-      ))), $this->parse('
-        $a && $b;
-      '));
+      ))), $this->parse('$a && $b;'));
     }
   }
 ?>

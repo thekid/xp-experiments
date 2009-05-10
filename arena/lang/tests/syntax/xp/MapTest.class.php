@@ -18,13 +18,13 @@
      */
     #[@test]
     public function emptyUntypedMap() {
-      $this->assertEquals(array(new MapNode(array(
-        'position'      => array(4, 9),
-        'elements'      => NULL,
-        'type'          => NULL,
-      ))), $this->parse('
-        [:];
-      '));
+      $this->assertEquals(
+        array(new MapNode(array(
+          'elements'      => NULL,
+          'type'          => NULL,
+        ))), 
+        $this->parse('[:];')
+      );
     }
 
     /**
@@ -33,26 +33,26 @@
      */
     #[@test]
     public function untypedMap() {
-      $this->assertEquals(array(new MapNode(array(
-        'position'      => array(4, 9),
-        'elements'      => array(
-          array(
-            new IntegerNode(array('position' => array(4, 11), 'value' => '1')),
-            new StringNode(array('position' => array(4, 15), 'value' => 'one')),
+      $this->assertEquals(
+        array(new MapNode(array(
+          'elements'      => array(
+            array(
+              new IntegerNode(array('value' => '1')),
+              new StringNode(array('value' => 'one')),
+            ),
+            array(
+              new IntegerNode(array('value' => '2')),
+              new StringNode(array('value' => 'two')),
+            ),
+            array(
+              new IntegerNode(array('value' => '3')),
+              new StringNode(array('value' => 'three')),
+            ),
           ),
-          array(
-            new IntegerNode(array('position' => array(4, 22), 'value' => '2')),
-            new StringNode(array('position' => array(4, 26), 'value' => 'two')),
-          ),
-          array(
-            new IntegerNode(array('position' => array(4, 33), 'value' => '3')),
-            new StringNode(array('position' => array(4, 37), 'value' => 'three')),
-          ),
-        ),
-        'type'          => NULL,
-      ))), $this->parse('
-        [ 1 : "one", 2 : "two", 3 : "three" ];
-      '));
+          'type'          => NULL,
+        ))), 
+        $this->parse('[ 1 : "one", 2 : "two", 3 : "three" ];')
+      );
     }
   }
 ?>
