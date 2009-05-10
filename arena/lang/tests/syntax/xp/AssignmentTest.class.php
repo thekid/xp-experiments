@@ -177,9 +177,7 @@
       $this->assertEquals(array(new AssignmentNode(array(
         'variable'      => new ChainNode(array(
           0 => new VariableNode('i'),
-          1 => new ArrayAccessNode(array(
-            'offset' => new IntegerNode(array('value' => '0'))
-          )),
+          1 => new ArrayAccessNode(new IntegerNode(array('value' => '0')))
         )),
         'expression'    => new IntegerNode(array('value' => '0')),
         'op'            => '='
@@ -195,7 +193,7 @@
       $this->assertEquals(array(new AssignmentNode(array(
         'variable'      => new ChainNode(array(
           0 => new VariableNode('i'),
-          1 => new ArrayAccessNode(array('offset' => NULL)),
+          1 => new ArrayAccessNode(NULL),
         )),
         'expression'    => new IntegerNode(array('value' => '0')),
         'op'            => '='

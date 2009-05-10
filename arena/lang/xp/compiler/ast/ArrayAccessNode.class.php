@@ -7,11 +7,20 @@
   uses('xp.compiler.ast.Node');
 
   /**
-   * (Insert class' description here)
+   * Represents an array access operator
    *
-   * @purpose  purpose
    */
   class ArrayAccessNode extends xp·compiler·ast·Node {
+    public $offset= NULL;
+    
+    /**
+     * Constructor
+     *
+     * @param   xp.compiler.ast.Node offset
+     */
+    public function __construct(xp·compiler·ast·Node $offset= NULL) {
+      $this->offset= $offset;
+    }
     
     /**
      * Returns a hashcode
