@@ -919,14 +919,11 @@
           $this->error('C405', 'Cannot create anonymous enums', $new);
           return;
         } else {
-          $p= array('parent' => $new->type);
+          $p= array('parent' => $new->type, 'implements' => NULL);
         }
         
         $unique= new TypeName($parent->name().'$'.++$i);
-        $decl= new ClassNode(array_merge($p, array(
-          'name'      => $unique,
-          'body'      => $new->body
-        )));
+        $decl= new ClassNode(0, NULL, $unique, $p['parent'], $p['implements'], $new->body);
         $this->declarations[0][]= $decl;
         $this->types[$new]= $unique;
         $this->types[$unique->name]= $ptr= new TypeDeclaration(new ParseTree(NULL, array(), $decl), $parent);
