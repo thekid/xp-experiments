@@ -22,9 +22,11 @@
      */
     #[@test]
     public function nameWithoutPackage() {
-      $decl= new TypeDeclaration(new ParseTree(NULL, array(), new ClassNode(array(
-        'name' => new TypeName('TestCase')
-      ))));
+      $decl= new TypeDeclaration(new ParseTree(NULL, array(), new ClassNode(
+        MODIFIER_PUBLIC, 
+        NULL,
+        new TypeName('TestCase')
+      )));
       $this->assertEquals('TestCase', $decl->name());
     }
 
@@ -34,9 +36,11 @@
      */
     #[@test]
     public function nameWithPackage() {
-      $decl= new TypeDeclaration(new ParseTree(new TypeName('unittest.web'), array(), new ClassNode(array(
-        'name' => new TypeName('WebTestCase')
-      ))));
+      $decl= new TypeDeclaration(new ParseTree(new TypeName('unittest.web'), array(), new ClassNode(
+        MODIFIER_PUBLIC, 
+        NULL,
+        new TypeName('WebTestCase')
+      )));
       $this->assertEquals('unittest.web.WebTestCase', $decl->name());
     }
 
@@ -46,9 +50,11 @@
      */
     #[@test]
     public function literalWithoutPackage() {
-      $decl= new TypeDeclaration(new ParseTree(NULL, array(), new ClassNode(array(
-        'name' => new TypeName('TestCase')
-      ))));
+      $decl= new TypeDeclaration(new ParseTree(NULL, array(), new ClassNode(
+        MODIFIER_PUBLIC, 
+        NULL,
+        new TypeName('TestCase')
+      )));
       $this->assertEquals('TestCase', $decl->literal());
     }
 
@@ -58,9 +64,11 @@
      */
     #[@test]
     public function literalWithPackage() {
-      $decl= new TypeDeclaration(new ParseTree(new TypeName('unittest.web'), array(), new ClassNode(array(
-        'name' => new TypeName('WebTestCase')
-      ))));
+      $decl= new TypeDeclaration(new ParseTree(new TypeName('unittest.web'), array(), new ClassNode(
+        MODIFIER_PUBLIC, 
+        NULL,
+        new TypeName('WebTestCase')
+      )));
       $this->assertEquals('WebTestCase', $decl->literal());
     }
 
@@ -70,9 +78,11 @@
      */
     #[@test]
     public function classKind() {
-      $decl= new TypeDeclaration(new ParseTree(NULL, array(), new ClassNode(array(
-        'name' => new TypeName('TestCase')
-      ))));
+      $decl= new TypeDeclaration(new ParseTree(NULL, array(), new ClassNode(
+        MODIFIER_PUBLIC, 
+        NULL,
+        new TypeName('TestCase')
+      )));
       $this->assertEquals(Types::CLASS_KIND, $decl->kind());
     }
 
@@ -108,16 +118,20 @@
      */
     protected function stringClass() {
       return new TypeDeclaration(
-        new ParseTree(new TypeName('lang.types'), array(), new ClassNode(array(
-          'name' => new TypeName('String'),
-          'body' => array(
+        new ParseTree(new TypeName('lang.types'), array(), new ClassNode(
+          MODIFIER_PUBLIC, 
+          NULL,
+          new TypeName('String'),
+          new TypeName('lang.Object'),
+          NULL,
+          array(
             'methods' => array(
               new MethodNode(array(
                 'name' => 'substring'
               ))
             )
           )
-         ))),
+        )),
         $this->objectClass()
       );
     }
@@ -129,16 +143,20 @@
      */
     protected function objectClass() {
       return new TypeDeclaration(
-        new ParseTree(new TypeName('lang'), array(), new ClassNode(array(
-          'name' => new TypeName('Object'),
-          'body' => array(
+        new ParseTree(new TypeName('lang'), array(), new ClassNode(
+          MODIFIER_PUBLIC, 
+          NULL,
+          new TypeName('Object'),
+          NULL,
+          NULL,
+          array(
             'methods' => array(
               new MethodNode(array(
                 'name' => 'equals'
               ))
             )
           )
-        )))
+        ))
       );
     }
 

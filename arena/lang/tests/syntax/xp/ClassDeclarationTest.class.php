@@ -4,17 +4,13 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'xp.compiler.syntax.xp.Lexer',
-    'xp.compiler.syntax.xp.Parser'
-  );
+  uses('tests.syntax.xp.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class ClassDeclarationTest extends TestCase {
+  class ClassDeclarationTest extends ParserTestCase {
   
     /**
      * Parse method source and return statements inside this method.
@@ -32,15 +28,17 @@
      */
     #[@test]
     public function emtpyClass() {
-      $this->assertEquals(new ClassNode(array(
-        'position'   => array(1, 1),
-        'modifiers'  => 0,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Empty'),
-        'parent'     => NULL,
-        'implements' => array(),
-        'body'       => NULL
-      )), $this->parse('class Empty { }'));
+      $this->assertEquals(
+        $this->create(new ClassNode(
+          0,                          // Modifiers
+          NULL,                       // Annotations
+          new TypeName('Empty'),      // Name
+          NULL,                       // Parent
+          array(),                    // Implements
+          NULL                        // Body
+        ), array(1, 1)), 
+        $this->parse('class Empty { }')
+      );
     }
 
     /**
@@ -49,18 +47,20 @@
      */
     #[@test]
     public function annotatedClass() {
-      $this->assertEquals(new ClassNode(array(
-        'position'   => array(1, 15),
-        'modifiers'  => 0,
-        'annotations'=> array(new AnnotationNode(array(
-          'position'   => array(1, 13),
-          'type'       => 'Deprecated'
-        ))),
-        'name'       => new TypeName('Empty'),
-        'parent'     => NULL,
-        'implements' => array(),
-        'body'       => NULL
-      )), $this->parse('[@Deprecated] class Empty { }'));
+      $this->assertEquals(
+        $this->create(new ClassNode(
+          0,
+          array(new AnnotationNode(array(
+            'position'   => array(1, 13),
+            'type'       => 'Deprecated'
+          ))),
+          new TypeName('Empty'),
+          NULL,
+          array(),
+          NULL
+        ), array(1, 15)), 
+        $this->parse('[@Deprecated] class Empty { }')
+      );
     }
 
     /**
@@ -69,15 +69,17 @@
      */
     #[@test]
     public function classWithParentClass() {
-      $this->assertEquals(new ClassNode(array(
-        'position'   => array(1, 1),
-        'modifiers'  => 0,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Class'),
-        'parent'     => new TypeName('lang.Object'),
-        'implements' => array(),
-        'body'       => NULL
-      )), $this->parse('class Class extends lang.Object { }'));
+      $this->assertEquals(
+        $this->create(new ClassNode(
+          0,
+          NULL,
+          new TypeName('Class'),
+          new TypeName('lang.Object'),
+          array(),
+          NULL
+        ), array(1, 1)), 
+        $this->parse('class Class extends lang.Object { }')
+      );
     }
 
     /**
@@ -86,15 +88,17 @@
      */
     #[@test]
     public function classWithInterface() {
-      $this->assertEquals(new ClassNode(array(
-        'position'   => array(1, 1),
-        'modifiers'  => 0,
-        'annotations'=> NULL,
-        'name'       => new TypeName('HttpConnection'),
-        'parent'     => NULL,
-        'implements' => array(new TypeName('Traceable')),
-        'body'       => NULL
-      )), $this->parse('class HttpConnection implements Traceable { }'));
+      $this->assertEquals(
+        $this->create(new ClassNode(
+          0,
+          NULL,
+          new TypeName('HttpConnection'),
+          NULL,
+          array(new TypeName('Traceable')),
+          NULL
+        ), array(1, 1)), 
+        $this->parse('class HttpConnection implements Traceable { }')
+      );
     }
 
     /**
@@ -103,15 +107,17 @@
      */
     #[@test]
     public function classWithInterfaces() {
-      $this->assertEquals(new ClassNode(array(
-        'position'   => array(1, 1),
-        'modifiers'  => 0,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Math'),
-        'parent'     => NULL,
-        'implements' => array(new TypeName('util.Observer'), new TypeName('Traceable')),
-        'body'       => NULL
-      )), $this->parse('class Math implements util.Observer, Traceable { }'));
+      $this->assertEquals(
+        $this->create(new ClassNode(
+          0,
+          NULL,
+          new TypeName('Math'),
+          NULL,
+          array(new TypeName('util.Observer'), new TypeName('Traceable')),
+          NULL
+        ), array(1, 1)), 
+        $this->parse('class Math implements util.Observer, Traceable { }')
+      );
     }
 
     /**
@@ -120,15 +126,17 @@
      */
     #[@test]
     public function classWithParentClassAndInterface() {
-      $this->assertEquals(new ClassNode(array(
-        'position'   => array(1, 1),
-        'modifiers'  => 0,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Integer'),
-        'parent'     => new TypeName('Number'),
-        'implements' => array(new TypeName('Observer')),
-        'body'       => NULL
-      )), $this->parse('class Integer extends Number implements Observer { }'));
+      $this->assertEquals(
+        $this->create(new ClassNode(
+          0,
+          NULL,
+          new TypeName('Integer'),
+          new TypeName('Number'),
+          array(new TypeName('Observer')),
+          NULL
+        ), array(1, 1)), 
+        $this->parse('class Integer extends Number implements Observer { }')
+      );
     }
 
     /**
@@ -137,15 +145,17 @@
      */
     #[@test]
     public function publicClass() {
-      $this->assertEquals(new ClassNode(array(
-        'position'   => array(1, 8),
-        'modifiers'  => MODIFIER_PUBLIC,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Class'),
-        'parent'     => NULL,
-        'implements' => array(),
-        'body'       => NULL
-      )), $this->parse('public class Class { }'));
+      $this->assertEquals(
+        $this->create(new ClassNode(
+          MODIFIER_PUBLIC,
+          NULL,
+          new TypeName('Class'),
+          NULL,
+          array(),
+          NULL
+        ), array(1, 8)), 
+        $this->parse('public class Class { }')
+      );
     }
 
     /**
@@ -154,15 +164,17 @@
      */
     #[@test]
     public function abstractClass() {
-      $this->assertEquals(new ClassNode(array(
-        'position'   => array(1, 17),
-        'modifiers'  => MODIFIER_PUBLIC | MODIFIER_ABSTRACT,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Base'),
-        'parent'     => NULL,
-        'implements' => array(),
-        'body'       => NULL
-      )), $this->parse('public abstract class Base { }'));
+      $this->assertEquals(
+        $this->create(new ClassNode(
+          MODIFIER_PUBLIC | MODIFIER_ABSTRACT,
+          NULL,
+          new TypeName('Base'),
+          NULL,
+          array(),
+          NULL
+        ), array(1, 17)), 
+        $this->parse('public abstract class Base { }')
+      );
     }
 
     /**
@@ -171,15 +183,17 @@
      */
     #[@test]
     public function genericClass() {
-      $this->assertEquals(new ClassNode(array(
-        'position'   => array(1, 1),
-        'modifiers'  => 0,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Class', array(new TypeName('T'))),
-        'parent'     => NULL,
-        'implements' => array(),
-        'body'       => NULL
-      )), $this->parse('class Class<T> { }'));
+      $this->assertEquals(
+        $this->create(new ClassNode(
+          0,
+          NULL,
+          new TypeName('Class', array(new TypeName('T'))),
+          NULL,
+          array(),
+          NULL
+        ), array(1, 1)), 
+        $this->parse('class Class<T> { }')
+      );
     }
 
     /**
@@ -188,15 +202,17 @@
      */
     #[@test]
     public function hashTableClass() {
-      $this->assertEquals(new ClassNode(array(
-        'position'   => array(1, 1),
-        'modifiers'  => 0,
-        'annotations'=> NULL,
-        'name'       => new TypeName('HashTable', array(new TypeName('K'), new TypeName('V'))),
-        'parent'     => NULL,
-        'implements' => array(new TypeName('Map', array(new TypeName('K'), new TypeName('V')))),
-        'body'       => NULL
-      )), $this->parse('class HashTable<K, V> implements Map<K, V> { }'));
+      $this->assertEquals(
+        $this->create(new ClassNode(
+          0,
+          NULL,
+          new TypeName('HashTable', array(new TypeName('K'), new TypeName('V'))),
+          NULL,
+          array(new TypeName('Map', array(new TypeName('K'), new TypeName('V')))),
+          NULL
+        ), array(1, 1)), 
+        $this->parse('class HashTable<K, V> implements Map<K, V> { }')
+      );
     }
 
     /**

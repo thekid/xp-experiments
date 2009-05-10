@@ -11,6 +11,6 @@
    *
    */
   class InterfaceNode extends TypeDeclarationNode {
-    
+    public $parents= NULL;
   }
 ?>

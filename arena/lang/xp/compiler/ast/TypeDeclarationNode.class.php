@@ -19,8 +19,9 @@
    * @see      xp://xp.compiler.ast.EnumNode
    */
   abstract class TypeDeclarationNode extends xp·compiler·ast·Node {
+    public $modifiers= 0;
+    public $annotations= NULL;
     public $name= NULL;
     public $body= NULL;
-    
   }
 ?>

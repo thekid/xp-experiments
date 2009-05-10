@@ -11,6 +11,7 @@
    *
    */
   class EnumNode extends TypeDeclarationNode {
-    
+    public $parent= NULL;
+    public $implements= NULL;
   }
 ?>
