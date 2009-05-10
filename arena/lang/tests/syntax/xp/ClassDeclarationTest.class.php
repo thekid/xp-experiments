@@ -221,14 +221,16 @@
      */
     #[@test]
     public function emtpyInterface() {
-      $this->assertEquals(new InterfaceNode(array(
-        'position'   => array(1, 1),
-        'modifiers'  => 0,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Empty'),
-        'parents'    => array(),
-        'body'       => NULL
-      )), $this->parse('interface Empty { }'));
+      $this->assertEquals(
+        $this->create(new InterfaceNode(
+          0,
+          NULL,
+          new TypeName('Empty'),
+          NULL,
+          NULL
+        ), array(1, 1)), 
+        $this->parse('interface Empty { }')
+      );
     }
 
     /**
@@ -237,14 +239,16 @@
      */
     #[@test]
     public function genericInterface() {
-      $this->assertEquals(new InterfaceNode(array(
-        'position'   => array(1, 1),
-        'modifiers'  => 0,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Filter', array(new TypeName('T'))),
-        'parents'    => array(),
-        'body'       => NULL
-      )), $this->parse('interface Filter<T> { }'));
+      $this->assertEquals(
+        $this->create(new InterfaceNode(
+          0,
+          NULL,
+          new TypeName('Filter', array(new TypeName('T'))),
+          NULL,
+          NULL
+        ), array(1, 1)), 
+        $this->parse('interface Filter<T> { }')
+      );
     }
 
     /**
@@ -253,14 +257,16 @@
      */
     #[@test]
     public function twoComponentGenericInterface() {
-      $this->assertEquals(new InterfaceNode(array(
-        'position'   => array(1, 1),
-        'modifiers'  => 0,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Map', array(new TypeName('K'), new TypeName('V'))),
-        'parents'    => array(),
-        'body'       => NULL
-      )), $this->parse('interface Map<K, V> { }'));
+      $this->assertEquals(
+        $this->create(new InterfaceNode(
+          0,
+          NULL,
+          new TypeName('Map', array(new TypeName('K'), new TypeName('V'))),
+          NULL,
+          NULL
+        ), array(1, 1)), 
+        $this->parse('interface Map<K, V> { }')
+      );
     }
 
     /**
@@ -269,14 +275,16 @@
      */
     #[@test]
     public function interfaceWithParent() {
-      $this->assertEquals(new InterfaceNode(array(
-        'position'   => array(1, 1),
-        'modifiers'  => 0,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Debuggable'),
-        'parents'    => array(new TypeName('util.log.Traceable')),
-        'body'       => NULL
-      )), $this->parse('interface Debuggable extends util.log.Traceable { }'));
+      $this->assertEquals(
+        $this->create(new InterfaceNode(
+          0,
+          NULL,
+          new TypeName('Debuggable'),
+          array(new TypeName('util.log.Traceable')),
+          NULL
+        ), array(1, 1)), 
+        $this->parse('interface Debuggable extends util.log.Traceable { }')
+      );
     }
 
     /**
@@ -285,14 +293,16 @@
      */
     #[@test]
     public function interfaceWithParents() {
-      $this->assertEquals(new InterfaceNode(array(
-        'position'   => array(1, 1),
-        'modifiers'  => 0,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Debuggable'),
-        'parents'    => array(new TypeName('Traceable'), new TypeName('Observer', array(new TypeName('T')))),
-        'body'       => NULL
-      )), $this->parse('interface Debuggable extends Traceable, Observer<T> { }'));
+      $this->assertEquals(
+        $this->create(new InterfaceNode(
+          0,
+          NULL,
+          new TypeName('Debuggable'),
+          array(new TypeName('Traceable'), new TypeName('Observer', array(new TypeName('T')))),
+          NULL
+        ), array(1, 1)), 
+        $this->parse('interface Debuggable extends Traceable, Observer<T> { }')
+      );
     }
 
     /**
