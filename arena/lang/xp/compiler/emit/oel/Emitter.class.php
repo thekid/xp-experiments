@@ -17,6 +17,7 @@
     'xp.compiler.syntax.xp.Lexer',
     'xp.compiler.syntax.xp.Parser',
     'xp.compiler.optimize.BinaryOptimization',
+    'xp.compiler.types.Scope',
     'lang.reflect.Modifiers',
     'util.collections.HashTable'
   );
@@ -42,7 +43,8 @@
       $properties   = array(NULL),
       $declarations = array(NULL),
       $inits        = array(NULL),
-      $origins      = array(NULL);
+      $origins      = array(NULL),
+      $scope        = array(NULL);
     
     protected
       $manager        = NULL,
@@ -110,12 +112,12 @@
         oel_add_begin_function_call($op, $inv->name);
         $n= $this->emitParameters($op, (array)$inv->parameters);
         oel_add_end_function_call($op, $n);
-        $this->types[$inv]= TypeName::$VAR;
+        $this->scope[0]->setType($inv, TypeName::$VAR);
       } else {
         oel_add_begin_static_method_call($op, $ptr->name(), $ptr->holder->literal());
         $n= $this->emitParameters($op, (array)$inv->parameters);
         oel_add_end_static_method_call($op, $n);
-        $this->types[$inv]= $ptr->returns;
+        $this->scope[0]->setType($inv, $ptr->returns);
       }
       $inv->free && oel_add_free($op);
     }
@@ -227,7 +229,7 @@
         oel_add_end_function_call($op, 2);
       }
       
-      $this->types[$cast]= $cast->type;
+      $this->scope[0]->setType($cast, $cast->type);
       $cast->free && oel_add_free($op);
     }
 
@@ -383,7 +385,7 @@
       
       // Emit chain members
       oel_add_begin_variable_parse($op);
-      $t= $this->typeOf($chain->elements[0]);
+      $t= $this->scope[0]->typeOf($chain->elements[0]);
       for ($i= 1; $i < sizeof($chain->elements); $i++) {
         $c= $chain->elements[$i];
 
@@ -405,7 +407,7 @@
       }
       
       // Record type
-      $this->types[$chain]= $t;
+      $this->scope[0]->setType($chain, $t);
       
       // If chain is used in read context, do not end variable parse
       $chain->read || oel_add_end_variable_parse($op);
@@ -581,7 +583,7 @@
       
       // Assign type. TODO: Depending on what the expression returns, this might
       // be something different!
-      $t= $this->typeOf($loop->expression);
+      $t= $this->scope[0]->typeOf($loop->expression);
       if ($t->isArray()) {
         $it= $t->arrayComponentType();
       } else if ($t->isVariable()) {
@@ -592,7 +594,7 @@
         $this->warn('T300', 'Illegal type '.$t->toString().' for loop expression '.$loop->expression->getClassName().'['.$loop->expression->hashCode().']', $loop);
         $it= TypeName::$VAR;
       }
-      $this->types[new VariableNode($loop->assignment['value'])]= $it;
+      $this->scope[0]->setType(new VariableNode($loop->assignment['value']), $it);
 
       oel_add_begin_foreach($op); {
         oel_add_begin_variable_parse($op);
@@ -736,7 +738,7 @@
           $this->warn('T305', 'Cannot resolve '.$ref->member->name.'() in type '.$ptr->toString(), $ref);
         } else {
           $m= $ptr->getMethod($ref->member->name);
-          $this->types[$ref]= $m->returns;
+          $this->scope[0]->setType($ref, $m->returns);
         }
 
         oel_add_begin_static_method_call($op, $ref->member->name, $ptr->literal());
@@ -749,7 +751,7 @@
           $this->warn('T305', 'Cannot resolve '.$ref->member->name.' in type '.$ptr->toString(), $ref);
         } else {
           $f= $ptr->getField($ref->member->name);
-          $this->types[$ref]= $f->type;
+          $this->scope[0]->setType($ref, $f->type);
         }
 
         oel_add_begin_variable_parse($op);
@@ -761,7 +763,7 @@
         oel_add_begin_new_object($op, 'XPClass');
         $n= $this->emitParameters($op, array(new StringNode(array('value' => $ptr->literal()))));
         oel_add_end_new_object($op, $n);
-        $this->types[$ref]= new TypeName('XPClass');
+        $this->scope[0]->setType($ref, new TypeName('XPClass'));
       } else if ($ref->member instanceof ConstantNode) {
 
         // Class constant
@@ -845,7 +847,7 @@
         ));
       } else {
         $first= $try->handling[0];
-        $this->types[new VariableNode($first->variable)]= $first->type;
+        $this->scope[0]->setType(new VariableNode($first->variable), $first->type);
       }
 
       oel_add_begin_tryblock($op); {
@@ -856,6 +858,7 @@
       
         // First catch.
         oel_add_begin_firstcatch($op, $this->resolve($first->type->name)->literal(), $first->variable); {
+          $this->scope[0]->setType(new VariableNode($first->variable->variable), $first->type);
           $this->emitAll($op, (array)$first->statements);
           $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
         }
@@ -868,7 +871,7 @@
             $this->resolve($try->handling[$i]->type->name)->literal(), 
             $try->handling[$i]->variable
           ); {
-            $this->types[$try->handling[$i]->variable]= $this->resolve($try->handling[$i]->type->name);
+            $this->scope[0]->setType(new VariableNode($try->handling[$i]->variable), $try->handling[$i]->type);
             $this->emitAll($op, (array)$try->handling[$i]->statements);
             $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
           }
@@ -932,11 +935,11 @@
         $unique= new TypeName($parent->name().'$'.++$i);
         $decl= new ClassNode(0, NULL, $unique, $p['parent'], $p['implements'], $new->body);
         $this->declarations[0][]= $decl;
-        $this->types[$new]= $unique;
+        $this->scope[0]->setType($new, $unique);
         $this->types[$unique->name]= $ptr= new TypeDeclaration(new ParseTree(NULL, array(), $decl), $parent);
       } else {
         $ptr= $this->resolve($new->type->name);
-        $this->types[$new]= $new->type;
+        $this->scope[0]->setType($new, $new->type);
       }
       
       oel_add_begin_new_object($op, $ptr->literal());
@@ -979,7 +982,7 @@
         )));
       } else {
         $this->emitOne($op, $assign->expression);
-        $this->types[$assign->variable]= $this->typeOf($assign->expression);
+        $this->scope[0]->setType($assign->variable, $this->scope[0]->typeOf($assign->expression));
         $assign->variable->read= TRUE;
         $this->emitOne($op, $assign->variable);
       
@@ -1028,7 +1031,7 @@
           oel_push_variable($op, $arg['name']);
           oel_add_assign($op);
           oel_add_free($op);
-          $this->types[new VariableNode($arg['name'])]= $arg['type'];
+          $this->scope[0]->setType(new VariableNode($arg['name']), $arg['type']);
           break;
         }
         
@@ -1061,7 +1064,7 @@
         }
         
         // FIXME: Emit type hint if type is a class, interface or enum
-        $this->types[new VariableNode($arg['name'])]= $arg['type'];
+        $this->scope[0]->setType(new VariableNode($arg['name']), $arg['type']);
       }
     }
 
@@ -1142,7 +1145,7 @@
           Modifiers::isFinal($method->modifiers)
         );
         if (!Modifiers::isStatic($method->modifiers)) {
-          $this->types[new VariableNode('this')]= new TypeName($this->class[0]);
+          $this->scope[0]->setType(new VariableNode('this'), new TypeName($this->class[0]));
         }
       }
       
@@ -1187,7 +1190,8 @@
       );
       
       // Begin
-      $this->types[new VariableNode('this')]= new TypeName($this->class[0]);
+      array_unshift($this->scope, new Scope());
+      $this->scope[0]->setType(new VariableNode('this'), new TypeName($this->class[0]));
       oel_set_source_file($cop, $this->origins[0]);
       array_unshift($this->method, $constructor);
 
@@ -1216,6 +1220,7 @@
       );
       oel_finalize($cop);
       array_shift($this->method);
+      array_shift($this->scope);
     }
     
     /**
@@ -1259,7 +1264,6 @@
      * @param   xp.compiler.ast.PropertyNode property
      */
     protected function emitProperty($op, PropertyNode $property) {
-      $this->types[new VariableNode('this')]= new TypeName($this->class[0]);
       if ('this' === $property->name && $property->arguments) {
 
         // Indexer - fixme: Maybe use IndexerPropertyNode?
@@ -1278,13 +1282,19 @@
             FALSE,          // Static
             $property->modifiers
           );
+          
+          array_unshift($this->scope, new Scope());
+          $this->scope[0]->setType(new VariableNode('this'), new TypeName($this->class[0]));
           oel_set_source_file($iop, $this->origins[0]);
+          
           foreach ($def[1] as $i => $arg) {
             oel_add_receive_arg($iop, $i + 1, $arg['name']);
-            $this->types[new VariableNode($arg['name'])]= $arg['type'];
+            $this->scope[0]->setType(new VariableNode($arg['name']), $arg['type']);
           }
           $this->emitAll($iop, $property->handlers[$handler]);
           oel_finalize($iop);
+          
+          array_shift($this->scope);
         }
       } else {
         foreach ($property->handlers as $name => $statements) {   
@@ -1313,9 +1323,10 @@
     protected function emitProperties($op, array $properties) {
       static $mangled= "\0name";
       
-      $this->types[new VariableNode('this')]= new TypeName($this->class[0]);
       if (isset($properties['get'])) {
         $gop= oel_new_method($op, '__get', FALSE, FALSE, MODIFIER_PUBLIC, FALSE);
+        array_unshift($this->scope, new Scope());
+        $this->scope[0]->setType(new VariableNode('this'), new TypeName($this->class[0]));
         oel_set_source_file($gop, $this->origins[0]);
         oel_add_receive_arg($gop, 1, $mangled);
         
@@ -1333,10 +1344,14 @@
         for ($i= 0, $s= sizeof($properties['get']); $i < $s; $i++) {
           oel_add_end_else($gop);
         }
+        
         oel_finalize($gop);
+        array_shift($this->scope);
       }
       if (isset($properties['set'])) {
         $sop= oel_new_method($op, '__set', FALSE, FALSE, MODIFIER_PUBLIC, FALSE);
+        array_unshift($this->scope, new Scope());
+        $this->scope[0]->setType(new VariableNode('this'), new TypeName($this->class[0]));
         oel_set_source_file($sop, $this->origins[0]);
         oel_add_receive_arg($sop, 1, $mangled);
         oel_add_receive_arg($sop, 2, 'value');
@@ -1355,7 +1370,9 @@
         for ($i= 0, $s= sizeof($properties['set']); $i < $s; $i++) {
           oel_add_end_else($sop);
         }
+
         oel_finalize($sop);
+        array_shift($this->scope);
       }
     }
     
@@ -1821,36 +1838,6 @@
     }
 
     /**
-     * Return a type for a given node
-     *
-     * @param   xp.compiler.ast.Node node
-     * @return  xp.compiler.types.TypeName
-     */
-    protected function typeOf(xp·compiler·ast·Node $node) {
-      if ($node instanceof ArrayNode) {
-        return new TypeName('var[]');     // FIXME: Component type
-      } else if ($node instanceof MapNode) {
-        return new TypeName('[var:var]');   // FIXME: Component type
-      } else if ($node instanceof StringNode) {
-        return new TypeName('string');
-      } else if ($node instanceof NaturalNode) {
-        return new TypeName('int');
-      } else if ($node instanceof DecimalNode) {
-        return new TypeName('double');
-      } else if ($node instanceof NullNode) {
-        return new TypeName('lang.Object');
-      } else if ($node instanceof BooleanNode) {
-        return new TypeName('bool');
-      } else if ($node instanceof ComparisonNode) {
-        return new TypeName('bool');
-      } else if ($this->types->containsKey($node)) {
-        return $this->types[$node];
-      }
-      $this->warn('T300', 'Cannot determine type for '.$node->getClassName().'['.$node->hashCode().']', $node);
-      return TypeName::$VAR;
-    }
-
-    /**
      * Resolve a static call. Return TRUE if the target is a function
      * (e.g. key()), a xp.compiler.emit.Method instance if it's a static 
      * method (Map::key()).
@@ -1978,6 +1965,7 @@
       array_unshift($this->imports, array());
       array_unshift($this->package, $tree->package ? $tree->package->name : NULL);
       array_unshift($this->declarations, array($tree->declaration));
+      array_unshift($this->scope, new Scope());
       
       // Functions from lang.base.php
       array_unshift($this->statics, array(
