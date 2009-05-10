@@ -56,6 +56,7 @@
      * @param   xp.compiler.types.Scope
      */
     protected function enter(Scope $s) {
+      $s->enclosing= $this->scope[0];
       array_unshift($this->scope, $s);
     }
 

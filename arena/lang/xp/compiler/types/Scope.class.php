@@ -12,6 +12,7 @@
    */
   class Scope extends Object {
     protected $types= NULL;
+    public $enclosing= NULL;
 
     /**
      * Constructor
@@ -22,10 +23,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Set type
      *
      * @param   xp.compiler.ast.Node node
-     * @param   xp.compiler.types.TypeName
+     * @param   xp.compiler.types.TypeName type
      */
     public function setType(xp·compiler·ast·Node $node, TypeName $type) {
       $this->types->put($node, $type);
