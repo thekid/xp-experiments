@@ -365,6 +365,13 @@
 
     /**
      * Emit a chain
+     *
+     * <pre>
+     *   $this.name;       // Chain(VariableNode[this], VariableNode[name])
+     *   $a.getClass();    // Chain(VariableNode[a], InvocationNode[getClass])
+     *   $args[0];         // Chain(VariableNode[args], ArrayAccessNode[IntegerNode(0)])
+     *   $args[];          // Chain(VariableNode[args], ArrayAccessNode[])
+     * </pre>
      * 
      * @param   resource op
      * @param   xp.compiler.ast.ChainNode chain
