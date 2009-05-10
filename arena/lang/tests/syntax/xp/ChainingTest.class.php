@@ -86,9 +86,7 @@
             'name'           => 'elements',
             'parameters'     => array()
           )),
-          2 => new ArrayAccessNode(array(
-            'offset'         => new IntegerNode(array('value' => '0')),
-          )),
+          2 => new ArrayAccessNode(new IntegerNode(array('value' => '0'))),
           3 => new VariableNode('name'),
         ))),
         $this->parse('$l.elements()[0].name;')
