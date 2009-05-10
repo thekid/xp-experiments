@@ -8,7 +8,6 @@
     'xp.compiler.ast.Node', 
     'xp.compiler.ast.ParseTree', 
     'xp.compiler.optimize.Optimizations',
-    'xp.compiler.optimize.BinaryOptimization',
     'util.log.Traceable'
   );
 
@@ -31,7 +30,7 @@
      */
     public function __construct() {
       $this->optimizations= new Optimizations();
-      $this->optimizations->add(XPClass::forName('xp.compiler.ast.BinaryOpNode'), new BinaryOptimization());
+      $this->optimizations->addAll(Package::forName('xp.compiler.optimize'));
     }
     
     /**

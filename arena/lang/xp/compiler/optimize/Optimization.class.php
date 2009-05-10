@@ -11,6 +11,13 @@
    *
    */
   interface Optimization {
+
+    /**
+     * Return node this optimization works on
+     *
+     * @return  lang.XPClass<? extends xp.compiler.ast.Node>
+     */
+    public function node();
     
     /**
      * Optimize a given node

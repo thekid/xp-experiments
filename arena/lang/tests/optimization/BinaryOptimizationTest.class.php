@@ -27,7 +27,7 @@
      */
     public function setUp() {
       $this->fixture= new Optimizations();
-      $this->fixture->add(XPClass::forName('xp.compiler.ast.BinaryOpNode'), new BinaryOptimization());
+      $this->fixture->add(new BinaryOptimization());
     }
     
     /**

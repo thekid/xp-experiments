@@ -204,6 +204,15 @@
     }
     
     /**
+     * Return node this optimization works on
+     *
+     * @return  lang.XPClass<? extends xp.compiler.ast.Node>
+     */
+    public function node() {
+      return XPClass::forName('xp.compiler.ast.BinaryOpNode');
+    }
+    
+    /**
      * Optimize a given node
      *
      * @param   xp.compiler.ast.Node in

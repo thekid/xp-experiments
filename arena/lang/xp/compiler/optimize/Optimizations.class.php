@@ -22,13 +22,28 @@
     }
     
     /**
-     * Add an optimization implementations for a given node class
+     * Adds all optimization implementations inside a given package
      *
-     * @param   lang.XPClass class
+     * @param   lang.reflect.Package package
+     */
+    public function addAll(Package $package) {
+      foreach ($package->getClasses() as $class) {
+        if (
+          $class->isInterface() || 
+          MODIFIER_PUBLIC != $class->getModifiers() || 
+          !$class->isSubclassOf('xp.compiler.optimize.Optimization')
+        ) continue;
+        $this->add($class->newInstance());
+      }
+    }
+    
+    /**
+     * Add an optimization implementation
+     *
      * @param   xp.compiler.optimize.Optimization impl
      */
-    public function add(XPClass $class, Optimization $impl) {
-      $this->impl[$class]= $impl;
+    public function add(Optimization $impl) {
+      $this->impl[$impl->node()]= $impl;
     }
     
     /**
