@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.TypeDeclarationNode');
 
   /**
    * (Insert class' description here)
    *
    * @purpose  purpose
    */
-  class ClassNode extends xp·compiler·ast·Node {
+  class ClassNode extends TypeDeclarationNode {
   }
 ?>

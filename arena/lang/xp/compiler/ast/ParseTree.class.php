@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('xp.compiler.ast.TypeDeclarationNode', 'xp.compiler.ast.Node');
+
   /**
    * (Insert class' description here)
    *
@@ -20,9 +22,9 @@
      *
      * @param   string package
      * @param   xp.compiler.ast.Node[] imports
-     * @param   xp.compiler.ast.Node declaration
+     * @param   xp.compiler.ast.TypeDeclarationNode declaration
      */
-    public function __construct($package= '', $imports= array(), xp·compiler·ast·Node $declaration= NULL) {
+    public function __construct($package= '', $imports= array(), TypeDeclarationNode $declaration= NULL) {
       $this->package= $package;
       $this->imports= $imports;
       $this->declaration= $declaration;

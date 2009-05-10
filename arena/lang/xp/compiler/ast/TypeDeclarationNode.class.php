@@ -1,0 +1,26 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  uses(
+    'xp.compiler.ast.Node', 
+    'xp.compiler.ast.MethodNode',
+    'xp.compiler.ast.FieldNode',
+    'xp.compiler.types.TypeName'
+  );
+  
+  /**
+   * Represents a type declaration
+   *
+   * @see      xp://xp.compiler.ast.ClassNode
+   * @see      xp://xp.compiler.ast.InterfaceNode
+   * @see      xp://xp.compiler.ast.EnumNode
+   */
+  abstract class TypeDeclarationNode extends xp·compiler·ast·Node {
+    public $name= NULL;
+    public $body= NULL;
+    
+  }
+?>

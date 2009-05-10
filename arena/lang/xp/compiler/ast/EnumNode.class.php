@@ -4,14 +4,13 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.TypeDeclarationNode', 'xp.compiler.ast.EnumMemberNode');
 
   /**
-   * (Insert class' description here)
+   * Represents an enum declaration
    *
-   * @purpose  purpose
    */
-  class EnumNode extends xp·compiler·ast·Node {
+  class EnumNode extends TypeDeclarationNode {
     
   }
 ?>

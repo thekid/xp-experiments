@@ -4,14 +4,13 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.TypeDeclarationNode');
 
   /**
-   * (Insert class' description here)
+   * Represents an interface declaration
    *
-   * @purpose  purpose
    */
-  class InterfaceNode extends xp·compiler·ast·Node {
+  class InterfaceNode extends TypeDeclarationNode {
     
   }
 ?>
