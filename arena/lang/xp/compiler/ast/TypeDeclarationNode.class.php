@@ -8,6 +8,7 @@
     'xp.compiler.ast.Node', 
     'xp.compiler.ast.MethodNode',
     'xp.compiler.ast.FieldNode',
+    'xp.compiler.ast.AnnotationNode',
     'xp.compiler.types.TypeName'
   );
   
