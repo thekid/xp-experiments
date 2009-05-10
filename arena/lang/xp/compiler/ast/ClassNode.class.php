@@ -7,9 +7,8 @@
   uses('xp.compiler.ast.TypeDeclarationNode');
 
   /**
-   * (Insert class' description here)
+   * Represents a class declaration
    *
-   * @purpose  purpose
    */
   class ClassNode extends TypeDeclarationNode {
     public $parent= NULL;
