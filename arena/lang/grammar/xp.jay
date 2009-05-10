@@ -825,7 +825,7 @@ chain:
   | '.' member {
       $$= $yyLex->create(new VariableNode($2)); 
     }
-  | '.' T_WORD '(' { $1= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' { 
+  | '.' member '(' { $1= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' { 
       $1->name= $2;
       $1->parameters= $5;
     }
