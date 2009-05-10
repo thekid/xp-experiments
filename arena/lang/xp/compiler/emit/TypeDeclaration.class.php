@@ -4,11 +4,18 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.emit.Types');
+  uses(
+    'xp.compiler.emit.Types', 
+    'xp.compiler.ast.ParseTree',
+    'xp.compiler.ast.ClassNode',
+    'xp.compiler.ast.InterfaceNode',
+    'xp.compiler.ast.EnumNode'
+  );
 
   /**
-   * (Insert class' description here)
+   * Represents a declared type
    *
+   * @test    xp://tests.types.TypeDeclarationTest
    */
   class TypeDeclaration extends Types {
     protected $tree= NULL;
