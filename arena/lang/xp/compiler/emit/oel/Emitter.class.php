@@ -1162,12 +1162,13 @@
           $method->modifiers,
           Modifiers::isFinal($method->modifiers)
         );
-        if (!Modifiers::isStatic($method->modifiers)) {
-          $this->scope[0]->setType(new VariableNode('this'), new TypeName($this->class[0]));
-        }
       }
       
       // Begin
+      $this->enter(new Scope());
+      if (!Modifiers::isStatic($method->modifiers)) {
+        $this->scope[0]->setType(new VariableNode('this'), new TypeName($this->class[0]));
+      }
       oel_set_source_file($mop, $this->origins[0]);
       array_unshift($this->method, $method);
 
@@ -1185,6 +1186,7 @@
       );
       oel_finalize($mop);
       array_shift($this->method);
+      $this->leave();
     }
 
     /**
