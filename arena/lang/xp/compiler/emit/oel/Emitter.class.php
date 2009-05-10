@@ -51,6 +51,23 @@
       $types          = NULL;
     
     /**
+     * Enter the given scope
+     *
+     * @param   xp.compiler.types.Scope
+     */
+    protected function enter(Scope $s) {
+      array_unshift($this->scope, $s);
+    }
+
+    /**
+     * Leave the current scope, returning to the previous
+     *
+     */
+    protected function leave() {
+      array_shift($this->scope);
+    }
+    
+    /**
      * Emit uses statements for a given list of types
      *
      * @param   resource op
@@ -1190,7 +1207,7 @@
       );
       
       // Begin
-      array_unshift($this->scope, new Scope());
+      $this->enter(new Scope());
       $this->scope[0]->setType(new VariableNode('this'), new TypeName($this->class[0]));
       oel_set_source_file($cop, $this->origins[0]);
       array_unshift($this->method, $constructor);
@@ -1220,7 +1237,7 @@
       );
       oel_finalize($cop);
       array_shift($this->method);
-      array_shift($this->scope);
+      $this->leave();
     }
     
     /**
@@ -1283,7 +1300,7 @@
             $property->modifiers
           );
           
-          array_unshift($this->scope, new Scope());
+          $this->enter(new Scope());
           $this->scope[0]->setType(new VariableNode('this'), new TypeName($this->class[0]));
           oel_set_source_file($iop, $this->origins[0]);
           
@@ -1294,7 +1311,7 @@
           $this->emitAll($iop, $property->handlers[$handler]);
           oel_finalize($iop);
           
-          array_shift($this->scope);
+          $this->leave();
         }
       } else {
         foreach ($property->handlers as $name => $statements) {   
@@ -1325,7 +1342,7 @@
       
       if (isset($properties['get'])) {
         $gop= oel_new_method($op, '__get', FALSE, FALSE, MODIFIER_PUBLIC, FALSE);
-        array_unshift($this->scope, new Scope());
+        $this->enter(new Scope());
         $this->scope[0]->setType(new VariableNode('this'), new TypeName($this->class[0]));
         oel_set_source_file($gop, $this->origins[0]);
         oel_add_receive_arg($gop, 1, $mangled);
@@ -1346,11 +1363,11 @@
         }
         
         oel_finalize($gop);
-        array_shift($this->scope);
+        $this->leave();
       }
       if (isset($properties['set'])) {
         $sop= oel_new_method($op, '__set', FALSE, FALSE, MODIFIER_PUBLIC, FALSE);
-        array_unshift($this->scope, new Scope());
+        $this->enter(new Scope());
         $this->scope[0]->setType(new VariableNode('this'), new TypeName($this->class[0]));
         oel_set_source_file($sop, $this->origins[0]);
         oel_add_receive_arg($sop, 1, $mangled);
@@ -1372,7 +1389,7 @@
         }
 
         oel_finalize($sop);
-        array_shift($this->scope);
+        $this->leave();
       }
     }
     
@@ -1965,7 +1982,7 @@
       array_unshift($this->imports, array());
       array_unshift($this->package, $tree->package ? $tree->package->name : NULL);
       array_unshift($this->declarations, array($tree->declaration));
-      array_unshift($this->scope, new Scope());
+      $this->enter(new Scope());
       
       // Functions from lang.base.php
       array_unshift($this->statics, array(
@@ -1995,6 +2012,7 @@
       array_shift($this->package);
       array_shift($this->used);
       array_shift($this->origins);
+      $this->leave();
       
       // Check on errors
       $this->cat && $this->cat->infof(
