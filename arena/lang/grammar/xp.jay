@@ -561,16 +561,27 @@ handleexception:
 ;
 
 catches:
-    catch { $$= array($1); }
-  | catches catch { $$= array_merge($1, array($2)); }
+    catch { $$= $1; }
+  | catches catch { $$= array_merge($1, $2); }
 ;
 
 catch:
-  T_CATCH { $1= $yyLex->create(new CatchNode()); } '(' typename T_VARIABLE ')' '{' statements_opt '}' {
-    $1->type= $4;
-    $1->variable= $5;
-    $1->statements= $8;
-  }
+    T_CATCH { $p= $yyLex->position; } '(' catchtype T_VARIABLE ')' '{' statements_opt '}' {
+      $$= array();
+      foreach ($4 as $type) {
+        $c= new CatchNode();
+        $c->position= $p;
+        $c->type= $type;
+        $c->variable= $5;
+        $c->statements= $8;
+        $$[]= $c;
+      }
+    }
+;
+
+catchtype:
+    typename { $$= array($1); }
+  | catchtype '|' typename { $$= array_merge($1, array($3)); }
 ;
 
 finally_opt:
