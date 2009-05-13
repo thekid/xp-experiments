@@ -140,5 +140,48 @@
         }
       '));
     }
+
+    /**
+     * Test try w/ multi catch
+     *
+     */
+    #[@test]
+    public function multiCatch() {
+      $this->assertEquals(array(new TryNode(array(
+        'statements' => array(
+          new ReturnNode(array(
+            'expression' => new InstanceCreationNode(array(
+              'type'       => new TypeName('util.collections.HashTable', array(
+                new TypeName('lang.types.String'), 
+                new TypeName('Object')
+              )),
+              'parameters' => NULL
+            ))
+          ))
+        ), 
+        'handling'   => array(
+          new CatchNode(array(
+            'type'       => new TypeName('IllegalArgumentException'),
+            'variable'   => 'e',
+            'statements' => array(new ThrowNode(array(
+              'expression' => new VariableNode('e')
+            ))), 
+          )),
+          new CatchNode(array(
+            'type'       => new TypeName('SecurityException'),
+            'variable'   => 'e',
+            'statements' => array(new ThrowNode(array(
+              'expression' => new VariableNode('e')
+            ))), 
+          ))
+        )
+      ))), $this->parse('
+        try {
+          return new util.collections.HashTable<lang.types.String, Object>();
+        } catch (IllegalArgumentException | SecurityException $e) {
+          throw $e;
+        }
+      '));
+    }
   }
 ?>
