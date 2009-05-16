@@ -8,6 +8,7 @@
 
   uses(
     'xp.compiler.emit.Emitter', 
+    'xp.compiler.emit.NativeImporter',
     'xp.compiler.emit.TypeReference', 
     'xp.compiler.emit.TypeReflection', 
     'xp.compiler.emit.TypeDeclaration', 
@@ -48,6 +49,7 @@
     
     protected
       $manager        = NULL,
+      $importer       = NULL,
       $types          = NULL;
     
     /**
@@ -1725,18 +1727,8 @@
      * @param   xp.compiler.ast.NativeImportNode import
      */
     protected function emitNativeImport($op, NativeImportNode $import) {
-      if ('.*' == substr($import->name, -2)) {
-        $this->statics[0][0][substr($import->name, 0, -2)]= TRUE;
-      } else {
-        $p= strrpos($import->name, '.');
-        $f= substr($import->name, $p+ 1);
-        $e= substr($import->name, 0, $p);
-        $l= get_extension_funcs($e);
-        if (!in_array($f, $l)) {
-          throw new IllegalArgumentException('Function '.$f.' does not exist in '.$e);
-        }
-        $this->statics[0][$f]= TRUE;
-      }
+      $import= $this->importer->import($import->name);
+      $this->statics[0][key($import)]= $import[key($import)];
     }
     
     /**
@@ -1867,7 +1859,7 @@
      */
     protected function resolveStatic($name) {
       foreach ($this->statics[0][0] as $lookup => $type) {
-        if (TRUE === $type && in_array($name, get_extension_funcs($lookup))) {
+        if (TRUE === $type && $this->importer->importSelected($lookup, $name)) {
           return TRUE;
         } else if ($type instanceof Types && $type->hasMethod($name)) {
           $m= $type->getMethod($name);
@@ -1970,6 +1962,7 @@
     public function emit(ParseTree $tree, FileManager $manager) {
       $this->types= new HashTable();
       $this->manager= $manager;
+      $this->importer= new NativeImporter();
       $this->messages= array(
         'warnings' => array(),
         'errors'   => array()
