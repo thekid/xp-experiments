@@ -56,6 +56,22 @@
       }
       return array($function => TRUE);
     }
+
+    /**
+     * Check whether a given function exists
+     *
+     * @param   string extension
+     * @param   string function
+     * @return  array<var, var> import
+     * @throws  lang.IllegalArgumentException if extension or function don't exist
+     */
+    public function hasFunction($extension, $function) {
+      if ('zend' === $extension) {
+        return function_exists($extension);
+      } else {
+        return in_array($function, get_extension_funcs($extension));
+      }
+    }
     
     /**
      * Import a given pattern
