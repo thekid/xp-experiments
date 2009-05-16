@@ -1727,8 +1727,12 @@
      * @param   xp.compiler.ast.NativeImportNode import
      */
     protected function emitNativeImport($op, NativeImportNode $import) {
-      $import= $this->importer->import($import->name);
-      $this->statics[0][key($import)]= $import[key($import)];
+      $imported= $this->importer->import($import->name);
+      if (0 === ($k= key($imported))) {
+        $this->statics[0][0]= array_merge($this->statics[0][0], $imported[$k]);
+      } else {
+        $this->statics[0][$k]= $imported[$k];
+      }
     }
     
     /**
@@ -1859,7 +1863,7 @@
      */
     protected function resolveStatic($name) {
       foreach ($this->statics[0][0] as $lookup => $type) {
-        if (TRUE === $type && $this->importer->importSelected($lookup, $name)) {
+        if (TRUE === $type && $this->importer->hasFunction($lookup, $name)) {
           return TRUE;
         } else if ($type instanceof Types && $type->hasMethod($name)) {
           $m= $type->getMethod($name);
