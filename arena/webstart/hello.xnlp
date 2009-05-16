@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<xnlp version="1.0" codebase="http://xp-framework.net/downloads/ws/">
+  <app main-class="de.thekid.Hello"/>
+  <resources>
+    <xar href="hello-app.xar"/>
+  </resources>
+</xnlp>
