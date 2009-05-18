@@ -448,6 +448,9 @@
         '*'   => OEL_BINARY_OP_MUL,
         '/'   => OEL_BINARY_OP_DIV,
         '%'   => OEL_BINARY_OP_MOD,
+        '|'   => OEL_BINARY_OP_BW_OR,
+        '&'   => OEL_BINARY_OP_BW_AND,
+        '^'   => OEL_BINARY_OP_BW_XOR
       );
       static $lop= array(
         '&&'  => OEL_OP_BOOL_AND,
