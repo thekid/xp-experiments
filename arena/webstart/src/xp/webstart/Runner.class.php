@@ -12,7 +12,7 @@
     'peer.URL',
     'xml.Tree',
     'xml.parser.XMLParser',
-    'xml.parser.InputSource',
+    'xml.parser.StreamInputSource',
     'peer.http.HttpConnection',
     'peer.http.HttpInputStream',
     'io.File',
@@ -90,7 +90,7 @@
       $t= new Tree();
       $p= new XMLParser();
       $p->setCallback($t);
-      $p->parse(new InputSource($stream));
+      $p->parse(new StreamInputSource($stream));
       $xnlp= Unmarshaller::unmarshal($t->getSource(INDENT_NONE), 'xp.webstart.types.XnlpDocument');
 
       $verbose && Console::writeLine($xnlp);
