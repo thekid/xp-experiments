@@ -95,6 +95,26 @@
      *
      */
     #[@test]
+    public function tryCatchFinallyWithReturnInsideCatch() {
+      $this->assertEquals(array('Try', 'Catch', 'Finally'), $this->run('
+        $r= [];
+        try {
+          $r[]= "Try";
+          throw new FormatException("Error");
+        } catch (FormatException $e) {
+          $r[]= "Catch"; 
+          return $r;
+        } finally {
+          $r[]= "Finally";
+        }
+      '));
+    }
+
+    /**
+     * Test try ... catch ... finally
+     *
+     */
+    #[@test]
     public function tryCatchFinallyNoException() {
       $this->assertEquals(array('Try', 'Finally'), $this->run('
         $r= [];
