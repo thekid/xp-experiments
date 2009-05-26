@@ -17,7 +17,7 @@
     'xp.compiler.syntax.php.Parser',
     'xp.compiler.syntax.xp.Lexer',
     'xp.compiler.syntax.xp.Parser',
-    'xp.compiler.optimize.BinaryOptimization',
+    'xp.compiler.ast.StatementsNode',
     'xp.compiler.types.Scope',
     'lang.reflect.Modifiers',
     'util.collections.HashTable'
@@ -586,6 +586,16 @@
      */
     protected function emitNoop($op, NoopNode $statement) {
       // NOOP
+    }
+
+    /**
+     * Emit statements
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.StatementsNode statements
+     */
+    protected function emitStatements($op, StatementsNode $statements) {
+      $this->emitAll($op, (array)$statements->list);
     }
 
     /**
