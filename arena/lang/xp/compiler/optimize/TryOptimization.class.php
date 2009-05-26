@@ -7,6 +7,7 @@
   uses(
     'xp.compiler.ast.TryNode',
     'xp.compiler.ast.StatementsNode',
+    'xp.compiler.ast.NoopNode',
     'xp.compiler.optimize.Optimization'
   );
 
@@ -35,6 +36,17 @@
      */
     public function optimize(xp·compiler·ast·Node $in, Optimizations $optimizations) {
       $try= cast($in, 'xp.compiler.ast.TryNode');
+      
+      // try { } catch (... $e) { ... } => NOOP
+      // try { } finally { ..[1].. }    => [1]
+      if (0 === sizeof($try->statements)) {
+        $last= $try->handling[sizeof($try->handling)- 1];
+        if ($last instanceof FinallyNode) {
+          return new StatementsNode($last->statements);
+        } else {
+          return new NoopNode();
+        }
+      }
       
       // try { ..[1].. } catch (... $e) { throw $e; } => [1]
       if (

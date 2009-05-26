@@ -42,9 +42,7 @@
     #[@test]
     public function removeUselessTryCatch() {
       $try= new TryNode(array(
-        'statements' => array(
-          new ReturnNode(array('expression' => new NullNode()))
-        ),
+        'statements' => array(new ReturnNode(array('expression' => new NullNode()))),
         'handling'   => array(
           new CatchNode(array(
             'type'       => new TypeName('lang.Throwable'),
@@ -53,7 +51,58 @@
           ))
         )
       ));
-      $this->assertEquals(new StatementsNode($try->statements), $this->fixture->optimize($try));
+
+      $this->assertEquals(
+        new StatementsNode($try->statements), 
+        $this->fixture->optimize($try)
+      );
+    }
+
+    /**
+     * Test try { } catch (... $e) { ... } is optimized to a NOOP
+     *
+     */
+    #[@test]
+    public function emptyTryBecomesNoop() {
+      $try= new TryNode(array(
+        'statements' => array(),
+        'handling'   => array(
+          new CatchNode(array(
+            'type'       => new TypeName('lang.Throwable'),
+            'variable'   => 'e',
+            'statements' => array(new ReturnNode(array('expression' => new NullNode())))
+          ))
+        )
+      ));
+
+      $this->assertEquals(
+        new NoopNode(), 
+        $this->fixture->optimize($try)
+      );
+    }
+
+    /**
+     * Test try { } finally { ... } is not optimized to the statements
+     * inside the finally block.
+     *
+     */
+    #[@test]
+    public function emptyTryWithFinally() {
+      $try= new TryNode(array(
+        'statements' => array(),
+        'handling'   => array(
+          new FinallyNode(array(
+            'type'       => new TypeName('lang.Throwable'),
+            'variable'   => 'e',
+            'statements' => array(new ReturnNode(array('expression' => new NullNode())))
+          ))
+        )
+      ));
+
+      $this->assertEquals(
+        new StatementsNode($try->handling[0]->statements), 
+        $this->fixture->optimize($try)
+      );
     }
   }
 ?>
