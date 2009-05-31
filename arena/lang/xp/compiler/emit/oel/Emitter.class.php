@@ -873,10 +873,11 @@
       // If no handlers are left, create a simple catch-all-and-rethrow
       // handler
       if (0 == $numHandlers) {
+        $rethrow= new ThrowNode(array('expression' => new VariableNode($mangled)));
         $first= new CatchNode(array(
           'type'       => new TypeName('lang.Throwable'),
           'variable'   => $mangled,
-          'statements' => array(new ThrowNode(array('expression' => new VariableNode($mangled))))
+          'statements' => $this->finalizers[0] ? array($this->finalizers[0], $rethrow) : array($rethrow)
         ));
       } else {
         $first= $try->handling[0];
@@ -915,7 +916,7 @@
       
       array_shift($this->finalizers);
     }
-
+    
     /**
      * Emit a throw node
      *
@@ -928,10 +929,10 @@
     }
 
     /**
-     * Emit a finallyNode node
+     * Emit a finally node
      *
      * @param   resource op
-     * @param   xp.compiler.ast.FinallyNode throw
+     * @param   xp.compiler.ast.FinallyNode finally
      */
     protected function emitFinally($op, FinallyNode $finally) {
       $this->emitAll($op, (array)$finally->statements);
