@@ -94,7 +94,7 @@ Try it!
 -------
 Compile:
 <pre>
-  $ xpcli cmd.Emit demo/HelloWorld.xp 
+  $ xcc demo/HelloWorld.xp 
 </pre>
 
 Run:
