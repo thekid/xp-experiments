@@ -4,7 +4,13 @@
  * $Id$ 
  */
 
-  uses('util.cmd.Command', 'HttpProtocol', 'handlers.FileHandler');
+  uses(
+    'util.cmd.Command', 
+    'HttpProtocol', 
+    'handlers.RewritingHandler', 
+    'handlers.FileHandler', 
+    'handlers.ScriptletHandler'
+  );
 
   /**
    * HTTP server runner
@@ -65,6 +71,16 @@
     public function setPort($port= 80) {
       $this->port= $port;
     }
+
+    /**
+     * Set virtualhost configuration
+     *
+     * @param   util.Properties config
+     */
+    #[@inject(type= 'util.Properties', name= 'httpservice')]
+    public function setConfig($config) {
+      $this->config= $config;
+    }
     
     /**
      * Runs this server. Terminate by pressing ^C in the shell you start
@@ -74,8 +90,17 @@
     public function run() {
       $this->out->writeLine('---> Binding ', $this->ip, ':', $this->port);
       $server= $this->model->newInstance($this->ip, $this->port);
+      $package= Package::forName('handlers');
       with ($protocol= $server->setProtocol(new HttpProtocol())); {
-        $protocol->setUrlHandler('/.*/', new FileHandler(realpath('../../people/friebe/xp-redesign/')));
+        $section= $this->config->getFirstSection();
+        $handlers= $this->config->readHash($section, 'handlers');
+        foreach ($handlers->toArray() as $pattern => $mapping) {
+          $protocol->setUrlHandler('°'.$pattern.'°i', $package->loadClass($this->config->readString($section.'::'.$mapping, 'handler').'Handler')
+            ->getConstructor()
+            ->newInstance($this->config->readArray($section.'::'.$mapping, 'args'))
+          );
+        }
+        Console::writeLine($protocol);
       }
       $server->init();
       $this->out->writeLine('===> Server started');
