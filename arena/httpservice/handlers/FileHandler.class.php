@@ -14,7 +14,7 @@
    */
   class FileHandler extends AbstractUrlHandler {
     protected 
-      $base= '';
+      $docroot= '';
 
     /**
      * Constructor
