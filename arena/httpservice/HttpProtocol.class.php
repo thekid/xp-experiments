@@ -12,6 +12,7 @@
    * @purpose  Protocol
    */
   class HttpProtocol extends Object implements ServerProtocol {
+    protected $handlers= array();
 
     /**
      * Initialize Protocol
