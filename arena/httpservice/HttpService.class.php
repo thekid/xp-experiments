@@ -100,7 +100,7 @@
             ->newInstance($this->config->readArray($section.'::'.$mapping, 'args'))
           );
         }
-        Console::writeLine($protocol);
+        Console::writeLine('---> ', $protocol);
       }
       $server->init();
       $this->out->writeLine('===> Server started');

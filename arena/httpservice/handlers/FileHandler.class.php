@@ -22,7 +22,7 @@
      * @param   string docroot document root
      */
     public function __construct($docroot) {
-      $this->docroot= rtrim($docroot, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+      $this->docroot= realpath($docroot);
     }
 
     /**
@@ -83,6 +83,15 @@
         $socket->write($f->read(8192));
       }
       $f->close();
+    }
+
+    /**
+     * Returns a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->docroot.'>';
     }
   }
 ?>

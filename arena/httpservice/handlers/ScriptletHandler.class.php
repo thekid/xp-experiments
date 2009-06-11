@@ -14,19 +14,25 @@
    */
   class ScriptletHandler extends AbstractUrlHandler {
     protected 
-      $webroot= '';
+      $webroot= '',
+      $docroot= '';
 
     static function __static() {
-      function getallheaders() { }
+      function getallheaders() { }    // HACK
     }
 
     /**
      * Constructor
      *
      * @param   string webroot document root
+     * @param   string docroot document root
      */
-    public function __construct($webroot) {
-      $this->webroot= rtrim($webroot, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+    public function __construct($webroot, $docroot) {
+      $this->webroot= realpath($webroot);
+      $this->docroot= realpath($docroot);
+      foreach (explode(PATH_SEPARATOR, scanpath(array($this->webroot), $this->webroot)) as $path) {
+        ClassLoader::registerPath($path);
+      }
     }
 
     /**
@@ -44,8 +50,9 @@
       putenv('SCRIPT_URL='.$url['path']);
       putenv('REQUEST_URI='.$url['path']);
       putenv('QUERY_STRING='.$url['query']);
-      putenv('HTTP_HOST=172.17.29.15');
+      putenv('HTTP_HOST='.$headers['host']);
       putenv('REQUEST_METHOD='.$method);
+      putenv('DOCUMENT_ROOT='.$this->docroot);
       putenv('SERVER_PROTOCOL=HTTP/1.0');
       $runner= xp·scriptlet·Runner::setup(array($this->webroot));
       try {
@@ -62,6 +69,15 @@
       }
       $this->sendHeader($socket, $response->statusCode, '', $h);
       $socket->write($response->getContent());
+    }
+
+    /**
+     * Returns a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->webroot.'|'.$this->docroot.'>';
     }
   }
 ?>

@@ -78,7 +78,9 @@
       $offset= strpos($header, "\r\n")+ 2;
       
       // Parse rest
-      $headers= array();
+      $headers= array(
+        'REQUEST_METHOD' => strtoupper($method)
+      );
       if ($t= strtok(substr($header, $offset, $p- $offset), "\r\n")) do {
         sscanf($t, "%[^:]: %[^\n]", $name, $value);
         $headers[$name]= $headers[strtolower($name)]= $value;
@@ -145,6 +147,19 @@
     public function handleError($socket, $e) {
       Console::$err->writeLine('* ', $socket->host, '~', $e);
       $socket->close();
+    }
+    
+    /**
+     * Returns a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      $s= $this->getClassName()."@{\n";
+      foreach ($this->handlers as $pattern => $handler) {
+        $s.= '  handler<'.$pattern.'> => '.$handler->toString()."\n";
+      }
+      return $s.'}';
     }
   }
 ?>
