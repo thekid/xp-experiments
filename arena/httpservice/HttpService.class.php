@@ -83,6 +83,29 @@
     }
     
     /**
+     * Creates an url handler from the config file
+     *
+     * @param   string namespace
+     * @param   string section
+     * @return  handlers.AbstractURLHandler
+     */
+    protected function urlHandlerFor($namespace, $section) {
+      $args= array();
+      foreach ($this->config->readArray($namespace.'::'.$section, 'args') as $arg) {
+        if ('@' === $arg{0}) {
+          $args[]= $this->urlHandlerFor($namespace, substr($arg, 1));
+        } else {
+          $args[]= $arg;
+        }
+      }
+      return Package::forName('handlers')
+        ->loadClass($this->config->readString($namespace.'::'.$section, 'handler').'Handler')
+        ->getConstructor()
+        ->newInstance($args)
+      ;
+    }
+    
+    /**
      * Runs this server. Terminate by pressing ^C in the shell you start
      * this server from.
      *
@@ -90,15 +113,11 @@
     public function run() {
       $this->out->writeLine('---> Binding ', $this->ip, ':', $this->port);
       $server= $this->model->newInstance($this->ip, $this->port);
-      $package= Package::forName('handlers');
       with ($protocol= $server->setProtocol(new HttpProtocol())); {
         $section= $this->config->getFirstSection();
         $handlers= $this->config->readHash($section, 'handlers');
         foreach ($handlers->toArray() as $pattern => $mapping) {
-          $protocol->setUrlHandler('°'.$pattern.'°i', $package->loadClass($this->config->readString($section.'::'.$mapping, 'handler').'Handler')
-            ->getConstructor()
-            ->newInstance($this->config->readArray($section.'::'.$mapping, 'args'))
-          );
+          $protocol->setUrlHandler('°'.$pattern.'°i', $this->urlHandlerFor($section, $mapping));
         }
         Console::writeLine('---> ', $protocol);
       }

@@ -39,7 +39,11 @@
      * @param   peer.Socket socket
      */
     public function handleRequest($method, $query, array $headers, $data, Socket $socket) {
-      $rewritten= preg_replace($this->pattern, $this->replacement, $query);
+      $rewritten= preg_replace(
+        array($this->pattern), 
+        array($this->replacement), 
+        $query
+      );
       Console::writeLine($query, ' => ', $rewritten);
       $this->delegate->handleRequest(
         $method, 
@@ -48,6 +52,15 @@
         $data, 
         $socket
       );
+    }
+
+    /**
+     * Returns a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->pattern.':='.$this->replacement.')@<'.$this->delegate->toString().'>';
     }
   }
 ?>
