@@ -115,7 +115,12 @@
       // Construct response 
       foreach ($this->handlers as $pattern => $handler) {
         if (preg_match($pattern, $query)) {
-          $handler->handleRequest($method, $query, $headers, $body, $socket);
+          try {
+            $handler->handleRequest($method, $query, $headers, $body, $socket);
+          } catch (IOException $e) {
+            Console::$err->writeLine('Connection closed ~ ', $e);
+            return $socket->close();
+          }
           $socket->close();
           return;
         }
