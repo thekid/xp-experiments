@@ -38,7 +38,7 @@
      * Sets up test case
      *
      */
-    public function setUp() {
+    public final function setUp() {
       $this->counter= 0;
     }
     
@@ -58,11 +58,12 @@
      * @param   string type
      * @param   string class
      * @param   string src
+     * @param   string[] imports
      * @return  lang.XPClass
      */
-    protected function define($type, $class, $src) {
+    protected function define($type, $class, $src, array $imports= array()) {
       $r= self::$emitter->emit(
-        self::$syntax->parse(new MemoryInputStream('public '.$type.' '.$class.' '.$src)), 
+        self::$syntax->parse(new MemoryInputStream(implode("\n", $imports).' public '.$type.' '.$class.' '.$src)), 
         self::$manager
       );
       xp::gc();
