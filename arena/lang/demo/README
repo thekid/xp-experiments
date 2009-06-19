@@ -26,8 +26,23 @@ length can be determined by using the <tt>length</tt> pseudo-member.
   $a= [1, 2, 3];           // same as $a= array(1, 2, 3);
   $i= $a.length;           // same as $i= sizeof($a);
   
-  $a= [ 'key' : 'value' ]; // same as $a= array('key' => 'value');
-  $a= [ : ];               // empty map
+  $m= [ 'key' : 'value' ]; // same as $a= array('key' => 'value');
+  $m= [ : ];               // empty map
+</code>
+
+Arrays can also have types:
+<code>
+  // Instantiation
+  $a= new string[] { 'Hello', 'World' };
+  
+  // Type
+  public static void main(string[] $args) { ... }
+
+  /// Instantiation  
+  $m= new [string : string] { 'key' : 'value' };
+  
+  // Type
+  public static void main([string : string] $args) { ... }
 </code>
 
 Varargs syntax
@@ -387,6 +402,7 @@ before that, one was able to create a function at runtime by calling
   $a.each(function($e) { Console::writeLine('- ', $e); });
   $a.each(void{ $e => Console::writeLine('- ', $e); });
   $a.each({ $e -> Console::writeLine('- ', $e); });
+  $a.each({ $e => Console::writeLine('- ', $e); });
   // }}}
   
   // Declaration variants {{{
