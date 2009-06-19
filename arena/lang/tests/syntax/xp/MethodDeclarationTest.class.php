@@ -39,7 +39,8 @@
         'returns'    => new TypeName('string'),
         'arguments'  => NULL,
         'throws'     => NULL,
-        'body'       => NULL
+        'body'       => NULL,
+        'extension'  => NULL
       ))), $this->parse('class Null { 
         public string toString() { }
       }'));
@@ -61,7 +62,8 @@
           'type' => new TypeName('Object')
         )),
         'throws'     => NULL,
-        'body'       => NULL
+        'body'       => NULL,
+        'extension'  => NULL
       ))), $this->parse('class Null { 
         public bool equals(Object $cmp) { }
       }'));
@@ -83,7 +85,8 @@
           'type' => new TypeName('util.log.LogCategory')
         )),
         'throws'     => NULL,
-        'body'       => NULL
+        'body'       => NULL,
+        'extension'  => NULL
       ))), $this->parse('class Null { 
         public abstract void setTrace(util.log.LogCategory $cat);
       }'));
@@ -105,7 +108,8 @@
           'type' => new TypeName('Object')
         )),
         'throws'     => NULL,
-        'body'       => NULL
+        'body'       => NULL,
+        'extension'  => NULL
       ))), $this->parse('interface Comparable { 
         public int compareTo(Object $other) { }
       }'));
@@ -127,7 +131,8 @@
           'type' => new TypeName('string')
         )),
         'throws'     => array(new TypeName('ClassNotFoundException'), new TypeName('SecurityException')),
-        'body'       => NULL
+        'body'       => NULL,
+        'extension'  => NULL
       ))), $this->parse('class Class<T> { 
         public static Class<T> loadClass(string $name) throws ClassNotFoundException, SecurityException { }
       }'));
@@ -153,7 +158,8 @@
           'vararg' => TRUE
         )), 
         'throws'     => NULL,
-        'body'       => NULL
+        'body'       => NULL,
+        'extension'  => NULL
       ))), $this->parse('class Format { 
         public static string printf(string $format, string... $args) {
         
@@ -177,7 +183,8 @@
           'type'   => new TypeName('T[]')      // XXX FIXME this is probably not a good representation
         )), 
         'throws'     => NULL,
-        'body'       => NULL
+        'body'       => NULL,
+        'extension'  => NULL
       ))), $this->parse('class List { 
         public void addAll(T[] $elements) { }
       }'));

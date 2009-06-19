@@ -12,6 +12,7 @@
    */
   class Scope extends Object {
     protected $types= NULL;
+    protected $extensions= array();
     public $enclosing= NULL;
 
     /**
@@ -20,6 +21,23 @@
      */
     public function __construct() {
       $this->types= create('new util.collections.HashTable<xp.compiler.ast.Node, xp.compiler.types.TypeName>()');
+    }
+    
+    public function addExtension(TypeName $type, $method, $class) {
+      $this->extensions[$type->name.$method->name]= array(
+        'method' => $method, 
+        'class'  => $class
+      );
+    }
+    
+    public function hasExtension(TypeName $type, $name) {
+      if (isset($this->extensions[$type->name.$name])) return TRUE;
+      return $this->enclosing ? $this->enclosing->hasExtension($type, $name) : FALSE;
+    }
+
+    public function getExtension(TypeName $type, $name) {
+      if (isset($this->extensions[$type->name.$name])) return $this->extensions[$type->name.$name];
+      return $this->enclosing ? $this->enclosing->getExtension($type, $name) : NULL;
     }
     
     /**

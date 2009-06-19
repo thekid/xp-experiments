@@ -370,6 +370,40 @@
         $ptr= $this->resolve($type->name);
         if ($ptr->hasMethod($access->name)) {
           $result= $ptr->getMethod($access->name)->returns;
+        } else if ($this->scope[0]->hasExtension($type, $access->name)) {
+          $ext= $this->scope[0]->getExtension($type, $access->name);
+          
+          // Assign this to a temporary variable
+          //
+          // The statement:
+          //   $r= $a.b().c().d;
+          //
+          // will become:
+          //  $t= $a.b();
+          //  $r= Extension::method($t, ...);
+          //  $r.d;
+          //
+          // when c() is an extension method to b()'s return type
+          $temp= $access->hashCode();
+          oel_add_begin_variable_parse($op);
+          oel_push_variable($op, $temp);
+          oel_add_assign($op);
+          oel_add_free($op);
+
+          // Call Extension::method($temp [, $args0 [, $arg1 [, ...]]]);
+          oel_add_begin_static_method_call($op, $ext['method']->name, $ext['class']);
+          $n= $this->emitParameters($op, array_merge(
+            array(new VariableNode($temp)),
+            (array)$access->parameters
+          ));
+          oel_add_end_static_method_call($op, $n);
+
+          // Push result
+          oel_add_begin_variable_parse($op);
+          oel_push_variable($op, 'R');
+          oel_add_assign($op);
+          
+          return $ext['method']->returns;
         } else {
           $this->warn('T201', 'No such method '.$access->name.'() in '.$type->compoundName(), $accesss);
         }
@@ -399,7 +433,7 @@
      * @param   xp.compiler.ast.ChainNode chain
      */
     public function emitChain($op, ChainNode $chain) {
-      
+    
       // Emit first node
       $this->emitOne($op, $chain->elements[0]);
       
@@ -796,7 +830,7 @@
         oel_add_begin_new_object($op, 'XPClass');
         $n= $this->emitParameters($op, array(new StringNode(array('value' => $ptr->literal()))));
         oel_add_end_new_object($op, $n);
-        $this->scope[0]->setType($ref, new TypeName('XPClass'));
+        $this->scope[0]->setType($ref, new TypeName('lang.XPClass'));
       } else if ($ref->member instanceof ConstantNode) {
 
         // Class constant
@@ -1098,7 +1132,7 @@
         }
         
         // FIXME: Emit type hint if type is a class, interface or enum
-        $this->scope[0]->setType(new VariableNode($arg['name']), $arg['type']);
+        $this->scope[0]->setType(new VariableNode($arg['name']), $arg['type'] ? $arg['type'] : TypeName::$VAR);
       }
     }
 
@@ -1159,7 +1193,9 @@
         $this->error('I403', 'Interface methods may not have a body', $method);
         return;
       }
-    
+      if ($method->extension) {
+        $this->scope[0]->addExtension($method->extension, $method, $this->class[0]);
+      }
       if (Modifiers::isAbstract($method->modifiers)) {
         // FIXME segfault $mop= oel_new_abstract_method(
         $mop= oel_new_method(
@@ -1201,6 +1237,7 @@
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$method->annotations)
       );
       oel_finalize($mop);
+
       array_shift($this->method);
       $this->leave();
     }
@@ -1716,6 +1753,18 @@
       $this->emitOne($op, $instanceof->expression);
       oel_add_instanceof($op, $this->resolve($instanceof->type->name)->literal());
       $instanceof->free && oel_add_free($op);
+    }
+
+    /**
+     * Emit clone
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.CloneNode clone
+     */
+    protected function emitClone($op, CloneNode $clone) {
+      $this->emitOne($op, $clone->expression);
+      oel_add_clone($op);
+      $clone->free && oel_add_free($op);
     }
 
     /**

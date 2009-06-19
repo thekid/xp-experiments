@@ -87,6 +87,7 @@
               'arguments'    => NULL,
               'throws'       => NULL,
               'body'         => NULL,
+              'extension'    => NULL
             ))
           )
         )
