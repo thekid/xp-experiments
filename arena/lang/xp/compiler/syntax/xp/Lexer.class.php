@@ -42,6 +42,7 @@
         'extends'       => xp搾ompiler新yntax暖p感arser::T_EXTENDS,
         'implements'    => xp搾ompiler新yntax暖p感arser::T_IMPLEMENTS,
         'instanceof'    => xp搾ompiler新yntax暖p感arser::T_INSTANCEOF,
+        'clone'         => xp搾ompiler新yntax暖p感arser::T_CLONE,     
 
         'operator'      => xp搾ompiler新yntax暖p感arser::T_OPERATOR,
         'throws'        => xp搾ompiler新yntax暖p感arser::T_THROWS,
