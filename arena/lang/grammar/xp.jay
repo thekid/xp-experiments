@@ -53,6 +53,7 @@
     'xp.compiler.ast.DefaultNode',
     'xp.compiler.ast.BreakNode',
     'xp.compiler.ast.ContinueNode',
+    'xp.compiler.ast.CloneNode',
     'xp.compiler.ast.IfNode',
     'xp.compiler.ast.ElseNode'
   );
@@ -74,7 +75,7 @@
 %nonassoc T_INSTANCEOF
 %right '~' T_INC T_DEC
 %right '['
-%right T_AS
+%right T_CLONE T_AS
 %nonassoc T_NEW
 
 %token T_WORD 260
@@ -334,14 +335,15 @@ initialization_opt:
 
 // {{{ Methods and operators
 method:
-    decorations typeref T_WORD '(' { $4= $yyLex->create(new MethodNode(), TRUE); } arguments_opt ')' throws_opt methodbody {
+    decorations typeref T_WORD '(' { $4= $yyLex->create(new MethodNode(), TRUE); } extension_arguments_opt ')' throws_opt methodbody {
       $4->modifiers= $1[0];
       $4->annotations= $1[1];
       $4->returns= $2;
       $4->name= $3;
-      $4->arguments= $6;
+      $4->arguments= $6[0];
       $4->throws= $8;
       $4->body= $9;
+      $4->extension= $6[1];
       $$= $4;
     }
   | decorations T_WORD '(' { $p= $yyLex->position; } arguments_opt ')' throws_opt methodbody {
@@ -420,6 +422,12 @@ annotationmember:
 methodbody:
     ';' { $$= NULL; }
   | '{' statements_opt '}' { $$= $2; }
+;
+
+extension_arguments_opt:
+    /* empty */       { $$= array(NULL, NULL); }
+  |  T_WORD arguments { $$= array($2, $2[0]['type']); }
+  | arguments         { $$= array($1, NULL); }
 ;
 
 arguments_opt:
@@ -682,6 +690,9 @@ expression:
       $2->parameters= $4;
       $6 && $2->chained= $6;
       $$= $2;
+    }
+  | T_CLONE expression { 
+      $$= $yyLex->create(new CloneNode($2)); break;
     }
   | '(' expression ')' { $$= $2; }
   | expression T_AS typeref { 
