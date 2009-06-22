@@ -127,5 +127,21 @@
     public function unknownType() {
       $this->assertEquals(TypeName::$VAR, $this->fixture->typeOf(new VariableNode('v')));
     }
+
+    /**
+     * Test extension method API
+     *
+     */
+    #[@test]
+    public function objectExtension() {
+      with ($objectType= new TypeName('lang.Object'), $classNameMethod= new MethodNode(array('name' => 'getClassName'))); {
+        $this->fixture->addExtension($objectType, $classNameMethod, 'lang.ext.ObjectExtension');
+        $this->assertTrue($this->fixture->hasExtension($objectType, $classNameMethod->name));
+        $this->assertEquals(
+          array('method' => $classNameMethod, 'class' => 'lang.ext.ObjectExtension'),
+          $this->fixture->getExtension($objectType, $classNameMethod->name)
+        );
+      }
+    }
   }
 ?>

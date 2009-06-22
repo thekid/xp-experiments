@@ -15,7 +15,8 @@
     'xp.compiler.ast.DecimalNode',
     'xp.compiler.ast.NullNode',
     'xp.compiler.ast.BooleanNode',
-    'xp.compiler.ast.ComparisonNode'
+    'xp.compiler.ast.ComparisonNode',
+    'xp.compiler.ast.MethodNode'
   );
 
   /**
@@ -40,10 +41,10 @@
      * Add an extension method
      *
      * @param   xp.compiler.types.TypeName type
-     * @param   string method method name
+     * @param   xp.compiler.ast.MethodNode method
      * @param   string class class name
      */
-    public function addExtension(TypeName $type, $method, $class) {
+    public function addExtension(TypeName $type, MethodNode $method, $class) {
       $this->extensions[$type->name.$method->name]= array(
         'method' => $method, 
         'class'  => $class
