@@ -23,6 +23,13 @@
       $this->types= create('new util.collections.HashTable<xp.compiler.ast.Node, xp.compiler.types.TypeName>()');
     }
     
+    /**
+     * Add an extension method
+     *
+     * @param   xp.compiler.types.TypeName type
+     * @param   string method method name
+     * @param   string class class name
+     */
     public function addExtension(TypeName $type, $method, $class) {
       $this->extensions[$type->name.$method->name]= array(
         'method' => $method, 
@@ -30,11 +37,25 @@
       );
     }
     
+    /**
+     * Return whether an extension method is available
+     *
+     * @param   xp.compiler.types.TypeName type
+     * @param   string name method name
+     * @return  bool
+     */
     public function hasExtension(TypeName $type, $name) {
       if (isset($this->extensions[$type->name.$name])) return TRUE;
       return $this->enclosing ? $this->enclosing->hasExtension($type, $name) : FALSE;
     }
 
+    /**
+     * Get an extension method
+     *
+     * @param   xp.compiler.types.TypeName type
+     * @param   string name method name
+     * @return  array
+     */
     public function getExtension(TypeName $type, $name) {
       if (isset($this->extensions[$type->name.$name])) return $this->extensions[$type->name.$name];
       return $this->enclosing ? $this->enclosing->getExtension($type, $name) : NULL;
