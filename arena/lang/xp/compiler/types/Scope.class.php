@@ -16,7 +16,7 @@
     'xp.compiler.ast.NullNode',
     'xp.compiler.ast.BooleanNode',
     'xp.compiler.ast.ComparisonNode',
-    'xp.compiler.ast.MethodNode'
+    'xp.compiler.emit.Method'
   );
 
   /**
@@ -41,14 +41,10 @@
      * Add an extension method
      *
      * @param   xp.compiler.types.TypeName type
-     * @param   xp.compiler.ast.MethodNode method
-     * @param   string class class name
+     * @param   xp.compiler.emit.Method method
      */
-    public function addExtension(TypeName $type, MethodNode $method, $class) {
-      $this->extensions[$type->name.$method->name]= array(
-        'method' => $method, 
-        'class'  => $class
-      );
+    public function addExtension(TypeName $type, xp·compiler·emit·Method $method) {
+      $this->extensions[$type->name.$method->name]= $method;
     }
     
     /**
@@ -68,7 +64,7 @@
      *
      * @param   xp.compiler.types.TypeName type
      * @param   string name method name
-     * @return  array
+     * @return  xp.compiler.emit.Method
      */
     public function getExtension(TypeName $type, $name) {
       if (isset($this->extensions[$type->name.$name])) return $this->extensions[$type->name.$name];

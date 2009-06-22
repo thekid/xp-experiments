@@ -391,7 +391,7 @@
           oel_add_free($op);
 
           // Call Extension::method($temp [, $args0 [, $arg1 [, ...]]]);
-          oel_add_begin_static_method_call($op, $ext['method']->name, $ext['class']);
+          oel_add_begin_static_method_call($op, $ext->name, $ext->holder->literal());
           $n= $this->emitParameters($op, array_merge(
             array(new VariableNode($temp)),
             (array)$access->parameters
@@ -403,7 +403,7 @@
           oel_push_variable($op, 'R');
           oel_add_assign($op);
           
-          return $ext['method']->returns;
+          return $ext->returns;
         } else {
           $this->warn('T201', 'No such method '.$access->name.'() in '.$type->compoundName(), $accesss);
         }
@@ -1194,7 +1194,10 @@
         return;
       }
       if ($method->extension) {
-        $this->scope[0]->addExtension($method->extension, $method, $this->class[0]);
+        $this->scope[0]->addExtension(
+          $method->extension, 
+          $this->resolve('self')->getMethod($method->name)
+        );
       }
       if (Modifiers::isAbstract($method->modifiers)) {
         // FIXME segfault $mop= oel_new_abstract_method(

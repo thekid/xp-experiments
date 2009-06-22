@@ -134,11 +134,11 @@
      */
     #[@test]
     public function objectExtension() {
-      with ($objectType= new TypeName('lang.Object'), $classNameMethod= new MethodNode(array('name' => 'getClassName'))); {
+      with ($objectType= new TypeName('lang.Object'), $classNameMethod= new xp·compiler·emit·Method('getClassName')); {
         $this->fixture->addExtension($objectType, $classNameMethod, 'lang.ext.ObjectExtension');
         $this->assertTrue($this->fixture->hasExtension($objectType, $classNameMethod->name));
         $this->assertEquals(
-          array('method' => $classNameMethod, 'class' => 'lang.ext.ObjectExtension'),
+          $classNameMethod,
           $this->fixture->getExtension($objectType, $classNameMethod->name)
         );
       }

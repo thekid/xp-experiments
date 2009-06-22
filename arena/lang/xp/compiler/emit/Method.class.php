@@ -20,6 +20,15 @@
       $holder     = NULL;
 
     /**
+     * Constructor
+     *
+     * @param   string name
+     */
+    public function __construct($name= '') {
+      $this->name= $name;
+    }
+
+    /**
      * Returns name
      *
      * @return  string
