@@ -4,11 +4,24 @@
  * $Id$ 
  */
 
-  uses('util.collections.HashTable', 'xp.compiler.types.TypeName');
+  uses(
+    'util.collections.HashTable', 
+    'xp.compiler.types.TypeName',
+    'xp.compiler.ast.ArrayNode',
+    'xp.compiler.ast.MapNode',
+    'xp.compiler.ast.StringNode',
+    'xp.compiler.ast.IntegerNode',
+    'xp.compiler.ast.HexNode',
+    'xp.compiler.ast.DecimalNode',
+    'xp.compiler.ast.NullNode',
+    'xp.compiler.ast.BooleanNode',
+    'xp.compiler.ast.ComparisonNode'
+  );
 
   /**
    * Represents the current scope
    *
+   * @test    xp://tests.types.ScopeTest
    */
   class Scope extends Object {
     protected $types= NULL;
