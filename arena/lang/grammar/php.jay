@@ -52,6 +52,7 @@
     'xp.compiler.ast.DefaultNode',
     'xp.compiler.ast.BreakNode',
     'xp.compiler.ast.ContinueNode',
+    'xp.compiler.ast.CloneNode',
     'xp.compiler.ast.IfNode',
     'xp.compiler.ast.ElseNode',
     'xp.compiler.ast.NoopNode'
@@ -65,6 +66,7 @@
 %left '*' '/'
 %right '[' '!' '~' T_INC T_DEC T_AS
 %nonassoc '<' '>' T_SE T_GE '.' T_EQUALS T_NOT_EQUALS 
+%nonassoc T_NEW T_CLONE
 
 %token T_WORD 260
 %token T_STRING 261
@@ -85,6 +87,7 @@
 %token T_EXTENDS 310
 %token T_IMPLEMENTS 311
 %token T_INSTANCEOF 312
+%token T_CLONE 313
 
 %token T_NAMESPACE 320
 %token T_USE 321
@@ -517,6 +520,9 @@ expression:
       $2->parameters= $4;
       $6 && $2->chained= $6;
       $$= $2;
+    }
+  | T_CLONE expression { 
+      $$= $yyLex->create(new CloneNode($2)); break;
     }
   | '(' expression ')' { $$= $2; }
   | assignment { 
