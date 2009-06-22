@@ -370,8 +370,8 @@
         $ptr= $this->resolve($type->name);
         if ($ptr->hasMethod($access->name)) {
           $result= $ptr->getMethod($access->name)->returns;
-        } else if ($this->scope[0]->hasExtension($type, $access->name)) {
-          $ext= $this->scope[0]->getExtension($type, $access->name);
+        } else if ($this->scope[0]->hasExtension($ptr, $access->name)) {
+          $ext= $this->scope[0]->getExtension($ptr, $access->name);
           
           // Assign this to a temporary variable
           //
@@ -1195,7 +1195,7 @@
       }
       if ($method->extension) {
         $this->scope[0]->addExtension(
-          $method->extension, 
+          $this->resolve($method->extension->name),
           $this->resolve('self')->getMethod($method->name)
         );
       }

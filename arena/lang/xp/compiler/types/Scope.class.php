@@ -16,6 +16,7 @@
     'xp.compiler.ast.NullNode',
     'xp.compiler.ast.BooleanNode',
     'xp.compiler.ast.ComparisonNode',
+    'xp.compiler.emit.Types',
     'xp.compiler.emit.Method'
   );
 
@@ -40,34 +41,34 @@
     /**
      * Add an extension method
      *
-     * @param   xp.compiler.types.TypeName type
+     * @param   xp.compiler.emit.Types type
      * @param   xp.compiler.emit.Method method
      */
-    public function addExtension(TypeName $type, xp·compiler·emit·Method $method) {
-      $this->extensions[$type->name.$method->name]= $method;
+    public function addExtension(Types $type, xp·compiler·emit·Method $method) {
+      $this->extensions[$type->name().$method->name]= $method;
     }
     
     /**
      * Return whether an extension method is available
      *
-     * @param   xp.compiler.types.TypeName type
+     * @param   xp.compiler.emit.Types type
      * @param   string name method name
      * @return  bool
      */
-    public function hasExtension(TypeName $type, $name) {
-      if (isset($this->extensions[$type->name.$name])) return TRUE;
+    public function hasExtension(Types $type, $name) {
+      if (isset($this->extensions[$type->name().$name])) return TRUE;
       return $this->enclosing ? $this->enclosing->hasExtension($type, $name) : FALSE;
     }
 
     /**
      * Get an extension method
      *
-     * @param   xp.compiler.types.TypeName type
+     * @param   xp.compiler.emit.Types type
      * @param   string name method name
      * @return  xp.compiler.emit.Method
      */
-    public function getExtension(TypeName $type, $name) {
-      if (isset($this->extensions[$type->name.$name])) return $this->extensions[$type->name.$name];
+    public function getExtension(Types $type, $name) {
+      if (isset($this->extensions[$type->name().$name])) return $this->extensions[$type->name().$name];
       return $this->enclosing ? $this->enclosing->getExtension($type, $name) : NULL;
     }
     

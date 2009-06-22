@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'xp.compiler.types.Scope',
+    'xp.compiler.emit.TypeReflection',
     'xp.compiler.ast.VariableNode'
   );
 
@@ -134,7 +135,7 @@
      */
     #[@test]
     public function objectExtension() {
-      with ($objectType= new TypeName('lang.Object'), $classNameMethod= new xp·compiler·emit·Method('getClassName')); {
+      with ($objectType= new TypeReflection(XPClass::forName('lang.Object')), $classNameMethod= new xp·compiler·emit·Method('getClassName')); {
         $this->fixture->addExtension($objectType, $classNameMethod, 'lang.ext.ObjectExtension');
         $this->assertTrue($this->fixture->hasExtension($objectType, $classNameMethod->name));
         $this->assertEquals(
