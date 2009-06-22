@@ -14,6 +14,7 @@
     'xp.compiler.ast.TryNode',
     'xp.compiler.ast.CatchNode',
     'xp.compiler.ast.ThrowNode',
+    'xp.compiler.ast.FinallyNode',
     'xp.compiler.types.TypeName'
   );
 
