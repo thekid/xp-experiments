@@ -75,8 +75,8 @@
 %nonassoc T_INSTANCEOF
 %right '~' T_INC T_DEC
 %right '['
-%right T_CLONE T_AS
-%nonassoc T_NEW
+%right T_AS
+%nonassoc T_NEW T_CLONE
 
 %token T_WORD 260
 %token T_STRING 261
@@ -102,6 +102,7 @@
 %token T_EXTENDS 310
 %token T_IMPLEMENTS 311
 %token T_INSTANCEOF 312
+%token T_CLONE 313
 
 %token T_OPERATOR 320
 %token T_THROWS 321
