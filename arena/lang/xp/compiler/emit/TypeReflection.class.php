@@ -28,8 +28,7 @@
      * @return  xp.compiler.emit.Types
      */
     public function parent() {
-      $parent= $this->class->getParentClass();
-      if ($parent) {
+      if ($parent= $this->class->getParentClass()) {
         return new self($parent);
       }
       return NULL;

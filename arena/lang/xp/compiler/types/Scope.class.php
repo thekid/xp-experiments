@@ -49,7 +49,7 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Helper method for hasExtension() and getExtension()
      *
      * @param   xp.compiler.emit.Types type
      * @param   string name method name
@@ -71,8 +71,7 @@
      * @return  bool
      */
     public function hasExtension(Types $type, $name) {
-      $k= $this->lookupExtension($type, $name);
-      if ($k) {
+      if ($k= $this->lookupExtension($type, $name)) {
         return TRUE;
       } else if ($this->enclosing) {
         return $this->enclosing->hasExtension($type, $name);
@@ -89,8 +88,7 @@
      * @return  xp.compiler.emit.Method
      */
     public function getExtension(Types $type, $name) {
-      $k= $this->lookupExtension($type, $name);
-      if ($k) {
+      if ($k= $this->lookupExtension($type, $name)) {
         return $this->extensions[$k];
       } else if ($this->enclosing) {
         return $this->enclosing->getExtension($type, $name);
