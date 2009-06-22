@@ -8,7 +8,8 @@
     'unittest.TestCase',
     'xp.compiler.types.Scope',
     'xp.compiler.emit.TypeReflection',
-    'xp.compiler.ast.VariableNode'
+    'xp.compiler.ast.VariableNode',
+    'xp.compiler.io.FileManager'
   );
 
   /**
@@ -24,7 +25,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= new Scope();
+      $this->fixture= new Scope(new FileManager());
     }
     
     /**

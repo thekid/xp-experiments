@@ -16,8 +16,12 @@
     'xp.compiler.ast.NullNode',
     'xp.compiler.ast.BooleanNode',
     'xp.compiler.ast.ComparisonNode',
+    'xp.compiler.emit.Method',
     'xp.compiler.emit.Types',
-    'xp.compiler.emit.Method'
+    'xp.compiler.emit.TypeReference', 
+    'xp.compiler.emit.TypeReflection', 
+    'xp.compiler.emit.TypeDeclaration', 
+    'xp.compiler.io.FileManager'
   );
 
   /**
@@ -28,14 +32,58 @@
   class Scope extends Object {
     protected $types= NULL;
     protected $extensions= array();
+    protected $resolved= array();
+    
     public $enclosing= NULL;
+    public $importer= NULL;
+    public $manager= NULL;
+    public $declarations= array();
+    public $imports= array();
+    public $used= array();
+    public $package= NULL;
+    public $statics= array();
 
     /**
      * Constructor
      *
+     * @param   xp.compiler.io.FileManager
      */
-    public function __construct() {
+    public function __construct(FileManager $manager= NULL) {
+      $this->manager= $manager;
       $this->types= create('new util.collections.HashTable<xp.compiler.ast.Node, xp.compiler.types.TypeName>()');
+      $this->resolved= create('new util.collections.HashTable<lang.types.String, xp.compiler.emit.Types>()');
+    }
+    
+    /**
+     * Enter a child scope
+     *
+     * @param   xp.compiler.types.Scope child
+     * @return  xp.compiler.types.Scope child
+     */
+    public function enter(self $child) {
+      $child->enclosing= $this;
+      
+      // Copy everything except types which are per-scope
+      $child->resolved= $this->resolved;
+      $child->extensions= $this->extensions;
+      $child->importer= $this->importer;
+      $child->manager= $this->manager;
+      $child->declarations= $this->declarations;
+      $child->imports= $this->imports;
+      $child->used= $this->declarations;
+      $child->package= $this->package;
+      $child->statics= $this->statics;
+      return $child;
+    }
+
+    /**
+     * Add a type to resolved
+     *
+     * @param   string type
+     * @param   xp.compiler.emit.Types resolved
+     */
+    public function addResolved($type, Types $resolved) {
+      $this->resolved[$type]= $resolved;
     }
     
     /**
@@ -71,13 +119,7 @@
      * @return  bool
      */
     public function hasExtension(Types $type, $name) {
-      if ($k= $this->lookupExtension($type, $name)) {
-        return TRUE;
-      } else if ($this->enclosing) {
-        return $this->enclosing->hasExtension($type, $name);
-      } else {
-        return FALSE;
-      }
+      return NULL !== $this->lookupExtension($type, $name);
     }
 
     /**
@@ -90,11 +132,112 @@
     public function getExtension(Types $type, $name) {
       if ($k= $this->lookupExtension($type, $name)) {
         return $this->extensions[$k];
-      } else if ($this->enclosing) {
-        return $this->enclosing->getExtension($type, $name);
       } else {
         return NULL;
       }
+    }
+
+    /**
+     * Resolve a static call. Return TRUE if the target is a function
+     * (e.g. key()), a xp.compiler.emit.Method instance if it's a static 
+     * method (Map::key()).
+     *
+     * @param   string name
+     * @return  var
+     */
+    public function resolveStatic($name) {
+      foreach ($this->statics as $lookup => $type) {
+        if (TRUE === $type && $this->importer->hasFunction($lookup, $name)) {
+          return TRUE;
+        } else if ($type instanceof Types && $type->hasMethod($name)) {
+          $m= $type->getMethod($name);
+          if (Modifiers::isStatic($m->modifiers)) return $m;
+        }
+      }
+      return NULL;
+    }
+    
+
+    /**
+     * Resolve a type name
+     *
+     * @param   string name
+     * @param   var messages
+     * @param   bool register
+     * @return  xp.compiler.emit.Types resolved
+     */
+    public function resolve($name, Emitter $messages, $register= TRUE) {
+      if (!is_string($name)) {
+        throw new IllegalArgumentException('Cannot resolve '.xp::stringOf($name));
+      }
+      
+      $cl= ClassLoader::getDefault();
+      if ('self' === $name || $name === $this->declarations[0]->name->name) {
+        switch ($decl= $this->declarations[0]) {
+          case $decl instanceof ClassNode: 
+            $parent= $this->resolve($decl->parent ? $decl->parent->name : 'lang.Object', $messages);
+            break;
+          case $decl instanceof EnumNode:
+            $parent= $this->resolve($decl->parent ? $decl->parent->name : 'lang.Enum', $messages);
+            break;
+          case $decl instanceof InterfaceNode:
+            $parent= NULL;
+            break;
+        }
+        return new TypeDeclaration(new ParseTree($this->package, $this->imports, $decl), $parent);
+      } else if ('parent' === $name || 'xp' === $name) {
+        return new TypeReference($name, Types::UNKNOWN_KIND);
+      } else if (strpos($name, '.')) {
+        $qualified= $name;
+      } else if (isset($this->imports[$name])) {
+        $qualified= $this->imports[$name];
+      } else if ($cl->providesClass('lang.'.$name)) {
+        $qualified= 'lang.'.$name;
+      } else {
+        $qualified= ($this->package ? $this->package->name.'.' : '').$name;
+      }
+      
+      // Locate class. If the classloader already knows this class,
+      // we can simply use this class. TODO: Use specialized 
+      // JitClassLoader?
+      if (!$this->resolved->containsKey($qualified)) {
+        if ($cl->providesClass($qualified)) {
+          $this->resolved[$qualified]= new TypeReflection(XPClass::forName($qualified));
+        } else {
+          try {
+            $tree= $this->manager->parseClass($qualified);
+            $this->manager->write($this->emit($tree, $this->manager), $this->manager->getTarget($tree));
+            
+            switch ($decl= $tree->declaration) {
+              case $decl instanceof ClassNode: 
+                $t= new TypeDeclaration($tree, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Object'));
+                break;
+              case $decl instanceof EnumNode:
+                $t= new TypeDeclaration($tree, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Enum'));
+                break;
+              case $decl instanceof InterfaceNode:
+                $t= new TypeDeclaration($tree, NULL);
+                break;
+            }
+          } catch (FormatException $e) {
+            $messages->error('P424', $e->compoundMessage());
+            $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
+          } catch (ParseException $e) {
+            $messages->error('P400', $e->getCause()->compoundMessage());
+            $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
+          } catch (ClassNotFoundException $e) {
+            $messages->error('T404', $e->compoundMessage());
+            $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
+          } catch (IOException $e) {
+            $messages->error('0507', $e->compoundMessage());
+            $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
+          }
+          $this->resolved[$qualified]= $t;
+        }
+        $register && $this->used[]= new TypeName($qualified);
+      }
+      
+      return $this->resolved[$qualified];
     }
     
     /**

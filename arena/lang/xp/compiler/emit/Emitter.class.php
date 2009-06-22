@@ -82,7 +82,7 @@
      * @param   string message
      * @param   xp.compiler.ast.Node context
      */
-    protected function warn($code, $message, xp·compiler·ast·Node $context= NULL) {
+    public function warn($code, $message, xp·compiler·ast·Node $context= NULL) {
       $message= $this->format($code, $message, $context);
       $this->cat && $this->cat->warn($message);
       $this->messages['warnings'][]= $message;
@@ -95,7 +95,7 @@
      * @param   string message
      * @param   xp.compiler.ast.Node context
      */
-    protected function error($code, $message, xp·compiler·ast·Node $context= NULL) {
+    public function error($code, $message, xp·compiler·ast·Node $context= NULL) {
       $message= $this->format($code, $message, $context);
       $this->cat && $this->cat->error($message);
       $this->messages['errors'][]= $message;
