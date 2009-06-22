@@ -49,6 +49,21 @@
     }
     
     /**
+     * (Insert method's description here)
+     *
+     * @param   xp.compiler.emit.Types type
+     * @param   string name method name
+     * @return  string
+     */
+    protected function lookupExtension(Types $type, $name) {
+      do {
+        $k= $type->name().$name;
+        if (isset($this->extensions[$k])) return $k;
+      } while ($type= $type->parent());
+      return NULL;
+    }
+    
+    /**
      * Return whether an extension method is available
      *
      * @param   xp.compiler.emit.Types type
@@ -56,8 +71,14 @@
      * @return  bool
      */
     public function hasExtension(Types $type, $name) {
-      if (isset($this->extensions[$type->name().$name])) return TRUE;
-      return $this->enclosing ? $this->enclosing->hasExtension($type, $name) : FALSE;
+      $k= $this->lookupExtension($type, $name);
+      if ($k) {
+        return TRUE;
+      } else if ($this->enclosing) {
+        return $this->enclosing->hasExtension($type, $name);
+      } else {
+        return FALSE;
+      }
     }
 
     /**
@@ -68,8 +89,14 @@
      * @return  xp.compiler.emit.Method
      */
     public function getExtension(Types $type, $name) {
-      if (isset($this->extensions[$type->name().$name])) return $this->extensions[$type->name().$name];
-      return $this->enclosing ? $this->enclosing->getExtension($type, $name) : NULL;
+      $k= $this->lookupExtension($type, $name);
+      if ($k) {
+        return $this->extensions[$k];
+      } else if ($this->enclosing) {
+        return $this->enclosing->getExtension($type, $name);
+      } else {
+        return NULL;
+      }
     }
     
     /**

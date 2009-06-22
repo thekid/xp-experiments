@@ -23,6 +23,15 @@
       $this->name= $name;
       $this->kind= $kind;
     }
+
+    /**
+     * Returns parent type
+     *
+     * @return  xp.compiler.emit.Types
+     */
+    public function parent() {
+      return NULL;
+    }
     
     /**
      * Returns name

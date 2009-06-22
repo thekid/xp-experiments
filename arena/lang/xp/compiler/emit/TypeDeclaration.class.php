@@ -31,6 +31,15 @@
       $this->tree= $tree;
       $this->parent= $parent;
     }
+
+    /**
+     * Returns parent type
+     *
+     * @return  xp.compiler.emit.Types
+     */
+    public function parent() {
+      return $this->parent;
+    }
     
     /**
      * Returns name

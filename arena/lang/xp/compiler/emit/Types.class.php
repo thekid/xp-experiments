@@ -27,6 +27,13 @@
     public abstract function name();
 
     /**
+     * Returns parent type
+     *
+     * @return  xp.compiler.emit.Types
+     */
+    public abstract function parent();
+
+    /**
      * Returns literal for use in code
      *
      * @return  string

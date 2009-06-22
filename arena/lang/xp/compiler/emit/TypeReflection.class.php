@@ -21,6 +21,19 @@
     public function __construct(XPClass $class) {
       $this->class= $class;
     }
+
+    /**
+     * Returns parent type
+     *
+     * @return  xp.compiler.emit.Types
+     */
+    public function parent() {
+      $parent= $this->class->getParentClass();
+      if ($parent) {
+        return new self($parent);
+      }
+      return NULL;
+    }
     
     /**
      * Returns name

@@ -135,12 +135,35 @@
      */
     #[@test]
     public function objectExtension() {
-      with ($objectType= new TypeReflection(XPClass::forName('lang.Object')), $classNameMethod= new xp·compiler·emit·Method('getClassName')); {
+      with (
+        $objectType= new TypeReflection(XPClass::forName('lang.Object')), 
+        $classNameMethod= new xp·compiler·emit·Method('getClassName')
+      ); {
         $this->fixture->addExtension($objectType, $classNameMethod, 'lang.ext.ObjectExtension');
         $this->assertTrue($this->fixture->hasExtension($objectType, $classNameMethod->name));
         $this->assertEquals(
           $classNameMethod,
           $this->fixture->getExtension($objectType, $classNameMethod->name)
+        );
+      }
+    }
+
+    /**
+     * Test extension method API
+     *
+     */
+    #[@test]
+    public function objectExtensionInherited() {
+      with (
+        $objectType= new TypeReflection(XPClass::forName('lang.Object')), 
+        $dateType= new TypeReflection(XPClass::forName('util.Date')),
+        $classNameMethod= new xp·compiler·emit·Method('getClassName')
+      ); {
+        $this->fixture->addExtension($objectType, $classNameMethod, 'lang.ext.ObjectExtension');
+        $this->assertTrue($this->fixture->hasExtension($dateType, $classNameMethod->name));
+        $this->assertEquals(
+          $classNameMethod,
+          $this->fixture->getExtension($dateType, $classNameMethod->name)
         );
       }
     }
