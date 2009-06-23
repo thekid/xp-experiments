@@ -38,6 +38,21 @@
           get { return str_split($this.buffer); }
           set { $this.buffer= implode("", $value); }
         }
+
+        public string this[int $offset] {
+          get {
+            return $offset >= 0 && $offset < $this.length ? $this.buffer[$offset] : null;
+          }
+          set {
+            $this.buffer= substr($this.buffer, 0, $offset) ~ $value ~ substr($this.buffer, $offset+ 1);
+          }
+          unset {
+            throw new lang.IllegalAccessException("Cannot remove string offsets");
+          }
+          isset {
+            return $offset >= 0 && $offset < $this.length;
+          }
+        }
         
         public string toString() {
           return $this.buffer;
@@ -45,6 +60,7 @@
       }', array(
         'import native zend.strlen;', 
         'import native standard.str_split;',
+        'import native standard.substr;',
         'import native standard.implode;',
       ));
     }
@@ -88,6 +104,62 @@
       $str= $this->fixture->newInstance('Hello');
       $str->chars= array('A', 'B', 'C');
       $this->assertEquals('ABC', $str->toString());
+    }
+
+    /**
+     * Test reading offsets
+     *
+     */
+    #[@test]
+    public function offsetGet() {
+      $str= $this->fixture->newInstance('Hello');
+      $this->assertEquals('H', $str[0], 0);
+      $this->assertEquals('o', $str[4], 4);
+    }
+
+    /**
+     * Test writing to offsets
+     *
+     */
+    #[@test]
+    public function offsetSet() {
+      $str= $this->fixture->newInstance('Hello');
+      $str[1]= 'a';
+      $this->assertEquals('Hallo', $str->toString());
+    }
+
+    /**
+     * Test testing offsets
+     *
+     */
+    #[@test]
+    public function offsetExists() {
+      $str= $this->fixture->newInstance('Hello');
+      $this->assertTrue(isset($str[0]));
+      $this->assertTrue(isset($str[4]));
+      $this->assertFalse(isset($str[-1]));
+      $this->assertFalse(isset($str[5]));
+    }
+
+    /**
+     * Test removing offsets
+     *
+     */
+    #[@test, @expect('lang.IllegalAccessException')]
+    public function offsetUnset() {
+      $str= $this->fixture->newInstance('Hello');
+      unset($str[0]);
+    }
+
+    /**
+     * Test reading non-existant offsets
+     *
+     */
+    #[@test]
+    public function getNonExistantOffset() {
+      $str= $this->fixture->newInstance('Hello');
+      $this->assertEquals(NULL, $str[-1], -1);
+      $this->assertEquals(NULL, $str[5], 5);
     }
   }
 ?>
