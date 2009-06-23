@@ -38,7 +38,7 @@
      * Sets up test case
      *
      */
-    public final function setUp() {
+    public function setUp() {
       $this->counter= 0;
     }
     
