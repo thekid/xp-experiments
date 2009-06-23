@@ -1334,7 +1334,7 @@
         
         foreach (array(
           'get'   => array('offsetGet', $property->arguments),
-          'set'   => array('offsetSet', array_merge($property->arguments, array(array('name' => '$value', 'type' => $property->type)))),
+          'set'   => array('offsetSet', array_merge($property->arguments, array(array('name' => 'value', 'type' => $property->type)))),
           'isset' => array('offsetExists', $property->arguments),
           'unset' => array('offsetUnset', $property->arguments),
         ) as $handler => $def) {
