@@ -15,7 +15,7 @@
    *
    * @see   xp://xp.compiler.diagnostic.DiagnosticListener
    */
-  class DefaultListener extends Object implements DiagnosticListener {
+  class DefaultDiagnosticListener extends Object implements DiagnosticListener {
     protected
       $writer    = NULL,
       $started   = 0,
@@ -37,20 +37,20 @@
     /**
      * Called when compilation starts
      *
-     * @param   io.File src
+     * @param   xp.compiler.io.Source src
      */
-    public function compilationStarted(File $src) {
+    public function compilationStarted(xp·compiler·io·Source $src) {
       $this->started++;
     }
   
     /**
      * Called when a compilation finishes successfully.
      *
-     * @param   io.File src
+     * @param   xp.compiler.io.Source src
      * @param   io.File compiled
      * @param   string[] messages
      */
-    public function compilationSucceeded(File $src, File $compiled, array $messages= array()) {
+    public function compilationSucceeded(xp·compiler·io·Source $src, File $compiled, array $messages= array()) {
       $this->writer->write('.');
       $this->succeeded++;
       if (!empty($messages)) {
@@ -61,10 +61,10 @@
     /**
      * Called when parsing fails
      *
-     * @param   io.File src
+     * @param   xp.compiler.io.Source src
      * @param   text.parser.generic.ParseException reason
      */
-    public function parsingFailed(File $src, ParseException $reason) {
+    public function parsingFailed(xp·compiler·io·Source $src, ParseException $reason) {
       $this->writer->write('P');
       $this->failed++;
       $this->messages[$src->getURI()]= $reason->getCause()->compoundMessage();
@@ -73,10 +73,10 @@
     /**
      * Called when emitting fails
      *
-     * @param   io.File src
+     * @param   xp.compiler.io.Source src
      * @param   lang.FormatException reason
      */
-    public function emittingFailed(File $src, FormatException $reason) {
+    public function emittingFailed(xp·compiler·io·Source $src, FormatException $reason) {
       $this->writer->write('E');
       $this->failed++;
       $this->messages[$src->getURI()]= $reason->compoundMessage();
@@ -85,10 +85,10 @@
     /**
      * Called when compilation fails
      *
-     * @param   io.File src
+     * @param   xp.compiler.io.Source src
      * @param   lang.Throwable reason
      */
-    public function compilationFailed(File $src, Throwable $reason) {
+    public function compilationFailed(xp·compiler·io·Source $src, Throwable $reason) {
       $this->writer->write('F');
       $this->failed++;
       $this->messages[$src->getURI()]= $reason->compoundMessage();

@@ -6,6 +6,7 @@
 
   uses(
     'util.collections.HashTable', 
+    'xp.compiler.types.ResolveException',
     'xp.compiler.types.TypeName',
     'xp.compiler.ast.ArrayNode',
     'xp.compiler.ast.MapNode',
@@ -20,8 +21,7 @@
     'xp.compiler.emit.Types',
     'xp.compiler.emit.TypeReference', 
     'xp.compiler.emit.TypeReflection', 
-    'xp.compiler.emit.TypeDeclaration', 
-    'xp.compiler.io.FileManager'
+    'xp.compiler.emit.TypeDeclaration'
   );
 
   /**
@@ -29,14 +29,14 @@
    *
    * @test    xp://tests.types.ScopeTest
    */
-  class Scope extends Object {
+  abstract class Scope extends Object {
+    protected $task= NULL;
     protected $types= NULL;
     protected $extensions= array();
     protected $resolved= array();
     
     public $enclosing= NULL;
     public $importer= NULL;
-    public $manager= NULL;
     public $declarations= array();
     public $imports= array();
     public $used= array();
@@ -46,10 +46,8 @@
     /**
      * Constructor
      *
-     * @param   xp.compiler.io.FileManager
      */
-    public function __construct(FileManager $manager= NULL) {
-      $this->manager= $manager;
+    public function __construct() {
       $this->types= create('new util.collections.HashTable<xp.compiler.ast.Node, xp.compiler.types.TypeName>()');
       $this->resolved= create('new util.collections.HashTable<lang.types.String, xp.compiler.emit.Types>()');
     }
@@ -64,15 +62,18 @@
       $child->enclosing= $this;
       
       // Copy everything except types which are per-scope
-      $child->resolved= $this->resolved;
-      $child->extensions= $this->extensions;
       $child->importer= $this->importer;
-      $child->manager= $this->manager;
-      $child->declarations= $this->declarations;
-      $child->imports= $this->imports;
-      $child->used= $this->declarations;
+      $child->task= $this->task;
       $child->package= $this->package;
-      $child->statics= $this->statics;
+      
+      // Reference arrays - TODO: Refactor and use Vectors instead
+      $child->resolved= &$this->resolved;
+      $child->extensions= &$this->extensions;
+      $child->declarations= &$this->declarations;
+      $child->imports= &$this->imports;
+      $child->used= &$this->used;
+      $child->statics= &$this->statics;
+
       return $child;
     }
 
@@ -97,6 +98,32 @@
     }
     
     /**
+     * Add a type import
+     *
+     * @param   string import fully qualified class name
+     * @throws  xp.compiler.types.ResolveException
+     */
+    public function addTypeImport($import) {
+      $p= strrpos($import, '.');
+      $this->imports[substr($import, $p+ 1)]= $this->resolveType(new TypeName($import));
+    }
+
+    /**
+     * Add a package import
+     *
+     * @param   string import fully qualified package name
+     * @throws  xp.compiler.types.ResolveException
+     */
+    public function addPackageImport($import) {
+    
+      // FIXME: This does not take into calculation other sources
+      // from the manager and really should be done later on!
+      foreach (Package::forName($import)->getClassNames() as $name) {
+        $this->addTypeImport($name);
+      }
+    }
+    
+    /**
      * Helper method for hasExtension() and getExtension()
      *
      * @param   xp.compiler.emit.Types type
@@ -104,10 +131,14 @@
      * @return  string
      */
     protected function lookupExtension(Types $type, $name) {
+    
+      // Check parent chain
       do {
         $k= $type->name().$name;
         if (isset($this->extensions[$k])) return $k;
       } while ($type= $type->parent());
+      
+      // Nothing found
       return NULL;
     }
     
@@ -161,40 +192,43 @@
     /**
      * Resolve a type name
      *
-     * @param   string name
-     * @param   var messages
+     * @param   xp.compiler.types.TypeName name
      * @param   bool register
      * @return  xp.compiler.emit.Types resolved
+     * @throws  xp.compiler.types.ResolveException
      */
-    public function resolve($name, Emitter $messages, $register= TRUE) {
-      if (!is_string($name)) {
-        throw new IllegalArgumentException('Cannot resolve '.xp::stringOf($name));
-      }
-      
+    public function resolveType(TypeName $name, $register= TRUE) {
       $cl= ClassLoader::getDefault();
-      if ('self' === $name || $name === $this->declarations[0]->name->name) {
+      if ('self' === $name->name || ($this->declarations && $name->name === $this->declarations[0]->name->name)) {
         switch ($decl= $this->declarations[0]) {
           case $decl instanceof ClassNode: 
-            $parent= $this->resolve($decl->parent ? $decl->parent->name : 'lang.Object', $messages);
+            $parent= $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Object'));
             break;
           case $decl instanceof EnumNode:
-            $parent= $this->resolve($decl->parent ? $decl->parent->name : 'lang.Enum', $messages);
+            $parent= $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Enum'));
             break;
           case $decl instanceof InterfaceNode:
             $parent= NULL;
             break;
         }
-        return new TypeDeclaration(new ParseTree($this->package, $this->imports, $decl), $parent);
-      } else if ('parent' === $name || 'xp' === $name) {
-        return new TypeReference($name, Types::UNKNOWN_KIND);
-      } else if (strpos($name, '.')) {
-        $qualified= $name;
-      } else if (isset($this->imports[$name])) {
-        $qualified= $this->imports[$name];
-      } else if ($cl->providesClass('lang.'.$name)) {
-        $qualified= 'lang.'.$name;
+
+        // FIXME: Imports= array() -> Maybe refactor TypeDeclaration to use 
+        // not ParseTree but an optimized version?
+        return new TypeDeclaration(new ParseTree($this->package, array(), $decl), $parent);
+      } else if ('parent' === $name->name || 'xp' === $name->name) {
+
+        // FIXME: "parent" must be used in emitted source but we really could 
+        // look it up here (but then use "parent" again later on).
+        return new TypeReference($name->name, Types::UNKNOWN_KIND);
+      } else if (strpos($name->name, '.')) {
+        $qualified= $name->name;
+      } else if (isset($this->imports[$name->name])) {
+        $register && $this->used[]= new TypeName($this->imports[$name->name]->name());
+        return $this->imports[$name->name];
+      } else if ($cl->providesClass('lang.'.$name->name)) {
+        $qualified= 'lang.'.$name->name;
       } else {
-        $qualified= ($this->package ? $this->package->name.'.' : '').$name;
+        $qualified= ($this->package ? $this->package->name.'.' : '').$name->name;
       }
       
       // Locate class. If the classloader already knows this class,
@@ -205,9 +239,7 @@
           $this->resolved[$qualified]= new TypeReflection(XPClass::forName($qualified));
         } else {
           try {
-            $tree= $this->manager->parseClass($qualified);
-            $this->manager->write($this->emit($tree, $this->manager), $this->manager->getTarget($tree));
-            
+            $tree= $this->task->newSubTask($qualified)->run($this);
             switch ($decl= $tree->declaration) {
               case $decl instanceof ClassNode: 
                 $t= new TypeDeclaration($tree, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Object'));
@@ -220,17 +252,13 @@
                 break;
             }
           } catch (FormatException $e) {
-            $messages->error('P424', $e->compoundMessage());
-            $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
+            throw new ResolveException('Cannot resolve '.$name->toString(), 424, $e);
           } catch (ParseException $e) {
-            $messages->error('P400', $e->getCause()->compoundMessage());
-            $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
+            throw new ResolveException('Cannot resolve '.$name->toString(), 400, $e);
           } catch (ClassNotFoundException $e) {
-            $messages->error('T404', $e->compoundMessage());
-            $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
+            throw new ResolveException('Cannot resolve '.$name->toString(), 404, $e);
           } catch (IOException $e) {
-            $messages->error('0507', $e->compoundMessage());
-            $t= new TypeReference($qualified, Types::UNKNOWN_KIND);
+            throw new ResolveException('Cannot resolve '.$name->toString(), 507, $e);
           }
           $this->resolved[$qualified]= $t;
         }

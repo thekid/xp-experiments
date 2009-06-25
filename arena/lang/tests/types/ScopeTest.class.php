@@ -6,10 +6,13 @@
 
   uses(
     'unittest.TestCase',
-    'xp.compiler.types.Scope',
     'xp.compiler.emit.TypeReflection',
     'xp.compiler.ast.VariableNode',
-    'xp.compiler.io.FileManager'
+    'xp.compiler.emit.oel.Emitter',
+    'xp.compiler.types.TaskScope',
+    'xp.compiler.diagnostic.NullDiagnosticListener',
+    'xp.compiler.io.FileManager',
+    'xp.compiler.task.CompilationTask'
   );
 
   /**
@@ -25,7 +28,12 @@
      *
      */
     public function setUp() {
-      $this->fixture= new Scope(new FileManager());
+      $this->fixture= new TaskScope(new CompilationTask(
+        new FileSource(new File(__FILE__), Syntax::forName('xp')),
+        new NullDiagnosticListener(),
+        new FileManager(),
+        new xp·compiler·emit·oel·Emitter()
+      ));
     }
     
     /**
@@ -140,7 +148,7 @@
         $objectType= new TypeReflection(XPClass::forName('lang.Object')), 
         $classNameMethod= new xp·compiler·emit·Method('getClassName')
       ); {
-        $this->fixture->addExtension($objectType, $classNameMethod, 'lang.ext.ObjectExtension');
+        $this->fixture->addExtension($objectType, $classNameMethod);
         $this->assertTrue($this->fixture->hasExtension($objectType, $classNameMethod->name));
         $this->assertEquals(
           $classNameMethod,
@@ -160,13 +168,60 @@
         $dateType= new TypeReflection(XPClass::forName('util.Date')),
         $classNameMethod= new xp·compiler·emit·Method('getClassName')
       ); {
-        $this->fixture->addExtension($objectType, $classNameMethod, 'lang.ext.ObjectExtension');
+        $this->fixture->addExtension($objectType, $classNameMethod);
         $this->assertTrue($this->fixture->hasExtension($dateType, $classNameMethod->name));
         $this->assertEquals(
           $classNameMethod,
           $this->fixture->getExtension($dateType, $classNameMethod->name)
         );
       }
+    }
+
+    /**
+     * Test addTypeImport
+     *
+     */
+    #[@test, @expect('xp.compiler.types.ResolveException')]
+    public function importNonExistant() {
+      $this->fixture->addTypeImport('util.cmd.@@NON_EXISTANT@@');
+    }
+
+    /**
+     * Test resolve()
+     *
+     */
+    #[@test]
+    public function resolveFullyQualified() {
+      $this->assertEquals(
+        new TypeReflection(XPClass::forName('util.cmd.Command')), 
+        $this->fixture->resolveType(new TypeName('util.cmd.Command'))
+      );
+    }
+
+    /**
+     * Test resolve()
+     *
+     */
+    #[@test]
+    public function resolveUnqualified() {
+      $this->fixture->addTypeImport('util.cmd.Command');
+      $this->assertEquals(
+        new TypeReflection(XPClass::forName('util.cmd.Command')), 
+        $this->fixture->resolveType(new TypeName('Command'))
+      );
+    }
+
+    /**
+     * Test resolve()
+     *
+     */
+    #[@test]
+    public function resolveUnqualifiedByPackageImport() {
+      $this->fixture->addPackageImport('util.cmd');
+      $this->assertEquals(
+        new TypeReflection(XPClass::forName('util.cmd.Command')), 
+        $this->fixture->resolveType(new TypeName('Command'))
+      );
     }
   }
 ?>

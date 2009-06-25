@@ -34,12 +34,13 @@
     }
     
     /**
-     * Emit a parse tree
+     * Entry point
      *
      * @param   xp.compiler.ast.ParseTree tree
-     * @return  
+     * @param   xp.compiler.types.Scope scope
+     * @return  xp.compiler.Result
      */
-    public abstract function emit(ParseTree $tree, FileManager $manager);
+    public abstract function emit(ParseTree $tree, Scope $scope);
     
     /**
      * Format a message

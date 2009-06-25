@@ -7,9 +7,12 @@
   uses(
     'unittest.TestCase',
     'io.streams.MemoryInputStream',
-    'xp.compiler.Syntax',
+    'io.streams.MemoryOutputStream',
     'xp.compiler.emit.oel.Emitter',
-    'xp.compiler.io.FileManager'
+    'xp.compiler.types.TaskScope',
+    'xp.compiler.diagnostic.NullDiagnosticListener',
+    'xp.compiler.io.FileManager',
+    'xp.compiler.task.CompilationTask'
   );
 
   /**
@@ -19,7 +22,7 @@
   abstract class ExecutionTest extends TestCase {
     protected static $syntax;
     protected static $emitter;
-    protected static $manager;
+    protected static $scope;
     
     protected $counter= 0;
   
@@ -31,7 +34,12 @@
     public static function setupCompilerApi() {
       self::$syntax= Syntax::forName('xp');
       self::$emitter= new xp·compiler·emit·oel·Emitter();
-      self::$manager= new FileManager();
+      self::$scope= new TaskScope(new CompilationTask(
+        new FileSource(new File(__FILE__), self::$syntax),
+        new NullDiagnosticListener(),
+        new FileManager(),
+        self::$emitter
+      ));
     }
   
     /**
@@ -64,7 +72,7 @@
     protected function define($type, $class, $src, array $imports= array()) {
       $r= self::$emitter->emit(
         self::$syntax->parse(new MemoryInputStream(implode("\n", $imports).' public '.$type.' '.$class.' '.$src)), 
-        self::$manager
+        self::$scope
       );
       xp::gc();
 

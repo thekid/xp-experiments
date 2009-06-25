@@ -10,7 +10,8 @@
     'io.File',
     'xp.compiler.Compiler',
     'xp.compiler.emit.oel.Emitter',
-    'xp.compiler.diagnostic.DefaultListener',
+    'xp.compiler.diagnostic.DefaultDiagnosticListener',
+    'xp.compiler.io.FileSource',
     'xp.compiler.io.FileManager',
     'util.log.Logger',
     'util.log.LogAppender'
@@ -74,7 +75,7 @@
       
       // Handle arguments
       $files= array();
-      $listener= new DefaultListener(Console::$out);
+      $listener= new DefaultDiagnosticListener(Console::$out);
       for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
         if ('-?' === $args[$i] || '--help' === $args[$i]) {
           self::showUsage();
@@ -93,7 +94,7 @@
           }');
           $c->setTrace(Logger::getInstance()->getCategory()->withAppender($appender, $levels));
         } else {
-          $files[]= new File($args[$i]);
+          $files[]= new FileSource(new File($args[$i]));
         }
       }
       

@@ -166,5 +166,15 @@
     public function toString() {
       return $this->getClassName().'@('.$this->class->toString().')';
     }
+    
+    /**
+     * Test this type reflection for equality with another object
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $this->class->equals($cmp->class);
+    }
   }
 ?>

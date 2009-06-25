@@ -7,7 +7,8 @@
   uses(
     'xp.compiler.Syntax',
     'xp.compiler.emit.Emitter',
-    'io.streams.FileInputStream',
+    'xp.compiler.io.Source',
+    'xp.compiler.io.FileSource',
     'io.streams.FileOutputStream',
     'io.File'
   );
@@ -23,14 +24,14 @@
      * up in the source path.
      *
      * @param   string qualified
-     * @return  xp.compiler.ast.ParseTree
+     * @return  xp.compiler.io.Source
      */
-    public function parseClass($qualified) {
+    public function locateClass($qualified) {
       $name= DIRECTORY_SEPARATOR.strtr($qualified, '.', DIRECTORY_SEPARATOR);
       foreach (xp::$registry['classpath'] as $path) {
         foreach (Syntax::available() as $ext => $syntax) {
           if (!file_exists($uri= $path.$name.'.'.$ext)) continue;
-          return $this->parseFile(new File($uri), $syntax);
+          return new FileSource(new File($uri), $syntax);   // FIXME: Use class loader / resources
         }
       }
       throw new ClassNotFoundException('Cannot find class '.$qualified);
@@ -39,15 +40,15 @@
     /**
      * Get parse tree for a given file
      *
-     * @param   io.File in
-     * @param   xp.compiler.Syntax s Syntax to use, determined via file extension if null
+     * @param   xp.compiler.io.Source in
+     * @param   xp.compiler.Syntax s Syntax to use, determined via source file's syntax otherwise
      * @return  xp.compiler.ast.ParseTree
      */
-    public function parseFile(File $in, Syntax $s= NULL) {
+    public function parseFile(xp·compiler·io·Source $in, Syntax $s= NULL) {
       if (NULL === $s) {
-        $s= Syntax::forName($in->getExtension());
+        $s= $in->getSyntax();
       }
-      return $s->parse(new FileInputStream($in), $in->getURI());
+      return $s->parse($in->getInputStream(), $in->getURI());
     }
 
     /**
@@ -71,8 +72,10 @@
         $origin= new File($in->origin);
       } else if ($in instanceof File) {
         $origin= $in;
+      } else if ($in instanceof xp·compiler·io·Source) {
+        $origin= new File($in->getURI());
       } else {
-        throw new IllegalArgumentException('In is expected to be either a File or a ParseTree, '.xp::typeOf($in).' given');
+        throw new IllegalArgumentException('In is expected to be either a File, Source or a ParseTree, '.xp::typeOf($in).' given');
       }
       return new File($origin->getPath(), str_replace(
         strstr($origin->getFileName(), '.'), 

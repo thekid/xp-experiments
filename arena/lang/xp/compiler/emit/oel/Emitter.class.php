@@ -15,7 +15,9 @@
     'xp.compiler.syntax.xp.Lexer',
     'xp.compiler.syntax.xp.Parser',
     'xp.compiler.ast.StatementsNode',
-    'xp.compiler.types.Scope',
+    'xp.compiler.types.CompilationUnitScope',
+    'xp.compiler.types.TypeDeclarationScope',
+    'xp.compiler.types.MethodScope',
     'lang.reflect.Modifiers',
     'util.collections.HashTable'
   );
@@ -23,6 +25,21 @@
   /**
    * Emits sourcecode using the OEL (Opcode Engineering Library).
    *
+   * @test     xp://tests.execution.ArrayTest
+   * @test     xp://tests.execution.CatchTest
+   * @test     xp://tests.execution.ClassDeclarationTest
+   * @test     xp://tests.execution.ComparisonTest
+   * @test     xp://tests.execution.EnumDeclarationTest
+   * @test     xp://tests.execution.ExecutionTest
+   * @test     xp://tests.execution.ExtensionMethodsTest
+   * @test     xp://tests.execution.FinallyTest
+   * @test     xp://tests.execution.InstanceCreationTest
+   * @test     xp://tests.execution.InterfaceDeclarationTest
+   * @test     xp://tests.execution.LoopExecutionTest
+   * @test     xp://tests.execution.MathTest
+   * @test     xp://tests.execution.MultiCatchTest
+   * @test     xp://tests.execution.PropertiesTest
+   * @test     xp://tests.execution.VariablesTest
    * @ext      oel
    * @see      xp://xp.compiler.ast.Node
    */
@@ -69,7 +86,7 @@
       oel_add_begin_function_call($op, 'uses');
       foreach ($types as $type) {
         try {
-          $name= $this->scope[0]->resolve($type->name, $this, FALSE)->name();
+          $name= $this->resolveType($type, FALSE)->name();
           oel_push_value($op, $name);
           oel_add_pass_param($op, ++$n);
         } catch (Throwable $e) {
@@ -228,7 +245,7 @@
           $this->emitOne($op, $cast->expression);
           oel_add_pass_param($op, 1);
 
-          oel_push_value($op, $this->scope[0]->resolve($cast->type->name, $this)->name());
+          oel_push_value($op, $this->resolveType($cast->type)->name());
           oel_add_pass_param($op, 2);
         }
         oel_add_end_function_call($op, 2);
@@ -325,7 +342,7 @@
     protected function emitMemberAccess($op, VariableNode $access, TypeName $type) {
       $result= TypeName::$VAR;
       if ($type->isClass()) {
-        $ptr= $this->scope[0]->resolve($type->name, $this);
+        $ptr= $this->resolveType($type);
         if ($ptr->hasField($access->name)) {
           $result= $ptr->getField($access->name)->type;
         } else {
@@ -352,7 +369,7 @@
     protected function emitMemberCall($op, InvocationNode $access, TypeName $type) {
       $result= TypeName::$VAR;
       if ($type->isClass()) {
-        $ptr= $this->scope[0]->resolve($type->name, $this);
+        $ptr= $this->resolveType($type);
         if ($ptr->hasMethod($access->name)) {
           $result= $ptr->getMethod($access->name)->returns;
         } else if ($this->scope[0]->hasExtension($ptr, $access->name)) {
@@ -640,7 +657,7 @@
         $it= $t->arrayComponentType();
       } else if ($t->isVariable()) {
         $it= TypeName::$VAR;
-      } else if ('lang.Iterable' === $this->scope[0]->resolve($t->name, $this)->name()) {
+      } else if ('lang.Iterable' === $this->resolveType($t)->name()) {
         $it= isset($t->components[0]) ? $t->components[0] : TypeName::$VAR;;
       } else {
         $this->warn('T300', 'Illegal type '.$t->toString().' for loop expression '.$loop->expression->getClassName().'['.$loop->expression->hashCode().']', $loop);
@@ -782,7 +799,7 @@
      * @param   xp.compiler.ast.ClassMemberNode ref
      */
     protected function emitClassMember($op, ClassMemberNode $ref) {
-      $ptr= $this->scope[0]->resolve($ref->class->name, $this);
+      $ptr= $this->resolveType($ref->class);
       if ($ref->member instanceof InvocationNode) {
       
         // Static method call
@@ -910,7 +927,7 @@
       oel_add_begin_catchblock($op); {
       
         // First catch.
-        oel_add_begin_firstcatch($op, $this->scope[0]->resolve($first->type->name, $this)->literal(), $first->variable); {
+        oel_add_begin_firstcatch($op, $this->resolveType($first->type)->literal(), $first->variable); {
           $this->scope[0]->setType(new VariableNode($first->variable->variable), $first->type);
           $this->emitAll($op, (array)$first->statements);
           $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
@@ -921,7 +938,7 @@
         for ($i= 1; $i < $numHandlers; $i++) {
           oel_add_begin_catch(
             $op, 
-            $this->scope[0]->resolve($try->handling[$i]->type->name, $this)->literal(), 
+            $this->resolveType($try->handling[$i]->type)->literal(), 
             $try->handling[$i]->variable
           ); {
             $this->scope[0]->setType(new VariableNode($try->handling[$i]->variable), $try->handling[$i]->type);
@@ -975,7 +992,7 @@
       // Do not register type name from new(), it will be added by 
       // emitClass() during declaration emittance.
       if (isset($new->body)) {
-        $parent= $this->scope[0]->resolve($new->type->name, $this, FALSE);
+        $parent= $this->resolveType($new->type, $this, FALSE);
         if (Types::INTERFACE_KIND === $parent->kind()) {
           $p= array('parent' => new TypeName('lang.Object'), 'implements' => array($new->type));
         } else if (Types::ENUM_KIND === $parent->kind()) {
@@ -992,7 +1009,7 @@
         $this->scope[0]->setType($new, $unique);
         $this->scope[0]->addResolved($unique->name, $ptr);
       } else {
-        $ptr= $this->scope[0]->resolve($new->type->name, $this);
+        $ptr= $this->resolveType($new->type);
         $this->scope[0]->setType($new, $new->type);
       }
       
@@ -1134,7 +1151,7 @@
         $params= array();
         foreach ((array)$annotation->parameters as $name => $value) {
           if ($value instanceof ClassMemberNode) {    // class literal
-            $params[$name]= $this->scope[0]->resolve($value->class->name, $this)->name();
+            $params[$name]= $this->resolveType($value->class)->name();
           } else if ($value instanceof Resolveable) {
             $params[$name]= $value->resolve();
           }
@@ -1181,8 +1198,8 @@
       }
       if ($method->extension) {
         $this->scope[0]->addExtension(
-          $this->scope[0]->resolve($method->extension->name, $this),
-          $this->scope[0]->resolve('self', $this)->getMethod($method->name)
+          $this->resolveType($method->extension),
+          $this->resolveType(new TypeName('self'))->getMethod($method->name)
         );
       }
       if (Modifiers::isAbstract($method->modifiers)) {
@@ -1206,7 +1223,7 @@
       }
       
       // Begin
-      $this->enter(new Scope($this->scope[0]->manager));
+      $this->enter(new MethodScope());
       if (!Modifiers::isStatic($method->modifiers)) {
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
       }
@@ -1253,7 +1270,7 @@
       );
       
       // Begin
-      $this->enter(new Scope($this->scope[0]->manager));
+      $this->enter(new MethodScope());
       $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
       oel_set_source_file($cop, $this->origins[0]);
       array_unshift($this->method, $constructor);
@@ -1346,7 +1363,7 @@
             $property->modifiers
           );
           
-          $this->enter(new Scope($this->scope[0]->manager));
+          $this->enter(new MethodScope());
           $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
           oel_set_source_file($iop, $this->origins[0]);
           
@@ -1388,7 +1405,7 @@
       
       if (isset($properties['get'])) {
         $gop= oel_new_method($op, '__get', FALSE, FALSE, MODIFIER_PUBLIC, FALSE);
-        $this->enter(new Scope($this->scope[0]->manager));
+        $this->enter(new MethodScope());
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
         oel_set_source_file($gop, $this->origins[0]);
         oel_add_receive_arg($gop, 1, $mangled);
@@ -1413,7 +1430,7 @@
       }
       if (isset($properties['set'])) {
         $sop= oel_new_method($op, '__set', FALSE, FALSE, MODIFIER_PUBLIC, FALSE);
-        $this->enter(new Scope($this->scope[0]->manager));
+        $this->enter(new MethodScope());
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
         oel_set_source_file($sop, $this->origins[0]);
         oel_add_receive_arg($sop, 1, $mangled);
@@ -1503,7 +1520,8 @@
       }
 
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Enum');
-      
+      $this->enter(new TypeDeclarationScope());    
+
       // Ensure parent class and interfaces are loaded
       $this->emitUses($op, array_merge(
         array($parent), 
@@ -1512,17 +1530,17 @@
 
       $abstract= Modifiers::isAbstract($declaration->modifiers);
       if ($abstract) {
-        // FIXME segfault oel_add_begin_abstract_class_declaration($op, $declaration->name->name, $this->scope[0]->resolve($parent, $this));
-        oel_add_begin_class_declaration($op, $declaration->name->name, $this->scope[0]->resolve($parent->name, $this)->literal());
+        // FIXME segfault oel_add_begin_abstract_class_declaration($op, $declaration->name->name, $this->resolveType($parent));
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolveType($parent)->literal());
       } else {
-        oel_add_begin_class_declaration($op, $declaration->name->name, $this->scope[0]->resolve($parent->name, $this)->literal());
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolveType($parent)->literal());
       }
       array_unshift($this->metadata, array(array(), array()));
       array_unshift($this->properties, array('get' => array(), 'set' => array()));
 
       // Interfaces
       foreach ($declaration->implements as $type) {
-        oel_add_implements_interface($op, $this->scope[0]->resolve($type->name, $this, FALSE)->literal());
+        oel_add_implements_interface($op, $this->resolveType($type, FALSE)->literal());
       }
       
       // Member declaration
@@ -1582,6 +1600,7 @@
         oel_add_free($op);
       }
       
+      $this->leave();
       $this->registerClass($op, $declaration->name->name, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
       array_shift($this->properties);
       array_shift($this->metadata);
@@ -1601,6 +1620,7 @@
         $this->error('I403', 'Interfaces may not have field declarations', $declaration);
         return;
       }
+      $this->enter(new TypeDeclarationScope());    
 
       // Ensure parent interfaces are loaded
       $this->emitUses($op, (array)$declaration->parents);
@@ -1609,12 +1629,14 @@
       array_unshift($this->metadata, array(array(), array()));
 
       foreach ((array)$declaration->parents as $type) {
-        oel_add_parent_interface($op, $this->scope[0]->resolve($type->name, $this, FALSE)->literal());
+        oel_add_parent_interface($op, $this->resolveType($type, FALSE)->literal());
       }
 
       $this->emitAll($op, (array)$declaration->body['methods']);
       
       oel_add_end_interface_declaration($op);
+      
+      $this->leave();
       $this->registerClass($op, $declaration->name->name, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
       array_shift($this->metadata);
     }
@@ -1630,7 +1652,8 @@
         $this->warn('D201', 'No api doc for class '.$declaration->name->name, $declaration);
       }
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Object');
-    
+      $this->enter(new TypeDeclarationScope());    
+      
       // Ensure parent class and interfaces are loaded
       $this->emitUses($op, array_merge(
         array($parent), 
@@ -1639,10 +1662,10 @@
     
       $abstract= Modifiers::isAbstract($declaration->modifiers);
       if ($abstract) {
-        // FIXME segfault oel_add_begin_abstract_class_declaration($op, $declaration->name->name, $this->scope[0]->resolve($parent));
-        oel_add_begin_class_declaration($op, $declaration->name->name, $this->scope[0]->resolve($parent->name, $this, FALSE)->literal());
+        // FIXME segfault oel_add_begin_abstract_class_declaration($op, $declaration->name->name, $this->resolveType($parent));
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolveType($parent, FALSE)->literal());
       } else {
-        oel_add_begin_class_declaration($op, $declaration->name->name, $this->scope[0]->resolve($parent->name, $this, FALSE)->literal());
+        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolveType($parent, FALSE)->literal());
       }
       array_unshift($this->metadata, array(array(), array()));
       array_unshift($this->properties, array());
@@ -1650,7 +1673,7 @@
 
       // Interfaces
       foreach ($declaration->implements as $type) {
-        oel_add_implements_interface($op, $this->scope[0]->resolve($type->name, $this, FALSE)->literal());
+        oel_add_implements_interface($op, $this->resolveType($type, FALSE)->literal());
       }
       
       // Members
@@ -1720,7 +1743,8 @@
       $this->metadata[0]['class']= array(
         DETAIL_COMMENT => preg_replace('/\n\s+\* ?/', "\n", "\n ".$declaration->comment)
       );
-      
+
+      $this->leave();      
       $this->registerClass($op, $declaration->name->name, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
       array_shift($this->properties);
       array_shift($this->metadata);
@@ -1735,7 +1759,7 @@
      */
     protected function emitInstanceOf($op, InstanceOfNode $instanceof) {
       $this->emitOne($op, $instanceof->expression);
-      oel_add_instanceof($op, $this->scope[0]->resolve($instanceof->type->name, $this)->literal());
+      oel_add_instanceof($op, $this->resolveType($instanceof->type)->literal());
       $instanceof->free && oel_add_free($op);
     }
 
@@ -1759,11 +1783,9 @@
      */
     protected function emitImport($op, ImportNode $import) {
       if ('.*' == substr($import->name, -2)) {
-        foreach (Package::forName(substr($import->name, 0, -2))->getClassNames() as $name) {
-          $this->scope[0]->imports[xp::reflect($name)]= $name;
-        }
+        $this->scope[0]->addPackageImport(substr($import->name, 0, -2));
       } else {
-        $this->scope[0]->imports[xp::reflect($import->name)]= $import->name;
+        $this->scope[0]->addTypeImport($import->name);
       }
     }
 
@@ -1798,10 +1820,10 @@
      */
     protected function emitStaticImport($op, StaticImportNode $import) {
       if ('.*' == substr($import->name, -2)) {
-        $this->scope[0]->statics[0][substr($import->name, 0, -2)]= $this->scope[0]->resolve(substr($import->name, 0, -2), $this);
+        $this->scope[0]->statics[0][substr($import->name, 0, -2)]= $this->resolveType(new TypeName(substr($import->name, 0, -2)));
       } else {
         $p= strrpos($import->name, '.');
-        $method= $this->scope[0]->resolve(substr($import->name, 0, $p), $this)->getMethod(substr($import->name, $p+ 1));
+        $method= $this->resolveType(new TypeName(substr($import->name, 0, $p)))->getMethod(substr($import->name, $p+ 1));
         $this->scope[0]->statics[$method->name()]= $method;
       }
     }
@@ -1899,15 +1921,32 @@
       }
       return $emitted;
     }
+    
+    /**
+     * Resolve a type, raising an error message if type resolution
+     * raises an error and return an unknown type reference in this
+     * case.
+     *
+     * @param   xp.compiler.types.TypeName
+     * @return  xp.compiler.emit.Types
+     */
+    protected function resolveType(TypeName $t) {
+      try {
+        return $this->scope[0]->resolveType($t);
+      } catch (ResolveException $e) {
+        $this->error('R'.$e->getKind(), $e->compoundMessage());
+        return new TypeReference($t, Types::UNKNOWN_KIND);
+      }
+    }
 
     /**
      * Entry point
      *
      * @param   xp.compiler.ast.ParseTree tree
-     * @param   xp.compiler.io.FileManager manager
-     * @return  io.File the written file
+     * @param   xp.compiler.types.Scope scope
+     * @return  xp.compiler.Result
      */
-    public function emit(ParseTree $tree, FileManager $manager) {
+    public function emit(ParseTree $tree, Scope $scope) {
       $this->messages= array(
         'warnings' => array(),
         'errors'   => array()
@@ -1919,7 +1958,7 @@
       oel_set_source_line($op, 0);
       
       array_unshift($this->origins, $tree->origin);
-      $this->scope= array(new Scope($manager));
+      array_unshift($this->scope, $scope->enter(new CompilationUnitScope()));
       $this->scope[0]->importer= new NativeImporter();
       $this->scope[0]->declarations= array($tree->declaration);
       $this->scope[0]->package= $tree->package;
