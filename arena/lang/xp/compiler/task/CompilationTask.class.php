@@ -56,7 +56,6 @@
       } else {
         throw new IllegalArgumentException('Expected either a string or a Source object');
       }
-      $self= new self($source, $this->listener, $this->manager, $this->emitter);
       return new self($source, $this->listener, $this->manager, $this->emitter);
     }
     
