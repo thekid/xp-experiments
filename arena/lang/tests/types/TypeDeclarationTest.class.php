@@ -173,6 +173,16 @@
     }
 
     /**
+     * Test getConstructor() method
+     *
+     */
+    #[@test]
+    public function objectClassNoConstructor() {
+      $decl= $this->objectClass();
+      $this->assertNull($decl->getConstructor());
+    }
+
+    /**
      * Test hasConstructor() method
      *
      */
@@ -180,6 +190,17 @@
     public function stringClassHasConstructor() {
       $decl= $this->stringClass();
       $this->assertTrue($decl->hasConstructor());
+    }
+
+    /**
+     * Test getConstructor() method
+     *
+     */
+    #[@test]
+    public function stringClassConstructor() {
+      $decl= $this->stringClass();
+      $constructor= $decl->getConstructor();
+      $this->assertClass($constructor, 'xp.compiler.types.Constructor');
     }
 
     /**

@@ -58,13 +58,34 @@
     }
 
     /**
+     * Test getConstructor() method
+     *
+     */
+    #[@test]
+    public function objectClassNoConstructor() {
+      $decl= new TypeReflection(XPClass::forName('lang.Object'));
+      $this->assertNull($decl->getConstructor());
+    }
+
+    /**
      * Test hasConstructor() method
      *
      */
     #[@test]
-    public function testCaseClassHasNoConstructor() {
+    public function testCaseClassHasConstructor() {
       $decl= new TypeReflection(XPClass::forName('unittest.TestCase'));
       $this->assertTrue($decl->hasConstructor());
+    }
+
+    /**
+     * Test getConstructor() method
+     *
+     */
+    #[@test]
+    public function testCaseClassConstructor() {
+      $decl= new TypeReflection(XPClass::forName('unittest.TestCase'));
+      $constructor= $decl->getConstructor();
+      $this->assertClass($constructor, 'xp.compiler.types.Constructor');
     }
 
     /**
