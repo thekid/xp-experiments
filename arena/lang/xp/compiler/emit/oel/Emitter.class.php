@@ -1704,13 +1704,27 @@
       // They will have already been emitted if a constructor exists!
       if ($this->inits[0][FALSE]) {
         if ($parentType->hasConstructor()) {
-          // TODO: Generate parent::__construct(<signature>)
+          $arguments= array();
+          $parameters= array();
+          foreach ($parentType->getConstructor()->parameters as $i => $type) {
+            $arguments[]= array('name' => '__a'.$i, 'type' => $type);    // TODO: default
+            $parameters[]= new VariableNode('__a'.$i);
+          }
+          $body= array(new ClassMemberNode(array(
+            'class'  => new TypeName('parent'),
+            'member' => new InvocationNode(array(
+              'name'       => '__construct',
+              'parameters' => $parameters
+            )),
+            'free'   => TRUE
+          )));
         } else {
           $body= array();
+          $arguments= array();
         }
         $this->emitOne($op, new ConstructorNode(array(
           'modifiers'    => MODIFIER_PUBLIC,
-          'arguments'    => NULL,
+          'arguments'    => $arguments,
           'annotations'  => NULL,
           'body'         => $body,
           'comment'      => '(Generated)',

@@ -77,7 +77,10 @@
      */
     protected function define($type, $class, $parent, $src, array $imports= array()) {
       $r= self::$emitter->emit(
-        self::$syntax->parse(new MemoryInputStream(implode("\n", $imports).' public '.$type.' '.$class.' '.$src)), 
+        self::$syntax->parse(new MemoryInputStream(
+          implode("\n", $imports).
+          ' public '.$type.' '.$class.' '.($parent ? ' extends '.$parent : '').$src
+        )), 
         self::$scope
       );
       xp::gc();

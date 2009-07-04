@@ -215,10 +215,16 @@
         // FIXME: Imports= array() -> Maybe refactor TypeDeclaration to use 
         // not ParseTree but an optimized version?
         return new TypeDeclaration(new ParseTree($this->package, array(), $decl), $parent);
-      } else if ('parent' === $name->name || 'xp' === $name->name) {
-
-        // FIXME: "parent" must be used in emitted source but we really could 
-        // look it up here (but then use "parent" again later on).
+      } else if ('parent' === $name->name && $this->declarations) {
+        switch ($decl= $this->declarations[0]) {
+          case $decl instanceof ClassNode: 
+            return $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Object'));
+          case $decl instanceof EnumNode:
+            return $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Enum'));
+          default:
+            return new TypeReference('parent', Types::UNKNOWN_KIND);
+        }
+      } else if ('xp' === $name->name) {
         return new TypeReference($name->name, Types::UNKNOWN_KIND);
       } else if (strpos($name->name, '.')) {
         $qualified= $name->name;

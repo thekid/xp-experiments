@@ -85,5 +85,23 @@
         $this->assertEquals(new ArrayList(1, 2, 3), $elements);
       }
     }
+
+    /**
+     * Test member initialization to complex expressions.
+     *
+     */
+    #[@test]
+    public function memberInitializationWithParent() {
+      $class= $this->define('class', $this->name, 'unittest.TestCase', '{
+        public lang.types.ArrayList $elements = lang.types.ArrayList::class.newInstance(1, 2, 3);
+      }');
+      
+      with ($instance= $class->newInstance($this->name)); {
+        $this->assertEquals($this->name, $instance->getName());
+        $elements= $class->getField('elements')->get($instance);
+        $this->assertClass($elements, 'lang.types.ArrayList');
+        $this->assertEquals(new ArrayList(1, 2, 3), $elements);
+      }
+    }
   }
 ?>
