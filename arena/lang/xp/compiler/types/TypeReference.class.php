@@ -70,6 +70,18 @@
     }
 
     /**
+     * Returns the constructor
+     *
+     * @return  xp.compiler.types.Constructor
+     */
+    public function getConstructor() {
+      $c= new xp·compiler·types·Constructor();
+      $c->parameters= array();
+      $c->holder= $this;
+      return $c;
+    }
+
+    /**
      * Returns a method by a given name
      *
      * @param   string name

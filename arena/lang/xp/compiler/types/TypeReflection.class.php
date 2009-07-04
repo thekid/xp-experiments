@@ -66,6 +66,22 @@
         return parent::CLASS_KIND;
       }
     }
+    
+    /**
+     * Create a type name object from a type name string. Corrects old 
+     * usages of the type name
+     *
+     * @param   string t
+     * @return  xp.compiler.types.TypeName
+     */
+    protected function typeNameOf($t) {
+      if ('mixed' === $t || '*' === $t || NULL === $t || 'resource' === $t) {
+        return TypeName::$VAR;
+      } else if (0 == strncmp($t, 'array', 5)) {
+        return new TypeName('var[]');
+      }
+      return new TypeName($t);
+    }
 
     /**
      * Returns whether a constructor exists
@@ -75,34 +91,25 @@
     public function hasConstructor() {
       return $this->class->hasConstructor();
     }
-
+    
     /**
-     * Creates a xp.compiler.types.Method object from a given
-     * lang.reflect.Method instance.
+     * Returns the constructor
      *
-     * @param   lang.reflect.Method method
-     * @return  xp.compiler.types.Method
+     * @return  xp.compiler.types.Constructor
      */
-    protected function method(Method $method) {
-      $t= $method->getReturnTypeName();
+    public function getConstructor() {
+      if (!$this->class->hasConstructor()) return NULL;
       
-      // Correct old usages of the return type name
-      if ('mixed' === $t || '*' === $t || NULL === $t || 'resource' === $t) {
-        $t= 'var';
-      } else if (0 == strncmp($t, 'array', 5)) {
-        $t= '*[]';
+      with ($constructor= $this->class->getConstructor()); {
+        $c= new xp·compiler·types·Constructor();
+        $c->modifiers= $constructor->getModifiers();
+        $c->parameters= array();
+        foreach ($constructor->getParameters() as $p) {
+          $c->parameters[]= $this->typeNameOf($p->getTypeName());
+        }
       }
-
-      $m= new xp·compiler·types·Method();
-      $m->name= $method->getName();
-      $m->returns= new TypeName($t);
-      $m->modifiers= $method->getModifiers();
-      $m->parameters= array();
-      foreach ($method->getParameters() as $p) {
-        $m->parameters[]= $p->getTypeName();
-      }
-      $m->holder= $this;
-      return $m;
+      $c->holder= $this;  
+      return $c;
     }
 
     /**
@@ -122,27 +129,18 @@
      * @return  xp.compiler.types.Method
      */
     public function getMethod($name) {
-      return $this->method($this->class->getMethod($name));
-    }
+      if (!$this->class->hasMethod($name)) return NULL;
 
-    /**
-     * Creates a xp.compiler.types.Field object from a given
-     * lang.reflect.Field instance.
-     *
-     * @param   lang.reflect.Field field
-     * @return  xp.compiler.types.Field
-     */
-    protected function field(Field $field) {
-      $t= $field->getType();
-
-      // Correct old usages of the return type name
-      if ('mixed' === $t || '*' === $t || NULL === $t) {
-        $t= 'var';
+      with ($method= $this->class->getMethod($name)); {
+        $m= new xp·compiler·types·Method();
+        $m->name= $method->getName();
+        $m->returns= $this->typeNameOf($method->getReturnTypeName());
+        $m->modifiers= $method->getModifiers();
+        $m->parameters= array();
+        foreach ($method->getParameters() as $p) {
+          $m->parameters[]= $this->typeNameOf($p->getTypeName());
+        }
       }
-
-      $m= new xp·compiler·types·Field();
-      $m->name= $field->getName();
-      $m->type= new TypeName($t);
       $m->holder= $this;
       return $m;
     }
@@ -164,7 +162,15 @@
      * @return  xp.compiler.types.Field
      */
     public function getField($name) {
-      return $this->field($this->class->getField($name));
+      if (!$this->class->hasField($name)) return NULL;
+      
+      with ($field= $this->class->getField($name)); {
+        $f= new xp·compiler·types·Field();
+        $f->name= $field->getName();
+        $f->type= $this->typeNameOf($field->getType());
+      }
+      $f->holder= $this;
+      return $f;
     }
 
     /**

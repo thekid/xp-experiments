@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.types.Method', 'xp.compiler.types.Field');
+  uses('xp.compiler.types.Method', 'xp.compiler.types.Constructor', 'xp.compiler.types.Field');
 
   /**
    * Abstract base class
@@ -53,6 +53,13 @@
      * @return  bool
      */
     public abstract function hasConstructor();
+
+    /**
+     * Returns the constructor
+     *
+     * @return  xp.compiler.types.Constructor
+     */
+    public abstract function getConstructor();
 
     /**
      * Returns whether a method with a given name exists

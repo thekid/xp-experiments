@@ -90,6 +90,26 @@
     }
 
     /**
+     * Returns the constructor
+     *
+     * @return  xp.compiler.types.Constructor
+     */
+    public function getConstructor() {
+      foreach ($this->tree->declaration->body['methods'] as $member) {
+        if ($member instanceof ConstructorNode) {
+          $c= new xp·compiler·types·Constructor();
+          $c->modifiers= $member->modifiers;
+          foreach ($member->parameters as $p) {
+            $c->parameters[]= $p->type;
+          }
+          $c->holder= $this;
+          return $c;
+        }
+      }
+      return $this->parent ? $this->parent->getMethod($name) : NULL;
+    }
+    
+    /**
      * Returns a method by a given name
      *
      * @param   string name
@@ -122,7 +142,7 @@
           return $m;
         }
       }
-      return $this->parent ? $this->parent->getMethod($name) : FALSE;
+      return $this->parent ? $this->parent->getMethod($name) : NULL;
     }
 
     /**
