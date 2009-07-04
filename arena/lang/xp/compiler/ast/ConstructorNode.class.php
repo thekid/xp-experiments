@@ -7,11 +7,13 @@
   uses('xp.compiler.ast.Node');
 
   /**
-   * (Insert class' description here)
+   * Represents a constructor
    *
-   * @purpose  purpose
    */
   class ConstructorNode extends xp·compiler·ast·Node {
+    public
+      $modifiers  = 0,
+      $parameters = array();
     
   }
 ?>

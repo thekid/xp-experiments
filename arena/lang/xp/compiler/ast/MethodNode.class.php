@@ -7,12 +7,16 @@
   uses('xp.compiler.ast.Node');
 
   /**
-   * (Insert class' description here)
+   * Represents a method
    *
-   * @purpose  purpose
    */
   class MethodNode extends xp·compiler·ast·Node {
-    
+    public
+      $name       = '',
+      $modifiers  = 0,
+      $returns    = NULL,
+      $parameters = array();
+      
     /**
      * Returns a hashcode
      *
