@@ -126,6 +126,8 @@
           NULL,
           array(
             'methods' => array(
+              new ConstructorNode(array(
+              )),
               new MethodNode(array(
                 'name' => 'substring'
               ))
@@ -158,6 +160,26 @@
           )
         ))
       );
+    }
+
+    /**
+     * Test hasConstructor() method
+     *
+     */
+    #[@test]
+    public function objectClassHasNoConstructor() {
+      $decl= $this->objectClass();
+      $this->assertFalse($decl->hasConstructor());
+    }
+
+    /**
+     * Test hasConstructor() method
+     *
+     */
+    #[@test]
+    public function stringClassHasConstructor() {
+      $decl= $this->stringClass();
+      $this->assertTrue($decl->hasConstructor());
     }
 
     /**
