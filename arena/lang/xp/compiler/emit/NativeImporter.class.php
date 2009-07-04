@@ -10,6 +10,11 @@
    * @test    xp://tests.NativeImporterTest
    */
   class NativeImporter extends Object {
+    protected static $coreExtAvailable= FALSE;
+    
+    static function __static() {
+      self::$coreExtAvailable= extension_loaded('core');
+    }
     
     /**
      * Import all functions from a given extension
@@ -37,8 +42,8 @@
      * @throws  lang.IllegalArgumentException if extension or function don't exist
      */
     public function importSelected($extension, $function) {
-      if ('core' === $extension) {
-        $e= extension_loaded('Core') ? new ReflectionExtension('Core') : NULL;
+      if ('core' === $extension && !self::$coreExtAvailable) {
+        $e= NULL;
       } else {
         try {
           $e= new ReflectionExtension($extension);
@@ -66,12 +71,8 @@
      * @throws  lang.IllegalArgumentException if extension or function don't exist
      */
     public function hasFunction($extension, $function) {
-      if ('core' === $extension) {
-        if (extension_loaded('Core')) {
-          return in_array($function, get_extension_funcs('Core'));
-        } else {
-          return function_exists($function);
-        }
+      if ('core' === $extension && !self::$coreExtAvailable) {
+        return function_exists($function);
       } else {
         return in_array($function, get_extension_funcs($extension));
       }
