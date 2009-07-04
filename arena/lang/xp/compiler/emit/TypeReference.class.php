@@ -61,6 +61,15 @@
     }
 
     /**
+     * Returns whether a constructor exists
+     *
+     * @return  bool
+     */
+    public function hasConstructor() {
+      return TRUE;
+    }
+
+    /**
      * Returns a method by a given name
      *
      * @param   string name

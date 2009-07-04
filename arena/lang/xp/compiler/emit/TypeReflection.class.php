@@ -68,6 +68,15 @@
     }
 
     /**
+     * Returns whether a constructor exists
+     *
+     * @return  bool
+     */
+    public function hasConstructor() {
+      return $this->class->hasConstructor();
+    }
+
+    /**
      * Creates a xp.compiler.emit.Method object from a given
      * lang.reflect.Method instance.
      *

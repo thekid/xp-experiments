@@ -48,7 +48,14 @@
     public abstract function kind();
 
     /**
-     * Returns a method by a given name
+     * Returns whether a constructor exists
+     *
+     * @return  bool
+     */
+    public abstract function hasConstructor();
+
+    /**
+     * Returns whether a method with a given name exists
      *
      * @param   string name
      * @return  bool

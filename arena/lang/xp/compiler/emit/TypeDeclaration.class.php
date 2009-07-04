@@ -78,6 +78,18 @@
     }
 
     /**
+     * Returns whether a constructor exists
+     *
+     * @return  bool
+     */
+    public function hasConstructor() {
+      foreach ($this->tree->declaration->body['methods'] as $member) {
+        if ($member instanceof ConstructorNode) return TRUE;
+      }
+      return $this->parent ? $this->parent->hasMethod($name) : FALSE;
+    }
+
+    /**
      * Returns a method by a given name
      *
      * @param   string name

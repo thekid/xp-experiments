@@ -74,7 +74,7 @@
      * Test member initialization to complex expressions.
      *
      */
-    #[@test, @ignore('Segmentation fault w/ PHP 5.3')]
+    #[@test]
     public function memberInitialization() {
       $class= $this->define('class', $this->name, '{
         public lang.types.ArrayList $elements = lang.types.ArrayList::class.newInstance(1, 2, 3);

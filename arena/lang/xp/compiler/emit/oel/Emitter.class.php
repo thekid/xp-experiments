@@ -1652,6 +1652,7 @@
         $this->warn('D201', 'No api doc for class '.$declaration->name->name, $declaration);
       }
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Object');
+      $parentType= $this->resolveType($parent, FALSE);
       $this->enter(new TypeDeclarationScope());    
       
       // Ensure parent class and interfaces are loaded
@@ -1663,9 +1664,9 @@
       $abstract= Modifiers::isAbstract($declaration->modifiers);
       if ($abstract) {
         // FIXME segfault oel_add_begin_abstract_class_declaration($op, $declaration->name->name, $this->resolveType($parent));
-        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolveType($parent, FALSE)->literal());
+        oel_add_begin_class_declaration($op, $declaration->name->name, $parentType->literal());
       } else {
-        oel_add_begin_class_declaration($op, $declaration->name->name, $this->resolveType($parent, FALSE)->literal());
+        oel_add_begin_class_declaration($op, $declaration->name->name, $parentType->literal());
       }
       array_unshift($this->metadata, array(array(), array()));
       array_unshift($this->properties, array());
@@ -1702,31 +1703,16 @@
       // Generate a constructor if initializations are available.
       // They will have already been emitted if a constructor exists!
       if ($this->inits[0][FALSE]) {
-        $this->scope[0]->statics['func_get_args']= TRUE;
-        $this->scope[0]->statics['call_user_func_array']= TRUE;
+        if ($parentType->hasConstructor()) {
+          // TODO: Generate parent::__construct(<signature>)
+        } else {
+          $body= array();
+        }
         $this->emitOne($op, new ConstructorNode(array(
           'modifiers'    => MODIFIER_PUBLIC,
           'arguments'    => NULL,
           'annotations'  => NULL,
-          'body'         => array(
-            new AssignmentNode(array(
-              'variable'   => new VariableNode('__a'),
-              'expression' => new InvocationNode(array('name' => 'func_get_args')),
-              'free'       => TRUE,
-              'op'         => '='
-            )),
-            new InvocationNode(array(
-              'name'       => 'call_user_func_array',
-              'parameters' => array(
-                new ArrayNode(array('values' => array(
-                  new StringNode(array('value' => 'parent')),
-                  new StringNode(array('value' => '__construct')),
-                ))), 
-                new VariableNode('__a')
-              ),
-              'free'       => TRUE
-            ))
-          ),
+          'body'         => $body,
           'comment'      => '(Generated)',
           'position'     => $declaration->position
         )));
