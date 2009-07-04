@@ -24,6 +24,17 @@
     public function setUp() {
       $this->fixture= new NativeImporter();
     }
+
+    /**
+     * Test hasFunction()
+     *
+     */
+    #[@test]
+    public function hasFunction() {
+      $this->assertTrue($this->fixture->hasFunction('standard', 'array_keys'), 'standard.array_keys');
+      $this->assertTrue($this->fixture->hasFunction('pcre', 'preg_match'), 'pcre.preg_match');
+      $this->assertTrue($this->fixture->hasFunction('zend', 'strlen'), 'zend.strlen');
+    }
     
     /**
      * Test importing array_keys from ext/standard
@@ -83,7 +94,7 @@
     }
 
     /**
-     * Test importing ll functions from a nonexistant extension
+     * Test importing all functions from a nonexistant extension
      *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
