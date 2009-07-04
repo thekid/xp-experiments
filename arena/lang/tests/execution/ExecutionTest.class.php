@@ -57,7 +57,12 @@
      * @return  var
      */
     protected function run($src) {
-      return $this->define('class', ucfirst($this->name).'·'.($this->counter++), '{ public void run() { '.$src.' }}')->newInstance()->run();
+      return $this->define(
+        'class', 
+        ucfirst($this->name).'·'.($this->counter++), 
+        NULL,
+        '{ public void run() { '.$src.' }}'
+      )->newInstance()->run();
     }
     
     /**
@@ -65,11 +70,12 @@
      *
      * @param   string type
      * @param   string class
+     * @param   string parent
      * @param   string src
      * @param   string[] imports
      * @return  lang.XPClass
      */
-    protected function define($type, $class, $src, array $imports= array()) {
+    protected function define($type, $class, $parent, $src, array $imports= array()) {
       $r= self::$emitter->emit(
         self::$syntax->parse(new MemoryInputStream(implode("\n", $imports).' public '.$type.' '.$class.' '.$src)), 
         self::$scope

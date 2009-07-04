@@ -20,7 +20,7 @@
      */
     #[@test]
     public function echoClass() {
-      $class= $this->define('class', 'EchoClass', '{
+      $class= $this->define('class', 'EchoClass', NULL, '{
         public static string[] echoArgs(string[] $args) {
           return $args;
         }
@@ -48,7 +48,7 @@
      */
     #[@test]
     public function staticInitializer() {
-      $class= $this->define('class', 'StaticInitializer', '{
+      $class= $this->define('class', 'StaticInitializer', NULL, '{
         public static self $instance;
         
         static {
@@ -64,7 +64,7 @@
      */
     #[@test]
     public function staticMemberInitialization() {
-      $class= $this->define('class', $this->name, '{
+      $class= $this->define('class', $this->name, NULL, '{
         public static XPClass $arrayClass = lang.types.ArrayList::class;
       }');
       $this->assertClass($class->getField('arrayClass')->get(NULL), 'lang.XPClass');
@@ -76,13 +76,11 @@
      */
     #[@test]
     public function memberInitialization() {
-      $class= $this->define('class', $this->name, '{
+      $class= $this->define('class', $this->name, NULL, '{
         public lang.types.ArrayList $elements = lang.types.ArrayList::class.newInstance(1, 2, 3);
       }');
       
-      // FIXME: The constructor calls "parent::__construct()" via call_user_func_array()
-      // internally which works perfectly but causes a warning to be issued
-      with ($instance= @$class->newInstance(), $elements= $class->getField('elements')->get($instance)); {
+      with ($instance= $class->newInstance(), $elements= $class->getField('elements')->get($instance)); {
         $this->assertClass($elements, 'lang.types.ArrayList');
         $this->assertEquals(new ArrayList(1, 2, 3), $elements);
       }

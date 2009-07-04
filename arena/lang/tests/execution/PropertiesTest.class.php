@@ -22,7 +22,7 @@
      */
     public function setUp() {
       parent::setUp();
-      $this->fixture= $this->define('class', 'StringBufferFor'.$this->name, '{
+      $this->fixture= $this->define('class', 'StringBufferFor'.$this->name, NULL, '{
         protected string $buffer;
         
         public __construct(string $initial) {

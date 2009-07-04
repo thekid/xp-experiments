@@ -21,7 +21,7 @@
      */
     #[@test]
     public function weekdayEnum() {
-      $class= $this->define('enum', 'WeekDay', '{
+      $class= $this->define('enum', 'WeekDay', NULL, '{
         MON, TUE, WED, THU, FRI, SAT, SUN;
         
         public bool isWeekend() {

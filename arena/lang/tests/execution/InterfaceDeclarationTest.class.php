@@ -20,7 +20,7 @@
      */
     #[@test]
     public function comparableInterface() {
-      $class= $this->define('interface', 'Comparable', '{
+      $class= $this->define('interface', 'Comparable', NULL, '{
         public int compareTo(Generic $in);
       }');
       $this->assertEquals('Comparable', $class->getName());
@@ -45,7 +45,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function interfacesMayNotHaveFields() {
-      $this->define('interface', 'WithField', '{
+      $this->define('interface', 'WithField', NULL, '{
         public int $field = 0;
       }');
     }
@@ -57,7 +57,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function interfacesMayNotHaveProperties() {
-      $this->define('interface', 'WithProperty', '{
+      $this->define('interface', 'WithProperty', NULL, '{
         public int property { get { return 0; } }
       }');
     }
@@ -69,7 +69,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function interfaceMethodsMayNotContainBody() {
-      $this->define('interface', 'WithMethod', '{
+      $this->define('interface', 'WithMethod', NULL, '{
         public int method() {
           return 0;
         }

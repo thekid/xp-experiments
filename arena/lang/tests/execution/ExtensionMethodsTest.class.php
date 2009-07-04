@@ -20,7 +20,7 @@
      */
     #[@test]
     public function sorted() {
-      $class= $this->define('class', 'ClassExtension', '{
+      $class= $this->define('class', 'ClassExtension', NULL, '{
         public static lang.reflect.Method[] methodsNamed(this lang.XPClass $class, text.regex.Pattern $pattern) {
           $r= new lang.reflect.Method[] { };
           foreach ($method in $class.getMethods()) {
