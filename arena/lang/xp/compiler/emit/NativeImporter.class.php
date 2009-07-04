@@ -38,7 +38,7 @@
      */
     public function importSelected($extension, $function) {
       if ('zend' === $extension) {
-        $e= NULL;
+        $e= extension_loaded('Core') ? new ReflectionExtension('Core') : NULL;
       } else {
         try {
           $e= new ReflectionExtension($extension);
@@ -52,7 +52,7 @@
         throw new IllegalArgumentException('Function '.$function.' does not exist');
       }
       if ($e != $f->getExtension()) {
-        throw new IllegalArgumentException('Function '.$function.' is not inside extension '.$extension);
+        throw new IllegalArgumentException('Function '.$function.' is not inside extension '.$extension.' (but '.$f->getExtension()->getName().')');
       }
       return array($function => TRUE);
     }
@@ -67,7 +67,11 @@
      */
     public function hasFunction($extension, $function) {
       if ('zend' === $extension) {
-        return function_exists($extension);
+        if (extension_loaded('Core')) {
+          return in_array($function, get_extension_funcs('Core'));
+        } else {
+          return function_exists($extension);
+        }
       } else {
         return in_array($function, get_extension_funcs($extension));
       }
