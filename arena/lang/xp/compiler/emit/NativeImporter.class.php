@@ -70,7 +70,7 @@
         if (extension_loaded('Core')) {
           return in_array($function, get_extension_funcs('Core'));
         } else {
-          return function_exists($extension);
+          return function_exists($function);
         }
       } else {
         return in_array($function, get_extension_funcs($extension));
