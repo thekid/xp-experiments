@@ -59,16 +59,26 @@
     }
 
     /**
-     * Test member initialization to complex expressions.
+     * Test static member initialization to complex expressions.
      *
      */
     #[@test]
-    public function memberInitialization() {
-      $class= $this->define('class', 'Initialization', '{
+    public function staticMemberInitialization() {
+      $class= $this->define('class', $this->name, '{
         public static XPClass $arrayClass = lang.types.ArrayList::class;
-        public lang.types.ArrayList $elements = self::$arrayClass.newInstance(1, 2, 3);
       }');
       $this->assertClass($class->getField('arrayClass')->get(NULL), 'lang.XPClass');
+    }
+
+    /**
+     * Test member initialization to complex expressions.
+     *
+     */
+    #[@test, @ignore('Segmentation fault w/ PHP 5.3')]
+    public function memberInitialization() {
+      $class= $this->define('class', $this->name, '{
+        public lang.types.ArrayList $elements = lang.types.ArrayList::class.newInstance(1, 2, 3);
+      }');
       
       // FIXME: The constructor calls "parent::__construct()" via call_user_func_array()
       // internally which works perfectly but causes a warning to be issued
