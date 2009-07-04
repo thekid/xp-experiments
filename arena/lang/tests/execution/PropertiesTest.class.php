@@ -58,7 +58,7 @@
           return $this.buffer;
         }
       }', array(
-        'import native zend.strlen;', 
+        'import native core.strlen;', 
         'import native standard.str_split;',
         'import native standard.substr;',
         'import native standard.implode;',

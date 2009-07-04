@@ -37,7 +37,7 @@
      * @throws  lang.IllegalArgumentException if extension or function don't exist
      */
     public function importSelected($extension, $function) {
-      if ('zend' === $extension) {
+      if ('core' === $extension) {
         $e= extension_loaded('Core') ? new ReflectionExtension('Core') : NULL;
       } else {
         try {
@@ -66,7 +66,7 @@
      * @throws  lang.IllegalArgumentException if extension or function don't exist
      */
     public function hasFunction($extension, $function) {
-      if ('zend' === $extension) {
+      if ('core' === $extension) {
         if (extension_loaded('Core')) {
           return in_array($function, get_extension_funcs('Core'));
         } else {
@@ -84,7 +84,7 @@
      * <code>
      *   import native standard.array_keys;
      *   import native pcre.preg_match;
-     *   import native zend.strlen;
+     *   import native core.strlen;
      * </code>
      *
      * On-Demand:

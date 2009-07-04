@@ -33,7 +33,7 @@
     public function hasFunction() {
       $this->assertTrue($this->fixture->hasFunction('standard', 'array_keys'), 'standard.array_keys');
       $this->assertTrue($this->fixture->hasFunction('pcre', 'preg_match'), 'pcre.preg_match');
-      $this->assertTrue($this->fixture->hasFunction('zend', 'strlen'), 'zend.strlen');
+      $this->assertTrue($this->fixture->hasFunction('core', 'strlen'), 'core.strlen');
     }
     
     /**
@@ -61,14 +61,14 @@
     }
 
     /**
-     * Test importing strlen from zend
+     * Test importing strlen from core
      *
      */
     #[@test]
     public function importStrlen() {
       $this->assertEquals(
         array('strlen' => TRUE), 
-        $this->fixture->import('zend.strlen')
+        $this->fixture->import('core.strlen')
       );
     }
 
