@@ -48,6 +48,26 @@
     }
 
     /**
+     * Test hasConstructor() method
+     *
+     */
+    #[@test]
+    public function objectClassHasNoConstructor() {
+      $decl= new TypeReflection(XPClass::forName('lang.Object'));
+      $this->assertFalse($decl->hasConstructor());
+    }
+
+    /**
+     * Test hasConstructor() method
+     *
+     */
+    #[@test]
+    public function testCaseClassHasNoConstructor() {
+      $decl= new TypeReflection(XPClass::forName('unittest.TestCase'));
+      $this->assertTrue($decl->hasConstructor());
+    }
+
+    /**
      * Test kind() method
      *
      */
