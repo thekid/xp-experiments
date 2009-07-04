@@ -1292,7 +1292,7 @@
       
       // Finalize
       $this->metadata[0][1]['__construct']= array(
-        DETAIL_ARGUMENTS    => $this->parametersAsMetadata((array)$method->arguments),
+        DETAIL_ARGUMENTS    => $this->parametersAsMetadata((array)$constructor->arguments),
         DETAIL_RETURNS      => NULL,
         DETAIL_THROWS       => array(),
         DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$constructor->comment),
