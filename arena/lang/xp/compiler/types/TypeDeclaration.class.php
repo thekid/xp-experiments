@@ -174,7 +174,7 @@
           return $f;
         }
       }
-      return $this->parent ? $this->parent->getField($name) : FALSE;
+      return $this->parent ? $this->parent->getField($name) : NULL;
     }
 
     /**
