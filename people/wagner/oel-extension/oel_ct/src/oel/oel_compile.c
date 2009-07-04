@@ -70,8 +70,8 @@ static zend_op_array *oel_compile_file(zend_file_handle *file_handle, int type T
         op_array->opcodes[op_array->last- 2].op1.op_type = IS_CONST;
         op_array->opcodes[op_array->last- 2].op1.u.constant.type = IS_LONG;
         op_array->opcodes[op_array->last- 2].op1.u.constant.value.lval = 1;
-        op_array->opcodes[op_array->last- 2].op1.u.constant.is_ref = 0;
-        op_array->opcodes[op_array->last- 2].op1.u.constant.refcount = 1;
+        Z_SET_ISREF_TO(op_array->opcodes[op_array->last- 2].op1.u.constant, 0);
+        Z_SET_REFCOUNT(op_array->opcodes[op_array->last- 2].op1.u.constant, 1);
         
         return op_array;
     }

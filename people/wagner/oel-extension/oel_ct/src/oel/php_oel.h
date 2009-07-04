@@ -90,6 +90,10 @@
     #if ZEND_MODULE_API_NO < 20071006
         #define Z_SET_REFCOUNT(o, v) (o).refcount= (v)
         #define Z_SET_ISREF_TO(o, v) (o).is_ref= (v)
+        #define Z_SET_REFCOUNT_P(p, v) p->refcount= (v)
+        #define Z_SET_ISREF_TO_P(p, v) p->is_ref= (v)
+        #define Z_REFCOUNT_P(p) p->refcount
+        #define Z_ISREF_P(p) p->is_ref
 
         #define PHP_OEL_COMPAT_EVP(o)
         #define PHP_OEL_COMPAT_FCT(o, i) i

@@ -219,8 +219,8 @@ static void serialize_zval(zval *ptr, znode *node SERIALIZE_DC)
 {
     SERIALIZE(ptr->type, zend_uchar);
     serialize_zvalue_value(&ptr->value, ptr->type, node SERIALIZE_CC);
-    SERIALIZE(ptr->is_ref, zend_uchar);
-    SERIALIZE(ptr->refcount, zend_ushort);
+    SERIALIZE(Z_ISREF_P(ptr), zend_uchar);
+    SERIALIZE(Z_REFCOUNT_P(ptr), zend_ushort);
 }
 
 static void serialize_znode(znode *node SERIALIZE_DC)
@@ -304,8 +304,12 @@ static void serialize_op_array(zend_op_array *op_array SERIALIZE_DC)
     SERIALIZE(op_array->required_num_args, zend_uint);
     SERIALIZE(op_array->pass_rest_by_reference, zend_bool);
     SERIALIZE(op_array->backpatch_count, int);
-    SERIALIZE(op_array->uses_this, zend_bool);
 
+#if ZEND_MODULE_API_NO < 20071006    
+    SERIALIZE(op_array->uses_this, zend_bool);
+#else
+    SERIALIZE(0, zend_bool);
+#endif
 
     SERIALIZE(op_array->last_var, int);
     SERIALIZE(op_array->size_var, int);
@@ -622,6 +626,8 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
     if (0 != brk) {
         op_array->brk_cont_array = (zend_brk_cont_element*)emalloc(op_array->last_brk_cont * sizeof(zend_brk_cont_element));
         READ(op_array->brk_cont_array, op_array->last_brk_cont * sizeof(zend_brk_cont_element));
+    } else {
+        op_array->brk_cont_array = NULL;
     }
     unserialize_hashtable_ptr(&op_array->static_variables, sizeof(zval *), unserialize_zval_ptr, "op_array->static_variables" UNSERIALIZE_CC);
 
@@ -649,7 +655,14 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
     UNSERIALIZE(&op_array->required_num_args, zend_uint);
     UNSERIALIZE(&op_array->pass_rest_by_reference, zend_bool);
     UNSERIALIZE(&op_array->backpatch_count, int);
+#if ZEND_MODULE_API_NO < 20071006    
     UNSERIALIZE(&op_array->uses_this, zend_bool);
+#else
+    {
+        zend_bool tmp;
+        UNSERIALIZE(&tmp, zend_bool);
+    }
+#endif
 
     UNSERIALIZE(&op_array->last_var, int);
     UNSERIALIZE(&op_array->size_var, int);
@@ -661,12 +674,16 @@ static void unserialize_op_array(zend_op_array* op_array UNSERIALIZE_DC)
             unserialize_string(&(op_array->vars[i].name) UNSERIALIZE_CC);
             UNSERIALIZE(&(op_array->vars[i].hash_value), ulong);
         }
+    } else {
+        op_array->vars = NULL;
     }
 
     UNSERIALIZE(&op_array->last_try_catch, int);
     if (op_array->last_try_catch > 0) {
         op_array->try_catch_array = (zend_try_catch_element*) emalloc(op_array->last_try_catch * sizeof(zend_try_catch_element));
         READ(op_array->try_catch_array, op_array->last_try_catch * sizeof(zend_try_catch_element));
+    } else {
+        op_array->try_catch_array = NULL;
     }
 }
 
@@ -817,10 +834,15 @@ static void unserialize_zvalue_value(zvalue_value *value, int type, znode *node 
 
 static void unserialize_zval(zval *ptr, znode *node UNSERIALIZE_DC)
 {
+    zend_uchar is_ref;
+    zend_ushort refcount;
+    
     UNSERIALIZE(&ptr->type, zend_uchar);
     unserialize_zvalue_value(&ptr->value, ptr->type, node UNSERIALIZE_CC);
-    UNSERIALIZE(&ptr->is_ref, zend_uchar);
-    UNSERIALIZE(&ptr->refcount, zend_ushort);
+    UNSERIALIZE(&is_ref, zend_uchar);
+    UNSERIALIZE(&refcount, zend_ushort);
+    Z_SET_ISREF_TO_P(ptr, is_ref);
+    Z_SET_REFCOUNT_P(ptr, refcount);
 }
 
 static void unserialize_zval_ptr(zval **zval_ptr UNSERIALIZE_DC)
@@ -1117,12 +1139,14 @@ static void unserialize_class_entry(zend_class_entry* ce UNSERIALIZE_DC)
     UNSERIALIZE(&count, int);
     if (count > 0) {
         int i;
+        zend_function_entry* builtin_functions;
 
-        ce->builtin_functions = (zend_function_entry*) emalloc((count+1) * sizeof(zend_function_entry));
-        ce->builtin_functions[count].fname = NULL;
+        builtin_functions = (zend_function_entry*) emalloc((count+1) * sizeof(zend_function_entry));
+        builtin_functions[count].fname = NULL;
         for (i = 0; i < count; i++) {
-            unserialize_function_entry(&ce->builtin_functions[i] UNSERIALIZE_CC);
+            unserialize_function_entry(&builtin_functions[i] UNSERIALIZE_CC);
         }
+        ce->builtin_functions = builtin_functions;
     } else {
         ce->builtin_functions = NULL;
     }
