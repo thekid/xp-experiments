@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.emit.Types');
+  uses('xp.compiler.types.Types');
 
   /**
    * (Insert class' description here)
@@ -27,7 +27,7 @@
     /**
      * Returns parent type
      *
-     * @return  xp.compiler.emit.Types
+     * @return  xp.compiler.types.Types
      */
     public function parent() {
       return NULL;
@@ -83,10 +83,10 @@
      * Returns a method by a given name
      *
      * @param   string name
-     * @return  xp.compiler.emit.Method
+     * @return  xp.compiler.types.Method
      */
     public function getMethod($name) {
-      $m= new xp·compiler·emit·Method();
+      $m= new xp·compiler·types·Method();
       $m->name= $name;
       $m->returns= new TypeName('var');
       $m->parameters= array();
@@ -108,10 +108,10 @@
      * Returns a field by a given name
      *
      * @param   string name
-     * @return  xp.compiler.emit.Field
+     * @return  xp.compiler.types.Field
      */
     public function getField($name) {
-      $m= new xp·compiler·emit·Field();
+      $m= new xp·compiler·types·Field();
       $m->name= $name;
       $m->type= new TypeName('var');
       $m->holder= $this;

@@ -1914,7 +1914,7 @@
      * case.
      *
      * @param   xp.compiler.types.TypeName
-     * @return  xp.compiler.emit.Types
+     * @return  xp.compiler.types.Types
      */
     protected function resolveType(TypeName $t) {
       try {

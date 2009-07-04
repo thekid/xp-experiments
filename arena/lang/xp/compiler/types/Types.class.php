@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.emit.Method', 'xp.compiler.emit.Field');
+  uses('xp.compiler.types.Method', 'xp.compiler.types.Field');
 
   /**
    * Abstract base class
@@ -29,7 +29,7 @@
     /**
      * Returns parent type
      *
-     * @return  xp.compiler.emit.Types
+     * @return  xp.compiler.types.Types
      */
     public abstract function parent();
 
@@ -66,7 +66,7 @@
      * Returns a method by a given name
      *
      * @param   string name
-     * @return  xp.compiler.emit.Method
+     * @return  xp.compiler.types.Method
      */
     public abstract function getMethod($name);
 
@@ -82,7 +82,7 @@
      * Returns a field by a given name
      *
      * @param   string name
-     * @return  xp.compiler.emit.Field
+     * @return  xp.compiler.types.Field
      */
     public abstract function getField($name);
   }

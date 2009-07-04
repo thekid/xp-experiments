@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.emit.Types');
+  uses('xp.compiler.types.Types');
 
   /**
    * (Insert class' description here)
@@ -25,7 +25,7 @@
     /**
      * Returns parent type
      *
-     * @return  xp.compiler.emit.Types
+     * @return  xp.compiler.types.Types
      */
     public function parent() {
       if ($parent= $this->class->getParentClass()) {
@@ -77,11 +77,11 @@
     }
 
     /**
-     * Creates a xp.compiler.emit.Method object from a given
+     * Creates a xp.compiler.types.Method object from a given
      * lang.reflect.Method instance.
      *
      * @param   lang.reflect.Method method
-     * @return  xp.compiler.emit.Method
+     * @return  xp.compiler.types.Method
      */
     protected function method(Method $method) {
       $t= $method->getReturnTypeName();
@@ -93,7 +93,7 @@
         $t= '*[]';
       }
 
-      $m= new xp·compiler·emit·Method();
+      $m= new xp·compiler·types·Method();
       $m->name= $method->getName();
       $m->returns= new TypeName($t);
       $m->modifiers= $method->getModifiers();
@@ -119,18 +119,18 @@
      * Returns a method by a given name
      *
      * @param   string name
-     * @return  xp.compiler.emit.Method
+     * @return  xp.compiler.types.Method
      */
     public function getMethod($name) {
       return $this->method($this->class->getMethod($name));
     }
 
     /**
-     * Creates a xp.compiler.emit.Field object from a given
+     * Creates a xp.compiler.types.Field object from a given
      * lang.reflect.Field instance.
      *
      * @param   lang.reflect.Field field
-     * @return  xp.compiler.emit.Field
+     * @return  xp.compiler.types.Field
      */
     protected function field(Field $field) {
       $t= $field->getType();
@@ -140,7 +140,7 @@
         $t= 'var';
       }
 
-      $m= new xp·compiler·emit·Field();
+      $m= new xp·compiler·types·Field();
       $m->name= $field->getName();
       $m->type= new TypeName($t);
       $m->holder= $this;
@@ -161,7 +161,7 @@
      * Returns a field by a given name
      *
      * @param   string name
-     * @return  xp.compiler.emit.Field
+     * @return  xp.compiler.types.Field
      */
     public function getField($name) {
       return $this->field($this->class->getField($name));

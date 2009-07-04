@@ -5,7 +5,7 @@
  */
 
   uses(
-    'xp.compiler.emit.Types', 
+    'xp.compiler.types.Types', 
     'xp.compiler.ast.ParseTree',
     'xp.compiler.ast.ClassNode',
     'xp.compiler.ast.InterfaceNode',
@@ -25,7 +25,7 @@
      * Constructor
      *
      * @param   xp.compiler.ast.ParseTree tree
-     * @param   xp.compiler.emit.Types parent
+     * @param   xp.compiler.types.Types parent
      */
     public function __construct(ParseTree $tree, Types $parent= NULL) {
       $this->tree= $tree;
@@ -35,7 +35,7 @@
     /**
      * Returns parent type
      *
-     * @return  xp.compiler.emit.Types
+     * @return  xp.compiler.types.Types
      */
     public function parent() {
       return $this->parent;
@@ -106,12 +106,12 @@
      * Returns a method by a given name
      *
      * @param   string name
-     * @return  xp.compiler.emit.Method
+     * @return  xp.compiler.types.Method
      */
     public function getMethod($name) {
       foreach ($this->tree->declaration->body['methods'] as $member) {
         if ($member instanceof MethodNode && $member->name === $name) {
-          $m= new xp·compiler·emit·Method();
+          $m= new xp·compiler·types·Method();
           $m->name= $member->name;
           $m->returns= $member->returns;
           $m->modifiers= $member->modifiers;
@@ -142,12 +142,12 @@
      * Returns a field by a given name
      *
      * @param   string name
-     * @return  xp.compiler.emit.Field
+     * @return  xp.compiler.types.Field
      */
     public function getField($name) {
       foreach ($this->tree->declaration->body['fields'] as $member) {
         if ($member instanceof FieldNode && $member->name === $name) {
-          $f= new xp·compiler·emit·Field();
+          $f= new xp·compiler·types·Field();
           $f->name= $member->name;
           $f->type= $member->type;
           $f->holder= $this;

@@ -4,14 +4,14 @@
  * $Id$ 
  */
 
-  $package= 'xp.compiler.emit';
+  $package= 'xp.compiler.types';
 
   /**
    * Represents a method
    *
-   * @see      xp://xp.compiler.emit.Types
+   * @see      xp://xp.compiler.types.Types
    */
-  class xp·compiler·emit·Field extends Object {
+  class xp·compiler·types·Field extends Object {
     public
       $name       = '',
       $returns    = NULL,

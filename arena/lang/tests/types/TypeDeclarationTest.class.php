@@ -6,13 +6,13 @@
 
   uses(
     'unittest.TestCase',
-    'xp.compiler.emit.TypeDeclaration'
+    'xp.compiler.types.TypeDeclaration'
   );
 
   /**
    * TestCase
    *
-   * @see      xp://xp.compiler.emit.TypeDeclaration
+   * @see      xp://xp.compiler.types.TypeDeclaration
    */
   class TypeDeclarationTest extends TestCase {
   

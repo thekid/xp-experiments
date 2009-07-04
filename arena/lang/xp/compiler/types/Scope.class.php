@@ -17,11 +17,11 @@
     'xp.compiler.ast.NullNode',
     'xp.compiler.ast.BooleanNode',
     'xp.compiler.ast.ComparisonNode',
-    'xp.compiler.emit.Method',
-    'xp.compiler.emit.Types',
-    'xp.compiler.emit.TypeReference', 
-    'xp.compiler.emit.TypeReflection', 
-    'xp.compiler.emit.TypeDeclaration'
+    'xp.compiler.types.Method',
+    'xp.compiler.types.Types',
+    'xp.compiler.types.TypeReference', 
+    'xp.compiler.types.TypeReflection', 
+    'xp.compiler.types.TypeDeclaration'
   );
 
   /**
@@ -49,7 +49,7 @@
      */
     public function __construct() {
       $this->types= create('new util.collections.HashTable<xp.compiler.ast.Node, xp.compiler.types.TypeName>()');
-      $this->resolved= create('new util.collections.HashTable<lang.types.String, xp.compiler.emit.Types>()');
+      $this->resolved= create('new util.collections.HashTable<lang.types.String, xp.compiler.types.Types>()');
     }
     
     /**
@@ -81,7 +81,7 @@
      * Add a type to resolved
      *
      * @param   string type
-     * @param   xp.compiler.emit.Types resolved
+     * @param   xp.compiler.types.Types resolved
      */
     public function addResolved($type, Types $resolved) {
       $this->resolved[$type]= $resolved;
@@ -90,10 +90,10 @@
     /**
      * Add an extension method
      *
-     * @param   xp.compiler.emit.Types type
-     * @param   xp.compiler.emit.Method method
+     * @param   xp.compiler.types.Types type
+     * @param   xp.compiler.types.Method method
      */
-    public function addExtension(Types $type, xp·compiler·emit·Method $method) {
+    public function addExtension(Types $type, xp·compiler·types·Method $method) {
       $this->extensions[$type->name().$method->name]= $method;
     }
     
@@ -126,7 +126,7 @@
     /**
      * Helper method for hasExtension() and getExtension()
      *
-     * @param   xp.compiler.emit.Types type
+     * @param   xp.compiler.types.Types type
      * @param   string name method name
      * @return  string
      */
@@ -145,7 +145,7 @@
     /**
      * Return whether an extension method is available
      *
-     * @param   xp.compiler.emit.Types type
+     * @param   xp.compiler.types.Types type
      * @param   string name method name
      * @return  bool
      */
@@ -156,9 +156,9 @@
     /**
      * Get an extension method
      *
-     * @param   xp.compiler.emit.Types type
+     * @param   xp.compiler.types.Types type
      * @param   string name method name
-     * @return  xp.compiler.emit.Method
+     * @return  xp.compiler.types.Method
      */
     public function getExtension(Types $type, $name) {
       if ($k= $this->lookupExtension($type, $name)) {
@@ -170,7 +170,7 @@
 
     /**
      * Resolve a static call. Return TRUE if the target is a function
-     * (e.g. key()), a xp.compiler.emit.Method instance if it's a static 
+     * (e.g. key()), a xp.compiler.types.Method instance if it's a static 
      * method (Map::key()).
      *
      * @param   string name
@@ -194,7 +194,7 @@
      *
      * @param   xp.compiler.types.TypeName name
      * @param   bool register
-     * @return  xp.compiler.emit.Types resolved
+     * @return  xp.compiler.types.Types resolved
      * @throws  xp.compiler.types.ResolveException
      */
     public function resolveType(TypeName $name, $register= TRUE) {

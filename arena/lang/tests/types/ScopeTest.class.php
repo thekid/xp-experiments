@@ -6,9 +6,9 @@
 
   uses(
     'unittest.TestCase',
-    'xp.compiler.emit.TypeReflection',
     'xp.compiler.ast.VariableNode',
     'xp.compiler.emit.oel.Emitter',
+    'xp.compiler.types.TypeReflection',
     'xp.compiler.types.TaskScope',
     'xp.compiler.diagnostic.NullDiagnosticListener',
     'xp.compiler.io.FileManager',
@@ -146,7 +146,7 @@
     public function objectExtension() {
       with (
         $objectType= new TypeReflection(XPClass::forName('lang.Object')), 
-        $classNameMethod= new xp·compiler·emit·Method('getClassName')
+        $classNameMethod= new xp·compiler·types·Method('getClassName')
       ); {
         $this->fixture->addExtension($objectType, $classNameMethod);
         $this->assertTrue($this->fixture->hasExtension($objectType, $classNameMethod->name));
@@ -166,7 +166,7 @@
       with (
         $objectType= new TypeReflection(XPClass::forName('lang.Object')), 
         $dateType= new TypeReflection(XPClass::forName('util.Date')),
-        $classNameMethod= new xp·compiler·emit·Method('getClassName')
+        $classNameMethod= new xp·compiler·types·Method('getClassName')
       ); {
         $this->fixture->addExtension($objectType, $classNameMethod);
         $this->assertTrue($this->fixture->hasExtension($dateType, $classNameMethod->name));
