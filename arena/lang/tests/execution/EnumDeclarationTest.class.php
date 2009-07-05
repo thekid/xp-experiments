@@ -106,5 +106,25 @@
       $minus= Enum::valueOf($class, 'minus');
       $this->assertEquals(0, $minus->evaluate(1, 1));
     }
+
+    /**
+     * Test declaring an enum
+     *
+     */
+    #[@test]
+    public function partialOperationEnum() {
+      $class= $this->define('abstract enum', 'PartialOperation', NULL, '{
+        plus {
+          public int evaluate(int $x, int $y) { return $x + $y; }
+        };
+        
+        public abstract int evaluate(int $x, int $y);
+      }');
+      $this->assertEquals('PartialOperation', $class->getName());
+      $this->assertTrue($class->isEnum());
+
+      $plus= Enum::valueOf($class, 'plus');
+      $this->assertEquals(2, $plus->evaluate(1, 1));
+    }
   }
 ?>
