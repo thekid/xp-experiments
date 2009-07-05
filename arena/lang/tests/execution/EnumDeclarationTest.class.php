@@ -133,7 +133,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function brokenOperationEnum() {
-      $this->define('enum', 'PartialOperation', NULL, '{
+      $this->define('enum', 'BrokenOperation', NULL, '{
         plus {
           public int evaluate(int $x, int $y) { return $x + $y; }
         };
