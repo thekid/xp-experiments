@@ -1082,18 +1082,15 @@
       foreach ($arguments as $i => $arg) {
         if (isset($arg['vararg'])) {
           if ($i > 0) {
-            oel_add_begin_function_call($op, 'array_splice'); {
-              oel_push_value($op, 0);
-              oel_add_pass_param($op, 1);
-
-              oel_push_value($op, $i);
-              oel_add_pass_param($op, 2);
-
+            oel_add_begin_function_call($op, 'array_slice'); {
               oel_add_begin_function_call($op, 'func_get_args');
               oel_add_end_function_call($op, 0);
-              oel_add_pass_param($op, 3);
+              oel_add_pass_param($op, 1);
+              
+              oel_push_value($op, $i);
+              oel_add_pass_param($op, 2);
             }
-            oel_add_end_function_call($op, 3);
+            oel_add_end_function_call($op, 2);
           } else {
             oel_add_begin_function_call($op, 'func_get_args');
             oel_add_end_function_call($op, 0);
@@ -1102,7 +1099,7 @@
           oel_push_variable($op, $arg['name']);
           oel_add_assign($op);
           oel_add_free($op);
-          $this->scope[0]->setType(new VariableNode($arg['name']), $arg['type']);
+          $this->scope[0]->setType(new VariableNode($arg['name']), new TypeName($arg['type']->name.'[]'));
           break;
         }
         
