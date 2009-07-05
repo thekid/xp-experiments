@@ -1154,6 +1154,11 @@
             $params[$name]= $this->resolveType($value->class)->name();
           } else if ($value instanceof Resolveable) {
             $params[$name]= $value->resolve();
+          } else if ($value instanceof ArrayNode) {
+            $params[$name]= array();
+            foreach ($value->values as $element) {
+              $element instanceof Resolveable && $params[$name][]= $element->resolve();
+            }
           }
         }
 
