@@ -54,7 +54,7 @@
      *
      */
     #[@test]
-    public function catchMultipleIAE() {
+    public function catchIAE() {
       $this->assertEquals(array('Try', 'Catch.IAE'), $this->run('
         $r= [];
         try {
@@ -74,7 +74,7 @@
      *
      */
     #[@test]
-    public function catchMultipleFE() {
+    public function catchFE() {
       $this->assertEquals(array('Try', 'Catch.FE'), $this->run('
         $r= [];
         try {
@@ -84,6 +84,62 @@
           $r[]= "Catch.IAE";
         } catch (FormatException $e) {
           $r[]= "Catch.FE";
+        }
+        return $r;
+      '));
+    }
+
+    /**
+     * Test try ... catch (A|B)
+     *
+     */
+    #[@test]
+    public function catchMultipleFE() {
+      $this->assertEquals(array('Try', 'Catch'), $this->run('
+        $r= [];
+        try {
+          $r[]= "Try";
+          throw new FormatException("Error");
+        } catch (IllegalArgumentException | FormatException $e) {
+          $r[]= "Catch";
+        }
+        return $r;
+      '));
+    }
+
+    /**
+     * Test try ... catch (A|B) when B is thrown
+     *
+     */
+    #[@test]
+    public function catchMultipleIAE() {
+      $this->assertEquals(array('Try', 'Catch'), $this->run('
+        $r= [];
+        try {
+          $r[]= "Try";
+          throw new IllegalArgumentException("Error");
+        } catch (IllegalArgumentException | FormatException $e) {
+          $r[]= "Catch";
+        }
+        return $r;
+      '));
+    }
+
+    /**
+     * Test try ... catch (A|B) when neither A nor B is thrown
+     *
+     */
+    #[@test]
+    public function catchMultipleISE() {
+      $this->assertEquals(array('Try', 'Catch.ISE'), $this->run('
+        $r= [];
+        try {
+          $r[]= "Try";
+          throw new IllegalStateException("Error");
+        } catch (IllegalArgumentException | FormatException $e) {
+          $r[]= "Catch";
+        } catch (IllegalStateException $e) {
+          $r[]= "Catch.ISE";
         }
         return $r;
       '));
