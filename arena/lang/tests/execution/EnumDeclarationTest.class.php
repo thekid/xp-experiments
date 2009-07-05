@@ -126,5 +126,20 @@
       $plus= Enum::valueOf($class, 'plus');
       $this->assertEquals(2, $plus->evaluate(1, 1));
     }
+
+    /**
+     * Test declaring an enum
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function brokenOperationEnum() {
+      $this->define('enum', 'PartialOperation', NULL, '{
+        plus {
+          public int evaluate(int $x, int $y) { return $x + $y; }
+        };
+
+        public abstract int evaluate(int $x, int $y);
+      }');
+    }
   }
 ?>

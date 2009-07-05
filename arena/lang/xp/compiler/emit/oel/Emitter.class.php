@@ -1552,7 +1552,15 @@
       $classes= array();
       foreach ($declaration->body['members'] as $member) { 
         oel_add_declare_property($op, $member->name, NULL, TRUE, MODIFIER_PUBLIC);
-        $classes[]= $member->body ? $declaration->name->name.'$'.$member->name : $declaration->name->name;
+        if ($member->body) {
+          if (!$abstract) {
+            $this->error('E403', 'Only abstract enums can contain members with bodies ('.$member->name.')');
+            // Continues so declaration is clodes
+          }
+          $classes[]= $declaration->name->name.'$'.$member->name;
+        } else {
+          $classes[]= $declaration->name->name;
+        }
       }
       
       // public static self[] values() { return parent::membersOf(__CLASS__) }
