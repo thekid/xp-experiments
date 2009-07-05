@@ -50,6 +50,24 @@
     }
 
     /**
+     * Test try ... catch
+     *
+     */
+    #[@test]
+    public function catchSubclass() {
+      $this->assertEquals(array('Try', 'Catch'), $this->run('
+        $r= [];
+        try {
+          $r[]= "Try";
+          throw new FormatException("Error");
+        } catch (Throwable $e) {
+          $r[]= "Catch";
+        }
+        return $r;
+      '));
+    }
+
+    /**
      * Test try ... catch ... catch
      *
      */
