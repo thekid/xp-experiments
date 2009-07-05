@@ -1124,11 +1124,20 @@
         }
         oel_add_receive_arg($op, $i + 1, $arg['name'], $optional, $init);
         if ($optional && !$resolveable) {
-          $this->emitOne($op, $arg['default']);
-          oel_add_begin_variable_parse($op);
-          oel_push_variable($op, $arg['name']);
-          oel_add_assign($op);
-          oel_add_free($op);
+          oel_push_value($op, $i + 1);
+          oel_add_begin_function_call($op, 'func_num_args'); 
+          oel_add_end_function_call($op, 0);
+          oel_add_binary_op($op, OEL_BINARY_OP_IS_SMALLER);
+          
+          oel_add_begin_if($op); {
+            $this->emitOne($op, $arg['default']);
+            oel_add_begin_variable_parse($op);
+            oel_push_variable($op, $arg['name']);
+            oel_add_assign($op);
+            oel_add_free($op);
+          } oel_add_end_if($op); {
+            // NOOP
+          } oel_add_end_else($op);
         }
         
         // FIXME: Emit type hint if type is a class, interface or enum
