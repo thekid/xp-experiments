@@ -1579,7 +1579,30 @@
       $this->emitAll($op, (array)$declaration->body['methods']);
       $this->emitProperties($op, $this->properties[0]);
 
-      // Static initializer (FIXME: Should be static function __static)
+      // Create static initializer
+      $sop= oel_new_method($op, '__static', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
+      oel_set_source_file($sop, $this->origins[0]);
+      foreach ($declaration->body['members'] as $i => $member) { 
+        oel_add_begin_new_object($sop, $classes[$i]); {
+          if ($member->value) {
+            $this->emitOne($sop, $member->value);
+          } else {
+            oel_push_value($sop, $i);
+          }
+          oel_add_pass_param($sop, 1);
+
+          oel_push_value($sop, $member->name);
+          oel_add_pass_param($sop, 2);
+        }
+        oel_add_end_new_object($sop, 2);
+        
+        oel_add_begin_variable_parse($sop);
+        oel_push_variable($sop, $member->name, $declaration->name->name);
+        oel_add_assign($sop);
+        oel_add_free($sop);
+      }
+      oel_finalize($sop);
+
       if ($abstract) {      
         // FIXME segfault oel_add_end_abstract_class_declaration($op);
         oel_add_end_class_declaration($op);
@@ -1591,26 +1614,6 @@
         }
       } else {      
         oel_add_end_class_declaration($op);
-      }
-      
-      foreach ($declaration->body['members'] as $i => $member) { 
-        oel_add_begin_new_object($op, $classes[$i]); {
-          if ($member->value) {
-            $this->emitOne($op, $member->value);
-          } else {
-            oel_push_value($op, $i);
-          }
-          oel_add_pass_param($op, 1);
-
-          oel_push_value($op, $member->name);
-          oel_add_pass_param($op, 2);
-        }
-        oel_add_end_new_object($op, 2);
-        
-        oel_add_begin_variable_parse($op);
-        oel_push_variable($op, $member->name, $declaration->name->name);
-        oel_add_assign($op);
-        oel_add_free($op);
       }
       
       $this->leave();
