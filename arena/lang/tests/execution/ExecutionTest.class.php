@@ -80,7 +80,7 @@
         self::$syntax->parse(new MemoryInputStream(
           implode("\n", $imports).
           ' public '.$type.' '.$class.' '.($parent ? ' extends '.$parent : '').$src
-        )), 
+        ), $this->name), 
         self::$scope
       );
       xp::gc();
