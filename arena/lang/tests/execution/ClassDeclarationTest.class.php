@@ -26,6 +26,8 @@
         }
       }');
       $this->assertEquals('EchoClass', $class->getName());
+      $this->assertFalse($class->isInterface());
+      $this->assertFalse($class->isEnum());
       
       with ($method= $class->getMethod('echoArgs')); {
         $this->assertEquals('echoArgs', $method->getName());
@@ -39,6 +41,31 @@
         
         $in= array('Hello', 'World');
         $this->assertEquals($in, $method->invoke(NULL, array($in)));
+      }
+    }
+
+    /**
+     * Test declaring an interface
+     *
+     */
+    #[@test]
+    public function serializableInterface() {
+      $class= $this->define('interface', 'Paintable', NULL, '{
+        public void paint(Generic $canvas);
+      }');
+      $this->assertEquals('Paintable', $class->getName());
+      $this->assertTrue($class->isInterface());
+      $this->assertFalse($class->isEnum());
+      
+      with ($method= $class->getMethod('paint')); {
+        $this->assertEquals('paint', $method->getName());
+        $this->assertEquals(MODIFIER_PUBLIC | MODIFIER_ABSTRACT, $method->getModifiers());
+        $this->assertEquals(Type::$VOID, $method->getReturnType());
+        
+        with ($params= $method->getParameters()); {
+          $this->assertEquals(1, sizeof($params));
+          $this->assertEquals(XPClass::forName('lang.Generic'), $params[0]->getType());
+        }
       }
     }
 
