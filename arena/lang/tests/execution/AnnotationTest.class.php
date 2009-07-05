@@ -31,6 +31,11 @@
         [@test, @limit(time = 0.1)]
         public function updateAll() { }
 
+        // TODO: Support this grammatically
+        //
+        // [@test, @expect(lang.FormatException::class)]
+        // public function findBy() { }
+
         [@restricted(roles = ["admin", "root"])]
         public function reset() { }
       }');
