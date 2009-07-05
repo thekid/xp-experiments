@@ -55,15 +55,15 @@
      */
     #[@test]
     public function catchMultipleIAE() {
-      $this->assertEquals(array('Try', 'lang.IllegalArgumentException'), $this->run('
+      $this->assertEquals(array('Try', 'Catch.IAE'), $this->run('
         $r= [];
         try {
           $r[]= "Try";
           throw new IllegalArgumentException("Error");
         } catch (IllegalArgumentException $e) {
-          $r[]= $e.getClassName();
+          $r[]= "Catch.IAE";
         } catch (FormatException $e) {
-          $r[]= $e.getClassName();
+          $r[]= "Catch.FE";
         }
         return $r;
       '));
@@ -75,15 +75,15 @@
      */
     #[@test]
     public function catchMultipleFE() {
-      $this->assertEquals(array('Try', 'lang.FormatException'), $this->run('
+      $this->assertEquals(array('Try', 'Catch.FE'), $this->run('
         $r= [];
         try {
           $r[]= "Try";
           throw new FormatException("Error");
         } catch (IllegalArgumentException $e) {
-          $r[]= $e.getClassName();
+          $r[]= "Catch.IAE";
         } catch (FormatException $e) {
-          $r[]= $e.getClassName();
+          $r[]= "Catch.FE";
         }
         return $r;
       '));
