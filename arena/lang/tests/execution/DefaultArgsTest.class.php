@@ -13,14 +13,13 @@
    *
    */
   class tests·execution·DefaultArgsTest extends ExecutionTest {
-    protected $fixture= NULL;
     
     /**
      * Sets up test case and define class to be used in tests
      *
      */
-    public function setUp() {
-      $this->fixture= $this->define('class', $this->name, NULL, '{
+    public function fixtureClass() {
+      return $this->define('class', $this->name, NULL, '{
         public int[] $values;
         
         public __construct(int $a, int $b= 2) {
@@ -35,7 +34,7 @@
      */
     #[@test]
     public function omitted() {
-      $this->assertEquals(array(1, 2), $this->fixture->newInstance(1)->values);
+      $this->assertEquals(array(1, 2), $this->fixtureClass()->newInstance(1)->values);
     }
 
     /**
@@ -44,7 +43,7 @@
      */
     #[@test]
     public function passed() {
-      $this->assertEquals(array(1, 2), $this->fixture->newInstance(1, 2)->values);
+      $this->assertEquals(array(1, 2), $this->fixtureClass()->newInstance(1, 2)->values);
     }
 
     /**
@@ -53,7 +52,24 @@
      */
     #[@test]
     public function overridden() {
-      $this->assertEquals(array(2, 3), $this->fixture->newInstance(2, 3)->values);
+      $this->assertEquals(array(2, 3), $this->fixtureClass()->newInstance(2, 3)->values);
+    }
+
+    /**
+     * Test 
+     *
+     */
+    #[@test]
+    public function complex() {
+      $class= $this->define('class', $this->name, NULL, '{
+        public static Generic newInstance(XPClass $class= Object::class) {
+          return $class.newInstance();
+        }
+      }');
+      with ($i= $class->getMethod('newInstance')); {
+        $this->assertClass($i->invoke(NULL, array()), 'lang.Object');
+        $this->assertClass($i->invoke(NULL, array(XPClass::forName('util.Date'))), 'util.Date');
+      }
     }
   }
 ?>
