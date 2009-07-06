@@ -1,0 +1,42 @@
+# XP Framework Macro file for Nedit
+#
+# $Id$
+#
+
+define xp_ide_autocomplete {
+  while (1) {
+    res= xp_ide_autocomplete_1()
+    if (0 == res) return 1
+    if ("." != substring(res, length(res) - 1, length(res))) return 1
+  }
+}
+
+define xp_ide_autocomplete_1 {
+  if (-1 != $selection_start) {
+    s_start=  $selection_start
+    selected= get_selection()
+  } else {
+    s_start=  $cursor
+    selected= ""
+  }
+
+  res= shell_command("xp -cp ~/bin/src xp.ide.autocompletion.Bash " selected, "")
+  if (length(res) == 0) return 0
+
+  res_list= split(res, "\n")
+  if (1 == res_list[])  {
+    res= res_list[0]
+  } else {
+    res= list_dialog("multiple packages found", res, "OK", "Cancel")
+    if (1 != $list_dialog_button) return 0
+  }
+
+  if (-1 == $selection_start) {
+    insert_string(res)
+  } else {
+    replace_selection(res)
+  }
+  select(s_start, s_start + length(res))
+  set_cursor_pos(s_start + length(res))
+  return res
+}
