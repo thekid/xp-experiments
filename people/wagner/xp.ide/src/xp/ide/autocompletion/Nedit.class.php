@@ -6,45 +6,33 @@
   $package= 'xp.ide.autocompletion';
   
   uses(
-    'util.cmd.Command',
-    'xp.ide.autocompletion.PackageCompleter',
-    'xp.ide.autocompletion.ClassCompleter'
+    'xp.ide.autocompletion.Bash',
+    'lang.ClassLoader'
   );
 
-  /**
+  /**-
    * Autocomleter for xp classes
    *
    * @purpose  IDE
    */
-  class xp·ide·autocompletion·Nedit extends Object {
+  class xp·ide·autocompletion·Nedit extends xp·ide·autocompletion·Bash {
 
-    /**
-     * Main runner method
-     *
-     * @param   string[] args
-     */
-    final public static function main(array $args) {
-      $packagename= ($args ? $args[0] : '');
-      $subpattern= '';
-      $suggestions= array();
-
-      if (!ClassLoader::getDefault()->providesPackage($packagename)) {
-        if (FALSE === strrpos($packagename, '.')) {
-          $subpattern= $packagename;
-          $packagename= '';
-        } else {
-          $subpattern= substr($packagename, 1 + strrpos($packagename, '.'));
-          $packagename= substr($packagename, 0, strrpos($packagename, '.'));
+    public static function main(array $args) {
+      // search project classpath
+      $csd= getcwd();
+      $home= getenv('HOME');
+      do {
+        if ($paths= scanpath(array($csd), $home)) {
+          foreach (explode(PATH_SEPARATOR, $paths) as $path) {
+            ClassLoader::registerpath($path);
+          }
+          break;
         }
-      }
-
-      $suggestions= array_merge(
-        create(new xp·ide·autocompletion·PackageCompleter($packagename, $subpattern))->suggest(),
-        create(new xp·ide·autocompletion·ClassCompleter($packagename, $subpattern))->suggest()
-      );
-
-      Console::$out->write(implode(PHP_EOL, $suggestions));
-      return 0;
+        $oldcsd= $csd;
+        $csd= dirname($csd);
+      } while ($oldcsd !== $csd);
+      
+      parent::main($args);
     }
 
   }
