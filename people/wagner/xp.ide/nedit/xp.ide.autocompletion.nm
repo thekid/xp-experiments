@@ -20,7 +20,7 @@ define xp_ide_autocomplete_1 {
     selected= ""
   }
 
-  res= shell_command("xp -cp ~/bin/src xp.ide.autocompletion.Bash " selected, "")
+  res= shell_command("xp -cp ~/bin/src xp.ide.autocompletion.Nedit " selected, "")
   if (length(res) == 0) return 0
 
   res_list= split(res, "\n")
