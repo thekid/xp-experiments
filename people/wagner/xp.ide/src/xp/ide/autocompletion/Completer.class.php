@@ -34,6 +34,7 @@
     final public function suggest() {
       $packages= $this->elements();
       if ($this->subpattern) $packages= array_filter($packages, array(self, 'filter'));
+      sort($packages);
       return $packages;
     }
 
