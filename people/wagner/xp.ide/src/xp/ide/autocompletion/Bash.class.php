@@ -6,9 +6,7 @@
   $package= 'xp.ide.autocompletion';
   
   uses(
-    'util.cmd.Command',
-    'xp.ide.autocompletion.PackageCompleter',
-    'xp.ide.autocompletion.ClassCompleter'
+    'util.cmd.Console'
   );
 
   /**
@@ -19,30 +17,12 @@
   class xp·ide·autocompletion·Bash extends Object {
 
     /**
-     * Main runner method
+     * output all suggestions
      *
-     * @param   string[] args
+     * @param   string[] suggestions
      */
-    public static function main(array $args) {
-      $packagename= ($args ? $args[0] : '');
-      $subpattern= '';
-      $suggestions= array();
-
-      if (!ClassLoader::getDefault()->providesPackage($packagename)) {
-        if (FALSE === strrpos($packagename, '.')) {
-          $subpattern= $packagename;
-          $packagename= '';
-        } else {
-          $subpattern= substr($packagename, 1 + strrpos($packagename, '.'));
-          $packagename= substr($packagename, 0, strrpos($packagename, '.'));
-        }
-      }
-
-      $suggestions= array_merge(
-        create(new xp·ide·autocompletion·PackageCompleter($packagename, $subpattern))->suggest(),
-        create(new xp·ide·autocompletion·ClassCompleter($packagename, $subpattern))->suggest()
-      );
-
+    #[@output]
+    public function suggest(array $suggestions) {
       Console::$out->write(implode(PHP_EOL, $suggestions));
       return 0;
     }

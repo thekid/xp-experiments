@@ -20,7 +20,7 @@ define xp_ide_autocomplete_1 {
     selected= ""
   }
 
-  res= shell_command("xp -cp ~/bin/src xp.ide.autocompletion.Nedit " selected, "")
+  res= shell_command("xp -cp ~/bin/src xp.ide.autocompletion.Runner xp.ide.autocompletion.Nedit " selected, "")
   if (length(res) == 0) return 0
 
   res_list= split(res, "\n")
@@ -40,3 +40,14 @@ define xp_ide_autocomplete_1 {
   set_cursor_pos(s_start + length(res))
   return res
 }
+
+define xp_ide_open_xpclass {
+  res= shell_command("xp -cp ~/bin/src xp.ide.resolve.Runner xp.ide.resolve.Nedit " get_selection(), "")
+  if ($shell_cmd_status == 0) {
+    filename= split(res, "\n")
+    open(filename[0])
+  } else {
+    calltip(res, -1, "tipText")
+  }
+}
+

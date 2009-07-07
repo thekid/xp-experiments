@@ -6,8 +6,7 @@
   $package= 'xp.ide.autocompletion';
   
   uses(
-    'xp.ide.autocompletion.Bash',
-    'lang.ClassLoader'
+    'xp.ide.ClassPathScanner'
   );
 
   /**-
@@ -15,24 +14,26 @@
    *
    * @purpose  IDE
    */
-  class xp·ide·autocompletion·Nedit extends xp·ide·autocompletion·Bash {
+  class xp·ide·autocompletion·Nedit extends Object {
 
-    public static function main(array $args) {
-      // search project classpath
-      $csd= getcwd();
-      $home= getenv('HOME');
-      do {
-        if ($paths= scanpath(array($csd), $home)) {
-          foreach (explode(PATH_SEPARATOR, $paths) as $path) {
-            ClassLoader::registerpath($path);
-          }
-          break;
-        }
-        $oldcsd= $csd;
-        $csd= dirname($csd);
-      } while ($oldcsd !== $csd);
-      
-      parent::main($args);
+    /**
+     * initialize extra class pathes
+     *
+     */
+    #[@init]
+    public function classpathes() {
+      create(new xp·ide·ClassPathScanner())->fromCwd();
+    }
+
+    /**
+     * output all suggestions
+     *
+     * @param   string[] suggestions
+     */
+    #[@output]
+    public function suggest(array $suggestions) {
+      Console::$out->write(implode(PHP_EOL, $suggestions));
+      return 0;
     }
 
   }

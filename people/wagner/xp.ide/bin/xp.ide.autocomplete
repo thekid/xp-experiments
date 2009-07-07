@@ -1,7 +1,7 @@
 _xp.ide.completion.bash()
 {
 	local opts;
-	opts=$(xp -cp ~/bin/src xp.ide.autocompletion.Bash ${COMP_WORDS[COMP_CWORD]})
+	opts=$(xp -cp ~/bin/src xp.ide.autocompletion.Runner xp.ide.autocompletion.Bash ${COMP_WORDS[COMP_CWORD]})
 	COMPREPLY=( ${opts} );
 }
 complete -o nospace -o default -F _xp.ide.completion.bash nx gx
