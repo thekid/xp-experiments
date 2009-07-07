@@ -23,7 +23,7 @@
      *
      * @param   string[] args
      */
-    final public static function main(array $args) {
+    public static function main(array $args) {
       $packagename= ($args ? $args[0] : '');
       $subpattern= '';
       $suggestions= array();
