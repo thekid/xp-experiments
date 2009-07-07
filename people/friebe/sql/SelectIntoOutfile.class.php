@@ -59,6 +59,16 @@
     public function setOut($file= 'php://stdout') {
       $this->generator->setOutputStream(new File($file));
     }
+
+    /**
+     * Set column delimiter
+     *
+     * @param   string delimiter
+     */
+    #[@arg]
+    public function setColumnDelimiter($delimiter= '|') {
+      $this->generator->setColDelimiter($delimiter);
+    }
     
     /**
      * Formats a value as a string
