@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo $* >&2
+CMD=$(xp -cp ~/bin/src xp.ide.resolve.Runner xp.ide.resolve.Bash $*)
+nedit $CMD &
