@@ -28,9 +28,11 @@
 
       $resolveMethods= new HashTable();
       $outputMethod=   NULL;
+      $statusMethod=   NULL;
       foreach ($class->getMethods() as $method) {
         if ($method->hasAnnotation('resolve', 'type')) $resolveMethods[XPClass::forName($method->getAnnotation('resolve', 'type'))]= $method;
         if ($method->hasAnnotation('output')) $outputMethod= $method;
+        if ($method->hasAnnotation('status')) $statusMethod= $method;
       }
       $result= array();
       foreach ($args as $className) {
@@ -39,8 +41,9 @@
         if (!isset($resolveMethods[$cp->getClass()])) continue;
         $result[]= $resolveMethods[$cp->getClass()]->invoke($resolver, array($cp, $className));
       }
-      if (!is_null($outputMethod)) return $outputMethod->invoke($resolver, array($result));
-      return 1;
+      if (!is_null($outputMethod)) $outputMethod->invoke($resolver, array($result));
+      if (!is_null($statusMethod)) return $statusMethod->invoke($resolver, array($result));
+      return 0;
     }
   }
 ?>
