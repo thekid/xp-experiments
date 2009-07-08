@@ -17,7 +17,7 @@
   class xp·ide·resolve·Bash extends Object {
 
     /**
-     * resolve a fiel system class
+     * print the result
      *
      * @param   string[] sources
      * @return  string
@@ -25,11 +25,10 @@
     #[@output]
     public function transform(array $sources) {
       Console::$out->write(implode(' ', $sources));
-      return 0;
     }
 
     /**
-     * resolve a fiel system class
+     * resolve a file system class
      *
      * @param   lang.FileSystemClassLoader cp
      * @param   string name
