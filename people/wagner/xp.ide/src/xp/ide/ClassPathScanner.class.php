@@ -26,7 +26,7 @@
       $home= getenv('HOME');
       do {
         if ($paths= scanpath(array($csd), $home)) {
-          foreach (explode(PATH_SEPARATOR, $paths) as $path) ClassLoader::registerpath($path);
+          foreach (explode(PATH_SEPARATOR, $paths) as $path) ClassLoader::registerPath($path);
           return TRUE;
         }
         $oldcsd= $csd;
