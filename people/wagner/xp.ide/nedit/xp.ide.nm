@@ -3,51 +3,92 @@
 # $Id$
 #
 
-define xp_ide_autocomplete {
+##
+# search a part of a class left to the cursor
+#
+# @return  string[start, part]
+##
+define xp_ide_get_class_range {
+   search_regex= "(?n[^a-z0-9\._-])"
+   result["pos"]= $cursor
+   result["part"]= ""
+
+   bs= search(search_regex, $cursor - 1, "regexNoCase", "backward")
+   if (bs == $cursor - 1) {
+     return result
+   }
+   result["pos"]= bs + 1
+   search_end= search(search_regex, result["pos"], "regexNoCase", "forward")
+   result["part"]= get_range(result["pos"], search_end)
+   return result
+}
+
+
+##
+# complete the full qualified class as long as the last result
+# was not empty or a package
+#
+# @return  int 1
+##
+define xp_ide_complete_class {
   while (1) {
-    res= xp_ide_autocomplete_1()
+    
+    to_complete= xp_ide_get_class_range()
+
+    res= xp_ide_complete_class_part(to_complete["part"])
+    if (length(res) == 0) return 0
+    
+    if ("\n" == get_character(to_complete["pos"] + length(to_complete["part"]) + 1)) {
+    }
+    
+    replace_range(to_complete["pos"], to_complete["pos"] + length(to_complete["part"]), res)
+    set_cursor_pos(to_complete["pos"] + length(res))
+
     if (0 == res) return 1
     if ("." != substring(res, length(res) - 1, length(res))) return 1
   }
 }
 
-define xp_ide_autocomplete_1 {
-  if (-1 != $selection_start) {
-    s_start=  $selection_start
-    selected= get_selection()
-  } else {
-    s_start=  $cursor
-    selected= ""
+##
+# complete a part of the pckage/class name
+# displays a dialog if more than one suggestions
+# are available
+#
+# @param   string to_complete
+# @return  string
+##
+define xp_ide_complete_class_part {
+  to_complete= $1
+
+  res= shell_command("xp -cp ~/bin/src xp.ide.autocompletion.Runner xp.ide.autocompletion.Nedit " to_complete, "")
+  if (0 == length(res)) {
+    calltip("nothing found")
+    return ""
   }
-
-  res= shell_command("xp -cp ~/bin/src xp.ide.autocompletion.Runner xp.ide.autocompletion.Nedit " selected, "")
-  if (length(res) == 0) return 0
-
   res_list= split(res, "\n")
   if (1 == res_list[])  {
-    res= res_list[0]
+    return res_list[0]
   } else {
     res= list_dialog("multiple packages found", res, "OK", "Cancel")
-    if (1 != $list_dialog_button) return 0
+    if (1 != $list_dialog_button) return ""
+    return res
   }
-
-  if (-1 == $selection_start) {
-    insert_string(res)
-  } else {
-    replace_selection(res)
-  }
-  select(s_start, s_start + length(res))
-  set_cursor_pos(s_start + length(res))
-  return res
 }
 
+##
+# try to open the class which full
+# qualified class name is selected
+#
+##
 define xp_ide_open_xpclass {
   res= shell_command("xp -cp ~/bin/src xp.ide.resolve.Runner xp.ide.resolve.Nedit " get_selection(), "")
   if ($shell_cmd_status == 0) {
     filename= split(res, "\n")
     open(filename[0])
+  } else if ($shell_cmd_status == 1) {
+    calltip(res)
   } else {
-    calltip(res, -1, "tipText")
+    calltip("class not found")
   }
 }
 
