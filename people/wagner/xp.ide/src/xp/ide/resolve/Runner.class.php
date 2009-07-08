@@ -7,9 +7,7 @@
   
   uses(
     'lang.XPClass',
-    'util.collections.HashTable',
-    'util.cmd.Console',
-    'xp.ide.resolve.ClassResolver'
+    'util.collections.HashTable'
   );
 
   /**
@@ -37,6 +35,7 @@
       $result= array();
       foreach ($args as $className) {
         $cp= ClassLoader::getDefault()->findClass($className);
+        if ($cp instanceof NULL) continue;
         if (!isset($resolveMethods[$cp->getClass()])) continue;
         $result[]= $resolveMethods[$cp->getClass()]->invoke($resolver, array($cp, $className));
       }
