@@ -48,7 +48,7 @@
      */
     #[@resolve(type="lang.archive.ArchiveClassLoader")]
     public function resolveToArchive(ArchiveClassLoader $cp, $name) {
-      Console::$err->writeLine(sprintf('Class is part of a XAR file: %s', $name));
+      Console::$err->writeLine(sprintf('Class "%s" is part of an archive: %s', $name, xp::stringOf($cp)));
     }
     
   }
