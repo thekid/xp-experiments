@@ -6,7 +6,8 @@
   $package= 'xp.ide.resolve';
   
   uses(
-    'util.cmd.Console'
+    'util.cmd.Console',
+    'xp.ide.ClassPathScanner'
   );
   
   /**
@@ -17,6 +18,14 @@
   class xp·ide·resolve·Nedit extends Object {
     private
       $status= 2;
+
+    /**
+     * Constructor
+     *
+     */
+    public function __construct() {
+      create(new xp·ide·ClassPathScanner())->fromCwd();
+    }
 
     /**
      * print the result
@@ -53,7 +62,7 @@
     #[@resolve(type="lang.archive.ArchiveClassLoader")]
     public function resolveToArchive(ArchiveClassLoader $cp, $name) {
       $this->status= 1;
-      Console::$out->writeLine(sprintf('Class "%s" is part of a XAR file: %s', $name, $cp->archive));
+      Console::$out->writeLine(sprintf('Class "%s" is part of an archive:'.PHP_EOL.' %s', $name, xp::stringOf($cp)));
     }
     
     /**
