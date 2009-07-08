@@ -15,9 +15,11 @@
    * @purpose  IDE
    */
   class xp·ide·resolve·Nedit extends Object {
+    private
+      $status= 2;
 
     /**
-     * resolve a fiel system class
+     * print the result
      *
      * @param   string[] sources
      * @return  string
@@ -25,11 +27,11 @@
     #[@output]
     public function transform(array $sources) {
       Console::$out->write(implode(PHP_EOL, $sources));
-      return 0;
+      return $this->result;
     }
 
     /**
-     * resolve a fiel system class
+     * resolve a file system class
      *
      * @param   lang.FileSystemClassLoader cp
      * @param   string name
@@ -37,6 +39,7 @@
      */
     #[@resolve(type="lang.FileSystemClassLoader")]
     public function resolveToFile(FileSystemClassLoader $cp, $name) {
+      $this->status= 0;
       return $cp->path.strtr($name, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT;
     }
 
@@ -49,8 +52,28 @@
      */
     #[@resolve(type="lang.archive.ArchiveClassLoader")]
     public function resolveToArchive(ArchiveClassLoader $cp, $name) {
-      return $cp->archive;
+      $this->status= 1;
+      Console::$out->writeLine(sprintf('Class "%s" is part of a XAR file: %s', $name, $cp->archive));
     }
     
+    /**
+     * Get status
+     *
+     * @return  mixed
+     */
+    #[@status]
+    public function getStatus() {
+      return $this->status;
+    }
+
+    /**
+     * Set status
+     *
+     * @param   mixed status
+     */
+    public function setStatus($status) {
+      $this->status= $status;
+    }
+
   }
 ?>
