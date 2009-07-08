@@ -17,11 +17,10 @@
   class xp·ide·autocompletion·Nedit extends Object {
 
     /**
-     * initialize extra class pathes
+     * Constructor
      *
      */
-    #[@init]
-    public function classpathes() {
+    public function __construct() {
       create(new xp·ide·ClassPathScanner())->fromCwd();
     }
 

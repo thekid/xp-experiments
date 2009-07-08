@@ -31,13 +31,10 @@
       $subpattern= '';
       $suggestions= array();
 
-      $initMethod= NULL;
       $outputMethod= NULL;
       foreach ($class->getMethods() as $method) {
-        if ($method->hasAnnotation('init')) $initMethod= $method;
         if ($method->hasAnnotation('output')) $outputMethod= $method;
       }
-      if (!is_null($initMethod)) $initMethod->invoke($inst);
 
       if (!ClassLoader::getDefault()->providesPackage($packagename)) {
         if (FALSE === strrpos($packagename, '.')) {
