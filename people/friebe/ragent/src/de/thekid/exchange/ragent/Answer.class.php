@@ -7,7 +7,8 @@
   uses(
     'util.cmd.Command',
     'peer.mail.store.ImapStore',
-    'peer.mail.store.NullStoreCache'
+    'peer.mail.store.NullStoreCache',
+    'org.imc.VCalendar'
   );
 
   /**
@@ -45,7 +46,17 @@
               while ($part= $msg->getPart()) {
                 if ('text/calendar' != $part->getContentType()) continue;
                 
-                $this->out->writeLine('-> Calendar ', $part);
+                try {
+                  $body= new Stream();
+                  $body->open(STREAM_MODE_WRITE);
+                  $body->write($part->getBody());
+                  $body->close();
+                  $cal= VCalendar::fromStream($body);
+                } catch (XPException $e) {
+                  $this->err->writeLine('*** ', $e);
+                  break;
+                }
+                $this->out->writeLine('-> Calendar ', VCalendar::fromStream($body));
                 
                 // TODO: Check if we're free & answer this request
                 break;
