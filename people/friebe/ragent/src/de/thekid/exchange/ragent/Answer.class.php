@@ -56,7 +56,7 @@
                   $this->err->writeLine('*** ', $e);
                   break;
                 }
-                $this->out->writeLine('-> Calendar ', VCalendar::fromStream($body));
+                $this->out->writeLine('-> Calendar ', $part->getBody(), ' => ', VCalendar::fromStream($body));
                 
                 // TODO: Check if we're free & answer this request
                 break;
