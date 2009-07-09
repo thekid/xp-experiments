@@ -26,53 +26,31 @@ define xp_ide_get_class_range {
 
 ##
 # complete the full qualified class as long as the last result
-# was not empty or a package
+# was not empty
+# displays a dialog if more than one suggestions
+# are available
 #
 # @return  int 1
 ##
 define xp_ide_complete_class {
-  while (1) {
-    
-    to_complete= xp_ide_get_class_range()
+  to_complete= xp_ide_get_class_range()
 
-    res= xp_ide_complete_class_part(to_complete["part"])
-    if (length(res) == 0) return 0
-    
-    if ("\n" == get_character(to_complete["pos"] + length(to_complete["part"]) + 1)) {
-    }
-    
-    replace_range(to_complete["pos"], to_complete["pos"] + length(to_complete["part"]), res)
-    set_cursor_pos(to_complete["pos"] + length(res))
-
-    if (0 == res) return 1
-    if ("." != substring(res, length(res) - 1, length(res))) return 1
-  }
-}
-
-##
-# complete a part of the pckage/class name
-# displays a dialog if more than one suggestions
-# are available
-#
-# @param   string to_complete
-# @return  string
-##
-define xp_ide_complete_class_part {
-  to_complete= $1
-
-  res= shell_command("xp -cp ~/bin/src xp.ide.autocompletion.Runner xp.ide.autocompletion.Nedit " to_complete, "")
-  if (0 == length(res)) {
+  suggestions= shell_command("xp -cp ~/bin/src xp.ide.autocompletion.Runner xp.ide.autocompletion.Nedit " to_complete["part"], "")
+  if (0 == length(suggestions)) {
     calltip("nothing found")
-    return ""
+    return 0
   }
-  res_list= split(res, "\n")
+
+  res_list= split(suggestions, "\n")
   if (1 == res_list[])  {
-    return res_list[0]
+    res= res_list[0]
   } else {
-    res= list_dialog("multiple packages found", res, "OK", "Cancel")
-    if (1 != $list_dialog_button) return ""
-    return res
+    res= list_dialog("multiple packages found", suggestions, "OK", "Cancel")
+    if (1 != $list_dialog_button) return 0
   }
+
+  replace_range(to_complete["pos"], to_complete["pos"] + length(to_complete["part"]), res)
+  set_cursor_pos(to_complete["pos"] + length(res))
 }
 
 ##
