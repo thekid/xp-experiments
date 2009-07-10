@@ -101,12 +101,12 @@
      * Add a type import
      *
      * @param   string import fully qualified class name
-     * @param   bool register default TRUE
      * @throws  xp.compiler.types.ResolveException
      */
-    public function addTypeImport($import, $register= TRUE) {
+    public function addTypeImport($import) {
       $p= strrpos($import, '.');
-      $this->imports[substr($import, $p+ 1)]= $this->resolveType(new TypeName($import), $register);
+      $this->imports[substr($import, $p+ 1)]= $import;
+      $this->resolveType(new TypeName($import));
     }
 
     /**
@@ -120,7 +120,8 @@
       // FIXME: This does not take into calculation other sources
       // from the manager and really should be done later on!
       foreach (Package::forName($import)->getClassNames() as $name) {
-        $this->addTypeImport($name, FALSE);
+        $p= strrpos($name, '.');
+        $this->imports[substr($name, $p+ 1)]= $name;
       }
     }
     
@@ -230,14 +231,7 @@
       } else if (strpos($name->name, '.')) {
         $qualified= $name->name;
       } else if (isset($this->imports[$name->name])) {
-        if ($register) {
-          $used= new TypeName($this->imports[$name->name]->name());
-          foreach ($this->used as $type) {    // Prevent duplicate used entries, FIXME
-            if ($type->equals($used)) $register= FALSE;
-          }
-          $register && $this->used[]= $used;
-        }
-        return $this->imports[$name->name];
+        $qualified= $this->imports[$name->name];
       } else if ($cl->providesClass('lang.'.$name->name)) {
         $qualified= 'lang.'.$name->name;
       } else {
