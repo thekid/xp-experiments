@@ -2,9 +2,9 @@
 # Set the XP_IDE_XAR environment variable to
 # the path of the ide classes
 ##
-if [ -z ${XP_IDE_XAR} ]; then
-	XP_IDE_XARs=( $(echo ${HOME}/xp/lib/xp-ide-*.xar | sort) )
-	declare -x XP_IDE_XAR=${XP_IDE_XARs[ ${#XP_IDE_XARs[*]} - 1]}
+if [ -z ${XP_IDE_CP} ]; then
+	XP_IDE_CPs=( $(echo ${HOME}/xp/lib/xp-ide-*.xar | sort) )
+	declare -x XP_IDE_CP=${XP_IDE_CPs[ ${#XP_IDE_XARs[*]} - 1]}
 fi
 
 ##
