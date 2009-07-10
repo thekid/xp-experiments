@@ -231,7 +231,54 @@
     #[@test]
     public function usedAfterPackageImport() {
       $this->fixture->addPackageImport('util.cmd');
+      
+      $this->assertEquals(array(), $this->fixture->used);
+    }
+
+    /**
+     * Test used list
+     *
+     */
+    #[@test]
+    public function usedAfterPackageAndTypeImport() {
+      $this->fixture->addPackageImport('util.cmd');
       $this->fixture->resolveType(new TypeName('Command'));
+      
+      $this->assertEquals(array(new TypeName('util.cmd.Command')), $this->fixture->used);
+    }
+
+    /**
+     * Test used list
+     *
+     */
+    #[@test]
+    public function usedAfterPackageAndMultipleTypeImport() {
+      $this->fixture->addPackageImport('util.cmd');
+      $this->fixture->resolveType(new TypeName('Command'));
+      $this->fixture->resolveType(new TypeName('Command'));
+      
+      $this->assertEquals(array(new TypeName('util.cmd.Command')), $this->fixture->used);
+    }
+
+    /**
+     * Test used list
+     *
+     */
+    #[@test]
+    public function usedAfterTypeImport() {
+      $this->fixture->addTypeImport('util.cmd.Command');
+      
+      $this->assertEquals(array(new TypeName('util.cmd.Command')), $this->fixture->used);
+    }
+
+    /**
+     * Test used list
+     *
+     */
+    #[@test]
+    public function usedAfterMultipleTypeImport() {
+      $this->fixture->addTypeImport('util.cmd.Command');
+      $this->fixture->addTypeImport('util.cmd.Command');
       
       $this->assertEquals(array(new TypeName('util.cmd.Command')), $this->fixture->used);
     }

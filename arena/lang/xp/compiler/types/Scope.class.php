@@ -230,7 +230,13 @@
       } else if (strpos($name->name, '.')) {
         $qualified= $name->name;
       } else if (isset($this->imports[$name->name])) {
-        $register && $this->used[]= new TypeName($this->imports[$name->name]->name());
+        if ($register) {
+          $used= new TypeName($this->imports[$name->name]->name());
+          foreach ($this->used as $type) {    // Prevent duplicate used entries, FIXME
+            if ($type->equals($used)) $register= FALSE;
+          }
+          $register && $this->used[]= $used;
+        }
         return $this->imports[$name->name];
       } else if ($cl->providesClass('lang.'.$name->name)) {
         $qualified= 'lang.'.$name->name;
