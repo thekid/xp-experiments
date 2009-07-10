@@ -35,7 +35,7 @@ define xp_ide_get_class_range {
 define xp_ide_complete_class {
   to_complete= xp_ide_get_class_range()
 
-  suggestions= shell_command("xp -cp ~/bin/src xp.ide.autocompletion.Runner xp.ide.autocompletion.Nedit " to_complete["part"], "")
+  suggestions= shell_command("xpide xp.ide.autocompletion.Runner xp.ide.autocompletion.Nedit " to_complete["part"], "")
   if (0 == length(suggestions)) {
     calltip("nothing found")
     return 0
@@ -59,7 +59,7 @@ define xp_ide_complete_class {
 #
 ##
 define xp_ide_open_xpclass {
-  res= shell_command("xp -cp ~/bin/src xp.ide.resolve.Runner xp.ide.resolve.Nedit " xp_ide_get_class_range()["part"], "")
+  res= shell_command("xpide xp.ide.resolve.Runner xp.ide.resolve.Nedit " xp_ide_get_class_range()["part"], "")
   if (0 == $shell_cmd_status) {
     filename= split(res, "\n")
     open(filename[0])
