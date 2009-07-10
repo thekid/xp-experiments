@@ -101,11 +101,12 @@
      * Add a type import
      *
      * @param   string import fully qualified class name
+     * @param   bool register default TRUE
      * @throws  xp.compiler.types.ResolveException
      */
-    public function addTypeImport($import) {
+    public function addTypeImport($import, $register= TRUE) {
       $p= strrpos($import, '.');
-      $this->imports[substr($import, $p+ 1)]= $this->resolveType(new TypeName($import));
+      $this->imports[substr($import, $p+ 1)]= $this->resolveType(new TypeName($import), $register);
     }
 
     /**
@@ -119,7 +120,7 @@
       // FIXME: This does not take into calculation other sources
       // from the manager and really should be done later on!
       foreach (Package::forName($import)->getClassNames() as $name) {
-        $this->addTypeImport($name);
+        $this->addTypeImport($name, FALSE);
       }
     }
     

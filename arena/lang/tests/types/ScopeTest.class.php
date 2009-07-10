@@ -223,5 +223,17 @@
         $this->fixture->resolveType(new TypeName('Command'))
       );
     }
+
+    /**
+     * Test used list
+     *
+     */
+    #[@test]
+    public function usedAfterPackageImport() {
+      $this->fixture->addPackageImport('util.cmd');
+      $this->fixture->resolveType(new TypeName('Command'));
+      
+      $this->assertEquals(array(new TypeName('util.cmd.Command')), $this->fixture->used);
+    }
   }
 ?>
