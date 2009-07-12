@@ -4,7 +4,9 @@
 ##
 if [ -z ${XP_IDE_CP} ]; then
 	XP_IDE_CPs=( $(echo ${HOME}/xp/lib/xp-ide-*.xar | sort) )
-	declare -x XP_IDE_CP=${XP_IDE_CPs[ ${#XP_IDE_XARs[*]} - 1]}
+    XP_IDE_IDX=${#XP_IDE_XARs[*]}
+    
+	declare -x XP_IDE_CP=${XP_IDE_CPs[(( ${XP_IDE_IDX--} ))]}
 fi
 
 ##
