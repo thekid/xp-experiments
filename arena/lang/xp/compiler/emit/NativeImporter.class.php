@@ -73,8 +73,10 @@
     public function hasFunction($extension, $function) {
       if ('core' === $extension && !self::$coreExtAvailable) {
         return function_exists($function);
+      } else if ($list= get_extension_funcs($extension)) {
+        return in_array($function, $list);
       } else {
-        return in_array($function, get_extension_funcs($extension));
+        return FALSE;
       }
     }
     
