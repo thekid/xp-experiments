@@ -12,21 +12,20 @@
    */
   class xp·ide·lint·Xml extends Object {
     private
-      $source= '',
       $errorLine= 0,
       $errorCol= 0,
       $errorText= '';
 
     /**
-     * Main runner method
+     * check source code
      *
-     * @param   string[] args
+     * @param   string ource
      */
     #[@check]
-    public function test() {
+    public function checkSource($source) {
       $p= new Process('xmllint', array('-noout', '-'));
       $in= $p->getInputStream();
-      $in->write($this->source);
+      $in->write($source);
       $in->close();
 
       $out= $p->getErrorStream();
@@ -40,16 +39,6 @@
         $this->errorCol= strlen($match[1]);
         return 0;
       }
-    }
-
-    /**
-     * Set source
-     *
-     * @param   string source
-     */
-    #[@source]
-    public function setSource($source) {
-      $this->source= $source;
     }
 
     /**

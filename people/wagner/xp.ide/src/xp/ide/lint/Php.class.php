@@ -12,20 +12,19 @@
    */
   class xp·ide·lint·Php extends Object {
     private
-      $source= '',
       $errorLine= 0,
       $errorText= '';
 
     /**
-     * Main runner method
+     * check source code
      *
-     * @param   string[] args
+     * @param   string source
      */
     #[@check]
-    public function test() {
+    public function test($source) {
       $p= new Process('php', array('-l'));
       $in= $p->getInputStream();
-      $in->write($this->source);
+      $in->write($source);
       $in->close();
 
       $out= $p->getOutputStream();
@@ -34,16 +33,6 @@
         $this->errorLine= $match[2];
         $this->errorText= $match[1];
       }
-    }
-
-    /**
-     * Set source
-     *
-     * @param   string source
-     */
-    #[@source]
-    public function setSource($source) {
-      $this->source= $source;
     }
 
     /**

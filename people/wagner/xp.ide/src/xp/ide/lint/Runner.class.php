@@ -39,12 +39,11 @@
         if ($method->hasAnnotation('errortext'))   $eTextMethod= $method;
       }
 
-      if ($sourceMethod) {
+      if ($testMethod) {
         $source= '';
         while (!feof(STDIN)) $source.= fgets(STDIN);
-        $sourceMethod->invoke($lint, array($source));
+        $testMethod->invoke($lint, array($source));
       }
-      if ($testMethod) $testMethod->invoke($lint);
       Console::writeLine($eLineMethod ? $eLineMethod->invoke($lint): 0);
       Console::writeLine($eColumnMethod ? $eColumnMethod->invoke($lint) : 0);
       Console::write($eTextMethod ? $eTextMethod->invoke($lint) : 0);
