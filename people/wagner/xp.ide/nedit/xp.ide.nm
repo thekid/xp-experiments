@@ -4,6 +4,14 @@
 #
 
 ##
+# check the Syntax of the current sh source file
+#
+##
+define xp_ide_lint_sh {
+  xp_ide_parse_lint_result(shell_command("xpide xp.ide.lint.Runner xp.ide.lint.Sh", get_range(0,$text_length)))
+}
+
+##
 # check the Syntax of the current PHP file
 #
 ##
