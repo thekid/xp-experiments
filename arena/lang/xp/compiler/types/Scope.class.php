@@ -249,10 +249,10 @@
             $tree= $this->task->newSubTask($qualified)->run($this);
             switch ($decl= $tree->declaration) {
               case $decl instanceof ClassNode: 
-                $t= new TypeDeclaration($tree, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Object'));
+                $t= new TypeDeclaration($tree, $this->resolveType($decl->parent ? $decl->parent->name : new TypeName('lang.Object')));
                 break;
               case $decl instanceof EnumNode:
-                $t= new TypeDeclaration($tree, $this->resolve($decl->parent ? $decl->parent->name : 'lang.Enum'));
+                $t= new TypeDeclaration($tree, $this->resolveType($decl->parent ? $decl->parent->name : new TypeName('lang.Enum')));
                 break;
               case $decl instanceof InterfaceNode:
                 $t= new TypeDeclaration($tree, NULL);
