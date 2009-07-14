@@ -1957,7 +1957,7 @@
         return $this->scope[0]->resolveType($t);
       } catch (ResolveException $e) {
         $this->error('R'.$e->getKind(), $e->compoundMessage());
-        return new TypeReference($t, Types::UNKNOWN_KIND);
+        return new TypeReference($t->name, Types::UNKNOWN_KIND);
       }
     }
 
