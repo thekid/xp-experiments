@@ -3,10 +3,10 @@
 # the path of the ide classes
 ##
 if [ -z ${XP_IDE_CP} ]; then
-	XP_IDE_CPs=( $(echo ${HOME}/xp/lib/xp-ide-*.xar | sort) )
+	XP_IDE_XARs=( $(echo ${HOME}/xp/lib/xp-ide-*.xar | sort) )
     XP_IDE_IDX=${#XP_IDE_XARs[*]}
-    
-	declare -x XP_IDE_CP=${XP_IDE_CPs[(( ${XP_IDE_IDX--} ))]}
+
+	declare -x XP_IDE_CP=${XP_IDE_XARs[(( ${XP_IDE_IDX} - 1 ))]}
 fi
 
 ##
