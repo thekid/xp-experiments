@@ -1,4 +1,8 @@
 #!/bin/sh
 echo $* >&2
 CMD=$(xpide xp.ide.resolve.Runner xp.ide.resolve.Bash $*)
+
+if [ "" = "${CMD}" ]; then
+  exit
+fi
 gedit $CMD &

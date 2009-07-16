@@ -15,6 +15,8 @@
    * @purpose  IDE
    */
   class xp·ide·resolve·Bash extends Object {
+    private
+      $status= 1;
 
     /**
      * print the result
@@ -51,5 +53,14 @@
       Console::$err->writeLine(sprintf('Class "%s" is part of an archive: %s', $name, xp::stringOf($cp)));
     }
     
+    /**
+     * Get status
+     *
+     * @return  mixed
+     */
+    #[@status]
+    public function getStatus() {
+      return $this->status;
+    }
   }
 ?>

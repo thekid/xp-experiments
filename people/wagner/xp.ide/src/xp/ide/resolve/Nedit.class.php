@@ -74,15 +74,5 @@
     public function getStatus() {
       return $this->status;
     }
-
-    /**
-     * Set status
-     *
-     * @param   mixed status
-     */
-    public function setStatus($status) {
-      $this->status= $status;
-    }
-
   }
 ?>

@@ -35,25 +35,33 @@ define xp_ide_lint_xml {
 #
 # @return  int 1
 ##
-define xp_ide_complete_class {
-  to_complete= xp_ide_get_class_range()
-
-  suggestions= shell_command("xpide xp.ide.autocompletion.Runner xp.ide.autocompletion.Nedit " to_complete["part"], "")
-  if (0 == length(suggestions)) {
-    calltip("nothing found")
-    return 0
+define xp_ide_complete {
+  result= shell_command("xpide xp.ide.completion.Runner xp.ide.completion.Nedit -p " $cursor " -l "  $line " -c " $column, get_range(0, $text_length))
+  if (0 != $shell_cmd_status) {
+    calltip("no class found")
+    return
   }
-
-  res_list= split(suggestions, "\n")
-  if (1 == res_list[])  {
-    res= res_list[0]
+  
+  res_list= split(result, "\n")
+  replacepos= res_list[0]
+  delete res_list[0]
+  replacelen= res_list[1]
+  delete res_list[1]
+  sugg_cnt= res_list[2]
+  delete res_list[2]
+  
+  if (1 == sugg_cnt) {
+    sugg= res_list[3]
   } else {
-    res= list_dialog("multiple packages found", suggestions, "OK", "Cancel")
-    if (1 != $list_dialog_button) return 0
+    res_list_d= ""
+    for (k in res_list) res_list_d= res_list_d "\n" res_list[k]
+    sugg= list_dialog("suggestions", res_list_d, "ok", "cancel")
+    if (1 != $list_dialog_button) return
   }
 
-  replace_range(to_complete["pos"], to_complete["pos"] + length(to_complete["part"]), res)
-  set_cursor_pos(to_complete["pos"] + length(res))
+  replace_range(replacepos, replacepos + replacelen, sugg)
+  select(replacepos, replacepos + length(sugg))
+  set_cursor_pos(replacepos + length(sugg))
 }
 
 ##

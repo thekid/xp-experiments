@@ -3,11 +3,11 @@
  *
  * $Id$ 
  */
-  $package= 'xp.ide.autocompletion';
+  $package= 'xp.ide.completion';
   
   uses(
     'lang.reflect.Package',
-    'xp.ide.autocompletion.Completer'
+    'xp.ide.completion.Completer'
   );
 
   /**
@@ -15,7 +15,7 @@
    *
    * @purpose  IDE
    */
-  class xp·ide·autocompletion·PackageCompleter extends xp·ide·autocompletion·Completer {
+  class xp·ide·completion·PackageCompleter extends xp·ide·completion·Completer {
 
     /**
      * unfiltered possible elements
@@ -25,7 +25,7 @@
     protected function elements() {
       $packages= array();
       try {
-        $packages= Package::forName($this->package)->getPackageNames();
+        $packages= Package::forName($this->uncomplete->getComplete())->getPackageNames();
       } catch(XPException $e) {
       }
       return array_map(create_function('$e', 'return $e.".";'), $packages);

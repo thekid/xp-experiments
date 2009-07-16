@@ -16,7 +16,7 @@ fi
 _xp.ide.completion.bash()
 {
 	local opts;
-	opts=$(xpide xp.ide.autocompletion.Runner xp.ide.autocompletion.Bash ${COMP_WORDS[COMP_CWORD]})
+	opts=$(echo -n  ${COMP_WORDS[COMP_CWORD]} | xpide xp.ide.completion.Runner xp.ide.completion.Bash)
 	COMPREPLY=( ${opts} );
 }
 complete -o nospace -o default -F _xp.ide.completion.bash nx gx
