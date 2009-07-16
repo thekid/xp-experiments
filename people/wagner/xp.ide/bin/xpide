@@ -1,3 +1,2 @@
 #!/bin/sh
-# xp -cp ${XP_IDE_CP} $*
-xp -cp /home/ruben/Work/xp.forge/experiments/people/wagner/xp.ide/src $*
+xp -cp ${XP_IDE_CP} $*
