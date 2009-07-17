@@ -1,0 +1,9 @@
+<ui>
+  <menubar name="MenuBar">
+    <placeholder name="ExtraMenu_1">
+      <menu name="XpMenu" action="XpIde">
+        <menuitem name="complete"  action="XpIdeComplete" />
+      </menu>
+    </placeholder>
+  </menubar>
+</ui>
