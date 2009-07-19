@@ -179,7 +179,7 @@
      * @return  var
      */
     public function resolveStatic($name) {
-      foreach ($this->statics as $lookup => $type) {
+      foreach ($this->statics[0] as $lookup => $type) {
         if (TRUE === $type && $this->importer->hasFunction($lookup, $name)) {
           return TRUE;
         } else if ($type instanceof Types && $type->hasMethod($name)) {
