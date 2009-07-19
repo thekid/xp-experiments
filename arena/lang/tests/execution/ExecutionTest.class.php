@@ -54,14 +54,16 @@
      * Run statements and return result
      *
      * @param   string src
+     * @param   string[] imports
      * @return  var
      */
-    protected function run($src) {
+    protected function run($src, array $imports= array()) {
       return $this->define(
         'class', 
         ucfirst($this->name).'·'.($this->counter++), 
         NULL,
-        '{ public void run() { '.$src.' }}'
+        '{ public void run() { '.$src.' }}',
+        $imports
       )->newInstance()->run();
     }
     
