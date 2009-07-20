@@ -34,3 +34,11 @@ class XpIdePlugin(gedit.Plugin):
         
     def complete(self, action, window):
         window.get_active_document().insert_at_cursor("PENG")
+        insert_mark= window.get_active_document().get_insert()
+        cursor= window.get_active_document().get_iter_at_mark(insert_mark)
+        print (
+            "xpide xp.ide.completion.Runner xp.ide.completion.Nedit"
+            " -p " + str(cursor.get_offset()) +
+            " -l " + str(cursor.get_line()) +
+            " -c " + str(cursor.get_line_offset())
+        )

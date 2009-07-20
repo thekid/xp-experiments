@@ -37,6 +37,7 @@ define xp_ide_lint_xml {
 ##
 define xp_ide_complete {
   result= shell_command("xpide xp.ide.completion.Runner xp.ide.completion.Nedit -p " $cursor " -l "  $line " -c " $column, get_range(0, $text_length))
+  kill_calltip()
   if (0 != $shell_cmd_status) {
     calltip("no class found")
     return
@@ -60,7 +61,6 @@ define xp_ide_complete {
   }
 
   replace_range(replacepos, replacepos + replacelen, sugg)
-  select(replacepos, replacepos + length(sugg))
   set_cursor_pos(replacepos + length(sugg))
 }
 
@@ -71,6 +71,7 @@ define xp_ide_complete {
 ##
 define xp_ide_open_xpclass {
   res= shell_command("xpide xp.ide.resolve.Runner xp.ide.resolve.Nedit " xp_ide_get_class_range()["part"], "")
+  kill_calltip()
   if (0 == $shell_cmd_status) {
     filename= split(res, "\n")
     open(filename[0])
