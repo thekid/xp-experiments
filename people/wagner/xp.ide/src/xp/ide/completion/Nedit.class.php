@@ -42,8 +42,8 @@
       $buffer= 0 == $this->cursor->getPosition() ? '' : $this->inputStream->read($this->cursor->getPosition());
       
       $searchword= '';
-      $replacepos= 0;
-      for ($i= strlen($buffer) - 1; $i >= 0; $i--) {
+      $replacepos= strlen($buffer);
+      for ($i= $replacepos - 1; $i >= 0; $i--) {
         if (!$this->isClassChar($buffer{$i})) break;
         $replacepos= $i;
         $searchword= $buffer{$i}.$searchword;

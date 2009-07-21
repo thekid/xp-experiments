@@ -1,5 +1,6 @@
 
 import gtk
+import gobject
 import subprocess
 import gedit
 import os
@@ -34,35 +35,81 @@ class XpIdePlugin(gedit.Plugin):
         pass
         
     def complete(self, action, window):
-        textbuffer= window.get_active_document()
-        cursor= textbuffer.get_iter_at_mark(textbuffer.get_insert())
+        tb= window.get_active_document()
+        cursor= tb.get_iter_at_mark(tb.get_insert())
         completion= subprocess.Popen(
-          [
-            "xpide",
-            "xp.ide.completion.Runner",
-            "xp.ide.completion.Nedit",
-            "-p", str(cursor.get_offset()),
-            "-l", str(cursor.get_line()),
-            "-c", str(cursor.get_line_offset()),
-          ],
-          stdin=subprocess.PIPE,
-          stdout=subprocess.PIPE
+            [
+                "xpide",
+                "xp.ide.completion.Runner",
+                "xp.ide.completion.Nedit",
+                "-p", str(cursor.get_offset()),
+                "-l", str(cursor.get_line()),
+                "-c", str(cursor.get_line_offset()),
+            ],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE
         )
-        completion.stdin.write(textbuffer.get_text(
-          textbuffer.get_start_iter(),
-          textbuffer.get_end_iter()
-        ))
+        completion.stdin.write(tb.get_text(tb.get_start_iter(), tb.get_end_iter()))
         completion.stdin.close()
         
-        replace_pos= int(completion.stdout.next())
-        replace_length= int(completion.stdout.next())
-        sugg_cnt= int(completion.stdout.next())
-        suggestion= completion.stdout.next().strip()
-        textbuffer.delete(
-          textbuffer.get_iter_at_offset(replace_pos),
-          textbuffer.get_iter_at_offset(replace_pos + replace_length)
+        rep_pos= int(completion.stdout.next())
+        rep_len= int(completion.stdout.next())
+        sug_cnt= int(completion.stdout.next())
+        if (sug_cnt == 0): return
+        if (sug_cnt == 1):
+            suggestion= completion.stdout.next().strip()
+        else:
+            sug_dialog= TextSelectDialog(master= window, title="")
+            for sug in completion.stdout: sug_dialog.addOption(sug.strip())
+            suggestion= sug_dialog.run()
+            if (suggestion is None): return
+        tb.delete(
+            tb.get_iter_at_offset(rep_pos),
+            tb.get_iter_at_offset(rep_pos + rep_len)
         )
-        textbuffer.insert(
-          textbuffer.get_iter_at_offset(replace_pos),
-          suggestion
-        )
+        tb.insert(tb.get_iter_at_offset(rep_pos), suggestion)
+
+class TextSelectDialog(gtk.Dialog):
+    def __init__(self, master=None, title=None):
+        gtk.Dialog.__init__(self)
+        if master: self.set_transient_for(master)
+        if title:  self.set_title(title)
+        self.set_modal(True)
+        self.set_destroy_with_parent(True)
+        self.set_has_separator(False)
+        self.set_resizable(False)
+        self.set_decorated(False)
+        list_col= gtk.TreeViewColumn(None, gtk.CellRendererText(), text= 0)
+        list_col.set_sort_order(gtk.SORT_ASCENDING)
+        self.list= gtk.ListStore(gobject.TYPE_STRING)
+        self.view= gtk.TreeView(self.list)
+        self.view.set_headers_visible(False)
+        self.view.append_column(list_col)
+        self.view.connect("key-press-event", self.keypressEH)
+        self.view.connect("button-press-event", self.buttonpressEH)
+        self.view.show()
+        self.vbox.pack_end(self.view)
+    
+    def addOption(self, text):
+        self.list.set(self.list.append(), 0, text)
+        
+    def run(self):
+        ret= gtk.Dialog.run(self)
+        self.hide()
+        if (ret != gtk.RESPONSE_OK): return None
+        ret_iter= self.view.get_selection().get_selected()[1]
+        if (ret_iter is None): return None
+        return self.list.get(ret_iter, 0)[0]
+
+    def keypressEH(self, widget, event):
+        if (gtk.gdk.keyval_name(event.keyval) in ["Return", "space"]):
+            self.response(gtk.RESPONSE_OK);
+            return True
+        return False
+
+    def buttonpressEH(self, widget, event):
+        print event
+        if (gtk.gdk._2BUTTON_PRESS == event.type):
+            self.response(gtk.RESPONSE_OK);
+            return True
+        return False
