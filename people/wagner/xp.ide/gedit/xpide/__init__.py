@@ -1,7 +1,8 @@
 
 import gtk
-import os
+import subprocess
 import gedit
+import os
 
 class XpIdeUi:
     def __init__(self, plugin, window):
@@ -33,12 +34,35 @@ class XpIdePlugin(gedit.Plugin):
         pass
         
     def complete(self, action, window):
-        window.get_active_document().insert_at_cursor("PENG")
-        insert_mark= window.get_active_document().get_insert()
-        cursor= window.get_active_document().get_iter_at_mark(insert_mark)
-        print (
-            "xpide xp.ide.completion.Runner xp.ide.completion.Nedit"
-            " -p " + str(cursor.get_offset()) +
-            " -l " + str(cursor.get_line()) +
-            " -c " + str(cursor.get_line_offset())
+        textbuffer= window.get_active_document()
+        cursor= textbuffer.get_iter_at_mark(textbuffer.get_insert())
+        completion= subprocess.Popen(
+          [
+            "xpide",
+            "xp.ide.completion.Runner",
+            "xp.ide.completion.Nedit",
+            "-p", str(cursor.get_offset()),
+            "-l", str(cursor.get_line()),
+            "-c", str(cursor.get_line_offset()),
+          ],
+          stdin=subprocess.PIPE,
+          stdout=subprocess.PIPE
+        )
+        completion.stdin.write(textbuffer.get_text(
+          textbuffer.get_start_iter(),
+          textbuffer.get_end_iter()
+        ))
+        completion.stdin.close()
+        
+        replace_pos= int(completion.stdout.next())
+        replace_length= int(completion.stdout.next())
+        sugg_cnt= int(completion.stdout.next())
+        suggestion= completion.stdout.next().strip()
+        textbuffer.delete(
+          textbuffer.get_iter_at_offset(replace_pos),
+          textbuffer.get_iter_at_offset(replace_pos + replace_length)
+        )
+        textbuffer.insert(
+          textbuffer.get_iter_at_offset(replace_pos),
+          suggestion
         )

@@ -39,11 +39,11 @@
      */
     #[@complete]
     public function complete() {
-      $buffer= $this->inputStream->read($this->cursor->getPosition());
+      $buffer= 0 == $this->cursor->getPosition() ? '' : $this->inputStream->read($this->cursor->getPosition());
       
       $searchword= '';
-      $replacepos= NULL;
-      for ($i= strlen($buffer) - 1; $i > 0; $i--) {
+      $replacepos= 0;
+      for ($i= strlen($buffer) - 1; $i >= 0; $i--) {
         if (!$this->isClassChar($buffer{$i})) break;
         $replacepos= $i;
         $searchword= $buffer{$i}.$searchword;
