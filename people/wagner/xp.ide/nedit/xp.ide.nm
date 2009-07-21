@@ -38,10 +38,6 @@ define xp_ide_lint_xml {
 define xp_ide_complete {
   result= shell_command("xpide xp.ide.completion.Runner xp.ide.completion.Nedit -p " $cursor " -l "  $line " -c " $column, get_range(0, $text_length))
   kill_calltip()
-  if (0 != $shell_cmd_status) {
-    calltip("no class found")
-    return
-  }
   
   res_list= split(result, "\n")
   replacepos= res_list[0]
@@ -51,7 +47,10 @@ define xp_ide_complete {
   sugg_cnt= res_list[2]
   delete res_list[2]
   
-  if (1 == sugg_cnt) {
+  if (0 == sugg_cnt) {
+    calltip("no class found")
+    return
+  } else if (1 == sugg_cnt) {
     sugg= res_list[3]
   } else {
     res_list_d= ""

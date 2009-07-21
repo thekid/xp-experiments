@@ -11,7 +11,7 @@
     'xp.ide.ClassPathScanner'
   );
 
-  /**-
+  /**
    * Autocomleter for xp classes
    *
    * @purpose  IDE
@@ -57,7 +57,6 @@
       $suggestions= create(new xp·ide·completion·PackageClassCompleter(
         new xp·ide·completion·UncompletePackageClass($searchword)
       ))->suggest();
-      if (0 == count($suggestions)) return 1;
 
       Console::$out->writeLine($replacepos);
       Console::$out->writeLine(strlen($searchword));

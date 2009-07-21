@@ -41,7 +41,7 @@ class XpIdePlugin(gedit.Plugin):
             [
                 "xpide",
                 "xp.ide.completion.Runner",
-                "xp.ide.completion.Nedit",
+                "xp.ide.completion.Gedit",
                 "-p", str(cursor.get_offset()),
                 "-l", str(cursor.get_line()),
                 "-c", str(cursor.get_line_offset()),
