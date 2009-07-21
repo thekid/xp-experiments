@@ -2,6 +2,15 @@ XP Runners with C#
 ========================================================================
 $Id$
 
+<summary>
+This experiment is the predecessor to the XP runners. This page is kept
+for historic reasons, but the runners have since been extended and moved
+to the installation infrastructure repository. They can be installed by
+the framework setup procedure.
+
+DO NOT USE THESE RUNNERS HERE!
+</summary>
+
 Howto: Build
 ------------
 Run "make" to build the XP runners. If you don't have "csc" (the C Sharp
