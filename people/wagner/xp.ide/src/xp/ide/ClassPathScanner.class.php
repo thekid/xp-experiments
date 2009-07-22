@@ -23,9 +23,8 @@
      */
     public function fromCwd() {
       $csd= getcwd();
-      $home= getenv('HOME');
       do {
-        if ($paths= scanpath(array($csd), $home)) {
+        if ($paths= scanpath(array($csd), getenv('HOME'))) {
           foreach (explode(PATH_SEPARATOR, $paths) as $path) ClassLoader::registerPath($path);
           return TRUE;
         }

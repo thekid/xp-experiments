@@ -53,7 +53,7 @@
         $searchword.= $c;
       }
       $this->inputStream->close();
-      
+
       $suggestions= create(new xp·ide·completion·PackageClassCompleter(
         new xp·ide·completion·UncompletePackageClass($searchword)
       ))->suggest();
@@ -73,7 +73,7 @@
      */
     private function isClassChar($c) {
       if ($c == '.') return TRUE;
-      if (96 < ord(strToLower($c)) && ord(strToLower($c)) < 122) return TRUE;
+      if (96 < ord(strToLower($c)) && ord(strToLower($c)) < 123) return TRUE;
       if (47 < ord($c) && ord($c) < 58) return TRUE;
       return FALSE;
     }

@@ -108,7 +108,6 @@ class TextSelectDialog(gtk.Dialog):
         return False
 
     def buttonpressEH(self, widget, event):
-        print event
         if (gtk.gdk._2BUTTON_PRESS == event.type):
             self.response(gtk.RESPONSE_OK);
             return True
