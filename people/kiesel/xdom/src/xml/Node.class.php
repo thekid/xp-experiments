@@ -6,25 +6,31 @@
  */
 
   uses(
-    'xml.XMLNode',
-    'xml.PCData',
+    'xml.Element',
     'xml.CData',
+    'xml.PCData',
     'xml.XMLFormatException'
   );
-  
+
   define('INDENT_DEFAULT',    0);
   define('INDENT_WRAPPED',    1);
   define('INDENT_NONE',       2);
-
-  define('XML_ILLEGAL_CHARS',   "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x0b\x0c\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f");
-
+ 
   /**
    * Represents a node
    *
    * @see   xp://xml.Tree#addChild
    * @test  xp://net.xp_framework.unittest.xml.NodeTest
    */
-  class Node extends Object implements XMLNode {
+  class Node extends Object implements Element {
+    const 
+      XML_ILLEGAL_CHARS = "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x0b\x0c\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f";
+
+    const
+      INDENT_DEFAULT  = 0,
+      INDENT_WRAPPED  = 1,
+      INDENT_NONE     = 2;
+
     public 
       $name         = '',
       $attribute    = array(),
@@ -134,7 +140,7 @@
 
       // Scan the given string for illegal characters.
       if (is_string($content)) {  
-        if (strlen($content) > ($p= strcspn($content, XML_ILLEGAL_CHARS))) {
+        if (strlen($content) > ($p= strcspn($content, self::XML_ILLEGAL_CHARS))) {
           throw new XMLFormatException(
             'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
           );
@@ -303,11 +309,11 @@
     /**
      * Add a child node
      *
-     * @param   xml.XMLNode child
-     * @return  xml.XMLNode added child
+     * @param   xml.Element child
+     * @return  xml.Element added child
      * @throws  lang.IllegalArgumentException in case the given argument is not a Node
      */
-    public function addChild(XMLNode $child) {
+    public function addChild(Element $child) {
       $this->children[]= $child;
       return $child;
     }

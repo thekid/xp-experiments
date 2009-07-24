@@ -6,7 +6,7 @@
  */
 
   uses(
-    'xml.XMLNode',
+    'xml.Element',
     'xml.XMLFormatException'
   );
 
@@ -14,7 +14,7 @@
    * Represents a text node
    *
    */
-  class TextNode extends Object implements XMLNode {
+  class TextNode extends Object implements Element {
     public 
       $content      = NULL;
 
@@ -42,7 +42,7 @@
 
       // Scan the given string for illegal characters.
       if (is_string($content)) {  
-        if (strlen($content) > ($p= strcspn($content, XML_ILLEGAL_CHARS))) {
+        if (strlen($content) > ($p= strcspn($content, Node::XML_ILLEGAL_CHARS))) {
           throw new XMLFormatException(
             'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
           );

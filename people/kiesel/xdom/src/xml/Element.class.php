@@ -8,7 +8,6 @@
    * (Insert class' description here)
    *
    */
-  interface XMLNode {
-    
+  interface Element {
   }
 ?>
