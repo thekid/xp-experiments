@@ -81,6 +81,17 @@
      *
      */
     #[@test]
+    public function remove() {
+      $n= new Node('root', array('key' => 'value'));
+      $n->removeAttribute('key');
+      $this->assertFalse($n->hasAttribute('key'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function withAttributeReturnsNode() {
       $n= new Node('root');
       $this->assertEquals($n, $n->withAttribute('any', 'key'));
