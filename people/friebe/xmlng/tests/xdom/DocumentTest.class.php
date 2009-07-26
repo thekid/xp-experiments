@@ -13,8 +13,7 @@
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://xml.xdom.Document
    */
   class DocumentTest extends TestCase {
   

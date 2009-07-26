@@ -132,6 +132,11 @@
       $this->size= 0;
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @return  string
+     */
     public function toString() {
       $s= $this->getClassName().'['.$this->size."] {\n";
       foreach ($this->backing as $index => $element) {

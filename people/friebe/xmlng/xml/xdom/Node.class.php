@@ -13,14 +13,16 @@
   class Node extends Element {
     protected $name= '';
     protected $children= NULL;
+    protected $attributes= array();
     
     /**
      * (Insert method's description here)
      *
      * @param   string name
      */
-    public function __construct($name) {
+    public function __construct($name, array $attributes= array()) {
       $this->name= $name;
+      $this->attributes= $attributes;
       $this->children= new ElementList($this);
     }
     
@@ -41,15 +43,72 @@
     public function children() {
       return $this->children;
     }
+    
+    /**
+     * Add a child
+     *
+     * @param   xml.xdom.Element e
+     * @return  xml.xdom.Element
+     */
+    public function addChild(Element $e) {
+      return $this->children->add($e);
+    }
 
     /**
      * (Insert method's description here)
      *
      * @param   string name
-     * @return  xml.xdom.ElementList
+     * @return  string
      */
-    public function childrenNamed($name) {
-      return $this->children;
+    public function getAttribute($name) {
+      if (!isset($this->attributes[$name])) {
+        throw new IllegalArgumentException('No such attribute '.$name);
+      }
+      return $this->attributes[$name];
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasAttribute($name) {
+      return isset($this->attributes[$name]);
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @param   string name
+     * @param   string value
+     */
+    public function setAttribute($name, $value) {
+      $this->attributes[$name]= (string)$value;
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @param   string name
+     */
+    public function removeAttribute($name) {
+      if (!isset($this->attributes[$name])) {
+        throw new IllegalArgumentException('No such attribute '.$name);
+      }
+      unset($this->attributes[$name]);
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @param   string name
+     * @param   string value
+     * @return  xml.xdom.Node
+     */
+    public function withAttribute($name, $value) {
+      $this->attributes[$name]= (string)$value;
+      return $this;
     }
 
     /**
