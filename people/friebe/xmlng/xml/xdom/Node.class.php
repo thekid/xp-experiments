@@ -14,18 +14,22 @@
     protected $name= '';
     protected $children= NULL;
     protected $attributes= array();
+    protected $ns= NULL;
     
     /**
      * (Insert method's description here)
      *
      * @param   string name
+     * @param   array<string, string> attributes
+     * @param   xml.xdom.XMLNamespace ns
      */
-    public function __construct($name, array $attributes= array()) {
+    public function __construct($name, array $attributes= array(), XMLNamespace $ns= NULL) {
       $this->name= $name;
       $this->children= new ElementList($this);
       foreach ($attributes as $key => $value) {
         $this->attributes[$key]= new Attribute($key, $value);
       }
+      $this->ns= $ns;
     }
     
     /**
@@ -35,6 +39,34 @@
      */
     public function getName() {
       return $this->name;
+    }
+
+    /**
+     * Set parent element
+     *
+     * @param   xml.xdom.Element parent
+     */
+    public function setParent(Element $parent) {
+      parent::setParent($parent);
+      if (!$this->ns) $this->ns= $parent->ns;   // Inherit parent's namespace
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @return  string
+     */
+    public function qualifiedName() {
+      return NULL === $this->ns ? $this->name : $this->ns->qualify($this->name);
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @return  xml.xdom.XMLNamespace
+     */
+    public function getNamespace() {
+      return $this->ns;
     }
     
     /**

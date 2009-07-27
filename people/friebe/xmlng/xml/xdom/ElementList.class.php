@@ -52,7 +52,7 @@
      */
     public function add(Element $e) {
       $this->backing[]= $e;
-      $e->parent= $this->parent;
+      $e->setParent($this->parent);
       $this->size++;
       return $e;
     }
@@ -73,7 +73,7 @@
         array($e),
         array_slice($this->backing, $i)
       );
-      $e->parent= $this->parent;
+      $e->setParent($this->parent);
       $this->size++;
       return $e;
     }
@@ -90,7 +90,7 @@
         throw new IndexOutOfBoundsException('No child at offset '.$i);
       }
       $this->backing[$i]= $e;
-      $e->parent= $this->parent;
+      $e->setParent($this->parent);
       return $e;
     }
     
