@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: AttributesTest.class.php 11290 2009-07-26 11:55:00Z friebe $ 
+ * $Id$ 
  */
 
   uses(
