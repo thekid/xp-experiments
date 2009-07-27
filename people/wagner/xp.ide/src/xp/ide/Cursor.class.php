@@ -3,14 +3,14 @@
  *
  * $Id$ 
  */
-  $package= 'xp.ide.completion';
+  $package= 'xp.ide';
 
   /**
    * text cursor
    *
    * @purpose  IDE
    */
-  class xp·ide·completion·Cursor extends Object {
+  class xp·ide·Cursor extends Object {
     private
       $position= 0,
       $line= 0,

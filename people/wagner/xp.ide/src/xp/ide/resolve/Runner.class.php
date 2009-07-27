@@ -23,7 +23,7 @@
      * @param   string[] args
      */
     public static function main(array $args) {
-      $class= XPClass::forName(array_shift($args));
+      $class= XPClass::forName('xp.ide.resolve.'.array_shift($args));
       $resolver= $class->newInstance();
 
       $resolveMethods= new HashTable();

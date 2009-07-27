@@ -3,7 +3,7 @@
  *
  * $Id$ 
  */
-  $package= 'xp.ide.completion';
+  $package= 'xp.ide.text';
   
   uses(
     'lang.XPClass',
@@ -17,7 +17,7 @@
    *
    * @purpose  IDE
    */
-  class xp·ide·completion·Runner extends Object {
+  class xp·ide·text·Runner extends Object {
 
     /**
      * Main runner method
@@ -25,15 +25,15 @@
      * @param   string[] args
      */
     public static function main(array $args) {
-      $class= XPClass::forName('xp.ide.completion.'.array_shift($args));
+      $class= XPClass::forName('xp.ide.text.'.array_shift($args));
       $inst= $class->newInstance();
 
       $params= new ParamString($args);
       $inputStream= new ChannelInputStream('stdin');
 
-      $completeMethod= NULL;
+      $actionMethods= array();
       foreach ($class->getMethods() as $method) {
-        if ($method->hasAnnotation('complete')) $completeMethod= $method;
+        if ($method->hasAnnotation('action')) $actionMethods[$method->getAnnotation('action', 'name')]= $method;
       }
 
       $inputStreamField= NULL;
@@ -51,7 +51,7 @@
 
       if ($inputStreamField) $inputStreamField->set($inst, $inputStream);
 
-      if (!is_null($completeMethod)) return $completeMethod->invoke($inst);
+      if ($params->exists('action')) return $actionMethods[$params->value('action')]->invoke($inst);
       return 1;
     }
 

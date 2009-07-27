@@ -23,7 +23,7 @@
      * @param   string[] args
      */
     public static function main(array $args) {
-      $class= XPClass::forName(array_shift($args));
+      $class= XPClass::forName('xp.ide.lint.'.array_shift($args));
       $lint= $class->newInstance();
 
       $testMethod=    NULL;
