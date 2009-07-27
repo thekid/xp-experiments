@@ -48,5 +48,18 @@
         $this->assertEquals('xsl:output', $root->children()->get(0)->qualifiedName());
       }
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function qualifiedNameChild() {
+      $doc= new Document(new Node('stylesheet', array(), $this->xslns));
+      with ($root= $doc->rootElement()); {
+        $root->addChild(new Node('output', array('method' => 'html'), $this->xslns));
+        $this->assertEquals('xsl:output', $root->children()->get(0)->qualifiedName());
+      }
+    }
   }
 ?>
