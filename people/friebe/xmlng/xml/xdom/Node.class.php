@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.xdom.Element', 'xml.xdom.ElementList');
+  uses('xml.xdom.Element', 'xml.xdom.ElementList', 'xml.xdom.Attribute');
 
   /**
    * (Insert class' description here)
@@ -22,8 +22,10 @@
      */
     public function __construct($name, array $attributes= array()) {
       $this->name= $name;
-      $this->attributes= $attributes;
       $this->children= new ElementList($this);
+      foreach ($attributes as $key => $value) {
+        $this->attributes[$key]= new Attribute($key, $value);
+      }
     }
     
     /**
@@ -58,56 +60,73 @@
      * (Insert method's description here)
      *
      * @param   string name
-     * @return  string
+     * @param   xml.xdom.XMLNamespace ns
+     * @return  xml.xdom.Attribute
      */
-    public function getAttribute($name) {
-      if (!isset($this->attributes[$name])) {
-        throw new IllegalArgumentException('No such attribute '.$name);
+    public function getAttribute($name, XMLNamespace $ns= NULL) {
+      $q= $ns ? $ns->qualify($name) : $name;
+      if (!isset($this->attributes[$q])) {
+        throw new IllegalArgumentException('No such attribute '.$q);
       }
-      return $this->attributes[$name];
+      return $this->attributes[$q];
     }
 
     /**
      * (Insert method's description here)
      *
      * @param   string name
+     * @param   xml.xdom.XMLNamespace ns
      * @return  bool
      */
-    public function hasAttribute($name) {
-      return isset($this->attributes[$name]);
+    public function hasAttribute($name, XMLNamespace $ns= NULL) {
+      return isset($this->attributes[$ns ? $ns->qualify($name) : $name]);
     }
 
     /**
      * (Insert method's description here)
      *
-     * @param   string name
+     * @param   string key
      * @param   string value
      */
-    public function setAttribute($name, $value) {
-      $this->attributes[$name]= (string)$value;
-    }
-
-    /**
-     * (Insert method's description here)
-     *
-     * @param   string name
-     */
-    public function removeAttribute($name) {
-      if (!isset($this->attributes[$name])) {
-        throw new IllegalArgumentException('No such attribute '.$name);
+    public function setAttribute($key, $value= NULL) {
+      if ($key instanceof Attribute) {
+        $this->attributes[$key->qualifiedName()]= $key;
+      } else if (!isset($this->attributes[$key])) {
+        $this->attributes[$key]= new Attribute($key, $value);
+      } else {
+        $this->attributes[$key]->setValue($value);
       }
-      unset($this->attributes[$name]);
     }
 
     /**
      * (Insert method's description here)
      *
      * @param   string name
+     * @param   xml.xdom.XMLNamespace ns
+     */
+    public function removeAttribute($name, XMLNamespace $ns= NULL) {
+      $q= $ns ? $ns->qualify($name) : $name;
+      if (!isset($this->attributes[$q])) {
+        throw new IllegalArgumentException('No such attribute '.$q);
+      }
+      unset($this->attributes[$q]);
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @param   string key
      * @param   string value
      * @return  xml.xdom.Node
      */
-    public function withAttribute($name, $value) {
-      $this->attributes[$name]= (string)$value;
+    public function withAttribute($key, $value= NULL) {
+      if ($key instanceof Attribute) {
+        $this->attributes[$key->qualifiedName()]= $key;
+      } else if (!isset($this->attributes[$key])) {
+        $this->attributes[$key]= new Attribute($key, $value);
+      } else {
+        $this->attributes[$key]->setValue($value);
+      }
       return $this;
     }
 

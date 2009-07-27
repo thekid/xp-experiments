@@ -14,7 +14,7 @@
     /**
      * (Insert method's description here)
      *
-     * @param   
+     * @return  xml.xdom.Element  
      */
     public function getParent() {
       return $this->parent;

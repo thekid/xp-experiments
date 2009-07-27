@@ -52,8 +52,8 @@
     #[@test]
     public function getAttributes() {
       $n= new Node('img', array('src' => '/blank.gif', 'border' => '0'));
-      $this->assertEquals('/blank.gif', $n->getAttribute('src'));
-      $this->assertEquals('0', $n->getAttribute('border'));
+      $this->assertEquals('/blank.gif', $n->getAttribute('src')->getValue());
+      $this->assertEquals('0', $n->getAttribute('border')->getValue());
     }
 
     /**
@@ -70,9 +70,20 @@
      *
      */
     #[@test]
-    public function add() {
+    public function setAttribute() {
       $n= new Node('root');
       $n->setAttribute('key', 'value');
+      $this->assertTrue($n->hasAttribute('key'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function setAttributeObject() {
+      $n= new Node('root');
+      $n->setAttribute(new Attribute('key', 'value'));
       $this->assertTrue($n->hasAttribute('key'));
     }
 
