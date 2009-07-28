@@ -6,8 +6,10 @@
   $package= 'xp.ide.text';
   
   uses(
-    'xp.ide.resolve.Nedit'
-  )
+    'xp.ide.resolve.Nedit',
+    'util.cmd.Console',
+    'xp.ide.text.StreamWorker'
+  );
 
   /**
    * nedit text actions
@@ -21,6 +23,9 @@
 
       #[@Cursor]
       $cursor= NULL;
+      
+    private
+      $status= 0;
 
     /**
      * output all suggestions
@@ -28,42 +33,26 @@
      * @param   string[] suggestions
      */
     #[@action(name='grepclassfile')]
-    public function grepclass() {
-      $buffer= 0 == $this->cursor->getPosition() ? '' : $this->inputStream->read($this->cursor->getPosition());
-      
-      $searchword= '';
-      $startpos= strlen($buffer);
-      for ($i= $startpos - 1; $i >= 0; $i--) {
-        if (!$this->isClassChar($buffer{$i})) break;
-        $startpos= $i;
-        $searchword= $buffer{$i}.$searchword;
+    public function grepClassFile() {
+      $searchWord= create(new xp·ide·text·StreamWorker($this->inputStream, $this->cursor))->grepClassName();
+      $resolver= new xp·ide·resolve·Nedit();
+      try {
+        Console::$out->write($resolver->getSourceFileUri($searchWord->getText()));
+        $this->status= $resolver->getStatus();
+      } catch (IllegalArgumentException $e) {
+        $this->status= 2;
       }
-      while ($c= $this->inputStream->read(1)) {
-        if (!$this->isClassChar($c)) break;
-        $searchword.= $c;
-      }
-      $this->inputStream->close();
-
-      
-
-      Console::$out->writeLine($startpos);
-      Console::$out->writeLine(strlen($searchword));
-      Console::$out->writeLine($searchword);
-      return 0;
-    }
-
-    /**
-     * test if char is allowed in a fully qualified class name
-     *
-     * @param   char c
-     * @return  bool
-     */
-    private function isClassChar($c) {
-      if ($c == '.') return TRUE;
-      if (96 < ord(strToLower($c)) && ord(strToLower($c)) < 123) return TRUE;
-      if (47 < ord($c) && ord($c) < 58) return TRUE;
-      return FALSE;
     }
     
+    /**
+     * Get status
+     *
+     * @return  int
+     */
+    #[@status]
+    public function getStatus() {
+      return $this->status;
+    }
+
   }
 ?>

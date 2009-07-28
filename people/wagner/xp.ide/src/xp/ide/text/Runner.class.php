@@ -32,7 +32,9 @@
       $inputStream= new ChannelInputStream('stdin');
 
       $actionMethods= array();
+      $statusMethod=  NULL;
       foreach ($class->getMethods() as $method) {
+        if ($method->hasAnnotation('status')) $statusMethod= $method;
         if ($method->hasAnnotation('action')) $actionMethods[$method->getAnnotation('action', 'name')]= $method;
       }
 
@@ -51,7 +53,8 @@
 
       if ($inputStreamField) $inputStreamField->set($inst, $inputStream);
 
-      if ($params->exists('action')) return $actionMethods[$params->value('action')]->invoke($inst);
+      if ($params->exists('action') && isset($actionMethods[$params->value('action')])) $actionMethods[$params->value('action')]->invoke($inst);
+      if ($statusMethod) return $statusMethod->invoke($inst);
       return 1;
     }
 

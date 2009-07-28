@@ -28,6 +28,27 @@ define xp_ide_lint_xml {
 }
 
 ##
+# parse a lint result
+# if result is not empty
+# line#1: error line
+# line#2: error column
+# rest: Error Text
+#
+##
+define xp_ide_parse_lint_result {
+  res_list= split($1, "\n")
+  if (res_list[2] == "") {
+    kill_calltip()
+    return
+  }
+  goto_line_number(res_list[0], res_list[1])
+  select($cursor, search("$", $cursor, "regex", "forward"))
+  res= res_list[2]
+  for (k= 3; res_list[] > k; k++) res= res "\n" res_list[k]
+  calltip(res)
+}
+
+##
 # complete the full qualified class as long as the
 # last result was not empty
 # displays a dialog if more than one possible completions
@@ -65,59 +86,18 @@ define xp_ide_complete {
 
 ##
 # try to open the class which full
-# qualified class name is selected
+# qualified class name is under the cursor
 #
 ##
 define xp_ide_open_xpclass {
-  res= shell_command("xpide xp.ide.resolve.Runner Nedit " xp_ide_get_class_range()["part"], "")
+  result= shell_command("xpide xp.ide.text.Runner Nedit -a grepclassfile -p " $cursor " -l "  $line " -c " $column, get_range(0, $text_length))
   kill_calltip()
+
   if (0 == $shell_cmd_status) {
-    filename= split(res, "\n")
-    open(filename[0])
+    open(result)
   } else if (1 == $shell_cmd_status) {
     calltip(res)
   } else {
     calltip("class not found")
   }
-}
-
-##
-# search a part of a class left to the cursor
-#
-# @return  string[pos, part]
-##
-define xp_ide_get_class_range {
-   search_regex= "(?n[^a-z0-9\._-])"
-   result["pos"]= $cursor
-   result["part"]= ""
-
-   bs= search(search_regex, $cursor - 1, "regexNoCase", "backward")
-   if (bs == $cursor - 1) {
-     return result
-   }
-   result["pos"]= bs + 1
-   search_end= search(search_regex, result["pos"], "regexNoCase", "forward")
-   result["part"]= get_range(result["pos"], search_end)
-   return result
-}
-
-##
-# parse a lint result
-# if result is not empty
-# line#1: error line
-# line#2: error column
-# rest: Error Text
-#
-##
-define xp_ide_parse_lint_result {
-  res_list= split($1, "\n")
-  if (res_list[2] == "") {
-    kill_calltip()
-    return
-  }
-  goto_line_number(res_list[0], res_list[1])
-  select($cursor, search("$", $cursor, "regex", "forward"))
-  res= res_list[2]
-  for (k= 3; res_list[] > k; k++) res= res "\n" res_list[k]
-  calltip(res)
 }

@@ -8,7 +8,8 @@
   uses(
     'xp.ide.completion.UncompletePackageClass',
     'xp.ide.completion.PackageClassCompleter',
-    'xp.ide.ClassPathScanner'
+    'xp.ide.ClassPathScanner',
+    'xp.ide.text.StreamWorker'
   );
 
   /**
@@ -39,44 +40,17 @@
      */
     #[@complete]
     public function complete() {
-      $buffer= 0 == $this->cursor->getPosition() ? '' : $this->inputStream->read($this->cursor->getPosition());
-      
-      $searchword= '';
-      $replacepos= strlen($buffer);
-      for ($i= $replacepos - 1; $i >= 0; $i--) {
-        if (!$this->isClassChar($buffer{$i})) break;
-        $replacepos= $i;
-        $searchword= $buffer{$i}.$searchword;
-      }
-      while ($c= $this->inputStream->read(1)) {
-        if (!$this->isClassChar($c)) break;
-        $searchword.= $c;
-      }
-      $this->inputStream->close();
-
+      $searchText= create(new xp·ide·text·StreamWorker($this->inputStream, $this->cursor))->grepClassName();
       $suggestions= create(new xp·ide·completion·PackageClassCompleter(
-        new xp·ide·completion·UncompletePackageClass($searchword)
+        new xp·ide·completion·UncompletePackageClass($searchText->getText())
       ))->suggest();
 
-      Console::$out->writeLine($replacepos);
-      Console::$out->writeLine(strlen($searchword));
+      Console::$out->writeLine($searchText->getPosition());
+      Console::$out->writeLine(strlen($searchText->getText()));
       Console::$out->writeLine(count($suggestions));
       Console::$out->write(implode("\n", $suggestions));
       return 0;
     }
 
-    /**
-     * test if char is allowed in a fully qualified class name
-     *
-     * @param   char c
-     * @return  bool
-     */
-    private function isClassChar($c) {
-      if ($c == '.') return TRUE;
-      if (96 < ord(strToLower($c)) && ord(strToLower($c)) < 123) return TRUE;
-      if (47 < ord($c) && ord($c) < 58) return TRUE;
-      return FALSE;
-    }
-    
   }
 ?>

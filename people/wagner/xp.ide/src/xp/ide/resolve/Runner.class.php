@@ -26,21 +26,14 @@
       $class= XPClass::forName('xp.ide.resolve.'.array_shift($args));
       $resolver= $class->newInstance();
 
-      $resolveMethods= new HashTable();
       $outputMethod=   NULL;
       $statusMethod=   NULL;
       foreach ($class->getMethods() as $method) {
-        if ($method->hasAnnotation('resolve', 'type')) $resolveMethods[XPClass::forName($method->getAnnotation('resolve', 'type'))]= $method;
         if ($method->hasAnnotation('output')) $outputMethod= $method;
         if ($method->hasAnnotation('status')) $statusMethod= $method;
       }
-      $result= array();
-      foreach ($args as $className) {
-        $cp= ClassLoader::getDefault()->findClass($className);
-        if ($cp instanceof NULL) continue;
-        if (!isset($resolveMethods[$cp->getClass()])) continue;
-        $result[]= $resolveMethods[$cp->getClass()]->invoke($resolver, array($cp, $className));
-      }
+
+      $result= array_map(array($resolver, 'getSourceFileUri'), $args);
       if (!is_null($outputMethod)) $outputMethod->invoke($resolver, array($result));
       if (!is_null($statusMethod)) return $statusMethod->invoke($resolver, array($result));
       return 0;

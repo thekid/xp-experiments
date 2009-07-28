@@ -7,7 +7,8 @@
   
   uses(
     'util.cmd.Console',
-    'xp.ide.ClassPathScanner'
+    'xp.ide.ClassPathScanner',
+    'xp.ide.resolve.Resolver'
   );
   
   /**
@@ -15,7 +16,7 @@
    *
    * @purpose  IDE
    */
-  class xp·ide·resolve·Nedit extends Object {
+  class xp·ide·resolve·Nedit extends xp·ide·resolve·Resolver {
     private
       $status= 2;
 
@@ -46,10 +47,9 @@
      * @param   string name
      * @return  string
      */
-    #[@resolve(type="lang.FileSystemClassLoader")]
-    public function resolveToFile(FileSystemClassLoader $cp, $name) {
+    protected function resolveFscl(FileSystemClassLoader $cp, $name) {
       $this->status= 0;
-      return $cp->path.strtr($name, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT;
+      return parent::resolveFscl($cp, $name);
     }
 
     /**
@@ -59,8 +59,7 @@
      * @param   string name
      * @return  string
      */
-    #[@resolve(type="lang.archive.ArchiveClassLoader")]
-    public function resolveToArchive(ArchiveClassLoader $cp, $name) {
+    protected function resolveAcl(ArchiveClassLoader $cp, $name) {
       $this->status= 1;
       Console::$out->writeLine(sprintf('Class "%s" is part of an archive:'.PHP_EOL.' %s', $name, xp::stringOf($cp)));
     }
