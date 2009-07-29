@@ -8,11 +8,12 @@ class Calltip():
         self._builder= gtk.Builder()
         self._builder.add_from_file(os.path.join(os.path.dirname(__file__), "dialog", dialog + ".ui"))
         self._dialog= self._builder.get_object(dialog)
+        self._dialog= self._builder.get_object(dialog)
         if master: self._dialog.set_transient_for(master)
         if title:  self._dialog.set_title(title)
 
     def run(self):
-        self._dialog.show()
+        self._dialog.show_all()
         ret= self._dialog.run()
         self._dialog.hide()
         return ret
@@ -32,6 +33,7 @@ class TextSelectCalltip(Calltip):
     
     def addOption(self, text):
         self._list.set(self._list.append(), 0, text)
+        return self
         
     def run(self):
         ret= Calltip.run(self)
@@ -59,3 +61,4 @@ class TextCalltip(Calltip):
 
     def setText(self, text):
         self._hint.set_text(text)
+        return self

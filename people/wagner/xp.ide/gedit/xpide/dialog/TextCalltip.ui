@@ -3,6 +3,7 @@
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkDialog" id="TextCalltip">
+    <property name="window_position">mouse</property>
     <property name="border_width">5</property>
     <property name="type">popup</property>
     <property name="resizable">False</property>

@@ -61,7 +61,7 @@
      */
     protected function resolveAcl(ArchiveClassLoader $cp, $name) {
       $this->status= 1;
-      Console::$out->writeLine(sprintf('Class "%s" is part of an archive:'.PHP_EOL.' %s', $name, xp::stringOf($cp)));
+      Console::$out->write(sprintf('Class "%s" is part of an archive:'.PHP_EOL.' %s', $name, xp::stringOf($cp)));
     }
     
     /**

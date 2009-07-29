@@ -7,7 +7,27 @@ import dialog
 
 class XpIdePlugin(gedit.Plugin):
     def openclass(self, action, window):
-        pass
+        tb= window.get_active_document()
+        cursor= tb.get_iter_at_mark(tb.get_insert())
+        result= textproc= subprocess.Popen(
+            [
+                "xpide",
+                "xp.ide.text.Runner",
+                "Gedit",
+                "-a", "grepclassfile",
+                "-p", str(cursor.get_offset()),
+                "-l", str(cursor.get_line()),
+                "-c", str(cursor.get_line_offset()),
+            ],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE
+        ).communicate(tb.get_text(tb.get_start_iter(), tb.get_end_iter()))
+        if (0 == textproc.returncode):
+            window.create_tab_from_uri("file://" + result[0], tb.get_encoding(), 0, False, True)
+        elif (1 == textproc.returncode):
+            dialog.TextCalltip(master=window).setText(result[0]).run()
+        else:
+            dialog.TextCalltip(master=window).setText("class not found").run()
 
     def complete(self, action, window):
         tb= window.get_active_document()
@@ -31,14 +51,12 @@ class XpIdePlugin(gedit.Plugin):
         rep_len= int(completion.stdout.next())
         sug_cnt= int(completion.stdout.next())
         if (sug_cnt == 0):
-          hint= dialog.TextCalltip(master=window, title="")
-          hint.setText("no object found")
-          hint.run()
-          return
+            dialog.TextCalltip(master=window).setText("no object found").run()
+            return
         if (sug_cnt == 1):
             suggestion= completion.stdout.next().strip()
         else:
-            sug_dialog= dialog.TextSelectCalltip(master= window, title="")
+            sug_dialog= dialog.TextSelectCalltip(master= window)
             for sug in completion.stdout: sug_dialog.addOption(sug.strip())
             suggestion= sug_dialog.run()
             if (suggestion is None): return
@@ -70,6 +88,10 @@ class XpIdeUi:
         completeAction= gtk.Action("XpIdeComplete", "complete", None, None)
         self._ag.add_action_with_accel(completeAction, "<Shift><Control>space")
         completeAction.connect("activate", self._plugin.complete, self._window)
+
+        completeAction= gtk.Action("XpIdeOpenClass", "open XP class", None, None)
+        self._ag.add_action_with_accel(completeAction, "<Shift><Control>o")
+        completeAction.connect("activate", self._plugin.openclass, self._window)
 
     def shutdown(self):
         self._window.get_ui_manager().remove_ui(self._ui)

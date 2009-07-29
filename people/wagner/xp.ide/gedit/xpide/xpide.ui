@@ -1,8 +1,10 @@
+<?xml version="1.0"?>
 <ui>
   <menubar name="MenuBar">
     <placeholder name="ExtraMenu_1">
       <menu name="XpMenu" action="XpIde">
-        <menuitem name="complete"  action="XpIdeComplete" />
+        <menuitem name="complete"       action="XpIdeComplete" />
+        <menuitem name="open XP class"  action="XpIdeOpenClass" />
       </menu>
     </placeholder>
   </menubar>

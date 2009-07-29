@@ -35,13 +35,22 @@
     #[@action(name='grepclassfile')]
     public function grepClassFile() {
       $searchWord= create(new xp·ide·text·StreamWorker($this->inputStream, $this->cursor))->grepClassName();
-      $resolver= new xp·ide·resolve·Nedit();
+      $resolver= $this->createResolver();
       try {
         Console::$out->write($resolver->getSourceFileUri($searchWord->getText()));
         $this->status= $resolver->getStatus();
       } catch (IllegalArgumentException $e) {
         $this->status= 2;
       }
+    }
+    
+    /**
+     * resolver factory
+     *
+     * @return  xp.ide.resolve.Resolver
+     */
+    protected function createResolver() {
+      return new xp·ide·resolve·Nedit();
     }
     
     /**
