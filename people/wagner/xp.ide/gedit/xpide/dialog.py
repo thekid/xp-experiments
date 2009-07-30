@@ -4,7 +4,7 @@ import gtk
 import os
 
 class Calltip():
-    def __init__(self, dialog, master=None, title=None):
+    def __init__(self, dialog, master, title=None):
         self._builder= gtk.Builder()
         self._builder.add_from_file(os.path.join(os.path.dirname(__file__), "dialog", dialog + ".ui"))
         self._dialog= self._builder.get_object(dialog)
@@ -19,7 +19,7 @@ class Calltip():
         return ret
 
 class TextSelectCalltip(Calltip):
-    def __init__(self, master=None, title=None):
+    def __init__(self, master, title=None):
         Calltip.__init__(self, "TextSelectCalltip", master, title)
 
         list_col= gtk.TreeViewColumn(None, gtk.CellRendererText(), text= 0)
@@ -55,7 +55,7 @@ class TextSelectCalltip(Calltip):
         return False
 
 class TextCalltip(Calltip):
-    def __init__(self, master=None, title=None):
+    def __init__(self, master, title=None):
         Calltip.__init__(self, "TextCalltip", master, title)
         self._hint= self._builder.get_object("hint")
 
