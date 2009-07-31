@@ -7,7 +7,8 @@
   
   uses(
     'lang.FileSystemClassLoader',
-    'lang.archive.ArchiveClassLoader'
+    'lang.archive.ArchiveClassLoader',
+    'xp.ide.resolve.NoSourceException'
   );
   
   /**
@@ -23,8 +24,10 @@
      * @param   string name
      * @return  string
      * @throws  lang.IllegalArgumentException
+     * @throws  xp.ide.resolve.NoSourceException
      */
-    final public function getSourceFileUri($name) {
+    final public function getSourceUri($name) {
+      if (empty($name)) throw new IllegalArgumentException("name is empty");
       $cp= ClassLoader::getDefault()->findClass($name);
       if (!$cp instanceof NULL) switch ($cp->getClassName()) {
         case 'lang.FileSystemClassLoader':
@@ -33,7 +36,7 @@
         case 'lang.archive.ArchiveClassLoader':
         return $this->resolveAcl($cp, $name);
       }
-      throw new IllegalArgumentException(sprintf("%s has no source file", $name));
+      throw new xp·ide·resolve·NoSourceException(sprintf("%s has no source file", $name));
     }
 
     /**
@@ -44,7 +47,7 @@
      * @return  string
      */
     protected function resolveFscl(FileSystemClassLoader $cp, $name) {
-      return $cp->path.strtr($name, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT;
+      return 'file://'.$cp->path.strtr($name, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT;
     }
 
     /**
@@ -55,7 +58,7 @@
      * @return  string
      */
     protected function resolveAcl(ArchiveClassLoader $cp, $name) {
-      list($cpclass, $filename)= sscanf($cp->toString(), $cp->getClassName().'<%s>');
+      list($filename)= sscanf($cp->toString(), $cp->getClassName().'<%s>');
       return $filename;
     }
     

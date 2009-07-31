@@ -8,7 +8,7 @@
   /**
    * text cursor
    *
-   * @purpose  IDE
+   * @purpose Bean
    */
   class xp·ide·Cursor extends Object {
     private

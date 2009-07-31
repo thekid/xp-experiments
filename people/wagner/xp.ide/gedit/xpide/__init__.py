@@ -44,23 +44,23 @@ class XpIdePlugin(gedit.Plugin):
         textproc= subprocess.Popen(
             [
                 "xpide",
-                "xp.ide.text.Runner",
+                "xp.ide.Runner",
                 "Gedit",
-                "-a", "grepclassfile",
-                "-p", str(cursor.get_offset()),
-                "-l", str(cursor.get_line()),
-                "-c", str(cursor.get_line_offset()),
+                "grepclassfile",
+                "-e", tb.get_encoding().get_charset(),
+                "-cp", str(cursor.get_offset()),
+                "-cl", str(cursor.get_line()),
+                "-cc", str(cursor.get_line_offset()),
             ],
             stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
         )
-        result= textproc.communicate(tb.get_text(tb.get_start_iter(), tb.get_end_iter()))[0]
+        (result, error)= textproc.communicate(tb.get_text(tb.get_start_iter(), tb.get_end_iter()))
         if (0 == textproc.returncode):
-            window.create_tab_from_uri("file://" + result, tb.get_encoding(), 0, False, True)
-        elif (1 == textproc.returncode):
-            dialog.TextCalltip(window).setText(result).run()
+            window.create_tab_from_uri(result, tb.get_encoding(), 0, False, True)
         else:
-            dialog.TextCalltip(window).setText("class not found").run()
+            dialog.TextCalltip(window).setText(error).run()
 
     def complete(self, action, window):
         tb= window.get_active_document()
@@ -70,9 +70,9 @@ class XpIdePlugin(gedit.Plugin):
                 "xpide",
                 "xp.ide.completion.Runner",
                 "Gedit",
-                "-p", str(cursor.get_offset()),
-                "-l", str(cursor.get_line()),
-                "-c", str(cursor.get_line_offset()),
+                "-cp", str(cursor.get_offset()),
+                "-cl", str(cursor.get_line()),
+                "-cc", str(cursor.get_line_offset()),
             ],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE

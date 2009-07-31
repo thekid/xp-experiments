@@ -1,8 +1,7 @@
 #!/bin/sh
-echo $* >&2
-CMD=$(xpide xp.ide.resolve.Runner Bash $*)
 
+CMD=$(echo "$*" | xpide xp.ide.Runner Bash grepclassfile -cp 2 -cl 1 -cc 1)
 if [ "" = "${CMD}" ]; then
   exit
 fi
-gedit $CMD &
+gedit --encoding=ISO-8859-15 $CMD &

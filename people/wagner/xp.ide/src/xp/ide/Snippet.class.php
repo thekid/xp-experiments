@@ -8,7 +8,7 @@
   /**
    * Text Snippet bean
    *
-   * @purpose  purpose
+   * @purpose Bean
    */
   class xp·ide·Snippet extends Object {
     private

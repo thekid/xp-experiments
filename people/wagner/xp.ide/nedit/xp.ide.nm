@@ -90,14 +90,12 @@ define xp_ide_complete {
 #
 ##
 define xp_ide_open_xpclass {
-  result= shell_command("xpide xp.ide.text.Runner Nedit -a grepclassfile -p " $cursor " -l "  $line " -c " $column, get_range(0, $text_length))
+  result= shell_command("xpide xp.ide.Runner Nedit grepclassfile -cp " $cursor " -cl "  $line " -cc " $column, get_range(0, $text_length))
   kill_calltip()
 
   if (0 == $shell_cmd_status) {
     open(result)
-  } else if (1 == $shell_cmd_status) {
-    calltip(res)
   } else {
-    calltip("class not found")
+    calltip(res)
   }
 }

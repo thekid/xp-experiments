@@ -37,7 +37,6 @@
      */
     public function grepClassName() {
       $buffer= (0 == $this->cursor->getPosition()) ? '' : $this->inputStream->read($this->cursor->getPosition());
-      
       $searchword= '';
       $startpos= strlen($buffer);
       for ($i= $startpos - 1; $i >= 0; $i--) {
@@ -49,7 +48,6 @@
         if (!$this->isClassChar($c)) break;
         $searchword.= $c;
       }
-      $this->inputStream->close();
       return new xp·ide·Snippet($startpos, $searchword);
     }
 
