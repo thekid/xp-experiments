@@ -16,7 +16,15 @@
    * @purpose IDE
    */
   class xp·ide·proxy·Bash extends xp·ide·proxy·Proxy implements xp·ide·IXpIde {
-    public function complete() {
+
+    /**
+     * complete the source under the cursor
+     *
+     * @param  io.streams.InputStream stream
+     * @param  xp-ide.Cursor cursor
+     * @return xp.ide.ClassFileInfo
+     */
+    public function complete(InputStream $stream, xp·ide·Cursor $cursor) {
     }
 
     /**
