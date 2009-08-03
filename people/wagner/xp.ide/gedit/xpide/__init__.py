@@ -19,8 +19,10 @@ class XpIdePlugin(gedit.Plugin):
           result= subprocess.Popen(
               [
                   "xpide",
-                  "xp.ide.lint.Runner",
-                  self.lint_map[tb.get_language().get_id()]
+                  "xp.ide.Runner",
+                  "Gedit",
+                  "checksyntax",
+                  "-ln", self.lint_map[tb.get_language().get_id()]
               ],
               stdin=subprocess.PIPE,
               stdout=subprocess.PIPE
@@ -29,7 +31,8 @@ class XpIdePlugin(gedit.Plugin):
             dialog.TextCalltip(window).setText("Lint for " + window.get_active_document().get_language().get_name() + " does not exist").run()
         except AttributeError:
             dialog.TextCalltip(window).setText("Document has no specified language").run()
-        if (2 == len(result)): return
+
+        if (0 == len(result[2])): return
 
         err_line= int(result.pop(0)) - 1
         err_col=  int(result.pop(0))
@@ -68,8 +71,9 @@ class XpIdePlugin(gedit.Plugin):
         result= subprocess.Popen(
             [
                 "xpide",
-                "xp.ide.completion.Runner",
+                "xp.ide.Runner",
                 "Gedit",
+                "complete",
                 "-cp", str(cursor.get_offset()),
                 "-cl", str(cursor.get_line()),
                 "-cc", str(cursor.get_line_offset()),

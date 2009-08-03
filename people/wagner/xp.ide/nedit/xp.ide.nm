@@ -8,7 +8,7 @@
 #
 ##
 define xp_ide_lint_sh {
-  xp_ide_parse_lint_result(shell_command("xpide xp.ide.lint.Runner Sh", get_range(0,$text_length)))
+  xp_ide_lint("sh")
 }
 
 ##
@@ -16,7 +16,7 @@ define xp_ide_lint_sh {
 #
 ##
 define xp_ide_lint_php {
-  xp_ide_parse_lint_result(shell_command("xpide xp.ide.lint.Runner Php", get_range(0,$text_length)))
+  xp_ide_lint("php")
 }
 
 ##
@@ -24,7 +24,7 @@ define xp_ide_lint_php {
 #
 ##
 define xp_ide_lint_xml {
-  xp_ide_parse_lint_result(shell_command("xpide xp.ide.lint.Runner Xml", get_range(0,$text_length)))
+  xp_ide_lint("xml")
 }
 
 ##
@@ -35,8 +35,9 @@ define xp_ide_lint_xml {
 # rest: Error Text
 #
 ##
-define xp_ide_parse_lint_result {
-  res_list= split($1, "\n")
+define xp_ide_lint {
+  lang= $1
+  res_list= split(shell_command("xpide xp.ide.Runner Nedit checksyntax -ln " lang , get_range(0,$text_length)), "\n")
   if (res_list[2] == "") {
     kill_calltip()
     return
@@ -57,9 +58,13 @@ define xp_ide_parse_lint_result {
 # @return  int 1
 ##
 define xp_ide_complete {
-  result= shell_command("xpide xp.ide.completion.Runner Nedit -p " $cursor " -l "  $line " -c " $column, get_range(0, $text_length))
+  result= shell_command("xpide xp.ide.Runner Nedit complete -cp " $cursor " -cl " $line " -cc " $column, get_range(0, $text_length))
   kill_calltip()
-  
+  if (0 != $shell_cmd_status) {
+    calltip(result)
+    return
+  }
+
   res_list= split(result, "\n")
   replacepos= res_list[0]
   delete res_list[0]
@@ -90,7 +95,7 @@ define xp_ide_complete {
 #
 ##
 define xp_ide_open_xpclass {
-  result= shell_command("xpide xp.ide.Runner Nedit grepclassfile -cp " $cursor " -cl "  $line " -cc " $column, get_range(0, $text_length))
+  result= shell_command("xpide xp.ide.Runner Nedit grepclassfile -cp " $cursor " -cl " $line " -cc " $column, get_range(0, $text_length))
   kill_calltip()
 
   if (0 == $shell_cmd_status) {
