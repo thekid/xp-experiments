@@ -1,5 +1,13 @@
 # XP Framework Macro file for Nedit
 #
+# INSTALLATION
+#
+# Load these macros by put the following line to your autoload.nm file
+#
+#       load_macro_file(getenv("HOME") "/.nedit/xp.ide.nm")
+#
+# The autoload.nm file should be located in the ~/.nedit directory.
+#
 # $Id$
 #
 
@@ -72,7 +80,7 @@ define xp_ide_complete {
   delete res_list[1]
   sugg_cnt= res_list[2]
   delete res_list[2]
-  
+
   if (0 == sugg_cnt) {
     calltip("no class found")
     return
