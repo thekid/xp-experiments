@@ -5,54 +5,39 @@
  */
  $package= 'xp.ide.lint';
  
+  uses(
+    'lang.Process',
+    'xp.ide.lint.Error',
+    'xp.ide.lint.ILanguage'
+  );
+ 
   /**
    * check php syntax
    *
    * @purpose  IDE
    */
-  class xp·ide·lint·Php extends Object {
-    private
-      $errorLine= 0,
-      $errorText= '';
+  class xp·ide·lint·Php extends Object implements xp·ide·lint·ILanguage {
 
     /**
      * check source code
      *
-     * @param   string source
+     * @param   io.streams.InputStream
+     * @return xp.ide.lint.Error[]
      */
-    #[@check]
-    public function test($source) {
+    public function checkSyntax(InputStream $stream) {
+      $errors= array();
       $p= new Process('php', array('-l'));
       $in= $p->getInputStream();
-      $in->write($source);
+      while ($stream->available()) $in->write($stream->read());
       $in->close();
 
       $out= $p->getOutputStream();
       while (!$out->eof()) {
         if (!preg_match('#^(.*) in - on line (\d+)$#', $out->readLine(), $match)) continue;
-        $this->errorLine= $match[2];
-        $this->errorText= $match[1];
+        $errors[]= new xp·ide·lint·Error($match[2], 0, $match[1]);
       }
+      return $errors;
     }
 
-    /**
-     * Get errorLine
-     *
-     * @return  int
-     */
-    #[@errorline]
-    public function getErrorLine() {
-      return $this->errorLine;
-    }
-
-    /**
-     * Get errortext
-     *
-     * @return  string
-     */
-    #[@errortext]
-    public function getErrortext() {
-      return $this->errorText;
-    }
   }
 ?>

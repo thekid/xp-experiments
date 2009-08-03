@@ -3,14 +3,14 @@
  *
  * $Id$ 
  */
-  $package= 'xp.ide';
+  $package= 'xp.ide.resolve';
 
   /**
    * class file info bean
    *
    * @purpose  Bean
    */
-  class xp·ide·ClassFileInfo extends Object {
+  class xp·ide·resolve·Info extends Object {
     private
       $snippet= NULL,
       $uri= '';
@@ -18,7 +18,7 @@
     /**
      * constructor
      *
-     * @param   xp.ide.Snippet snippet
+     * @param   xp.ide.text.Snippet snippet
      * @param   string uri
      */
     public function __construct($snippet, $uri) {
@@ -29,7 +29,7 @@
     /**
      * Set snippet
      *
-     * @param   xp.ide.Snippet snippet
+     * @param   xp.ide.text.Snippet snippet
      */
     public function setSnippet($snippet) {
       $this->snippet= $snippet;
@@ -38,7 +38,7 @@
     /**
      * Get snippet
      *
-     * @return  xp.ide.Snippet
+     * @return  xp.ide.text.Snippet
      */
     public function getSnippet() {
       return $this->snippet;

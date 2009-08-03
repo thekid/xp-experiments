@@ -7,7 +7,8 @@
 
   uses(
     'xp.ide.IXpIde',
-    'xp.ide.proxy.Proxy'
+    'xp.ide.proxy.Proxy',
+    'lang.IllegalArgumentException'
   );
 
   /**
@@ -21,17 +22,22 @@
      * complete the source under the cursor
      *
      * @param  io.streams.InputStream stream
-     * @param  xp-ide.Cursor cursor
-     * @return xp.ide.ClassFileInfo
+     * @param  xp.ide.Cursor cursor
+     * @return xp.ide.completion.Info
      */
     public function complete(InputStream $stream, xp·ide·Cursor $cursor) {
+      $info= $this->ide->complete($stream, $cursor);
+      Console::$out->write(implode(PHP_EOL, $info->getSuggestions()));
+      return $info;
     }
 
     /**
      * grep the file URI where the XP class
      * under the cursor if defined
      *
-     * @param   string[] suggestions
+     * @param  io.streams.InputStream stream
+     * @param  xp.ide.Cursor cursor
+     * @return xp.ide.resolve.Info
      */
     public function grepClassFileUri(InputStream $stream, xp·ide·Cursor $cursor) {
       $result= array();
@@ -49,10 +55,19 @@
         $result[]= $rest;
       } while ($stream->available());
       Console::$out->write(implode(' ', $result));
+      return $result;
     }
 
-    public function lint() {
+    /**
+     * check syntax
+     *
+     * @param  io.streams.InputStream stream
+     * @param  xp.ide.lint.ILanguage language
+     * @return xp.ide.lint.Error[]
+     * @throws lang.IllegalArgumentException
+     */
+    public function checkSyntax(InputStream $stream, xp·ide·lint·ILanguage $language) {
+      throw new IllegalArgumentException('checkSyntax is not implemented for bash proxy');
     }
-
   }
 ?>

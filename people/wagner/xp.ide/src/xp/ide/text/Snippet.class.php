@@ -3,14 +3,14 @@
  *
  * $Id$ 
  */
-  $package= 'xp.ide';
+  $package= 'xp.ide.text';
 
   /**
    * Text Snippet bean
    *
    * @purpose Bean
    */
-  class xp·ide·Snippet extends Object {
+  class xp·ide·text·Snippet extends Object {
     private
       $position= 0,
       $text= '';

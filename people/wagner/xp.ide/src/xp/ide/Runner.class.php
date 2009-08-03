@@ -25,6 +25,7 @@
       $artefacts= array(
         'Cursor'      => 'getCursor',
         'InputStream' => 'getInputStream',
+        'Language'    => 'getLanguage',
       );
 
     /**
@@ -65,7 +66,6 @@
       try {
         call_user_func_array(array($proxy, $actionMethods[$action]->getName()), $action_args);
       } catch (XPException $e) {
-throw $e;
         Console::$err->write($e->getMessage());
         return 1;
       }
@@ -89,10 +89,21 @@ throw $e;
     /**
      * get input stream
      *
+     * @param util.cmd.ParamString params
      * @return io.streams.InputStream
      */
-    public static function getInputStream() {
+    public static function getInputStream($params) {
       return new ChannelInputStream('stdin');
+    }
+
+    /**
+     * get source language
+     *
+     * @param util.cmd.ParamString params
+     * @return xp.ide.lint.language
+     */
+    public static function getLanguage($params) {
+      return XPClass::forName('xp.ide.lint.'.ucFirst(strToLower($params->value('language-name', 'ln'))))->newInstance();
     }
 
     /**
@@ -107,6 +118,8 @@ throw $e;
       Console::$out->writeLine('   - cursor-position (cp): Cursor char position in the text buffer');
       Console::$out->writeLine('   - cursor-line (cl):     Cursor line');
       Console::$out->writeLine('   - cursor-column (cc):   Cursor char position in the line');
+      Console::$out->writeLine(' * Language: parameters to assamble the source language');
+      Console::$out->writeLine('   - language-name (ln): language name (e.g "php")');
     }
 
   }

@@ -26,7 +26,7 @@
      * @throws  lang.IllegalArgumentException
      * @throws  xp.ide.resolve.NoSourceException
      */
-    final public function getSourceUri($name) {
+    public function getSourceUri($name) {
       if (empty($name)) throw new IllegalArgumentException("name is empty");
       $cp= ClassLoader::getDefault()->findClass($name);
       if (!$cp instanceof NULL) switch ($cp->getClassName()) {

@@ -16,8 +16,8 @@
      * complete the source under the cursor
      *
      * @param  io.streams.InputStream stream
-     * @param  xp-ide.Cursor cursor
-     * @return xp.ide.ClassFileInfo
+     * @param  xp.ide.Cursor cursor
+     * @return xp.ide.completion.Info
      */
     public function complete(InputStream $stream, xp·ide·Cursor $cursor);
 
@@ -26,11 +26,19 @@
      * under the cursor if defined
      *
      * @param  io.streams.InputStream stream
-     * @param  xp-ide.Cursor cursor
-     * @return xp.ide.ClassFileInfo
+     * @param  xp.ide.Cursor cursor
+     * @return xp.ide.resolve.Info
      */
     public function grepClassFileUri(InputStream $stream, xp·ide·Cursor $cursor);
 
-    public function lint();
+    /**
+     * check syntax
+     *
+     * @param  io.streams.InputStream stream
+     * @param  xp.ide.lint.ILanguage language
+     * @return xp.ide.lint.Error[]
+     */
+    public function checkSyntax(InputStream $stream, xp·ide·lint·ILanguage $language);
+
   }
 ?>

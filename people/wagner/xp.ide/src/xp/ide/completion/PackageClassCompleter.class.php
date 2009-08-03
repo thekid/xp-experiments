@@ -18,27 +18,29 @@
    * @purpose  IDE
    */
   class xp·ide·completion·PackageClassCompleter extends xp·ide·completion·Completer {
+    private
+      $classes= NULL,
+      $packages= NULL;
 
     /**
      * Constructor
      *
-     * @param   xp.ide.completion.UncompletePackageClass $uncomplete
      */
-    public function __construct(xp·ide·completion·UncompletePackageClass $uncomplete) {
-      parent::__construct($uncomplete);
-      $this->classes= new xp·ide·completion·ClassCompleter($uncomplete);
-      $this->packages= new xp·ide·completion·PackageCompleter($uncomplete);
+    public function __construct() {
+      $this->classes= new xp·ide·completion·ClassCompleter();
+      $this->packages= new xp·ide·completion·PackageCompleter();
     }
 
     /**
      * unfiltered possible elements
      *
+     * @param   string $complete
      * @return  string[]
      */
-    protected function elements() {
+    protected function elements($complete) {
       return array_merge(
-        $this->classes->elements(),
-        $this->packages->elements()
+        $this->classes->elements($complete),
+        $this->packages->elements($complete)
       );
     }
 

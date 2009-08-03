@@ -11,26 +11,20 @@
    * @purpose  IDE
    */
   abstract class xp·ide·completion·Completer extends Object {
-    protected 
-      $uncomplete= NULL;
-
-    /**
-     * Constructor
-     *
-     * @param   xp.ide.completion.UncompletePackageClass $uncomplete
-     */
-    public function __construct(xp·ide·completion·UncompletePackageClass $uncomplete) {
-      $this->uncomplete= $uncomplete;
-    }
 
     /**
      * suggestions
      *
+     * @param   xp.ide.completion.UncompletePackageClass $uncomplete
      * @return  string[]
      */
-    final public function suggest() {
-      $packages= $this->elements();
-      if ($this->uncomplete->getUncomplete()) $packages= array_filter($packages, array(self, 'filter'));
+    final public function suggest(xp·ide·completion·UncompletePackageClass $uncomplete) {
+      $packages= $this->elements($uncomplete->getComplete());
+      if ($uncomplete->getUncomplete()) {
+        foreach ($packages as $i => $package) {
+          if (!$this->filter($package, $uncomplete)) unset($packages[$i]);
+        }
+      }
       sort($packages);
       return $packages;
     }
@@ -38,37 +32,21 @@
     /**
      * unfiltered possible elements
      *
+     * @param   string $complete
      * @return  string[]
      */
-    abstract protected function elements();
+    abstract protected function elements($complete);
 
     /**
      * test if a subpattern matches or not
      *
+     * @param   xp.ide.completion.UncompletePackageClass $searchbase
      * @param   string teststring
-     * @return  
+     * @return  bool
      */
-    protected function filter($teststring) {
-      $pattern= ($this->uncomplete->getComplete() ? $this->uncomplete->getComplete().'.' : '').$this->uncomplete->getUncomplete();
+    protected function filter($teststring, xp·ide·completion·UncompletePackageClass $searchbase) {
+      $pattern= ($searchbase->getComplete() ? $searchbase->getComplete().'.' : '').$searchbase->getUncomplete();
       return 0 == strncmp($teststring, $pattern, strlen($pattern));
-    }
-      
-    /**
-     * Set uncomplete
-     *
-     * @param   lang.Object uncomplete
-     */
-    public function setUncomplete($uncomplete) {
-      $this->uncomplete= $uncomplete;
-    }
-
-    /**
-     * Get uncomplete
-     *
-     * @return  lang.Object
-     */
-    public function getUncomplete() {
-      return $this->uncomplete;
     }
   }
 ?>

@@ -3,42 +3,45 @@
  *
  * $Id$ 
  */
- $package= 'xp.ide.lint';
- 
+  $package= 'xp.ide.lint';
+
+  uses(
+    'lang.Process',
+    'xp.ide.lint.ILanguage',
+    'xp.ide.lint.Error'
+  );
+
   /**
    * check xml syntax
    *
    * @purpose  IDE
    */
-  class xp·ide·lint·Xml extends Object {
-    private
-      $errorLine= 0,
-      $errorCol= 0,
-      $errorText= '';
+  class xp·ide·lint·Xml extends Object implements xp·ide·lint·ILanguage {
 
     /**
      * check source code
      *
-     * @param   string ource
+     * @param   io.streams.InputStream
+     * @return xp.ide.lint.Error[]
      */
-    #[@check]
-    public function checkSource($source) {
+    public function checkSyntax(InputStream $stream) {
+      $errors= array();
       $p= new Process('xmllint', array('-noout', '-'));
       $in= $p->getInputStream();
-      $in->write($source);
+      while ($stream->available()) $in->write($stream->read());
       $in->close();
 
       $out= $p->getErrorStream();
       while (!$out->eof()) {
         if (!preg_match('#^.+:\s*(\d+)\s*:\s*(.+)$#', $out->readLine(), $match)) continue;
-        $this->errorLine= $match[1];
-        $this->errorText= $match[2];
-        if ($out->eof()) return 0;
+        $e= $errors[]= new xp·ide·lint·Error($match[1], 0, $match[2]);
+
+        if ($out->eof()) break;
         $out->readLine();
-        if ($out->eof() || !preg_match('#^(\s+\^).*$#', $out->readLine(), $match)) return 0;
-        $this->errorCol= strlen($match[1]);
-        return 0;
+        if ($out->eof() || !preg_match('#^(\s+\^).*$#', $out->readLine(), $match)) break;
+        $e->setColumn(strlen($match[1]));
       }
+      return $errors;
     }
 
     /**

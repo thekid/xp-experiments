@@ -4,43 +4,44 @@
  * $Id$ 
  */
   $package= 'xp.ide.lint';
-  
+
   uses(
     'io.File',
-    'lang.System'
+    'lang.System',
+    'lang.Process',
+    'xp.ide.lint.ILanguage',
+    'xp.ide.lint.Error'
   );
- 
+
   /**
    * check sh shell script syntax
    *
    * @purpose  IDE
    */
-  class xp·ide·lint·Sh extends Object {
-    private
-      $errorLine= 0,
-      $errorText= '';
+  class xp·ide·lint·Sh extends Object implements xp·ide·lint·ILanguage {
 
     /**
      * check source code
      *
-     * @param   string ource
+     * @param   io.streams.InputStream
+     * @return xp.ide.lint.Error[]
      */
-    #[@check]
-    public function checkSource($source) {
+    public function checkSyntax(InputStream $stream) {
+      $errors= array();
       $f= new File(tempnam(System::getProperty('os.tempdir'), 'xil'));
       $f->open(FILE_MODE_WRITE);
-      $f->write($source);
+      while ($stream->available()) $f->write($stream->read());
       $f->close();
-      
+
       $p= new Process('sh', array('-n', $f->getUri()));
 
       $out= $p->getErrorStream();
       while (!$out->eof()) {
         if (!preg_match('#^.+:\s*(\d+)\s*:\s*(.+)$#', $out->readLine(), $match)) continue;
-        $this->errorLine= $match[1];
-        $this->errorText= $match[2];
+        $errors[]= new xp·ide·lint·Error($match[1], 0, $match[2]);
       }
       $f->unlink();
+      return $errors;
     }
 
     /**

@@ -3,14 +3,14 @@
  *
  * $Id: ClassFileInfo.class.php 11304 2009-07-31 15:56:44Z ruben $ 
  */
-  $package= 'xp.ide';
+  $package= 'xp.ide.completion';
 
   /**
    * class file info bean
    *
    * @purpose  Bean
    */
-  class xp·ide·CompleteInfo extends Object {
+  class xp·ide·completion·Info extends Object {
     private
       $snippet= NULL,
       $suggestions= array();
@@ -18,7 +18,7 @@
     /**
      * constructor
      *
-     * @param   xp.ide.Snippet snippet
+     * @param   xp.ide.text.Snippet snippet
      * @param   string[] suggestions
      */
     public function __construct($snippet, $suggestions) {
@@ -29,7 +29,7 @@
     /**
      * Set snippet
      *
-     * @param   xp.ide.Snippet snippet
+     * @param   xp.ide.text.Snippet snippet
      */
     public function setSnippet($snippet) {
       $this->snippet= $snippet;
@@ -38,7 +38,7 @@
     /**
      * Get snippet
      *
-     * @return  xp.ide.Snippet
+     * @return  xp.ide.text.Snippet
      */
     public function getSnippet() {
       return $this->snippet;

@@ -20,12 +20,13 @@
     /**
      * unfiltered possible elements
      *
+     * @param   string $complete
      * @return  string[]
      */
-    protected function elements() {
+    protected function elements($complete) {
       $packages= array();
       try {
-        $packages= Package::forName($this->uncomplete->getComplete())->getPackageNames();
+        $packages= Package::forName($complete)->getPackageNames();
       } catch(XPException $e) {
       }
       return array_map(create_function('$e', 'return $e.".";'), $packages);

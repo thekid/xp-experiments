@@ -20,12 +20,13 @@
     /**
      * unfiltered possible elements
      *
+     * @param   string $complete
      * @return  string[]
      */
-    protected function elements() {
+    protected function elements($complete) {
       $classes= array();
       try {
-        $classes= Package::forName($this->uncomplete->getComplete())->getClassNames();
+        $classes= Package::forName($complete)->getClassNames();
       } catch(XPException $e) {
       }
       return $classes;

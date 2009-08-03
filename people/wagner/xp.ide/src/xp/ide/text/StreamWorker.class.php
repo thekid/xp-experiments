@@ -6,7 +6,7 @@
   $package= 'xp.ide.text';
   
   uses(
-    'xp.ide.Snippet'
+    'xp.ide.text.Snippet'
   );
 
   /**
@@ -33,7 +33,7 @@
     /**
      * grep a class name from $this->inputStream
      *
-     * @return xp.ide.Snippet
+     * @return xp.ide.text.Snippet
      */
     public function grepClassName() {
       $buffer= (0 == $this->cursor->getPosition()) ? '' : $this->inputStream->read($this->cursor->getPosition());
@@ -48,7 +48,7 @@
         if (!$this->isClassChar($c)) break;
         $searchword.= $c;
       }
-      return new xp·ide·Snippet($startpos, $searchword);
+      return new xp·ide·text·Snippet($startpos, $searchword);
     }
 
     /**
