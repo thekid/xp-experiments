@@ -20,3 +20,11 @@ _xp.ide.completion.bash()
 	COMPREPLY=( ${opts} );
 }
 complete -o nospace -o default -F _xp.ide.completion.bash nx gx
+
+##
+# Load the nedit to avoid overwriting nedit.rc
+#  - menu
+#  - color theme
+#  - syntax highlighting
+##
+alias nedit='nedit -import ~/.nedit/xp.ide.menu -import ~/.nedit/xp.ide.theme -import ~/.nedit/xp.php.syntax'
