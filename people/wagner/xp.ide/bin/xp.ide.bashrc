@@ -27,4 +27,14 @@ complete -o nospace -o default -F _xp.ide.completion.bash nx gx
 #  - color theme
 #  - syntax highlighting
 ##
-alias nedit='nedit -import ~/.nedit/xp.ide.menu -import ~/.nedit/xp.ide.theme -import ~/.nedit/xp.php.syntax'
+IMPORTS=''
+if [ -f ${HOME}/.nedit/xp.php.syntax ]; then
+  IMPORTS=${IMPORTS}" -import "${HOME}"/.nedit/xp.php.syntax"
+fi
+if [ -f ${HOME}/.nedit/xp.ide.menu ]; then
+  IMPORTS=${IMPORTS}" -import "${HOME}"/.nedit/xp.ide.menu"
+fi
+if [ -f ${HOME}/.nedit/xp.ide.theme ]; then
+  IMPORTS=${IMPORTS}" -import "${HOME}"/.nedit/xp.ide.theme"
+fi
+alias nedit='nedit'${IMPORTS}' '
