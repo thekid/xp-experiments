@@ -13,7 +13,8 @@
   class xp·ide·completion·UncompletePackageClass extends Object {
     private
       $complete= '',
-      $uncomplete= '';
+      $uncomplete= '',
+      $origin= '';
 
     /**
      * constructor
@@ -21,6 +22,7 @@
      * @param   string name
      */
     public function __construct($name= '') {
+      $this->origin= $name;
       if (!ClassLoader::getDefault()->providesPackage($name)) {
         if (FALSE === strrpos($name, '.')) {
           $this->uncomplete= $name;
@@ -51,6 +53,14 @@
       return $this->uncomplete;
     }
 
+    /**
+     * Get origin
+     *
+     * @return  string
+     */
+    public function getOrigin() {
+      return $this->origin;
+    }
 
   }
 ?>

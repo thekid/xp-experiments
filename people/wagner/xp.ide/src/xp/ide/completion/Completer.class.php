@@ -25,8 +25,18 @@
           if (!$this->filter($package, $uncomplete)) unset($packages[$i]);
         }
       }
+      if (sizeOf($packages) < 2) return $packages;
       sort($packages);
-      return $packages;
+      $base= $packages[0];
+      foreach($packages as $package) {
+        $new_base= '';
+        for ($i= 0; $i < min(strlen($base), strlen($package)); $i++) {
+          if ($base{$i} != $package{$i}) break;
+          $new_base.= $base{$i};
+        }
+        $base= $new_base;
+      }
+      return strlen($base) > strlen($uncomplete->getOrigin()) ? array($base) : $packages;
     }
 
     /**
@@ -45,7 +55,7 @@
      * @return  bool
      */
     protected function filter($teststring, xp·ide·completion·UncompletePackageClass $searchbase) {
-      $pattern= ($searchbase->getComplete() ? $searchbase->getComplete().'.' : '').$searchbase->getUncomplete();
+      $pattern= $searchbase->getOrigin();
       return 0 == strncmp($teststring, $pattern, strlen($pattern));
     }
   }
