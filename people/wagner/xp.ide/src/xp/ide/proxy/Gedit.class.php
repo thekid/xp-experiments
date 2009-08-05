@@ -62,10 +62,17 @@
         Console::$out->writeLine("0".PHP_EOL."0".PHP_EOL);
         return;
       }
+      $e= array_shift($errors);
+      Console::$out->writeLine($e->getLine());
+      Console::$out->writeLine($e->getColumn());
+      Console::$out->writeLine($e->getText());
       foreach ($errors as $e) {
-        Console::$out->writeLine($e->getLine());
-        Console::$out->writeLine($e->getColumn());
-        Console::$out->writeLine($e->getText());
+        Console::$out->writeLine(sprintf(
+          '- %d(%d): %s',
+          $e->getLine(),
+          $e->getColumn(),
+          $e->getText()
+        ));
       }
       return $errors;
     }

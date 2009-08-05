@@ -39,7 +39,7 @@
         if ($out->eof()) break;
         $out->readLine();
         if ($out->eof() || !preg_match('#^(\s+\^).*$#', $out->readLine(), $match)) break;
-        $e->setColumn(strlen($match[1]));
+        $e->setColumn(strlen($match[1]) - 1);
       }
       return $errors;
     }
