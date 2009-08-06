@@ -45,7 +45,7 @@ define xp_ide_lint_xml {
 ##
 define xp_ide_lint {
   lang= $1
-  res_list= split(shell_command("xpide xp.ide.Runner Nedit checksyntax -ln " lang , get_range(0,$text_length)), "\n")
+  res_list= split(shell_command("xpide Nedit checksyntax -ln " lang , get_range(0,$text_length)), "\n")
   if (res_list[2] == "") {
     kill_calltip()
     return
@@ -66,7 +66,7 @@ define xp_ide_lint {
 # @return  int 1
 ##
 define xp_ide_complete {
-  result= shell_command("xpide xp.ide.Runner Nedit complete -cp " $cursor " -cl " $line " -cc " $column, get_range(0, $text_length))
+  result= shell_command("xpide Nedit complete -cp " $cursor " -cl " $line " -cc " $column, get_range(0, $text_length))
   kill_calltip()
   if (0 != $shell_cmd_status) {
     calltip(result)
@@ -103,7 +103,7 @@ define xp_ide_complete {
 #
 ##
 define xp_ide_open_xpclass {
-  result= shell_command("xpide xp.ide.Runner Nedit grepclassfile -cp " $cursor " -cl " $line " -cc " $column, get_range(0, $text_length))
+  result= shell_command("xpide Nedit grepclassfile -cp " $cursor " -cl " $line " -cc " $column, get_range(0, $text_length))
   kill_calltip()
 
   if (0 == $shell_cmd_status) {

@@ -1,2 +1,2 @@
 #!/bin/sh
-xp -cp ${XP_IDE_CP} $*
+xp -cp ${XP_IDE_CP} xp.ide.Runner $*

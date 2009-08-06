@@ -1,7 +1,7 @@
 #!/bin/sh
 
 IMPORTS=''
-CMD=$(echo "$*" | xpide xp.ide.Runner Bash grepclassfile -cp 2 -cl 1 -cc 1)
+CMD=$(echo "$*" | xpide Bash grepclassfile -cp 2 -cl 1 -cc 1)
 if [ "" = "${CMD}" ]; then
   exit
 fi

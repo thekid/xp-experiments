@@ -19,7 +19,6 @@ class XpIdePlugin(gedit.Plugin):
           result= subprocess.Popen(
               [
                   "xpide",
-                  "xp.ide.Runner",
                   "Gedit",
                   "checksyntax",
                   "-se", "UTF-8",
@@ -48,7 +47,6 @@ class XpIdePlugin(gedit.Plugin):
         textproc= subprocess.Popen(
             [
                 "xpide",
-                "xp.ide.Runner",
                 "Gedit",
                 "grepclassfile",
                 "-se", "UTF-8",
@@ -72,7 +70,6 @@ class XpIdePlugin(gedit.Plugin):
         result= subprocess.Popen(
             [
                 "xpide",
-                "xp.ide.Runner",
                 "Gedit",
                 "complete",
                 "-se", "UTF-8",
