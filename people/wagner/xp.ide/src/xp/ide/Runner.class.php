@@ -8,7 +8,7 @@
   uses(
     'lang.XPClass',
     'util.cmd.Console',
-    'io.streams.ChannelInputStream',
+    'xp.ide.text.ChannelInputStream',
     'xp.ide.Cursor',
     'util.cmd.ParamString',
     'xp.ide.XpIde'
@@ -44,9 +44,6 @@
 
       $action= array_shift($args);
 
-      $params= new ParamString($args);
-      $encoding= $params->value('encoding', 'e', 'UTF-8');
-
       $actionMethods= array();
       foreach ($class->getMethods() as $method) {
         if ($method->hasAnnotation('action')) $actionMethods[$method->getAnnotation('action', 'name')]= $method;
@@ -56,6 +53,7 @@
       // assemble arguments
       $action_args= array();
       if ($actionMethods[$action]->hasAnnotation('action', 'args')) {
+        $params= new ParamString($args);
         foreach (explode(',', $actionMethods[$action]->getAnnotation('action', 'args')) as $arg) {
           $arg= trim($arg);
           if (!isset(self::$artefacts[$arg])) throw new IllegalStateException(sprintf('unknown artefact "%s" requested by action "%s"', $arg, $action));
@@ -78,7 +76,7 @@
      * @param util.cmd.ParamString params
      * @return xp.ide.Cursor
      */
-    public static function getCursor($params) {
+    public static function getCursor(ParamString $params) {
       return new xp·ide·Cursor(
         $params->value('cursor-position', 'cp'),
         $params->value('cursor-line',     'cl'),
@@ -90,10 +88,12 @@
      * get input stream
      *
      * @param util.cmd.ParamString params
-     * @return io.streams.InputStream
+     * @return xp.ide.text.IInputStream
      */
-    public static function getInputStream($params) {
-      return new ChannelInputStream('stdin');
+    public static function getInputStream(ParamString $params) {
+      $stream= new xp·ide·text·ChannelInputStream('stdin');
+      $stream->setEncoding($params->value('stream-encoding', 'se', xp·ide·text·IInputStream::ENCODING_NONE));
+      return $stream;
     }
 
     /**
@@ -102,7 +102,7 @@
      * @param util.cmd.ParamString params
      * @return xp.ide.lint.language
      */
-    public static function getLanguage($params) {
+    public static function getLanguage(ParamString $params) {
       return XPClass::forName('xp.ide.lint.'.ucFirst(strToLower($params->value('language-name', 'ln'))))->newInstance();
     }
 
@@ -110,10 +110,11 @@
      * Show usage
      */
     public static function usage() {
-      Console::$out->writeLine('** Usage: xpide xp.ide.Runner "proxy" "action" [--encoding] [--cursor-position --cursor-line --cursor-column]');
+      Console::$out->writeLine('** Usage: xpide xp.ide.Runner "proxy" "action" [--stream-encoding] [--cursor-position --cursor-line --cursor-column] [--language-name]');
       Console::$out->writeLine('   - proxy: a classname from the namespace xp.ide.proxy (e.g. "Nedit")');
       Console::$out->writeLine('   - action: XpIde action');
-      Console::$out->writeLine('   - encoding (e): input stream encoding (defaults to UTF-8)');
+      Console::$out->writeLine(' * Stream: parameters to assamble the input stream');
+      Console::$out->writeLine('   - stream-encoding (se): input stream encoding (defaults to binary)');
       Console::$out->writeLine(' * Cursor: parameters to assamble the cursor');
       Console::$out->writeLine('   - cursor-position (cp): Cursor char position in the text buffer');
       Console::$out->writeLine('   - cursor-line (cl):     Cursor line');

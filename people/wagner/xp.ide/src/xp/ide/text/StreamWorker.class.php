@@ -15,40 +15,45 @@
    * @purpose  IDE
    */
   class xp·ide·text·StreamWorker extends Object {
-    private
-      $inputStream= NULL,
-      $cursor= NULL;
-
-    /**
-     * consructor
-     *
-     * @param   lang.Object inputStream
-     * @param   xp.ide.Cursor cursor
-     */
-    public function __construct($inputStream, $cursor) {
-      $this->inputStream= $inputStream;
-      $this->cursor= $cursor;
-    }
 
     /**
      * grep a class name from $this->inputStream
      *
+     * @param  xp.ide.text.IInputStream input
+     * @param  xp.ide.Cursor cursor
      * @return xp.ide.text.Snippet
      */
-    public function grepClassName() {
-      $buffer= (0 == $this->cursor->getPosition()) ? '' : $this->inputStream->read($this->cursor->getPosition());
+    public function grepClassName(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor) {
+      $buffer= '';
+      while ($stream->available() && $this->eStrlen($buffer, $stream->getEncoding()) < $cursor->getPosition()) {
+        $buffer.= $stream->read($cursor->getPosition() - $this->eStrlen($buffer, $stream->getEncoding()));
+      }
+
       $searchword= '';
-      $startpos= strlen($buffer);
-      for ($i= $startpos - 1; $i >= 0; $i--) {
+      $byte_startpos= strlen($buffer);
+      for ($i= $byte_startpos - 1; $i >= 0; $i--) {
         if (!$this->isClassChar($buffer{$i})) break;
-        $startpos= $i;
+        $byte_startpos= $i;
         $searchword= $buffer{$i}.$searchword;
       }
-      while ($c= $this->inputStream->read(1)) {
+      $startpos= $this->eStrlen($buffer, $stream->getEncoding()) - $this->eStrlen($searchword, $stream->getEncoding());
+      while ($c= $stream->read(1)) {
         if (!$this->isClassChar($c)) break;
         $searchword.= $c;
       }
       return new xp·ide·text·Snippet($startpos, $searchword);
+    }
+
+    /**
+     * get the string length of characters
+     * respecting encoding
+     *
+     * @param   string string
+     * @param   string encoding
+     * @return  bool
+     */
+    private function eStrlen(&$string, $encoding) {
+      return xp·ide·text·IInputStream::ENCODING_NONE == $encoding ? strlen($string) : iconv_strlen($string, $encoding);
     }
 
     /**
@@ -62,24 +67,6 @@
       if (96 < ord(strToLower($c)) && ord(strToLower($c)) < 123) return TRUE;
       if (47 < ord($c) && ord($c) < 58) return TRUE;
       return FALSE;
-    }
-    
-    /**
-     * Set inputStream
-     *
-     * @param   lang.Object inputStream
-     */
-    public function setInputStream($inputStream) {
-      $this->inputStream= $inputStream;
-    }
-
-    /**
-     * Set cursor
-     *
-     * @param   xp.ide.Cursor cursor
-     */
-    public function setCursor($cursor) {
-      $this->cursor= $cursor;
     }
 
   }
