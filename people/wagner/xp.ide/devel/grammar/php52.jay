@@ -1,0 +1,21 @@
+%{
+
+  $package= 'xp.ide.source.parser';
+
+%}
+
+%token T_NUMBER T_STRING
+%left '+' '-'
+%left '*' ':' '%'
+
+%%
+
+start:
+    classfilecontent { var_dump($1); $$= FALSE; }
+;
+
+classfilecontent:
+  T_STRING { $$= $1; }
+;
+
+%%
