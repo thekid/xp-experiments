@@ -4,4 +4,4 @@ CMD=$(echo "$*" | xpide Bash grepclassfile -cp 2 -cl 1 -cc 1)
 if [ "" = "${CMD}" ]; then
   exit
 fi
-gedit $CMD &
+gedit --encoding=ISO-8859-15 $CMD &

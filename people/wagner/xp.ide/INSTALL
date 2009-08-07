@@ -2,10 +2,10 @@ Install the XpIde
 =================
 
 Step by step:
- - Copy or link all files from <xp.ide dir>/bin to
+ - Copy or link all files from <xp.ide dir>/stable/bin to
    your ${HOME}/bin directory.
 
-     cp <xp.ide dir>/bin/* ~/bin/
+     cp <xp.ide dir>/stable/bin/* ~/bin/
    
    Contents:
      * gx: gedit starter which takes fully qualified
@@ -20,20 +20,20 @@ Step by step:
 	   XpIde class path (XP_IDE_CP)
 
 
- - Copy or link all files and directories from <xp.ide dir>/gedit
+ - Copy or link all files and directories from <xp.ide dir>/stable/gedit
    to your gedit plugin directory (${HOME}/.gnome2/gedit/plugins).
    
-     cp -r <xp.ide dir>/gedit/* ~/.gnome2/gedit/plugins/
+     cp -r <xp.ide dir>/stable/gedit/* ~/.gnome2/gedit/plugins/
    
    Contents:
      * xpide.gedit-plugin: gedit plugin definition
      * xpide: python source package
 
 
- - Copy or link all files from <xp.ide dir>/nedit
+ - Copy or link all files from <xp.ide dir>/stable/nedit
    to your nedit settings directory (${HOME}/.nedit/).
    
-     cp -r <xp.ide dir>/nedit/* ~/.nedit/
+     cp -r <xp.ide dir>/stable/nedit/* ~/.nedit/
    
    Contents:
      * xp.ide.menu:   menu and shortcut definitions
@@ -42,11 +42,11 @@ Step by step:
      * xp.php.syntax: syntax highlighting for PHP and XP
 
 
- - Copy or link the <xp.ide dir>/lib directory to your ${HOME}/xp
+ - Copy or link the <xp.ide dir>/stable/lib directory to your ${HOME}/xp
    directory. If you want to set it elsewhere, you have to provide
    the path in the "XP_IDE_CP" environment variable.
    
-     cp -r <xp.ide dir>/lib ~/xp/
+     cp -r <xp.ide dir>/stable/lib ~/xp/
    
    Contents:
      * xp-ide-<version>.xar: XpIde classes
