@@ -3,7 +3,7 @@
 # the path of the ide classes
 ##
 if [ -z ${XP_IDE_CP} ]; then
-  declare -x XP_IDE_XARs=${HOME}/xp/lib/xp-ide.xar
+  declare -x XP_IDE_CP=${HOME}/xp/lib/xp-ide.xar
 fi
 
 ##
