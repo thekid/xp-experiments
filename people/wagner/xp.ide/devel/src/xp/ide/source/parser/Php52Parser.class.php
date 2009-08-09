@@ -9,7 +9,11 @@
 
   $package= 'xp.ide.source.parser';
 
-#line 13 "-"
+  uses(
+    'xp.ide.source.element.ClassFile'
+  );
+
+#line 17 "-"
 
   uses('text.parser.generic.AbstractParser');
 
@@ -21,32 +25,36 @@
   class xp·ide·source·parser·Php52Parser extends AbstractParser {
     const T_NUMBER= 257;
     const T_STRING= 258;
+    const T_OPEN_TAG= 259;
+    const T_CLOSE_TAG= 260;
     const YY_ERRORCODE= 256;
 
     protected static $yyLhs= array(-1,
-          0,     1, 
+          0,     1,     1, 
     );
     protected static $yyLen= array(2,
-          1,     1, 
+          3,     1,     0, 
     );
     protected static $yyDefRed= array(0,
-          2,     0,     1, 
+          0,     0,     2,     0,     1, 
     );
     protected static $yyDgoto= array(2,
-          3, 
+          4, 
     );
-    protected static $yySindex = array(         -258,
-          0,     0,     0, 
+    protected static $yySindex = array(         -259,
+       -257,     0,     0,  -258,     0, 
     );
     protected static $yyRindex= array(            0,
-          0,     0,     0, 
+       -256,     0,     0,     0,     0, 
     );
     protected static $yyGindex= array(0,
           0, 
     );
     protected static $yyTable = array(1,
+          3,     5,     0,     3, 
     );
-    protected static $yyCheck = array(258,
+    protected static $yyCheck = array(259,
+        258,   260,    -1,   260, 
     );
     protected static $yyFinal= 2;
     protected static $yyName= array(    
@@ -69,7 +77,7 @@
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T_NUMBER', 
-      'T_STRING', 
+      'T_STRING', 'T_OPEN_TAG', 'T_CLOSE_TAG', 
     );
 
     protected static $yyTableCount= 0, $yyNameCount= 0;
@@ -224,12 +232,19 @@
             // Actions
             switch ($yyN) {
 
-    case 1:  #line 14 "./grammar/php52.jay"
-    { var_dump($yyVals[0+$yyTop]); $yyVal= FALSE; } break;
+    case 1:  #line 18 "./grammar/php52.jay"
+    {
+      $yyVal= $yyVals[-1+$yyTop];
+    } break;
 
-    case 2:  #line 18 "./grammar/php52.jay"
-    { $yyVal= $yyVals[0+$yyTop]; } break;
-#line 233 "-"
+    case 2:  #line 24 "./grammar/php52.jay"
+    {
+    $yyVal= new xp·ide·source·element·ClassFile();
+  } break;
+
+    case 3:  #line 27 "./grammar/php52.jay"
+    {$yyVal= new xp·ide·source·element·ClassFile();} break;
+#line 248 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

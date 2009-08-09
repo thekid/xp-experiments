@@ -2,20 +2,29 @@
 
   $package= 'xp.ide.source.parser';
 
+  uses(
+    'xp.ide.source.element.ClassFile'
+  );
+
 %}
 
-%token T_NUMBER T_STRING
+%token T_NUMBER T_STRING T_OPEN_TAG T_CLOSE_TAG
 %left '+' '-'
 %left '*' ':' '%'
 
 %%
 
 start:
-    classfilecontent { var_dump($1); $$= FALSE; }
+    T_OPEN_TAG classfile T_CLOSE_TAG {
+      $$= $2;
+    }
 ;
 
-classfilecontent:
-  T_STRING { $$= $1; }
+classfile:
+  T_STRING {
+    $$= new xp·ide·source·element·ClassFile();
+  }
+  | {$$= new xp·ide·source·element·ClassFile();}
 ;
 
 %%

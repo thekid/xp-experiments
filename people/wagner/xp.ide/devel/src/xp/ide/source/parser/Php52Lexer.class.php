@@ -50,6 +50,12 @@
         if (FALSE !== strpos(self::DELIMITERS, $token) && 1 == strlen($token)) {
           $this->token= ord($token);
           $this->value= $token;
+        } else if ('<?php' == $token) {
+          $this->token= xp搏de新ource搆arser感hp52Parser::T_OPEN_TAG;
+          $this->value= $token;
+        } else if ('?>' == $token) {
+          $this->token= xp搏de新ource搆arser感hp52Parser::T_CLOSE_TAG;
+          $this->value= $token;
         } else if (1 == sscanf($token, '%s', $string)) {
           $this->token= xp搏de新ource搆arser感hp52Parser::T_STRING;
           $this->value= $token;
