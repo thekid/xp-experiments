@@ -10,10 +10,11 @@
   $package= 'xp.ide.source.parser';
 
   uses(
-    'xp.ide.source.element.ClassFile'
+    'xp.ide.source.element.ClassFile',
+    'xp.ide.source.element.BlockComment'
   );
 
-#line 17 "-"
+#line 18 "-"
 
   uses('text.parser.generic.AbstractParser');
 
@@ -27,42 +28,42 @@
     const T_STRING= 258;
     const T_OPEN_TAG= 259;
     const T_CLOSE_TAG= 260;
+    const T_OPEN_BCOMMENT= 261;
+    const T_CLOSE_BCOMMENT= 262;
+    const T_CONTENT_BCOMMENT= 263;
     const YY_ERRORCODE= 256;
 
     protected static $yyLhs= array(-1,
-          0,     1,     1, 
+          0,     1,     1,     4,     3,     2, 
     );
     protected static $yyLen= array(2,
-          3,     1,     0, 
+          3,     3,     0,     0,     0,     3, 
     );
     protected static $yyDefRed= array(0,
-          0,     0,     2,     0,     1, 
+          0,     0,     0,     0,     5,     0,     1,     4,     6,     2, 
     );
     protected static $yyDgoto= array(2,
-          4, 
+          4,     5,     8,    10, 
     );
     protected static $yySindex = array(         -259,
-       -257,     0,     0,  -258,     0, 
+       -260,     0,  -261,  -257,     0,  -258,     0,     0,     0,     0, 
     );
     protected static $yyRindex= array(            0,
-       -256,     0,     0,     0,     0, 
+       -255,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
     );
     protected static $yyGindex= array(0,
-          0, 
+          0,     0,     0,     0, 
     );
     protected static $yyTable = array(1,
-          3,     5,     0,     3, 
+          3,     6,     7,     9,     3, 
     );
     protected static $yyCheck = array(259,
-        258,   260,    -1,   260, 
+        261,   263,   260,   262,   260, 
     );
     protected static $yyFinal= 2;
     protected static $yyName= array(    
       'end-of-file', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
-      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "'%'", NULL, 
-      NULL, NULL, NULL, "'*'", "'+'", NULL, "'-'", NULL, NULL, NULL, NULL, NULL, NULL, 
-      NULL, NULL, NULL, NULL, NULL, NULL, "':'", NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
@@ -76,8 +77,12 @@
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
-      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T_NUMBER', 
-      'T_STRING', 'T_OPEN_TAG', 'T_CLOSE_TAG', 
+      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
+      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
+      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
+      NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T_NUMBER', 'T_STRING', 'T_OPEN_TAG', 
+      'T_CLOSE_TAG', 'T_OPEN_BCOMMENT', 'T_CLOSE_BCOMMENT', 
+      'T_CONTENT_BCOMMENT', 
     );
 
     protected static $yyTableCount= 0, $yyNameCount= 0;
@@ -232,19 +237,26 @@
             // Actions
             switch ($yyN) {
 
-    case 1:  #line 18 "./grammar/php52.jay"
+    case 1:  #line 17 "./grammar/php52.jay"
     {
       $yyVal= $yyVals[-1+$yyTop];
     } break;
 
-    case 2:  #line 24 "./grammar/php52.jay"
+    case 2:  #line 23 "./grammar/php52.jay"
     {
     $yyVal= new xp·ide·source·element·ClassFile();
+    $yyVal->addElement($yyVals[-2+$yyTop]);
   } break;
 
     case 3:  #line 27 "./grammar/php52.jay"
-    {$yyVal= new xp·ide·source·element·ClassFile();} break;
-#line 248 "-"
+    { $yyVal= new xp·ide·source·element·ClassFile(); } break;
+
+    case 6:  #line 37 "./grammar/php52.jay"
+    {
+    $yyVal= new xp·ide·source·element·BlockComment();
+    $yyVal->setText($yyVals[-1+$yyTop]);
+  } break;
+#line 260 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

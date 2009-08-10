@@ -3,28 +3,41 @@
   $package= 'xp.ide.source.parser';
 
   uses(
-    'xp.ide.source.element.ClassFile'
+    'xp.ide.source.element.ClassFile',
+    'xp.ide.source.element.BlockComment'
   );
 
 %}
 
-%token T_NUMBER T_STRING T_OPEN_TAG T_CLOSE_TAG
-%left '+' '-'
-%left '*' ':' '%'
+%token T_NUMBER T_STRING T_OPEN_TAG T_CLOSE_TAG T_OPEN_BCOMMENT T_CLOSE_BCOMMENT T_CONTENT_BCOMMENT
 
 %%
 
 start:
-    T_OPEN_TAG classfile T_CLOSE_TAG {
+    T_OPEN_TAG classFile T_CLOSE_TAG {
       $$= $2;
     }
 ;
 
-classfile:
-  T_STRING {
+classFile:
+  blockComment package uses {
     $$= new xp·ide·source·element·ClassFile();
+    $$->addElement($1);
   }
-  | {$$= new xp·ide·source·element·ClassFile();}
+  | { $$= new xp·ide·source·element·ClassFile(); }
+;
+
+uses:
+;
+
+package:
+;
+
+blockComment:
+  T_OPEN_BCOMMENT T_CONTENT_BCOMMENT T_CLOSE_BCOMMENT {
+    $$= new xp·ide·source·element·BlockComment();
+    $$->setText($2);
+  }
 ;
 
 %%

@@ -32,9 +32,30 @@
      */
     #[@test]
     public function testParseClassFile() {
-      $this->assertObject($this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
-        <?php ?>
-      ')), 'xp.ide.source.element.ClassFile');
+      $this->assertObject($this->p->parse(new xp搏de新ource搆arser感hp52Lexer('<?php ?>')), 'xp.ide.source.element.ClassFile');
     }
+
+    /**
+     * Test parser parses a comment
+     *
+     */
+    #[@test]
+    public function testParseClassFileComment() {
+      $tree= $this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+        <?php
+          /**
+           * block comment
+           *
+           */
+         ?>
+      '));
+      $this->assertObject($tree, 'xp.ide.source.element.ClassFile');
+      $this->assertObject($tree->getElement(0), 'xp.ide.source.element.BlockComment');
+      $this->assertEquals($tree->getElement(0)->getText(), '*
+           * block comment
+           *
+           ');
+    }
+
   }
 ?>

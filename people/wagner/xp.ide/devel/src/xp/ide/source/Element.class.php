@@ -11,8 +11,28 @@
    *
    * @purpose  IDE
    */
-  class xp·ide·source·Element extends Object {
-    
+  abstract class xp·ide·source·Element extends Object {
+    private
+      $elements= array();
+
+    /**
+     * add a subelement
+     *
+     * @param xp.ide.source.Element e
+     */
+    public function addElement(self $e) {
+      $this->elements[]= $e;
+    }
+
+    /**
+     * get a subelement at index
+     *
+     * @param int i
+     */
+    public function getElement($i) {
+      return $this->elements[$i];
+    }
+
   }
 
 ?>
