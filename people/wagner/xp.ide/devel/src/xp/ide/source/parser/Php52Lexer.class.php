@@ -20,12 +20,14 @@
    */
   class xp搏de新ource搆arser感hp52Lexer extends AbstractLexer {
 
-    const DELIMITERS= " \r\n\t@";
-    const S_SOURCE= 0;
+    const DELIMITERS= " \r\n\t@'\";{}()[]";
+    const S_INITIAL= 0;
     const S_BCOMMENT= 1;
+    const S_ESTRING= 2;
 
     protected $tokenizer= NULL;
-    private $state= self::S_SOURCE;
+    private $state= self::S_INITIAL;
+    private $encapse;
 
     /**
      * Constructor
@@ -34,7 +36,7 @@
      */
     public function __construct($expression) {
       $this->tokenizer= new StringTokenizer($expression, self::DELIMITERS, TRUE);
-      $this->position= array(1, 1);
+      $this->position= array(1, 0);
     }
 
     /**
@@ -43,56 +45,103 @@
      * @return  bool
      */
     public function advance() {
+      $this->position[1]+= strlen($this->value);
+      $t= '';
       do {
         if (!$this->tokenizer->hasMoreTokens()) return FALSE;
         $token= $this->tokenizer->nextToken(self::DELIMITERS);
 
-        // pass through comments
-        if (self::S_BCOMMENT == $this->state) {
-          $this->token= xp搏de新ource搆arser感hp52Parser::T_CONTENT_BCOMMENT;
-          $this->value= '';
-          while ('*/' != substr($token, 0, 2)) {
-            if ("\r" != $token) $this->value.= $token;
-            if (!$this->tokenizer->hasMoreTokens()) return FALSE;
-            $token= $this->tokenizer->nextToken(self::DELIMITERS);
+        switch ($this->state) {
+          case self::S_ESTRING:
+          if ($this->encaps == $token && "\\" != substr($t, -1)) {
+            $this->token= xp搏de新ource搆arser感hp52Parser::T_ENCAPSE_STRING;
+            $this->value= $t;
+            $this->state= self::S_INITIAL;
+            break(2);
+          } else {
+            $t.= $token;
+            continue(2);
           }
-          $this->tokenizer->pushBack($token);
-          $this->state= self::S_SOURCE;
-          return TRUE;
-        }
-        // Ignore whitespace
 
-        if (FALSE !== strpos(" \n\r\t", $token)) continue;
-        if ('<?php' == substr($token, 0, 5)) {
-          $this->token= xp搏de新ource搆arser感hp52Parser::T_OPEN_TAG;
-          $this->value= "<?php";
-          $this->tokenizer->pushBack(substr($token, 5));
-        } else if ('?>' == substr($token, 0, 2)) {
-          $this->token= xp搏de新ource搆arser感hp52Parser::T_CLOSE_TAG;
-          $this->value= "?>";
-          $this->tokenizer->pushBack(substr($token, 2));
-        } else if ('/*' == substr($token, 0, 2)) {
-          $this->token= xp搏de新ource搆arser感hp52Parser::T_OPEN_BCOMMENT;
-          $this->value= "/*";
-          $this->tokenizer->pushBack(substr($token, 2));
-          $this->state= self::S_BCOMMENT;
-        } else if ('*/' == substr($token, 0, 2)) {
-          $this->token= xp搏de新ource搆arser感hp52Parser::T_CLOSE_BCOMMENT;
-          $this->value= "*/";
-          $this->tokenizer->pushBack(substr($token, 2));
-        } else if (preg_match('/[a-z][a-z0-9_-]*/i', $token)) {
-          $this->token= xp搏de新ource搆arser感hp52Parser::T_STRING;
-          $this->value= $token;
-        } else if (1 == sscanf($token, '%d', $digits)) {
-          $this->token= xp搏de新ource搆arser感hp52Parser::T_NUMBER;
-          $this->value= $token;
-        } else {
-          $this->token= ord($token);
-          $this->value= $token;
+          // pass through comments
+          case self::S_BCOMMENT:
+          switch ($token) {
+            case "\r":
+            continue(3);
+
+            case '*/':
+            $this->token= xp搏de新ource搆arser感hp52Parser::T_CONTENT_BCOMMENT;
+            $this->value= $t;
+            $this->tokenizer->pushBack($token);
+            $this->state= self::S_INITIAL;
+            break(3);
+
+            default:
+            $t.= $token;
+            continue(3);
+          }
+
+          case self::S_INITIAL:
+          // Ignore whitespace
+          if (FALSE !== strpos(" \n\r\t", $token)) {
+            if (PHP_EOL == $token || "\n" == $token && "\r\n" == PHP_OEL) {
+              $this->position[0]++;
+              $this->position[1]= 0;
+            }
+            $this->position[1]++;
+            continue(2);
+          } else if ($this->grep('"', $token, NULL)) {
+            $this->encaps= '"';
+            $this->state= self::S_ESTRING;
+            $this->position[1]++;
+            continue(2);
+          } else if ($this->grep("'", $token, NULL)) {
+            $this->encaps= "'";
+            $this->state= self::S_ESTRING;
+            $this->position[1]++;
+            continue(2);
+          } else if ($this->grep('/*', $token, xp搏de新ource搆arser感hp52Parser::T_OPEN_BCOMMENT)) {
+            $this->state= self::S_BCOMMENT;
+          } else if ($this->grep('*/', $token, xp搏de新ource搆arser感hp52Parser::T_CLOSE_BCOMMENT)) {
+          } else if ($this->grep('<?php', $token, xp搏de新ource搆arser感hp52Parser::T_OPEN_TAG)) {
+          } else if ($this->grep('?>', $token, xp搏de新ource搆arser感hp52Parser::T_CLOSE_TAG)) {
+          } else if ($this->grep('uses', $token, xp搏de新ource搆arser感hp52Parser::T_USES)) {
+          } else if ($this->grep('class', $token, xp搏de新ource搆arser感hp52Parser::T_CLASS)) {
+          } else if ($this->grep('extends', $token, xp搏de新ource搆arser感hp52Parser::T_EXTENDS)) {
+          } else if (1 == sscanf($token, '%d', $digits)) {
+            $this->token= xp搏de新ource搆arser感hp52Parser::T_NUMBER;
+            $this->value= $token;
+          } else if ($this->pgrep('/^(\$+[a-z][a-z0-9_-愍*)/i', $token, xp搏de新ource搆arser感hp52Parser::T_VARIABLE)) {
+          } else if ($this->pgrep('/^([a-z][a-z0-9_-愍*)/i', $token, xp搏de新ource搆arser感hp52Parser::T_STRING)) {
+          } else {
+            $this->token= ord($token);
+            $this->value= $token;
+          }
+          break(2);
         }
-        break;
       } while (1);
       return TRUE;
+    }
+
+    private function grep($string, $test, $token) {
+      if ($string == substr($test, 0, strlen($string))) {
+        $this->token= $token;
+        $this->value= $string;
+        if (strlen($test) > strlen($string)) $this->tokenizer->pushBack(substr($test, strlen($string)));
+        return TRUE;
+      }
+      return FALSE;
+    }
+
+    private function pgrep($regex, $test, $token) {
+      if (preg_match($regex, $test, $match)) {
+        list($all, $string)= $match;
+        $this->token= $token;
+        $this->value= $string;
+        if (strlen($test) > strlen($string)) $this->tokenizer->pushBack(substr($test, strlen($string)));
+        return TRUE;
+      }
+      return FALSE;
     }
   }
 ?>

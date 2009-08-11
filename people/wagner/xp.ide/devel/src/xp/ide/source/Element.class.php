@@ -25,6 +25,15 @@
     }
 
     /**
+     * add a subelement
+     *
+     * @param xp.ide.source.Element[] es
+     */
+    public function setElements(array $es) {
+      $this->elements= $es;
+    }
+
+    /**
      * get a subelement at index
      *
      * @param int i

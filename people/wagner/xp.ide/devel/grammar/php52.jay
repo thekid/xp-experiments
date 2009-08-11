@@ -3,34 +3,59 @@
   $package= 'xp.ide.source.parser';
 
   uses(
+    'xp.ide.source.element.Package',
+    'xp.ide.source.element.Uses',
     'xp.ide.source.element.ClassFile',
     'xp.ide.source.element.BlockComment'
   );
 
 %}
 
-%token T_NUMBER T_STRING T_OPEN_TAG T_CLOSE_TAG T_OPEN_BCOMMENT T_CLOSE_BCOMMENT T_CONTENT_BCOMMENT
+%token T_NUMBER T_STRING T_OPEN_TAG T_CLOSE_TAG T_OPEN_BCOMMENT
+  T_CLOSE_BCOMMENT T_CONTENT_BCOMMENT T_USES T_ENCAPSE_STRING
+  T_VARIABLE T_CLASS T_EXTENDS
 
 %%
 
 start:
-    T_OPEN_TAG classFile T_CLOSE_TAG {
-      $$= $2;
-    }
+  T_OPEN_TAG meta classDef T_CLOSE_TAG {
+    $$= new xp·ide·source·element·ClassFile();
+    $$->setElements($2);
+  }
+  | T_OPEN_TAG classDef T_CLOSE_TAG {
+    $$= new xp·ide·source·element·ClassFile();
+  }
 ;
 
-classFile:
-  blockComment package uses {
-    $$= new xp·ide·source·element·ClassFile();
-    $$->addElement($1);
+classDef:
+  blockComment T_CLASS T_STRING T_EXTENDS T_STRING '{' '}'
+;
+
+meta:
+  blockComment package uses { $$= array($1, $2, $3); }
+  | blockComment package { $$= array($1, $2); }
+  | package uses { $$= array($1, $2); }
+  | blockComment uses { $$= array($1, $2); }
+  | blockComment { $$= array($1); }
+  | package { $$= array($1); }
+  | uses { $$= array($1); }
+
+package:
+  T_VARIABLE '=' T_ENCAPSE_STRING ';'  {
+    $$= new xp·ide·source·element·Package();
+    $$->setPathname($3);
   }
-  | { $$= new xp·ide·source·element·ClassFile(); }
 ;
 
 uses:
+  T_USES '(' usesClasses ')' ';'  {
+    $$= new xp·ide·source·element·Uses();
+    $$->setClassnames($3);
+  }
 ;
-
-package:
+usesClasses:
+  usesClasses ',' T_ENCAPSE_STRING { $1[]= $3; $$= $1; }
+  | T_ENCAPSE_STRING { $$= array($1); }
 ;
 
 blockComment:
