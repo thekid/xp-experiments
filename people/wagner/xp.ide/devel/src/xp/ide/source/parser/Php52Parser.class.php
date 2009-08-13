@@ -15,11 +15,12 @@
     'xp.ide.source.element.Uses',
     'xp.ide.source.element.Classdef',
     'xp.ide.source.element.Classmember',
+    'xp.ide.source.element.Classconstant',
     'xp.ide.source.element.ClassFile',
     'xp.ide.source.element.BlockComment'
   );
 
-#line 23 "-"
+#line 24 "-"
 
   uses('text.parser.generic.AbstractParser');
 
@@ -47,90 +48,102 @@
     const T_PUBLIC= 272;
     const T_PRIVATE= 273;
     const T_PROTECTED= 274;
+    const T_CONST= 275;
+    const T_STATIC= 276;
     const YY_ERRORCODE= 256;
 
     protected static $yyLhs= array(-1,
-          0,     0,     2,     2,     5,     5,     4,     4,     6,     6, 
-          8,     8,     9,     9,     1,     1,     1,     1,     1,     1, 
-          1,    11,    12,    13,    13,     3,     7,     7,     7,    10, 
-         10,    10,    10, 
+          0,     0,     2,     2,     5,     5,     4,     4,     4,     4, 
+          6,     6,     8,     8,     7,     7,    11,    11,    12,    12, 
+          1,     1,     1,     1,     1,     1,     1,    13,    14,    15, 
+         15,     3,    10,    10,    10,    10,    10,    16,    16,    16, 
+          9,     9,     9,     9, 
     );
     protected static $yyLen= array(2,
-          4,     3,     6,     8,     3,     1,     3,     2,     4,     3, 
-          3,     1,     3,     1,     3,     2,     2,     2,     1,     1, 
-          1,     4,     5,     3,     1,     3,     1,     1,     1,     3, 
-          1,     1,     1, 
+          4,     3,     6,     8,     3,     1,     4,     3,     3,     2, 
+          4,     3,     5,     3,     4,     3,     3,     1,     3,     1, 
+          3,     2,     2,     2,     1,     1,     1,     4,     5,     3, 
+          1,     3,     2,     2,     1,     1,     0,     1,     1,     1, 
+          3,     1,     1,     1, 
     );
     protected static $yyDefRed= array(0,
-          0,     0,     0,     0,     0,     0,     0,     0,     0,    21, 
-          0,     0,     0,     0,     0,     2,     0,     0,    17,    18, 
-         26,    25,     0,     0,     1,     0,    15,     0,     0,    22, 
-          0,    24,    23,     0,     0,     0,     3,     6,     0,    27, 
-         28,    29,     8,     0,     0,     0,     4,     7,     0,     0, 
-          0,    12,     5,     0,     0,     0,    10,     9,    33,    31, 
-          0,    32,    13,    11,     0,    30, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,    27, 
+          0,     0,     0,     0,     0,     2,     0,     0,    23,    24, 
+         32,    31,     0,     0,     1,     0,    21,     0,     0,    28, 
+          0,    30,    29,     0,     0,     0,     3,     6,     0,    38, 
+         39,    40,     0,     0,    10,     0,     0,     0,     0,     0, 
+          4,     0,     0,    34,     0,     8,     0,     9,     0,     0, 
+          0,    18,    33,     5,     0,     0,    12,     0,     7,     0, 
+          0,     0,    16,    44,    42,     0,    43,    14,     0,    11, 
+         15,    19,    17,     0,     0,    41,    13, 
     );
     protected static $yyDgoto= array(2,
-          6,     7,     8,    37,    39,    44,    45,    51,    52,    63, 
-          9,    10,    23, 
+          6,     7,     8,    37,    39,    46,    47,    53,    78,    48, 
+         61,    62,     9,    10,    23,    49, 
     );
-    protected static $yySindex = array(         -252,
-       -241,     0,  -242,   -15,   -35,  -236,  -229,  -246,  -237,     0, 
-       -226,  -228,  -227,  -224,  -221,     0,  -230,  -237,     0,     0, 
-          0,     0,   -31,   -21,     0,  -223,     0,  -220,   -19,     0, 
-       -225,     0,     0,  -121,  -222,  -125,     0,     0,   -43,     0, 
-          0,     0,     0,  -122,  -219,  -218,     0,     0,  -219,   -18, 
-        -40,     0,     0,   -39,  -255,  -219,     0,     0,     0,     0, 
-          4,     0,     0,     0,     5,     0, 
+    protected static $yySindex = array(         -240,
+       -256,     0,  -228,    -7,   -26,  -229,  -216,  -241,  -224,     0, 
+       -213,  -215,  -214,  -211,  -208,     0,  -217,  -224,     0,     0, 
+          0,     0,   -24,    -8,     0,  -210,     0,  -207,    -6,     0, 
+       -212,     0,     0,  -122,  -209,  -125,     0,     0,   -42,     0, 
+          0,     0,  -206,  -232,     0,  -120,  -115,  -205,  -220,  -204, 
+          0,    -4,   -41,     0,  -206,     0,  -110,     0,  -205,    -2, 
+        -40,     0,     0,     0,  -233,  -202,     0,   -38,     0,   -37, 
+       -233,  -205,     0,     0,     0,    20,     0,     0,     1,     0, 
+          0,     0,     0,    25,  -233,     0,     0, 
     );
     protected static $yyRindex= array(            0,
-          0,     0,     0,     0,     0,     0,     0,  -217,  -214,     0, 
-          0,     0,     0,     0,     0,     0,     0,  -213,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,  -198,  -197,     0, 
+          0,     0,     0,     0,     0,     0,     0,  -196,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,  -199,     0,     0,     0,     0, 
+          0,     0,     0,  -195,     0,  -199,  -199,     0,  -194,     0, 
+          0,     0,     0,     0,     0,     0,  -199,     0,     0,   -36, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,   -38, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0, 
     );
     protected static $yyGindex= array(0,
-          0,    41,    47,    15,     0,     0,    11,     7,     1,     0, 
-         50,    -1,     0, 
+          0,    65,    66,    34,     0,     0,    30,    22,   -60,   -33, 
+         19,     7,    72,    21,     0,    38, 
     );
-    protected static $yyTable = array(43,
-         46,    36,    48,    56,    56,    14,    19,    20,    59,    29, 
-         17,    60,    28,     1,    61,    62,    27,    11,    57,    58, 
-         14,     4,     5,     3,    12,    13,     4,     5,     3,    16, 
-          4,    21,    22,    24,    25,    17,    26,    30,    31,    33, 
-         32,    34,    55,    65,    38,    66,    14,    19,    53,    50, 
-         20,    16,    15,    47,    49,    54,    64,    18,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,    36, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+    protected static $yyTable = array(45,
+         36,    50,    66,    72,    56,    66,    72,    20,     3,    58, 
+         82,     4,     5,    59,    69,    17,    29,    67,    73,    28, 
+         80,    81,    20,    59,    87,     1,     4,     5,    19,    20, 
+         74,    11,    12,    75,    13,     3,    76,    77,    27,    40, 
+         41,    42,    16,     4,    21,    22,    24,    25,    17,    26, 
+         30,    31,    33,    32,    34,    63,    65,    38,    71,    84, 
+         52,    85,    64,    60,    79,    86,    25,    26,    22,    37, 
+         14,    15,    51,    35,    36,    57,    68,    70,    83,    18, 
+         36,    54,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,    35,     0,     0,     0,     0,    40,    41,    42,    40, 
-         41,    42, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+         35,     0,     0,     0,     0,     0,    40,    41,    42,    43, 
+         44,    40,    41,    42,    55,    44,    40,    41,    42,     0, 
+         44,    40,    41,    42,     0,    44, 
     );
     protected static $yyCheck = array(125,
-         44,   123,   125,    44,    44,    44,     8,     9,   264,    41, 
-        257,   267,    44,   266,   270,   271,    18,   260,    59,    59, 
-         59,   268,   269,   265,    40,    61,   268,   269,   265,   259, 
-        268,   258,   261,   261,   259,   257,   267,    59,   262,    59, 
-        261,   267,    61,    40,   267,    41,     6,   265,   267,   269, 
-        265,   265,     6,    39,    44,    49,    56,     8,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   123, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+        123,    44,    44,    44,   125,    44,    44,    44,   265,   125, 
+         71,   268,   269,    47,   125,   257,    41,    59,    59,    44, 
+         59,    59,    59,    57,    85,   266,   268,   269,     8,     9, 
+        264,   260,    40,   267,    61,   265,   270,   271,    18,   272, 
+        273,   274,   259,   268,   258,   261,   261,   259,   257,   267, 
+         59,   262,    59,   261,   267,   276,    61,   267,    61,    40, 
+        267,    61,   267,   269,   267,    41,   265,   265,   265,   269, 
+          6,     6,    39,   269,   269,    46,    55,    59,    72,     8, 
+        123,    44,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,   263,    -1,    -1,    -1,    -1,   272,   273,   274,   272, 
-        273,   274, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+        263,    -1,    -1,    -1,    -1,    -1,   272,   273,   274,   275, 
+        276,   272,   273,   274,   275,   276,   272,   273,   274,    -1, 
+        276,   272,   273,   274,    -1,   276, 
     );
     protected static $yyFinal= 2;
     protected static $yyName= array(    
@@ -156,7 +169,8 @@
       'T_CLOSE_BCOMMENT', 'T_CLOSE_TAG', 'T_CONTENT_BCOMMENT', 
       'T_ENCAPSE_STRING', 'T_EXTENDS', 'T_IMPLEMENTS', 'T_NUMBER', 
       'T_OPEN_BCOMMENT', 'T_OPEN_TAG', 'T_STRING', 'T_USES', 'T_VARIABLE', 
-      'T_ARRAY', 'T_NULL', 'T_PUBLIC', 'T_PRIVATE', 'T_PROTECTED', 
+      'T_ARRAY', 'T_NULL', 'T_PUBLIC', 'T_PRIVATE', 'T_PROTECTED', 'T_CONST', 
+      'T_STATIC', 
     );
 
     protected static $yyTableCount= 0, $yyNameCount= 0;
@@ -311,20 +325,20 @@
             // Actions
             switch ($yyN) {
 
-    case 1:  #line 25 "./grammar/php52.jay"
+    case 1:  #line 26 "./grammar/php52.jay"
     { $yyVal= $yyVals[-2+$yyTop]; $yyVal->setClassdef($yyVals[-1+$yyTop]); } break;
 
-    case 2:  #line 26 "./grammar/php52.jay"
+    case 2:  #line 27 "./grammar/php52.jay"
     { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setClassdef($yyVals[-1+$yyTop]); } break;
 
-    case 3:  #line 30 "./grammar/php52.jay"
+    case 3:  #line 31 "./grammar/php52.jay"
     {
     $yyVal= $yyVals[0+$yyTop];
     $yyVal->setName($yyVals[-3+$yyTop]);
     $yyVal->setParent($yyVals[-1+$yyTop]);
   } break;
 
-    case 4:  #line 35 "./grammar/php52.jay"
+    case 4:  #line 36 "./grammar/php52.jay"
     {
     $yyVal= $yyVals[0+$yyTop];
     $yyVal->setName($yyVals[-5+$yyTop]);
@@ -332,81 +346,114 @@
     $yyVal->setInterfaces($yyVals[-1+$yyTop]);
   } break;
 
-    case 5:  #line 43 "./grammar/php52.jay"
+    case 5:  #line 44 "./grammar/php52.jay"
     { $yyVals[-2+$yyTop][]= $yyVals[0+$yyTop]; $yyVal= $yyVals[-2+$yyTop]; } break;
 
-    case 6:  #line 44 "./grammar/php52.jay"
+    case 6:  #line 45 "./grammar/php52.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 7:  #line 48 "./grammar/php52.jay"
+    case 7:  #line 49 "./grammar/php52.jay"
+    { $yyVal= new xp·ide·source·element·Classdef(); $yyVal->setConstants($yyVals[-2+$yyTop]); $yyVal->setMembers($yyVals[-1+$yyTop]); } break;
+
+    case 8:  #line 50 "./grammar/php52.jay"
+    { $yyVal= new xp·ide·source·element·Classdef(); $yyVal->setConstants($yyVals[-1+$yyTop]); } break;
+
+    case 9:  #line 51 "./grammar/php52.jay"
     { $yyVal= new xp·ide·source·element·Classdef(); $yyVal->setMembers($yyVals[-1+$yyTop]); } break;
 
-    case 8:  #line 49 "./grammar/php52.jay"
+    case 10:  #line 52 "./grammar/php52.jay"
     { $yyVal= new xp·ide·source·element·Classdef(); } break;
 
-    case 9:  #line 52 "./grammar/php52.jay"
-    { foreach($yyVals[-1+$yyTop] as $m) $m->setScope($yyVals[-2+$yyTop]); $yyVal= array_merge($yyVals[-3+$yyTop],$yyVals[-1+$yyTop]); } break;
-
-    case 10:  #line 53 "./grammar/php52.jay"
-    { foreach($yyVals[-1+$yyTop] as $m) $m->setScope($yyVals[-2+$yyTop]); $yyVal= $yyVals[-1+$yyTop]; } break;
-
     case 11:  #line 56 "./grammar/php52.jay"
-    { $yyVals[-2+$yyTop][]= $yyVals[0+$yyTop]; $yyVal= $yyVals[-2+$yyTop];} break;
+    { $yyVal= array_merge($yyVals[-3+$yyTop], $yyVals[-1+$yyTop]); } break;
 
     case 12:  #line 57 "./grammar/php52.jay"
-    { $yyVal= array($yyVals[0+$yyTop]); } break;
+    { $yyVal= $yyVals[-1+$yyTop]; } break;
 
     case 13:  #line 60 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·Classmember(substr($yyVals[-2+$yyTop], 1)); } break;
+    { $yyVals[-4+$yyTop][]= new xp·ide·source·element·Classconstant($yyVals[-2+$yyTop]); $yyVal= $yyVals[-4+$yyTop]; } break;
 
     case 14:  #line 61 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·Classmember(substr($yyVals[0+$yyTop], 1)); } break;
+    { $yyVal= array(new xp·ide·source·element·Classconstant($yyVals[-2+$yyTop])); } break;
 
-    case 15:  #line 64 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setHeader($yyVals[-2+$yyTop]); $yyVal->setPackage($yyVals[-1+$yyTop]); $yyVal->setUses($yyVals[0+$yyTop]); } break;
+    case 15:  #line 65 "./grammar/php52.jay"
+    { foreach($yyVals[-1+$yyTop] as $m) { $m->setStatic($yyVals[-2+$yyTop]['static']); $m->setScope($yyVals[-2+$yyTop]['scope']); } $yyVal= array_merge($yyVals[-3+$yyTop],$yyVals[-1+$yyTop]); } break;
 
-    case 16:  #line 65 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setHeader($yyVals[-1+$yyTop]); $yyVal->setPackage($yyVals[0+$yyTop]); } break;
+    case 16:  #line 66 "./grammar/php52.jay"
+    { foreach($yyVals[-1+$yyTop] as $m) { $m->setStatic($yyVals[-2+$yyTop]['static']); $m->setScope($yyVals[-2+$yyTop]['scope']); } $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 17:  #line 66 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setHeader($yyVals[-1+$yyTop]); $yyVal->setUses($yyVals[0+$yyTop]); } break;
+    case 17:  #line 69 "./grammar/php52.jay"
+    { $yyVals[-2+$yyTop][]= $yyVals[0+$yyTop]; $yyVal= $yyVals[-2+$yyTop];} break;
 
-    case 18:  #line 67 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setPackage($yyVals[-1+$yyTop]); $yyVal->setUses($yyVals[0+$yyTop]); } break;
-
-    case 19:  #line 68 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setHeader($yyVals[0+$yyTop]); } break;
-
-    case 20:  #line 69 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setPackage($yyVals[0+$yyTop]); } break;
-
-    case 21:  #line 70 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setUses($yyVals[0+$yyTop]); } break;
-
-    case 22:  #line 74 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·Package(); $yyVal->setPathname($yyVals[-1+$yyTop]); } break;
-
-    case 23:  #line 78 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·Uses(); $yyVal->setClassnames($yyVals[-2+$yyTop]); } break;
-
-    case 24:  #line 81 "./grammar/php52.jay"
-    { $yyVals[-2+$yyTop][]= $yyVals[0+$yyTop]; $yyVal= $yyVals[-2+$yyTop]; } break;
-
-    case 25:  #line 82 "./grammar/php52.jay"
+    case 18:  #line 70 "./grammar/php52.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 26:  #line 86 "./grammar/php52.jay"
+    case 19:  #line 73 "./grammar/php52.jay"
+    { $yyVal= new xp·ide·source·element·Classmember(substr($yyVals[-2+$yyTop], 1)); } break;
+
+    case 20:  #line 74 "./grammar/php52.jay"
+    { $yyVal= new xp·ide·source·element·Classmember(substr($yyVals[0+$yyTop], 1)); } break;
+
+    case 21:  #line 77 "./grammar/php52.jay"
+    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setHeader($yyVals[-2+$yyTop]); $yyVal->setPackage($yyVals[-1+$yyTop]); $yyVal->setUses($yyVals[0+$yyTop]); } break;
+
+    case 22:  #line 78 "./grammar/php52.jay"
+    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setHeader($yyVals[-1+$yyTop]); $yyVal->setPackage($yyVals[0+$yyTop]); } break;
+
+    case 23:  #line 79 "./grammar/php52.jay"
+    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setHeader($yyVals[-1+$yyTop]); $yyVal->setUses($yyVals[0+$yyTop]); } break;
+
+    case 24:  #line 80 "./grammar/php52.jay"
+    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setPackage($yyVals[-1+$yyTop]); $yyVal->setUses($yyVals[0+$yyTop]); } break;
+
+    case 25:  #line 81 "./grammar/php52.jay"
+    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setHeader($yyVals[0+$yyTop]); } break;
+
+    case 26:  #line 82 "./grammar/php52.jay"
+    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setPackage($yyVals[0+$yyTop]); } break;
+
+    case 27:  #line 83 "./grammar/php52.jay"
+    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setUses($yyVals[0+$yyTop]); } break;
+
+    case 28:  #line 87 "./grammar/php52.jay"
+    { $yyVal= new xp·ide·source·element·Package(); $yyVal->setPathname($yyVals[-1+$yyTop]); } break;
+
+    case 29:  #line 91 "./grammar/php52.jay"
+    { $yyVal= new xp·ide·source·element·Uses(); $yyVal->setClassnames($yyVals[-2+$yyTop]); } break;
+
+    case 30:  #line 94 "./grammar/php52.jay"
+    { $yyVals[-2+$yyTop][]= $yyVals[0+$yyTop]; $yyVal= $yyVals[-2+$yyTop]; } break;
+
+    case 31:  #line 95 "./grammar/php52.jay"
+    { $yyVal= array($yyVals[0+$yyTop]); } break;
+
+    case 32:  #line 99 "./grammar/php52.jay"
     { $yyVal= new xp·ide·source·element·BlockComment(); $yyVal->setText($yyVals[-1+$yyTop]); } break;
 
-    case 27:  #line 90 "./grammar/php52.jay"
+    case 33:  #line 103 "./grammar/php52.jay"
+    { $yyVal= array('scope' => $yyVals[-1+$yyTop], 'static' => TRUE); } break;
+
+    case 34:  #line 104 "./grammar/php52.jay"
+    { $yyVal= array('scope' => $yyVals[0+$yyTop], 'static' => TRUE); } break;
+
+    case 35:  #line 105 "./grammar/php52.jay"
+    { $yyVal= array('scope' => xp·ide·source·Scope::$PUBLIC, 'static' => TRUE); } break;
+
+    case 36:  #line 106 "./grammar/php52.jay"
+    { $yyVal= array('scope' => $yyVals[0+$yyTop], 'static' => FALSE); } break;
+
+    case 37:  #line 107 "./grammar/php52.jay"
+    { $yyVal= array('scope' => xp·ide·source·Scope::$PUBLIC, 'static' => FALSE); } break;
+
+    case 38:  #line 111 "./grammar/php52.jay"
     { $yyVal= xp·ide·source·Scope::$PUBLIC; } break;
 
-    case 28:  #line 91 "./grammar/php52.jay"
+    case 39:  #line 112 "./grammar/php52.jay"
     { $yyVal= xp·ide·source·Scope::$PRIVATE; } break;
 
-    case 29:  #line 92 "./grammar/php52.jay"
+    case 40:  #line 113 "./grammar/php52.jay"
     { $yyVal= xp·ide·source·Scope::$PROTECTED; } break;
-#line 410 "-"
+#line 457 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

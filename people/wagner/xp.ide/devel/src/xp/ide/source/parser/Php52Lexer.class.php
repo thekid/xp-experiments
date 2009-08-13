@@ -106,18 +106,18 @@
           } else if ($this->grep('NULL', $token, xp搏de新ource搆arser感hp52Parser::T_NULL)) {
           } else if ($this->grep('array', $token, xp搏de新ource搆arser感hp52Parser::T_ARRAY)) {
           } else if ($this->grep('private', $token, xp搏de新ource搆arser感hp52Parser::T_PRIVATE)) {
+          } else if ($this->grep('static', $token, xp搏de新ource搆arser感hp52Parser::T_STATIC)) {
           } else if ($this->grep('protected', $token, xp搏de新ource搆arser感hp52Parser::T_PROTECTED)) {
           } else if ($this->grep('public', $token, xp搏de新ource搆arser感hp52Parser::T_PUBLIC)) {
+          } else if ($this->grep('const', $token, xp搏de新ource搆arser感hp52Parser::T_CONST)) {
           } else if ($this->grep('<?php', $token, xp搏de新ource搆arser感hp52Parser::T_OPEN_TAG)) {
           } else if ($this->grep('?>', $token, xp搏de新ource搆arser感hp52Parser::T_CLOSE_TAG)) {
           } else if ($this->grep('uses', $token, xp搏de新ource搆arser感hp52Parser::T_USES)) {
           } else if ($this->grep('class', $token, xp搏de新ource搆arser感hp52Parser::T_CLASS)) {
           } else if ($this->grep('extends', $token, xp搏de新ource搆arser感hp52Parser::T_EXTENDS)) {
           } else if ($this->grep('implements', $token, xp搏de新ource搆arser感hp52Parser::T_IMPLEMENTS)) {
-          } else if (1 == sscanf($token, '%d', $digits)) {
-            $this->token= xp搏de新ource搆arser感hp52Parser::T_NUMBER;
-            $this->value= $token;
           } else if ($this->pgrep('/^(\$+[a-z][a-z0-9_-愍*)/i', $token, xp搏de新ource搆arser感hp52Parser::T_VARIABLE)) {
+          } else if ($this->pgrep('/^([0-9]*.?[0-9]+)/i', $token, xp搏de新ource搆arser感hp52Parser::T_NUMBER)) {
           } else if ($this->pgrep('/^([a-z][a-z0-9_-愍*)/i', $token, xp搏de新ource搆arser感hp52Parser::T_STRING)) {
           } else {
             $this->token= ord($token);

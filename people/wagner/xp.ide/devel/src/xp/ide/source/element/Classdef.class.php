@@ -19,7 +19,8 @@
       $name= '',
       $parent= '',
       $interfaces= array(),
-      $members= array();
+      $members= array(),
+      $constants= array();
 
     public function setName($name) {
       $this->name= $name;
@@ -51,6 +52,14 @@
 
     public function getMembers() {
       return $this->members;
+    }
+
+    public function setConstants(array $constants) {
+      $this->constants= $constants;
+    }
+
+    public function getConstants() {
+      return $this->constants;
     }
   }
 

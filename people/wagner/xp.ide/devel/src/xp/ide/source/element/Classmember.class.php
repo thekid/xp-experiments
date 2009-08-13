@@ -18,6 +18,7 @@
   class xp·ide·source·element·Classmember extends xp·ide·source·Element {
     private
       $name= '',
+      $static= FALSE,
       $scope= NULL;
 
     public function __construct($name= '', xp·ide·source·Scope $scope= NULL) {
@@ -26,7 +27,10 @@
     }
 
     public function equals($o) {
-      return $this->name === $o->getName() && $this->scope === $o->getScope();
+      return $this->name === $o->getName() 
+        && $this->scope === $o->getScope()
+        && $this->static === $o->isStatic()
+      ;
     }
 
     public function setName($name) {
@@ -45,6 +49,13 @@
       return $this->scope;
     }
 
+    public function setStatic($static) {
+      $this->static= $static;
+    }
+
+    public function isStatic() {
+      return $this->static;
+    }
   }
 
 ?>
