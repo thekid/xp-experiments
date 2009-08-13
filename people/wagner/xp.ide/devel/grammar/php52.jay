@@ -3,55 +3,79 @@
   $package= 'xp.ide.source.parser';
 
   uses(
+    'xp.ide.source.Scope',
     'xp.ide.source.element.Package',
     'xp.ide.source.element.Uses',
+    'xp.ide.source.element.Classdef',
+    'xp.ide.source.element.Classmember',
     'xp.ide.source.element.ClassFile',
     'xp.ide.source.element.BlockComment'
   );
 
 %}
 
-%token T_NUMBER T_STRING T_OPEN_TAG T_CLOSE_TAG T_OPEN_BCOMMENT
-  T_CLOSE_BCOMMENT T_CONTENT_BCOMMENT T_USES T_ENCAPSE_STRING
-  T_VARIABLE T_CLASS T_EXTENDS
+%token
+  T_CLASS T_CLOSE_BCOMMENT T_CLOSE_TAG T_CONTENT_BCOMMENT T_ENCAPSE_STRING
+  T_EXTENDS T_IMPLEMENTS T_NUMBER T_OPEN_BCOMMENT T_OPEN_TAG T_STRING T_USES
+  T_VARIABLE T_ARRAY T_NULL T_PUBLIC T_PRIVATE T_PROTECTED
 
 %%
 
 start:
-  T_OPEN_TAG meta classDef T_CLOSE_TAG {
-    $$= new xp·ide·source·element·ClassFile();
-    $$->setElements($2);
-  }
-  | T_OPEN_TAG classDef T_CLOSE_TAG {
-    $$= new xp·ide·source·element·ClassFile();
-  }
+  T_OPEN_TAG meta classDef T_CLOSE_TAG { $$= $2; $$->setClassdef($3); }
+  | T_OPEN_TAG classDef T_CLOSE_TAG { $$= new xp·ide·source·element·ClassFile(); $$->setClassdef($2); }
 ;
 
 classDef:
-  blockComment T_CLASS T_STRING T_EXTENDS T_STRING '{' '}'
+  blockComment T_CLASS T_STRING T_EXTENDS T_STRING classBody {
+    $$= $6;
+    $$->setName($3);
+    $$->setParent($5);
+  }
+  | blockComment T_CLASS T_STRING T_EXTENDS T_STRING T_IMPLEMENTS interfaces classBody {
+    $$= $8;
+    $$->setName($3);
+    $$->setParent($5);
+    $$->setInterfaces($7);
+  }
+;
+interfaces:
+  interfaces ',' T_STRING { $1[]= $3; $$= $1; }
+  | T_STRING { $$= array($1); }
 ;
 
+classBody:
+  '{' classMemberScopes '}' { $$= new xp·ide·source·element·Classdef(); $$->setMembers($2); }
+  | '{' '}' { $$= new xp·ide·source·element·Classdef(); }
+;
+classMemberScopes:
+  classMemberScopes scope classMembers ';' { foreach($3 as $m) $m->setScope($2); $$= array_merge($1,$3); }
+  | scope classMembers ';' { foreach($2 as $m) $m->setScope($1); $$= $2; }
+;
+classMembers:
+  classMembers ',' classMember { $1[]= $3; $$= $1;}
+  | classMember { $$= array($1); }
+;
+classMember:
+  T_VARIABLE '=' initAssignRight { $$= new xp·ide·source·element·Classmember(substr($1, 1)); }
+  | T_VARIABLE { $$= new xp·ide·source·element·Classmember(substr($1, 1)); }
+
 meta:
-  blockComment package uses { $$= array($1, $2, $3); }
-  | blockComment package { $$= array($1, $2); }
-  | package uses { $$= array($1, $2); }
-  | blockComment uses { $$= array($1, $2); }
-  | blockComment { $$= array($1); }
-  | package { $$= array($1); }
-  | uses { $$= array($1); }
+  blockComment package uses { $$= new xp·ide·source·element·ClassFile(); $$->setHeader($1); $$->setPackage($2); $$->setUses($3); }
+  | blockComment package { $$= new xp·ide·source·element·ClassFile(); $$->setHeader($1); $$->setPackage($2); }
+  | blockComment uses { $$= new xp·ide·source·element·ClassFile(); $$->setHeader($1); $$->setUses($2); }
+  | package uses { $$= new xp·ide·source·element·ClassFile(); $$->setPackage($1); $$->setUses($2); }
+  | blockComment { $$= new xp·ide·source·element·ClassFile(); $$->setHeader($1); }
+  | package { $$= new xp·ide·source·element·ClassFile(); $$->setPackage($1); }
+  | uses { $$= new xp·ide·source·element·ClassFile(); $$->setUses($1); }
+;
 
 package:
-  T_VARIABLE '=' T_ENCAPSE_STRING ';'  {
-    $$= new xp·ide·source·element·Package();
-    $$->setPathname($3);
-  }
+  T_VARIABLE '=' T_ENCAPSE_STRING ';'  { $$= new xp·ide·source·element·Package(); $$->setPathname($3); }
 ;
 
 uses:
-  T_USES '(' usesClasses ')' ';'  {
-    $$= new xp·ide·source·element·Uses();
-    $$->setClassnames($3);
-  }
+  T_USES '(' usesClasses ')' ';'  { $$= new xp·ide·source·element·Uses(); $$->setClassnames($3); }
 ;
 usesClasses:
   usesClasses ',' T_ENCAPSE_STRING { $1[]= $3; $$= $1; }
@@ -59,10 +83,17 @@ usesClasses:
 ;
 
 blockComment:
-  T_OPEN_BCOMMENT T_CONTENT_BCOMMENT T_CLOSE_BCOMMENT {
-    $$= new xp·ide·source·element·BlockComment();
-    $$->setText($2);
-  }
+  T_OPEN_BCOMMENT T_CONTENT_BCOMMENT T_CLOSE_BCOMMENT { $$= new xp·ide·source·element·BlockComment(); $$->setText($2); }
+;
+
+scope:
+  T_PUBLIC { $$= xp·ide·source·Scope::$PUBLIC; }
+  | T_PRIVATE { $$= xp·ide·source·Scope::$PRIVATE; }
+  | T_PROTECTED { $$= xp·ide·source·Scope::$PROTECTED; }
+;
+
+initAssignRight:
+  T_ARRAY '(' ')' | T_STRING | T_NULL | T_NUMBER
 ;
 
 %%

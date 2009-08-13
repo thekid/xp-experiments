@@ -64,8 +64,8 @@
         ?>
       '));
       $this->assertObject($tree, 'xp.ide.source.element.ClassFile');
-      $this->assertObject($tree->getElement(0), 'xp.ide.source.element.BlockComment');
-      $this->assertEquals($tree->getElement(0)->getText(), ' This class is part of the XP framework
+      $this->assertObject($tree->getHeader(), 'xp.ide.source.element.BlockComment');
+      $this->assertEquals($tree->getHeader()->getText(), ' This class is part of the XP framework
           *
           * $Id$ 
           ');
@@ -89,8 +89,8 @@
         ?>
       '));
       $this->assertObject($tree, 'xp.ide.source.element.ClassFile');
-      $this->assertObject($tree->getElement(0), 'xp.ide.source.element.Uses');
-      $this->assertEquals($tree->getElement(0)->getClassnames(), array("bla", "blubb"));
+      $this->assertObject($tree->getUses(), 'xp.ide.source.element.Uses');
+      $this->assertEquals($tree->getUses()->getClassnames(), array("bla", "blubb"));
     }
 
     /**
@@ -111,8 +111,8 @@
         ?>
       '));
       $this->assertObject($tree, 'xp.ide.source.element.ClassFile');
-      $this->assertObject($tree->getElement(0), 'xp.ide.source.element.Package');
-      $this->assertEquals($tree->getElement(0)->getPathname(), "bla");
+      $this->assertObject($tree->getPackage(), 'xp.ide.source.element.Package');
+      $this->assertEquals($tree->getPackage()->getPathname(), "bla");
     }
 
     /**
@@ -137,13 +137,13 @@
         ?>
       '));
       $this->assertObject($tree, 'xp.ide.source.element.ClassFile');
-      $this->assertObject($tree->getElement(0), 'xp.ide.source.element.BlockComment');
-      $this->assertEquals($tree->getElement(0)->getText(), ' This class is part of the XP framework
+      $this->assertObject($tree->getHeader(), 'xp.ide.source.element.BlockComment');
+      $this->assertEquals($tree->getHeader()->getText(), ' This class is part of the XP framework
           *
           * $Id$ 
           ');
-      $this->assertObject($tree->getElement(1), 'xp.ide.source.element.Package');
-      $this->assertEquals($tree->getElement(1)->getPathname(), "bla");
+      $this->assertObject($tree->getPackage(), 'xp.ide.source.element.Package');
+      $this->assertEquals($tree->getPackage()->getPathname(), "bla");
     }
 
     /**
@@ -168,13 +168,13 @@
         ?>
       '));
       $this->assertObject($tree, 'xp.ide.source.element.ClassFile');
-      $this->assertObject($tree->getElement(0), 'xp.ide.source.element.BlockComment');
-      $this->assertEquals($tree->getElement(0)->getText(), ' This class is part of the XP framework
+      $this->assertObject($tree->getHeader(), 'xp.ide.source.element.BlockComment');
+      $this->assertEquals($tree->getHeader()->getText(), ' This class is part of the XP framework
           *
           * $Id$ 
           ');
-      $this->assertObject($tree->getElement(1), 'xp.ide.source.element.Uses');
-      $this->assertEquals($tree->getElement(1)->getClassnames(), array("bla", "blubb"));
+      $this->assertObject($tree->getUses(), 'xp.ide.source.element.Uses');
+      $this->assertEquals($tree->getUses()->getClassnames(), array("bla", "blubb"));
     }
 
     /**
@@ -201,15 +201,15 @@
         ?>
       '));
       $this->assertObject($tree, 'xp.ide.source.element.ClassFile');
-      $this->assertObject($tree->getElement(0), 'xp.ide.source.element.BlockComment');
-      $this->assertEquals($tree->getElement(0)->getText(), ' This class is part of the XP framework
+      $this->assertObject($tree->getHeader(), 'xp.ide.source.element.BlockComment');
+      $this->assertEquals($tree->getHeader()->getText(), ' This class is part of the XP framework
           *
           * $Id$ 
           ');
-      $this->assertObject($tree->getElement(1), 'xp.ide.source.element.Package');
-      $this->assertEquals($tree->getElement(1)->getPathname(), "bla");
-      $this->assertObject($tree->getElement(2), 'xp.ide.source.element.Uses');
-      $this->assertEquals($tree->getElement(2)->getClassnames(), array("bla", "blubb"));
+      $this->assertObject($tree->getPackage(), 'xp.ide.source.element.Package');
+      $this->assertEquals($tree->getPackage()->getPathname(), "bla");
+      $this->assertObject($tree->getUses(), 'xp.ide.source.element.Uses');
+      $this->assertEquals($tree->getUses()->getClassnames(), array("bla", "blubb"));
     }
 
   }
