@@ -63,7 +63,7 @@
      * @return  bool
      */
     private function isClassChar($c) {
-      if ($c == '.') return TRUE;
+      if (FALSE !== strpos('._', $c)) return TRUE;
       if (96 < ord(strToLower($c)) && ord(strToLower($c)) < 123) return TRUE;
       if (47 < ord($c) && ord($c) < 58) return TRUE;
       return FALSE;
