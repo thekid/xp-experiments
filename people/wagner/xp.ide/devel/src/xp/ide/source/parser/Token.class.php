@@ -6,8 +6,7 @@
   $package= 'xp.ide.source.parser';
 
   /**
-   * source tree representation
-   * base object
+   * lexer token
    *
    * @purpose  IDE
    */
