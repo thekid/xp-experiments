@@ -8,6 +8,7 @@
 
   uses(
     'text.StringTokenizer',
+    'xp.ide.source.parser.Token',
     'xp.ide.source.parser.Php52Parser',
     'text.parser.generic.AbstractLexer'
   );
@@ -37,6 +38,7 @@
     public function __construct($expression) {
       $this->tokenizer= new StringTokenizer($expression, self::DELIMITERS, TRUE);
       $this->position= array(1, 0);
+      $this->fileName= "memory stream";
     }
 
     /**
@@ -45,8 +47,11 @@
      * @return  bool
      */
     public function advance() {
-      $this->position[1]+= strlen($this->value);
+      $this->position[1]+= is_null($this->value) ? 0 : strlen($this->value->getValue());
       $t= '';
+      $this->value= new xp搏de新ource搆arser愁oken();
+      $this->value->setLine($this->position[0]);
+      $this->value->setColumn($this->position[1]);
       do {
         if (!$this->tokenizer->hasMoreTokens()) return FALSE;
         $token= $this->tokenizer->nextToken(self::DELIMITERS);
@@ -55,7 +60,7 @@
           case self::S_ESTRING:
           if ($this->encaps == $token && "\\" != substr($t, -1)) {
             $this->token= xp搏de新ource搆arser感hp52Parser::T_ENCAPSE_STRING;
-            $this->value= $t;
+            $this->value->setValue($t);
             $this->state= self::S_INITIAL;
             break(2);
           } else {
@@ -71,7 +76,7 @@
 
             case '*/':
             $this->token= xp搏de新ource搆arser感hp52Parser::T_CONTENT_BCOMMENT;
-            $this->value= $t;
+            $this->value->setValue($t);
             $this->tokenizer->pushBack($token);
             $this->state= self::S_INITIAL;
             break(3);
@@ -121,7 +126,7 @@
           } else if ($this->pgrep('/^([a-z][a-z0-9_-愍*)/i', $token, xp搏de新ource搆arser感hp52Parser::T_STRING)) {
           } else {
             $this->token= ord($token);
-            $this->value= $token;
+            $this->value->setValue($token);
           }
           break(2);
         }
@@ -132,7 +137,7 @@
     private function grep($string, $test, $token) {
       if ($string == substr($test, 0, strlen($string))) {
         $this->token= $token;
-        $this->value= $string;
+        $this->value->setValue($string);
         if (strlen($test) > strlen($string)) $this->tokenizer->pushBack(substr($test, strlen($string)));
         return TRUE;
       }
@@ -143,7 +148,7 @@
       if (preg_match($regex, $test, $match)) {
         list($all, $string)= $match;
         $this->token= $token;
-        $this->value= $string;
+        $this->value->setValue($string);
         if (strlen($test) > strlen($string)) $this->tokenizer->pushBack(substr($test, strlen($string)));
         return TRUE;
       }

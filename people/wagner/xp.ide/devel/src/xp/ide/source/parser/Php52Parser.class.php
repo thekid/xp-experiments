@@ -334,23 +334,23 @@
     case 3:  #line 31 "./grammar/php52.jay"
     {
     $yyVal= $yyVals[0+$yyTop];
-    $yyVal->setName($yyVals[-3+$yyTop]);
-    $yyVal->setParent($yyVals[-1+$yyTop]);
+    $yyVal->setName($yyVals[-3+$yyTop]->getValue());
+    $yyVal->setParent($yyVals[-1+$yyTop]->getValue());
   } break;
 
     case 4:  #line 36 "./grammar/php52.jay"
     {
     $yyVal= $yyVals[0+$yyTop];
-    $yyVal->setName($yyVals[-5+$yyTop]);
-    $yyVal->setParent($yyVals[-3+$yyTop]);
+    $yyVal->setName($yyVals[-5+$yyTop]->getValue());
+    $yyVal->setParent($yyVals[-3+$yyTop]->getValue());
     $yyVal->setInterfaces($yyVals[-1+$yyTop]);
   } break;
 
     case 5:  #line 44 "./grammar/php52.jay"
-    { $yyVals[-2+$yyTop][]= $yyVals[0+$yyTop]; $yyVal= $yyVals[-2+$yyTop]; } break;
+    { $yyVals[-2+$yyTop][]= $yyVals[0+$yyTop]->getValue(); $yyVal= $yyVals[-2+$yyTop]; } break;
 
     case 6:  #line 45 "./grammar/php52.jay"
-    { $yyVal= array($yyVals[0+$yyTop]); } break;
+    { $yyVal= array($yyVals[0+$yyTop]->getValue()); } break;
 
     case 7:  #line 49 "./grammar/php52.jay"
     { $yyVal= new xp·ide·source·element·Classdef(); $yyVal->setConstants($yyVals[-2+$yyTop]); $yyVal->setMembers($yyVals[-1+$yyTop]); } break;
@@ -371,10 +371,10 @@
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
     case 13:  #line 60 "./grammar/php52.jay"
-    { $yyVals[-4+$yyTop][]= new xp·ide·source·element·Classconstant($yyVals[-2+$yyTop]); $yyVal= $yyVals[-4+$yyTop]; } break;
+    { $yyVals[-4+$yyTop][]= new xp·ide·source·element·Classconstant($yyVals[-2+$yyTop]->getValue()); $yyVal= $yyVals[-4+$yyTop]; } break;
 
     case 14:  #line 61 "./grammar/php52.jay"
-    { $yyVal= array(new xp·ide·source·element·Classconstant($yyVals[-2+$yyTop])); } break;
+    { $yyVal= array(new xp·ide·source·element·Classconstant($yyVals[-2+$yyTop]->getValue())); } break;
 
     case 15:  #line 65 "./grammar/php52.jay"
     { foreach($yyVals[-1+$yyTop] as $m) { $m->setStatic($yyVals[-2+$yyTop]['static']); $m->setScope($yyVals[-2+$yyTop]['scope']); } $yyVal= array_merge($yyVals[-3+$yyTop],$yyVals[-1+$yyTop]); } break;
@@ -389,10 +389,10 @@
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
     case 19:  #line 73 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·Classmember(substr($yyVals[-2+$yyTop], 1)); } break;
+    { $yyVal= new xp·ide·source·element·Classmember(substr($yyVals[-2+$yyTop]->getValue(), 1)); } break;
 
     case 20:  #line 74 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·Classmember(substr($yyVals[0+$yyTop], 1)); } break;
+    { $yyVal= new xp·ide·source·element·Classmember(substr($yyVals[0+$yyTop]->getValue(), 1)); } break;
 
     case 21:  #line 77 "./grammar/php52.jay"
     { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setHeader($yyVals[-2+$yyTop]); $yyVal->setPackage($yyVals[-1+$yyTop]); $yyVal->setUses($yyVals[0+$yyTop]); } break;
@@ -416,19 +416,19 @@
     { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setUses($yyVals[0+$yyTop]); } break;
 
     case 28:  #line 87 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·Package(); $yyVal->setPathname($yyVals[-1+$yyTop]); } break;
+    { $yyVal= new xp·ide·source·element·Package(); $yyVal->setPathname($yyVals[-1+$yyTop]->getValue()); } break;
 
     case 29:  #line 91 "./grammar/php52.jay"
     { $yyVal= new xp·ide·source·element·Uses(); $yyVal->setClassnames($yyVals[-2+$yyTop]); } break;
 
     case 30:  #line 94 "./grammar/php52.jay"
-    { $yyVals[-2+$yyTop][]= $yyVals[0+$yyTop]; $yyVal= $yyVals[-2+$yyTop]; } break;
+    { $yyVals[-2+$yyTop][]= $yyVals[0+$yyTop]->getValue(); $yyVal= $yyVals[-2+$yyTop]; } break;
 
     case 31:  #line 95 "./grammar/php52.jay"
-    { $yyVal= array($yyVals[0+$yyTop]); } break;
+    { $yyVal= array($yyVals[0+$yyTop]->getValue()); } break;
 
     case 32:  #line 99 "./grammar/php52.jay"
-    { $yyVal= new xp·ide·source·element·BlockComment(); $yyVal->setText($yyVals[-1+$yyTop]); } break;
+    { $yyVal= new xp·ide·source·element·BlockComment(); $yyVal->setText($yyVals[-1+$yyTop]->getValue()); } break;
 
     case 33:  #line 103 "./grammar/php52.jay"
     { $yyVal= array('scope' => $yyVals[-1+$yyTop], 'static' => TRUE); } break;
