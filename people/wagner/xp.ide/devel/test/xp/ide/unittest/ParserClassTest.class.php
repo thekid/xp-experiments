@@ -156,6 +156,19 @@
      */
     #[@test]
     public function testParseStaticMember() {
+var_dump(array_map(create_function('$e', '$e[0]= token_name($e[0]); return $e;'), token_get_all('
+        <?php
+          /**
+           * Test class definition
+           * 
+           */
+          class Test extends Object {
+            protected $member1;
+            protected static $member2;
+            static protected $member2;
+          }
+         ?>
+       ')));
       $tree= $this->p->parse(new xp·ide·source·parser·Php52Lexer('
         <?php
           /**
