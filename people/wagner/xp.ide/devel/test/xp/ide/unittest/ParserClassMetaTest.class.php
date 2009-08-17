@@ -5,9 +5,8 @@
  */
 
   uses(
-    'unittest.TestCase',
-    'xp.ide.source.parser.Php52Parser',
-    'xp.ide.source.parser.Php52Lexer'
+    'xp.ide.unittest.TestCase',
+    'xp.ide.source.parser.Php52Parser'
   );
 
   /**
@@ -16,7 +15,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class ParserClassMetaTest extends TestCase {
+  class ParserClassMetaTest extends xp搏de暉nittest愁estCase {
 
     /**
      * Sets up test case
@@ -32,7 +31,7 @@
      */
     #[@test]
     public function testParseClassFile() {
-      $this->assertObject($this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+      $this->assertObject($this->p->parse($this->getLexer('
         <?php
           /**
            * Test class definition
@@ -49,7 +48,7 @@
      */
     #[@test]
     public function testParseClassFileComment() {
-      $tree= $this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+      $tree= $this->p->parse($this->getLexer('
         <?php
          /* This class is part of the XP framework
           *
@@ -77,7 +76,7 @@
      */
     #[@test]
     public function testParseClassFileUses() {
-      $tree= $this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+      $tree= $this->p->parse($this->getLexer('
         <?php
           uses("bla","blubb");
 
@@ -99,7 +98,7 @@
      */
     #[@test]
     public function testParseClassFilePackage() {
-      $tree= $this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+      $tree= $this->p->parse($this->getLexer('
         <?php
           $package= "bla";
 
@@ -121,7 +120,7 @@
      */
     #[@test]
     public function testParseClassFileCommentPackage() {
-      $tree= $this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+      $tree= $this->p->parse($this->getLexer('
         <?php
          /* This class is part of the XP framework
           *
@@ -152,7 +151,7 @@
      */
     #[@test]
     public function testParseClassFileCommentUses() {
-      $tree= $this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+      $tree= $this->p->parse($this->getLexer('
         <?php
          /* This class is part of the XP framework
           *
@@ -183,7 +182,7 @@
      */
     #[@test]
     public function testParseClassFileCommentPackageUses() {
-      $tree= $this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+      $tree= $this->p->parse($this->getLexer('
         <?php
          /* This class is part of the XP framework
           *

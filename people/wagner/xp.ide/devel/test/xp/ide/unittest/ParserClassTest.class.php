@@ -5,9 +5,8 @@
  */
 
   uses(
-    'unittest.TestCase',
+    'xp.ide.unittest.TestCase',
     'xp.ide.source.parser.Php52Parser',
-    'xp.ide.source.parser.Php52Lexer',
     'xp.ide.source.Scope',
     'xp.ide.source.element.Classmember',
     'xp.ide.source.element.Classconstant'
@@ -19,7 +18,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class ParserClassTest extends TestCase {
+  class ParserClassTest extends xp搏de暉nittest愁estCase {
 
     /**
      * Sets up test case
@@ -35,7 +34,7 @@
      */
     #[@test]
     public function testParseClass() {
-      $tree= $this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+      $tree= $this->p->parse($this->getLexer('
         <?php
           /**
            * Test class definition
@@ -55,7 +54,7 @@
      */
     #[@test]
     public function testParseClassInterface() {
-      $tree= $this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+      $tree= $this->p->parse($this->getLexer('
         <?php
           /**
            * Test class definition
@@ -73,7 +72,7 @@
      */
     #[@test]
     public function testParseMember() {
-      $tree= $this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+      $tree= $this->p->parse($this->getLexer('
         <?php
           /**
            * Test class definition
@@ -102,7 +101,7 @@
      */
     #[@test]
     public function testParseConst() {
-      $tree= $this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+      $tree= $this->p->parse($this->getLexer('
         <?php
           /**
            * Test class definition
@@ -129,7 +128,7 @@
      */
     #[@test]
     public function testParseConstMember() {
-      $tree= $this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+      $tree= $this->p->parse($this->getLexer('
         <?php
           /**
            * Test class definition
@@ -156,20 +155,7 @@
      */
     #[@test]
     public function testParseStaticMember() {
-var_dump(array_map(create_function('$e', '$e[0]= token_name($e[0]); return $e;'), token_get_all('
-        <?php
-          /**
-           * Test class definition
-           * 
-           */
-          class Test extends Object {
-            protected $member1;
-            protected static $member2;
-            static protected $member2;
-          }
-         ?>
-       ')));
-      $tree= $this->p->parse(new xp搏de新ource搆arser感hp52Lexer('
+      $tree= $this->p->parse($this->getLexer('
         <?php
           /**
            * Test class definition
