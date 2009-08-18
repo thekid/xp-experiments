@@ -3,6 +3,7 @@
   $package= 'xp.ide.source.parser';
 
   uses(
+    'xp.ide.source.parser.ParserHelper',
     'xp.ide.source.Scope',
     'xp.ide.source.element.Package',
     'xp.ide.source.element.Uses',
@@ -16,7 +17,7 @@
 %}
 
 %token
-  T_CLASS T_CLOSE_BCOMMENT T_CLOSE_TAG T_CONTENT_BCOMMENT T_ENCAPSE_STRING
+  T_CLASS T_CLOSE_BCOMMENT T_CLOSE_TAG T_CONTENT_BCOMMENT T_ENCAPSED_STRING
   T_EXTENDS T_IMPLEMENTS T_NUMBER T_OPEN_BCOMMENT T_OPEN_TAG T_STRING T_USES
   T_VARIABLE T_ARRAY T_NULL T_PUBLIC T_PRIVATE T_PROTECTED T_CONST T_STATIC
 
@@ -84,15 +85,15 @@ meta:
 ;
 
 package:
-  T_VARIABLE '=' T_ENCAPSE_STRING ';'  { $$= new xp搏de新ource搪lement感ackage(); $$->setPathname($3->getValue()); }
+  T_VARIABLE '=' T_ENCAPSED_STRING ';'  { $$= new xp搏de新ource搪lement感ackage(); $$->setPathname(xp搏de新ource搆arser感arserHelper::unquote($3->getValue())); }
 ;
 
 uses:
   T_USES '(' usesClasses ')' ';'  { $$= new xp搏de新ource搪lement愈ses(); $$->setClassnames($3); }
 ;
 usesClasses:
-  usesClasses ',' T_ENCAPSE_STRING { $1[]= $3->getValue(); $$= $1; }
-  | T_ENCAPSE_STRING { $$= array($1->getValue()); }
+  usesClasses ',' T_ENCAPSED_STRING { $1[]= xp搏de新ource搆arser感arserHelper::unquote($3->getValue()); $$= $1; }
+  | T_ENCAPSED_STRING { $$= array(xp搏de新ource搆arser感arserHelper::unquote($1->getValue())); }
 ;
 
 blockComment:

@@ -59,8 +59,8 @@
         switch ($this->state) {
           case self::S_ESTRING:
           if ($this->encaps == $token && "\\" != substr($t, -1)) {
-            $this->token= xp搏de新ource搆arser感hp52Parser::T_ENCAPSE_STRING;
-            $this->value->setValue($t);
+            $this->token= xp搏de新ource搆arser感hp52Parser::T_ENCAPSED_STRING;
+            $this->value->setValue($this->encaps.$t.$this->encaps);
             $this->state= self::S_INITIAL;
             break(2);
           } else {
