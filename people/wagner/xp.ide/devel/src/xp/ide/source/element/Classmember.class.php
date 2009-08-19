@@ -19,11 +19,13 @@
     private
       $name= '',
       $static= FALSE,
-      $scope= NULL;
+      $scope= NULL,
+      $init=  NULL;
 
-    public function __construct($name= '', xp·ide·source·Scope $scope= NULL) {
+    public function __construct($name= '', xp·ide·source·Scope $scope= NULL, $init= NULL) {
       $this->name= $name;
       $this->scope= $scope;
+      $this->init= $init;
     }
 
     public function equals($o) {
@@ -55,6 +57,14 @@
 
     public function isStatic() {
       return $this->static;
+    }
+
+    public function setInit($init) {
+      $this->init= $init;
+    }
+
+    public function getInit() {
+      return $this->init;
     }
   }
 

@@ -19,13 +19,18 @@
    */
   abstract class xp·ide·source·parser·Lexer extends AbstractLexer {
 
-    protected function tokenFrom($t) {
+    public
+      $value= '',
+      $token= NULL,
+      $position= array(0, 0);
+
+    protected function tokenFrom($t, $v, $l= 0, $c= 0) {
       $this->value= new xp·ide·source·parser·Token();
-      $this->token= $t[0];
-      $this->value->setValue($t[1]);
-      $this->value->setLine($t[2]);
-      $this->value->setColumn(0);
-      $this->position= array($t[2], 0);
+      $this->token= $t;
+      $this->value->setValue($v);
+      $this->value->setLine($l);
+      $this->value->setColumn($c);
+      $this->position= array($l, $c);
     }
 
   }

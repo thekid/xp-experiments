@@ -1,10 +1,8 @@
 %{
 
-  $package= 'xp.ide.source.parser';
-
   uses(
-    'xp.ide.source.parser.ParserHelper',
     'xp.ide.source.Scope',
+    'xp.ide.source.element.Classdef',
     'xp.ide.source.element.Classmember',
     'xp.ide.source.element.Classconstant',
     'xp.ide.source.element.BlockComment'
@@ -14,18 +12,17 @@
 
 
 %token
-  T_CLOSE_BCOMMENT T_CLOSE_TAG T_CONTENT_BCOMMENT T_ENCAPSED_STRING
-  T_EXTENDS T_IMPLEMENTS T_NUMBER T_OPEN_BCOMMENT T_OPEN_TAG T_STRING T_USES
-  T_VARIABLE T_ARRAY T_NULL T_PUBLIC T_PRIVATE T_PROTECTED T_CONST T_STATIC
-  T_OPEN_INNERBLOCK T_CONTENT_INNERBLOCK T_CLOSE_INNERBLOCK
+  T_ENCAPSED_STRING T_NUMBER T_STRING T_VARIABLE T_ARRAY
+  T_NULL T_PUBLIC T_PRIVATE T_PROTECTED T_CONST T_STATIC
+  T_BOOLEAN
 
+%%
 
-classBody:
-  T_OPEN_INNERBLOCK T_CONTENT_INNERBLOCK T_CLOSE_INNERBLOCK { $$= new xp路ide路source路element路Classdef(); }
-  | '{' classConstantList classMemberScopes '}' { $$= new xp路ide路source路element路Classdef(); $$->setConstants($2); $$->setMembers($3); }
-  | '{' classConstantList '}' { $$= new xp路ide路source路element路Classdef(); $$->setConstants($2); }
-  | '{' classMemberScopes '}' { $$= new xp路ide路source路element路Classdef(); $$->setMembers($2); }
-  | '{' '}' { $$= new xp路ide路source路element路Classdef(); }
+start:
+   classConstantList classMemberScopes { $$= new xp穒de穝ource積lement稢lassdef(); $$->setConstants($1); $$->setMembers($2); }
+  | classConstantList { $$= new xp穒de穝ource積lement稢lassdef(); $$->setConstants($1); }
+  | classMemberScopes { $$= new xp穒de穝ource積lement稢lassdef(); $$->setMembers($1); }
+  | { $$= new xp穒de穝ource積lement稢lassdef(); }
 ;
 
 classConstantList:
@@ -33,8 +30,8 @@ classConstantList:
   | T_CONST classConstants ';' { $$= $2; }
 ;
 classConstants:
-  classConstants ',' T_STRING '=' initAssignRight { $1[]= new xp路ide路source路element路Classconstant($3->getValue()); $$= $1; };
-  | T_STRING '=' initAssignRight { $$= array(new xp路ide路source路element路Classconstant($1->getValue())); }
+  classConstants ',' T_STRING '=' initAssignRight { $1[]= new xp穒de穝ource積lement稢lassconstant($3->getValue()); $$= $1; };
+  | T_STRING '=' initAssignRight { $$= array(new xp穒de穝ource積lement稢lassconstant($1->getValue())); }
 ;
 
 classMemberScopes:
@@ -46,25 +43,30 @@ classMembers:
   | classMember { $$= array($1); }
 ;
 classMember:
-  T_VARIABLE '=' initAssignRight { $$= new xp路ide路source路element路Classmember(substr($1->getValue(), 1)); }
-  | T_VARIABLE { $$= new xp路ide路source路element路Classmember(substr($1->getValue(), 1)); }
+  T_VARIABLE '=' initAssignRight { $$= new xp穒de穝ource積lement稢lassmember(substr($1->getValue(), 1), NULL, $3); }
+  | T_VARIABLE { $$= new xp穒de穝ource積lement稢lassmember(substr($1->getValue(), 1)); }
 
 
 classMemberMods:
   scope T_STATIC { $$= array('scope' => $1, 'static' => TRUE); }
   | T_STATIC scope { $$= array('scope' => $2, 'static' => TRUE); }
-  | T_STATIC { $$= array('scope' => xp路ide路source路Scope::$PUBLIC, 'static' => TRUE); }
+  | T_STATIC { $$= array('scope' => xp穒de穝ource稴cope::$PUBLIC, 'static' => TRUE); }
   | scope { $$= array('scope' => $1, 'static' => FALSE); }
-  | { $$= array('scope' => xp路ide路source路Scope::$PUBLIC, 'static' => FALSE); }
+  | { $$= array('scope' => xp穒de穝ource稴cope::$PUBLIC, 'static' => FALSE); }
 ;
 
 scope:
-  T_PUBLIC { $$= xp路ide路source路Scope::$PUBLIC; }
-  | T_PRIVATE { $$= xp路ide路source路Scope::$PRIVATE; }
-  | T_PROTECTED { $$= xp路ide路source路Scope::$PROTECTED; }
+  T_PUBLIC { $$= xp穒de穝ource稴cope::$PUBLIC; }
+  | T_PRIVATE { $$= xp穒de穝ource稴cope::$PRIVATE; }
+  | T_PROTECTED { $$= xp穒de穝ource稴cope::$PROTECTED; }
 ;
 
 initAssignRight:
-  T_ARRAY '(' ')' | T_STRING | T_NULL | T_NUMBER
+  T_ARRAY '(' ')' { $$= $1->getValue(); }
+  | T_ENCAPSED_STRING { $$= $1->getValue(); }
+  | T_NULL { $$= $1->getValue(); }
+  | T_NUMBER { $$= $1->getValue(); }
+  | T_BOOLEAN { $$= $1->getValue(); }
 ;
 
+%%

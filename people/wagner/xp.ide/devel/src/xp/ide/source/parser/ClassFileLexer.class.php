@@ -7,7 +7,6 @@
   $package= 'xp.ide.source.parser';
 
   uses(
-    'xp.ide.source.parser.Token',
     'xp.ide.source.parser.ClassFileParser',
     'xp.ide.source.parser.Lexer'
   );
@@ -24,14 +23,23 @@
       S_COMMENT= 2,
       S_INNERBLOCK= 3;
 
+    private
+      $state= self::S_CLASS,
+      $tokens;
+
     public
       $token    = NULL,
       $value    = NULL,
       $position = array();
 
-    private
-      $tokens,
-      $state= self::S_CLASS;
+    /**
+     * Constructor
+     *
+     * @param   string expression
+     */
+    public function __construct($expression) {
+      $this->tokens= token_get_all($expression);
+    }
 
     private static $trans= array(
       T_OPEN_TAG => xp·ide·source·parser·ClassFileParser::T_OPEN_TAG,
@@ -44,13 +52,13 @@
       T_VARIABLE => xp·ide·source·parser·ClassFileParser::T_VARIABLE,
     );
 
-    /**
-     * Constructor
-     *
-     * @param   string expression
-     */
-    public function __construct($expression) {
-      $this->tokens= token_get_all($expression);
+    private function translate($t) {
+      $t[0]= self::$trans[$t[0]];
+      return $t;
+    }
+
+    protected function tokenFrom($t) {
+      parent::tokenFrom(array_shift($t), array_shift($t), array_shift($t), array_shift($t));
     }
 
     /**
@@ -144,11 +152,6 @@
         }
       }
       return TRUE;
-    }
-
-    private function translate($t) {
-      $t[0]= self::$trans[$t[0]];
-      return $t;
     }
 
   }

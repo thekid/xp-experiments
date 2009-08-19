@@ -10,9 +10,10 @@ help: all
 
 .PHONY: parser parser.% release release.%
 
-parser: parser.ClassFile
+parser: parser.ClassFile parser.Class
 
 parser.%:
+	@echo "  * create /src/xp/ide/source/parser/$*Parser.class.php";
 	@$(XP_PUBLIC_PATH)/ports/technologies/opt/jay/$(JAY_BIN) -cv < "./grammar/php.skl" ./grammar/$*.jay \
 	| sed -e 's/{%NAME%}/'$*Parser'/g' \
 	> ./src/xp/ide/source/parser/$*Parser.class.php
