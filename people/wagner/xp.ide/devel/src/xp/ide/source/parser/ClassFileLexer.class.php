@@ -9,7 +9,7 @@
   uses(
     'xp.ide.source.parser.Token',
     'xp.ide.source.parser.ClassFileParser',
-    'text.parser.generic.AbstractLexer'
+    'xp.ide.source.parser.Lexer'
   );
 
   /**
@@ -18,7 +18,7 @@
    * @see      xp://text.parser.generic.AbstractLexer
    * @purpose  Lexer
    */
-  class xp·ide·source·parser·ClassFileLexer extends AbstractLexer {
+  class xp·ide·source·parser·ClassFileLexer extends xp·ide·source·parser·Lexer {
     const
       S_CLASS= 1,
       S_COMMENT= 2,
@@ -149,15 +149,6 @@
     private function translate($t) {
       $t[0]= self::$trans[$t[0]];
       return $t;
-    }
-
-    private function tokenFrom($t) {
-      $this->value= new xp·ide·source·parser·Token();
-      $this->token= $t[0];
-      $this->value->setValue($t[1]);
-      $this->value->setLine($t[2]);
-      $this->value->setColumn(0);
-      $this->position= array($t[2], 0);
     }
 
   }
