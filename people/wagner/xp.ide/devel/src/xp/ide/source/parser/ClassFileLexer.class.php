@@ -8,7 +8,7 @@
 
   uses(
     'xp.ide.source.parser.Token',
-    'xp.ide.source.parser.Php52Parser',
+    'xp.ide.source.parser.ClassFileParser',
     'text.parser.generic.AbstractLexer'
   );
 
@@ -18,7 +18,7 @@
    * @see      xp://text.parser.generic.AbstractLexer
    * @purpose  Lexer
    */
-  class xp·ide·source·parser·NativeLexer extends AbstractLexer {
+  class xp·ide·source·parser·ClassFileLexer extends AbstractLexer {
     const
       S_CLASS= 1,
       S_COMMENT= 2,
@@ -34,20 +34,14 @@
       $state= self::S_CLASS;
 
     private static $trans= array(
-      T_OPEN_TAG => xp·ide·source·parser·Php52Parser::T_OPEN_TAG,
-      T_CLOSE_TAG => xp·ide·source·parser·Php52Parser::T_CLOSE_TAG,
-      T_CLASS    => xp·ide·source·parser·Php52Parser::T_CLASS,
-      T_STRING   => xp·ide·source·parser·Php52Parser::T_STRING,
-      T_EXTENDS  => xp·ide·source·parser·Php52Parser::T_EXTENDS,
-      T_IMPLEMENTS => xp·ide·source·parser·Php52Parser::T_IMPLEMENTS,
-      T_CONSTANT_ENCAPSED_STRING => xp·ide·source·parser·Php52Parser::T_ENCAPSED_STRING,
-      T_VARIABLE => xp·ide·source·parser·Php52Parser::T_VARIABLE,
-      T_PRIVATE => xp·ide·source·parser·Php52Parser::T_PRIVATE,
-      T_PROTECTED => xp·ide·source·parser·Php52Parser::T_PROTECTED,
-      T_PUBLIC => xp·ide·source·parser·Php52Parser::T_PUBLIC,
-      T_STATIC => xp·ide·source·parser·Php52Parser::T_STATIC,
-      T_CONST => xp·ide·source·parser·Php52Parser::T_CONST,
-      T_LNUMBER => xp·ide·source·parser·Php52Parser::T_NUMBER,
+      T_OPEN_TAG => xp·ide·source·parser·ClassFileParser::T_OPEN_TAG,
+      T_CLOSE_TAG => xp·ide·source·parser·ClassFileParser::T_CLOSE_TAG,
+      T_CLASS    => xp·ide·source·parser·ClassFileParser::T_CLASS,
+      T_STRING   => xp·ide·source·parser·ClassFileParser::T_STRING,
+      T_EXTENDS  => xp·ide·source·parser·ClassFileParser::T_EXTENDS,
+      T_IMPLEMENTS => xp·ide·source·parser·ClassFileParser::T_IMPLEMENTS,
+      T_CONSTANT_ENCAPSED_STRING => xp·ide·source·parser·ClassFileParser::T_ENCAPSED_STRING,
+      T_VARIABLE => xp·ide·source·parser·ClassFileParser::T_VARIABLE,
     );
 
     /**
@@ -76,17 +70,17 @@
           case self::S_INNERBLOCK:
           if ('{' === $t) $op_cnt++;
           if ('}' === $t) $op_cnt--;
-          if ('}' === $t && 0 > $opt_cnt) {
+          if ('}' === $t && 0 > $op_cnt) {
             $this->state= self::S_CLASS;
-            $this->tokenFrom(array(xp·ide·source·parser·Php52Parser::T_CONTENT_INNERBLOCK, $c, 0));
-            array_unshift($t5his->tokens, $t);
+            $this->tokenFrom(array(xp·ide·source·parser·ClassFileParser::T_CONTENT_INNERBLOCK, $c, 0));
+            array_unshift($this->tokens, $t);
             break(2);
           }
           $c.= is_string($t) ? $t : $t[1];
           continue(2);
 
           case self::S_COMMENT:
-          if (xp·ide·source·parser·Php52Parser::T_CLOSE_BCOMMENT == $t[0]) $this->state= self::S_CLASS;
+          if (xp·ide·source·parser·ClassFileParser::T_CLOSE_BCOMMENT == $t[0]) $this->state= self::S_CLASS;
           $this->tokenFrom($t);
           break(2);
 
@@ -94,12 +88,12 @@
           if (is_string($t)) {
             switch ($t) {
               case '{':
-              $this->tokenFrom(array(xp·ide·source·parser·Php52Parser::T_OPEN_INNERBLOCK, $t, 0));
+              $this->tokenFrom(array(xp·ide·source·parser·ClassFileParser::T_OPEN_INNERBLOCK, $t, 0));
               $this->state= self::S_INNERBLOCK;
               break(3);
 
               case '}':
-              $this->tokenFrom(array(xp·ide·source·parser·Php52Parser::T_CLOSE_INNERBLOCK, $t, 0));
+              $this->tokenFrom(array(xp·ide·source·parser·ClassFileParser::T_CLOSE_INNERBLOCK, $t, 0));
               break(3);
 
               default;
@@ -117,17 +111,17 @@
             case T_COMMENT:
             array_unshift($this->tokens,
               array(
-                xp·ide·source·parser·Php52Parser::T_OPEN_BCOMMENT,
+                xp·ide·source·parser·ClassFileParser::T_OPEN_BCOMMENT,
                 substr($t[1], 0, 2),
                 $t[2]
               ),
               array(
-                xp·ide·source·parser·Php52Parser::T_CONTENT_BCOMMENT,
+                xp·ide·source·parser·ClassFileParser::T_CONTENT_BCOMMENT,
                 substr($t[1], 2, -2),
                 $t[2]
               ),
               array(
-                xp·ide·source·parser·Php52Parser::T_CLOSE_BCOMMENT,
+                xp·ide·source·parser·ClassFileParser::T_CLOSE_BCOMMENT,
                 substr($t[1], -2),
                 $t[2]
               )
@@ -138,9 +132,9 @@
             case T_STRING:
             switch ($t[1]) {
               case 'uses':
-              $t[0]= xp·ide·source·parser·Php52Parser::T_USES;
+              $t[0]= xp·ide·source·parser·ClassFileParser::T_USES;
               $this->tokenFrom($t);
-              break(3);
+              break(4);
             }
 
             default: $t= $this->translate($t);

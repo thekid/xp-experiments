@@ -1,0 +1,76 @@
+%{
+
+  uses(
+    'xp.ide.source.Scope',
+    'xp.ide.source.element.Package',
+    'xp.ide.source.element.Uses',
+    'xp.ide.source.element.Classdef',
+    'xp.ide.source.element.ClassFile',
+    'xp.ide.source.element.BlockComment'
+  );
+
+%}
+
+%token
+  T_CLASS T_CLOSE_BCOMMENT T_CLOSE_TAG T_CONTENT_BCOMMENT T_ENCAPSED_STRING
+  T_EXTENDS T_IMPLEMENTS T_OPEN_BCOMMENT T_OPEN_TAG T_USES T_OPEN_INNERBLOCK 
+  T_CONTENT_INNERBLOCK T_CLOSE_INNERBLOCK T_VARIABLE T_STRING
+
+%%
+
+start:
+  T_OPEN_TAG meta classDef T_CLOSE_TAG { $$= $2; $$->setClassdef($3); }
+  | T_OPEN_TAG classDef T_CLOSE_TAG { $$= new xp·ide·source·element·ClassFile(); $$->setClassdef($2); }
+;
+
+classDef:
+  blockComment T_CLASS T_STRING T_EXTENDS T_STRING classBody {
+    $$= $6;
+    $$->setName($3->getValue());
+    $$->setParent($5->getValue());
+  }
+  | blockComment T_CLASS T_STRING T_EXTENDS T_STRING T_IMPLEMENTS interfaces classBody {
+    $$= $8;
+    $$->setName($3->getValue());
+    $$->setParent($5->getValue());
+    $$->setInterfaces($7);
+  }
+;
+interfaces:
+  interfaces ',' T_STRING { $1[]= $3->getValue(); $$= $1; }
+  | T_STRING { $$= array($1->getValue()); }
+;
+
+classBody:
+  T_OPEN_INNERBLOCK T_CONTENT_INNERBLOCK T_CLOSE_INNERBLOCK {
+    $$= new xp·ide·source·element·Classdef();
+  }
+;
+
+meta:
+  blockComment package uses { $$= new xp·ide·source·element·ClassFile(); $$->setHeader($1); $$->setPackage($2); $$->setUses($3); }
+  | blockComment package { $$= new xp·ide·source·element·ClassFile(); $$->setHeader($1); $$->setPackage($2); }
+  | blockComment uses { $$= new xp·ide·source·element·ClassFile(); $$->setHeader($1); $$->setUses($2); }
+  | package uses { $$= new xp·ide·source·element·ClassFile(); $$->setPackage($1); $$->setUses($2); }
+  | blockComment { $$= new xp·ide·source·element·ClassFile(); $$->setHeader($1); }
+  | package { $$= new xp·ide·source·element·ClassFile(); $$->setPackage($1); }
+  | uses { $$= new xp·ide·source·element·ClassFile(); $$->setUses($1); }
+;
+
+package:
+  T_VARIABLE '=' T_ENCAPSED_STRING ';'  { $$= new xp·ide·source·element·Package(); $$->setPathname($this->unquote($3->getValue())); }
+;
+
+uses:
+  T_USES '(' usesClasses ')' ';'  { $$= new xp·ide·source·element·Uses(); $$->setClassnames($3); }
+;
+usesClasses:
+  usesClasses ',' T_ENCAPSED_STRING { $1[]= $this->unquote($3->getValue()); $$= $1; }
+  | T_ENCAPSED_STRING { $$= array($this->unquote($1->getValue())); }
+;
+
+blockComment:
+  T_OPEN_BCOMMENT T_CONTENT_BCOMMENT T_CLOSE_BCOMMENT { $$= new xp·ide·source·element·BlockComment(); $$->setText($2->getValue()); }
+;
+
+%%

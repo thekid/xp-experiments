@@ -1,4 +1,5 @@
 XP_PUBLIC_PATH=$(shell xp -e "uses('util.cmd.Console'); Console::\$$out->write(dirname(ClassLoader::getDefault()->findPackage('lang')->path));")
+JAY_BIN=$(shell if [ 0 -lt `env | grep OS | grep -i WINDOWS | wc -l` ]; then echo -n "phpJay.exe"; else echo -n "phpJay"; fi)
 
 all:
 	@echo "Usage:"
@@ -7,15 +8,14 @@ all:
 
 help: all
 
-.PHONY: parser release release.% clean
+.PHONY: parser parser.% release release.%
 
-parser: ./src/xp/ide/source/parser/Php52Parser.class.php
+parser: parser.ClassFile
 
-clean:
-	@rm ./src/xp/ide/source/parser/Php52Parser.class.php
-
-./src/xp/ide/source/parser/Php52Parser.class.php:
-	@sh $(XP_PUBLIC_PATH)/ports/technologies/opt/jay/generate.sh ./grammar/php52.jay php5 'xp·ide·source·parser·Php52' > ./src/xp/ide/source/parser/Php52Parser.class.php
+parser.%:
+	@$(XP_PUBLIC_PATH)/ports/technologies/opt/jay/$(JAY_BIN) -cv < "./grammar/php.skl" ./grammar/$*.jay \
+	| sed -e 's/{%NAME%}/'$*Parser'/g' \
+	> ./src/xp/ide/source/parser/$*Parser.class.php
 	@rm ./y.output
 
 release:

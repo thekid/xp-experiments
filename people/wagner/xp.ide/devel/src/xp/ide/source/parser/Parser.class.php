@@ -3,17 +3,16 @@
  *
  * $Id$
  */
-
-  
   $package= 'xp.ide.source.parser';
+
+  uses('text.parser.generic.AbstractParser');
 
   /**
    * methods to extend the parser
-   * this should be in the parent class
    *
    * @purpose  Parser implementation
    */
-  class xp搏de新ource搆arser感arserHelper extends Object {
+  abstract class xp搏de新ource搆arser感arser extends AbstractParser {
 
     public static function unquote($string) {
       $q= $string{0};

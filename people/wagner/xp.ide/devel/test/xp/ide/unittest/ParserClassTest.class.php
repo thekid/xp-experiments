@@ -7,6 +7,7 @@
   uses(
     'xp.ide.unittest.TestCase',
     'xp.ide.source.parser.Php52Parser',
+    'xp.ide.source.parser.ClassFileLexer',
     'xp.ide.source.Scope',
     'xp.ide.source.element.Classmember',
     'xp.ide.source.element.Classconstant'
@@ -21,6 +22,16 @@
   class ParserClassTest extends xp·ide·unittest·TestCase {
 
     /**
+     * lexer to do tests with
+     *
+     * @param string exp
+     * @return text.parser.generic.AbstractLexer
+     */
+    private function getLexer($exp) {
+      return new xp·ide·source·parser·ClassFileLexer($exp);
+    }
+
+    /**
      * Sets up test case
      *
      */
@@ -32,45 +43,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test]
-    public function testParseClass() {
-      $tree= $this->p->parse($this->getLexer('
-        <?php
-          /**
-           * Test class definition
-           * 
-           */
-          class Test extends Object {}
-         ?>
-       '));
-       $this->assertObject($tree->getClassdef(), 'xp.ide.source.element.Classdef');
-       $this->assertEquals($tree->getClassdef()->getName(), 'Test');
-       $this->assertEquals($tree->getClassdef()->getParent(), 'Object');
-    }
-
-    /**
-     * Test parser parses a classfile
-     *
-     */
-    #[@test]
-    public function testParseClassInterface() {
-      $tree= $this->p->parse($this->getLexer('
-        <?php
-          /**
-           * Test class definition
-           * 
-           */
-          class Test extends Object implements ITest, ITest2 {}
-         ?>
-       '));
-       $this->assertEquals($tree->getClassdef()->getInterfaces(), array('ITest', 'ITest2'));
-    }
-
-    /**
-     * Test parser parses a classfile
-     *
-     */
-    #[@test]
+    #[@test, @ignore]
     public function testParseMember() {
       $tree= $this->p->parse($this->getLexer('
         <?php
@@ -99,7 +72,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test]
+    #[@test, @ignore]
     public function testParseConst() {
       $tree= $this->p->parse($this->getLexer('
         <?php
@@ -126,7 +99,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test]
+    #[@test, @ignore]
     public function testParseConstMember() {
       $tree= $this->p->parse($this->getLexer('
         <?php
@@ -153,7 +126,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test]
+    #[@test, @ignore]
     public function testParseStaticMember() {
       $tree= $this->p->parse($this->getLexer('
         <?php

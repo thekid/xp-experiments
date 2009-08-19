@@ -6,7 +6,8 @@
 
   uses(
     'xp.ide.unittest.TestCase',
-    'xp.ide.source.parser.Php52Parser'
+    'xp.ide.source.parser.ClassFileParser',
+    'xp.ide.source.parser.ClassFileLexer'
   );
 
   /**
@@ -15,14 +16,24 @@
    * @see      reference
    * @purpose  purpose
    */
-  class ParserClassMetaTest extends xp·ide·unittest·TestCase {
+  class ParserClassFileTest extends xp·ide·unittest·TestCase {
+
+    /**
+     * lexer to do tests with
+     *
+     * @param string exp
+     * @return text.parser.generic.AbstractLexer
+     */
+    private function getLexer($exp) {
+      return new xp·ide·source·parser·ClassFileLexer($exp);
+    }
 
     /**
      * Sets up test case
      *
      */
     public function setUp() {
-      $this->p= new xp·ide·source·parser·Php52Parser();
+      $this->p= new xp·ide·source·parser·ClassFileParser();
     }
 
     /**
@@ -209,6 +220,44 @@
       $this->assertEquals($tree->getPackage()->getPathname(), "bla");
       $this->assertObject($tree->getUses(), 'xp.ide.source.element.Uses');
       $this->assertEquals($tree->getUses()->getClassnames(), array("bla", "blubb"));
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testParseClass() {
+      $tree= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           * Test class definition
+           * 
+           */
+          class Test extends Object {}
+         ?>
+       '));
+       $this->assertObject($tree->getClassdef(), 'xp.ide.source.element.Classdef');
+       $this->assertEquals($tree->getClassdef()->getName(), 'Test');
+       $this->assertEquals($tree->getClassdef()->getParent(), 'Object');
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testParseClassInterface() {
+      $tree= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           * Test class definition
+           * 
+           */
+          class Test extends Object implements ITest, ITest2 {}
+         ?>
+       '));
+       $this->assertEquals($tree->getClassdef()->getInterfaces(), array('ITest', 'ITest2'));
     }
 
   }

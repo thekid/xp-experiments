@@ -7,9 +7,7 @@
   $package= 'xp.ide.unittest';
 
   uses(
-    'unittest.TestCase',
-    'xp.ide.source.parser.Php52Lexer',
-    'xp.ide.source.parser.NativeLexer'
+    'unittest.TestCase'
   );
 
   /**
@@ -19,16 +17,5 @@
    * @purpose  purpose
    */
   abstract class xp·ide·unittest·TestCase extends TestCase {
-
-    /**
-     * lexer to do tests with
-     *
-     * @param string exp
-     * @return text.parser.generic.AbstractLexer
-     */
-    public function getLexer($exp) {
-      return new xp·ide·source·parser·NativeLexer($exp);
-    }
-
   }
 ?>
