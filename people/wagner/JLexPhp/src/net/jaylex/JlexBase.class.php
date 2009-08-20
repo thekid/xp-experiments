@@ -30,12 +30,14 @@
   *     of or in connection with the use or performance of this software.
   */
 
+  $package= 'net.jaylex';
+
   uses(
     'text.parser.generic.AbstractLexer',
     'io.IOException'
   );
 
-  abstract class JLexBase extends AbstractLexer {
+  abstract class net·jaylex·JLexBase extends AbstractLexer {
     public static $yy_error_string= array(
       'INTERNAL' => "Error: internal error.\n",
       'MATCH' => "Error: Unmatched input.\n"

@@ -5,7 +5,7 @@
   */
 
   uses(
-    'JlexBase'
+    'net.jaylex.JlexBase'
   );
 
   /**

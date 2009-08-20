@@ -9,15 +9,15 @@ JLexPHP.jar: JLexPHP/Main.java
 
 clean:
 	rm JLexPHP/*.class *.jar
-	rm ExampleLexer.class.php
+	rm src/ExampleLexer.class.php
 
-test: ExampleLexer.class.php
-	@unittest ExampleLexerTest
+test: src/ExampleLexer.class.php
+	@unittest -cp src unittest.ExampleLexerTest
 
-ExampleLexer.class.php: Example.lex JLexPHP.jar
+src/ExampleLexer.class.php: Example.lex JLexPHP.jar
 	@echo " ** create ExampleLexer"
 	java -cp JLexPHP.jar JLexPHP.Main Example.lex
 	@cat Example.lex.php \
 	| sed -e 's/{%CLASSNAME%}/'ExampleLexer'/g' \
-	| sed -e 's/{%PARENTNAME%}/'JlexBase'/g' \
-	> ExampleLexer.class.php && rm Example.lex.php
+	| sed -e 's/{%PARENTNAME%}/'net·jaylex·JlexBase'/g' \
+	> src/ExampleLexer.class.php && rm Example.lex.php
