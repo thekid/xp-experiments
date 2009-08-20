@@ -24,6 +24,9 @@
       $token= NULL,
       $position= array(0, 0);
 
+    private
+      $buffer= '';
+
     /**
      * Advance to next token. Return TRUE and set token, value and
      * position members to indicate we have more tokens, or FALSE
@@ -32,13 +35,30 @@
      * @return  bool
      */
     public function advance() {
-      $this->token= $this->yylex();
-      $this->position= array($this->yyline, $this->yycol);
+      $this->value= NULL;
+      $this->yylex();
+      return NULL !== $this->value;
+    }
+
+    protected function resetBuffer() {
+      $this->buffer= '';
+    }
+
+    protected function addBuffer($s) {
+      $this->buffer.= $s;
+    }
+
+    protected function getBuffer() {
+      return $this->buffer;
+    }
+
+    protected function createToken($t, $v= NULL) {
       $this->value= new xp·ide·source·parser·Token();
-      $this->value->setValue($this->yytext());
+      $this->token= $t;
+      $this->value->setValue(NULL === $v ? $this->yytext() : $v);
       $this->value->setLine($this->yyline);
       $this->value->setColumn($this->yycol);
-      return TRUE;
+      $this->position= array($this->yyline, $this->yycol);
     }
 
     protected function tokenFrom($t, $v, $l= 0, $c= 0) {

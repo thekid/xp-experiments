@@ -65,7 +65,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testConst() {
       $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
           const CONSTANT1= 1;
@@ -84,7 +84,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testConstMember() {
       $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
           const CONST1= 1;
@@ -103,7 +103,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testStaticMember() {
       $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
           protected $member1;
@@ -120,7 +120,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testMemberTypes() {
       $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
           $member1= 1;
@@ -139,7 +139,25 @@
      * Test parser parses a classfile
      *
      */
-    #[@test, @ignore]
+    #[@test]
+    public function testMemberStrings() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        $member1= "sdfggsd\"jh";
+        $member1= \'sdfggsd\\\'jh\';
+        $member2= "";
+        $member3= \'\';
+      ')));
+      $this->assertEquals(
+        array('"sdfggsd\"jh"', "'sdfggsd\\'jh'", '""', "''"),
+        array_map(create_function('$e', 'return $e->getInit();'), $tree->getMembers())
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
     public function testMemberArray() {
       $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
           $member1= array();
@@ -154,7 +172,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testMemberArrayAssoc() {
       $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
         $member1= array(4 => TRUE);
@@ -169,7 +187,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testMemberArrayValues() {
       $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
         $member4= array(NULL, TRUE, 1);

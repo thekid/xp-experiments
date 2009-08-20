@@ -36,11 +36,14 @@ lexer: \
 
 lexer.%:
 	@echo "  * create /src/xp/ide/source/parser/$*Lexer.class.php";
-	$(JLEX) ./grammar/$*.lex
-	@cat ./grammar/$*.lex.php \
+	@iconv -f ISO-8859-15 -t UTF-8 ./grammar/$*.lex > ./grammar/$*.lex.enc
+	@$(JLEX) ./grammar/$*.lex.enc
+	@rm ./grammar/$*.lex.enc
+	@cat ./grammar/$*.lex.enc.php \
+	| iconv -t ISO-8859-15 -f UTF-8 \
 	| sed -e 's/{%CLASSNAME%}/'xp·ide·source·parser·$*Lexer'/g' \
 	| sed -e 's/{%PARENTNAME%}/'xp·ide·source·parser·Lexer'/g' \
-	> ./src/xp/ide/source/parser/$*Lexer.class.php && rm ./grammar/$*.lex.php
+	> ./src/xp/ide/source/parser/$*Lexer.class.php && rm ./grammar/$*.lex.enc.php
 
 parser.%:
 	@echo "  * create /src/xp/ide/source/parser/$*Parser.class.php";

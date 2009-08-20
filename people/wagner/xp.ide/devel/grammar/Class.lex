@@ -21,30 +21,55 @@
 
 %line
 %char
-%state ENCAPSED
-%state COMMENT
+%state S_ENCAPSED_S S_ENCAPSED_D
+%ignorecase
 
-ALPHA=[A-Za-z_]
-DIGIT=[0-9]
-NUMBER=({DIGIT})+
+LNUM=[0-9]+
+DNUM=([0-9]*[\.][0-9]+)|([0-9]+[\.][0-9]*)
+EXPONENT_DNUM=(({LNUM}|{DNUM})[eE][+-]?{LNUM})
+HNUM="0x"[0-9a-fA-F]+
+LABEL=([a-zA-Z_\x81-\xff][a-zA-Z0-9_\x81-\xff]*)
+TOKENS=[;:,.\[\]()|^&+-*/=%!~$<>?@]
+NUMBER={LNUM}|{DNUM}|{EXPONENT_DNUM}|{HNUM}
+VARIABLE=(\$+{LABEL})
 WHITE_SPACE=([\ \n\r\t\f])+
 
 %%
 
-<YYINITIAL> 'const' { return xp路ide路source路parser路ClassParser::T_CONST; }
-<YYINITIAL> "private" { return xp路ide路source路parser路ClassParser::T_PRIVATE; }
-<YYINITIAL> 'protected' { return xp路ide路source路parser路ClassParser::T_PROTECTED; }
-<YYINITIAL> 'public' { return xp路ide路source路parser路ClassParser::T_PUBLIC; }
-<YYINITIAL> 'static' { return xp路ide路source路parser路ClassParser::T_STATIC; }
-<YYINITIAL> 'array' { return xp路ide路source路parser路ClassParser::T_ARRAY; }
-<YYINITIAL> 'null' { return xp路ide路source路parser路ClassParser::T_NULL; }
-<YYINITIAL> 'true' { return xp路ide路source路parser路ClassParser::T_BOOLEAN; }
-<YYINITIAL> 'false' { return xp路ide路source路parser路ClassParser::T_BOOLEAN; }
-<YYINITIAL> {NUMBER} { return xp路ide路source路parser路ClassParser::T_NUMBER; }
 <YYINITIAL> {WHITE_SPACE} { }
-<YYINITIAL> "'" { $this->yybegin(self::ENCAPSED); }
-<YYINITIAL> . { return ord($this->yytext()); }
+<YYINITIAL> "null" { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_NULL); }
+<YYINITIAL> "const" { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_CONST); }
+<YYINITIAL> "private" { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_PRIVATE); }
+<YYINITIAL> "protected" { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_PROTECTED); }
+<YYINITIAL> "public" { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_PUBLIC); }
+<YYINITIAL> "static" { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_STATIC); }
+<YYINITIAL> "array" { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_ARRAY); }
+<YYINITIAL> "null" { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_NULL); }
+<YYINITIAL> "true" { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_BOOLEAN); }
+<YYINITIAL> "false" { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_BOOLEAN); }
+<YYINITIAL> "=>" { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_DOUBLE_ARROW); }
+<YYINITIAL> {NUMBER} { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_NUMBER); }
+<YYINITIAL> \" { $this->yybegin(self::S_ENCAPSED_D); $this->addBuffer($this->yytext()); }
+<YYINITIAL> ' { $this->yybegin(self::S_ENCAPSED_S); $this->addBuffer($this->yytext()); }
+<YYINITIAL> {VARIABLE} { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_VARIABLE); }
+<YYINITIAL> {TOKENS} { return $this->createToken(ord($this->yytext())); }
+<YYINITIAL> {LABEL} { return $this->createToken(xp穒de穝ource穚arser稢lassParser::T_STRING); }
 
-<ENCAPSED> ("\'") { }
-<ENCAPSED> "'" { $this->yybegin(self::YYINITIAL); }
+<S_ENCAPSED_D> \\\" {  $this->addBuffer($this->yytext()); }
+<S_ENCAPSED_S> \\' {  $this->addBuffer($this->yytext()); }
+<S_ENCAPSED_S> ' {
+  $this->yybegin(self::YYINITIAL);
+  $this->addBuffer($this->yytext());
+  $this->createToken(xp穒de穝ource穚arser稢lassParser::T_ENCAPSED_STRING, $this->getBuffer());
+  $this->resetBuffer();
+  return;
+}
+<S_ENCAPSED_D> \" {
+  $this->yybegin(self::YYINITIAL);
+  $this->addBuffer($this->yytext());
+  $this->createToken(xp穒de穝ource穚arser稢lassParser::T_ENCAPSED_STRING, $this->getBuffer());
+  $this->resetBuffer();
+  return;
+}
+<S_ENCAPSED_D,S_ENCAPSED_S> . {  $this->addBuffer($this->yytext()); }
 
