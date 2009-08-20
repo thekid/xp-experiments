@@ -260,5 +260,28 @@
        $this->assertEquals($tree->getClassdef()->getInterfaces(), array('ITest', 'ITest2'));
     }
 
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testWithBody() {
+      $tree= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           * Test class definition
+           * 
+           */
+          class Test extends Object {
+            $mebber bla dasfa 
+            adf a
+          }
+         ?>
+       '));
+       $this->assertObject($tree->getClassdef(), 'xp.ide.source.element.Classdef');
+       $this->assertEquals($tree->getClassdef()->getName(), 'Test');
+       $this->assertEquals($tree->getClassdef()->getParent(), 'Object');
+    }
+
   }
 ?>

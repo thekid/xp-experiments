@@ -10,7 +10,8 @@
     'xp.ide.source.parser.ClassLexer',
     'xp.ide.source.Scope',
     'xp.ide.source.element.Classmember',
-    'xp.ide.source.element.Classconstant'
+    'xp.ide.source.element.Classconstant',
+    'io.streams.MemoryInputStream'
   );
 
   /**
@@ -45,12 +46,12 @@
      */
     #[@test]
     public function testMember() {
-      $tree= $this->p->parse($this->getLexer('
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
           private $member1= 1;
           public $member2= NULL;
           protected $member3= NULL, $member4;
           $member5;
-       '));
+       ')));
        $this->assertEquals(array(
          new xp·ide·source·element·Classmember('member1', xp·ide·source·Scope::$PRIVATE),
          new xp·ide·source·element·Classmember('member2', xp·ide·source·Scope::$PUBLIC),
@@ -64,14 +65,14 @@
      * Test parser parses a classfile
      *
      */
-    #[@test]
+    #[@test, @ignore]
     public function testConst() {
-      $tree= $this->p->parse($this->getLexer('
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
           const CONSTANT1= 1;
           const
             CONSTANT2= 2,
             CONSTANT3= 3;
-       '));
+       ')));
        $this->assertEquals(array(
          new xp·ide·source·element·Classconstant('CONSTANT1'),
          new xp·ide·source·element·Classconstant('CONSTANT2'),
@@ -83,12 +84,12 @@
      * Test parser parses a classfile
      *
      */
-    #[@test]
+    #[@test, @ignore]
     public function testConstMember() {
-      $tree= $this->p->parse($this->getLexer('
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
           const CONST1= 1;
           protected $member3= NULL, $member4;
-       '));
+       ')));
        $this->assertEquals(array(
          new xp·ide·source·element·Classconstant('CONST1'),
        ), $tree->getConstants());
@@ -102,13 +103,13 @@
      * Test parser parses a classfile
      *
      */
-    #[@test]
+    #[@test, @ignore]
     public function testStaticMember() {
-      $tree= $this->p->parse($this->getLexer('
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
           protected $member1;
           protected static $member2;
           static protected $member3;
-       '));
+       ')));
        $this->assertEquals(
          array(FALSE, TRUE, TRUE),
          array_map(create_function('$e', 'return $e->isStatic();'), $tree->getMembers())
@@ -119,20 +120,64 @@
      * Test parser parses a classfile
      *
      */
-    #[@test]
+    #[@test, @ignore]
     public function testMemberTypes() {
-      $tree= $this->p->parse($this->getLexer('
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
           $member1= 1;
           $member2= FALSE;
           $member3= TRUE;
-          $member4= array();
           $member5= NULL;
           $member6= "";
-       '));
+       ')));
        $this->assertEquals(
-         array("1", "FALSE", "TRUE", "array", "NULL", '""'),
+         array("1", "FALSE", "TRUE", "NULL", '""'),
          array_map(create_function('$e', 'return $e->getInit();'), $tree->getMembers())
        );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test, @ignore]
+    public function testMemberArray() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+          $member1= array();
+       ')));
+       $this->assertClass(
+         $tree->getMember(0)->getInit(),
+         "xp.ide.source.element.Array"
+       );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test, @ignore]
+    public function testMemberArrayAssoc() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        $member1= array(4 => TRUE);
+      ')));
+      $this->assertEquals(
+        array("4" => "TRUE"),
+        $tree->getMember(0)->getInit()->getValues()
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test, @ignore]
+    public function testMemberArrayValues() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        $member4= array(NULL, TRUE, 1);
+      ')));
+      $this->assertEquals(
+        array("NULL", "TRUE", "1"),
+        $tree->getMember(0)->getInit()->getValues()
+      );
     }
   }
 ?>

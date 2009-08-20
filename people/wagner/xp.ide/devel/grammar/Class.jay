@@ -5,6 +5,7 @@
     'xp.ide.source.element.Classdef',
     'xp.ide.source.element.Classmember',
     'xp.ide.source.element.Classconstant',
+    'xp.ide.source.element.Array',
     'xp.ide.source.element.BlockComment'
   );
 
@@ -62,11 +63,17 @@ scope:
 ;
 
 initAssignRight:
-  T_ARRAY '(' ')' { $$= $1->getValue(); }
+  T_ARRAY '(' initArrayBody ')' { $$= new xp·ide·source·element·Array($3); }
+  | T_ARRAY '(' ')' { $$= new xp·ide·source·element·Array(); }
   | T_ENCAPSED_STRING { $$= $1->getValue(); }
   | T_NULL { $$= $1->getValue(); }
   | T_NUMBER { $$= $1->getValue(); }
   | T_BOOLEAN { $$= $1->getValue(); }
+;
+
+initArrayBody:
+  initArrayBody "," initAssignRight { $1[]= $3; $$= $1; }
+  | initAssignRight { $$= array($1); }
 ;
 
 %%

@@ -1,20 +1,50 @@
-XP_PUBLIC_PATH=$(shell xp -e "uses('util.cmd.Console'); Console::\$$out->write(dirname(ClassLoader::getDefault()->findPackage('lang')->path));")
-JAY_BIN=$(shell if [ 0 -lt `env | grep OS | grep -i WINDOWS | wc -l` ]; then echo -n "phpJay.exe"; else echo -n "phpJay"; fi)
+JAY=$(shell \
+  xp -e "uses('util.cmd.Console'); Console::\$$out->write(dirname(ClassLoader::getDefault()->findPackage('lang')->path));"; \
+  echo -n "/ports/technologies/opt/jay/"; \
+  if [ 0 -lt `env | grep OS | grep -i WINDOWS | wc -l` ]; then \
+    echo -n "phpJay.exe"; \
+  else \
+    echo -n "phpJay"; \
+  fi; \
+)
+
+JLEX=$(shell \
+  echo "java -cp ../../JLexPhp/JLexPHP.jar JLexPHP.Main"; \
+)
 
 all:
 	@echo "Usage:"
 	@echo "  ${MAKE} parser"
+	@echo "  ${MAKE} lexer"
 	@echo "  ${MAKE} release"
 
 help: all
 
-.PHONY: parser parser.% release release.%
+.PHONY: parser parser.% lexer lexer.% release release.% help
 
-parser: parser.ClassFile parser.Class
+parser: \
+  /src/xp/ide/source/parser/ClassFileParser.class.php\
+  /src/xp/ide/source/parser/ClassParser.class.php
+
+/src/xp/ide/source/parser/ClassFileParser.class.php: ./grammar/ClassFile.jay parser.ClassFile
+/src/xp/ide/source/parser/ClassParser.class.php: ./grammar/Class.jay parser.Class
+
+lexer: \
+  /src/xp/ide/source/parser/ClassLexer.class.php
+
+/src/xp/ide/source/parser/ClassLexer.class.php: ./grammar/Class.lex lexer.Class
+
+lexer.%:
+	@echo "  * create /src/xp/ide/source/parser/$*Lexer.class.php";
+	$(JLEX) ./grammar/$*.lex
+	@cat ./grammar/$*.lex.php \
+	| sed -e 's/{%CLASSNAME%}/'xp·ide·source·parser·$*Lexer'/g' \
+	| sed -e 's/{%PARENTNAME%}/'xp·ide·source·parser·Lexer'/g' \
+	> ./src/xp/ide/source/parser/$*Lexer.class.php && rm ./grammar/$*.lex.php
 
 parser.%:
 	@echo "  * create /src/xp/ide/source/parser/$*Parser.class.php";
-	@$(XP_PUBLIC_PATH)/ports/technologies/opt/jay/$(JAY_BIN) -cv < "./grammar/php.skl" ./grammar/$*.jay \
+	@$(JAY) -cv < "./grammar/php.skl" ./grammar/$*.jay \
 	| sed -e 's/{%NAME%}/'$*Parser'/g' \
 	> ./src/xp/ide/source/parser/$*Parser.class.php
 	@rm ./y.output

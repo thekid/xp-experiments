@@ -154,5 +154,6 @@
       return TRUE;
     }
 
+    protected function yylex() {}
   }
 ?>

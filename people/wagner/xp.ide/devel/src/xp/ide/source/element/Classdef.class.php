@@ -54,6 +54,10 @@
       return $this->members;
     }
 
+    public function getMember($i) {
+      return $this->members[$i];
+    }
+
     public function setConstants(array $constants) {
       $this->constants= $constants;
     }
