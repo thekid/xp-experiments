@@ -19,7 +19,7 @@
   class ArrayListExtensionTest extends TestCase {
   
     /**
-     * Test
+     * Test sorted() extension method provided by ArraySortingExtension
      *
      */
     #[@test]
@@ -31,7 +31,7 @@
     }
 
     /**
-     * Test
+     * Test filtered() extension method provided by ArrayFiltersExtension
      *
      */
     #[@test]
@@ -45,7 +45,8 @@
     }
 
     /**
-     * Test
+     * Test a non-existing method, neither in the class nor as an 
+     * extension.
      *
      */
     #[@test, @expect('lang.Error')]
@@ -54,7 +55,7 @@
     }
 
     /**
-     * Test
+     * Test a regular instance method call still works.
      *
      */
     #[@test]
