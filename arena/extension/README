@@ -86,7 +86,7 @@ The sorter
 </code>
 
 In any of these situations though, we have to write more sourcecode. 
-Sourcecode not only for the extension itself but also when using it. 
+More sourcecode not only for the extension itself but also when using it. 
 
 Fact
 ----
@@ -108,11 +108,51 @@ Anatomy
 -------
 Extension methods let you "add" methods to existing types without having
 to change the respective type itself. They are declared in a regular 
-class as public static methods, albeit being called as if they were 
-instance methods on objects of the type they extend. Seen from the 
-outside, using extension methods does not differ from calling methods
-actually defined inside that type.
+class as static methods, albeit being called as if they were instance 
+methods on objects of the type they extend. Seen from the outside, using 
+extension methods does not differ from calling methods actually defined 
+inside that type.
 
+Declaration
+~~~~~~~~~~~
+Given this, to implement an extension method "sorted" for the ArrayList
+class so that it can be used as in the example from the beginning, we 
+declare the following:
+
+<code>
+  class ArraySortingExtension extends Object {
+  
+    static function __static() {
+      xp::$registry['ext:lang.types.ArrayList'][]= __CLASS__;
+    }
+
+    public static function sorted(ArrayList $self) {
+      $a= $self->values;
+      sort($a);
+      return ArrayList::newInstance($a);
+    }
+  }
+</code>
+
+There are two essential parts in this declaration: First of all, the
+static initializer, which registers this class as a provider for extension
+methods for the lang.types.ArrayList class. Second, the extension method
+itself, which is declared <tt>public static</tt> and receives the ArrayList
+instance to work on as its first parameter.
+
+Using it
+~~~~~~~~
+Although extension methods are defined static, they are called using 
+instance method syntax. However, extension methods are only available
+if they're explicitly imported! This can be done by adding the extension
+method class to the <tt>uses()</tt> list:
+
+<code>
+  uses('com.example.extensions.ArraySortingExtension');
+</code>
+
+Once this is achieved our example will work and the <tt>sorted()</tt>
+call will yield an ArrayList containing the sorted values <tt>1, 2, 3</tt>.
 
 
 See also
