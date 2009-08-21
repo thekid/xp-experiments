@@ -169,6 +169,16 @@ check <tt>xp::$registry</tt> for a matching extension class providing
 methods to <tt>$this</tt>' class. If found, the method is invoked, an
 error is raised otherwise.
 
+<code>
+  public function __call($name, $args) {
+    if (isset(xp::$registry[$ext= 'ext:'.xp::nameOf(get_class($this))])) {
+      // Try to find extension method by $name, invoke and return
+      // from this block if successfull.
+    }
+    throw new Error('Call to undefined method '.get_class($this).'::'.$name);
+  }
+</code>
+
 This poses a considerable performance impact on extension methods, though
 its effects are not really noticeable inside a regular business application
 working with databases, web service calls and the local file system.
