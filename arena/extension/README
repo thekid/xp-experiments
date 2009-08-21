@@ -50,7 +50,7 @@ The delegate
     public function __call($name, $args) {
       return call_user_func_array(array($this->delegate, $name), $args);
     }
-    public function sorted() { ...} 
+    public function sorted() { ... } 
   }
   
   $array= new ArrayList(3, 1, 2);
@@ -67,7 +67,7 @@ The helper class
 ~~~~~~~~~~~~~~~~
 <code>
   class Arrays extends Object {
-    public static function sort(ArrayList $in) { ...} 
+    public static function sort(ArrayList $in) { ... } 
   }
   
   $array= new ArrayList(3, 1, 2);
@@ -78,7 +78,7 @@ The sorter
 ~~~~~~~~~~
 <code>
   class ArraySorter extends Object {
-    public function sort(ArrayList $in) { ...} 
+    public function sort(ArrayList $in) { ... } 
   }
   
   $array= new ArrayList(3, 1, 2);
@@ -127,9 +127,7 @@ declare the following:
     }
     
     public static function sorted(ArrayList $self) {
-      $a= $self->values;
-      sort($a);
-      return ArrayList::newInstance($a);
+      // Implementation here
     }
   }
 </code>
