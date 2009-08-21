@@ -15,8 +15,8 @@ shortly before our program is terminated.
   $sorted= $array->sorted();
 </code>
 
-Of course we can add this method to the class, but the next request
-would be to have filter(), map(), join(), collect(), partition(), and
+We could add this method to the class, but the next request would be to 
+have <tt>filter(), map(), join(), collect(), partition()</tt>, and
 whatever else methods in this class, which would turn it into the 
 "swiss army knife" anti-pattern. Of course adding functionality can 
 also be accomplished by subclassing or by creating an adapter which 
@@ -85,11 +85,16 @@ The sorter
   $sorted= create(new ArraySorter())->sort($array);
 </code>
 
-In any of these situations, we have to write more sourcecode. Sourcecode 
-not only for the extension itself but also when using it. Programmers 
-can be safely said to be of the type of person who are lazy (or else 
-we'd be shifting the bytes ourselves and not letting a programming 
-language do the job, right?)
+In any of these situations though, we have to write more sourcecode. 
+Sourcecode not only for the extension itself but also when using it. 
+
+Fact
+----
+Programmers can be safely said to be of the type of person who are 
+lazy (or else we'd be shifting the bytes ourselves and not letting a 
+programming language do the job, right?). Writing less code to solve 
+a problem is not fundamental to a programmer's motivation: It also
+circumvents possible bugs.
 
 Anatomy
 -------
