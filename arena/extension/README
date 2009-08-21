@@ -19,14 +19,9 @@ Of course we can add this method to the class, but the next request
 would be to have filter(), map(), join(), collect(), partition(), and
 whatever else methods in this class, which would turn it into the 
 "swiss army knife" anti-pattern. Of course adding functionality can 
-also be accomplished by subclassing, by creating an adapter which 
+also be accomplished by subclassing or by creating an adapter which 
 delegates all calls to the ArrayList class but the ones it wants to
-implement on top, or by writing an ArrayHelper class with all kinds of
-static helper functions. In any of these situations, we have to write 
-more sourcecode. Sourcecode for the extension itself, and when using it.
-Programmers can be safely said to be of the type of person who are lazy 
-(or else we'd be shifting the bytes ourselves and not letting a 
-programming language do the job, right?)
+implement on top. 
 
 The subclass
 ~~~~~~~~~~~~
@@ -62,6 +57,12 @@ The delegate
   $sorted= create(new SortableArrayList($array))->sorted();  
 </code>
 
+Following the "one class, one responsibility" we could also refactor
+the code out into an ArrayHelper class with all kinds of static helper 
+functions or into an ArraySorter, an ArrayFilterer, and so on. We
+wouldn't really be adding functionality in these cases, but let's have
+a look at them nevertheless:
+
 The helper class
 ~~~~~~~~~~~~~~~~
 <code>
@@ -72,6 +73,23 @@ The helper class
   $array= new ArrayList(3, 1, 2);
   $sorted= Arrays::sort($array);
 </code>
+
+The sorter
+~~~~~~~~~~
+<code>
+  class ArraySorter extends Object {
+    public function sort(ArrayList $in) { ...} 
+  }
+  
+  $array= new ArrayList(3, 1, 2);
+  $sorted= create(new ArraySorter())->sort($array);
+</code>
+
+In any of these situations, we have to write more sourcecode. Sourcecode 
+not only for the extension itself but also when using it. Programmers 
+can be safely said to be of the type of person who are lazy (or else 
+we'd be shifting the bytes ourselves and not letting a programming 
+language do the job, right?)
 
 Anatomy
 -------
