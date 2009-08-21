@@ -152,8 +152,8 @@ method class to the <tt>uses()</tt> list:
 Once this is achieved our example will work and the <tt>sorted()</tt>
 call will yield an ArrayList containing the sorted values <tt>1, 2, 3</tt>.
 
-Restriction
-~~~~~~~~~~~
+Restrictions
+~~~~~~~~~~~~
 Because of the way they're implemented, extension methods can only operate
 on a type's public API. Extension methods are really only syntactic sugar,
 backed by static method calls to an extension class. Thus, the following
@@ -166,6 +166,21 @@ two calls are equivalent from a protection level point of view.
 
 If you look at the second it becomes clear why only public methods can 
 be called!
+
+Furthermore, extension methods can only add functionality. Extension 
+methods cannot overwrite existing methods. Thus, the following extension 
+method will never be executed because the <tt>XPClass</tt> class already
+has a <tt>getName()</tt> method:
+
+<code>
+  class XPClassExtensions extends Object {
+    public static function getName(XPClass $self) { ... }
+  }
+</code>
+
+The same applies for the methods defined in <tt>lang.Object</tt> itself,
+every other object inherits these: <tt>hashCode()</tt>, <tt>equals()</tt>,
+<tt>getClassName()</tt>, <tt>getClass()</tt> and <tt>toString()</tt>.
 
 
 How it works
