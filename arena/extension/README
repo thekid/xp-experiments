@@ -6,9 +6,9 @@ the XP Framework's core.
 Motivation
 ----------
 The following calls a method called "sorted" on an instance of the
-lang.types.ArrayList class. To someone who doesn't know, it would 
-seem as if the ArrayList class had a method called "sorted", but it 
-actually doesn't. 
+lang.types.ArrayList class. The ArrayList class doesn't have such a
+method, and we'll thus get a nice "call to undefined method" error
+shortly before our program is terminated.
 
 <code>
   $array= new ArrayList(3, 1, 2);
@@ -27,6 +27,45 @@ more sourcecode. Sourcecode for the extension itself, and when using it.
 Programmers can be safely said to be of the type of person who are lazy 
 (or else we'd be shifting the bytes ourselves and not letting a 
 programming language do the job, right?)
+
+The subclass
+~~~~~~~~~~~~
+<code>
+  class SortableArrayList extends ArrayList {
+    public function sorted() { ... }
+  }
+  
+  $array= new ArrayList(3, 1, 2);
+  $sorted= SortableArrayList::newInstance($array->values)->sorted(); 
+</code>
+
+The delegate
+~~~~~~~~~~~~  
+<code>
+  class SortableArrayList extends Object {
+    public function __construct(ArrayList $delegate) {
+      $this->delegate= $delegate;
+    }
+    public function __call($name, $args) {
+      return call_user_func_array(array($this->delegate, $name), $args);
+    }
+    public function sorted() { ...} 
+  }
+
+  $array= new ArrayList(3, 1, 2);
+  $sorted= create(new SortableArrayList($array))->sorted();  
+</code>
+
+The helper class
+~~~~~~~~~~~~~~~~
+<code>
+  class Arrays extends Object {
+    public static function sort(ArrayList $in) { ...} 
+  }
+
+  $array= new ArrayList(3, 1, 2);
+  $sorted= Arrays::sort($array);
+</code>
 
 Anatomy
 -------
