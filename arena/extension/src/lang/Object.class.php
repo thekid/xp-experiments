@@ -32,7 +32,7 @@
       if (isset(xp::$registry[$ext= 'ext:'.xp::nameOf(get_class($this))])) {
         foreach (xp::$registry[$ext] as $class) {
           if (!method_exists($class, $name)) continue;
-          return call_user_func_array(array($class, $name),  array_merge(array($this), $args));
+          return call_user_func_array(array($class, $name), array_merge(array($this), $args));
         }
       }
       throw new Error('Call to undefined method '.get_class($this).'::'.$name);
