@@ -30,10 +30,14 @@
      */
     public function __call($name, $args) {
       $ext= 'ext:'.xp::nameOf(get_class($this));
-      if (!isset(xp::$registry[$ext]) || !method_exists(xp::$registry[$ext], $name)) {
+      if (!isset(xp::$registry[$ext])) {
         throw new Error('Call to undefined method '.get_class($this).'::'.$name);
       }
-      return call_user_func_array(array(xp::$registry[$ext], $name),  array_merge(array($this), $args));
+      foreach (xp::$registry[$ext] as $class) {
+        if (!method_exists($class, $name)) continue;
+        return call_user_func_array(array($class, $name),  array_merge(array($this), $args));
+      }
+      throw new Error('Call to undefined method '.get_class($this).'::'.$name);
     }
 
     /**

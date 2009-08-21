@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses('lang.types.ArrayList');
@@ -10,10 +10,10 @@
    * Extends the ArrayList class
    *
    */
-  class ArrayListExtension extends Object {
+  class ArraySortingExtension extends Object {
   
     static function __static() {
-      xp::$registry['ext:lang.types.ArrayList']= __CLASS__;
+      xp::$registry['ext:lang.types.ArrayList'][]= __CLASS__;
     }
 
     /**
