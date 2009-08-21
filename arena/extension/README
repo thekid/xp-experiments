@@ -90,11 +90,17 @@ Sourcecode not only for the extension itself but also when using it.
 
 Fact
 ----
-Programmers can be safely said to be of the type of person who are 
-lazy (or else we'd be shifting the bytes ourselves and not letting a 
-programming language do the job, right?). Writing less code to solve 
-a problem is not fundamental to a programmer's motivation: It also
+Programmers can be safely said to be of the type of person who are lazy 
+(or else we'd be shifting the bytes ourselves and not letting a 
+programming language do the job, right?). Writing less code to solve a 
+problem is not only fundamental to a programmer's motivation: It also
 circumvents possible bugs.
+
+In this spirit, we'd like to accomplish the following:
+
+* add functionality to an existing type without modifying it,
+* import this functionality on demand to prevent bloat,
+* write shortest amount of code when using the extension.
 
 Anatomy
 -------
