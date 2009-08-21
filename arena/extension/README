@@ -32,11 +32,17 @@ The subclass
 ~~~~~~~~~~~~
 <code>
   class SortableArrayList extends ArrayList {
+    public static function from(ArrayList $in) {
+      $s= new self();
+      $s->values= $in->values;
+      $s->size= $in->size;
+      return $s;
+    }
     public function sorted() { ... }
   }
   
   $array= new ArrayList(3, 1, 2);
-  $sorted= SortableArrayList::newInstance($array->values)->sorted(); 
+  $sorted= SortableArrayList::from($array)->sorted(); 
 </code>
 
 The delegate
@@ -51,7 +57,7 @@ The delegate
     }
     public function sorted() { ...} 
   }
-
+  
   $array= new ArrayList(3, 1, 2);
   $sorted= create(new SortableArrayList($array))->sorted();  
 </code>
@@ -62,7 +68,7 @@ The helper class
   class Arrays extends Object {
     public static function sort(ArrayList $in) { ...} 
   }
-
+  
   $array= new ArrayList(3, 1, 2);
   $sorted= Arrays::sort($array);
 </code>
