@@ -20,36 +20,29 @@ all:
 
 help: all
 
-.PHONY: parser parser.% lexer lexer.% release release.% help
-
 parser: \
-  /src/xp/ide/source/parser/ClassFileParser.class.php\
-  /src/xp/ide/source/parser/ClassParser.class.php
-
-/src/xp/ide/source/parser/ClassFileParser.class.php: ./grammar/ClassFile.jay parser.ClassFile
-/src/xp/ide/source/parser/ClassParser.class.php: ./grammar/Class.jay parser.Class
+  src/xp/ide/source/parser/ClassFileParser.class.php\
+  src/xp/ide/source/parser/ClassParser.class.php
 
 lexer: \
-  /src/xp/ide/source/parser/ClassLexer.class.php
+  src/xp/ide/source/parser/ClassLexer.class.php
 
-/src/xp/ide/source/parser/ClassLexer.class.php: ./grammar/Class.lex lexer.Class
+test: parser lexer
+	unittest xp.ide.**
 
-lexer.%:
-	@echo "  * create /src/xp/ide/source/parser/$*Lexer.class.php";
-	@iconv -f ISO-8859-15 -t UTF-8 ./grammar/$*.lex > ./grammar/$*.lex.enc
-	@$(JLEX) ./grammar/$*.lex.enc
-	@rm ./grammar/$*.lex.enc
-	@cat ./grammar/$*.lex.enc.php \
+src/xp/ide/source/parser/%Lexer.class.php: ./grammar/%.lex
+	@iconv -f ISO-8859-15 -t UTF-8 $< > $<.enc
+	@$(JLEX) $<.enc
+	@rm $<.enc
+	@cat $<.enc.php \
 	| iconv -t ISO-8859-15 -f UTF-8 \
 	| sed -e 's/{%CLASSNAME%}/'xp·ide·source·parser·$*Lexer'/g' \
 	| sed -e 's/{%PARENTNAME%}/'xp·ide·source·parser·Lexer'/g' \
-	> ./src/xp/ide/source/parser/$*Lexer.class.php && rm ./grammar/$*.lex.enc.php
+	> $@
+	@rm ./grammar/$*.lex.enc.php
 
-parser.%:
-	@echo "  * create /src/xp/ide/source/parser/$*Parser.class.php";
-	@$(JAY) -cv < "./grammar/php.skl" ./grammar/$*.jay \
-	| sed -e 's/{%NAME%}/'$*Parser'/g' \
-	> ./src/xp/ide/source/parser/$*Parser.class.php
+src/xp/ide/source/parser/%Parser.class.php: ./grammar/php.skl ./grammar/%.jay
+	@$(JAY) -cv < $+ | sed -e 's/{%NAME%}/'$*Parser'/g' > $@
 	@rm ./y.output
 
 release:
