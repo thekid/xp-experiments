@@ -96,11 +96,13 @@ programming language do the job, right?). Writing less code to solve a
 problem is not only fundamental to a programmer's motivation: It also
 circumvents possible bugs.
 
+<summary>
 In this spirit, we'd like to accomplish the following:
 
 * add functionality to an existing type without modifying it,
 * import this functionality on demand to prevent bloat,
 * write shortest amount of code when using the extension.
+</summary>
 
 Anatomy
 -------
