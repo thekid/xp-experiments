@@ -152,6 +152,20 @@ method class to the <tt>uses()</tt> list:
 Once this is achieved our example will work and the <tt>sorted()</tt>
 call will yield an ArrayList containing the sorted values <tt>1, 2, 3</tt>.
 
+Restriction
+~~~~~~~~~~~
+Because of the way they're implemented, extension methods can only operate
+on a type's public API. Extension methods are really only syntactic sugar,
+backed by static method calls to an extension class. Thus, the following
+two calls are equivalent from a protection level point of view.
+<code>
+  $sorted= $array->sorted();
+  $sorted= ArraySortingExtension::sorted($array);
+</code>
+
+If you look at the second it becomes clear why only public methods can 
+be called!
+
 
 How it works
 ------------
