@@ -1,0 +1,44 @@
+Extension methods
+========================================================================
+This experiment evaluates the possibility to add extension methods to 
+the XP Framework's core.
+
+Motivation
+----------
+The following calls a method called "sorted" on an instance of the
+lang.types.ArrayList class. To someone who doesn't know, it would 
+seem as if the ArrayList class had a method called "sorted", but it 
+actually doesn't. 
+
+<code>
+  $array= new ArrayList(3, 1, 2);
+  $sorted= $array->sorted();
+</code>
+
+Of course we can add this method to the class, but the next request
+would be to have filter(), map(), join(), collect(), partition(), and
+whatever else methods in this class, which would turn it into the 
+"swiss army knife" anti-pattern. Of course adding functionality can 
+also be accomplished by subclassing, by creating an adapter which 
+delegates all calls to the ArrayList class but the ones it wants to
+implement on top, or by writing an ArrayHelper class with all kinds of
+static helper functions. In any of these situations, we have to write 
+more sourcecode. Sourcecode for the extension itself, and when using it.
+Programmers can be safely said to be of the type of person who are lazy 
+(or else we'd be shifting the bytes ourselves and not letting a 
+programming language do the job, right?)
+
+Anatomy
+-------
+Extension methods let you "add" methods to existing types without having
+to change the respective type itself. They are declared in a regular 
+class as public static methods, albeit being called as if they were 
+instance methods on objects of the type they extend. Seen from the 
+outside, using extension methods does not differ from calling methods
+actually defined inside that type.
+
+
+
+See also
+--------
+* http://msdn.microsoft.com/en-us/library/bb383977.aspx
