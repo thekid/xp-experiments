@@ -125,7 +125,7 @@ declare the following:
     static function __static() {
       xp::$registry['ext:lang.types.ArrayList'][]= __CLASS__;
     }
-
+    
     public static function sorted(ArrayList $self) {
       $a= $self->values;
       sort($a);
@@ -154,6 +154,24 @@ method class to the <tt>uses()</tt> list:
 Once this is achieved our example will work and the <tt>sorted()</tt>
 call will yield an ArrayList containing the sorted values <tt>1, 2, 3</tt>.
 
+
+How it works
+------------
+Because almost everything happens at runtime in PHP, so do method call
+lookups. When the PHP runtime encounters a method call, it looks at the
+object and the method name, trying to find a method called equivalent
+in the object's type declaration. If it fails to find a method by the
+given name, PHP falls back to calling a special method by name 
+[http://de3.php.net/__call __call] (a so-called "magic" method).
+
+We make use of this facility in the <tt>Object</tt> base class and then
+check <tt>xp::$registry</tt> for a matching extension class providing 
+methods to <tt>$this</tt>' class. If found, the method is invoked, an
+error is raised otherwise.
+
+This poses a considerable performance impact on extension methods, though
+its effects are not really noticeable inside a regular business application
+working with databases, web service calls and the local file system.
 
 See also
 --------
