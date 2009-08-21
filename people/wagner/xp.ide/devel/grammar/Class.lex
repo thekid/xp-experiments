@@ -21,7 +21,7 @@
 
 %line
 %char
-%state S_ENCAPSED_S S_ENCAPSED_D
+%state S_ENCAPSED_S S_ENCAPSED_D S_METHOD_CONTENT
 %ignorecase
 
 LNUM=[0-9]+
@@ -47,16 +47,32 @@ WHITE_SPACE=([\ \n\r\t\f])+
 <YYINITIAL> "null" { return $this->createToken(xp·ide·source·parser·ClassParser::T_NULL); }
 <YYINITIAL> "true" { return $this->createToken(xp·ide·source·parser·ClassParser::T_BOOLEAN); }
 <YYINITIAL> "false" { return $this->createToken(xp·ide·source·parser·ClassParser::T_BOOLEAN); }
+<YYINITIAL> "function" { return $this->createToken(xp·ide·source·parser·ClassParser::T_FUNCTION); }
+<YYINITIAL> "abstract" { return $this->createToken(xp·ide·source·parser·ClassParser::T_ABSTRACT); }
 <YYINITIAL> "=>" { return $this->createToken(xp·ide·source·parser·ClassParser::T_DOUBLE_ARROW); }
 <YYINITIAL> {NUMBER} { return $this->createToken(xp·ide·source·parser·ClassParser::T_NUMBER); }
+<YYINITIAL> \{ { $this->yybegin(self::S_METHOD_CONTENT); $this->cnt= 0; return $this->createToken(ord($this->yytext())); }
 <YYINITIAL> \" { $this->yybegin(self::S_ENCAPSED_D); $this->addBuffer($this->yytext()); }
 <YYINITIAL> ' { $this->yybegin(self::S_ENCAPSED_S); $this->addBuffer($this->yytext()); }
 <YYINITIAL> {VARIABLE} { return $this->createToken(xp·ide·source·parser·ClassParser::T_VARIABLE); }
-<YYINITIAL> {TOKENS} { return $this->createToken(ord($this->yytext())); }
+<YYINITIAL> \}|{TOKENS} { return $this->createToken(ord($this->yytext())); }
 <YYINITIAL> {LABEL} { return $this->createToken(xp·ide·source·parser·ClassParser::T_STRING); }
 
-<S_ENCAPSED_D> \\\" {  $this->addBuffer($this->yytext()); }
-<S_ENCAPSED_S> \\' {  $this->addBuffer($this->yytext()); }
+<S_METHOD_CONTENT> \{ { $this->addBuffer($this->yytext()); $this->cnt++; }
+<S_METHOD_CONTENT> \} {
+  if (--$this->cnt < 0) {
+    $this->yy_buffer_index--;
+    $this->yybegin(self::YYINITIAL);
+    $this->createToken(xp·ide·source·parser·ClassParser::T_FUNCTION_BODY, $this->getBuffer());
+    $this->resetBuffer();
+    return;
+  } else {
+    $this->addBuffer($this->yytext());
+  }
+}
+
+<S_ENCAPSED_D> \\\" { $this->addBuffer($this->yytext()); }
+<S_ENCAPSED_S> \\' { $this->addBuffer($this->yytext()); }
 <S_ENCAPSED_S> ' {
   $this->yybegin(self::YYINITIAL);
   $this->addBuffer($this->yytext());
@@ -71,5 +87,5 @@ WHITE_SPACE=([\ \n\r\t\f])+
   $this->resetBuffer();
   return;
 }
-<S_ENCAPSED_D,S_ENCAPSED_S> . {  $this->addBuffer($this->yytext()); }
+<S_METHOD_CONTENT,S_ENCAPSED_D,S_ENCAPSED_S> .|{WHITE_SPACE} {  $this->addBuffer($this->yytext()); }
 

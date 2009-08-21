@@ -15,17 +15,18 @@
    *
    * @purpose  IDE
    */
-  class xp·ide·source·element·Classmember extends xp·ide·source·Element {
+  class xp·ide·source·element·Classmethod extends xp·ide·source·Element {
     private
       $name= '',
+      $params= array(),
       $static= FALSE,
+      $abstract= FALSE,
       $scope= NULL,
-      $init=  NULL;
+      $content= '';
 
-    public function __construct($name= '', xp·ide·source·Scope $scope= NULL, $init= NULL) {
+    public function __construct($name= '', xp·ide·source·Scope $scope= NULL) {
       $this->name= $name;
       $this->scope= NULL === $scope ? xp·ide·source·Scope::$PUBLIC : $scope;
-      $this->init= $init;
     }
 
     public function equals($o) {
@@ -52,6 +53,18 @@
       return $this->scope;
     }
 
+    public function setParams($params) {
+      $this->params= $params;
+    }
+
+    public function getParams() {
+      return $this->params;
+    }
+
+    public function getParam($i) {
+      return $this->params[$i];
+    }
+
     public function setStatic($static) {
       $this->static= $static;
     }
@@ -60,12 +73,20 @@
       return $this->static;
     }
 
-    public function setInit($init) {
-      $this->init= $init;
+    public function setAbstract($abstract) {
+      $this->abstract= $abstract;
     }
 
-    public function getInit() {
-      return $this->init;
+    public function isAbstract() {
+      return $this->abstract;
+    }
+
+    public function setContent($content) {
+      $this->content= $content;
+    }
+
+    public function getContent() {
+      return $this->content;
     }
   }
 

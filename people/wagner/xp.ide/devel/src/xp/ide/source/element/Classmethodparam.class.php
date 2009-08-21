@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: Classmember.class.php 11324 2009-08-13 17:58:23Z ruben $ 
+ * $Id$ 
  */
   $package="xp.ide.source.element";
 
@@ -15,12 +15,15 @@
    *
    * @purpose  IDE
    */
-  class xp·ide·source·element·Classconstant extends xp·ide·source·Element {
+  class xp·ide·source·element·Classmethodparam extends xp·ide·source·Element {
     private
-      $name= '';
+      $typehint= '',
+      $name= '',
+      $init=  NULL;
 
-    public function __construct($name= '') {
+    public function __construct($name= '', $typehint= NULL) {
       $this->name= $name;
+      $this->typehint= $typehint;
     }
 
     public function equals($o) {
@@ -34,6 +37,22 @@
 
     public function getName() {
       return $this->name;
+    }
+
+    public function setTypehint($typehint) {
+      $this->typehint= $typehint;
+    }
+
+    public function getTypehint() {
+      return $this->typehint;
+    }
+
+    public function setInit($init) {
+      $this->init= $init;
+    }
+
+    public function getInit() {
+      return $this->init;
     }
   }
 

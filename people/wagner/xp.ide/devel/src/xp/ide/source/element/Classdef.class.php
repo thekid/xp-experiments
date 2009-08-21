@@ -20,6 +20,7 @@
       $parent= '',
       $interfaces= array(),
       $members= array(),
+      $methods= array(),
       $constants= array();
 
     public function setName($name) {
@@ -44,6 +45,18 @@
 
     public function getInterfaces() {
       return $this->interfaces;
+    }
+
+    public function setMethods(array $methods) {
+      $this->methods= $methods;
+    }
+
+    public function getMethods() {
+      return $this->methods;
+    }
+
+    public function getMethod($i) {
+      return $this->methods[$i];
     }
 
     public function setMembers(array $members) {

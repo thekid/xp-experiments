@@ -11,11 +11,17 @@
     'xp.ide.source.Scope',
     'xp.ide.source.element.Classmember',
     'xp.ide.source.element.Classconstant',
+    'xp.ide.source.element.Classmethod',
     'io.streams.MemoryInputStream'
   );
 
   /**
    * TestCase
+   * TODO:
+   *  - Annotation member 
+   *  - Annotation method
+   *  - API doc method
+   *  - inline comments
    *
    * @see      reference
    * @purpose  purpose
@@ -53,9 +59,9 @@
           $member5;
        ')));
        $this->assertEquals(array(
-         new xp·ide·source·element·Classmember('member1', xp·ide·source·Scope::$PRIVATE),
-         new xp·ide·source·element·Classmember('member2', xp·ide·source·Scope::$PUBLIC),
-         new xp·ide·source·element·Classmember('member3', xp·ide·source·Scope::$PROTECTED),
+         new xp·ide·source·element·Classmember('member1', xp·ide·source·Scope::$PRIVATE, "1"),
+         new xp·ide·source·element·Classmember('member2', xp·ide·source·Scope::$PUBLIC, "NULL"),
+         new xp·ide·source·element·Classmember('member3', xp·ide·source·Scope::$PROTECTED, "NULL"),
          new xp·ide·source·element·Classmember('member4', xp·ide·source·Scope::$PROTECTED),
          new xp·ide·source·element·Classmember('member5', xp·ide·source·Scope::$PUBLIC),
        ), $tree->getMembers());
@@ -109,9 +115,10 @@
           protected $member1;
           protected static $member2;
           static protected $member3;
+          static $member4;
        ')));
        $this->assertEquals(
-         array(FALSE, TRUE, TRUE),
+         array(FALSE, TRUE, TRUE, TRUE),
          array_map(create_function('$e', 'return $e->isStatic();'), $tree->getMembers())
        );
     }
@@ -197,5 +204,171 @@
         $tree->getMember(0)->getInit()->getValues()
       );
     }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethod() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        function method1() {}
+      ')));
+      $this->assertEquals(
+        array(new xp·ide·source·element·Classmethod('method1', xp·ide·source·Scope::$PUBLIC)),
+        $tree->getMethods()
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethodMod() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        private function method1() {}
+      ')));
+      $this->assertEquals(
+        array(new xp·ide·source·element·Classmethod('method1', xp·ide·source·Scope::$PRIVATE)),
+        $tree->getMethods()
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethodStatic() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        static function method1() {}
+      ')));
+      $this->assertTRUE($tree->getMethod(0)->isStatic());
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethodAbstract() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        abstract function method1() {}
+      ')));
+      $this->assertTRUE($tree->getMethod(0)->isAbstract());
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethodAbstractStaticScope() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        public abstract function method1() {}
+        abstract private function method2() { ... }
+        abstract static function method3() {}
+        abstract private static function method3() {}
+      ')));
+      $this->assertEquals(
+        array(TRUE, TRUE, TRUE, TRUE),
+        array_map(create_function('$e', 'return $e->isAbstract();'), $tree->getMethods()),
+        'abstract'
+      );
+      $this->assertEquals(
+        array(FALSE, FALSE, TRUE, TRUE),
+        array_map(create_function('$e', 'return $e->isStatic();'), $tree->getMethods()),
+        'static'
+      );
+      $this->assertEquals(
+        array(xp·ide·source·Scope::$PUBLIC, xp·ide·source·Scope::$PRIVATE, xp·ide·source·Scope::$PUBLIC, xp·ide·source·Scope::$PRIVATE),
+        array_map(create_function('$e', 'return $e->getScope();'), $tree->getMethods()),
+        'scope'
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethodParam() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        function method1($param) {}
+      ')));
+      $this->assertEquals(
+        array(new xp·ide·source·element·Classmethodparam('param')),
+        $tree->getMethod(0)->getParams()
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethodParamInit() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        function method1($param= array()) {}
+      ')));
+      $this->assertClass(
+        $tree->getMethod(0)->getParam(0)->getInit(),
+        "xp.ide.source.element.Array"
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethodParamTypehint() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        function method1(array $param) {}
+      ')));
+      $this->assertEquals(
+        "array",
+        $tree->getMethod(0)->getParam(0)->getTypehint()
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethodParams() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        function method1($param, $foo) {}
+      ')));
+      $this->assertEquals(
+        array(
+          new xp·ide·source·element·Classmethodparam('param'),
+          new xp·ide·source·element·Classmethodparam('foo')
+        ),
+        $tree->getMethod(0)->getParams()
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethodContent() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        function method1() {
+          bkah k{ys}ld kljsnvs,ll98)%%khk
+          $ggd
+        }
+      ')));
+      $this->assertEquals('
+          bkah k{ys}ld kljsnvs,ll98)%%khk
+          $ggd
+        ', $tree->getMethod(0)->getContent()
+      );
+    }
+
   }
 ?>
