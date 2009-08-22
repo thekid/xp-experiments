@@ -206,9 +206,10 @@ error is raised otherwise.
   }
 </code>
 
-This poses a considerable performance impact on extension methods, though
-its effects are not really noticeable inside a regular business application
-working with databases, web service calls and the local file system.
+This poses a considerable performance impact on extension methods (the 
+factor is about 8), though its effects are not really noticeable inside 
+a regular business application working with databases, web service calls 
+and the local file system.
 
 XP Language
 ~~~~~~~~~~~
@@ -221,3 +222,4 @@ See also
 * http://groovy.codehaus.org/Pimp+my+Library+Pattern
 * http://www.oreillynet.com/onjava/blog/2007/12/extension_methods_proposals.html
 * http://weblogs.java.net/blog/forax/archive/2007/11/java_7_extensio.html
+* http://journal.stuffwithstuff.com/2008/02/09/c-extension-methods-not-just-for-breakfast/
