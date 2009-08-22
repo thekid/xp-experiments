@@ -282,8 +282,11 @@
          ?>
        '));
        $this->assertObject($tree->getClassdef(), 'xp.ide.source.element.Classdef');
-       $this->assertEquals($tree->getClassdef()->getName(), 'Test');
-       $this->assertEquals($tree->getClassdef()->getParent(), 'Object');
+       $this->assertEquals($tree->getClassdef()->getContent(), '
+            $mebber bla dasfa 
+            adf a
+          '
+       );
     }
 
   }
