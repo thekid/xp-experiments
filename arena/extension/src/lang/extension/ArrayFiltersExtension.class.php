@@ -13,7 +13,7 @@
   class ArrayFiltersExtension extends Object {
   
     static function __static() {
-      xp::$registry['ext:lang.types.ArrayList'][]= __CLASS__;
+      xp::$registry['ArrayList::filtered']= array(__CLASS__, 'filtered');
     }
 
     /**

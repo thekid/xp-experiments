@@ -15,7 +15,7 @@
   class tests·FixtureExtension extends Object {
 
     static function __static() {
-      xp::$registry['ext:tests.Fixture'][]= __CLASS__;
+      xp::$registry['tests·Fixture::dec']= array(__CLASS__, 'dec');
     }
 
     /**
