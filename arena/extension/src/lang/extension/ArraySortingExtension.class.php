@@ -13,7 +13,7 @@
   class ArraySortingExtension extends Object {
   
     static function __static() {
-      xp::$registry['ArrayList::sorted']= array(__CLASS__, 'sorted');
+      xp::extensions('lang.types.ArrayList', __CLASS__);
     }
 
     /**

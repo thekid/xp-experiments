@@ -123,7 +123,7 @@ declare the following:
   class ArraySortingExtension extends Object {
   
     static function __static() {
-      xp::$registry['ArrayList::sorted']= array(__CLASS__, 'sorted');
+      xp::extensions('lang.types.ArrayList', __CLASS__);
     }
     
     public static function sorted(ArrayList $self) {
