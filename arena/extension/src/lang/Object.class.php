@@ -30,7 +30,7 @@
      */
     public function __call($name, $args) {
       if (isset(xp::$registry[$m= get_class($this).'::'.$name])) {
-        return call_user_func_array(xp::$registry[$m], array_merge(array($this), $args));
+        return xp::$registry[$m]->invokeArgs(NULL, array_merge(array($this), $args));
       }
       throw new Error('Call to undefined method '.$m);
     }

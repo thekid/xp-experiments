@@ -80,7 +80,7 @@
       $i= new ReflectionClass($impl);
       foreach ($i->getMethods() as $m) {
         if (!($p= $m->getParameters()) || (!($c= $p[0]->getClass())) || $r !== $c->getName()) continue;
-        xp::$registry[$r.'::'.$m->getName()]= array($i->getName(), $m->getName());
+        xp::$registry[$r.'::'.$m->getName()]= $m;
       }
     }
     // }}}
