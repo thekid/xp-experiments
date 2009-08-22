@@ -2,4 +2,4 @@ test:
 	unittest tests.ArrayListExtensionTest
     
 profile:
-	xpcli Profile tests.ExtensionMethodPerformance
+	xpcli -cp lib/profiler.xar Profile tests.ExtensionMethodPerformance
