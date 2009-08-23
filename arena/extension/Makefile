@@ -1,3 +1,10 @@
+all:
+	@echo "===> Running tests"
+	@$(MAKE) test
+	@echo ""
+	@echo "===> Profiling"
+	@$(MAKE) profile
+    
 test:
 	unittest tests.ArrayListExtensionTest
     
