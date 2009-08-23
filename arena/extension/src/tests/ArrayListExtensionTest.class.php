@@ -6,8 +6,10 @@
 
   uses(
     'unittest.TestCase',
+    'lang.types.ArrayList',
     'lang.extension.ArrayFiltersExtension',
-    'lang.extension.ArraySortingExtension'
+    'lang.extension.ArraySortingExtension',
+    'xml.extension.XmlExtension'
   );
 
   /**
@@ -63,6 +65,31 @@
       $this->assertEquals(
         'lang.types.ArrayList[3]@{3, 1, 2}', 
         create(new ArrayList(3, 1, 2))->toString()
+      );
+    }
+
+    /**
+     * Test sorted() extension method provided by ArraySortingExtension
+     * also works for subclasses of ArrayList
+     *
+     */
+    #[@test]
+    public function subClassSorted() {
+      $this->assertEquals(
+        new ArrayList(1, 2, 3), 
+        create(newinstance('lang.types.ArrayList', array(3, 1, 2), '{}'))->sorted()
+      );
+    }
+
+    /**
+     * Test 
+     *
+     */
+    #[@test]
+    public function onInterface() {
+      $this->assertEquals(
+        '<array><values><value>3</value><value>1</value><value>2</value></values><length>3</length><__id></__id></array>',
+        create(new ArrayList(3, 1, 2))->asNode('array')->getSource(INDENT_NONE)
       );
     }
   }

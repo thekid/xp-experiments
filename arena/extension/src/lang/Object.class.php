@@ -29,10 +29,19 @@
      *
      */
     public function __call($name, $args) {
-      if (isset(xp::$registry[$m= get_class($this).'::'.$name])) {
-        return xp::$registry[$m]->invokeArgs(NULL, array_merge(array($this), $args));
+      $class= get_class($this);
+      do {
+        if (isset(xp::$registry[$m= $class.'::'.$name])) {
+          return xp::$registry[$m]->invokeArgs(NULL, array_merge(array($this), $args));
+        }
+      } while ($class= get_parent_class($class));
+      $c= new ReflectionClass($this);
+      foreach ($c->getInterfaceNames() as $i) {
+        if (isset(xp::$registry[$m= $i.'::'.$name])) {
+          return xp::$registry[$m]->invokeArgs(NULL, array_merge(array($this), $args));
+        }
       }
-      throw new Error('Call to undefined method '.$m);
+      throw new Error('Call to undefined method '.$c->getName().'::'.$name);
     }
 
     /**

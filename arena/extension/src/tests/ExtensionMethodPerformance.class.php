@@ -4,7 +4,14 @@
  * $Id$ 
  */
 
-  uses('lang.Enum', 'Profileable', 'tests.Fixture', 'tests.FixtureExtension');
+  uses(
+    'lang.Enum', 
+    'Profileable', 
+    'tests.Fixture', 
+    'tests.FixtureExtension',
+    'tests.ObjectExtension',
+    'tests.GenericExtension'
+  );
 
   /**
    * Profiles extension versus instance methods
@@ -13,7 +20,9 @@
   abstract class ExtensionMethodPerformance extends Enum implements Profileable {
     public static
       $instance,
-      $extension;
+      $class_extension,
+      $subclass_extension,
+      $interface_extension;
     
     protected static
       $fixture;
@@ -28,11 +37,27 @@
           }
         }
       }');
-      self::$extension= newinstance(__CLASS__, array(0, 'extension'), '{
+      self::$class_extension= newinstance(__CLASS__, array(1, 'class_extension'), '{
         static function __static() { }
         public function run($times) {
           for ($i= 0; $i < $times; $i++) {
             parent::$fixture->dec($i);
+          }
+        }
+      }');
+      self::$subclass_extension= newinstance(__CLASS__, array(2, 'subclass_extension'), '{
+        static function __static() { }
+        public function run($times) {
+          for ($i= 0; $i < $times; $i++) {
+            parent::$fixture->obj($i);
+          }
+        }
+      }');
+      self::$interface_extension= newinstance(__CLASS__, array(3, 'interface_extension'), '{
+        static function __static() { }
+        public function run($times) {
+          for ($i= 0; $i < $times; $i++) {
+            parent::$fixture->gen($i);
           }
         }
       }');
