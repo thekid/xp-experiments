@@ -30,18 +30,21 @@
      */
     public function __call($name, $args) {
       $class= get_class($this);
-      do {
-        if (isset(xp::$registry[$m= $class.'::'.$name])) {
-          return xp::$registry[$m]->invokeArgs(NULL, array_merge(array($this), $args));
-        }
-      } while ($class= get_parent_class($class));
-      $c= new ReflectionClass($this);
-      foreach ($c->getInterfaceNames() as $i) {
-        if (isset(xp::$registry[$m= $i.'::'.$name])) {
-          return xp::$registry[$m]->invokeArgs(NULL, array_merge(array($this), $args));
-        }
+      $name= '::'.$name;
+      if (!isset(xp::$registry[$k= $class.$name])) { 
+        do {
+          $c= new ReflectionClass($this);
+          do {
+            if (isset(xp::$registry[$k= $class.$name])) break 2;
+          } while ($class= get_parent_class($class));
+          foreach ($c->getInterfaceNames() as $i) {
+            if (isset(xp::$registry[$k= $i.$name])) break 2;
+          }
+          throw new Error('Call to undefined method '.$c->getName().$name);
+        } while (0);
+        xp::$registry[$c->getName().$name]= xp::$registry[$k];
       }
-      throw new Error('Call to undefined method '.$c->getName().'::'.$name);
+      return xp::$registry[$k]->invokeArgs(NULL, array_merge(array($this), $args));
     }
 
     /**
