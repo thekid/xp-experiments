@@ -216,6 +216,7 @@ XP Language
 In the XP language, this performance problem is solved by compile time 
 resolution.
 
+
 See also
 --------
 * http://msdn.microsoft.com/en-us/library/bb383977.aspx
@@ -223,3 +224,6 @@ See also
 * http://www.oreillynet.com/onjava/blog/2007/12/extension_methods_proposals.html
 * http://weblogs.java.net/blog/forax/archive/2007/11/java_7_extensio.html
 * http://journal.stuffwithstuff.com/2008/02/09/c-extension-methods-not-just-for-breakfast/
+* http://www.codeproject.com/KB/cs/ExtensionUnitTests.aspx
+* http://blog.getpaint.net/2008/07/03/c-extension-methods-portability-aid/
+* http://www.zorched.net/2008/01/03/implementing-mixins-with-c-extension-methods/
