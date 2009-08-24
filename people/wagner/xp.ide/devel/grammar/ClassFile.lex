@@ -19,6 +19,7 @@
 
 %%
 
+%full
 %line
 %char
 %state S_COMMENT S_COMMENT_END S_INNERBLOCK S_ENCAPSED_S S_ENCAPSED_D

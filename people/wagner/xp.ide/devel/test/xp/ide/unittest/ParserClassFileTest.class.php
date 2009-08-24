@@ -44,7 +44,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testParseClassFile() {
       $this->assertObject($this->p->parse($this->getLexer('
         <?php
@@ -61,7 +61,7 @@
      * Test parser parses a comment
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testParseClassFileComment() {
       $tree= $this->p->parse($this->getLexer('
         <?php
@@ -89,7 +89,7 @@
      * Test parser parses a class requirement
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testParseClassFileUses() {
       $tree= $this->p->parse($this->getLexer('
         <?php
@@ -133,7 +133,7 @@
      * Test parser parses a comment an a package definition
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testParseClassFileCommentPackage() {
       $tree= $this->p->parse($this->getLexer('
         <?php
@@ -164,7 +164,7 @@
      * Test parser parses a comment an a class requirement
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testParseClassFileCommentUses() {
       $tree= $this->p->parse($this->getLexer('
         <?php
@@ -195,7 +195,7 @@
      * Test parser parses a comment, a package definition and a class requirement
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testParseClassFileCommentPackageUses() {
       $tree= $this->p->parse($this->getLexer('
         <?php
@@ -230,7 +230,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testParseClass() {
       $tree= $this->p->parse($this->getLexer('
         <?php
@@ -250,7 +250,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testParseClassInterface() {
       $tree= $this->p->parse($this->getLexer('
         <?php
@@ -268,7 +268,7 @@
      * Test parser parses a classfile
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function testWithBody() {
       $tree= $this->p->parse($this->getLexer('
         <?php

@@ -19,6 +19,7 @@
 
 %%
 
+%full
 %line
 %char
 %state S_ENCAPSED_S S_ENCAPSED_D S_METHOD_CONTENT
