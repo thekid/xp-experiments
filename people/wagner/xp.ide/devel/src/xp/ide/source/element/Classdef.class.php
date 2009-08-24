@@ -21,7 +21,8 @@
       $interfaces= array(),
       $members= array(),
       $methods= array(),
-      $constants= array();
+      $constants= array(),
+      $content= '';
 
     public function setName($name) {
       $this->name= $name;
@@ -77,6 +78,14 @@
 
     public function getConstants() {
       return $this->constants;
+    }
+
+    public function setContent($content) {
+      $this->content= $content;
+    }
+
+    public function getContent() {
+      return $this->content;
     }
   }
 

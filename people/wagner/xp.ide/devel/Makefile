@@ -25,7 +25,8 @@ parser: \
   src/xp/ide/source/parser/ClassParser.class.php
 
 lexer: \
-  src/xp/ide/source/parser/ClassLexer.class.php
+  src/xp/ide/source/parser/ClassLexer.class.php \
+  src/xp/ide/source/parser/ClassFileLexer.class.php
 
 test: parser lexer
 	unittest xp.ide.**

@@ -36,11 +36,9 @@
     const T_OPEN_BCOMMENT= 264;
     const T_OPEN_TAG= 265;
     const T_USES= 266;
-    const T_OPEN_INNERBLOCK= 267;
-    const T_CONTENT_INNERBLOCK= 268;
-    const T_CLOSE_INNERBLOCK= 269;
-    const T_VARIABLE= 270;
-    const T_STRING= 271;
+    const T_CONTENT_INNERBLOCK= 267;
+    const T_VARIABLE= 268;
+    const T_STRING= 269;
     const YY_ERRORCODE= 256;
 
     protected static $yyLhs= array(-1,
@@ -61,72 +59,54 @@
     protected static $yyDgoto= array(2,
           6,     7,     8,    37,    39,     9,    10,    23, 
     );
-    protected static $yySindex = array(         -261,
-       -259,     0,  -252,   -34,   -45,  -247,  -240,  -256,  -246,     0, 
-       -237,  -239,  -238,  -235,  -232,     0,  -245,  -246,     0,     0, 
-          0,     0,   -26,   -32,     0,  -234,     0,  -231,   -30,     0, 
-       -236,     0,     0,  -254,  -233,  -229,     0,     0,   -44,  -228, 
-       -227,     0,     0,     0, 
+    protected static $yySindex = array(         -262,
+       -258,     0,  -253,   -25,   -45,  -247,  -241,  -255,  -246,     0, 
+       -239,  -240,  -238,  -237,  -233,     0,  -244,  -246,     0,     0, 
+          0,     0,   -32,   -33,     0,  -235,     0,  -232,   -31,     0, 
+       -236,     0,     0,  -123,  -234,  -231,     0,     0,   -43,   -95, 
+       -230,     0,     0,     0, 
     );
     protected static $yyRindex= array(            0,
-          0,     0,     0,     0,     0,     0,     0,  -230,  -224,     0, 
-          0,     0,     0,     0,     0,     0,     0,  -222,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,  -227,  -226,     0, 
+          0,     0,     0,     0,     0,     0,     0,  -224,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0, 
     );
     protected static $yyGindex= array(0,
-          0,    25,    26,    -3,     0,    29,    -6,     0, 
+          0,    25,    26,    -5,     0,    33,    -4,     0, 
     );
-    protected static $yyTable = array(41,
-         17,    19,    20,     1,     3,    12,     4,    11,    35,     4, 
-          5,    27,    36,     5,    29,    13,     3,    28,    16,     4, 
-         21,    22,    24,    25,    17,    26,    30,    31,    33,    32, 
-         14,    15,     0,    12,    34,    42,    18,    38,    40,    13, 
-         43,     9,     0,    44,     0,     0,     0,     0,     0,     0, 
+    protected static $yyTable = array(36,
+         41,    17,     1,    19,    20,     3,    11,     4,    29,     5, 
+          4,    28,     5,    27,    12,    13,     3,    16,    21,     4, 
+         22,    25,    24,    17,    26,    30,    31,    33,    32,    43, 
+         14,    15,    34,    42,    38,    40,    12,    13,    44,     9, 
+         18,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,    36, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,    36, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,    35, 
     );
-    protected static $yyCheck = array(44,
-        257,     8,     9,   265,   264,    40,   266,   260,   263,   266, 
-        270,    18,   267,   270,    41,    61,   264,    44,   259,   266, 
-        258,   261,   261,   259,   257,   271,    59,   262,    59,   261, 
-          6,     6,    -1,   264,   271,    39,     8,   271,   268,   264, 
-        269,   264,    -1,   271,    -1,    -1,    -1,    -1,    -1,    -1, 
+    protected static $yyCheck = array(123,
+         44,   257,   265,     8,     9,   264,   260,   266,    41,   268, 
+        266,    44,   268,    18,    40,    61,   264,   259,   258,   266, 
+        261,   259,   261,   257,   269,    59,   262,    59,   261,   125, 
+          6,     6,   269,    39,   269,   267,   264,   264,   269,   264, 
+          8,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   123, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,   267, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   263, 
     );
     protected static $yyFinal= 2;
     protected static $yyName= array(    
@@ -139,6 +119,7 @@
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
+      NULL, "'{'", NULL, "'}'", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
@@ -147,12 +128,10 @@
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
-      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
-      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T_CLASS', 
+      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'T_CLASS', 
       'T_CLOSE_BCOMMENT', 'T_CLOSE_TAG', 'T_CONTENT_BCOMMENT', 
       'T_ENCAPSED_STRING', 'T_EXTENDS', 'T_IMPLEMENTS', 'T_OPEN_BCOMMENT', 
-      'T_OPEN_TAG', 'T_USES', 'T_OPEN_INNERBLOCK', 'T_CONTENT_INNERBLOCK', 
-      'T_CLOSE_INNERBLOCK', 'T_VARIABLE', 'T_STRING', 
+      'T_OPEN_TAG', 'T_USES', 'T_CONTENT_INNERBLOCK', 'T_VARIABLE', 'T_STRING', 
     );
 
     protected static $yyTableCount= 0, $yyNameCount= 0;
@@ -336,7 +315,7 @@
 
     case 7:  #line 45 "grammar/ClassFile.jay"
     {
-    $yyVal= new xp·ide·source·element·Classdef();
+    $yyVal= new xp·ide·source·element·Classdef(); $yyVal->setContent($yyVals[-1+$yyTop]->getValue());
   } break;
 
     case 8:  #line 51 "grammar/ClassFile.jay"
@@ -374,7 +353,7 @@
 
     case 19:  #line 73 "grammar/ClassFile.jay"
     { $yyVal= new xp·ide·source·element·BlockComment(); $yyVal->setText($yyVals[-1+$yyTop]->getValue()); } break;
-#line 378 "-"
+#line 357 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];
