@@ -16,6 +16,7 @@
    * TODO:
    *  - Annotation class
    *  - API doc class
+   *  - inline comments
    *
    * @see      reference
    * @purpose  purpose
@@ -287,7 +288,25 @@
             $mebber bla dasfa 
             adf a
           '
-       );
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testApidoc() {
+      $tree= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           * Test class definition
+           * 
+           */
+          class Test extends Object {}
+        ?>
+      '));
+      $this->assertObject($tree->getClassdef()->getApidoc(), 'xp.ide.source.element.Apidoc');
     }
 
   }

@@ -6,7 +6,8 @@
     'xp.ide.source.element.Uses',
     'xp.ide.source.element.Classdef',
     'xp.ide.source.element.ClassFile',
-    'xp.ide.source.element.BlockComment'
+    'xp.ide.source.element.BlockComment',
+    'xp.ide.source.element.Apidoc'
   );
 
 %}
@@ -14,7 +15,7 @@
 %token
   T_CLASS T_CLOSE_BCOMMENT T_CLOSE_TAG T_CONTENT_BCOMMENT T_ENCAPSED_STRING
   T_EXTENDS T_IMPLEMENTS T_OPEN_BCOMMENT T_OPEN_TAG T_USES  T_CONTENT_INNERBLOCK
-  T_VARIABLE T_STRING
+  T_VARIABLE T_STRING T_OPEN_APIDOC T_CONTENT_APIDOC T_CLOSE_APIDOC
 
 %%
 
@@ -24,13 +25,15 @@ start:
 ;
 
 classDef:
-  blockComment T_CLASS T_STRING T_EXTENDS T_STRING classBody {
+  apidoc T_CLASS T_STRING T_EXTENDS T_STRING classBody {
     $$= $6;
+    $$->setApidoc($1);
     $$->setName($3->getValue());
     $$->setParent($5->getValue());
   }
-  | blockComment T_CLASS T_STRING T_EXTENDS T_STRING T_IMPLEMENTS interfaces classBody {
+  | apidoc T_CLASS T_STRING T_EXTENDS T_STRING T_IMPLEMENTS interfaces classBody {
     $$= $8;
+    $$->setApidoc($1);
     $$->setName($3->getValue());
     $$->setParent($5->getValue());
     $$->setInterfaces($7);
@@ -71,6 +74,10 @@ usesClasses:
 
 blockComment:
   T_OPEN_BCOMMENT T_CONTENT_BCOMMENT T_CLOSE_BCOMMENT { $$= new xp·ide·source·element·BlockComment(); $$->setText($2->getValue()); }
+;
+
+apidoc:
+  T_OPEN_APIDOC T_CONTENT_APIDOC T_CLOSE_APIDOC { $$= new xp·ide·source·element·Apidoc(); $$->setText($2->getValue()); }
 ;
 
 %%

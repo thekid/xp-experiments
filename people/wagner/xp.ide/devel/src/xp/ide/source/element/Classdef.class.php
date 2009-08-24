@@ -22,7 +22,16 @@
       $members= array(),
       $methods= array(),
       $constants= array(),
-      $content= '';
+      $content= '',
+      $apidoc= NULL;
+
+    public function setApidoc(xp·ide·source·element·Apidoc $apidoc= NULL) {
+      $this->apidoc= $apidoc;
+    }
+
+    public function getApidoc() {
+      return $this->apidoc;
+    }
 
     public function setName($name) {
       $this->name= $name;
