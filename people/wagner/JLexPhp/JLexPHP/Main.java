@@ -1038,18 +1038,16 @@ private void emit_table_as_array_2d(int [][] ia) {
         m_outstream.println(" {");
       }
 
-    m_outstream.println("    $yy_anchor = self::YY_NO_ANCHOR;");
-    m_outstream.println("    $yy_state "
-         + "= self::$yy_state_dtrans[$this->yy_lexical_state];");
-    m_outstream.println("    $yy_next_state = self::YY_NO_STATE;");
-    m_outstream.println("    $yy_last_accept_state = self::YY_NO_STATE;");
-    m_outstream.println("    $yy_initial = true;");
+    m_outstream.println("    $yy_anchor= self::YY_NO_ANCHOR;");
+    m_outstream.println("    $yy_state= self::$yy_state_dtrans[$this->yy_lexical_state];");
+    m_outstream.println("    $yy_next_state= self::YY_NO_STATE;");
+    m_outstream.println("    $yy_last_accept_state= self::YY_NO_STATE;");
+    m_outstream.println("    $yy_initial= TRUE;");
     m_outstream.println();
-
     m_outstream.println("    $this->yy_mark_start();");
-    m_outstream.println("    $yy_this_accept = self::$yy_acpt[$yy_state];");
+    m_outstream.println("    $yy_this_accept= self::$yy_acpt[$yy_state];");
     m_outstream.println("    if (self::YY_NOT_ACCEPT != $yy_this_accept) {");
-    m_outstream.println("      $yy_last_accept_state = $yy_state;");
+    m_outstream.println("      $yy_last_accept_state= $yy_state;");
     m_outstream.println("      $this->yy_mark_end();");
     m_outstream.println("    }");
 
@@ -1058,7 +1056,7 @@ private void emit_table_as_array_2d(int [][] ia) {
         m_outstream.println("    echo \"Begin\\n\";");
       }
 
-    m_outstream.println("    while (true) {");
+    m_outstream.println("    while (TRUE) {");
 
     m_outstream.println("      if ($yy_initial && $this->yy_at_bol) "+
                        "$yy_lookahead = self::YY_BOL;");
@@ -1068,62 +1066,46 @@ private void emit_table_as_array_2d(int [][] ia) {
 
     if (NOT_EDBG)
       {
-        m_outstream.println("print(\"Current state: \""
-             + " . $yy_state . ");
-        m_outstream.println(". \"  Current input: \"");
-        m_outstream.println(" . $yy_lookahead);");
+        m_outstream.println("print(\"Current state: \".$yy_state.");
+        m_outstream.println(".\"  Current input: \"");
+        m_outstream.println(".$yy_lookahead);");
       }
     if (NOT_EDBG)
       {
-        m_outstream.println("      print(\"State = \""
-             + ". $yy_state . \"\\n\");");
-        m_outstream.println("      print(\"Accepting status = \""
-             + ". $yy_this_accept);");
-        m_outstream.println("      print(\"Last accepting state = \""
-             + ". $yy_last_accept_state);");
-        m_outstream.println("      print(\"Next state = \""
-             + ". $yy_next_state);");
-        m_outstream.println("      print(\"Lookahead input = \""
-             + ". $yy_lookahead);");
+        m_outstream.println("      print(\"State = \". $yy_state . \"\\n\");");
+        m_outstream.println("      print(\"Accepting status = \". $yy_this_accept);");
+        m_outstream.println("      print(\"Last accepting state = \". $yy_last_accept_state);");
+        m_outstream.println("      print(\"Next state = \". $yy_next_state);");
+        m_outstream.println("      print(\"Lookahead input = \". $yy_lookahead);");
       }
 
     // handle bare EOF.
-    m_outstream.println("      if ($this->YY_EOF == $yy_lookahead "
-         + "&& true == $yy_initial) {");
-    if (null != m_spec.m_eof_code)
-      {
-        m_outstream.println("        $this->yy_do_eof();");
-      }
-    if (true == m_spec.m_integer_type)
-      {
-        m_outstream.println("        return self::YYEOF;");
-      }
-    else if (null != m_spec.m_eof_value_code)
-      {
-        m_outstream.print(new String(m_spec.m_eof_value_code,0,
-            m_spec.m_eof_value_read));
-      }
-    else
-      {
-        m_outstream.println("        return null;");
-      }
+    m_outstream.println("      if ($this->YY_EOF == $yy_lookahead && true == $yy_initial) {");
+    if (null != m_spec.m_eof_code) {
+      m_outstream.println("        $this->yy_do_eof();");
+    }
+    if (true == m_spec.m_integer_type) {
+      m_outstream.println("        return self::YYEOF;");
+    } else if (null != m_spec.m_eof_value_code) {
+      m_outstream.print(new String(m_spec.m_eof_value_code,0, m_spec.m_eof_value_read));
+    } else {
+      m_outstream.println("        return NULL;");
+    }
 
     m_outstream.println("      }");
     m_outstream.println("      if (self::YY_F != $yy_next_state) {");
-    m_outstream.println("        $yy_state = $yy_next_state;");
-    m_outstream.println("        $yy_initial = false;");
-    m_outstream.println("        $yy_this_accept = self::$yy_acpt[$yy_state];");
+    m_outstream.println("        $yy_state= $yy_next_state;");
+    m_outstream.println("        $yy_initial= false;");
+    m_outstream.println("        $yy_this_accept= self::$yy_acpt[$yy_state];");
     m_outstream.println("        if (self::YY_NOT_ACCEPT != $yy_this_accept) {");
-    m_outstream.println("          $yy_last_accept_state = $yy_state;");
+    m_outstream.println("          $yy_last_accept_state= $yy_state;");
     m_outstream.println("          $this->yy_mark_end();");
     m_outstream.println("        }");
-    m_outstream.println("      }");
-    m_outstream.println("      else {");
+    m_outstream.println("      } else {");
     m_outstream.println("        if (self::YY_NO_STATE == $yy_last_accept_state) {");
-    m_outstream.println("          throw new Exception(\"Lexical Error: Unmatched Input.\");");
-    m_outstream.println("        }");
-    m_outstream.println("        else {");
-    m_outstream.println("          $yy_anchor = self::$yy_acpt[$yy_last_accept_state];");
+    m_outstream.println("          throw new IllegalStateException(sprintf('Lexical Error: Unmatched Input on line %d, byte %d', $this->yyline, $this->yycol));");
+    m_outstream.println("        } else {");
+    m_outstream.println("          $yy_anchor= self::$yy_acpt[$yy_last_accept_state];");
     m_outstream.println("          if (0 != (self::YY_END & $yy_anchor)) {");
     m_outstream.println("            $this->yy_move_end();");
     m_outstream.println("          }");
@@ -1134,21 +1116,19 @@ private void emit_table_as_array_2d(int [][] ia) {
 
     m_outstream.println("            default:");
     m_outstream.println("            $this->yy_error('INTERNAL',false);");
-    m_outstream.println("          case -1:");
+    m_outstream.println("            case -1:");
     m_outstream.println("          }");
-    m_outstream.println("          $yy_initial = true;");
-    m_outstream.println("          $yy_state "
-         + "= self::$yy_state_dtrans[$this->yy_lexical_state];");
-    m_outstream.println("          $yy_next_state = self::YY_NO_STATE;");
-    m_outstream.println("          $yy_last_accept_state = self::YY_NO_STATE;");
+    m_outstream.println("          $yy_initial= TRUE;");
+    m_outstream.println("          $yy_state= self::$yy_state_dtrans[$this->yy_lexical_state];");
+    m_outstream.println("          $yy_next_state= self::YY_NO_STATE;");
+    m_outstream.println("          $yy_last_accept_state= self::YY_NO_STATE;");
     m_outstream.println("          $this->yy_mark_start();");
 
-    m_outstream.println("          $yy_this_accept = self::$yy_acpt[$yy_state];");
+    m_outstream.println("          $yy_this_accept= self::$yy_acpt[$yy_state];");
     m_outstream.println("          if (self::YY_NOT_ACCEPT != $yy_this_accept) {");
-    m_outstream.println("            $yy_last_accept_state = $yy_state;");
+    m_outstream.println("            $yy_last_accept_state= $yy_state;");
     m_outstream.println("            $this->yy_mark_end();");
     m_outstream.println("          }");
-
     m_outstream.println("        }");
     m_outstream.println("      }");
     m_outstream.println("    }");
