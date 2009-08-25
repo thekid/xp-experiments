@@ -36,6 +36,7 @@
      */
     public function setUp() {
       $this->p= new xp·ide·source·parser·ClassFileParser();
+      $this->p->setTopElement(new xp·ide·source·element·ClassFile());
     }
 
     /**

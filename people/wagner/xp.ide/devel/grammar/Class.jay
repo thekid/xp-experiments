@@ -28,12 +28,12 @@
 %%
 
 start:
-   classConstantList classMemberScopes classMethods { $$= new xp·ide·source·element·Classdef(); $$->setConstants($1); $$->setMembers($2); $$->setMethods($3); }
-  | classConstantList classMemberScopes { $$= new xp·ide·source·element·Classdef(); $$->setConstants($1); $$->setMembers($2); }
-  | classConstantList { $$= new xp·ide·source·element·Classdef(); $$->setConstants($1); }
-  | classMemberScopes { $$= new xp·ide·source·element·Classdef(); $$->setMembers($1); }
-  | classMethods { $$= new xp·ide·source·element·Classdef(); $$->setMethods($1); }
-  | { $$= new xp·ide·source·element·Classdef(); }
+   classConstantList classMemberScopes classMethods { $$= $this->top_element; $$->setConstants($1); $$->setMembers($2); $$->setMethods($3); }
+  | classConstantList classMemberScopes { $$= $this->top_element; $$->setConstants($1); $$->setMembers($2); }
+  | classConstantList { $$= $this->top_element; $$->setConstants($1); }
+  | classMemberScopes { $$= $this->top_element; $$->setMembers($1); }
+  | classMethods { $$= $this->top_element; $$->setMethods($1); }
+  | { $$= $this->top_element; }
 ;
 
 classMethods:

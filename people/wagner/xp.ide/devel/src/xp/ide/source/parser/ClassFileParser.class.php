@@ -334,7 +334,7 @@
     { $yyVal= $yyVals[-2+$yyTop]; $yyVal->setClassdef($yyVals[-1+$yyTop]); } break;
 
     case 2:  #line 26 "grammar/ClassFile.jay"
-    { $yyVal= new xp·ide·source·element·ClassFile(); $yyVal->setClassdef($yyVals[-1+$yyTop]); } break;
+    { $yyVal= $this->top_element; $yyVal->setClassdef($yyVals[-1+$yyTop]); } break;
 
     case 3:  #line 30 "grammar/ClassFile.jay"
     {

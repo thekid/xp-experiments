@@ -23,7 +23,7 @@
 
 start:
   T_OPEN_TAG meta classDef T_CLOSE_TAG { $$= $2; $$->setClassdef($3); }
-  | T_OPEN_TAG classDef T_CLOSE_TAG { $$= new xp·ide·source·element·ClassFile(); $$->setClassdef($2); }
+  | T_OPEN_TAG classDef T_CLOSE_TAG { $$= $this->top_element; $$->setClassdef($2); }
 ;
 
 classDef:

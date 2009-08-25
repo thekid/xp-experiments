@@ -366,22 +366,22 @@
             switch ($yyN) {
 
     case 1:  #line 31 "grammar/Class.jay"
-    { $yyVal= new xp·ide·source·element·Classdef(); $yyVal->setConstants($yyVals[-2+$yyTop]); $yyVal->setMembers($yyVals[-1+$yyTop]); $yyVal->setMethods($yyVals[0+$yyTop]); } break;
+    { $yyVal= $this->top_element; $yyVal->setConstants($yyVals[-2+$yyTop]); $yyVal->setMembers($yyVals[-1+$yyTop]); $yyVal->setMethods($yyVals[0+$yyTop]); } break;
 
     case 2:  #line 32 "grammar/Class.jay"
-    { $yyVal= new xp·ide·source·element·Classdef(); $yyVal->setConstants($yyVals[-1+$yyTop]); $yyVal->setMembers($yyVals[0+$yyTop]); } break;
+    { $yyVal= $this->top_element; $yyVal->setConstants($yyVals[-1+$yyTop]); $yyVal->setMembers($yyVals[0+$yyTop]); } break;
 
     case 3:  #line 33 "grammar/Class.jay"
-    { $yyVal= new xp·ide·source·element·Classdef(); $yyVal->setConstants($yyVals[0+$yyTop]); } break;
+    { $yyVal= $this->top_element; $yyVal->setConstants($yyVals[0+$yyTop]); } break;
 
     case 4:  #line 34 "grammar/Class.jay"
-    { $yyVal= new xp·ide·source·element·Classdef(); $yyVal->setMembers($yyVals[0+$yyTop]); } break;
+    { $yyVal= $this->top_element; $yyVal->setMembers($yyVals[0+$yyTop]); } break;
 
     case 5:  #line 35 "grammar/Class.jay"
-    { $yyVal= new xp·ide·source·element·Classdef(); $yyVal->setMethods($yyVals[0+$yyTop]); } break;
+    { $yyVal= $this->top_element; $yyVal->setMethods($yyVals[0+$yyTop]); } break;
 
     case 6:  #line 36 "grammar/Class.jay"
-    { $yyVal= new xp·ide·source·element·Classdef(); } break;
+    { $yyVal= $this->top_element; } break;
 
     case 7:  #line 40 "grammar/Class.jay"
     { $yyVal= $yyVals[-1+$yyTop]; $yyVal[]= $yyVals[0+$yyTop]; } break;

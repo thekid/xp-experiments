@@ -14,6 +14,17 @@
    */
   abstract class xp·ide·source·parser·Parser extends AbstractParser {
 
+    protected
+      $top_element= NULL;
+
+    public function getTopElement() {
+      return $this->top_element;
+    }
+
+    public function setTopElement(xp·ide·source·Element $top_element) {
+      $this->top_element= $top_element;
+    }
+
     public static function unquote($string) {
       $q= $string{0};
       return str_replace('\\'.$q, $q, substr($string, 1, -1));
