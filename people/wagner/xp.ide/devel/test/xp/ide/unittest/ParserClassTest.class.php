@@ -20,7 +20,6 @@
    * TestCase
    * TODO:
    *  - Annotation member 
-   *  - Annotation method
    *
    * @see      reference
    * @purpose  purpose

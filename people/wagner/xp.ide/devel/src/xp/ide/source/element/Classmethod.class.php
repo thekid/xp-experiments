@@ -23,7 +23,8 @@
       $abstract= FALSE,
       $scope= NULL,
       $content= '',
-      $apidoc= NULL;
+      $apidoc= NULL,
+      $annotations;
 
     public function __construct($name= '', xp·ide·source·Scope $scope= NULL) {
       $this->name= $name;
@@ -36,6 +37,14 @@
         && $this->scope === $o->getScope()
         && $this->static === $o->isStatic()
       ;
+    }
+
+    public function setAnnotations(array $annotations) {
+      $this->annotations= $annotations;
+    }
+
+    public function getAnnotations() {
+      return $this->annotations;
     }
 
     public function setName($name) {
