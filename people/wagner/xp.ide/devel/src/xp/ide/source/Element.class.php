@@ -12,6 +12,11 @@
    * @purpose  IDE
    */
   abstract class xp·ide·source·Element extends Object {
+
+    public function accept($v) {
+      return $v->visit($this);
+    }
+
   }
 
 ?>

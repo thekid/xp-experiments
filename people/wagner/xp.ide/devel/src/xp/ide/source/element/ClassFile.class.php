@@ -45,7 +45,7 @@
       return $this->uses;
     }
 
-    public function setClassdef(xp·ide·source·element·Classdef$classdef) {
+    public function setClassdef(xp·ide·source·element·Classdef $classdef) {
       $this->classdef= $classdef;
     }
 
