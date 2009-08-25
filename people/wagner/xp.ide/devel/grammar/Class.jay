@@ -17,6 +17,8 @@
 %token
   T_ENCAPSED_STRING T_NUMBER T_STRING T_VARIABLE T_ARRAY
   T_NULL T_BOOLEAN T_DOUBLE_ARROW T_FUNCTION T_FUNCTION_BODY
+  T_OPEN_APIDOC T_CONTENT_APIDOC T_CLOSE_APIDOC T_DIRECTIVE_APIDOC
+  T_START_ANNOTATION T_CLOSE_ANNOTATION T_ANNOTATION
 
 %right
   T_PUBLIC T_PRIVATE T_PROTECTED T_CONST T_STATIC T_ABSTRACT
@@ -38,8 +40,44 @@ classMethods:
 ;
 
 classMethod:
-  classMethodMods T_FUNCTION T_STRING classMethodParamDef '{' T_FUNCTION_BODY '}' { $$= new xp·ide·source·element·Classmethod($3->getValue()); isset($1['abstract']) && $$->setAbstract($1['abstract']); isset($1['scope']) && $$->setScope($1['scope']); isset($1['static']) && $$->setStatic($1['static']);  $$->setParams($4);  $$->setContent($6->getValue());  }
-  | T_FUNCTION T_STRING classMethodParamDef '{' T_FUNCTION_BODY '}' { $$= new xp·ide·source·element·Classmethod($2->getValue()); $$->setParams($3);  $$->setContent($5->getValue()); }
+  classMethodMods T_FUNCTION T_STRING classMethodParamDef '{' T_FUNCTION_BODY '}' {
+    $$= new xp·ide·source·element·Classmethod($3->getValue());
+    isset($1['abstract']) && $$->setAbstract($1['abstract']);
+    isset($1['scope'])    && $$->setScope($1['scope']);
+    isset($1['static'])   && $$->setStatic($1['static']);
+    $$->setParams($4);
+    $$->setContent($6->getValue());
+  }
+  | T_FUNCTION T_STRING classMethodParamDef '{' T_FUNCTION_BODY '}' {
+    $$= new xp·ide·source·element·Classmethod($2->getValue());
+    $$->setParams($3);
+    $$->setContent($5->getValue());
+  }
+  | apidoc classMethodMods T_FUNCTION T_STRING classMethodParamDef '{' T_FUNCTION_BODY '}' {
+    $$= new xp·ide·source·element·Classmethod($4->getValue());
+    $$->setApidoc($1);
+    isset($2['abstract']) && $$->setAbstract($2['abstract']);
+    isset($2['scope'])    && $$->setScope($2['scope']);
+    isset($2['static'])   && $$->setStatic($2['static']);
+    $$->setParams($5);
+    $$->setContent($7->getValue());
+  }
+  | apidoc T_FUNCTION T_STRING classMethodParamDef '{' T_FUNCTION_BODY '}' {
+    $$= new xp·ide·source·element·Classmethod($3->getValue());
+    $$->setApidoc($1);
+    $$->setParams($4);
+    $$->setContent($6->getValue());
+  }
+;
+
+apidoc:
+  T_OPEN_APIDOC T_CONTENT_APIDOC apidocDirectives T_CLOSE_APIDOC { $$= new xp·ide·source·element·Apidoc(); $$->setText($2->getValue()); $$->setDirectives($3); }
+  | T_OPEN_APIDOC T_CONTENT_APIDOC T_CLOSE_APIDOC { $$= new xp·ide·source·element·Apidoc(); $$->setText($2->getValue()); }
+;
+
+apidocDirectives:
+  apidocDirectives T_DIRECTIVE_APIDOC { $$= $1; $$[]= new xp·ide·source·element·ApidocDirective($2->getValue()); }
+  | T_DIRECTIVE_APIDOC { $$= array(new xp·ide·source·element·ApidocDirective($1->getValue())); }
 ;
 
 classMethodParamDef:

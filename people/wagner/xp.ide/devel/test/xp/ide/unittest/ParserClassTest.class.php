@@ -12,6 +12,7 @@
     'xp.ide.source.element.Classmember',
     'xp.ide.source.element.Classconstant',
     'xp.ide.source.element.Classmethod',
+    'xp.ide.source.element.Annotation',
     'io.streams.MemoryInputStream'
   );
 
@@ -20,8 +21,6 @@
    * TODO:
    *  - Annotation member 
    *  - Annotation method
-   *  - API doc method
-   *  - inline comments
    *
    * @see      reference
    * @purpose  purpose
@@ -367,6 +366,84 @@
           bkah k{ys}ld kljsnvs,ll98)%%khk
           $ggd
         ', $tree->getMethod(0)->getContent()
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testInlineComment() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        // ... bla
+        function method1() { // foo
+          bkah k{ys}ld kljsnvs,ll98)%%khk
+          $ggd
+        }
+      ')));
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethodApidoc() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        /**
+         * Test method api doc
+         *
+         */
+        function method1($param, $foo) {}
+      ')));
+      $this->assertEquals(
+        '
+Test method api doc
+',
+        $tree->getMethod(0)->getApidoc()->getText()
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethodApidocDirectives() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        /**
+         * Test method api doc
+         *
+         * @param string bla
+         * @return boolean
+         */
+        function method1($param, $foo) {}
+      ')));
+      $this->assertEquals(
+        array(
+          new xp·ide·source·element·ApidocDirective('@param string bla'),
+          new xp·ide·source·element·ApidocDirective('@return boolean'),
+        ),
+        $tree->getMethod(0)->getApidoc()->getDirectives()
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethodAnnotation() {
+      $tree= $this->p->parse($this->getLexer(new MemoryInputStream('
+        #[@test]
+        function method1($param, $foo) {}
+      ')));
+      $this->assertEquals(
+        array(
+          new xp·ide·source·element·Annotation('test'),
+        ),
+        $tree->getMethod(0)->getAnnotations()
       );
     }
 

@@ -25,7 +25,8 @@
       $position= array(0, 0);
 
     private
-      $buffer= '';
+      $buffer= '',
+      $states= array();
 
     /**
      * Advance to next token. Return TRUE and set token, value and
@@ -38,6 +39,15 @@
       $this->value= NULL;
       $this->yylex();
       return NULL !== $this->value;
+    }
+
+    protected function pushState($state) {
+      array_push($this->states, $this->yy_lexical_state);
+      $this->yybegin($state);
+    }
+
+    protected function popState() {
+      $this->yybegin(array_pop($this->states));
     }
 
     protected function resetBuffer() {

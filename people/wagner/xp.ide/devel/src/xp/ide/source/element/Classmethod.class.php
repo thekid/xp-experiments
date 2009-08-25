@@ -22,7 +22,8 @@
       $static= FALSE,
       $abstract= FALSE,
       $scope= NULL,
-      $content= '';
+      $content= '',
+      $apidoc= NULL;
 
     public function __construct($name= '', xp·ide·source·Scope $scope= NULL) {
       $this->name= $name;
@@ -87,6 +88,14 @@
 
     public function getContent() {
       return $this->content;
+    }
+
+    public function setApidoc($apidoc) {
+      $this->apidoc= $apidoc;
+    }
+
+    public function getApidoc() {
+      return $this->apidoc;
     }
   }
 

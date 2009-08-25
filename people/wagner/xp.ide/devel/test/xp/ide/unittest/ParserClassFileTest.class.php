@@ -8,15 +8,12 @@
     'io.streams.MemoryInputStream',
     'xp.ide.unittest.TestCase',
     'xp.ide.source.parser.ClassFileParser',
-    'xp.ide.source.parser.ClassFileLexer'
+    'xp.ide.source.parser.ClassFileLexer',
+    'xp.ide.source.element.ApidocDirective'
   );
 
   /**
    * TestCase
-   * TODO:
-   *  - Annotation class
-   *  - API doc class
-   *  - inline comments
    *
    * @see      reference
    * @purpose  purpose
@@ -307,6 +304,141 @@
         ?>
       '));
       $this->assertObject($tree->getClassdef()->getApidoc(), 'xp.ide.source.element.Apidoc');
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testApidocContent() {
+      $tree= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           * Test class definition
+           *   
+           */
+          class Test extends Object {}
+        ?>
+      '));
+      $this->assertEquals(
+        '
+Test class definition
+  ',
+        $tree->getClassdef()->getApidoc()->getText()
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testApidocDirective() {
+      $tree= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           * Test class definition
+           *
+           * @param string bla
+           * @return boolean
+           */
+          class Test extends Object {}
+        ?>
+      '));
+      $this->assertEquals(
+        array(
+          new xp·ide·source·element·ApidocDirective('@param string bla'),
+          new xp·ide·source·element·ApidocDirective('@return boolean'),
+        ),
+        $tree->getClassdef()->getApidoc()->getDirectives()
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testInlineComment() {
+      $tree= $this->p->parse($this->getLexer('
+        <?php
+          // ...
+          /**
+           */
+          class Test extends Object {}
+        ?>
+      '));
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testAnnotation() {
+      $tree= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           */
+          #[@test]
+          class Test extends Object {}
+        ?>
+      '));
+      $this->assertEquals(
+        array(
+          new xp·ide·source·element·Annotation('test'),
+        ),
+        $tree->getClassdef()->getAnnotations()
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testAnnotations() {
+      $tree= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           */
+          #[@test, @ignore]
+          class Test extends Object {}
+        ?>
+      '));
+      $this->assertEquals(
+        array(
+          new xp·ide·source·element·Annotation('test'),
+          new xp·ide·source·element·Annotation('ingore'),
+        ),
+        $tree->getClassdef()->getAnnotations()
+      );
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testAnnotationParam() {
+      $tree= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           */
+          #[@test(), @inject(type = \'lang.Object\'), @except(\'lang.XPException\'), @bla(blubb=\'Fisch\', foo=\'bar\')]
+          class Test extends Object {}
+        ?>
+      '));
+      $this->assertEquals(
+        array(
+          new xp·ide·source·element·Annotation('test'),
+          new xp·ide·source·element·Annotation('inject', array('type' => 'lang.Object')),
+          new xp·ide·source·element·Annotation('expect', array('lang.XPException')),
+          new xp·ide·source·element·Annotation('bla', array('blubb' => 'Fisch', 'foo' => 'bar')),
+        ),
+        $tree->getClassdef()->getAnnotations()
+      );
     }
 
   }

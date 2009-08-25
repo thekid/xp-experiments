@@ -18,6 +18,7 @@
     private
       $name= '',
       $parent= '',
+      $annotations= array(),
       $interfaces= array(),
       $members= array(),
       $methods= array(),
@@ -55,6 +56,14 @@
 
     public function getInterfaces() {
       return $this->interfaces;
+    }
+
+    public function setAnnotations(array $annotations) {
+      $this->annotations= $annotations;
+    }
+
+    public function getAnnotations() {
+      return $this->annotations;
     }
 
     public function setMethods(array $methods) {

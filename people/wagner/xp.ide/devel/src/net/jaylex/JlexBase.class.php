@@ -34,7 +34,8 @@
 
   uses(
     'text.parser.generic.AbstractLexer',
-    'io.IOException'
+    'io.IOException',
+    'lang.IllegalArgumentException'
   );
 
   abstract class net·jaylex·JLexBase extends AbstractLexer {
@@ -203,7 +204,7 @@
     /**
      * get detected token
      *
-     * return string
+     * @return string
      */
     protected function yytext() {
       return substr(
@@ -216,21 +217,33 @@
     /**
      * get detected token length
      *
-     * return int
+     * @return int
      */
     protected function yylength() {
       return $this->yy_buffer_end - $this->yy_buffer_start;
     }
 
     /**
+     * go back in buffer
+     *
+     * @param int l
+     * @return int
+     * @throws lang.IllegalArgumentException
+     */
+    protected function yypushback($l) {
+      if ($l > $this->yylength()) throw new IllegalStateException(sprintf('pushback can only be as long as the recognized pattern (%d byte but was %d)', $this->yylength(), $l));
+      return $this->yy_buffer_index -= $l;
+    }
+
+    /**
      * raise error
      *
+     * @param string error code
+     * @param bool fatal
      * @throws io.IOException
      */
     protected function yy_error($code, $fatal) {
-      print self::$yy_error_string[$code];
-      flush();
-      if ($fatal) throw new IOException("JLex fatal error " . self::$yy_error_string[$code]);
+      throw new IOException("JLex fatal error " . self::$yy_error_string[$code]);
     }
 
   }
