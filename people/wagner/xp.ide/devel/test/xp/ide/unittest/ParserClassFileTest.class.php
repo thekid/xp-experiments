@@ -14,8 +14,6 @@
 
   /**
    * TestCase
-   * TODO
-   *   * abstract class
    *
    * @see      reference
    * @purpose  purpose
@@ -372,6 +370,22 @@ Test class definition
           class Test extends Object {}
         ?>
       '));
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testAbstract() {
+      $tree= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           */
+          abstract class Test extends Object {}
+        ?>
+      '));
+      $this->assertTrue($tree->getClassdef()->isAbstract());
     }
 
     /**

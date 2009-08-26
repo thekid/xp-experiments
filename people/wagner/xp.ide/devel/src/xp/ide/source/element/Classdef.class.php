@@ -24,7 +24,8 @@
       $methods= array(),
       $constants= array(),
       $content= '',
-      $apidoc= NULL;
+      $apidoc= NULL,
+      $abstract= FALSE;
 
     public function __construct($name, $parent= 'Object') {
       $this->name= $name;
@@ -109,6 +110,14 @@
 
     public function getContent() {
       return $this->content;
+    }
+
+    public function setAbstract($abstract) {
+      $this->abstract= $abstract;
+    }
+
+    public function isAbstract() {
+      return $this->abstract;
     }
   }
 
