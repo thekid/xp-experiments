@@ -26,6 +26,11 @@
       $content= '',
       $apidoc= NULL;
 
+    public function __construct($name, $parent= 'Object') {
+      $this->name= $name;
+      $this->parent= $parent;
+    }
+
     public function setApidoc(xp·ide·source·element·Apidoc $apidoc= NULL) {
       $this->apidoc= $apidoc;
     }

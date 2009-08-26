@@ -16,14 +16,18 @@
    */
   class xp·ide·source·element·Package extends xp·ide·source·Element {
     private
-      $pathname= '';
+      $name= '';
 
-    public function setPathname($pathname) {
-      $this->pathname= $pathname;
+    public function __construct($name) {
+      $this->name= $name;
     }
 
-    public function getPathname() {
-      return $this->pathname;
+    public function setName($name) {
+      $this->name= $name;
+    }
+
+    public function getName() {
+      return $this->name;
     }
 
   }

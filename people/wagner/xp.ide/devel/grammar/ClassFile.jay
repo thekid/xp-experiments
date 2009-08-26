@@ -28,19 +28,17 @@ start:
 
 classDef:
   apidoc annotationblock T_CLASS T_STRING T_EXTENDS T_STRING classBody {
-    $$= $7;
+    $$= new xp·ide·source·element·Classdef($4->getValue(), $6->getValue());
     $$->setApidoc($1);
     $$->setAnnotations($2);
-    $$->setName($4->getValue());
-    $$->setParent($6->getValue());
+    $$->setContent($7);
   }
   | apidoc annotationblock  T_CLASS T_STRING T_EXTENDS T_STRING T_IMPLEMENTS interfaces classBody {
-    $$= $9;
+    $$= new xp·ide·source·element·Classdef($4->getValue(), $6->getValue());
     $$->setApidoc($1);
     $$->setAnnotations($2);
-    $$->setName($4->getValue());
-    $$->setParent($6->getValue());
     $$->setInterfaces($8);
+    $$->setContent($9);
   }
 ;
 interfaces:
@@ -49,9 +47,8 @@ interfaces:
 ;
 
 classBody:
-  '{' T_CONTENT_INNERBLOCK '}' {
-    $$= new xp·ide·source·element·Classdef(); $$->setContent($2->getValue());
-  }
+  '{' T_CONTENT_INNERBLOCK '}' { $$= $2->getValue(); }
+  | '{' '}' { $$= ''; }
 ;
 
 annotationblock:
@@ -87,7 +84,7 @@ meta:
 ;
 
 package:
-  T_VARIABLE '=' T_ENCAPSED_STRING ';'  { $$= new xp·ide·source·element·Package(); $$->setPathname($this->unquote($3->getValue())); }
+  T_VARIABLE '=' T_ENCAPSED_STRING ';'  { $$= new xp·ide·source·element·Package($this->unquote($3->getValue())); }
 ;
 
 uses:

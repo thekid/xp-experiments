@@ -42,7 +42,7 @@
      */
     public function setUp() {
       $this->p= new xp·ide·source·parser·ClassParser();
-      $this->p->setTopElement(new xp·ide·source·element·ClassDef());
+      $this->p->setTopElement(new xp·ide·source·element·ClassDef('Test'));
     }
 
     /**

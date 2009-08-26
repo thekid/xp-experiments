@@ -14,6 +14,8 @@
 
   /**
    * TestCase
+   * TODO
+   *   * abstract class
    *
    * @see      reference
    * @purpose  purpose
@@ -125,7 +127,7 @@
       '));
       $this->assertObject($tree, 'xp.ide.source.element.ClassFile');
       $this->assertObject($tree->getPackage(), 'xp.ide.source.element.Package');
-      $this->assertEquals($tree->getPackage()->getPathname(), "bla");
+      $this->assertEquals($tree->getPackage()->getName(), "bla");
     }
 
     /**
@@ -156,7 +158,7 @@
           * $Id$ 
           ');
       $this->assertObject($tree->getPackage(), 'xp.ide.source.element.Package');
-      $this->assertEquals($tree->getPackage()->getPathname(), "bla");
+      $this->assertEquals($tree->getPackage()->getName(), "bla");
     }
 
     /**
@@ -220,7 +222,7 @@
           * $Id$ 
           ');
       $this->assertObject($tree->getPackage(), 'xp.ide.source.element.Package');
-      $this->assertEquals($tree->getPackage()->getPathname(), "bla");
+      $this->assertEquals($tree->getPackage()->getName(), "bla");
       $this->assertObject($tree->getUses(), 'xp.ide.source.element.Uses');
       $this->assertEquals($tree->getUses()->getClassnames(), array("bla", "blubb"));
     }

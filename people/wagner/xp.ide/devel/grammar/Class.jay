@@ -2,7 +2,6 @@
 
   uses(
     'xp.ide.source.Scope',
-    'xp.ide.source.element.Classdef',
     'xp.ide.source.element.Classmember',
     'xp.ide.source.element.Classmethod',
     'xp.ide.source.element.Classconstant',

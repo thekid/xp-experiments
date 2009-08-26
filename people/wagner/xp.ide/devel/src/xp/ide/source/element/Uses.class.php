@@ -18,6 +18,10 @@
     private
       $classnames= array();
 
+    public function __construct(array $classes= array()) {
+      $this->classes= $classes;
+    }
+
     public function setClassnames(array $classes) {
       $this->classes= $classes;
     }
