@@ -10,6 +10,8 @@
     'xp.ide.source.element.BlockComment',
     'xp.ide.source.element.Uses',
     'xp.ide.source.element.Classdef',
+    'xp.ide.source.element.Apidoc',
+    'xp.ide.source.element.ApidocDirective',
     'xp.ide.unittest.TestCase',
     'io.streams.MemoryOutputStream',
     'xp.ide.source.Generator'
@@ -24,7 +26,6 @@
    *   * methods
    *   * constants
    *   * content
-   *   * apidoc
    *
    * @purpose  Test
    */
@@ -42,6 +43,8 @@
       $this->e_ch= new xp·ide·source·element·BlockComment(" This class is part of the XP framework\n *\n * \$Id:\$\n ");
       $this->e_us= new xp·ide·source·element·Uses(array('lang.Object'));
       $this->e_cd= new xp·ide·source·element·Classdef('Test');
+      $this->e_ad= new xp·ide·source·element·Apidoc("Class to test\nthe tests\n");
+      $this->e_di= new xp·ide·source·element·ApidocDirective('@test xp://xp.ide.unittest.PhpCodeGeneratorTest');
     }
 
     /**
@@ -175,6 +178,17 @@
      *
      */
     #[@test]
+    public function classfileClassdef() {
+      $this->e_cf->setClassdef($this->e_cd);
+      $this->g->visit($this->e_cf);
+      $this->assertEquals("<?php\n  class Test extends Object {}\n?>", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
     public function classdefParent() {
       $this->e_cd->setParent('Parent');
       $this->g->visit($this->e_cd);
@@ -186,10 +200,66 @@
      *
      */
     #[@test]
-    public function classfileClassdef() {
-      $this->e_cf->setClassdef($this->e_cd);
-      $this->g->visit($this->e_cf);
-      $this->assertEquals("<?php\n  class Test extends Object {}\n?>", $this->o->getBytes());
+    public function apidoc() {
+      $this->g->visit($this->e_ad);
+      $this->assertEquals("/**\n * Class to test\n * the tests\n * \n */", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function classdefApidoc() {
+      $this->e_cd->setApidoc($this->e_ad);
+      $this->g->visit($this->e_cd);
+      $this->assertEquals(
+        "/**\n * Class to test\n * the tests\n * \n */\nclass Test extends Object {}",
+        $this->o->getBytes()
+      );
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function apidocDirective() {
+      $this->g->visit($this->e_di);
+      $this->assertEquals(" * @test xp://xp.ide.unittest.PhpCodeGeneratorTest", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function apidocApidocDirective() {
+      $this->e_ad->setDirectives(array(
+        $this->e_di
+      ));
+      $this->g->visit($this->e_ad);
+      $this->assertEquals(
+        "/**\n * Class to test\n * the tests\n * \n * @test xp://xp.ide.unittest.PhpCodeGeneratorTest\n */",
+        $this->o->getBytes()
+      );
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function apidocApidocDirective2() {
+      $this->e_ad->setDirectives(array(
+        $this->e_di,
+        new xp·ide·source·element·ApidocDirective('@see  http://xp-framework.net')
+      ));
+      $this->g->visit($this->e_ad);
+      $this->assertEquals(
+        "/**\n * Class to test\n * the tests\n * \n * @test xp://xp.ide.unittest.PhpCodeGeneratorTest\n * @see  http://xp-framework.net\n */",
+        $this->o->getBytes()
+      );
     }
 
   }

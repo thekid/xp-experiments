@@ -43,12 +43,80 @@
 
     public function visit(xp·ide·source·Element $e) {
       switch ($e->getClassName()) {
-        case 'xp.ide.source.element.ClassFile':    return $this->visitClassFile($e);
-        case 'xp.ide.source.element.Package':      return $this->visitPackage($e);
-        case 'xp.ide.source.element.BlockComment': return $this->visitBlockComment($e);
-        case 'xp.ide.source.element.Uses':         return $this->visitUses($e);
-        case 'xp.ide.source.element.Classdef':     return $this->visitClassdef($e);
+        case 'xp.ide.source.element.ClassFile':       return $this->visitClassFile($e);
+        case 'xp.ide.source.element.Package':         return $this->visitPackage($e);
+        case 'xp.ide.source.element.BlockComment':    return $this->visitBlockComment($e);
+        case 'xp.ide.source.element.Uses':            return $this->visitUses($e);
+        case 'xp.ide.source.element.Classdef':        return $this->visitClassdef($e);
+        case 'xp.ide.source.element.Apidoc':          return $this->visitApidoc($e);
+        case 'xp.ide.source.element.ApidocDirective': return $this->visitApidocDirective($e);
       }
+    }
+
+    private function visitApidocDirective($e) {
+      $this->indention();
+      $this->out->write(' * ');
+      $this->out->write($e->getText());
+    }
+
+    private function visitApidoc($e) {
+      $this->indention();
+      $this->out->writeLine('/**');
+      for ($i= 0, $lines= explode(PHP_EOL, $e->getText()), $m= sizeOf($lines); $i < $m; $i++) {
+        $this->indention();
+        $this->out->write(' * ');
+        $this->out->writeLine($lines[$i]);
+      }
+      if ($e->getDirectives()) foreach ($e->getDirectives() as $d) {
+        $this->visit($d);
+        $this->out->writeLine();
+      }
+      $this->indention();
+      $this->out->write(' */');
+    }
+
+    private function visitClassdef($e) {
+      if ($e->getApidoc()) {
+        $this->indention();
+        $this->visit($e->getApidoc());
+        $this->out->writeLine();
+      }
+      $this->indention();
+      $this->out->writef('class %s extends %s {}', $e->getName(), $e->getParent());
+    }
+
+    private function visitUses($e) {
+      $this->indention();
+      $this->out->writeLine('uses(');
+      $this->indent++;
+      for ($i= 0, $lines= $e->getClassnames(), $m= sizeOf($lines); $i < $m; $i++) {
+        $this->indention();
+        $this->out->writef("'%s'", $lines[$i]);
+        if ($i !== $m - 1) $this->out->write(',');
+        $this->out->writeLine('');
+      }
+      $this->indent--;
+      $this->indention();
+      $this->out->write(');');
+    }
+
+    private function visitBlockComment($e) {
+      $this->indention();
+      $this->out->write('/*');
+      for ($i= 0, $lines= explode(PHP_EOL, $e->getText()), $m= sizeOf($lines); $i < $m; $i++) {
+        if (0 !== $i) {
+          $this->out->writeLine('');
+          $this->indention();
+        }
+        $this->out->write($lines[$i]);
+      }
+      $this->indention();
+      $this->out->write('*/');
+    }
+
+    private function visitPackage($e) {
+      $this->indention();
+      $this->out->writef("\$package= '%s';", $e->getName());
     }
 
     private function visitClassFile($e) {
@@ -74,44 +142,5 @@
       $this->indent--;
       $this->out->write('?>');
     }
-
-    private function visitPackage($e) {
-      $this->indention();
-      $this->out->writef("\$package= '%s';", $e->getName());
-    }
-
-    private function visitBlockComment($e) {
-      $this->out->write('/*');
-      for ($i= 0, $lines= explode(PHP_EOL, $e->getText()), $m= sizeOf($lines); $i < $m; $i++) {
-        if (0 !== $i) {
-          $this->out->writeLine('');
-          $this->indention();
-        }
-        $this->out->write($lines[$i]);
-      }
-      $this->out->write('*/');
-    }
-
-    private function visitUses($e) {
-      $this->indention();
-      $this->out->writeLine('uses(');
-      $this->indent++;
-      for ($i= 0, $lines= $e->getClassnames(), $m= sizeOf($lines); $i < $m; $i++) {
-        $this->indention();
-        $this->out->writef("'%s'", $lines[$i]);
-        if ($i !== $m - 1) $this->out->write(',');
-        $this->out->writeLine('');
-      }
-      $this->indent--;
-      $this->indention();
-      $this->out->write(');');
-    }
-
-    private function visitClassdef($e) {
-      $this->indention();
-      $this->out->writef('class %s extends %s {}', $e->getName(), $e->getParent());
-    }
-
   }
-
 ?>
