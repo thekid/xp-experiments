@@ -50,7 +50,22 @@
         case 'xp.ide.source.element.Classdef':        return $this->visitClassdef($e);
         case 'xp.ide.source.element.Apidoc':          return $this->visitApidoc($e);
         case 'xp.ide.source.element.ApidocDirective': return $this->visitApidocDirective($e);
+        case 'xp.ide.source.element.Annotation':      return $this->visitAnnotation($e);
       }
+    }
+
+    private function visitAnnotation($e) {
+      $this->out->write('@'.$e->getName());
+      $s= sizeOf($e->getParams());
+      if (0 == $s) return;
+      $i= 1;
+      $this->out->write("(");
+      foreach($e->getParams() as $k => $v) {
+        if (!is_integer($k)) $this->out->write($k.'=');
+        $this->out->write("'".$v."'");
+        if ($i++ < $s) $this->out->write(',');
+      }
+      $this->out->write(")");
     }
 
     private function visitApidocDirective($e) {
@@ -81,8 +96,22 @@
         $this->visit($e->getApidoc());
         $this->out->writeLine();
       }
+      if ($e->getAnnotations()) {
+        $this->indention();
+        $this->out->write('#[');
+        for ($i= 0, $as= $e->getAnnotations(), $m= sizeOf($as); $i < $m; $i++) {
+          $this->visit($as[$i]);
+          if ($i < $m -1) $this->out->write(',');
+        }
+        $this->out->writeLine(']');
+      }
       $this->indention();
-      $this->out->writef('class %s extends %s {}', $e->getName(), $e->getParent());
+      $this->out->writef('class %s extends %s ', $e->getName(), $e->getParent());
+      if ($e->getInterfaces()) {
+        $this->out->write('implements ');
+        $this->out->write(implode(', ', $e->getInterfaces()).' ');
+      }
+      $this->out->write('{}');
     }
 
     private function visitUses($e) {
