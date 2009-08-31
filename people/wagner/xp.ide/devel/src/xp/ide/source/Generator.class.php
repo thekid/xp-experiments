@@ -54,37 +54,70 @@
         case 'xp.ide.source.element.Classmembergroup': return $this->visitClassmembergroup($e);
         case 'xp.ide.source.element.Classmember':      return $this->visitClassmember($e);
         case 'xp.ide.source.element.Array':            return $this->visitArray($e);
+        case 'xp.ide.source.element.Classmethod':      return $this->visitMethod($e);
+        case 'xp.ide.source.element.Classmethodparam': return $this->visitMethodparam($e);
       }
     }
 
+    private function visitMethodparam($e) {
+      if ($h= $e->getTypehint()) $this->out->write($h, ' ');
+      $this->out->write('$', $e->getName());
+      if ($i= $e->getInit()) {
+        $this->out->write('= ');
+        $this->generateRightInit($i);
+      }
+    }
+
+    private function visitMethod($e) {
+      if ($a= $e->getApidoc()) $this->generateApidoc($a);
+      if ($a= $e->getAnnotations()) $this->generateAnnotations($a);
+      $this->indention();
+      if ($e->isAbstract()) $this->out->write('abstract ');
+      $this->generateScope($e->getScope());
+      if ($e->isStatic()) $this->out->write(' static');
+      $this->out->write(' function ', $e->getName(), '(');
+      if ($ps= $e->getParams()) {
+        $i= 1; $m= sizeOf($ps);
+        foreach ($ps as $p) {
+          $p->accept($this);
+          if ($i++ !== $m) $this->out->write(', ');
+        }
+      }
+      $this->out->write(') {');
+      if ($c= $e->getContent()) $this->generateContent($c);
+      $this->out->write('}');
+    }
+
     private function visitArray($e) {
-      $this->out->write('array()');
+      $this->out->write('array(');
+      if ($vs= $e->getValues()) {
+        $this->out->writeLine();
+        $this->indent++;
+        $i= 1; $m= sizeOf($vs);
+        foreach ($vs as $k => $v) {
+          $this->indention();
+          $this->out->write($k, ' => ');
+          $this->generateRightInit($v);
+          $this->out->writeLine($i++ !== $m ? ',' : '');
+        }
+        $this->indent--;
+        $this->indention();
+      }
+      $this->out->write(')');
     }
 
     private function visitClassmember($e) {
       $this->out->write('$', $e->getName());
       if ($i= $e->getInit()) {
         $this->out->write('= ');
-        $i instanceof xp·ide·source·Element? $i->accept($this) : $this->out->write($i);
+        $this->generateRightInit($i);
       }
     }
 
     private function visitClassmembergroup($e) {
       if ($ms= $e->getMembers()) {
         $this->indention();
-        switch ($e->getScope()) {
-          case xp·ide·source·Scope::$PRIVATE:
-          $this->out->write('private');
-          break;
-
-          case xp·ide·source·Scope::$PROTECTED:
-          $this->out->write('protected');
-          break;
-
-          default:
-          $this->out->write('public');
-          break;
-        }
+        $this->generateScope($e->getScope());
         $this->out->writeLine($e->isStatic() ? ' static' : '');
         $this->indent++;
         $i= 1; $mm= sizeOf($ms);
@@ -135,35 +168,18 @@
     }
 
     private function visitClassdef($e) {
-      if ($e->getApidoc()) {
-        $this->indention();
-        $e->getApidoc()->accept($this);
-        $this->out->writeLine();
-      }
-      if ($e->getAnnotations()) {
-        $this->indention();
-        $this->out->write('#[');
-        for ($i= 0, $as= $e->getAnnotations(), $m= sizeOf($as); $i < $m; $i++) {
-          $as[$i]->accept($this);
-          if ($i < $m -1) $this->out->write(',');
-        }
-        $this->out->writeLine(']');
-      }
+      if ($a= $e->getApidoc()) $this->generateApidoc($a);
+      if ($a= $e->getAnnotations()) $this->generateAnnotations($a);
       $this->indention();
+      if ($e->isAbstract()) $this->out->write('abstract ');
       $this->out->writef('class %s extends %s ', $e->getName(), $e->getParent());
       if ($e->getInterfaces()) {
         $this->out->write('implements ');
         $this->out->write(implode(', ', $e->getInterfaces()).' ');
       }
       $this->out->write('{');
-      if ($e->getContent()) {
-        $this->indent++;
-        $this->out->writeLine('');
-        foreach (explode(PHP_EOL, $e->getContent()) as $line) {
-          $this->indention();
-          $this->out->writeLine($line);
-        }
-        $this->indent--;
+      if ($c= $e->getContent()) {
+        $this->generateContent($c);
       } else {
         if ($cs= $e->getConstants()) {
           $this->indent++;
@@ -178,6 +194,26 @@
             $this->out->writeLine($i++ !== $m ? ',' : ';');
           }
           $this->indent -= 2;
+        }
+        if ($cg= $e->getMembergroups()) {
+          $this->indent++;
+          $this->out->writeLine('');
+          foreach ($cg as $g) {
+            $g->accept($this);
+            $this->out->writeLine('');
+          }
+          $this->indent--;
+        }
+        if ($mes= $e->getMethods()) {
+          $this->indent++;
+          $this->out->writeLine('');
+          $i= 1; $m= sizeOf($mes);
+          foreach ($mes as $me) {
+            $me->accept($this);
+            $this->out->writeLine('');
+            if ($i++ !== $m) $this->out->writeLine('');
+          }
+          $this->indent--;
         }
       }
       $this->out->write('}');
@@ -239,6 +275,52 @@
       }
       $this->indent--;
       $this->out->write('?>');
+    }
+
+    private function generateContent($c) {
+      $this->indent++;
+      $this->out->writeLine('');
+      foreach (explode(PHP_EOL, $c) as $line) {
+        $this->indention();
+        $this->out->writeLine($line);
+      }
+      $this->indent--;
+    }
+
+    private function generateAnnotations($as) {
+      $this->indention();
+      $this->out->write('#[');
+      for ($i= 0, $as, $m= sizeOf($as); $i < $m; $i++) {
+        $as[$i]->accept($this);
+        if ($i < $m -1) $this->out->write(',');
+      }
+      $this->out->writeLine(']');
+    }
+
+    private function generateApidoc($a) {
+      $this->indention();
+      $a->accept($this);
+      $this->out->writeLine();
+    }
+
+    private function generateScope($s) {
+      switch ($s) {
+        case xp·ide·source·Scope::$PRIVATE:
+        $this->out->write('private');
+        break;
+
+        case xp·ide·source·Scope::$PROTECTED:
+        $this->out->write('protected');
+        break;
+
+        default:
+        $this->out->write('public');
+        break;
+      }
+    }
+
+    private function generateRightInit($i) {
+      $i instanceof xp·ide·source·Element ? $i->accept($this) : $this->out->write($i);
     }
   }
 ?>

@@ -26,9 +26,10 @@
       $apidoc= NULL,
       $annotations= array();
 
-    public function __construct($name= '', xp·ide·source·Scope $scope= NULL) {
+    public function __construct($name= '', xp·ide·source·Scope $scope= NULL, $static= FALSE) {
       $this->name= $name;
       $this->scope= NULL === $scope ? xp·ide·source·Scope::$PUBLIC : $scope;
+      $this->static= $static;
     }
 
     public function equals($o) {
