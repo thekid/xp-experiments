@@ -43,26 +43,70 @@
 
     public function visit(xp·ide·source·Element $e) {
       switch ($e->getClassName()) {
-        case 'xp.ide.source.element.ClassFile':       return $this->visitClassFile($e);
-        case 'xp.ide.source.element.Package':         return $this->visitPackage($e);
-        case 'xp.ide.source.element.BlockComment':    return $this->visitBlockComment($e);
-        case 'xp.ide.source.element.Uses':            return $this->visitUses($e);
-        case 'xp.ide.source.element.Classdef':        return $this->visitClassdef($e);
-        case 'xp.ide.source.element.Apidoc':          return $this->visitApidoc($e);
-        case 'xp.ide.source.element.ApidocDirective': return $this->visitApidocDirective($e);
-        case 'xp.ide.source.element.Annotation':      return $this->visitAnnotation($e);
+        case 'xp.ide.source.element.ClassFile':        return $this->visitClassFile($e);
+        case 'xp.ide.source.element.Package':          return $this->visitPackage($e);
+        case 'xp.ide.source.element.BlockComment':     return $this->visitBlockComment($e);
+        case 'xp.ide.source.element.Uses':             return $this->visitUses($e);
+        case 'xp.ide.source.element.Classdef':         return $this->visitClassdef($e);
+        case 'xp.ide.source.element.Apidoc':           return $this->visitApidoc($e);
+        case 'xp.ide.source.element.ApidocDirective':  return $this->visitApidocDirective($e);
+        case 'xp.ide.source.element.Annotation':       return $this->visitAnnotation($e);
+        case 'xp.ide.source.element.Classmembergroup': return $this->visitClassmembergroup($e);
+        case 'xp.ide.source.element.Classmember':      return $this->visitClassmember($e);
+        case 'xp.ide.source.element.Array':            return $this->visitArray($e);
+      }
+    }
+
+    private function visitArray($e) {
+      $this->out->write('array()');
+    }
+
+    private function visitClassmember($e) {
+      $this->out->write('$', $e->getName());
+      if ($i= $e->getInit()) {
+        $this->out->write('= ');
+        $i instanceof xp·ide·source·Element? $i->accept($this) : $this->out->write($i);
+      }
+    }
+
+    private function visitClassmembergroup($e) {
+      if ($ms= $e->getMembers()) {
+        $this->indention();
+        switch ($e->getScope()) {
+          case xp·ide·source·Scope::$PRIVATE:
+          $this->out->write('private');
+          break;
+
+          case xp·ide·source·Scope::$PROTECTED:
+          $this->out->write('protected');
+          break;
+
+          default:
+          $this->out->write('public');
+          break;
+        }
+        $this->out->writeLine($e->isStatic() ? ' static' : '');
+        $this->indent++;
+        $i= 1; $mm= sizeOf($ms);
+        foreach ($ms as $m) {
+          $this->indention();
+          $m->accept($this);
+          if ($i++ !== $mm) $this->out->writeLine(',');
+          else $this->out->write(';');
+        }
+        $this->indent--;
       }
     }
 
     private function visitAnnotation($e) {
-      $this->out->write('@'.$e->getName());
+      $this->out->write('@', $e->getName());
       $s= sizeOf($e->getParams());
       if (0 == $s) return;
-      $i= 1;
       $this->out->write("(");
+      $i= 1;
       foreach($e->getParams() as $k => $v) {
-        if (!is_integer($k)) $this->out->write($k.'=');
-        $this->out->write("'".$v."'");
+        if (!is_integer($k)) $this->out->write($k, '=');
+        $this->out->write("'", $v, "'");
         if ($i++ < $s) $this->out->write(',');
       }
       $this->out->write(")");
@@ -83,7 +127,7 @@
         $this->out->writeLine($lines[$i]);
       }
       if ($e->getDirectives()) foreach ($e->getDirectives() as $d) {
-        $this->visit($d);
+        $d->accept($this);
         $this->out->writeLine();
       }
       $this->indention();
@@ -93,14 +137,14 @@
     private function visitClassdef($e) {
       if ($e->getApidoc()) {
         $this->indention();
-        $this->visit($e->getApidoc());
+        $e->getApidoc()->accept($this);
         $this->out->writeLine();
       }
       if ($e->getAnnotations()) {
         $this->indention();
         $this->out->write('#[');
         for ($i= 0, $as= $e->getAnnotations(), $m= sizeOf($as); $i < $m; $i++) {
-          $this->visit($as[$i]);
+          $as[$i]->accept($this);
           if ($i < $m -1) $this->out->write(',');
         }
         $this->out->writeLine(']');
@@ -111,7 +155,32 @@
         $this->out->write('implements ');
         $this->out->write(implode(', ', $e->getInterfaces()).' ');
       }
-      $this->out->write('{}');
+      $this->out->write('{');
+      if ($e->getContent()) {
+        $this->indent++;
+        $this->out->writeLine('');
+        foreach (explode(PHP_EOL, $e->getContent()) as $line) {
+          $this->indention();
+          $this->out->writeLine($line);
+        }
+        $this->indent--;
+      } else {
+        if ($cs= $e->getConstants()) {
+          $this->indent++;
+          $this->out->writeLine('');
+          $this->indention();
+          $this->out->writeLine('const');
+          $this->indent++;
+          $i= 1; $m= sizeOf($cs);
+          foreach ($cs as $n => $v) {
+            $this->indention();
+            $this->out->writef('%s= %s', $n, $v);
+            $this->out->writeLine($i++ !== $m ? ',' : ';');
+          }
+          $this->indent -= 2;
+        }
+      }
+      $this->out->write('}');
     }
 
     private function visitUses($e) {
@@ -151,21 +220,21 @@
     private function visitClassFile($e) {
       $this->out->writeLine('<?php');
       if ($e->getHeader()) {
-        $this->visit($e->getHeader());
+        $e->getHeader()->accept($this);
         $this->out->writeLine('');
       }
       $this->indent++;
       if ($e->getPackage()) {
-        $this->visit($e->getPackage());
+        $e->getPackage()->accept($this);
         $this->out->writeLine('');
         $this->out->writeLine('');
       }
       if ($e->getUses()) {
-        $this->visit($e->getUses());
+        $e->getUses()->accept($this);
         $this->out->writeLine('');
       }
       if ($e->getClassdef()) {
-        $this->visit($e->getClassdef());
+        $e->getClassdef()->accept($this);
         $this->out->writeLine('');
       }
       $this->indent--;

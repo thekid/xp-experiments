@@ -20,7 +20,7 @@
       $parent= '',
       $annotations= array(),
       $interfaces= array(),
-      $members= array(),
+      $membergroups= array(),
       $methods= array(),
       $constants= array(),
       $content= '',
@@ -84,16 +84,16 @@
       return $this->methods[$i];
     }
 
-    public function setMembers(array $members) {
-      $this->members= $members;
+    public function setMembergroups(array $membergroups) {
+      $this->membergroups= $membergroups;
     }
 
-    public function getMembers() {
-      return $this->members;
+    public function getMembergroups() {
+      return $this->membergroups;
     }
 
-    public function getMember($i) {
-      return $this->members[$i];
+    public function getMembergroup($i) {
+      return $this->membergroups[$i];
     }
 
     public function setConstants(array $constants) {

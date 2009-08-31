@@ -24,7 +24,7 @@
       $scope= NULL,
       $content= '',
       $apidoc= NULL,
-      $annotations;
+      $annotations= array();
 
     public function __construct($name= '', xp·ide·source·Scope $scope= NULL) {
       $this->name= $name;

@@ -13,6 +13,9 @@
     'xp.ide.source.element.Apidoc',
     'xp.ide.source.element.ApidocDirective',
     'xp.ide.source.element.Annotation',
+    'xp.ide.source.element.Classmembergroup',
+    'xp.ide.source.element.Classmember',
+    'xp.ide.source.element.Array',
     'xp.ide.unittest.TestCase',
     'io.streams.MemoryOutputStream',
     'xp.ide.source.Generator'
@@ -23,8 +26,7 @@
    * TODO:
    *   * members
    *   * methods
-   *   * constants
-   *   * content
+   *   * array
    *
    * @purpose  Test
    */
@@ -45,6 +47,110 @@
       $this->e_ad= new xp·ide·source·element·Apidoc("Class to test\nthe tests\n");
       $this->e_di= new xp·ide·source·element·ApidocDirective('@test xp://xp.ide.unittest.PhpCodeGeneratorTest');
       $this->e_an= new xp·ide·source·element·Annotation('test');
+      $this->e_cg= new xp·ide·source·element·Classmembergroup();
+      $this->e_cm= new xp·ide·source·element·Classmember('member1');
+      $this->e_ar= new xp·ide·source·element·Array();
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function arrayInit() {
+      $this->e_ar->setValues(array(
+        'k1' => "'s1'",
+        'k2' => "1",
+        "'v3'"
+      ));
+      $this->g->visit($this->e_ar);
+      $this->assertEquals("array(\n  'k1' => 's1',\n  'k2' => 1,\n  'v3'\n)", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function classmemberInitArray() {
+      $this->e_cm->setInit($this->e_ar);
+      $this->g->visit($this->e_cm);
+      $this->assertEquals("\$member1= array()", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function tarray() {
+      $this->g->visit($this->e_ar);
+      $this->assertEquals("array()", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function classmemberInit() {
+      $this->e_cm->setInit("'test string'");
+      $this->g->visit($this->e_cm);
+      $this->assertEquals("\$member1= 'test string'", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function classmembergroupStaticClassmember() {
+      $this->e_cg->setMembers(array($this->e_cm));
+      $this->e_cg->setStatic(TRUE);
+      $this->g->visit($this->e_cg);
+      $this->assertEquals("public static\n  \$member1;", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function classmembergroupClassmember2() {
+      $this->e_cg->setMembers(array($this->e_cm, new xp·ide·source·element·Classmember('member2')));
+      $this->g->visit($this->e_cg);
+      $this->assertEquals("public\n  \$member1,\n  \$member2;", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function classmembergroupClassmember() {
+      $this->e_cg->setMembers(array($this->e_cm));
+      $this->g->visit($this->e_cg);
+      $this->assertEquals("public\n  \$member1;", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function classmember() {
+      $this->g->visit($this->e_cm);
+      $this->assertEquals("\$member1", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function classmembergroup() {
+      $this->g->visit($this->e_cg);
+      $this->assertEquals("", $this->o->getBytes());
     }
 
     /**
@@ -195,6 +301,28 @@
      *
      */
     #[@test]
+    public function classdefConstant2() {
+      $this->e_cd->setConstants(array('CONSTANT1' => 0, 'CONSTANT2' => 1));
+      $this->g->visit($this->e_cd);
+      $this->assertEquals("class Test extends Object {\n  const\n    CONSTANT1= 0,\n    CONSTANT2= 1;\n}", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function classdefConstant() {
+      $this->e_cd->setConstants(array('CONSTANT1' => 0));
+      $this->g->visit($this->e_cd);
+      $this->assertEquals("class Test extends Object {\n  const\n    CONSTANT1= 0;\n}", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
     public function classdefParent() {
       $this->e_cd->setParent('Parent');
       $this->g->visit($this->e_cd);
@@ -206,10 +334,10 @@
      *
      */
     #[@test]
-    public function classfileClassdef() {
-      $this->e_cf->setClassdef($this->e_cd);
-      $this->g->visit($this->e_cf);
-      $this->assertEquals("<?php\n  class Test extends Object {}\n?>", $this->o->getBytes());
+    public function classdefContent() {
+      $this->e_cd->setContent("const\n  CONSTANT1= 0,\n  CONSTANT2= 1;");
+      $this->g->visit($this->e_cd);
+      $this->assertEquals("class Test extends Object {\n  const\n    CONSTANT1= 0,\n    CONSTANT2= 1;\n}", $this->o->getBytes());
     }
 
     /**
@@ -243,6 +371,17 @@
       $this->e_cd->setName('Test2');
       $this->g->visit($this->e_cd);
       $this->assertEquals("class Test2 extends Object {}", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function classfileClassdef() {
+      $this->e_cf->setClassdef($this->e_cd);
+      $this->g->visit($this->e_cf);
+      $this->assertEquals("<?php\n  class Test extends Object {}\n?>", $this->o->getBytes());
     }
 
     /**

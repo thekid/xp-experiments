@@ -50,7 +50,7 @@
      *
      */
     #[@test]
-    public function testMember() {
+    public function testMembergroup() {
       $tree= $this->p->parse($this->getLexer('
         private $member1= 1;
         public $member2= NULL;
@@ -58,12 +58,11 @@
         $member5;
       '));
       $this->assertEquals(array(
-        new xp·ide·source·element·Classmember('member1', xp·ide·source·Scope::$PRIVATE, "1"),
-        new xp·ide·source·element·Classmember('member2', xp·ide·source·Scope::$PUBLIC, "NULL"),
-        new xp·ide·source·element·Classmember('member3', xp·ide·source·Scope::$PROTECTED, "NULL"),
-        new xp·ide·source·element·Classmember('member4', xp·ide·source·Scope::$PROTECTED),
-        new xp·ide·source·element·Classmember('member5', xp·ide·source·Scope::$PUBLIC),
-      ), $tree->getMembers());
+        new xp·ide·source·element·Classmembergroup(xp·ide·source·Scope::$PRIVATE),
+        new xp·ide·source·element·Classmembergroup(xp·ide·source·Scope::$PUBLIC),
+        new xp·ide·source·element·Classmembergroup(xp·ide·source·Scope::$PROTECTED),
+        new xp·ide·source·element·Classmembergroup(),
+      ), $tree->getMembergroups());
     }
 
     /**
@@ -101,7 +100,7 @@
       $this->assertEquals(array(
         new xp·ide·source·element·Classmember('member3', xp·ide·source·Scope::$PROTECTED),
         new xp·ide·source·element·Classmember('member4', xp·ide·source·Scope::$PROTECTED),
-      ), $tree->getMembers());
+      ), $tree->getMembergroup(0)->getMembers());
     }
 
     /**
@@ -109,7 +108,7 @@
      *
      */
     #[@test]
-    public function testStaticMember() {
+    public function testStaticMembergroup() {
       $tree= $this->p->parse($this->getLexer('
         protected $member1;
         protected static $member2;
@@ -118,7 +117,7 @@
       '));
       $this->assertEquals(
         array(FALSE, TRUE, TRUE, TRUE),
-        array_map(create_function('$e', 'return $e->isStatic();'), $tree->getMembers())
+        array_map(create_function('$e', 'return $e->isStatic();'), $tree->getMembergroups())
       );
     }
 
@@ -129,15 +128,15 @@
     #[@test]
     public function testMemberTypes() {
       $tree= $this->p->parse($this->getLexer('
-        $member1= 1;
-        $member2= FALSE;
-        $member3= TRUE;
-        $member5= NULL;
+        $member1= 1,
+        $member2= FALSE,
+        $member3= TRUE,
+        $member5= NULL,
         $member6= "";
       '));
       $this->assertEquals(
         array("1", "FALSE", "TRUE", "NULL", '""'),
-        array_map(create_function('$e', 'return $e->getInit();'), $tree->getMembers())
+        array_map(create_function('$e', 'return $e->getInit();'), $tree->getMembergroup(0)->getMembers())
       );
     }
 
@@ -148,14 +147,14 @@
     #[@test]
     public function testMemberStrings() {
       $tree= $this->p->parse($this->getLexer('
-        $member1= "sdfggsd\"jh";
-        $member1= \'sdfggsd\\\'jh\';
-        $member2= "";
+        $member1= "sdfggsd\"jh",
+        $member1= \'sdfggsd\\\'jh\',
+        $member2= "",
         $member3= \'\';
       '));
       $this->assertEquals(
         array('"sdfggsd\"jh"', "'sdfggsd\\'jh'", '""', "''"),
-        array_map(create_function('$e', 'return $e->getInit();'), $tree->getMembers())
+        array_map(create_function('$e', 'return $e->getInit();'), $tree->getMembergroup(0)->getMembers())
       );
     }
 
@@ -169,7 +168,7 @@
         $member1= array();
       '));
       $this->assertClass(
-        $tree->getMember(0)->getInit(),
+        $tree->getMembergroup(0)->getMember(0)->getInit(),
         "xp.ide.source.element.Array"
       );
     }
@@ -185,7 +184,7 @@
       '));
       $this->assertEquals(
         array("4" => "TRUE"),
-        $tree->getMember(0)->getInit()->getValues()
+        $tree->getMembergroup(0)->getMember(0)->getInit()->getValues()
       );
     }
 
@@ -200,7 +199,7 @@
       '));
       $this->assertEquals(
         array("NULL", "TRUE", "1"),
-        $tree->getMember(0)->getInit()->getValues()
+        $tree->getMembergroup(0)->getMember(0)->getInit()->getValues()
       );
     }
 

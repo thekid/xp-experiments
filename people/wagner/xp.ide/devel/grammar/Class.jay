@@ -2,6 +2,7 @@
 
   uses(
     'xp.ide.source.Scope',
+    'xp.ide.source.element.Classmembergroup',
     'xp.ide.source.element.Classmember',
     'xp.ide.source.element.Classmethod',
     'xp.ide.source.element.Classconstant',
@@ -27,10 +28,10 @@
 %%
 
 start:
-   classConstantList classMemberScopes classMethods { $$= $this->top_element; $$->setConstants($1); $$->setMembers($2); $$->setMethods($3); }
-  | classConstantList classMemberScopes { $$= $this->top_element; $$->setConstants($1); $$->setMembers($2); }
+  classConstantList classMemberScopes classMethods { $$= $this->top_element; $$->setConstants($1); $$->setMembergroups($2); $$->setMethods($3); }
+  | classConstantList classMemberScopes { $$= $this->top_element; $$->setConstants($1); $$->setMembergroups($2); }
   | classConstantList { $$= $this->top_element; $$->setConstants($1); }
-  | classMemberScopes { $$= $this->top_element; $$->setMembers($1); }
+  | classMemberScopes { $$= $this->top_element; $$->setMembergroups($1); }
   | classMethods { $$= $this->top_element; $$->setMethods($1); }
   | { $$= $this->top_element; }
 ;
@@ -44,33 +45,33 @@ classMethod:
   apidoc annotationblock classMethodMods methodDec {
     $$= $4;
     $$->setApidoc($1);
-    $$->setAnnotation($2);
+    $$->setAnnotations($2);
     isset($3['abstract']) && $$->setAbstract($3['abstract']);
     isset($3['scope'])    && $$->setScope($3['scope']);
     isset($3['static'])   && $$->setStatic($3['static']);
   }
-  | apidoc classMethodMods methodDec {
+  apidoc classMethodMods methodDec {
     $$= $3;
     $$->setApidoc($1);
     isset($2['abstract']) && $$->setAbstract($2['abstract']);
     isset($2['scope'])    && $$->setScope($2['scope']);
     isset($2['static'])   && $$->setStatic($2['static']);
   }
+  | apidoc annotationblock methodDec { $$= $3; $$->setApidoc($1); $$->setAnnotations($2); }
   | annotationblock classMethodMods methodDec {
     $$= $3;
-    $$->setAnnotation($1);
+    $$->setAnnotations($1);
     isset($2['abstract']) && $$->setAbstract($2['abstract']);
     isset($2['scope'])    && $$->setScope($2['scope']);
     isset($2['static'])   && $$->setStatic($2['static']);
   }
+  | apidoc methodDec { $$= $2; $$->setApidoc($1); }
   | classMethodMods methodDec {
     $$= $2;
     isset($1['abstract']) && $$->setAbstract($1['abstract']);
     isset($1['scope'])    && $$->setScope($1['scope']);
     isset($1['static'])   && $$->setStatic($1['static']);
   }
-  | annotationblock apidoc methodDec { $$= $3; $$->setApidoc($1); $$->setAnnotations($1); }
-  | apidoc methodDec { $$= $2; $$->setApidoc($1); }
   | annotationblock methodDec { $$= $2;  $$->setAnnotations($1); }
   | methodDec { $$= $1; }
 ;
@@ -85,7 +86,6 @@ methodDec:
 
 annotationblock:
   T_START_ANNOTATION annotations T_CLOSE_ANNOTATION { $$= $2;}
-  | { $$= array(); }
 ;
 annotations:
   annotations ',' annotation { $$= $1; $$[]= $3; }
@@ -143,8 +143,8 @@ classMethodMods:
 ;
 
 classMethodMod:
-  classMemberMod { $$= $1; }
-  | T_ABSTRACT { $$= array('abstract' => TRUE); }
+  T_ABSTRACT { $$= array('abstract' => TRUE); }
+  | classMemberMod { $$= $1; }
 ;
 
 classConstantList:
@@ -158,10 +158,30 @@ classConstants:
 ;
 
 classMemberScopes:
-  classMemberScopes classMemberMods classMembers ';' { foreach($3 as $m) { isset($2['static']) && $m->setStatic($2['static']); isset($2['scope']) && $m->setScope($2['scope']); } $$= array_merge($1,$3); }
-  | classMemberScopes classMembers ';' { $$= array_merge($1, $2); }
-  | classMemberMods classMembers ';' { foreach($2 as $m) { isset($1['static']) && $m->setStatic($1['static']); isset($1['scope']) && $m->setScope($1['scope']); } $$= $2; }
-  | classMembers ';' { $$= $1; }
+  classMemberScopes classMemberMods classMembers ';' {
+    $$= $1;
+    $$[]= $cg= new xp·ide·source·element·Classmembergroup();
+    $cg->setMembers($3);
+    isset($2['static']) && $cg->setStatic($2['static']);
+    isset($2['scope'])  && $cg->setScope($2['scope']);
+  }
+  | classMemberScopes classMembers ';' {
+    $$= $1;
+    $$[]= $cg= new xp·ide·source·element·Classmembergroup();
+    $cg->setMembers($2);
+  }
+  | classMemberMods classMembers ';' {
+    $$= new xp·ide·source·element·Classmembergroup();
+    isset($1['static']) && $$->setStatic($1['static']);
+    isset($1['scope'])  && $$->setScope($1['scope']);
+    $$->setMembers($2);
+    $$= array($$);
+  }
+  | classMembers ';' {
+    $$= new xp·ide·source·element·Classmembergroup();
+    $$->setMembers($1);
+    $$= array($$);
+  }
 ;
 
 classMembers:
@@ -170,7 +190,7 @@ classMembers:
 ;
 
 classMember:
-  T_VARIABLE '=' initAssignRight { $$= new xp·ide·source·element·Classmember(substr($1->getValue(), 1), NULL, $3); }
+  T_VARIABLE '=' initAssignRight { $$= new xp·ide·source·element·Classmember(substr($1->getValue(), 1), $3); }
   | T_VARIABLE { $$= new xp·ide·source·element·Classmember(substr($1->getValue(), 1)); }
 
 
