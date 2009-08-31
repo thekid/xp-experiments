@@ -8,7 +8,8 @@
     'xp.ide.source.element.ClassFile',
     'xp.ide.source.element.BlockComment',
     'xp.ide.source.element.Annotation',
-    'xp.ide.source.element.Apidoc'
+    'xp.ide.source.element.Apidoc',
+    'xp.ide.source.element.ApidocDirective'
   );
 
 %}
@@ -85,13 +86,13 @@ annotationparam:
 ;
 
 meta:
-  blockComment package uses { $$= new xp·ide·source·element·ClassFile(); $$->setHeader($1); $$->setPackage($2); $$->setUses($3); }
-  | blockComment package { $$= new xp·ide·source·element·ClassFile(); $$->setHeader($1); $$->setPackage($2); }
-  | blockComment uses { $$= new xp·ide·source·element·ClassFile(); $$->setHeader($1); $$->setUses($2); }
-  | package uses { $$= new xp·ide·source·element·ClassFile(); $$->setPackage($1); $$->setUses($2); }
-  | blockComment { $$= new xp·ide·source·element·ClassFile(); $$->setHeader($1); }
-  | package { $$= new xp·ide·source·element·ClassFile(); $$->setPackage($1); }
-  | uses { $$= new xp·ide·source·element·ClassFile(); $$->setUses($1); }
+  blockComment package uses { $$= $this->top_element; $$->setHeader($1); $$->setPackage($2); $$->setUses($3); }
+  | blockComment package { $$= $this->top_element; $$->setHeader($1); $$->setPackage($2); }
+  | blockComment uses { $$= $this->top_element; $$->setHeader($1); $$->setUses($2); }
+  | package uses { $$= $this->top_element; $$->setPackage($1); $$->setUses($2); }
+  | blockComment { $$= $this->top_element; $$->setHeader($1); }
+  | package { $$= $this->top_element; $$->setPackage($1); }
+  | uses { $$= $this->top_element; $$->setUses($1); }
 ;
 
 package:

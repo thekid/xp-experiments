@@ -76,5 +76,14 @@
       }
       return $errors;
     }
+
+    /**
+     * parse file content
+     *
+     * @param  xp.ide.text.IInputStream stream
+     */
+    public function parse(xp·ide·text·IInputStream $stream) {
+      $this->ide->parse($stream);
+    }
   }
 ?>

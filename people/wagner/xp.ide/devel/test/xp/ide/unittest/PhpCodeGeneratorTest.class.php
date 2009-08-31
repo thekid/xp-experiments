@@ -26,7 +26,8 @@
   /**
    * TestCase
    * TODO:
-   *   * methods
+   *   - methods final
+   *   - class final
    *
    * @purpose  Test
    */

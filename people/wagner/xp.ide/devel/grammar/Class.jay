@@ -29,6 +29,8 @@
 
 start:
   classConstantList classMemberScopes classMethods { $$= $this->top_element; $$->setConstants($1); $$->setMembergroups($2); $$->setMethods($3); }
+  | classMemberScopes classMethods { $$= $this->top_element; $$->setMembergroups($1); $$->setMethods($2); }
+  | classConstantList classMethods { $$= $this->top_element; $$->setConstants($1); $$->setMethods($2); }
   | classConstantList classMemberScopes { $$= $this->top_element; $$->setConstants($1); $$->setMembergroups($2); }
   | classConstantList { $$= $this->top_element; $$->setConstants($1); }
   | classMemberScopes { $$= $this->top_element; $$->setMembergroups($1); }
@@ -50,7 +52,7 @@ classMethod:
     isset($3['scope'])    && $$->setScope($3['scope']);
     isset($3['static'])   && $$->setStatic($3['static']);
   }
-  apidoc classMethodMods methodDec {
+  | apidoc classMethodMods methodDec {
     $$= $3;
     $$->setApidoc($1);
     isset($2['abstract']) && $$->setAbstract($2['abstract']);

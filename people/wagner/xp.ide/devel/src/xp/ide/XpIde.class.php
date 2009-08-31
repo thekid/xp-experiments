@@ -6,6 +6,11 @@
   $package= 'xp.ide';
 
   uses(
+    'xp.ide.source.parser.ClassFileParser',
+    'xp.ide.source.parser.ClassFileLexer',
+    'xp.ide.source.parser.ClassParser',
+    'xp.ide.source.parser.ClassLexer',
+    'io.streams.MemoryInputStream',
     'xp.ide.IXpIde',
     'xp.ide.resolve.Resolver',
     'xp.ide.completion.PackageClassCompleter',
@@ -66,6 +71,41 @@
     #[@action(name='checksyntax', args="InputStream, Language")]
     public function checkSyntax(xp·ide·text·IInputStream $stream, xp·ide·lint·ILanguage $language) {
       return $language->checkSyntax($stream);
+    }
+
+    /**
+     * parse file content
+     *
+     * @param  xp.ide.text.IInputStream stream
+     */
+    #[@action(name='parse', args="InputStream")]
+    public function parse(xp·ide·text·IInputStream $stream) {
+      $t= new xp·ide·source·element·ClassFile();
+
+      $p= new xp·ide·source·parser·ClassFileParser();
+      $p->setTopElement($t);
+      $l= new xp·ide·source·parser·ClassFileLexer($stream);
+      try {
+        $p->parse($l);
+      } catch (ParseException $e) {
+        var_dump($e->getCause()->getMessage());
+        exit();
+      }
+
+      $cd= $t->getClassdef();
+      $cp= new xp·ide·source·parser·ClassParser();
+      $cp->setTopElement($cd);
+      $cl= new xp·ide·source·parser·ClassLexer(new MemoryInputStream($cd->getContent()));
+      try {
+        $cp->parse($cl);
+      } catch (ParseException $e) {
+        var_dump($e->getCause()->getMessage());
+        var_dump($cd->getContent());
+        exit();
+      }
+      $cd->setContent(NULL);
+
+      var_dump($t);
     }
 
   }
