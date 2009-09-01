@@ -44,6 +44,7 @@ WHITE_SPACE=({NL}|{SPACE})+
 <YYINITIAL> {WHITE_SPACE} { }
 <YYINITIAL> "null" { return $this->createToken(xp·ide·source·parser·ClassParser::T_NULL); }
 <YYINITIAL> "const" { return $this->createToken(xp·ide·source·parser·ClassParser::T_CONST); }
+<YYINITIAL> "var" { return $this->createToken(xp·ide·source·parser·ClassParser::T_VAR); }
 <YYINITIAL> "private" { return $this->createToken(xp·ide·source·parser·ClassParser::T_PRIVATE); }
 <YYINITIAL> "protected" { return $this->createToken(xp·ide·source·parser·ClassParser::T_PROTECTED); }
 <YYINITIAL> "public" { return $this->createToken(xp·ide·source·parser·ClassParser::T_PUBLIC); }

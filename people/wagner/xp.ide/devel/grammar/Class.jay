@@ -21,26 +21,22 @@
   T_NULL T_BOOLEAN T_DOUBLE_ARROW T_FUNCTION T_FUNCTION_BODY
   T_OPEN_APIDOC T_CONTENT_APIDOC T_CLOSE_APIDOC T_DIRECTIVE_APIDOC
   T_START_ANNOTATION T_CLOSE_ANNOTATION T_ANNOTATION
-
-%right
-  T_PUBLIC T_PRIVATE T_PROTECTED T_CONST T_STATIC T_ABSTRACT
+  T_PUBLIC T_PRIVATE T_PROTECTED T_CONST T_STATIC T_ABSTRACT T_VAR
 
 %%
 
 start:
-  classConstantList classMemberScopes classMethods { $$= $this->top_element; $$->setConstants($1); $$->setMembergroups($2); $$->setMethods($3); }
-  | classMemberScopes classMethods { $$= $this->top_element; $$->setMembergroups($1); $$->setMethods($2); }
-  | classConstantList classMethods { $$= $this->top_element; $$->setConstants($1); $$->setMethods($2); }
-  | classConstantList classMemberScopes { $$= $this->top_element; $$->setConstants($1); $$->setMembergroups($2); }
-  | classConstantList { $$= $this->top_element; $$->setConstants($1); }
-  | classMemberScopes { $$= $this->top_element; $$->setMembergroups($1); }
-  | classMethods { $$= $this->top_element; $$->setMethods($1); }
-  | { $$= $this->top_element; }
+  { $$= $this->top_element; }
+  | contents { $$= $this->top_element; }
 ;
 
-classMethods:
-  classMethods classMethod { $$= $1; $$[]= $2; }
-  | classMethod { $$= array($1); }
+contents:
+  contents classConstantList { $$= $this->top_element; $t= $$->getConstants(); $$->setConstants(array_merge($t, $2)); }
+  | contents classMemberScope { $$= $this->top_element; $t= $$->getMembergroups(); $t[]= $2; $$->setMembergroups($t); }
+  | contents classMethod { $$= $this->top_element; $t= $$->getMethods(); $t[]= $2; $$->setMethods($t); }
+  | classConstantList { $$= $this->top_element; $$->setConstants($1); }
+  | classMemberScope { $$= $this->top_element; $$->setMembergroups(array($1)); }
+  | classMethod { $$= $this->top_element; $$->setMethods(array($1)); }
 ;
 
 classMethod:
@@ -118,8 +114,8 @@ apidocDirectives:
 ;
 
 classMethodParamDef:
-  '(' classMethodParams ')' { $$= $2; }
-  | '(' ')' { $$= array(); }
+  '(' ')' { $$= array(); }
+  | '(' classMethodParams ')' { $$= $2; }
 ;
 
 classMethodParams:
@@ -130,12 +126,11 @@ classMethodParams:
 classMethodParam:
   typehint T_VARIABLE '=' initAssignRight { $$= new xp·ide·source·element·Classmethodparam(substr($2->getValue(), 1), $1); $$->setInit($4); }
   | typehint T_VARIABLE { $$= new xp·ide·source·element·Classmethodparam(substr($2->getValue(), 1), $1); }
-  | T_VARIABLE '=' initAssignRight { $$= new xp·ide·source·element·Classmethodparam(substr($1->getValue(), 1)); $$->setInit($3); }
-  | T_VARIABLE { $$= new xp·ide·source·element·Classmethodparam(substr($1->getValue(), 1)); }
 ;
 
 typehint:
-  T_STRING { $$= $1->getValue(); }
+  { $$= NULL; }
+  | T_STRING { $$= $1->getValue(); }
   | T_ARRAY { $$= $1->getValue(); }
 ;
 
@@ -146,12 +141,12 @@ classMethodMods:
 
 classMethodMod:
   T_ABSTRACT { $$= array('abstract' => TRUE); }
-  | classMemberMod { $$= $1; }
+  | T_STATIC { $$= array('static' => TRUE); }
+  | scope { $$= array('scope' => $1); }
 ;
 
 classConstantList:
-  classConstantList T_CONST classConstants ';' { $$= array_merge($1, $3); }
-  | T_CONST classConstants ';' { $$= $2; }
+  T_CONST classConstants ';' { $$= $2; }
 ;
 
 classConstants:
@@ -159,42 +154,31 @@ classConstants:
   | T_STRING '=' initAssignRight { $$= array(new xp·ide·source·element·Classconstant($1->getValue())); }
 ;
 
-classMemberScopes:
-  classMemberScopes classMemberMods classMembers ';' {
-    $$= $1;
-    $$[]= $cg= new xp·ide·source·element·Classmembergroup();
-    $cg->setMembers($3);
-    isset($2['static']) && $cg->setStatic($2['static']);
-    isset($2['scope'])  && $cg->setScope($2['scope']);
-  }
-  | classMemberScopes classMembers ';' {
-    $$= $1;
-    $$[]= $cg= new xp·ide·source·element·Classmembergroup();
-    $cg->setMembers($2);
-  }
-  | classMemberMods classMembers ';' {
+classMemberScope:
+  classMemberMods classMember ',' classMembers ';' {
     $$= new xp·ide·source·element·Classmembergroup();
     isset($1['static']) && $$->setStatic($1['static']);
     isset($1['scope'])  && $$->setScope($1['scope']);
-    $$->setMembers($2);
-    $$= array($$);
+    array_unshift($4, $2);
+    $$->setMembers($4);
   }
-  | classMembers ';' {
+  | classMemberMods classMember ';' {
     $$= new xp·ide·source·element·Classmembergroup();
-    $$->setMembers($1);
-    $$= array($$);
+    isset($1['static']) && $$->setStatic($1['static']);
+    isset($1['scope'])  && $$->setScope($1['scope']);
+    $$->setMembers(array($2));
   }
 ;
 
 classMembers:
-  classMembers ',' classMember { $1[]= $3; $$= $1;}
-  | classMember { $$= array($1); }
+  classMember { $$= array($1); }
+  | classMembers ',' classMember { $$= $1; $$[]= $3;}
 ;
 
 classMember:
   T_VARIABLE '=' initAssignRight { $$= new xp·ide·source·element·Classmember(substr($1->getValue(), 1), $3); }
   | T_VARIABLE { $$= new xp·ide·source·element·Classmember(substr($1->getValue(), 1)); }
-
+;
 
 classMemberMods:
   classMemberMods classMemberMod { $$= array_merge($1, $2); }
@@ -202,8 +186,9 @@ classMemberMods:
 ;
 
 classMemberMod:
-  scope { $$= array('scope' => $1); }
+  T_VAR { $$= array(); }
   | T_STATIC { $$= array('static' => TRUE); }
+  | scope { $$= array('scope' => $1); }
 ;
 
 scope:

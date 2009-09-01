@@ -56,7 +56,7 @@
         private $member1= 1;
         public $member2= NULL;
         protected $member3= NULL, $member4;
-        $member5;
+        var $member5;
       '));
       $this->assertEquals(array(
         new xp·ide·source·element·Classmembergroup(xp·ide·source·Scope::$PRIVATE),
@@ -129,7 +129,7 @@
     #[@test]
     public function testMemberTypes() {
       $tree= $this->p->parse($this->getLexer('
-        $member1= 1,
+        var $member1= 1,
         $member2= FALSE,
         $member3= TRUE,
         $member5= NULL,
@@ -148,7 +148,7 @@
     #[@test]
     public function testMemberStrings() {
       $tree= $this->p->parse($this->getLexer('
-        $member1= "sdfggsd\"jh",
+        var $member1= "sdfggsd\"jh",
         $member1= \'sdfggsd\\\'jh\',
         $member2= "",
         $member3= \'\';
@@ -166,7 +166,7 @@
     #[@test]
     public function testMemberArray() {
       $tree= $this->p->parse($this->getLexer('
-        $member1= array();
+        var $member1= array();
       '));
       $this->assertClass(
         $tree->getMembergroup(0)->getMember(0)->getInit(),
@@ -181,7 +181,7 @@
     #[@test]
     public function testMemberArrayAssoc() {
       $tree= $this->p->parse($this->getLexer('
-        $member1= array(4 => TRUE);
+        var $member1= array(4 => TRUE);
       '));
       $this->assertEquals(
         array("4" => "TRUE"),
@@ -196,7 +196,7 @@
     #[@test]
     public function testMemberArrayValues() {
       $tree= $this->p->parse($this->getLexer('
-        $member4= array(NULL, TRUE, 1);
+        var $member4= array(NULL, TRUE, 1);
       '));
       $this->assertEquals(
         array("NULL", "TRUE", "1"),
