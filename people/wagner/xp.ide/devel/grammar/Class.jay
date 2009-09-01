@@ -40,7 +40,7 @@ contents:
 ;
 
 classMethod:
-  apidoc annotationblock classMethodMods methodDec {
+  apidoc annotationblock modifications methodDec {
     $$= $4;
     $$->setApidoc($1);
     $$->setAnnotations($2);
@@ -48,7 +48,7 @@ classMethod:
     isset($3['scope'])    && $$->setScope($3['scope']);
     isset($3['static'])   && $$->setStatic($3['static']);
   }
-  | apidoc classMethodMods methodDec {
+  | apidoc modifications methodDec {
     $$= $3;
     $$->setApidoc($1);
     isset($2['abstract']) && $$->setAbstract($2['abstract']);
@@ -56,7 +56,7 @@ classMethod:
     isset($2['static'])   && $$->setStatic($2['static']);
   }
   | apidoc annotationblock methodDec { $$= $3; $$->setApidoc($1); $$->setAnnotations($2); }
-  | annotationblock classMethodMods methodDec {
+  | annotationblock modifications methodDec {
     $$= $3;
     $$->setAnnotations($1);
     isset($2['abstract']) && $$->setAbstract($2['abstract']);
@@ -64,7 +64,7 @@ classMethod:
     isset($2['static'])   && $$->setStatic($2['static']);
   }
   | apidoc methodDec { $$= $2; $$->setApidoc($1); }
-  | classMethodMods methodDec {
+  | modifications methodDec {
     $$= $2;
     isset($1['abstract']) && $$->setAbstract($1['abstract']);
     isset($1['scope'])    && $$->setScope($1['scope']);
@@ -107,7 +107,6 @@ apidoc:
   T_OPEN_APIDOC T_CONTENT_APIDOC apidocDirectives T_CLOSE_APIDOC { $$= new xp·ide·source·element·Apidoc(); $$->setText($2->getValue()); $$->setDirectives($3); }
   | T_OPEN_APIDOC T_CONTENT_APIDOC T_CLOSE_APIDOC { $$= new xp·ide·source·element·Apidoc(); $$->setText($2->getValue()); }
 ;
-
 apidocDirectives:
   apidocDirectives T_DIRECTIVE_APIDOC { $$= $1; $$[]= new xp·ide·source·element·ApidocDirective($2->getValue()); }
   | T_DIRECTIVE_APIDOC { $$= array(new xp·ide·source·element·ApidocDirective($1->getValue())); }
@@ -117,12 +116,10 @@ classMethodParamDef:
   '(' ')' { $$= array(); }
   | '(' classMethodParams ')' { $$= $2; }
 ;
-
 classMethodParams:
   classMethodParams ',' classMethodParam { $$= $1; $$[]= $3; }
   | classMethodParam { $$= array($1); }
 ;
-
 classMethodParam:
   typehint T_VARIABLE '=' initAssignRight { $$= new xp·ide·source·element·Classmethodparam(substr($2->getValue(), 1), $1); $$->setInit($4); }
   | typehint T_VARIABLE { $$= new xp·ide·source·element·Classmethodparam(substr($2->getValue(), 1), $1); }
@@ -134,67 +131,45 @@ typehint:
   | T_ARRAY { $$= $1->getValue(); }
 ;
 
-classMethodMods:
-  classMethodMods classMethodMod { $$= array_merge($1, $2); }
-  | classMethodMod { $$= $1; }
-;
-
-classMethodMod:
-  T_ABSTRACT { $$= array('abstract' => TRUE); }
-  | T_STATIC { $$= array('static' => TRUE); }
-  | scope { $$= array('scope' => $1); }
-;
-
 classConstantList:
   T_CONST classConstants ';' { $$= $2; }
 ;
-
 classConstants:
   classConstants ',' T_STRING '=' initAssignRight { $1[]= new xp·ide·source·element·Classconstant($3->getValue()); $$= $1; };
   | T_STRING '=' initAssignRight { $$= array(new xp·ide·source·element·Classconstant($1->getValue())); }
 ;
 
 classMemberScope:
-  classMemberMods classMember ',' classMembers ';' {
+  modifications classMembers ';' {
     $$= new xp·ide·source·element·Classmembergroup();
     isset($1['static']) && $$->setStatic($1['static']);
     isset($1['scope'])  && $$->setScope($1['scope']);
-    array_unshift($4, $2);
-    $$->setMembers($4);
+    $$->setMembers($2);
   }
-  | classMemberMods classMember ';' {
+  | T_VAR classMembers ';' {
     $$= new xp·ide·source·element·Classmembergroup();
-    isset($1['static']) && $$->setStatic($1['static']);
-    isset($1['scope'])  && $$->setScope($1['scope']);
-    $$->setMembers(array($2));
+    $$->setMembers($2);
   }
 ;
-
 classMembers:
   classMember { $$= array($1); }
   | classMembers ',' classMember { $$= $1; $$[]= $3;}
 ;
-
 classMember:
   T_VARIABLE '=' initAssignRight { $$= new xp·ide·source·element·Classmember(substr($1->getValue(), 1), $3); }
   | T_VARIABLE { $$= new xp·ide·source·element·Classmember(substr($1->getValue(), 1)); }
 ;
 
-classMemberMods:
-  classMemberMods classMemberMod { $$= array_merge($1, $2); }
-  | classMemberMod { $$= $1; }
+modifications:
+  modifications modification { $$= array_merge($1, $2); }
+  | modification { $$= $1; }
 ;
-
-classMemberMod:
-  T_VAR { $$= array(); }
+modification:
+  T_ABSTRACT { $$= array('abstract' => TRUE); }
   | T_STATIC { $$= array('static' => TRUE); }
-  | scope { $$= array('scope' => $1); }
-;
-
-scope:
-  T_PUBLIC { $$= xp·ide·source·Scope::$PUBLIC; }
-  | T_PRIVATE { $$= xp·ide·source·Scope::$PRIVATE; }
-  | T_PROTECTED { $$= xp·ide·source·Scope::$PROTECTED; }
+  | T_PUBLIC { $$= array('scope' => xp·ide·source·Scope::$PUBLIC); }
+  | T_PRIVATE { $$= array('scope' => xp·ide·source·Scope::$PRIVATE); }
+  | T_PROTECTED { $$= array('scope' => xp·ide·source·Scope::$PROTECTED); }
 ;
 
 initSimple:
