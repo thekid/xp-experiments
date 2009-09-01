@@ -19,6 +19,7 @@
     private
       $name= '',
       $params= array(),
+      $final= FALSE,
       $static= FALSE,
       $abstract= FALSE,
       $scope= NULL,
@@ -74,6 +75,14 @@
 
     public function getParam($i) {
       return $this->params[$i];
+    }
+
+    public function setFinal($final) {
+      $this->final= $final;
+    }
+
+    public function isFinal() {
+      return $this->final;
     }
 
     public function setStatic($static) {

@@ -16,9 +16,10 @@
 
 %token
   T_CLASS T_CLOSE_BCOMMENT T_CLOSE_TAG T_CONTENT_BCOMMENT T_ENCAPSED_STRING
-  T_EXTENDS T_IMPLEMENTS T_OPEN_BCOMMENT T_OPEN_TAG T_USES  T_CONTENT_INNERBLOCK T_ABSTRACT
+  T_EXTENDS T_IMPLEMENTS T_OPEN_BCOMMENT T_OPEN_TAG T_USES  T_CONTENT_INNERBLOCK
   T_VARIABLE T_STRING T_OPEN_APIDOC T_CONTENT_APIDOC T_CLOSE_APIDOC T_DIRECTIVE_APIDOC
   T_START_ANNOTATION T_CLOSE_ANNOTATION T_ANNOTATION
+  T_FINAL T_ABSTRACT
 
 %%
 
@@ -28,17 +29,27 @@ start:
 ;
 
 classDef:
-  apidoc annotationblock T_ABSTRACT classDefSc {
+  apidoc annotationblock modifications classDefSc {
     $$= $4;
     $$->setApidoc($1);
     $$->setAnnotations($2);
-    $$->setAbstract(TRUE);
+    if (isset($3['abstract'])) $$->setAbstract($3['abstract']);
+    if (isset($3['final']))    $$->setFinal($3['final']);
   }
   | apidoc annotationblock classDefSc {
     $$= $3;
     $$->setApidoc($1);
     $$->setAnnotations($2);
   }
+;
+
+modifications:
+  modifications modification { $$= array_merge($1, $2); }
+  | modification { $$= $1; }
+;
+modification:
+  T_ABSTRACT { $$= array('abstract' => TRUE); }
+  | T_FINAL { $$= array('final' => TRUE); }
 ;
 
 classDefSc:

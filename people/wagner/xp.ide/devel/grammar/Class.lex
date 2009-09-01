@@ -55,6 +55,7 @@ WHITE_SPACE=({NL}|{SPACE})+
 <YYINITIAL> "false" { return $this->createToken(xp·ide·source·parser·ClassParser::T_BOOLEAN); }
 <YYINITIAL> "function" { return $this->createToken(xp·ide·source·parser·ClassParser::T_FUNCTION); }
 <YYINITIAL> "abstract" { return $this->createToken(xp·ide·source·parser·ClassParser::T_ABSTRACT); }
+<YYINITIAL> "final" { return $this->createToken(xp·ide·source·parser·ClassParser::T_FINAL); }
 <YYINITIAL> "/**" { $this->pushState(self::S_APIDOC); return $this->createToken(xp·ide·source·parser·ClassParser::T_OPEN_APIDOC); }
 <YYINITIAL> //.* {}
 <YYINITIAL> "#[" { $this->pushState(self::S_ANNOTATION); return $this->createToken(xp·ide·source·parser·ClassParser::T_START_ANNOTATION); }

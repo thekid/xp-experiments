@@ -10,6 +10,7 @@
     'xp.ide.source.parser.ClassLexer',
     'xp.ide.source.Scope',
     'xp.ide.source.element.Classmember',
+    'xp.ide.source.element.Classmembergroup',
     'xp.ide.source.element.Classconstant',
     'xp.ide.source.element.Classmethod',
     'xp.ide.source.element.Annotation',
@@ -20,7 +21,6 @@
    * TestCase
    * TODO:
    *  - Annotation member
-   *  - final
    *
    * @see      reference
    * @purpose  purpose
@@ -102,6 +102,24 @@
         new xp·ide·source·element·Classmember('member3', xp·ide·source·Scope::$PROTECTED),
         new xp·ide·source·element·Classmember('member4', xp·ide·source·Scope::$PROTECTED),
       ), $tree->getMembergroup(0)->getMembers());
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testFinalMembergroup() {
+      $tree= $this->p->parse($this->getLexer('
+        protected $member1;
+        protected final $member2;
+        final protected $member3;
+        final $member4;
+      '));
+      $this->assertEquals(
+        array(FALSE, TRUE, TRUE, TRUE),
+        array_map(create_function('$e', 'return $e->isFinal();'), $tree->getMembergroups())
+      );
     }
 
     /**
@@ -256,6 +274,18 @@
         abstract function method1() {}
       '));
       $this->assertTRUE($tree->getMethod(0)->isAbstract());
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testMethodFinal() {
+      $tree= $this->p->parse($this->getLexer('
+        final function method1() {}
+      '));
+      $this->assertTRUE($tree->getMethod(0)->isFinal());
     }
 
     /**

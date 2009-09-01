@@ -15,8 +15,6 @@
   /**
    * TestCase
    *
-   * TODO: final
-   *
    * @see      reference
    * @purpose  purpose
    */
@@ -325,9 +323,7 @@
         ?>
       '));
       $this->assertEquals(
-        '
-Test class definition
-  ',
+        "\nTest class definition\n  ",
         $tree->getClassdef()->getApidoc()->getText()
       );
     }
@@ -372,6 +368,22 @@ Test class definition
           class Test extends Object {}
         ?>
       '));
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function testFinal() {
+      $tree= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           */
+          final class Test extends Object {}
+        ?>
+      '));
+      $this->assertTrue($tree->getClassdef()->isFinal());
     }
 
     /**

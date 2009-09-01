@@ -72,6 +72,7 @@
       if ($a= $e->getApidoc()) $this->generateApidoc($a);
       if ($a= $e->getAnnotations()) $this->generateAnnotations($a);
       $this->indention();
+      if ($e->isFinal()) $this->out->write('final ');
       if ($e->isAbstract()) $this->out->write('abstract ');
       $this->generateScope($e->getScope());
       if ($e->isStatic()) $this->out->write(' static');
@@ -117,6 +118,7 @@
     private function visitClassmembergroup($e) {
       if ($ms= $e->getMembers()) {
         $this->indention();
+        if ($e->isFinal()) $this->out->write('final ');
         $this->generateScope($e->getScope());
         $this->out->writeLine($e->isStatic() ? ' static' : '');
         $this->indent++;
@@ -171,6 +173,7 @@
       if ($a= $e->getApidoc()) $this->generateApidoc($a);
       if ($a= $e->getAnnotations()) $this->generateAnnotations($a);
       $this->indention();
+      if ($e->isFinal()) $this->out->write('final ');
       if ($e->isAbstract()) $this->out->write('abstract ');
       $this->out->writef('class %s extends %s ', $e->getName(), $e->getParent());
       if ($e->getInterfaces()) {

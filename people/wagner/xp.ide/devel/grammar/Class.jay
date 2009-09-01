@@ -21,7 +21,7 @@
   T_NULL T_BOOLEAN T_DOUBLE_ARROW T_FUNCTION T_FUNCTION_BODY
   T_OPEN_APIDOC T_CONTENT_APIDOC T_CLOSE_APIDOC T_DIRECTIVE_APIDOC
   T_START_ANNOTATION T_CLOSE_ANNOTATION T_ANNOTATION
-  T_PUBLIC T_PRIVATE T_PROTECTED T_CONST T_STATIC T_ABSTRACT T_VAR
+  T_PUBLIC T_PRIVATE T_PROTECTED T_CONST T_STATIC T_ABSTRACT T_VAR T_FINAL
 
 %%
 
@@ -47,6 +47,7 @@ classMethod:
     isset($3['abstract']) && $$->setAbstract($3['abstract']);
     isset($3['scope'])    && $$->setScope($3['scope']);
     isset($3['static'])   && $$->setStatic($3['static']);
+    isset($3['final'])    && $$->setFinal($3['final']);
   }
   | apidoc modifications methodDec {
     $$= $3;
@@ -54,6 +55,7 @@ classMethod:
     isset($2['abstract']) && $$->setAbstract($2['abstract']);
     isset($2['scope'])    && $$->setScope($2['scope']);
     isset($2['static'])   && $$->setStatic($2['static']);
+    isset($2['final'])    && $$->setFinal($2['final']);
   }
   | apidoc annotationblock methodDec { $$= $3; $$->setApidoc($1); $$->setAnnotations($2); }
   | annotationblock modifications methodDec {
@@ -62,6 +64,7 @@ classMethod:
     isset($2['abstract']) && $$->setAbstract($2['abstract']);
     isset($2['scope'])    && $$->setScope($2['scope']);
     isset($2['static'])   && $$->setStatic($2['static']);
+    isset($2['final'])    && $$->setFinal($2['final']);
   }
   | apidoc methodDec { $$= $2; $$->setApidoc($1); }
   | modifications methodDec {
@@ -69,6 +72,7 @@ classMethod:
     isset($1['abstract']) && $$->setAbstract($1['abstract']);
     isset($1['scope'])    && $$->setScope($1['scope']);
     isset($1['static'])   && $$->setStatic($1['static']);
+    isset($1['final'])    && $$->setFinal($1['final']);
   }
   | annotationblock methodDec { $$= $2;  $$->setAnnotations($1); }
   | methodDec { $$= $1; }
@@ -144,6 +148,7 @@ classMemberScope:
     $$= new xp·ide·source·element·Classmembergroup();
     isset($1['static']) && $$->setStatic($1['static']);
     isset($1['scope'])  && $$->setScope($1['scope']);
+    isset($1['final'])  && $$->setFinal($1['final']);
     $$->setMembers($2);
   }
   | T_VAR classMembers ';' {
@@ -166,6 +171,7 @@ modifications:
 ;
 modification:
   T_ABSTRACT { $$= array('abstract' => TRUE); }
+  | T_FINAL { $$= array('final' => TRUE); }
   | T_STATIC { $$= array('static' => TRUE); }
   | T_PUBLIC { $$= array('scope' => xp·ide·source·Scope::$PUBLIC); }
   | T_PRIVATE { $$= array('scope' => xp·ide·source·Scope::$PRIVATE); }

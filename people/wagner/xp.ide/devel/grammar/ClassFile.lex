@@ -46,6 +46,7 @@ WHITE_SPACE=({NL}|{SPACE})+
 <YYINITIAL> "?>" { return $this->createToken(xp·ide·source·parser·ClassFileParser::T_CLOSE_TAG); }
 <YYINITIAL> "uses" { return $this->createToken(xp·ide·source·parser·ClassFileParser::T_USES); }
 <YYINITIAL> "abstract" { return $this->createToken(xp·ide·source·parser·ClassFileParser::T_ABSTRACT); }
+<YYINITIAL> "final" { return $this->createToken(xp·ide·source·parser·ClassFileParser::T_FINAL); }
 <YYINITIAL> "class" { return $this->createToken(xp·ide·source·parser·ClassFileParser::T_CLASS); }
 <YYINITIAL> "extends" { return $this->createToken(xp·ide·source·parser·ClassFileParser::T_EXTENDS); }
 <YYINITIAL> "implements" { return $this->createToken(xp·ide·source·parser·ClassFileParser::T_IMPLEMENTS); }

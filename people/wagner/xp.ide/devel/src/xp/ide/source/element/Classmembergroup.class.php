@@ -18,6 +18,7 @@
   class xp·ide·source·element·Classmembergroup extends xp·ide·source·Element {
     private
       $static= FALSE,
+      $final= FALSE,
       $scope= NULL,
       $members= array();
 
@@ -30,6 +31,7 @@
       if (!$o instanceof self) return FALSE;
       return $this->scope === $o->getScope()
         && $this->static === $o->isStatic()
+        && $this->final === $o->isFinal()
       ;
     }
 
@@ -39,6 +41,14 @@
 
     public function getScope() {
       return $this->scope;
+    }
+
+    public function setFinal($final) {
+      $this->final= $final;
+    }
+
+    public function isFinal() {
+      return $this->final;
     }
 
     public function setStatic($static) {

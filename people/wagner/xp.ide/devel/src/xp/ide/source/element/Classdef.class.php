@@ -25,6 +25,7 @@
       $constants= array(),
       $content= '',
       $apidoc= NULL,
+      $final= FALSE,
       $abstract= FALSE;
 
     public function __construct($name, $parent= 'Object') {
@@ -110,6 +111,14 @@
 
     public function getContent() {
       return $this->content;
+    }
+
+    public function setFinal($final) {
+      $this->final= $final;
+    }
+
+    public function isFinal() {
+      return $this->final;
     }
 
     public function setAbstract($abstract) {

@@ -25,9 +25,6 @@
 
   /**
    * TestCase
-   * TODO:
-   *   - methods final
-   *   - class final
    *
    * @purpose  Test
    */
@@ -191,6 +188,17 @@
      *
      */
     #[@test]
+    public function methodFinal() {
+      $this->e_me->setFinal(TRUE);
+      $this->g->visit($this->e_me);
+      $this->assertEquals("final public function method1() {}", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
     public function methodStatic() {
       $this->e_me->setStatic(TRUE);
       $this->g->visit($this->e_me);
@@ -289,6 +297,18 @@
       $this->e_cm->setInit("'test string'");
       $this->g->visit($this->e_cm);
       $this->assertEquals("\$member1= 'test string'", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function classmembergroupFinalClassmember() {
+      $this->e_cg->setMembers(array($this->e_cm));
+      $this->e_cg->setFinal(TRUE);
+      $this->g->visit($this->e_cg);
+      $this->assertEquals("final public\n  \$member1;", $this->o->getBytes());
     }
 
     /**
@@ -564,6 +584,17 @@
       $this->e_cd->setInterfaces(array('i_face'));
       $this->g->visit($this->e_cd);
       $this->assertEquals("class Test extends Object implements i_face {}", $this->o->getBytes());
+    }
+
+    /**
+     * Test generate php source
+     *
+     */
+    #[@test]
+    public function classdefFinal() {
+      $this->e_cd->setFinal(TRUE);
+      $this->g->visit($this->e_cd);
+      $this->assertEquals("final class Test extends Object {}", $this->o->getBytes());
     }
 
     /**
