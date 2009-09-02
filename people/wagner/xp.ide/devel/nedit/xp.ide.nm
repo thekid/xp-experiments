@@ -109,6 +109,6 @@ define xp_ide_open_xpclass {
   if (0 == $shell_cmd_status) {
     open(result)
   } else {
-    calltip(res)
+    calltip(result)
   }
 }
