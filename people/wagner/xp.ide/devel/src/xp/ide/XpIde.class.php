@@ -17,8 +17,8 @@
     'xp.ide.completion.UncompletePackageClass',
     'xp.ide.text.StreamWorker',
     'xp.ide.text.StreamWorker',
-    'xp.ide.resolve.Info',
-    'xp.ide.completion.Info'
+    'xp.ide.resolve.Respose',
+    'xp.ide.completion.Respose'
   );
 
   /**
@@ -33,12 +33,12 @@
      *
      * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.Cursor cursor
-     * @return xp.ide.completion.Info
+     * @return xp.ide.completion.Respose
      */
     #[@action(name='complete', args="InputStream, Cursor")]
     public function complete(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor) {
       $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($stream, $cursor);
-      return new xp·ide·completion·Info(
+      return new xp·ide·completion·Respose(
         $searchWord,
         create(new xp·ide·completion·PackageClassCompleter())->suggest(
           new xp·ide·completion·UncompletePackageClass($searchWord->getText())
@@ -52,13 +52,13 @@
      *
      * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.Cursor cursor
-     * @return xp.ide.resolve.Info
+     * @return xp.ide.resolve.Respose
      */
     #[@action(name='grepclassfile', args="InputStream, Cursor")]
     public function grepClassFileUri(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor) {
       $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($stream, $cursor);
       $resolver= new xp·ide·resolve·Resolver();
-      return new xp·ide·resolve·Info($searchWord, $resolver->getSourceUri($searchWord->getText()));
+      return new xp·ide·resolve·Respose($searchWord, $resolver->getSourceUri($searchWord->getText()));
     }
 
     /**
@@ -74,12 +74,13 @@
     }
 
     /**
-     * parse file content
+     * get class info
      *
      * @param  xp.ide.text.IInputStream stream
+     * @param  xp.ide.info.InfoType itype
      */
-    #[@action(name='parse', args="InputStream")]
-    public function parse(xp·ide·text·IInputStream $stream) {
+    #[@action(name='info', args="InputStream, Infotype")]
+    public function info(xp·ide·text·IInputStream $stream, xp·ide·info·InfoType $itype) {
       $t= new xp·ide·source·element·ClassFile();
 
       $p= new xp·ide·source·parser·ClassFileParser();
@@ -105,7 +106,10 @@
       }
       $cd->setContent(NULL);
 
-      var_dump($t);
+      switch ($itype) {
+        case xp·ide·info·InfoType::$MEMBER:
+        var_dump($t);
+      }
     }
 
   }

@@ -13,7 +13,7 @@
    */
   abstract class xp·ide·source·Element extends Object {
 
-    public function accept($v) {
+    public function accept(xp·ide·source·IElementVisitor $v) {
       return $v->visit($this);
     }
 

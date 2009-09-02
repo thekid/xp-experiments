@@ -22,8 +22,8 @@
 
     static function __static() {
       self::$PRIVATE=   newinstance(__CLASS__, array(1, 'PRIVATE'), '{ static function __static() {}}');
-      self::$PROTECTED= newinstance(__CLASS__, array(1, 'PROTECTED'), '{ static function __static() {}} ');
-      self::$PUBLIC=    newinstance(__CLASS__, array(1, 'PUBLIC'), '{ static function __static() {}} ');
+      self::$PROTECTED= newinstance(__CLASS__, array(2, 'PROTECTED'), '{ static function __static() {}} ');
+      self::$PUBLIC=    newinstance(__CLASS__, array(3, 'PUBLIC'), '{ static function __static() {}} ');
     }
   }
 

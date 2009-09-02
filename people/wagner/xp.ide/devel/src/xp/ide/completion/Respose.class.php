@@ -1,29 +1,29 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: ClassFileInfo.class.php 11304 2009-07-31 15:56:44Z ruben $ 
  */
-  $package= 'xp.ide.resolve';
+  $package= 'xp.ide.completion';
 
   /**
-   * class file info bean
+   * class file respose bean
    *
    * @purpose  Bean
    */
-  class xp·ide·resolve·Info extends Object {
+  class xp·ide·completion·Respose extends Object {
     private
       $snippet= NULL,
-      $uri= '';
+      $suggestions= array();
 
     /**
      * constructor
      *
      * @param   xp.ide.text.Snippet snippet
-     * @param   string uri
+     * @param   string[] suggestions
      */
-    public function __construct($snippet, $uri) {
+    public function __construct($snippet, $suggestions) {
       $this->snippet= $snippet;
-      $this->uri= $uri;
+      $this->suggestions= $suggestions;
     }
 
     /**
@@ -45,21 +45,21 @@
     }
 
     /**
-     * Set uri
+     * Set suggestions
      *
-     * @param   string uri
+     * @param   string suggestions
      */
-    public function setUri($uri) {
-      $this->uri= $uri;
+    public function setSuggestions($suggestions) {
+      $this->suggestions= $suggestions;
     }
 
     /**
-     * Get uri
+     * Get suggestions
      *
-     * @return  string
+     * @return  string[]
      */
-    public function getUri() {
-      return $this->uri;
+    public function getSuggestions() {
+      return $this->suggestions;
     }
   }
 ?>

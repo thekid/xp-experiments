@@ -10,6 +10,7 @@
     'util.cmd.Console',
     'xp.ide.text.ChannelInputStream',
     'xp.ide.Cursor',
+    'xp.ide.info.InfoType',
     'util.cmd.ParamString',
     'xp.ide.XpIde'
   );
@@ -26,6 +27,7 @@
         'Cursor'      => 'getCursor',
         'InputStream' => 'getInputStream',
         'Language'    => 'getLanguage',
+        'Infotype'    => 'getInfotype',
       );
 
     /**
@@ -57,7 +59,7 @@
         foreach (explode(',', $actionMethods[$action]->getAnnotation('action', 'args')) as $arg) {
           $arg= trim($arg);
           if (!isset(self::$artefacts[$arg])) throw new IllegalStateException(sprintf('unknown artefact "%s" requested by action "%s"', $arg, $action));
-          $action_args[]= call_user_func_array(array(self, self::$artefacts[$arg]), array($params));
+          $action_args[]= call_user_func_array(array(__CLASS__, self::$artefacts[$arg]), array($params));
         }
       }
 
@@ -107,6 +109,16 @@
     }
 
     /**
+     * get requsted info type
+     *
+     * @param util.cmd.ParamString params
+     * @return xp.ide.info.InfoType
+     */
+    public static function getInfotype(ParamString $params) {
+      return xp·ide·info·InfoType::${strToUpper($params->value('info-type', 'it'))};
+    }
+
+    /**
      * Show usage
      */
     public static function usage() {
@@ -125,3 +137,4 @@
 
   }
 ?>
+

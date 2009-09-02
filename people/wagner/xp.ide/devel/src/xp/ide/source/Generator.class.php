@@ -6,7 +6,8 @@
   $package="xp.ide.source";
 
   uses(
-    'io.streams.StringWriter'
+    'io.streams.StringWriter',
+    'xp.ide.source.IElementVisitor'
   );
 
   /**
@@ -15,7 +16,7 @@
    *
    * @purpose  IDE
    */
-  class xp·ide·source·Generator extends Object {
+  class xp·ide·source·Generator extends Object implements xp·ide·source·IElementVisitor {
 
     private
       $output_stream= NULL,

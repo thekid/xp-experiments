@@ -17,7 +17,7 @@
      *
      * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.Cursor cursor
-     * @return xp.ide.completion.Info
+     * @return xp.ide.completion.Respose
      */
     public function complete(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor);
 
@@ -27,7 +27,7 @@
      *
      * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.Cursor cursor
-     * @return xp.ide.resolve.Info
+     * @return xp.ide.resolve.Respose
      */
     public function grepClassFileUri(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor);
 

@@ -23,12 +23,12 @@
      *
      * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.Cursor cursor
-     * @return xp.ide.completion.Info
+     * @return xp.ide.completion.Response
      */
     public function complete(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor) {
-      $info= $this->ide->complete($stream, $cursor);
-      Console::$out->write(implode(PHP_EOL, $info->getSuggestions()));
-      return $info;
+      $response= $this->ide->complete($stream, $cursor);
+      Console::$out->write(implode(PHP_EOL, $response->getSuggestions()));
+      return $response;
     }
 
     /**
@@ -37,21 +37,21 @@
      *
      * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.Cursor cursor
-     * @return xp.ide.resolve.Info
+     * @return xp.ide.resolve.Response
      */
     public function grepClassFileUri(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor) {
       $result= array();
       do {
         try {
-          $info= $this->ide->grepClassFileUri($stream, $cursor);
+          $response= $this->ide->grepClassFileUri($stream, $cursor);
         } catch (IllegalArgumentException $e) {
           continue;
         } catch (xp·ide·resolve·NoSourceException $e) {
           Console::$err->writeLine($e->getMessage());
           continue;
         }
-        list($scheme, $rest)= explode('://', $info->getUri(), 2);
-        if ('file' !== $scheme) Console::$err->writeLine(sprintf('Cannot open class "%s" from location %s', $info->getSnippet()->getText(), $info->getUri()));
+        list($scheme, $rest)= explode('://', $response->getUri(), 2);
+        if ('file' !== $scheme) Console::$err->writeLine(sprintf('Cannot open class "%s" from location %s', $response->getSnippet()->getText(), $response->getUri()));
         $result[]= $rest;
       } while ($stream->available());
       Console::$out->write(implode(' ', $result));
