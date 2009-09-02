@@ -17,8 +17,8 @@
     'xp.ide.completion.UncompletePackageClass',
     'xp.ide.text.StreamWorker',
     'xp.ide.text.StreamWorker',
-    'xp.ide.resolve.Respose',
-    'xp.ide.completion.Respose'
+    'xp.ide.resolve.Response',
+    'xp.ide.completion.Response'
   );
 
   /**
@@ -33,12 +33,12 @@
      *
      * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.Cursor cursor
-     * @return xp.ide.completion.Respose
+     * @return xp.ide.completion.Response
      */
     #[@action(name='complete', args="InputStream, Cursor")]
     public function complete(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor) {
       $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($stream, $cursor);
-      return new xp·ide·completion·Respose(
+      return new xp·ide·completion·Response(
         $searchWord,
         create(new xp·ide·completion·PackageClassCompleter())->suggest(
           new xp·ide·completion·UncompletePackageClass($searchWord->getText())
@@ -52,13 +52,13 @@
      *
      * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.Cursor cursor
-     * @return xp.ide.resolve.Respose
+     * @return xp.ide.resolve.Response
      */
     #[@action(name='grepclassfile', args="InputStream, Cursor")]
     public function grepClassFileUri(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor) {
       $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($stream, $cursor);
       $resolver= new xp·ide·resolve·Resolver();
-      return new xp·ide·resolve·Respose($searchWord, $resolver->getSourceUri($searchWord->getText()));
+      return new xp·ide·resolve·Response($searchWord, $resolver->getSourceUri($searchWord->getText()));
     }
 
     /**
