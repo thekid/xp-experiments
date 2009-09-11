@@ -8,15 +8,13 @@
   uses(
     'xp.ide.source.parser.ClassFileParser',
     'xp.ide.source.parser.ClassFileLexer',
-    'xp.ide.source.parser.ClassParser',
-    'xp.ide.source.parser.ClassLexer',
     'io.streams.MemoryInputStream',
     'xp.ide.IXpIde',
     'xp.ide.resolve.Resolver',
     'xp.ide.completion.PackageClassCompleter',
     'xp.ide.completion.UncompletePackageClass',
     'xp.ide.text.StreamWorker',
-    'xp.ide.text.StreamWorker',
+    'xp.ide.info.MemberInfoVisitor',
     'xp.ide.resolve.Response',
     'xp.ide.completion.Response'
   );
@@ -27,6 +25,14 @@
    * @purpose IDE
    */
   class xp·ide·XpIde extends Object implements xp·ide·IXpIde {
+
+    private
+      $in,
+      $out,
+      $err;
+
+    public function __construct() {
+    }
 
     /**
      * complete the source under the cursor
@@ -81,34 +87,13 @@
      */
     #[@action(name='info', args="InputStream, Infotype")]
     public function info(xp·ide·text·IInputStream $stream, xp·ide·info·InfoType $itype) {
-      $t= new xp·ide·source·element·ClassFile();
-
       $p= new xp·ide·source·parser·ClassFileParser();
-      $p->setTopElement($t);
-      $l= new xp·ide·source·parser·ClassFileLexer($stream);
-      try {
-        $p->parse($l);
-      } catch (ParseException $e) {
-        var_dump($e->getCause()->getMessage());
-        exit();
-      }
-
-      $cd= $t->getClassdef();
-      $cp= new xp·ide·source·parser·ClassParser();
-      $cp->setTopElement($cd);
-      $cl= new xp·ide·source·parser·ClassLexer(new MemoryInputStream($cd->getContent()));
-      try {
-        $cp->parse($cl);
-      } catch (ParseException $e) {
-        var_dump($e->getCause()->getMessage());
-        var_dump($cd->getContent());
-        exit();
-      }
-      $cd->setContent(NULL);
+      $p->setTopElement($t= new xp·ide·source·element·ClassFile());
+      $p->parse(new xp·ide·source·parser·ClassFileLexer($stream));
 
       switch ($itype) {
         case xp·ide·info·InfoType::$MEMBER:
-        var_dump($t);
+        create(new xp·ide·info·MemberInfoVisitor(new ConsoleOutputStream(STDOUT)))->visit($t);
       }
     }
 
