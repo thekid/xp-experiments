@@ -42,6 +42,15 @@
      *
      */
     #[@test]
+    public function readOneUtf8() {
+      $this->assertEquals('Ü', $this->newReader('Ãœbercoder', 'utf-8')->read(1));
+    }
+
+    /**
+     * Test reading
+     *
+     */
+    #[@test]
     public function readLength() {
       $this->assertEquals('Hello', $this->newReader('Hello')->read(5));
     }
@@ -51,8 +60,39 @@
      *
      */
     #[@test]
+    public function readLengthUtf8() {
+      $this->assertEquals('Übercoder', $this->newReader('Ãœbercoder', 'utf-8')->read(9));
+    }
+
+    /**
+     * Test reading
+     *
+     */
+    #[@test]
     public function read() {
       $this->assertEquals('Hello', $this->newReader('Hello')->read());
+    }
+
+    /**
+     * Test reading. Warning: This test "knows" the internal chunk size is 512 bytes.
+     *
+     */
+    #[@test]
+    public function chunkLengthWithUtf8() {
+      $chunk= str_repeat('x', 511);
+      $this->assertEquals($chunk.'Ü', $this->newReader($chunk.'Ãœ', 'utf-8')->read(512));
+    }
+
+    /**
+     * Test reading a source returning encoded bytes only (no US-ASCII inbetween!)
+     *
+     */
+    #[@test]
+    public function encodedBytesOnly() {
+      $this->assertEquals(
+        str_repeat('Ü', 1024), 
+        $this->newReader(str_repeat('Ãœ', 1024), 'utf-8')->read(1024)
+      );
     }
 
     /**
@@ -132,6 +172,18 @@
       $this->assertEquals('Hello', $r->readLine());
       $this->assertEquals('', $r->readLine());
       $this->assertEquals('World', $r->readLine());
+      $this->assertNull($r->readLine());
+    }
+
+    /**
+     * Test reading lines
+     *
+     */
+    #[@test]
+    public function readLinesUtf8() {
+      $r= $this->newReader("Ãœber\nCoder", 'utf-8');
+      $this->assertEquals('Über', $r->readLine());
+      $this->assertEquals('Coder', $r->readLine());
       $this->assertNull($r->readLine());
     }
   }
