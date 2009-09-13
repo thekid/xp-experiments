@@ -7,8 +7,22 @@
   uses('text.csv.CsvReader');
 
   /**
-   * Reads values from CSV lines into objects
+   * Reads values from CSV lines into objects.
    *
+   * Example:
+   * <code>
+   *   class Person extends Object {
+   *     protected $name= '';
+   *   }
+   *   
+   *   // ...
+   *   $beanreader->read(array('name'));
+   * </code>
+   *
+   * The read creates a Person instance and sets its name property to
+   * the value read.
+   *
+   * @see      xp://text.csv.CsvBeanReader
    * @test     xp://net.xp_framework.unittest.text.csv.CsvObjectReaderTest
    */
   class CsvObjectReader extends CsvReader {

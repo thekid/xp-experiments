@@ -7,8 +7,26 @@
   uses('text.csv.CsvReader');
 
   /**
-   * Reads values from CSV lines into Beans
+   * Reads values from CSV lines into Beans. Works like the object reader
+   * but instead of directly accessing the properties uses setter methods.
    *
+   * Example:
+   * <code>
+   *   class Person extends Object {
+   *     protected $name= '';
+   *
+   *     public function setName($name) { $this->name= $name; }
+   *     public function getName() { return $this->name; }
+   *   }
+   *   
+   *   // ...
+   *   $beanreader->read(array('name'));
+   * </code>
+   *
+   * The read creates a Person instance and invokes its setName() method
+   * with the value read.
+   *
+   * @see      xp://text.csv.CsvObjectReader
    * @test     xp://net.xp_framework.unittest.text.csv.CsvBeanReaderTest
    */
   class CsvBeanReader extends CsvReader {
