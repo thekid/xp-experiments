@@ -28,7 +28,7 @@
     }
   
     /**
-     * Test
+     * Test reading a single line
      *
      */
     #[@test]
@@ -38,7 +38,7 @@
     }
 
     /**
-     * Test
+     * Test reading an empty input
      *
      */
     #[@test]
@@ -48,7 +48,7 @@
     }
 
     /**
-     * Test
+     * Test reading multiple lines
      *
      */
     #[@test]
@@ -56,6 +56,26 @@
       $in= $this->newReader('Timm;Karlsruhe;76137'."\n".'Alex;Karlsruhe;76131');
       $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
       $this->assertEquals(array('Alex', 'Karlsruhe', '76131'), $in->read());
+    }
+
+    /**
+     * Test reading a quoted value
+     *
+     */
+    #[@test]
+    public function readQuotedValue() {
+      $in= $this->newReader('"Timm";Karlsruhe;76137');
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test reading an empty value
+     *
+     */
+    #[@test]
+    public function readEmptyValue() {
+      $in= $this->newReader('Timm;;76137');
+      $this->assertEquals(array('Timm', '', '76137'), $in->read());
     }
   }
 ?>
