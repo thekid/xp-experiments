@@ -33,15 +33,17 @@
      * @return  string[]
      */
     protected function readValues() {
-      if (NULL === ($l= $this->reader->readLine())) return NULL;
+      if (NULL === ($line= $this->reader->readLine())) return NULL;
       
       $values= array();
-      $o= 0;
-      while (FALSE !== ($p= strcspn($l, $this->separator, $o))) {
-        if ($this->quote === $l{$o}) {
-          $value= substr($l, $o+ 1, $p- 2);
+      $o= 0; $l= strlen($line);
+      while (FALSE !== ($p= strcspn($line, $this->separator, $o))) {
+        if ($o >= $l) {
+          $value= '';
+        } else if ($this->quote === $line{$o}) {
+          $value= substr($line, $o+ 1, $p- 2);
         } else {
-          $value= substr($l, $o, $p);
+          $value= substr($line, $o, $p);
         }
         $values[]= $value;
         $o+= $p+ 1;
