@@ -41,7 +41,9 @@
         if ($o >= $l) {
           $value= '';
         } else if ($this->quote === $line{$o}) {
-          if ($this->quote !== $line{$p- 1}) {
+          if ($o === $p- 1) {
+            throw new FormatException('Unterminated quoted value in ['.$line.']');
+          } else if ($this->quote !== $line{$p- 1}) {
             $p= strcspn($line, $this->quote, $o+ 1)+ 2;   // leading and trailing quote
             if ($p > $l) {
               throw new FormatException('Unterminated quoted value in ['.$line.']');
