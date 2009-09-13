@@ -20,8 +20,8 @@
      * @param   io.streams.TextReader reader
      * @param   lang.XPClass class
      */
-    public function  __construct(TextReader $r, XPClass $class) {
-      parent::__construct($r);
+    public function  __construct(TextReader $reader, XPClass $class) {
+      parent::__construct($reader);
       $this->class= $class;
     }
     
