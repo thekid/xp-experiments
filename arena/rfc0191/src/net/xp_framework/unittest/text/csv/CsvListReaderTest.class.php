@@ -108,7 +108,6 @@
       $this->assertEquals(array('A single " is OK', 'Karlsruhe', '76137'), $in->read());
     }
 
-
     /**
      * Test reading a quoted value
      *
@@ -120,12 +119,32 @@
     }
 
     /**
-     * Test reading a quoted value
+     * Test unterminated quoted value detection
      *
      */
     #[@test, @expect('lang.FormatException')]
     public function unterminatedQuote() {
       $in= $this->newReader('"Unterminated;Karlsruhe;76131');
+      $in->read();
+    }
+
+    /**
+     * Test unterminated quoted value detection
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function unterminatedQuoteRightBeforeSeparator() {
+      $in= $this->newReader('";Karlsruhe;76131');
+      $in->read();
+    }
+
+    /**
+     * Test unterminated quoted value detection
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function unterminatedQuoteAtEnd() {
+      $in= $this->newReader('"');
       $in->read();
     }
 
