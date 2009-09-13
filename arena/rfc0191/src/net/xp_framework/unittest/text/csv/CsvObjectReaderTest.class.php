@@ -8,7 +8,8 @@
     'unittest.TestCase',
     'text.csv.CsvObjectReader',
     'io.streams.MemoryInputStream',
-    'net.xp_framework.unittest.text.csv.Address'
+    'net.xp_framework.unittest.text.csv.Address',
+    'net.xp_framework.unittest.text.csv.Person'
   );
 
   /**
