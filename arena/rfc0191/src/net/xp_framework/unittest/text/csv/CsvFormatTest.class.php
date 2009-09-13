@@ -28,6 +28,39 @@
     }
 
     /**
+     * Test pipes format uses '|' as delimiter and '"' as quote
+     *
+     */
+    #[@test]
+    public function pipesFormat() {
+      $format= CsvFormat::$PIPES;
+      $this->assertEquals('|', $format->getDelimiter());
+      $this->assertEquals('"', $format->getQuote());
+    }
+
+    /**
+     * Test commas format uses ',' as delimiter and '"' as quote
+     *
+     */
+    #[@test]
+    public function commasFormat() {
+      $format= CsvFormat::$COMMAS;
+      $this->assertEquals(',', $format->getDelimiter());
+      $this->assertEquals('"', $format->getQuote());
+    }
+
+    /**
+     * Test tabs format uses TAB as delimiter and '"' as quote
+     *
+     */
+    #[@test]
+    public function tabsFormat() {
+      $format= CsvFormat::$TABS;
+      $this->assertEquals("\t", $format->getDelimiter());
+      $this->assertEquals('"', $format->getQuote());
+    }
+
+    /**
      * Test withQuote() method
      *
      */

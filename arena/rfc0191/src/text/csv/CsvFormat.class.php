@@ -5,7 +5,21 @@
  */
 
   /**
-   * CSV format
+   * CSV format: Specifies which delimiter and quoting characters should
+   * be used.
+   *
+   * Example:
+   * <code>
+   *   $format= create(new CsvFormat())->withDelimiter(';')->withQuote('"');
+   * </code>
+   *
+   * Contains the following static members with predefined formats:
+   * <ul>
+   *   <li>CsvFormat::$DEFAULT - ';' and '"'</li>
+   *   <li>CsvFormat::$PIPES   - '|' and '"'</li>
+   *   <li>CsvFormat::$COMMAS  - ',' and '"'</li>
+   *   <li>CsvFormat::$TABS    - [TAB] and '"'</li>
+   * </ul>
    *
    * @test     xp://net.xp_framework.unittest.text.csv.CsvFormatTest
    * @see      xp://text.csv.CsvReader
@@ -15,9 +29,15 @@
     protected $quote= '';
     
     public static $DEFAULT= NULL;
+    public static $PIPES= NULL;
+    public static $COMMAS= NULL;
+    public static $TABS= NULL;
     
     static function __static() {
-      self::$DEFAULT= new self();
+      self::$DEFAULT= new self(';', '"');
+      self::$PIPES= new self('|', '"');
+      self::$COMMAS= new self(',', '"');
+      self::$TABS= new self("\t", '"');
     }
     
     /**
