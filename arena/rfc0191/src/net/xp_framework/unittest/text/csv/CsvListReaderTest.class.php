@@ -77,5 +77,25 @@
       $in= $this->newReader('Timm;;76137');
       $this->assertEquals(array('Timm', '', '76137'), $in->read());
     }
+
+    /**
+     * Test reading an empty value
+     *
+     */
+    #[@test]
+    public function readEmptyValueAtBeginning() {
+      $in= $this->newReader(';Karlsruhe;76137');
+      $this->assertEquals(array('', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test reading an empty value
+     *
+     */
+    #[@test]
+    public function readEmptyValueAtEnd() {
+      $in= $this->newReader('Timm;Karlsruhe;');
+      $this->assertEquals(array('Timm', 'Karlsruhe', ''), $in->read());
+    }
   }
 ?>
