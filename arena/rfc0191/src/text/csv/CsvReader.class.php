@@ -11,6 +11,7 @@
    *
    * @see   xp://text.csv.CsvListReader
    * @see   xp://text.csv.CsvObjectReader
+   * @see   xp://text.csv.CsvBeanReader
    */
   abstract class CsvReader extends Object {
     protected $reader= NULL;
