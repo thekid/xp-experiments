@@ -30,6 +30,60 @@
     }
     
     /**
+     * Sets id member
+     *
+     * @param   string id
+     */
+    public function setId($id) {
+      $this->id= $id;
+    }
+
+    /**
+     * Gets id member
+     *
+     * @return  string id
+     */
+    public function getId() {
+      return $this->id;
+    }
+    
+    /**
+     * Sets name member
+     *
+     * @param   string name
+     */
+    public function setName($name) {
+      $this->name= $name;
+    }
+
+    /**
+     * Gets name member
+     *
+     * @return  string name
+     */
+    public function getName() {
+      return $this->name;
+    }
+    
+    /**
+     * Sets email member
+     *
+     * @param   string email
+     */
+    public function setEmail($email) {
+      $this->email= $email;
+    }
+
+    /**
+     * Gets email member
+     *
+     * @return  string email
+     */
+    public function getEmail() {
+      return $this->email;
+    }
+    
+    /**
      * Returns whether another object is equal to this person
      *
      * @param   lang.Generic cmp
