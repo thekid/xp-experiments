@@ -69,6 +69,26 @@
     }
 
     /**
+     * Test reading a quoted value containing the separator character
+     *
+     */
+    #[@test]
+    public function readQuotedValueWithSeparator() {
+      $in= $this->newReader('"Friebe;Timm";Karlsruhe;76137');
+      $this->assertEquals(array('Friebe;Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test reading a quoted value
+     *
+     */
+    #[@test]
+    public function readQuotedValueWithQuotes() {
+      $in= $this->newReader('"""Hello""";Karlsruhe;76137');
+      $this->assertEquals(array('"Hello"', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
      * Test reading an empty value
      *
      */

@@ -41,7 +41,7 @@
         if ($o >= $l) {
           $value= '';
         } else if ($this->quote === $line{$o}) {
-          $value= substr($line, $o+ 1, $p- 2);
+          $value= str_replace($this->quote.$this->quote, $this->quote, substr($line, $o+ 1, $p- 2));
         } else {
           $value= substr($line, $o, $p);
         }
