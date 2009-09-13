@@ -79,6 +79,26 @@
     }
 
     /**
+     * Test reading a quoted value containing the separator character
+     *
+     */
+    #[@test]
+    public function readQuotedValueWithSeparatorInMiddle() {
+      $in= $this->newReader('Timm;"Karlsruhe;Germany";76137');
+      $this->assertEquals(array('Timm', 'Karlsruhe;Germany', '76137'), $in->read());
+    }
+
+    /**
+     * Test reading a quoted value containing the separator character
+     *
+     */
+    #[@test]
+    public function readQuotedValueWithSeparatorAtEnd() {
+      $in= $this->newReader('Timm;Karlsruhe;"76131;76135;76137"');
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76131;76135;76137'), $in->read());
+    }
+
+    /**
      * Test reading a quoted value
      *
      */
@@ -142,6 +162,15 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function unterminatedQuoteAtEnd() {
+      $this->newReader('A;B;"')->read();
+    }
+
+    /**
+     * Test unterminated quoted value detection
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function unterminatedQuoteAtBeginning() {
       $this->newReader('"')->read();
     }
 
