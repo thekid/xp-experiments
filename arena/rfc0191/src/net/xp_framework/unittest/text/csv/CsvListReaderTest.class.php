@@ -124,8 +124,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function unterminatedQuote() {
-      $in= $this->newReader('"Unterminated;Karlsruhe;76131');
-      $in->read();
+      $this->newReader('"Unterminated;Karlsruhe;76131')->read();
     }
 
     /**
@@ -134,8 +133,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function unterminatedQuoteRightBeforeSeparator() {
-      $in= $this->newReader('";Karlsruhe;76131');
-      $in->read();
+      $this->newReader('";Karlsruhe;76131')->read();
     }
 
     /**
@@ -144,8 +142,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function unterminatedQuoteAtEnd() {
-      $in= $this->newReader('"');
-      $in->read();
+      $this->newReader('"')->read();
     }
 
     /**
