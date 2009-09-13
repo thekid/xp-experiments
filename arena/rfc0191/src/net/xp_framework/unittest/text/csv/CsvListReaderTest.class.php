@@ -184,6 +184,20 @@
     }
 
     /**
+     * Test unterminated quoted value detection
+     *
+     */
+    #[@test]
+    public function readingContinuesAfterBrokenLine() {
+      $in= $this->newReader('"Unterminated;Karlsruhe;76131'."\n".'Timm;Karlsruhe;76137');
+      try {
+        $in->read();
+        $this->fail('Unterminated literal not detected', NULL, 'lang.FormatException');
+      } catch (FormatException $expected) { }
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
      * Test reading an empty value
      *
      */
