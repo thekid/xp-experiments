@@ -41,6 +41,9 @@
         if ($o >= $l) {
           $value= '';
         } else if ($this->quote === $line{$o}) {
+          if ($this->quote !== $line{$p- 1}) {
+            $p= strcspn($line, $this->quote, $o+ 1)+ 2;   // leading and trailing quote
+          }
           $value= str_replace($this->quote.$this->quote, $this->quote, substr($line, $o+ 1, $p- 2));
         } else {
           $value= substr($line, $o, $p);
