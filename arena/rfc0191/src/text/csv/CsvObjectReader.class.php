@@ -38,14 +38,15 @@
       // private and protected fields as well as avoids the constructor call.
       $n= xp::reflect($this->class->getName());
       $s= 'O:'.strlen($n).':"'.$n.'":'.sizeof($fields).':{';
-      foreach (explode(';', $l) as $i => $value) {
-        $f= $this->class->getField($fields[$i]);
+      $values= explode(';', $l);
+      foreach ($fields as $i => $name) {
+        $f= $this->class->getField($name);
         switch ($f->getModifiers() & (MODIFIER_PUBLIC | MODIFIER_PROTECTED | MODIFIER_PRIVATE)) {
           case MODIFIER_PUBLIC: $s.= serialize($f->getName()); break;
           case MODIFIER_PROTECTED: $s.= serialize("\0*\0".$f->getName()); break;
           case MODIFIER_PRIVATE: $s.= serialize("\0".$n."\0".$f->getName()); break;
         }
-        $s.= serialize($value);
+        $s.= serialize($values[$i]);
       }
       $s.= '}';
       return unserialize($s);
