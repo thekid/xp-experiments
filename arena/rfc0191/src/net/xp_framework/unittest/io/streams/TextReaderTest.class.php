@@ -111,9 +111,33 @@
      *
      */
     #[@test]
+    public function readMultipleAfterEnd() {
+      $r= $this->newReader('Hello');
+      $this->assertEquals('Hello', $r->read(5));
+      $this->assertNull($r->read());
+      $this->assertNull($r->read());
+    }
+
+    /**
+     * Test reading after EOF
+     *
+     */
+    #[@test]
     public function readLineAfterEnd() {
       $r= $this->newReader('Hello');
       $this->assertEquals('Hello', $r->read(5));
+      $this->assertNull($r->readLine());
+    }
+
+    /**
+     * Test reading after EOF
+     *
+     */
+    #[@test]
+    public function readLineMultipleAfterEnd() {
+      $r= $this->newReader('Hello');
+      $this->assertEquals('Hello', $r->read(5));
+      $this->assertNull($r->readLine());
       $this->assertNull($r->readLine());
     }
 
