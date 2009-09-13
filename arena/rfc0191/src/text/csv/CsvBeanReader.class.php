@@ -19,9 +19,10 @@
      *
      * @param   io.streams.TextReader reader
      * @param   lang.XPClass class
+     * @param   text.csv.CsvFormat format
      */
-    public function  __construct(TextReader $reader, XPClass $class) {
-      parent::__construct($reader);
+    public function  __construct(TextReader $reader, XPClass $class, CsvFormat $format= NULL) {
+      parent::__construct($reader, $format);
       $this->class= $class;
     }
     

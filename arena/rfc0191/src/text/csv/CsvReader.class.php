@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.streams.TextReader');
+  uses('io.streams.TextReader', 'text.csv.CsvFormat');
 
   /**
    * Abstract base class
@@ -15,7 +15,7 @@
    */
   abstract class CsvReader extends Object {
     protected $reader= NULL;
-    protected $separator= ';';
+    protected $delimiter= ';';
     protected $quote= '"';
     protected $line= 0;
    
@@ -23,9 +23,14 @@
      * Creates a new CSV reader reading data from a given TextReader
      *
      * @param   io.streams.TextReader reader
+     * @param   text.csv.CsvFormat format
      */
-    public function  __construct(TextReader $reader) {
+    public function  __construct(TextReader $reader, CsvFormat $format= NULL) {
       $this->reader= $reader;
+      with ($f= $format ? $format : CsvFormat::$DEFAULT); {
+        $this->delimiter= $f->getDelimiter();
+        $this->quote= $f->getQuote();
+      }
     }
 
     /**
@@ -53,7 +58,7 @@
       $this->line++;
       $values= array();
       $o= 0; $l= strlen($line);
-      while (FALSE !== ($p= strcspn($line, $this->separator, $o))) {
+      while (FALSE !== ($p= strcspn($line, $this->delimiter, $o))) {
         if ($o >= $l) {
           $value= '';
         } else if ($this->quote === $line{$o}) {
