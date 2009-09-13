@@ -33,11 +33,22 @@
      */
     public function read(array $fields) {
       if (NULL === ($l= $this->reader->readLine())) return NULL;
-      $instance= $this->class->newInstance();
+      
+      // Create an object by deserialization. This enables us to also set
+      // private and protected fields as well as avoids the constructor call.
+      $n= xp::reflect($this->class->getName());
+      $s= 'O:'.strlen($n).':"'.$n.'":'.sizeof($fields).':{';
       foreach (explode(';', $l) as $i => $value) {
-        $this->class->getField($fields[$i])->set($instance, $value);
+        $f= $this->class->getField($fields[$i]);
+        switch ($f->getModifiers() & (MODIFIER_PUBLIC | MODIFIER_PROTECTED | MODIFIER_PRIVATE)) {
+          case MODIFIER_PUBLIC: $s.= serialize($f->getName()); break;
+          case MODIFIER_PROTECTED: $s.= serialize("\0*\0".$f->getName()); break;
+          case MODIFIER_PRIVATE: $s.= serialize("\0".$n."\0".$f->getName()); break;
+        }
+        $s.= serialize($value);
       }
-      return $instance;
+      $s.= '}';
+      return unserialize($s);
     }    
   }
 ?>
