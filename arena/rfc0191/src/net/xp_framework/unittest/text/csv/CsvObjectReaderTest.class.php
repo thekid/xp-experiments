@@ -43,5 +43,15 @@
         $in->read(array('name', 'city', 'zip'))
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readEmpty() {
+      $in= $this->newReader('');
+      $this->assertNull($in->read(array('name', 'city', 'zip')));
+    }
   }
 ?>
