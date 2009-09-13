@@ -170,6 +170,15 @@
      *
      */
     #[@test, @expect('lang.FormatException')]
+    public function unterminatedQuoteAtEndWithTrailingSeparator() {
+      $this->newReader('A;B;";')->read();
+    }
+
+    /**
+     * Test unterminated quoted value detection
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
     public function unterminatedQuoteAtBeginning() {
       $this->newReader('"')->read();
     }
