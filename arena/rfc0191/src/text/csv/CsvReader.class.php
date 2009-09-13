@@ -15,6 +15,8 @@
    */
   abstract class CsvReader extends Object {
     protected $reader= NULL;
+    protected $separator= ';';
+    protected $quote= '"';
    
     /**
      * Creates a new CSV reader reading data from a given TextReader
@@ -32,7 +34,19 @@
      */
     protected function readValues() {
       if (NULL === ($l= $this->reader->readLine())) return NULL;
-      return explode(';', $l);
+      
+      $values= array();
+      $o= 0;
+      while (FALSE !== ($p= strcspn($l, $this->separator, $o))) {
+        if ($this->quote === $l{$o}) {
+          $value= substr($l, $o+ 1, $p- 2);
+        } else {
+          $value= substr($l, $o, $p);
+        }
+        $values[]= $value;
+        $o+= $p+ 1;
+      }
+      return $values;
     }
   }
 ?>
