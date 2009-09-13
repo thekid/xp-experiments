@@ -19,8 +19,7 @@
      * @return  string[] or NULL if end of the file is reached
      */
     public function read() {
-      $l= $this->reader->readLine();
-      return NULL === $l ? NULL : explode(';', $l);
+      return $this->readValues();
     }    
   }
 ?>

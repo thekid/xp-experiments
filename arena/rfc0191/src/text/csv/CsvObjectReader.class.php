@@ -32,13 +32,12 @@
      * @return  lang.Object or NULL if end of the file is reached
      */
     public function read(array $fields) {
-      if (NULL === ($l= $this->reader->readLine())) return NULL;
+      if (NULL === ($values= $this->readValues())) return NULL;
       
       // Create an object by deserialization. This enables us to also set
       // private and protected fields as well as avoids the constructor call.
       $n= xp::reflect($this->class->getName());
       $s= 'O:'.strlen($n).':"'.$n.'":'.sizeof($fields).':{';
-      $values= explode(';', $l);
       foreach ($fields as $i => $name) {
         $f= $this->class->getField($name);
         switch ($f->getModifiers() & (MODIFIER_PUBLIC | MODIFIER_PROTECTED | MODIFIER_PRIVATE)) {

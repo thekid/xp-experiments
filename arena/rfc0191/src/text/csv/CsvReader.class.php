@@ -23,5 +23,15 @@
     public function  __construct(TextReader $reader) {
       $this->reader= $reader;
     }
+    
+    /**
+     * Reads values
+     *
+     * @return  string[]
+     */
+    protected function readValues() {
+      if (NULL === ($l= $this->reader->readLine())) return NULL;
+      return explode(';', $l);
+    }
   }
 ?>
