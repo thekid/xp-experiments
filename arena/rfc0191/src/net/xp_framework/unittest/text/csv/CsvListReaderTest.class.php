@@ -21,10 +21,11 @@
      * Creates a new list reader
      *
      * @param   string str
+     * @param   text.csv.CsvFormat format
      * @return  text.csv.CsvListReader
      */
-    protected function newReader($str) {
-      return new CsvListReader(new TextReader(new MemoryInputStream($str)));
+    protected function newReader($str, CsvFormat $format= NULL) {
+      return new CsvListReader(new TextReader(new MemoryInputStream($str)), $format);
     }
   
     /**
@@ -34,6 +35,26 @@
     #[@test]
     public function readLine() {
       $in= $this->newReader('Timm;Karlsruhe;76137');
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test reading a single line
+     *
+     */
+    #[@test]
+    public function readLineDelimitedByCommas() {
+      $in= $this->newReader('Timm,Karlsruhe,76137', create(new CsvFormat())->withDelimiter(','));
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test reading a single line
+     *
+     */
+    #[@test]
+    public function readLineDelimitedByPipes() {
+      $in= $this->newReader('Timm|Karlsruhe|76137', create(new CsvFormat())->withDelimiter('|'));
       $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
     }
 
@@ -91,6 +112,26 @@
     }
 
     /**
+     * Test reading a quoted value
+     *
+     */
+    #[@test]
+    public function readQuotedValues() {
+      $in= $this->newReader('"Timm";"Karlsruhe";"76137"');
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test reading a quoted value
+     *
+     */
+    #[@test]
+    public function readQuotedWithSingleQuotes() {
+      $in= $this->newReader("Timm;'Karlsruhe';76137", create(new CsvFormat())->withQuote("'"));
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
      * Test reading a quoted value containing the separator character
      *
      */
@@ -128,6 +169,16 @@
     public function readQuotedValueWithQuotes() {
       $in= $this->newReader('"""Hello""";Karlsruhe;76137');
       $this->assertEquals(array('"Hello"', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test reading a quoted value
+     *
+     */
+    #[@test]
+    public function readQuotedValueWithQuotesInside() {
+      $in= $this->newReader('"Timm""Karlsruhe";76137');
+      $this->assertEquals(array('Timm"Karlsruhe', '76137'), $in->read());
     }
 
     /**
