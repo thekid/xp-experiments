@@ -59,6 +59,28 @@
     }
 
     /**
+     * Test getHeaders() method
+     *
+     */
+    #[@test]
+    public function getHeaders() {
+      $in= $this->newReader('name;city;zip'."\n".'Alex;Karlsruhe;76131');
+      $this->assertEquals(array('name', 'city', 'zip'), $in->getHeaders());
+      $this->assertEquals(array('Alex', 'Karlsruhe', '76131'), $in->read());
+    }
+
+    /**
+     * Test getHeaders() method
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function cannotGetHeadersAfterReading() {
+      $in= $this->newReader('Timm;Karlsruhe;76137');
+      $in->read();
+      $in->getHeaders();
+    }
+
+    /**
      * Test reading a quoted value
      *
      */
