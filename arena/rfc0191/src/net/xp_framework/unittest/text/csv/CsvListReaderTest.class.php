@@ -103,6 +103,17 @@
      *
      */
     #[@test]
+    public function quoteInsideUnquoted() {
+      $in= $this->newReader('A single " is OK;Karlsruhe;76137');
+      $this->assertEquals(array('A single " is OK', 'Karlsruhe', '76137'), $in->read());
+    }
+
+
+    /**
+     * Test reading a quoted value
+     *
+     */
+    #[@test]
     public function readEmptyQuotedValue() {
       $in= $this->newReader('"";Karlsruhe;76137');
       $this->assertEquals(array('', 'Karlsruhe', '76137'), $in->read());
