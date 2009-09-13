@@ -89,6 +89,36 @@
     }
 
     /**
+     * Test reading a quoted value
+     *
+     */
+    #[@test]
+    public function quotesInsideUnquoted() {
+      $in= $this->newReader('He said "Hello";Karlsruhe;76137');
+      $this->assertEquals(array('He said "Hello"', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test reading a quoted value
+     *
+     */
+    #[@test]
+    public function readEmptyQuotedValue() {
+      $in= $this->newReader('"";Karlsruhe;76137');
+      $this->assertEquals(array('', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test reading a quoted value
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function unterminatedQuote() {
+      $in= $this->newReader('"Unterminated;Karlsruhe;76131');
+      $in->read();
+    }
+
+    /**
      * Test reading an empty value
      *
      */
