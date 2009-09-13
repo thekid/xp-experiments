@@ -152,8 +152,26 @@
      *
      */
     #[@test, @expect('lang.FormatException')]
+    public function unterminatedQuoteInTheMiddle() {
+      $this->newReader('Timm;"Unterminated;76131')->read();
+    }
+
+    /**
+     * Test unterminated quoted value detection
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
     public function unterminatedQuoteRightBeforeSeparator() {
       $this->newReader('";Karlsruhe;76131')->read();
+    }
+
+    /**
+     * Test unterminated quoted value detection
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function unterminatedQuoteInTheMiddleRightBeforeSeparator() {
+      $this->newReader('Timm;";76131')->read();
     }
 
     /**
