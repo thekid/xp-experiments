@@ -61,8 +61,8 @@
      */
     #[@test]
     public function readEmpty() {
-      $in= $this->newReader('', XPClass::forName('net.xp_framework.unittest.text.csv.Address'));
-      $this->assertNull($in->read(array('name', 'city', 'zip')));
+      $in= $this->newReader('', XPClass::forName('net.xp_framework.unittest.text.csv.Person'));
+      $this->assertNull($in->read(array('id', 'name', 'email')));
     }
   }
 ?>
