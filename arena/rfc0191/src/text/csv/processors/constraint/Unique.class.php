@@ -17,7 +17,7 @@
     protected $values= array();
 
     /**
-     * Creates a new "Required" constraint
+     * Creates a new "Unique" constraint
      *
      * @param   text.csv.CellProcessor
      */
