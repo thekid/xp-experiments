@@ -14,6 +14,7 @@
     'text.csv.processors.AsEnum',
     'text.csv.processors.constraint.Optional',
     'text.csv.processors.constraint.Required',
+    'text.csv.processors.constraint.Unique',
     'net.xp_framework.unittest.core.Coin',
     'io.streams.MemoryInputStream'
   );
@@ -388,6 +389,23 @@
         new Optional(new AsInteger())
       ));
       $this->assertEquals(array(200, NULL), $in->read());
+    }
+
+    /**
+     * Test Unique processor
+     *
+     */
+    #[@test]
+    public function unique() {
+      $in= $this->newReader("200;OK\n200;NACK")->withProcessors(array(
+        new Unique(),
+        NULL
+      ));
+      $this->assertEquals(array('200', 'OK'), $in->read());
+      try {
+        $in->read();
+        $this->fail('Duplicate value not detected', NULL, 'lang.FormatException');
+      } catch (FormatException $expected) { }
     }
   }
 ?>
