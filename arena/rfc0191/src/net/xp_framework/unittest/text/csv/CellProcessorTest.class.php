@@ -12,8 +12,8 @@
     'text.csv.processors.AsDate',
     'text.csv.processors.AsBool',
     'text.csv.processors.AsEnum',
-    'text.csv.processors.Optional',
-    'text.csv.processors.Required',
+    'text.csv.processors.constraint.Optional',
+    'text.csv.processors.constraint.Required',
     'net.xp_framework.unittest.core.Coin',
     'io.streams.MemoryInputStream'
   );
