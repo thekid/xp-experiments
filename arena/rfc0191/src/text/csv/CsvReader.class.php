@@ -18,7 +18,8 @@
     protected $delimiter= ';';
     protected $quote= '"';
     protected $line= 0;
-   
+    protected $processors= array();
+
     /**
      * Creates a new CSV reader reading data from a given TextReader
      *
@@ -31,6 +32,17 @@
         $this->delimiter= $f->getDelimiter();
         $this->quote= $f->getQuote();
       }
+    }
+    
+    /**
+     * Sets processors and return this reader
+     *
+     * @param   text.csv.CellProcessor[] processors
+     * @return  text.csv.CsvReader this reader
+     */
+    public function withProcessors(array $processors) {
+      $this->processors= $processors;
+      return $this;
     }
 
     /**
@@ -76,6 +88,7 @@
       //   escaped, e.g. "'He said ''hello'' when he arrived',B,C"
       // * Quoted values may span multiple lines.
       $values= array(); 
+      $v= 0;
       $escape= $this->quote.$this->quote;
       $whitespace= " \t";
       $this->line++;
@@ -108,7 +121,7 @@
             }
             break;
           } while (1);
-          $values[]= str_replace($escape, $this->quote, substr($line, $b + 1, $e));
+          $value= str_replace($escape, $this->quote, substr($line, $b + 1, $e));
           $e+= 2;
           $e+= strspn($line, $whitespace, $b+ $e);                // Skip trailing WS
           if ($b + $e < $l && $this->delimiter !== $line{$b + $e}) {
@@ -123,11 +136,18 @@
 
           // Find end of unquoted value (= delimiter)
           $e= strcspn($line, $this->delimiter, $b);
-          $values[]= rtrim(substr($line, $b, $e), $whitespace);   // Trim trailing WS
+          $value= rtrim(substr($line, $b, $e), $whitespace);   // Trim trailing WS
         }
+        
+        if (isset($this->processors[$v])) {
+          $values[$v]= $this->processors[$v]->process($value);
+        } else {
+          $values[$v]= $value;
+        }
+        $v++;
         $o= $b + $e + 1;
       } while ($o < $l);
-      // DEBUG Console::$err->writeLine('<', addcslashes($line, "\n"), '> => [<', implode('>, <', $values), '>]');
+      // DEBUG Console::$err->writeLine('<', addcslashes($line, "\n"), '> => ', $values);
       return $values;
     }
   }
