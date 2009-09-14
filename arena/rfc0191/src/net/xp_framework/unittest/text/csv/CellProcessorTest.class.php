@@ -12,6 +12,7 @@
     'text.csv.processors.AsDate',
     'text.csv.processors.AsBool',
     'text.csv.processors.AsEnum',
+    'text.csv.processors.Optional',
     'net.xp_framework.unittest.core.Coin',
     'io.streams.MemoryInputStream'
   );
@@ -296,6 +297,45 @@
         NULL,
         new AsEnum(XPClass::forName('net.xp_framework.unittest.core.Coin'))
       ))->read();
+    }
+
+       /**
+     * Test Optional processor
+     *
+     */
+    #[@test]
+    public function optionalString() {
+      $in= $this->newReader('200;OK;')->withProcessors(array(
+        NULL,
+        new Optional()
+      ));
+      $this->assertEquals(array('200', 'OK'), $in->read());
+    }
+    
+    /**
+     * Test Optional processor
+     *
+     */
+    #[@test]
+    public function optionalEmpty() {
+      $in= $this->newReader('666;;')->withProcessors(array(
+        NULL,
+        new Optional()
+      ));
+      $this->assertEquals(array('666', NULL), $in->read());
+    }
+
+    /**
+     * Test Optional processor
+     *
+     */
+    #[@test]
+    public function optionalEmptyWithDefault() {
+      $in= $this->newReader('666;;')->withProcessors(array(
+        NULL,
+        create(new Optional())->withDefault('(unknown)')
+      ));
+      $this->assertEquals(array('666', '(unknown)'), $in->read());
     }
   }
 ?>
