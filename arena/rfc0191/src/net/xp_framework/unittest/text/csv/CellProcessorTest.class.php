@@ -363,5 +363,31 @@
         new Required()
       ))->read();
     }
+
+    /**
+     * Test chaining in Required processor
+     *
+     */
+    #[@test]
+    public function chainingRequired() {
+      $in= $this->newReader('200;OK;')->withProcessors(array(
+        new Required(new AsInteger()),
+        new Required()
+      ));
+      $this->assertEquals(array(200, 'OK'), $in->read());
+    }
+
+    /**
+     * Test chaining in Optional processor
+     *
+     */
+    #[@test]
+    public function chainingOptional() {
+      $in= $this->newReader('200;;')->withProcessors(array(
+        new Optional(new AsInteger()),
+        new Optional(new AsInteger())
+      ));
+      $this->assertEquals(array(200, NULL), $in->read());
+    }
   }
 ?>
