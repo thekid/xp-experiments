@@ -18,7 +18,7 @@
     protected $next= NULL;
 
     /**
-     * Creates a new "Required" constraint
+     * Creates a new "Optional" constraint
      *
      * @param   text.csv.CellProcessor
      */
