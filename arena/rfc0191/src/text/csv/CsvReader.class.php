@@ -45,38 +45,89 @@
       }
       return $this->readValues();
     }
+
+    /**
+     * Raise an exception
+     *
+     * @param   string message
+     */
+    protected function raise($message) {
+      throw new FormatException(sprintf('Line %d: %s', $this->line, $message));
+    }
     
     /**
      * Reads values
      *
+     * @see     http://en.wikipedia.org/wiki/Comma-separated_values
      * @return  string[]
      * @throws  lang.FormatException if a formatting error is detected
      */
     protected function readValues() {
       if (NULL === ($line= $this->reader->readLine())) return NULL;
 
+      // Parse line. 
+      // * In the easiest form, we have values separated by the delimiter 
+      //   character, e.g. "A,B,C".
+      // * Whitespace around the values is ignored, "A , B, C" is the same
+      //   as "A,B,C".
+      // * Values containing the delimiter must be quoted, "'A,B',C,D" 
+      //   resembles the list "A,B" "C" and "D".
+      // * The quote character must be doubled inside quoted values to be
+      //   escaped, e.g. "'He said ''hello'' when he arrived',B,C"
+      // * Quoted values may span multiple lines.
+      $values= array(); 
+      $escape= $this->quote.$this->quote;
+      $whitespace= " \t";
       $this->line++;
-      $values= array();
       $o= 0; $l= strlen($line);
-      while (FALSE !== ($p= strcspn($line, $this->delimiter, $o))) {
-        if ($o >= $l) {
-          $value= '';
-        } else if ($this->quote === $line{$o}) {
-          if ($o === $p- 1) {
-            throw new FormatException('Unterminated quoted value in ['.$line.'] (line '.$this->line.')');
-          } else if ($this->quote !== $line{$p- 1}) {
-            $p= strcspn($line, $this->quote, $o+ 1)+ 2;   // leading and trailing quote
-            if ($o+ $p > $l) {
-              throw new FormatException('Unterminated quoted value in ['.$line.'] (line '.$this->line.')');
+      do {
+        $b= $o + strspn($line, $whitespace, $o);                  // Skip leading WS
+        if ($this->quote === $line{$b}) {
+
+          // Find end of quoted value (= quote not preceded by quote)
+          $q= $b + 1;
+          $e= 0;
+          $bl= $this->line;
+          do {
+            $p= strcspn($line, $this->quote, $q);
+            $e+= $p;
+            if ($q + $p >= $l) {
+              if (NULL === ($chunk= $this->reader->readLine())) {
+                $this->raise('Unterminated quoted value beginning at line '.$bl);
+              }
+              $this->line++;
+              $line.= "\n".$chunk;
+              $q+= $p + 1;
+              $e+= 1;
+              $l= strlen($line);
+              continue;
+            } else if ($escape === substr($line, $p + $q, 2)) {
+              $q+= $p + 2;
+              $e+= 2;
+              continue;
             }
+            break;
+          } while (1);
+          $values[]= str_replace($escape, $this->quote, substr($line, $b + 1, $e));
+          $e+= 2;
+          $e+= strspn($line, $whitespace, $b+ $e);                // Skip trailing WS
+          if ($b + $e < $l && $this->delimiter !== $line{$b + $e}) {
+            $this->raise(sprintf(
+              'Illegal quoting, expected [%s or <END>], have [%s] beginning at line %d',
+              $this->delimiter,
+              $line{$b + $e},
+              $bl
+            ));
           }
-          $value= str_replace($this->quote.$this->quote, $this->quote, substr($line, $o+ 1, $p- 2));
         } else {
-          $value= substr($line, $o, $p);
+
+          // Find end of unquoted value (= delimiter)
+          $e= strcspn($line, $this->delimiter, $b);
+          $values[]= rtrim(substr($line, $b, $e), $whitespace);   // Trim trailing WS
         }
-        $values[]= $value;
-        $o+= $p+ 1;
-      }
+        $o= $b + $e + 1;
+      } while ($o < $l);
+      // DEBUG Console::$err->writeLine('<', addcslashes($line, "\n"), '> => [<', implode('>, <', $values), '>]');
       return $values;
     }
   }

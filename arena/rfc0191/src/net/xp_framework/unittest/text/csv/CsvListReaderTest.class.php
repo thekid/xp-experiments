@@ -102,6 +102,56 @@
     }
 
     /**
+     * Test whitespace is ignored
+     *
+     */
+    #[@test]
+    public function leadingWhitespace() {
+      $in= $this->newReader(' Timm;Karlsruhe;76137');
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test whitespace is ignored
+     *
+     */
+    #[@test]
+    public function leadingWhitespaces() {
+      $in= $this->newReader('Timm;    Karlsruhe;    76137');
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test whitespace is ignored
+     *
+     */
+    #[@test]
+    public function trailingWhitespace() {
+      $in= $this->newReader('Timm ;Karlsruhe;76137');
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test whitespace is ignored
+     *
+     */
+    #[@test]
+    public function surroundingWhitespace() {
+      $in= $this->newReader('Timm   ;   Karlsruhe   ;   76137');
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test whitespace is ignored
+     *
+     */
+    #[@test]
+    public function whiteSpaceAndEmpty() {
+      $in= $this->newReader('       ;   Karlsruhe   ;   76137');
+      $this->assertEquals(array('', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
      * Test reading a quoted value
      *
      */
@@ -109,6 +159,26 @@
     public function readQuotedValue() {
       $in= $this->newReader('"Timm";Karlsruhe;76137');
       $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test reading a quoted value
+     *
+     */
+    #[@test]
+    public function readQuotedValueWithSurroundingWhitespace() {
+      $in= $this->newReader('   "Timm"    ;Karlsruhe;76137');
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test reading a quoted value
+     *
+     */
+    #[@test]
+    public function readQuotedValueIncludingWhitespace() {
+      $in= $this->newReader('"   Timm    ";Karlsruhe;76137');
+      $this->assertEquals(array('   Timm    ', 'Karlsruhe', '76137'), $in->read());
     }
 
     /**
@@ -176,6 +246,16 @@
      *
      */
     #[@test]
+    public function readEmptyQuotedValue() {
+      $in= $this->newReader('"";Karlsruhe;76137');
+      $this->assertEquals(array('', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test reading a quoted value
+     *
+     */
+    #[@test]
     public function readQuotedValueWithQuotesInside() {
       $in= $this->newReader('"Timm""Karlsruhe";76137');
       $this->assertEquals(array('Timm"Karlsruhe', '76137'), $in->read());
@@ -202,13 +282,57 @@
     }
 
     /**
-     * Test reading a quoted value
+     * Test multi-line string. From the specification: "An entry may 
+     * contain newlines in which case the whole entry is enclosed in 
+     * quotation marks".
      *
      */
     #[@test]
-    public function readEmptyQuotedValue() {
-      $in= $this->newReader('"";Karlsruhe;76137');
-      $this->assertEquals(array('', 'Karlsruhe', '76137'), $in->read());
+    public function multiLine() {
+      $in= $this->newReader(
+        "14:30-15:30;Development;'- Fix unittests\n- QA: Apidoc'",
+        create(new CsvFormat())->withQuote("'")
+      );
+      $this->assertEquals(
+        array('14:30-15:30', 'Development', "- Fix unittests\n- QA: Apidoc"), 
+        $in->read()
+      );
+    }
+
+    /**
+     * Test multi-line string. From the specification: "An entry may 
+     * contain newlines in which case the whole entry is enclosed in 
+     * quotation marks".
+     *
+     */
+    #[@test]
+    public function multiLines() {
+      $in= $this->newReader(
+        "14:30-15:30;Development;'- Fix unittests\n- QA: Apidoc'\n15:30-15:49;Report;- Tests",
+        create(new CsvFormat())->withQuote("'")
+      );
+      $this->assertEquals(array('14:30-15:30', 'Development', "- Fix unittests\n- QA: Apidoc"), $in->read());
+      $this->assertEquals(array('15:30-15:49', 'Report', '- Tests'), $in->read());
+    }
+
+    /**
+     * Test quoting of only partial values
+     *
+     */
+    #[@test, @ignore('Is this really allowed?')]
+    public function partialQuoting() {
+      $in= $this->newReader('"Timm"|"Karlsruhe";76137');
+      $this->assertEquals(array('Timm|Karlsruhe', '76131'), $in->read());
+    }
+
+    /**
+     * Test quoting of only partial values
+     *
+     */
+    #[@test, @ignore('Is this really allowed?')]
+    public function partialQuotingDelimiter() {
+      $in= $this->newReader('Timm";"Karlsruhe;76137');
+      $this->assertEquals(array('Timm;Karlsruhe', '76131'), $in->read());
     }
 
     /**
@@ -280,7 +404,7 @@
      */
     #[@test]
     public function readingContinuesAfterBrokenLine() {
-      $in= $this->newReader('"Unterminated;Karlsruhe;76131'."\n".'Timm;Karlsruhe;76137');
+      $in= $this->newReader('"Hello"-;Karlsruhe;76131'."\n".'Timm;Karlsruhe;76137');
       try {
         $in->read();
         $this->fail('Unterminated literal not detected', NULL, 'lang.FormatException');
@@ -314,8 +438,17 @@
      */
     #[@test]
     public function readEmptyValueAtEnd() {
-      $in= $this->newReader('Timm;Karlsruhe;');
+      $in= $this->newReader('Timm;Karlsruhe;;');
       $this->assertEquals(array('Timm', 'Karlsruhe', ''), $in->read());
+    }
+
+    /**
+     * Test illegal quoting
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function illegalQuoting() {
+      $this->newReader('"Timm"Karlsruhe";76137')->read();
     }
   }
 ?>
