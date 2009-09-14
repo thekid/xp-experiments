@@ -13,6 +13,7 @@
     'text.csv.processors.AsBool',
     'text.csv.processors.AsEnum',
     'text.csv.processors.Optional',
+    'text.csv.processors.Required',
     'net.xp_framework.unittest.core.Coin',
     'io.streams.MemoryInputStream'
   );
@@ -336,6 +337,31 @@
         create(new Optional())->withDefault('(unknown)')
       ));
       $this->assertEquals(array('666', '(unknown)'), $in->read());
+    }
+
+    /**
+     * Test Required processor
+     *
+     */
+    #[@test]
+    public function requiredString() {
+      $in= $this->newReader('200;OK;')->withProcessors(array(
+        NULL,
+        new Required()
+      ));
+      $this->assertEquals(array('200', 'OK'), $in->read());
+    }
+    
+    /**
+     * Test Required processor
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function requiredEmpty() {
+      $this->newReader('666;;')->withProcessors(array(
+        NULL,
+        new Required()
+      ))->read();
     }
   }
 ?>
