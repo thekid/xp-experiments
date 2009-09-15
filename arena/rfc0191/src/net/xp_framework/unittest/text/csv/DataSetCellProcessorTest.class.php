@@ -7,8 +7,10 @@
   uses(
     'unittest.TestCase',
     'text.csv.CsvListReader',
-    'text.csv.processors.lookup.DataSetLookup',
-    'net.xp_framework.unittest.rdbms.dataset.Person',
+    'text.csv.processors.lookup.GetDataSet',
+    'text.csv.processors.lookup.FindDataSet',
+    'net.xp_framework.unittest.rdbms.dataset.Job',
+    'net.xp_framework.unittest.rdbms.dataset.JobFinder',
     'net.xp_framework.unittest.rdbms.mock.MockConnection',
     'io.streams.MemoryInputStream'
   );
@@ -27,7 +29,7 @@
     #[@beforeClass]
     public static function registerMockConnection() {
       DriverManager::register('mock', XPClass::forName('net.xp_framework.unittest.rdbms.mock.MockConnection'));
-      Person::getPeer()->setConnection(DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'));
+      Job::getPeer()->setConnection(DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'));
     }
 
     /**
@@ -46,18 +48,18 @@
      *
      */
     #[@test]
-    public function lookup() {
-      Person::getPeer()->getConnection()->setResultSet(new MockResultSet(array(
-        array('person_id' => 1549, 'name' => 'Timm')
+    public function getByPrimary() {
+      Job::getPeer()->getConnection()->setResultSet(new MockResultSet(array(
+        array('job_id' => 1549, 'title' => 'Developer')
       )));
-      $in= $this->newReader("person_id;commits\n1549;10248")->withProcessors(array(
-        new DataSetLookup(Person::getPeer()),
+      $in= $this->newReader("job_id;title\n1549;10248")->withProcessors(array(
+        new GetDataSet(create(new JobFinder())->method('byPrimary')),
         NULL
       ));
       $in->getHeaders();
       $list= $in->read();
-      $this->assertClass($list[0], 'net.xp_framework.unittest.rdbms.dataset.Person');
-      $this->assertEquals(1549, $list[0]->getPerson_id());
+      $this->assertClass($list[0], 'net.xp_framework.unittest.rdbms.dataset.Job');
+      $this->assertEquals(1549, $list[0]->getJob_id());
     }
 
     /**
@@ -65,21 +67,18 @@
      *
      */
     #[@test]
-    public function lookupByCriteria() {
-      Person::getPeer()->getConnection()->setResultSet(new MockResultSet(array(
-        array('person_id' => 1549, 'name' => 'Timm')
+    public function findByTitle() {
+      Job::getPeer()->getConnection()->setResultSet(new MockResultSet(array(
+        array('job_id' => 1549, 'title' => 'Developer')
       )));
-      $in= $this->newReader("name;commits\nTimm;10248")->withProcessors(array(
-        new DataSetLookup(Person::getPeer(), create(new Criteria())
-          ->add('name', new QueryParameter(), EQUAL)
-          ->add('department_id', 6100, EQUAL)
-        ),
+      $in= $this->newReader("title;external_id\nDeveloper;10248")->withProcessors(array(
+        new GetDataSet(create(new JobFinder())->method('similarTo')),
         NULL
       ));
       $in->getHeaders();
       $list= $in->read();
-      $this->assertClass($list[0], 'net.xp_framework.unittest.rdbms.dataset.Person');
-      $this->assertEquals(1549, $list[0]->getPerson_id());
+      $this->assertClass($list[0], 'net.xp_framework.unittest.rdbms.dataset.Job');
+      $this->assertEquals(1549, $list[0]->getJob_id());
     }
 
     /**
@@ -87,10 +86,10 @@
      *
      */
     #[@test]
-    public function notFound() {
-      Person::getPeer()->getConnection()->setResultSet(new MockResultSet(array()));
-      $in= $this->newReader("person_id;commits\n1549;10248")->withProcessors(array(
-        new DataSetLookup(Person::getPeer()),
+    public function getNotFound() {
+      Job::getPeer()->getConnection()->setResultSet(new MockResultSet(array()));
+      $in= $this->newReader("job_id;title\n1549;Developer")->withProcessors(array(
+        new GetDataSet(create(new JobFinder())->method('byPrimary')),
         NULL
       ));
       $in->getHeaders();
@@ -101,17 +100,33 @@
     }
 
     /**
+     * Test lookup not returning a result
+     *
+     */
+    #[@test]
+    public function findNotFound() {
+      Job::getPeer()->getConnection()->setResultSet(new MockResultSet(array()));
+      $in= $this->newReader("job_id;title\n1549;Developer")->withProcessors(array(
+        new FindDataSet(create(new JobFinder())->method('byPrimary')),
+        NULL
+      ));
+      $in->getHeaders();
+      $list= $in->read();
+      $this->assertNull($list[0]);
+    }
+
+    /**
      * Test lookup returning more than one result
      *
      */
     #[@test]
     public function ambiguous() {
-      Person::getPeer()->getConnection()->setResultSet(new MockResultSet(array(
-        array('person_id' => 1549, 'name' => 'Timm'),
-        array('person_id' => 1549, 'name' => 'Doppelgänger'),
+      Job::getPeer()->getConnection()->setResultSet(new MockResultSet(array(
+        array('job_id' => 1549, 'title' => 'Developer'),
+        array('job_id' => 1549, 'title' => 'Doppelgänger'),
       )));
-      $in= $this->newReader("person_id;commits\n1549;10248")->withProcessors(array(
-        new DataSetLookup(Person::getPeer()),
+      $in= $this->newReader("job_id;title\n1549;10248")->withProcessors(array(
+        new GetDataSet(create(new JobFinder())->method('byPrimary')),
         NULL
       ));
       $in->getHeaders();
