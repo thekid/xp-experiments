@@ -48,7 +48,7 @@
     #[@test]
     public function writePersonReSorted() {
       $this->newWriter()->write(new net·xp_framework·unittest·text·csv·Person(1549, 'Timm', 'friebe@example.com'), array('email', 'id', 'name'));
-      $this->assertEquals("friebe@example.com;1549;Timm\n", $this->out->getBytes());
+      $this->assertEquals("friebe@example.com;1549;Timm;\n", $this->out->getBytes());
     }
 
     /**
