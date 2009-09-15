@@ -462,6 +462,26 @@
     }
 
     /**
+     * Test TAB as delimiter
+     *
+     */
+    #[@test]
+    public function tabDelimiter() {
+      $in= $this->newReader("A\tB\tC", CsvFormat::$TABS);
+      $this->assertEquals(array('A', 'B', 'C'), $in->read());
+    }
+
+    /**
+     * Test SPACE as delimiter
+     *
+     */
+    #[@test]
+    public function spaceDelimiter() {
+      $in= $this->newReader('A B C', create(new CsvFormat())->withDelimiter(' '));
+      $this->assertEquals(array('A', 'B', 'C'), $in->read());
+    }
+
+    /**
      * Test example from Wikipedia article on the CSV file format
      *
      * @see   http://en.wikipedia.org/wiki/Comma-separated_values
