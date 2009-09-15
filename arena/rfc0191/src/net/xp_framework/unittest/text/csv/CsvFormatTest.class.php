@@ -61,6 +61,50 @@
     }
 
     /**
+     * Test setQuote() and getQuote() method
+     *
+     */
+    #[@test]
+    public function quoteAccessors() {
+      $format= new CsvFormat();
+      $format->setQuote('`');
+      $this->assertEquals('`', $format->getQuote());
+    }
+
+    /**
+     * Test withQuote() and getQuote() method
+     *
+     */
+    #[@test]
+    public function withQuoteAccessor() {
+      $format= new CsvFormat();
+      $this->assertEquals($format, $format->withQuote('`'));
+      $this->assertEquals('`', $format->getQuote());
+    }
+
+    /**
+     * Test setDelimiter() and getDelimiter() method
+     *
+     */
+    #[@test]
+    public function delimiterAccessors() {
+      $format= new CsvFormat();
+      $format->setDelimiter(' ');
+      $this->assertEquals(' ', $format->getDelimiter());
+    }
+
+    /**
+     * Test withDelimiter() and getDelimiter() method
+     *
+     */
+    #[@test]
+    public function withDelimiterAccessor() {
+      $format= new CsvFormat();
+      $this->assertEquals($format, $format->withDelimiter(' '));
+      $this->assertEquals(' ', $format->getDelimiter());
+    }
+
+    /**
      * Test withQuote() method
      *
      */
