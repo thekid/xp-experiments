@@ -14,6 +14,7 @@
    */
   class FormatDate extends CellProcessor {
     protected $format= '';
+    protected $default= NULL;
 
     /**
      * Creates a new date formatter
@@ -24,6 +25,17 @@
     public function __construct($format) {
       $this->format= $format;
     }
+
+    /**
+     * Set default when empty columns are encountered
+     *
+     * @param   util.Date default
+     * @return  text.csv.processors.AsDate
+     */
+    public function withDefault(Date $default= NULL) {
+      $this->default= $default;
+      return $this;
+    }
     
     /**
      * Processes cell value
@@ -33,7 +45,9 @@
      * @throws  lang.FormatException
      */
     public function process($in) {
-      if (!$in instanceof Date) {
+      if (NULL === $in && NULL !== $this->default) {
+        return $this->default->toString($this->format);
+      } else if (!$in instanceof Date) {
         throw new FormatException('Cannot format non-date '.xp::stringOf($in));
       }
       return $in->toString($this->format);

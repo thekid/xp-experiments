@@ -218,6 +218,33 @@
     }
 
     /**
+     * Test DateFormat processor
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function formatNull() {
+      $this->newWriter()->withProcessors(array(
+        new FormatDate('Y-m-d H:i'),
+        NULL
+      ))->write(array(NULL, 'Order placed'));
+    }
+
+    /**
+     * Test DateFormat processor
+     *
+     */
+    #[@test]
+    public function formatNullWithDefault() {
+      $now= Date::now();
+      $writer= $this->newWriter()->withProcessors(array(
+        create(new FormatDate('Y-m-d H:i'))->withDefault($now),
+        NULL
+      ));
+      $writer->write(array(NULL, 'Order placed'));
+      $this->assertEquals($now->toString('Y-m-d H:i').";Order placed\n", $this->out->getBytes());
+    }
+
+    /**
      * Test AsBool processor
      *
      */
