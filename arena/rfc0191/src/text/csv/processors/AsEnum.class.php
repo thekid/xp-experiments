@@ -7,7 +7,8 @@
   uses('text.csv.CellProcessor', 'lang.Enum');
 
   /**
-   * Returns cell values as an enum
+   * Returns cell values as an enum. Uses the enum's name member to 
+   * construct an enumeration member.
    *
    * @test    xp://net.xp_framework.unittest.text.csv.CellProcessorTest
    * @see     xp://text.csv.CellProcessor

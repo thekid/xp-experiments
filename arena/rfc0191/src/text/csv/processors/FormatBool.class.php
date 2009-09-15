@@ -7,7 +7,9 @@
   uses('text.csv.CellProcessor');
 
   /**
-   * Formats bools as cell values
+   * Formats bools as cell values. Uses the string "true" for TRUE values
+   * the string "false" for FALSE values per default, which may be changed
+   * by supplying other values in the constructor.
    *
    * @test    xp://net.xp_framework.unittest.text.csv.CellProcessorTest
    * @see     xp://text.csv.CellProcessor

@@ -7,7 +7,8 @@
   uses('text.csv.CellProcessor', 'lang.Enum');
 
   /**
-   * Formats enums as cell values
+   * Formats enums as cell values. Uses the enum's name member as string
+   * representation.
    *
    * @test    xp://net.xp_framework.unittest.text.csv.CellProcessorTest
    * @see     xp://text.csv.CellProcessor
