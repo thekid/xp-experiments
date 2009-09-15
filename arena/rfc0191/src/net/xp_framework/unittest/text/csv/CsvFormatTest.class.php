@@ -105,6 +105,28 @@
     }
 
     /**
+     * Test setQuoting() and getQuoting() method
+     *
+     */
+    #[@test]
+    public function quotingAccessors() {
+      $format= new CsvFormat();
+      $format->setQuoting(text搾sv想uoting::$ALWAYS);
+      $this->assertEquals(text搾sv想uoting::$ALWAYS, $format->getQuoting());
+    }
+
+    /**
+     * Test withQuoting() and getQuoting() method
+     *
+     */
+    #[@test]
+    public function withQuotingAccessor() {
+      $format= new CsvFormat();
+      $this->assertEquals($format, $format->withQuoting(text搾sv想uoting::$ALWAYS));
+      $this->assertEquals(text搾sv想uoting::$ALWAYS, $format->getQuoting());
+    }
+
+    /**
      * Test withQuote() method
      *
      */
@@ -175,6 +197,25 @@
     #[@test]
     public function withQuoteClonesDefaults() {
       $format= CsvFormat::$DEFAULT->withQuote("'");
+      $this->assertFalse($format === CsvFormat::$DEFAULT);
+    }
+
+    /**
+     * Test default format is not changeable
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function defaultFormatUnchangeableBySetQuoting() {
+      CsvFormat::$DEFAULT->setQuoting(text搾sv想uoting::$ALWAYS);
+    }
+
+    /**
+     * Test default format is not changeable
+     *
+     */
+    #[@test]
+    public function withQuotingClonesDefaults() {
+      $format= CsvFormat::$DEFAULT->withQuoting(text搾sv想uoting::$ALWAYS);
       $this->assertFalse($format === CsvFormat::$DEFAULT);
     }
   }

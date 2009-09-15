@@ -15,8 +15,7 @@
    */
   abstract class CsvWriter extends AbstractCsvProcessor {
     protected $writer= NULL;
-    protected $delimiter= ';';
-    protected $quote= '"';
+    protected $format= NULL;
     protected $line= 0;
 
     /**
@@ -27,10 +26,7 @@
      */
     public function  __construct(TextWriter $writer, CsvFormat $format= NULL) {
       $this->writer= $writer;
-      with ($f= $format ? $format : CsvFormat::$DEFAULT); {
-        $this->delimiter= $f->getDelimiter();
-        $this->quote= $f->getQuote();
-      }
+      $this->format= $format ? $format : CsvFormat::$DEFAULT;
     }
 
     /**
@@ -63,8 +59,6 @@
      * @throws  lang.FormatException if a formatting error is detected
      */
     protected function writeValues($values, $raw= FALSE) {
-      $escape= $this->quote.$this->quote;
-      $quoting= $this->delimiter.$this->quote."\r\n";
       $line= '';
       foreach ($values as $v => $value) {        
         if (!$raw && isset($this->processors[$v])) {
@@ -74,12 +68,8 @@
             $this->raise($e->getMessage());
           }
         }
-        if (strcspn($value, $quoting) < strlen($value)) {
-          $line.= $this->quote.str_replace($this->quote, $escape, $value).$this->quote;
-        } else {
-          $line.= $value;
-        }
-        $line.= $this->delimiter;
+        
+        $line.= $this->format->format((string)$value);
       }
       $this->line++;
       $this->writer->writeLine(substr($line, 0, -1));

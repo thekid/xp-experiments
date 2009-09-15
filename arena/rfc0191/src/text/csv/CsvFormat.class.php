@@ -3,6 +3,8 @@
  *
  * $Id$ 
  */
+ 
+  uses('text.csv.Quoting');
 
   /**
    * CSV format: Specifies which delimiter and quoting characters should
@@ -27,6 +29,7 @@
   class CsvFormat extends Object {
     protected $delimiter= '';
     protected $quote= '';
+    protected $quoting= NULL;
     protected $final= FALSE;
     
     public static $DEFAULT= NULL;
@@ -50,6 +53,7 @@
     public function __construct($delimiter= ';', $quote= '"') {
       $this->setDelimiter($delimiter);
       $this->setQuote($quote);
+      $this->quoting= text·csv·Quoting::$DEFAULT;
     }
     
     /**
@@ -145,6 +149,58 @@
      */
     public function getQuote() {
       return $this->quote;
+    }
+
+    /**
+     * Set quoting strategy
+     *
+     * @param   text.csv.QuotingStrategy quoting
+     */
+    public function setQuoting(QuotingStrategy $quoting) {
+      if ($this->final) {
+        throw new IllegalStateException('Cannot change final object');
+      }
+      $this->quoting= $quoting;
     }    
+
+    /**
+     * Set quoting strategy and return this format object
+     *
+     * @param   text.csv.QuotingStrategy quoting
+     * @return  text.csv.CsvFormat self
+     */
+    public function withQuoting(QuotingStrategy $quoting) {
+      if ($this->final) {
+        $self= clone $this;
+        $self->final= FALSE;
+      } else {
+        $self= $this;
+      }
+      $self->setQuoting($quoting);
+      return $self;
+    }    
+
+    /**
+     * Returns quoting strategy used in this format object
+     *
+     * @return  text.csv.QuotingStrategy
+     */
+    public function getQuoting() {
+      return $this->quoting;
+    }    
+    
+    /**
+     * Format a value
+     *
+     * @param   string value
+     * @return  string the formatted value and the delimiter
+     */
+    public function format($value) {
+      if ($this->quoting->necessary($value, $this->delimiter, $this->quote)) {
+        return $this->quote.str_replace($this->quote, $this->quote.$this->quote, $value).$this->quote.$this->delimiter;
+      } else {
+        return $value.$this->delimiter;
+      }
+    }
   }
 ?>
