@@ -532,5 +532,61 @@
         $this->fail('Duplicate value not detected', NULL, 'lang.FormatException');
       } catch (FormatException $expected) { }
     }
+    
+    /**
+     * Creates a cell processor that checks for an unwanted value and
+     * upon encountering it, throws a FormatException
+     *
+     * @param   var value
+     * @return  text.csv.CellProcessor
+     */
+    protected function newUnwantedValueProcessor($value) {
+      return newinstance('text.csv.CellProcessor', array($value), '{
+        protected $unwanted= NULL;
+        
+        public function __construct($value) {
+          $this->unwanted= $value;
+        }
+        
+        public function process($in) {
+          if ($this->unwanted !== $in) return $in;
+          throw new FormatException("Unwanted value ".xp::stringOf($this->unwanted)." encountered");
+        }
+      }');
+    }
+
+    /**
+     * Test exceptions caused by processors do not break reading
+     *
+     */
+    #[@test]
+    public function processorExceptionsDoNotBreakReading() {
+      $in= $this->newReader("200;OK\n404;Not found")->withProcessors(array(
+        $this->newUnwantedValueProcessor('200'),
+        NULL
+      ));
+      try {
+        $in->read();
+        $this->fail('Unwanted value not detected', NULL, 'lang.FormatException');
+      } catch (FormatException $expected) { }
+      $this->assertEquals(array('404', 'Not found'), $in->read());
+    }
+
+    /**
+     * Test exceptions caused by processors do not break reading
+     *
+     */
+    #[@test]
+    public function processorExceptionsDoNotBreakReadingMultiline() {
+      $in= $this->newReader("200;'OK\nThank god'\n404;'Not found\nFamous'", create(new CsvFormat())->withQuote("'"))->withProcessors(array(
+        $this->newUnwantedValueProcessor('200'),
+        NULL
+      ));
+      try {
+        $in->read();
+        $this->fail('Unwanted value not detected', NULL, 'lang.FormatException');
+      } catch (FormatException $expected) { }
+      $this->assertEquals(array('404', "Not found\nFamous"), $in->read());
+    }
   }
 ?>
