@@ -53,7 +53,7 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Constructor that creates final CsvFormat instances
      *
      * @param   string delimiter
      * @param   string quote
