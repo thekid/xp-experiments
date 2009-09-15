@@ -56,6 +56,18 @@
       );
     }
 
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readPersonCompletely() {
+      $in= $this->newReader('1549;Timm;friebe@example.com', XPClass::forName('net.xp_framework.unittest.text.csv.Person'));
+      $this->assertEquals(
+        new net·xp_framework·unittest·text·csv·Person('1549', 'Timm', 'friebe@example.com'), 
+        $in->read()
+      );
+    }
 
     /**
      * Test

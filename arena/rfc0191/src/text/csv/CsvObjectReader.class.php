@@ -43,11 +43,15 @@
     /**
      * Read a record
      *
-     * @param   string[] fields
+     * @param   string[] fields if omitted, class fields are used in order of appearance
      * @return  lang.Object or NULL if end of the file is reached
      */
-    public function read(array $fields) {
+    public function read(array $fields= array()) {
       if (NULL === ($values= $this->readValues())) return NULL;
+      
+      if (!$fields) foreach ($this->class->getFields() as $f) {
+        $fields[]= $f->getName();
+      }
       
       // Create an object by deserialization. This enables us to also set
       // private and protected fields as well as avoids the constructor call.
