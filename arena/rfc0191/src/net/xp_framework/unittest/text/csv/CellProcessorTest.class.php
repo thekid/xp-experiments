@@ -521,7 +521,7 @@
      *
      */
     #[@test]
-    public function unique() {
+    public function readUnique() {
       $in= $this->newReader("200;OK\n200;NACK")->withProcessors(array(
         new Unique(),
         NULL
@@ -531,6 +531,26 @@
         $in->read();
         $this->fail('Duplicate value not detected', NULL, 'lang.FormatException');
       } catch (FormatException $expected) { }
+    }
+
+    /**
+     * Test Unique processor
+     *
+     */
+    #[@test]
+    public function writeUnique() {
+      $writer= $this->newWriter()->withProcessors(array(
+        new Unique(),
+        NULL,
+      ));
+
+      $writer->write(array('200', 'OK'));
+      try {
+        $writer->write(array('200', 'NACK'));
+        $this->fail('Duplicate value not detected', NULL, 'lang.FormatException');
+      } catch (FormatException $expected) { }
+
+      $this->assertEquals("200;OK;\n", $this->out->getBytes());
     }
     
     /**
