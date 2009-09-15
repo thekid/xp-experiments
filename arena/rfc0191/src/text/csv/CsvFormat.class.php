@@ -27,6 +27,7 @@
   class CsvFormat extends Object {
     protected $delimiter= '';
     protected $quote= '';
+    protected $final= FALSE;
     
     public static $DEFAULT= NULL;
     public static $PIPES= NULL;
@@ -34,10 +35,10 @@
     public static $TABS= NULL;
     
     static function __static() {
-      self::$DEFAULT= new self(';', '"');
-      self::$PIPES= new self('|', '"');
-      self::$COMMAS= new self(',', '"');
-      self::$TABS= new self("\t", '"');
+      self::$DEFAULT= self::predefined(';', '"');
+      self::$PIPES= self::predefined('|', '"');
+      self::$COMMAS= self::predefined(',', '"');
+      self::$TABS= self::predefined("\t", '"');
     }
     
     /**
@@ -50,6 +51,18 @@
       $this->setDelimiter($delimiter);
       $this->setQuote($quote);
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   string delimiter
+     * @param   string quote
+     */
+    protected static function predefined($delimiter= ';', $quote= '"') {
+      $s= new self($delimiter, $quote);
+      $s->final= TRUE;
+      return $s;
+    }
 
     /**
      * Set delimiter character
@@ -57,6 +70,9 @@
      * @param   string delimiter
      */
     public function setDelimiter($delimiter) {
+      if ($this->final) {
+        throw new IllegalStateException('Cannot change final object');
+      }
       if (strlen($delimiter) != 1) {
         throw new IllegalArgumentException('Delimiter '.xp::stringOf($delimiter).' must be 1 character long');
       }
@@ -70,8 +86,14 @@
      * @return  text.csv.CsvFormat self
      */
     public function withDelimiter($delimiter) {
-      $this->setDelimiter($delimiter);
-      return $this;
+      if ($this->final) {
+        $self= clone $this;
+        $self->final= FALSE;
+      } else {
+        $self= $this;
+      }
+      $self->setDelimiter($delimiter);
+      return $self;
     }    
 
     /**
@@ -89,6 +111,9 @@
      * @param   string quote
      */
     public function setQuote($quote) {
+      if ($this->final) {
+        throw new IllegalStateException('Cannot change final object');
+      }
       if (strlen($quote) != 1) {
         throw new IllegalArgumentException('Quote '.xp::stringOf($quote).' must be 1 character long');
       }
@@ -103,8 +128,14 @@
      * @return  text.csv.CsvFormat self
      */
     public function withQuote($quote) {
-      $this->setQuote($quote);
-      return $this;
+      if ($this->final) {
+        $self= clone $this;
+        $self->final= FALSE;
+      } else {
+        $self= $this;
+      }
+      $self->setQuote($quote);
+      return $self;
     }    
 
     /**

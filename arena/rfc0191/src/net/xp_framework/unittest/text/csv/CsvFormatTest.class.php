@@ -139,5 +139,43 @@
     public function delimiterCharMayNotBeEmpty() {
       create(new CsvFormat())->withDelimiter('');
     }
+
+    /**
+     * Test default format is not changeable
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function defaultFormatUnchangeableBySetDelimiter() {
+      CsvFormat::$DEFAULT->setDelimiter(',');
+    }
+
+    /**
+     * Test default format is not changeable
+     *
+     */
+    #[@test]
+    public function withDelimiterClonesDefaults() {
+      $format= CsvFormat::$DEFAULT->withDelimiter(',');
+      $this->assertFalse($format === CsvFormat::$DEFAULT);
+    }
+
+    /**
+     * Test default format is not changeable
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function defaultFormatUnchangeableBySetQuote() {
+      CsvFormat::$DEFAULT->setQuote("'");
+    }
+
+    /**
+     * Test default format is not changeable
+     *
+     */
+    #[@test]
+    public function withQuoteClonesDefaults() {
+      $format= CsvFormat::$DEFAULT->withQuote("'");
+      $this->assertFalse($format === CsvFormat::$DEFAULT);
+    }
   }
 ?>
