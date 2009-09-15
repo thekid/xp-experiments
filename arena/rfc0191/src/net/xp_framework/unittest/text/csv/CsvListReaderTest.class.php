@@ -460,5 +460,25 @@
     public function illegalQuoting() {
       $this->newReader('"Timm"Karlsruhe";76137')->read();
     }
+
+    /**
+     * Test example from Wikipedia article on the CSV file format
+     *
+     * @see   http://en.wikipedia.org/wiki/Comma-separated_values
+     */
+    #[@test]
+    public function wikipediaExample() {
+      $r= $this->newReader(
+        '1997,Ford,E350,"ac, abs, moon",3000.00'."\n".
+        '1999,Chevy,"Venture ""Extended Edition""","",4900.00'."\n".
+        '1996,Jeep,Grand Cherokee,"MUST SELL!'."\n".
+        'air, moon roof, loaded",4799.00'."\n",
+        CsvFormat::$COMMAS
+      );
+      $this->assertEquals(array('1997', 'Ford', 'E350', 'ac, abs, moon', '3000.00'), $r->read());
+      $this->assertEquals(array('1999', 'Chevy', 'Venture "Extended Edition"', '', '4900.00'), $r->read());
+      $this->assertEquals(array('1996', 'Jeep', 'Grand Cherokee', "MUST SELL!\nair, moon roof, loaded", '4799.00'), $r->read());
+      $this->assertNull($r->read());
+    }
   }
 ?>
