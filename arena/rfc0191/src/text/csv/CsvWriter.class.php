@@ -77,12 +77,13 @@
      */
     protected function writeValues($values, $raw= FALSE) {
       $escape= $this->quote.$this->quote;
+      $quoting= $this->delimiter.$this->quote."\r\n";
       $line= '';
       foreach ($values as $v => $value) {        
         if (!$raw && isset($this->processors[$v])) {
           $value= $this->processors[$v]->process($value);
         }
-        if (strcspn($value, $this->delimiter.$this->quote) < strlen($value)) {
+        if (strcspn($value, $quoting) < strlen($value)) {
           $line.= $this->quote.str_replace($this->quote, $escape, $value).$this->quote;
         } else {
           $line.= $value;
