@@ -25,6 +25,9 @@ nedit.macroCommands: \
 	XpIDE>check syntax@XML:Alt+C::: {\n\
 		xp_ide_lint_xml()\n\
 	}\n\
+	XpIDE>check syntax@JavaScript:Alt+C::: {\n\
+		xp_ide_lint_js()\n\
+	}\n\
 	XpIDE>open class source@PHP:Shift+Ctrl+O::: {\n\
 		xp_ide_open_xpclass()\n\
 	}
