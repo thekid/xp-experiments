@@ -97,7 +97,9 @@
       $o= 0; $l= strlen($line);
       do {
         $b= $o + strspn($line, $whitespace, $o);                  // Skip leading WS
-        if ($this->quote === $line{$b}) {
+        if ($b >= $l) {
+          $value= '';
+        } else if ($this->quote === $line{$b}) {
 
           // Find end of quoted value (= quote not preceded by quote)
           $q= $b + 1;
@@ -153,7 +155,7 @@
         }
         $v++;
         $o= $b + $e + 1;
-      } while ($o < $l);
+      } while ($o <= $l);
 
       if ($exception) throw $exception;
       return $values;

@@ -438,8 +438,18 @@
      */
     #[@test]
     public function readEmptyValueAtEnd() {
-      $in= $this->newReader('Timm;Karlsruhe;;');
+      $in= $this->newReader('Timm;Karlsruhe;');
       $this->assertEquals(array('Timm', 'Karlsruhe', ''), $in->read());
+    }
+
+    /**
+     * Test reading an empty value
+     *
+     */
+    #[@test]
+    public function readEmptyValueAtEndWithTrailingDelimiter() {
+      $in= $this->newReader('Timm;Karlsruhe;;');
+      $this->assertEquals(array('Timm', 'Karlsruhe', '', ''), $in->read());
     }
 
     /**

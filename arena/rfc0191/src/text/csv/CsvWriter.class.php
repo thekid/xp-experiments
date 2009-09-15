@@ -90,7 +90,7 @@
         }
         $line.= $this->delimiter;
       }
-      $this->writer->writeLine($line);
+      $this->writer->writeLine(substr($line, 0, -1));
     }
   }
 ?>

@@ -202,7 +202,7 @@
         NULL
       ));
       $writer->write(array(new Date('2009-09-09 15:45'), 'Order placed'));
-      $this->assertEquals("2009-09-09 15:45;Order placed;\n", $this->out->getBytes());
+      $this->assertEquals("2009-09-09 15:45;Order placed\n", $this->out->getBytes());
     }
 
     /**
@@ -301,7 +301,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function emptyAsBool() {
-      $this->newReader('Timm;;')->withProcessors(array(
+      $this->newReader('Timm;')->withProcessors(array(
         NULL,
         new AsBool()
       ))->read();
@@ -318,7 +318,7 @@
         new FormatBool()
       ));
       $writer->write(array('A', TRUE));
-      $this->assertEquals("A;true;\n", $this->out->getBytes());
+      $this->assertEquals("A;true\n", $this->out->getBytes());
     }
 
     /**
@@ -332,7 +332,7 @@
         new FormatBool('Y', 'N')
       ));
       $writer->write(array('A', TRUE));
-      $this->assertEquals("A;Y;\n", $this->out->getBytes());
+      $this->assertEquals("A;Y\n", $this->out->getBytes());
     }
 
     /**
@@ -346,7 +346,7 @@
         new FormatBool()
       ));
       $writer->write(array('A', FALSE));
-      $this->assertEquals("A;false;\n", $this->out->getBytes());
+      $this->assertEquals("A;false\n", $this->out->getBytes());
     }
 
     /**
@@ -360,7 +360,7 @@
         new FormatBool('Y', 'N')
       ));
       $writer->write(array('A', FALSE));
-      $this->assertEquals("A;N;\n", $this->out->getBytes());
+      $this->assertEquals("A;N\n", $this->out->getBytes());
     }
 
     /**
@@ -394,7 +394,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function emptyCoin() {
-      $this->newReader('200;;')->withProcessors(array(
+      $this->newReader('200;')->withProcessors(array(
         NULL,
         new AsEnum(XPClass::forName('net.xp_framework.unittest.core.Coin'))
       ))->read();
@@ -411,7 +411,7 @@
         new FormatEnum()
       ));
       $writer->write(array('200', Coin::$penny));
-      $this->assertEquals("200;penny;\n", $this->out->getBytes());
+      $this->assertEquals("200;penny\n", $this->out->getBytes());
     }
 
     /**
@@ -432,7 +432,7 @@
      */
     #[@test]
     public function optionalString() {
-      $in= $this->newReader('200;OK;')->withProcessors(array(
+      $in= $this->newReader('200;OK')->withProcessors(array(
         NULL,
         new Optional()
       ));
@@ -445,7 +445,7 @@
      */
     #[@test]
     public function optionalEmpty() {
-      $in= $this->newReader('666;;')->withProcessors(array(
+      $in= $this->newReader('666;')->withProcessors(array(
         NULL,
         new Optional()
       ));
@@ -458,7 +458,7 @@
      */
     #[@test]
     public function optionalEmptyWithDefault() {
-      $in= $this->newReader('666;;')->withProcessors(array(
+      $in= $this->newReader('666;')->withProcessors(array(
         NULL,
         create(new Optional())->withDefault('(unknown)')
       ));
@@ -475,7 +475,7 @@
         new Optional(),
         NULL
       ))->write(array('A', 'Test'));
-      $this->assertEquals("A;Test;\n", $this->out->getBytes());
+      $this->assertEquals("A;Test\n", $this->out->getBytes());
     }
 
     /**
@@ -488,7 +488,7 @@
         new Optional(),
         NULL
       ))->write(array('', 'Test'));
-      $this->assertEquals(";Test;\n", $this->out->getBytes());
+      $this->assertEquals(";Test\n", $this->out->getBytes());
     }
 
     /**
@@ -501,7 +501,7 @@
         create(new Optional())->withDefault('(unknown)'),
         NULL
       ))->write(array('', 'Test'));
-      $this->assertEquals("(unknown);Test;\n", $this->out->getBytes());
+      $this->assertEquals("(unknown);Test\n", $this->out->getBytes());
     }
 
     /**
@@ -510,7 +510,7 @@
      */
     #[@test]
     public function requiredString() {
-      $in= $this->newReader('200;OK;')->withProcessors(array(
+      $in= $this->newReader('200;OK')->withProcessors(array(
         NULL,
         new Required()
       ));
@@ -523,7 +523,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function requiredEmpty() {
-      $this->newReader('666;;')->withProcessors(array(
+      $this->newReader('666;')->withProcessors(array(
         NULL,
         new Required()
       ))->read();
@@ -539,7 +539,7 @@
         new Required(),
         NULL
       ))->write(array('A', 'B'));
-      $this->assertEquals("A;B;\n", $this->out->getBytes());
+      $this->assertEquals("A;B\n", $this->out->getBytes());
     }
 
     /**
@@ -560,7 +560,7 @@
      */
     #[@test]
     public function chainingRequired() {
-      $in= $this->newReader('200;OK;')->withProcessors(array(
+      $in= $this->newReader('200;OK')->withProcessors(array(
         new Required(new AsInteger()),
         new Required()
       ));
@@ -573,7 +573,7 @@
      */
     #[@test]
     public function chainingOptional() {
-      $in= $this->newReader('200;;')->withProcessors(array(
+      $in= $this->newReader('200;')->withProcessors(array(
         new Optional(new AsInteger()),
         new Optional(new AsInteger())
       ));
@@ -614,7 +614,7 @@
         $this->fail('Duplicate value not detected', NULL, 'lang.FormatException');
       } catch (FormatException $expected) { }
 
-      $this->assertEquals("200;OK;\n", $this->out->getBytes());
+      $this->assertEquals("200;OK\n", $this->out->getBytes());
     }
     
     /**
@@ -690,7 +690,7 @@
       } catch (FormatException $expected) { }
 
       $writer->write(array('404', 'Not found'));
-      $this->assertEquals("404;Not found;\n", $this->out->getBytes());
+      $this->assertEquals("404;Not found\n", $this->out->getBytes());
     }
 
     /**
@@ -710,7 +710,7 @@
       } catch (FormatException $expected) { }
 
       $writer->write(array('404', 'Not found'));
-      $this->assertEquals("404;Not found;\n", $this->out->getBytes());
+      $this->assertEquals("404;Not found\n", $this->out->getBytes());
     }
   }
 ?>

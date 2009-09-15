@@ -36,7 +36,7 @@
     #[@test]
     public function writeLine() {
       $this->newWriter()->write(array('Timm', 'Karlsruhe', '76137'));
-      $this->assertEquals("Timm;Karlsruhe;76137;\n", $this->out->getBytes());
+      $this->assertEquals("Timm;Karlsruhe;76137\n", $this->out->getBytes());
     }
 
     /**
@@ -46,7 +46,7 @@
     #[@test]
     public function writeEmptyValue() {
       $this->newWriter()->write(array('Timm', '', '76137'));
-      $this->assertEquals("Timm;;76137;\n", $this->out->getBytes());
+      $this->assertEquals("Timm;;76137\n", $this->out->getBytes());
     }
 
     /**
@@ -56,7 +56,7 @@
     #[@test]
     public function writeUnixMultiLineValue() {
       $this->newWriter(create(new CsvFormat())->withQuote("'"))->write(array('Timm', "76137\nKarlsruhe\nGermany"));
-      $this->assertEquals("Timm;'76137\nKarlsruhe\nGermany';\n", $this->out->getBytes());
+      $this->assertEquals("Timm;'76137\nKarlsruhe\nGermany'\n", $this->out->getBytes());
     }
 
     /**
@@ -66,7 +66,7 @@
     #[@test]
     public function writeMacMultiLineValue() {
       $this->newWriter(create(new CsvFormat())->withQuote("'"))->write(array('Timm', "76137\rKarlsruhe\rGermany"));
-      $this->assertEquals("Timm;'76137\rKarlsruhe\rGermany';\n", $this->out->getBytes());
+      $this->assertEquals("Timm;'76137\rKarlsruhe\rGermany'\n", $this->out->getBytes());
     }
 
     /**
@@ -76,7 +76,7 @@
     #[@test]
     public function writeWindowsMultiLineValue() {
       $this->newWriter(create(new CsvFormat())->withQuote("'"))->write(array('Timm', "76137\r\nKarlsruhe\r\nGermany"));
-      $this->assertEquals("Timm;'76137\r\nKarlsruhe\r\nGermany';\n", $this->out->getBytes());
+      $this->assertEquals("Timm;'76137\r\nKarlsruhe\r\nGermany'\n", $this->out->getBytes());
     }
 
     /**
@@ -86,7 +86,7 @@
     #[@test]
     public function valueWithDelimiterIsQuoted() {
       $this->newWriter(create(new CsvFormat())->withQuote("'"))->write(array('Timm;Friebe', 'Karlsruhe', '76137'));
-      $this->assertEquals("'Timm;Friebe';Karlsruhe;76137;\n", $this->out->getBytes());
+      $this->assertEquals("'Timm;Friebe';Karlsruhe;76137\n", $this->out->getBytes());
     }
 
     /**
@@ -96,7 +96,7 @@
     #[@test]
     public function delimiterIsQuoted() {
       $this->newWriter(create(new CsvFormat())->withQuote("'"))->write(array(';', 'Karlsruhe', '76137'));
-      $this->assertEquals("';';Karlsruhe;76137;\n", $this->out->getBytes());
+      $this->assertEquals("';';Karlsruhe;76137\n", $this->out->getBytes());
     }
 
     /**
@@ -106,7 +106,7 @@
     #[@test]
     public function quotesAroundValueAreEscaped() {
       $this->newWriter(create(new CsvFormat())->withQuote("'"))->write(array("'Hello'", 'Karlsruhe', '76137'));
-      $this->assertEquals("'''Hello''';Karlsruhe;76137;\n", $this->out->getBytes());
+      $this->assertEquals("'''Hello''';Karlsruhe;76137\n", $this->out->getBytes());
     }
 
     /**
@@ -116,7 +116,7 @@
     #[@test]
     public function quotesInsideValueAreEscaped() {
       $this->newWriter(create(new CsvFormat())->withQuote("'"))->write(array("He said 'Hello' to me", 'Karlsruhe', '76137'));
-      $this->assertEquals("'He said ''Hello'' to me';Karlsruhe;76137;\n", $this->out->getBytes());
+      $this->assertEquals("'He said ''Hello'' to me';Karlsruhe;76137\n", $this->out->getBytes());
     }
 
     /**
@@ -126,7 +126,7 @@
     #[@test]
     public function quotesAroundEmptyAreEscaped() {
       $this->newWriter(create(new CsvFormat())->withQuote("'"))->write(array("''", 'Karlsruhe', '76137'));
-      $this->assertEquals("'''''';Karlsruhe;76137;\n", $this->out->getBytes());
+      $this->assertEquals("'''''';Karlsruhe;76137\n", $this->out->getBytes());
     }
   }
 ?>

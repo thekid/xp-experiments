@@ -37,7 +37,7 @@
     #[@test]
     public function writePerson() {
       $this->newWriter()->write(new net·xp_framework·unittest·text·csv·Person(1549, 'Timm', 'friebe@example.com'));
-      $this->assertEquals("1549;Timm;friebe@example.com;\n", $this->out->getBytes());
+      $this->assertEquals("1549;Timm;friebe@example.com\n", $this->out->getBytes());
     }
 
     /**
@@ -47,7 +47,7 @@
     #[@test]
     public function writePersonReSorted() {
       $this->newWriter()->write(new net·xp_framework·unittest·text·csv·Person(1549, 'Timm', 'friebe@example.com'), array('email', 'id', 'name'));
-      $this->assertEquals("friebe@example.com;1549;Timm;\n", $this->out->getBytes());
+      $this->assertEquals("friebe@example.com;1549;Timm\n", $this->out->getBytes());
     }
 
     /**
@@ -57,7 +57,7 @@
     #[@test]
     public function writePersonPartially() {
       $this->newWriter()->write(new net·xp_framework·unittest·text·csv·Person(1549, 'Timm', 'friebe@example.com'), array('id', 'name'));
-      $this->assertEquals("1549;Timm;\n", $this->out->getBytes());
+      $this->assertEquals("1549;Timm\n", $this->out->getBytes());
     }
   }
 ?>
