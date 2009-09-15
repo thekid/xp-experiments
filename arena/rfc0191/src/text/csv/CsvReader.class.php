@@ -55,7 +55,7 @@
       if ($this->line > 0) {
         throw new IllegalStateException('Cannot read headers - already started reading data');
       }
-      return $this->readValues();
+      return $this->readValues(TRUE);
     }
 
     /**
@@ -71,10 +71,11 @@
      * Reads values
      *
      * @see     http://en.wikipedia.org/wiki/Comma-separated_values
+     * @param   bool raw
      * @return  string[]
      * @throws  lang.FormatException if a formatting error is detected
      */
-    protected function readValues() {
+    protected function readValues($raw= FALSE) {
       if (NULL === ($line= $this->reader->readLine())) return NULL;
 
       // Parse line. 
@@ -139,7 +140,7 @@
           $value= rtrim(substr($line, $b, $e), $whitespace);   // Trim trailing WS
         }
         
-        if (isset($this->processors[$v])) {
+        if (!$raw && isset($this->processors[$v])) {
           $values[$v]= $this->processors[$v]->process($value);
         } else {
           $values[$v]= $value;
