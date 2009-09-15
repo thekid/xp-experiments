@@ -40,6 +40,26 @@
     }
 
     /**
+     * Test writing text
+     *
+     */
+    #[@test]
+    public function writeOne() {
+      $this->newWriter()->write('H');
+      $this->assertEquals('H', $this->out->getBytes());
+    }
+
+    /**
+     * Test writing text
+     *
+     */
+    #[@test]
+    public function writeEmpty() {
+      $this->newWriter()->write('');
+      $this->assertEquals('', $this->out->getBytes());
+    }
+
+    /**
      * Test writing a text and a line
      *
      */
