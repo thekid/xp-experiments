@@ -23,13 +23,12 @@
     /**
      * Creates a new object writer
      *
-     * @param   string str
      * @param   text.csv.CsvFormat format
      * @return  text.csv.CsvObjectWriter
      */
     protected function newWriter(CsvFormat $format= NULL) {
       $this->out= new MemoryOutputStream();
-      return new CsvObjectWriter(new TextWriter($this->out, 'iso-8859-1'), $format);
+      return new CsvObjectWriter(new TextWriter($this->out), $format);
     }
   
     /**

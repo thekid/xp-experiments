@@ -21,13 +21,12 @@
     /**
      * Creates a new list writer
      *
-     * @param   string str
      * @param   text.csv.CsvFormat format
      * @return  text.csv.CsvListWriter
      */
     protected function newWriter(CsvFormat $format= NULL) {
       $this->out= new MemoryOutputStream();
-      return new CsvListWriter(new TextWriter($this->out, 'iso-8859-1'), $format);
+      return new CsvListWriter(new TextWriter($this->out), $format);
     }
   
     /**

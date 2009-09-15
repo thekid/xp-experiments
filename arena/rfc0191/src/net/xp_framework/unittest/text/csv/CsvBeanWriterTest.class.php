@@ -27,7 +27,7 @@
      */
     protected function newWriter(CsvFormat $format= NULL) {
       $this->out= new MemoryOutputStream();
-      return new CsvBeanWriter(new TextWriter($this->out, 'iso-8859-1'), $format);
+      return new CsvBeanWriter(new TextWriter($this->out), $format);
     }
   
     /**
