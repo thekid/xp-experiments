@@ -45,7 +45,7 @@
      * @throws  lang.FormatException
      */
     public function process($in) {
-      if ('' === $in) {
+      if ('' === $in || NULL === $in) {
         return $this->default;
       }
       return $this->next ? $this->next->process($in) : $in;

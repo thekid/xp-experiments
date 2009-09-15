@@ -496,11 +496,37 @@
      *
      */
     #[@test]
+    public function writeOptionalNull() {
+      $this->newWriter()->withProcessors(array(
+        new Optional(),
+        NULL
+      ))->write(array(NULL, 'Test'));
+      $this->assertEquals(";Test\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test Optional processor
+     *
+     */
+    #[@test]
     public function writeOptionalWithDefault() {
       $this->newWriter()->withProcessors(array(
         create(new Optional())->withDefault('(unknown)'),
         NULL
       ))->write(array('', 'Test'));
+      $this->assertEquals("(unknown);Test\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test Optional processor
+     *
+     */
+    #[@test]
+    public function writeOptionalNullWithDefault() {
+      $this->newWriter()->withProcessors(array(
+        create(new Optional())->withDefault('(unknown)'),
+        NULL
+      ))->write(array(NULL, 'Test'));
       $this->assertEquals("(unknown);Test\n", $this->out->getBytes());
     }
 
