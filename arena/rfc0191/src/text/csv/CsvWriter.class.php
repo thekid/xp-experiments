@@ -81,7 +81,11 @@
       $line= '';
       foreach ($values as $v => $value) {        
         if (!$raw && isset($this->processors[$v])) {
-          $value= $this->processors[$v]->process($value);
+          try {
+            $value= $this->processors[$v]->process($value);
+          } catch (Throwable $e) {
+            $this->raise($e->getMessage());
+          }
         }
         if (strcspn($value, $quoting) < strlen($value)) {
           $line.= $this->quote.str_replace($this->quote, $escape, $value).$this->quote;
