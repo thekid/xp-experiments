@@ -17,16 +17,19 @@
      * Write a record
      *
      * @param   lang.Generic object
-     * @param   string[] headers if omitted, all fields will be written
+     * @param   string[] fields if omitted, all fields will be written
      */
-    public function write(Generic $object, array $headers= array()) {
+    public function write(Generic $object, array $fields= array()) {
       $values= array();
-      $map= array_flip($headers);
       $class= $object->getClass();
-      foreach ($class->getFields() as $f) {
-        $name= $f->getName();
-        if ($map && !isset($map[$name])) continue;
-        $values[]= $class->getMethod('get'.ucfirst($name))->invoke($object);
+      if (!$fields) {
+        foreach ($class->getFields() as $f) {
+          $values[]= $class->getMethod('get'.ucfirst($f->getName()))->invoke($object);
+        }
+      } else {
+        foreach ($fields as $name) {
+          $values[]= $class->getMethod('get'.ucfirst($name))->invoke($object);
+        }
       }
       return $this->writeValues($values);
     }
