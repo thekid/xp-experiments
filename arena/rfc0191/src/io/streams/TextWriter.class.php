@@ -16,10 +16,10 @@
    */
   class TextWriter extends Writer {
     protected $charset= '';
-    public $newLine= "\n";
+    protected $newLine= "\n";
   
     /**
-     * Constructor. Creates a new TextWriter on an underlying outpit
+     * Constructor. Creates a new TextWriter on an underlying output
      * stream with a given charset.
      *
      * @param   io.streams.OutputStream stream
