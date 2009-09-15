@@ -588,5 +588,45 @@
       } catch (FormatException $expected) { }
       $this->assertEquals(array('404', "Not found\nFamous"), $in->read());
     }
+
+    /**
+     * Test exceptions caused by processors do not break writing
+     *
+     */
+    #[@test]
+    public function processorExceptionsDoNotBreakWriting() {
+      $writer= $this->newWriter()->withProcessors(array(
+        $this->newUnwantedValueProcessor('200'),
+        NULL
+      ));
+
+      try {
+        $writer->write(array('200', 'OK'));
+        $this->fail('Unwanted value not detected', NULL, 'lang.FormatException');
+      } catch (FormatException $expected) { }
+
+      $writer->write(array('404', 'Not found'));
+      $this->assertEquals("404;Not found;\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test exceptions caused by processors do not break writing
+     *
+     */
+    #[@test]
+    public function processorExceptionsDoNotCausePartialWriting() {
+      $writer= $this->newWriter()->withProcessors(array(
+        NULL,
+        $this->newUnwantedValueProcessor('Internal Server Error')
+      ));
+
+      try {
+        $writer->write(array('500', 'Internal Server Error'));
+        $this->fail('Unwanted value not detected', NULL, 'lang.FormatException');
+      } catch (FormatException $expected) { }
+
+      $writer->write(array('404', 'Not found'));
+      $this->assertEquals("404;Not found;\n", $this->out->getBytes());
+    }
   }
 ?>
