@@ -12,6 +12,14 @@
 #
 
 ##
+# check the Syntax of the current javascript source file
+#
+##
+define xp_ide_lint_js {
+  xp_ide_lint("js")
+}
+
+##
 # check the Syntax of the current sh source file
 #
 ##
