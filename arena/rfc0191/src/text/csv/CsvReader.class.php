@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.streams.TextReader', 'text.csv.CsvFormat');
+  uses('io.streams.TextReader', 'text.csv.AbstractCsvProcessor', 'text.csv.CsvFormat');
 
   /**
    * Abstract base class
@@ -13,12 +13,11 @@
    * @see   xp://text.csv.CsvObjectReader
    * @see   xp://text.csv.CsvBeanReader
    */
-  abstract class CsvReader extends Object {
+  abstract class CsvReader extends AbstractCsvProcessor {
     protected $reader= NULL;
     protected $delimiter= ';';
     protected $quote= '"';
     protected $line= 0;
-    protected $processors= array();
 
     /**
      * Creates a new CSV reader reading data from a given TextReader
@@ -32,17 +31,6 @@
         $this->delimiter= $f->getDelimiter();
         $this->quote= $f->getQuote();
       }
-    }
-    
-    /**
-     * Sets processors and return this reader
-     *
-     * @param   text.csv.CellProcessor[] processors
-     * @return  text.csv.CsvReader this reader
-     */
-    public function withProcessors(array $processors) {
-      $this->processors= $processors;
-      return $this;
     }
 
     /**

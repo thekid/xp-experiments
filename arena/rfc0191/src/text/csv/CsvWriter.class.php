@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('io.streams.TextWriter', 'text.csv.CsvFormat');
+  uses('io.streams.TextWriter', 'text.csv.AbstractCsvProcessor', 'text.csv.CsvFormat');
 
   /**
    * Abstract base class
@@ -13,12 +13,11 @@
    * @see   xp://text.csv.CsvObjectWriter
    * @see   xp://text.csv.CsvBeanWriter
    */
-  abstract class CsvWriter extends Object {
+  abstract class CsvWriter extends AbstractCsvProcessor {
     protected $writer= NULL;
     protected $delimiter= ';';
     protected $quote= '"';
     protected $line= 0;
-    protected $processors= array();
 
     /**
      * Creates a new CSV writer writing data to a given TextWriter
@@ -32,17 +31,6 @@
         $this->delimiter= $f->getDelimiter();
         $this->quote= $f->getQuote();
       }
-    }
-    
-    /**
-     * Sets processors and return this writer
-     *
-     * @param   text.csv.CellProcessor[] processors
-     * @return  text.csv.CsvWriter this writer
-     */
-    public function withProcessors(array $processors) {
-      $this->processors= $processors;
-      return $this;
     }
 
     /**
