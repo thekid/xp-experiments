@@ -88,6 +88,7 @@
       // * The quote character must be doubled inside quoted values to be
       //   escaped, e.g. "'He said ''hello'' when he arrived',B,C"
       // * Quoted values may span multiple lines.
+      $exception= NULL;
       $values= array(); 
       $v= 0;
       $escape= $this->quote.$this->quote;
@@ -141,13 +142,18 @@
         }
         
         if (!$raw && isset($this->processors[$v])) {
-          $values[$v]= $this->processors[$v]->process($value);
+          try {
+            $values[$v]= $this->processors[$v]->process($value);
+          } catch (Throwable $exception) {
+            // Store for later
+          }
         } else {
           $values[$v]= $value;
         }
         $v++;
         $o= $b + $e + 1;
       } while ($o < $l);
+      if ($exception) throw $exception;
       // DEBUG Console::$err->writeLine('<', addcslashes($line, "\n"), '> => ', $values);
       return $values;
     }
