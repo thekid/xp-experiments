@@ -26,7 +26,7 @@
       if (!$in->getClass()->isEnum()) {
         throw new FormatException('Cannot format non-enum '.xp::stringOf($in));
       }
-      return $in->name();
+      return $this->proceed($in->name());
     }
   }
 ?>

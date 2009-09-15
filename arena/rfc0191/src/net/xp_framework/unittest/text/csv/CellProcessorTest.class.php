@@ -681,12 +681,13 @@
       return newinstance('text.csv.CellProcessor', array($value), '{
         protected $unwanted= NULL;
         
-        public function __construct($value) {
+        public function __construct($value, $next= NULL) {
+          parent::__construct($next);
           $this->unwanted= $value;
         }
         
         public function process($in) {
-          if ($this->unwanted !== $in) return $in;
+          if ($this->unwanted !== $in) return $this->proceed($in);
           throw new FormatException("Unwanted value ".xp::stringOf($this->unwanted)." encountered");
         }
       }');

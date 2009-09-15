@@ -15,16 +15,6 @@
    * @see     xp://text.csv.CellProcessor
    */
   class Required extends CellProcessor {
-    protected $next= NULL;
-
-    /**
-     * Creates a new "Required" constraint
-     *
-     * @param   text.csv.CellProcessor
-     */
-    public function __construct(CellProcessor $next= NULL) {
-      $this->next= $next;
-    }
 
     /**
      * Processes cell value
@@ -34,10 +24,10 @@
      * @throws  lang.FormatException
      */
     public function process($in) {
-      if ('' === $in) {
-        throw new FormatException('Empty values not allowed here');
+      if ('' === $in || NULL === $in) {
+        throw new FormatException('Empty and NULL values not allowed here');
       }
-      return $this->next ? $this->next->process($in) : $in;
+      return $this->proceed($in);
     }
   }
 ?>

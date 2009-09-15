@@ -21,8 +21,10 @@
      *
      * @see     xp://util.Date#toString for format string composition
      * @param   string format
+     * @param   text.csv.CellProcessor if omitted, no further processing will be done
      */
-    public function __construct($format) {
+    public function __construct($format, CellProcessor $next= NULL) {
+      parent::__construct($next);
       $this->format= $format;
     }
 
@@ -30,7 +32,7 @@
      * Set default when empty columns are encountered
      *
      * @param   util.Date default
-     * @return  text.csv.processors.AsDate
+     * @return  text.csv.processors.FormatDate
      */
     public function withDefault(Date $default= NULL) {
       $this->default= $default;
@@ -46,11 +48,13 @@
      */
     public function process($in) {
       if (NULL === $in && NULL !== $this->default) {
-        return $this->default->toString($this->format);
+        $date= $this->default;
       } else if (!$in instanceof Date) {
         throw new FormatException('Cannot format non-date '.xp::stringOf($in));
+      } else {
+        $date= $in;
       }
-      return $in->toString($this->format);
+      return $this->proceed($date->toString($this->format));
     }
   }
 ?>

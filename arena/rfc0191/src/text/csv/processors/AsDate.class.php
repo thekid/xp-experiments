@@ -34,15 +34,18 @@
      * @throws  lang.FormatException
      */
     public function process($in) {
-      if ('' === $in) {
-        if ($this->default) return $this->default;
+      if ('' !== $in) {
+        try {
+          $date= new Date($in);
+        } catch (IllegalArgumentException $e) {
+          throw new FormatException($e->getMessage());
+        }
+      } else if (NULL === $this->default) {
         throw new FormatException('Cannot parse empty date');
+      } else {
+        $date= $this->default;
       }
-      try {
-        return new Date($in);
-      } catch (IllegalArgumentException $e) {
-        throw new FormatException($e->getMessage());
-      }
+      return $this->proceed($date);
     }
   }
 ?>

@@ -19,10 +19,12 @@
     /**
      * Creates a new instance of this processor.
      *
-     * @param  rdbms.Peer peer
-     * @param  rdbms.Criteria c if omitted, the peer's primary key is used
+     * @param   rdbms.Peer peer
+     * @param   rdbms.Criteria c if omitted, the peer's primary key is used
+     * @param   text.csv.CellProcessor if omitted, no further processing will be done
      */
-    public function __construct(Peer $peer, Criteria $c= NULL) {
+    public function __construct(Peer $peer, Criteria $c= NULL, CellProcessor $next= NULL) {
+      parent::__construct($next);
       $this->peer= $peer;
       if (!$c) {
         if (1 === sizeof($peer->primary)) {
@@ -50,7 +52,7 @@
           if ($it->hasNext()) {
             throw new FormatException('More than one '.$this->peer->identifier.' returned for '.$this->criteria->toString());
           }
-          return $e;
+          return $this->proceed($e);
         } else {
           throw new FormatException('No '.$this->peer->identifier.' records found for '.$this->criteria->toString());
         }

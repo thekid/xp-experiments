@@ -20,8 +20,10 @@
      * Creates a new instance of this processor.
      *
      * @param   lang.XPClass<? extends lang.Enum> enum
+     * @param   text.csv.CellProcessor if omitted, no further processing will be done
      */
-    public function __construct(XPClass $enum) {
+    public function __construct(XPClass $enum, CellProcessor $next= NULL) {
+      parent::__construct($next);
       $this->enum= $enum;
     }
     
@@ -34,7 +36,7 @@
      */
     public function process($in) {
       try {
-        return Enum::valueOf($this->enum, $in);
+        return $this->proceed(Enum::valueOf($this->enum, $in));
       } catch (IllegalArgumentException $e) {
         throw new FormatException($e->getMessage());
       }

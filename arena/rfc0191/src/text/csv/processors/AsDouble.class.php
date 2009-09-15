@@ -25,7 +25,7 @@
       if (1 !== sscanf($in, '%f', $out)) {
         throw new FormatException('Cannot parse "'.$in.'" into an double');
       }
-      return $out;
+      return $this->proceed($out);
     }
   }
 ?>

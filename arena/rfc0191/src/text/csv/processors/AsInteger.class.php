@@ -25,7 +25,7 @@
       if (1 !== sscanf($in, '%d', $out)) {
         throw new FormatException('Cannot parse "'.$in.'" into an integer');
       }
-      return $out;
+      return $this->proceed($out);
     }
   }
 ?>

@@ -13,17 +13,7 @@
    * @see     xp://text.csv.CellProcessor
    */
   class Unique extends CellProcessor {
-    protected $next= NULL;
     protected $values= array();
-
-    /**
-     * Creates a new "Unique" constraint
-     *
-     * @param   text.csv.CellProcessor
-     */
-    public function __construct(CellProcessor $next= NULL) {
-      $this->next= $next;
-    }
 
     /**
      * Processes cell value
@@ -37,7 +27,7 @@
         throw new FormatException('Value "'.$in.'" already encountered');
       }
       $this->values[$in]= TRUE;
-      return $this->next ? $this->next->process($in) : $in;
+      return $this->proceed($in);
     }
   }
 ?>

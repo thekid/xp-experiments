@@ -28,8 +28,10 @@
      *
      * @param   string[] true
      * @param   string[] false
+     * @param   text.csv.CellProcessor if omitted, no further processing will be done
      */
-    public function __construct($true= array('true', '1', 'Y'), $false = array('false', '0', 'N')) {
+    public function __construct($true= array('true', '1', 'Y'), $false = array('false', '0', 'N'), CellProcessor $next= NULL) {
+      parent::__construct($next);
       $this->true= $true;
       $this->false= $false;
     }
@@ -42,8 +44,8 @@
      * @throws  lang.FormatException if the string cannot be parsed
      */
     public function process($in) {
-      if (in_array($in, $this->true, TRUE)) return TRUE;
-      if (in_array($in, $this->false, TRUE)) return FALSE;
+      if (in_array($in, $this->true, TRUE)) return $this->proceed(TRUE);
+      if (in_array($in, $this->false, TRUE)) return $this->proceed(FALSE);
       throw new FormatException('Cannot parse "'.$in.'"');
     }
   }

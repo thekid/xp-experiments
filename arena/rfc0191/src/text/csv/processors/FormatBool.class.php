@@ -23,8 +23,10 @@
      *
      * @param   string true
      * @param   string false
+     * @param   text.csv.CellProcessor if omitted, no further processing will be done
      */
-    public function __construct($true= 'true', $false= 'false') {
+    public function __construct($true= 'true', $false= 'false', CellProcessor $next= NULL) {
+      parent::__construct($next);
       $this->true= $true;
       $this->false= $false;
     }
@@ -37,7 +39,7 @@
      * @throws  lang.FormatException
      */
     public function process($in) {
-      return $in ? $this->true : $this->false;
+      return $this->proceed($in ? $this->true : $this->false);
     }
   }
 ?>

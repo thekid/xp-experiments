@@ -15,16 +15,6 @@
    */
   class Optional extends CellProcessor {
     protected $default= NULL;
-    protected $next= NULL;
-
-    /**
-     * Creates a new "Optional" constraint
-     *
-     * @param   text.csv.CellProcessor
-     */
-    public function __construct(CellProcessor $next= NULL) {
-      $this->next= $next;
-    }
 
     /**
      * Set default when empty columns are encountered
@@ -48,7 +38,7 @@
       if ('' === $in || NULL === $in) {
         return $this->default;
       }
-      return $this->next ? $this->next->process($in) : $in;
+      return $this->proceed($in);
     }
   }
 ?>
