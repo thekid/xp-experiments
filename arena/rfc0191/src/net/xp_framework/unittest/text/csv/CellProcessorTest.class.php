@@ -7,16 +7,21 @@
   uses(
     'unittest.TestCase',
     'text.csv.CsvListReader',
+    'text.csv.CsvListWriter',
     'text.csv.processors.AsInteger',
     'text.csv.processors.AsDouble',
     'text.csv.processors.AsDate',
+    'text.csv.processors.FormatDate',
     'text.csv.processors.AsBool',
+    'text.csv.processors.FormatBool',
     'text.csv.processors.AsEnum',
+    'text.csv.processors.FormatEnum',
     'text.csv.processors.constraint.Optional',
     'text.csv.processors.constraint.Required',
     'text.csv.processors.constraint.Unique',
     'net.xp_framework.unittest.core.Coin',
-    'io.streams.MemoryInputStream'
+    'io.streams.MemoryInputStream',
+    'io.streams.MemoryOutputStream'
   );
 
   /**
@@ -25,6 +30,7 @@
    * @see      xp://text.csv.CellProcessor
    */
   class CellProcessorTest extends TestCase {
+    protected $out= NULL;
 
     /**
      * Creates a new list reader
@@ -35,6 +41,17 @@
      */
     protected function newReader($str, CsvFormat $format= NULL) {
       return new CsvListReader(new TextReader(new MemoryInputStream($str)), $format);
+    }
+
+    /**
+     * Creates a new list writer
+     *
+     * @param   text.csv.CsvFormat format
+     * @return  text.csv.CsvListWriter
+     */
+    protected function newWriter(CsvFormat $format= NULL) {
+      $this->out= new MemoryOutputStream();
+      return new CsvListWriter(new TextWriter($this->out), $format);
     }
   
     /**
@@ -175,6 +192,32 @@
     }
 
     /**
+     * Test DateFormat processor
+     *
+     */
+    #[@test]
+    public function formatDate() {
+      $writer= $this->newWriter()->withProcessors(array(
+        new FormatDate('Y-m-d H:i'),
+        NULL
+      ));
+      $writer->write(array(new Date('2009-09-09 15:45'), 'Order placed'));
+      $this->assertEquals("2009-09-09 15:45;Order placed;\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test DateFormat processor
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function formatNonDate() {
+      $this->newWriter()->withProcessors(array(
+        new FormatDate('Y-m-d H:i'),
+        NULL
+      ))->write(array(new Object(), 'Order placed'));
+    }
+
+    /**
      * Test AsBool processor
      *
      */
@@ -265,6 +308,62 @@
     }
 
     /**
+     * Test FormatBool rocessor
+     *
+     */
+    #[@test]
+    public function formatTrue() {
+      $writer= $this->newWriter()->withProcessors(array(
+        NULL,
+        new FormatBool()
+      ));
+      $writer->write(array('A', TRUE));
+      $this->assertEquals("A;true;\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test FormatBool rocessor
+     *
+     */
+    #[@test]
+    public function formatTrueAsY() {
+      $writer= $this->newWriter()->withProcessors(array(
+        NULL,
+        new FormatBool('Y', 'N')
+      ));
+      $writer->write(array('A', TRUE));
+      $this->assertEquals("A;Y;\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test FormatBool rocessor
+     *
+     */
+    #[@test]
+    public function formatFalse() {
+      $writer= $this->newWriter()->withProcessors(array(
+        NULL,
+        new FormatBool()
+      ));
+      $writer->write(array('A', FALSE));
+      $this->assertEquals("A;false;\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test FormatBool rocessor
+     *
+     */
+    #[@test]
+    public function formatFalseAsN() {
+      $writer= $this->newWriter()->withProcessors(array(
+        NULL,
+        new FormatBool('Y', 'N')
+      ));
+      $writer->write(array('A', FALSE));
+      $this->assertEquals("A;N;\n", $this->out->getBytes());
+    }
+
+    /**
      * Test AsEnum processor
      *
      */
@@ -299,6 +398,32 @@
         NULL,
         new AsEnum(XPClass::forName('net.xp_framework.unittest.core.Coin'))
       ))->read();
+    }
+
+    /**
+     * Test FormatEnum processor
+     *
+     */
+    #[@test]
+    public function formatEnumValue() {
+      $writer= $this->newWriter()->withProcessors(array(
+        NULL,
+        new FormatEnum()
+      ));
+      $writer->write(array('200', Coin::$penny));
+      $this->assertEquals("200;penny;\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test AsEnum processor
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function formatNonEnum() {
+      $this->newWriter()->withProcessors(array(
+        NULL,
+        new FormatEnum()
+      ))->write(array('200', new Object()));
     }
 
     /**
