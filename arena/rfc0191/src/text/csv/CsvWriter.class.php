@@ -94,6 +94,7 @@
         }
         $line.= $this->delimiter;
       }
+      $this->line++;
       $this->writer->writeLine(substr($line, 0, -1));
     }
   }
