@@ -50,6 +50,36 @@
     }
 
     /**
+     * Test writing a multiline value with "\n"
+     *
+     */
+    #[@test]
+    public function writeUnixMultiLineValue() {
+      $this->newWriter(create(new CsvFormat())->withQuote("'"))->write(array('Timm', "76137\nKarlsruhe\nGermany"));
+      $this->assertEquals("Timm;'76137\nKarlsruhe\nGermany';\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test writing a multiline value with "\r"
+     *
+     */
+    #[@test]
+    public function writeMacMultiLineValue() {
+      $this->newWriter(create(new CsvFormat())->withQuote("'"))->write(array('Timm', "76137\rKarlsruhe\rGermany"));
+      $this->assertEquals("Timm;'76137\rKarlsruhe\rGermany';\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test writing a multiline value with "\r\n"
+     *
+     */
+    #[@test]
+    public function writeWindowsMultiLineValue() {
+      $this->newWriter(create(new CsvFormat())->withQuote("'"))->write(array('Timm', "76137\r\nKarlsruhe\r\nGermany"));
+      $this->assertEquals("Timm;'76137\r\nKarlsruhe\r\nGermany';\n", $this->out->getBytes());
+    }
+
+    /**
      * Test delimiter is quoted
      *
      */
