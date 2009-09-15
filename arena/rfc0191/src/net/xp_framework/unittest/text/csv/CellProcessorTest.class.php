@@ -466,6 +466,45 @@
     }
 
     /**
+     * Test Optional processor
+     *
+     */
+    #[@test]
+    public function writeOptionalString() {
+      $this->newWriter()->withProcessors(array(
+        new Optional(),
+        NULL
+      ))->write(array('A', 'Test'));
+      $this->assertEquals("A;Test;\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test Optional processor
+     *
+     */
+    #[@test]
+    public function writeOptionalEmpty() {
+      $this->newWriter()->withProcessors(array(
+        new Optional(),
+        NULL
+      ))->write(array('', 'Test'));
+      $this->assertEquals(";Test;\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test Optional processor
+     *
+     */
+    #[@test]
+    public function writeOptionalWithDefault() {
+      $this->newWriter()->withProcessors(array(
+        create(new Optional())->withDefault('(unknown)'),
+        NULL
+      ))->write(array('', 'Test'));
+      $this->assertEquals("(unknown);Test;\n", $this->out->getBytes());
+    }
+
+    /**
      * Test Required processor
      *
      */
@@ -488,6 +527,31 @@
         NULL,
         new Required()
       ))->read();
+    }
+
+    /**
+     * Test Required processor
+     *
+     */
+    #[@test]
+    public function writeRequired() {
+      $this->newWriter()->withProcessors(array(
+        new Required(),
+        NULL
+      ))->write(array('A', 'B'));
+      $this->assertEquals("A;B;\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test Required processor
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function writeEmptyRequired() {
+      $this->newWriter()->withProcessors(array(
+        new Required(),
+        NULL
+      ))->write(array('', 'Test'));
     }
 
     /**
