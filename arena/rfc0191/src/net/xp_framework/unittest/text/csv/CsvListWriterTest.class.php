@@ -13,7 +13,7 @@
   /**
    * TestCase
    *
-   * @see      xp://text.csv.CsvListReader
+   * @see      xp://text.csv.CsvListWriter
    */
   class CsvListWriterTest extends TestCase {
     protected $out= NULL;
