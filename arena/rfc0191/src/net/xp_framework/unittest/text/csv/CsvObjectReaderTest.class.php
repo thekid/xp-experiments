@@ -61,6 +61,19 @@
      *
      */
     #[@test]
+    public function readPersonReSorted() {
+      $in= $this->newReader('friebe@example.com;1549;Timm', XPClass::forName('net.xp_framework.unittest.text.csv.Person'));
+      $this->assertEquals(
+        new net·xp_framework·unittest·text·csv·Person('1549', 'Timm', 'friebe@example.com'), 
+        $in->read(array('email', 'id', 'name'))
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function readPersonCompletely() {
       $in= $this->newReader('1549;Timm;friebe@example.com', XPClass::forName('net.xp_framework.unittest.text.csv.Person'));
       $this->assertEquals(
