@@ -116,6 +116,26 @@
      *
      */
     #[@test]
+    public function leadingTab() {
+      $in= $this->newReader("\tTimm;Karlsruhe;76137");
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test whitespace is ignored
+     *
+     */
+    #[@test]
+    public function leadingTabAndWhiteSpace() {
+      $in= $this->newReader("\t  Timm;Karlsruhe;76137");
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test whitespace is ignored
+     *
+     */
+    #[@test]
     public function leadingWhitespaces() {
       $in= $this->newReader('Timm;    Karlsruhe;    76137');
       $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
@@ -126,8 +146,28 @@
      *
      */
     #[@test]
+    public function leadingTabs() {
+      $in= $this->newReader("Timm;\tKarlsruhe;\t76137");
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test whitespace is ignored
+     *
+     */
+    #[@test]
     public function trailingWhitespace() {
       $in= $this->newReader('Timm ;Karlsruhe;76137');
+      $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
+    }
+
+    /**
+     * Test whitespace is ignored
+     *
+     */
+    #[@test]
+    public function trailingTab() {
+      $in= $this->newReader("Timm\t;Karlsruhe;76137");
       $this->assertEquals(array('Timm', 'Karlsruhe', '76137'), $in->read());
     }
 
