@@ -141,6 +141,7 @@
           $value= rtrim(substr($line, $b, $e), $whitespace);   // Trim trailing WS
         }
         
+        // Run processors
         if (!$raw && isset($this->processors[$v])) {
           try {
             $values[$v]= $this->processors[$v]->process($value);
@@ -153,8 +154,8 @@
         $v++;
         $o= $b + $e + 1;
       } while ($o < $l);
+
       if ($exception) throw $exception;
-      // DEBUG Console::$err->writeLine('<', addcslashes($line, "\n"), '> => ', $values);
       return $values;
     }
   }
