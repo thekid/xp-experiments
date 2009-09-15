@@ -63,20 +63,18 @@
      * Write characters
      *
      * @param   string text
-     * @return  int length
      */
     public function write($text) {
-      return $this->stream->write(iconv('iso-8859-1', $this->charset, $text));
+      $this->stream->write(iconv('iso-8859-1', $this->charset, $text));
     }
     
     /**
      * Write an entire line
      *
      * @param   string text
-     * @return  int length
      */
     public function writeLine($text= '') {
-      return $this->stream->write(iconv('iso-8859-1', $this->charset, $text).$this->newLine);
+      $this->stream->write(iconv('iso-8859-1', $this->charset, $text).$this->newLine);
     }
   }
 ?>
