@@ -47,9 +47,21 @@
      * @param   string quote
      */
     public function __construct($delimiter= ';', $quote= '"') {
-      $this->withDelimiter($delimiter);
-      $this->withQuote($quote);
+      $this->setDelimiter($delimiter);
+      $this->setQuote($quote);
     }
+
+    /**
+     * Set delimiter character
+     *
+     * @param   string delimiter
+     */
+    public function setDelimiter($delimiter) {
+      if (strlen($delimiter) != 1) {
+        throw new IllegalArgumentException('Delimiter '.xp::stringOf($delimiter).' must be 1 character long');
+      }
+      $this->delimiter= $delimiter;
+    }    
 
     /**
      * Set delimiter character and return this format object
@@ -58,10 +70,7 @@
      * @return  text.csv.CsvFormat self
      */
     public function withDelimiter($delimiter) {
-      if (strlen($delimiter) != 1) {
-        throw new IllegalArgumentException('Delimiter '.xp::stringOf($delimiter).' must be 1 character long');
-      }
-      $this->delimiter= $delimiter;
+      $this->setDelimiter($delimiter);
       return $this;
     }    
 
@@ -75,16 +84,26 @@
     }    
 
     /**
+     * Set quoting character
+     *
+     * @param   string quote
+     */
+    public function setQuote($quote) {
+      if (strlen($quote) != 1) {
+        throw new IllegalArgumentException('Quote '.xp::stringOf($quote).' must be 1 character long');
+      }
+      $this->quote= $quote;
+      return $this;
+    }    
+
+    /**
      * Set quoting character and return this format object
      *
      * @param   string quote
      * @return  text.csv.CsvFormat self
      */
     public function withQuote($quote) {
-      if (strlen($quote) != 1) {
-        throw new IllegalArgumentException('Quote '.xp::stringOf($quote).' must be 1 character long');
-      }
-      $this->quote= $quote;
+      $this->setQuote($quote);
       return $this;
     }    
 
