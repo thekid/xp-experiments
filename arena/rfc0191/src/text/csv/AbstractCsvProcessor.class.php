@@ -9,6 +9,8 @@
   /**
    * Abstract base class for CSV processors
    *
+   * @see     http://en.wikipedia.org/wiki/Comma-separated_values
+   * @see     rfc://4180
    * @test    xp://net.xp_framework.unittest.text.csv.ProcessorAccessorsTest
    */
   abstract class AbstractCsvProcessor extends Object {

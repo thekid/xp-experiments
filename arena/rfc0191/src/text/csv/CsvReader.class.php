@@ -58,7 +58,6 @@
     /**
      * Reads values
      *
-     * @see     http://en.wikipedia.org/wiki/Comma-separated_values
      * @param   bool raw
      * @return  string[]
      * @throws  lang.FormatException if a formatting error is detected
