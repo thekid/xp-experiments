@@ -77,18 +77,19 @@
      */
     protected function writeValues($values, $raw= FALSE) {
       $escape= $this->quote.$this->quote;
+      $line= '';
       foreach ($values as $v => $value) {        
         if (!$raw && isset($this->processors[$v])) {
           $value= $this->processors[$v]->process($value);
         }
         if (strcspn($value, $this->delimiter.$this->quote) < strlen($value)) {
-          $this->writer->write($this->quote.str_replace($this->quote, $escape, $value).$this->quote);
+          $line.= $this->quote.str_replace($this->quote, $escape, $value).$this->quote;
         } else {
-          $this->writer->write($value);
+          $line.= $value;
         }
-        $this->writer->write($this->delimiter);
+        $line.= $this->delimiter;
       }
-      $this->writer->writeLine();
+      $this->writer->writeLine($line);
     }
   }
 ?>
