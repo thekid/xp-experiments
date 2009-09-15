@@ -50,6 +50,29 @@
     }
 
     /**
+     * Test writing headers
+     *
+     */
+    #[@test]
+    public function setHeaders() {
+      $writer= $this->newWriter();
+      $writer->setHeaders(array('name', 'city', 'zip'));
+      $writer->write(array('Timm', 'Karlsruhe', '76137'));
+      $this->assertEquals("name;city;zip\nTimm;Karlsruhe;76137\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test writing headers
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function cannotSetHeadersAfterWriting() {
+      $writer= $this->newWriter();
+      $writer->write(array('Timm', 'Karlsruhe', '76137'));
+      $writer->setHeaders(array('name', 'city', 'zip'));
+    }
+
+    /**
      * Test writing a multiline value with "\n"
      *
      */
