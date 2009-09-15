@@ -30,5 +30,13 @@
     public function getStream() {
       return $this->stream;
     }
+
+    /**
+     * Closes this reader (and the underlying stream)
+     *
+     */
+    public function close() {
+      $this->stream->close();
+    }
   }
 ?>
