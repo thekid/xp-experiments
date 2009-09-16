@@ -10,10 +10,12 @@ class XpIdePlugin(gedit.Plugin):
         'php':  'Php',
         'sh':   'Sh',
         'xml':  'Xml',
-        'xslt': 'Xml'
+        'xslt': 'Xml',
+        'js':   'Js'
     }
 
     def lint(self, action, window):
+        result= []
         tb= window.get_active_document()
         try:
           result= subprocess.Popen(
@@ -28,11 +30,11 @@ class XpIdePlugin(gedit.Plugin):
               stdout=subprocess.PIPE
           ).communicate(tb.get_text(tb.get_start_iter(), tb.get_end_iter()))[0].splitlines()
         except KeyError:
-            dialog.TextCalltip(window).setText("Lint for " + window.get_active_document().get_language().get_name() + " does not exist").run()
+            dialog.TextCalltip(window).setText("Lint for " + window.get_active_document().get_language().get_id() + " does not exist").run()
         except AttributeError:
             dialog.TextCalltip(window).setText("Document has no specified language").run()
 
-        if (0 == len(result[2])): return
+        if (0 == len(result)): return
 
         err_line= int(result.pop(0)) - 1
         err_col=  int(result.pop(0))
