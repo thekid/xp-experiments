@@ -30,7 +30,7 @@
         $tmp->open(FILE_MODE_WRITE);
         $tmp->write($cl->getResource('fulljslint.js'));
         $tmp->write($cl->getResource('spidermonkey.js'));
-	$tmp->close();
+        $tmp->close();
       }
 
       $errors= array();
@@ -43,7 +43,7 @@
       while (!$out->eof()) {
         if (!preg_match('#^Lint at line (\d+) character (\d+): (.*)\.$#', $out->readLine(), $match)) continue;
         $errors[]= new xp·ide·lint·Error(++$match[1], $match[2], $match[3]);
-	break;
+        break;
       }
 
       $tmp->unlink();
