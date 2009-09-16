@@ -13,6 +13,7 @@
     'xp.ide.resolve.Resolver',
     'xp.ide.completion.PackageClassCompleter',
     'xp.ide.completion.UncompletePackageClass',
+    'xp.ide.text.ChannelInputStream',
     'xp.ide.text.StreamWorker',
     'xp.ide.info.MemberInfoVisitor',
     'xp.ide.resolve.Response',
@@ -27,23 +28,46 @@
   class xp·ide·XpIde extends Object implements xp·ide·IXpIde {
 
     private
-      $in,
-      $out,
-      $err;
+      $in= NULL,
+      $out= NULL,
+      $err= NULL;
 
-    public function __construct() {
+    /**
+     * Constructor
+     *
+     * @param  xp.ide.text.IInputStream stream
+     */
+    public function __construct(xp·ide·text·IInputStream $in= NULL) {
+      $this->in= is_null($in) ? new xp·ide·text·ChannelInputStream('stdin') : $in;
+    }
+
+    /**
+     * set input stream
+     *
+     * @param  xp.ide.text.IInputStream stream
+     */
+    public function setIn(xp·ide·text·IInputStream $in) {
+      $this->in= $in;
+    }
+
+    /**
+     * get input stream
+     *
+     * @return xp.ide.text.IInputStream stream
+     */
+    public function getIn() {
+      return $this->in;
     }
 
     /**
      * complete the source under the cursor
      *
-     * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.Cursor cursor
      * @return xp.ide.completion.Response
      */
-    #[@action(name='complete', args="InputStream, Cursor")]
-    public function complete(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor) {
-      $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($stream, $cursor);
+    #[@action(name='complete', args="Cursor")]
+    public function complete(xp·ide·Cursor $cursor) {
+      $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($this->in, $cursor);
       return new xp·ide·completion·Response(
         $searchWord,
         create(new xp·ide·completion·PackageClassCompleter())->suggest(
@@ -60,9 +84,9 @@
      * @param  xp.ide.Cursor cursor
      * @return xp.ide.resolve.Response
      */
-    #[@action(name='grepclassfile', args="InputStream, Cursor")]
-    public function grepClassFileUri(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor) {
-      $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($stream, $cursor);
+    #[@action(name='grepclassfile', args="Cursor")]
+    public function grepClassFileUri(xp·ide·Cursor $cursor) {
+      $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($this->in, $cursor);
       $resolver= new xp·ide·resolve·Resolver();
       return new xp·ide·resolve·Response($searchWord, $resolver->getSourceUri($searchWord->getText()));
     }
@@ -70,26 +94,24 @@
     /**
      * check syntax
      *
-     * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.lint.ILanguage language
      * @return xp.ide.lint.Error[]
      */
-    #[@action(name='checksyntax', args="InputStream, Language")]
-    public function checkSyntax(xp·ide·text·IInputStream $stream, xp·ide·lint·ILanguage $language) {
-      return $language->checkSyntax($stream);
+    #[@action(name='checksyntax', args="Language")]
+    public function checkSyntax(xp·ide·lint·ILanguage $language) {
+      return $language->checkSyntax($this->in);
     }
 
     /**
      * get class info
      *
-     * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.info.InfoType itype
      */
-    #[@action(name='info', args="InputStream, Infotype")]
-    public function info(xp·ide·text·IInputStream $stream, xp·ide·info·InfoType $itype) {
+    #[@action(name='info', args="Infotype")]
+    public function info(xp·ide·info·InfoType $itype) {
       $p= new xp·ide·source·parser·ClassFileParser();
       $p->setTopElement($t= new xp·ide·source·element·ClassFile());
-      $p->parse(new xp·ide·source·parser·ClassFileLexer($stream));
+      $p->parse(new xp·ide·source·parser·ClassFileLexer($this->in));
 
       switch ($itype) {
         case xp·ide·info·InfoType::$MEMBER:

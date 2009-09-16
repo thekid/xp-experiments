@@ -20,12 +20,11 @@
     /**
      * complete the source under the cursor
      *
-     * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.Cursor cursor
      * @return xp.ide.completion.Respone
      */
-    public function complete(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor) {
-      $response= $this->ide->complete($stream, $cursor);
+    public function complete(xp·ide·Cursor $cursor) {
+      $response= $this->ide->complete($cursor);
       Console::$out->writeLine($response->getSnippet()->getPosition());
       Console::$out->writeLine(strlen($response->getSnippet()->getText()));
       Console::$out->writeLine(count($response->getSuggestions()));
@@ -37,12 +36,11 @@
      * grep the file URI where the XP class
      * under the cursor if defined
      *
-     * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.Cursor cursor
      * @return xp.ide.resolve.Response
      */
-    public function grepClassFileUri(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor) {
-      $response= $this->ide->grepClassFileUri($stream, $cursor);
+    public function grepClassFileUri(xp·ide·Cursor $cursor) {
+      $response= $this->ide->grepClassFileUri($cursor);
       list($scheme, $rest)= explode('://', $response->getUri(), 2);
       if ('file' !== $scheme) throw new IllegalArgumentException(sprintf('Cannot open class "%s" from location %s', $response->getSnippet()->getText(), $response->getUri()));
       Console::$out->write($response->getUri());
@@ -52,12 +50,11 @@
     /**
      * check syntax
      *
-     * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.lint.ILanguage language
      * @return xp.ide.lint.Error[]
      */
-    public function checkSyntax(xp·ide·text·IInputStream $stream, xp·ide·lint·ILanguage $language) {
-      $errors= $this->ide->checkSyntax($stream, $language);
+    public function checkSyntax(xp·ide·lint·ILanguage $language) {
+      $errors= $this->ide->checkSyntax($language);
       if (0 == sizeOf($errors)) {
         Console::$out->writeLine("0".PHP_EOL."0".PHP_EOL);
         return;
@@ -80,11 +77,10 @@
     /**
      * get class info
      *
-     * @param  xp.ide.text.IInputStream stream
      * @param  xp.ide.info.InfoType itype
      */
-    public function info(xp·ide·text·IInputStream $stream, xp·ide·info·InfoType $itype) {
-      $this->ide->info($stream, $itype);
+    public function info(xp·ide·info·InfoType $itype) {
+      $this->ide->info($itype);
     }
   }
 ?>

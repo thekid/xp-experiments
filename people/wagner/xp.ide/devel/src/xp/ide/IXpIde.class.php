@@ -18,7 +18,7 @@
      * @param  xp.ide.Cursor cursor
      * @return xp.ide.completion.Response
      */
-    public function complete(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor);
+    public function complete(xp·ide·Cursor $cursor);
 
     /**
      * grep the file URI where the XP class
@@ -27,7 +27,7 @@
      * @param  xp.ide.Cursor cursor
      * @return xp.ide.resolve.Response
      */
-    public function grepClassFileUri(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor);
+    public function grepClassFileUri(xp·ide·Cursor $cursor);
 
     /**
      * check syntax
@@ -35,7 +35,21 @@
      * @param  xp.ide.lint.ILanguage language
      * @return xp.ide.lint.Error[]
      */
-    public function checkSyntax(xp·ide·text·IInputStream $stream, xp·ide·lint·ILanguage $language);
+    public function checkSyntax(xp·ide·lint·ILanguage $language);
+
+    /**
+     * set input stream
+     *
+     * @param  xp.ide.text.IInputStream stream
+     */
+    public function setIn(xp·ide·text·IInputStream $in);
+
+    /**
+     * get input stream
+     *
+     * @return xp.ide.text.IInputStream
+     */
+    public function getIn();
 
   }
 ?>

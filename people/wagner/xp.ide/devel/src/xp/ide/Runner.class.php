@@ -8,7 +8,6 @@
   uses(
     'lang.XPClass',
     'util.cmd.Console',
-    'xp.ide.text.ChannelInputStream',
     'xp.ide.Cursor',
     'xp.ide.info.InfoType',
     'util.cmd.ParamString',
@@ -25,7 +24,6 @@
     private static
       $artefacts= array(
         'Cursor'      => 'getCursor',
-        'InputStream' => 'getInputStream',
         'Language'    => 'getLanguage',
         'Infotype'    => 'getInfotype',
       );
@@ -54,8 +52,11 @@
 
       // assemble arguments
       $action_args= array();
+
+      $params= new ParamString($args);
+      $proxy->getIn()->setEncoding($params->value('stream-encoding', 'se', xp·ide·text·IInputStream::ENCODING_NONE));
+
       if ($actionMethods[$action]->hasAnnotation('action', 'args')) {
-        $params= new ParamString($args);
         foreach (explode(',', $actionMethods[$action]->getAnnotation('action', 'args')) as $arg) {
           $arg= trim($arg);
           if (!isset(self::$artefacts[$arg])) throw new IllegalStateException(sprintf('unknown artefact "%s" requested by action "%s"', $arg, $action));
@@ -84,18 +85,6 @@
         $params->value('cursor-line',     'cl'),
         $params->value('cursor-column',   'cc')
       );
-    }
-
-    /**
-     * get input stream
-     *
-     * @param util.cmd.ParamString params
-     * @return xp.ide.text.IInputStream
-     */
-    public static function getInputStream(ParamString $params) {
-      $stream= new xp·ide·text·ChannelInputStream('stdin');
-      $stream->setEncoding($params->value('stream-encoding', 'se', xp·ide·text·IInputStream::ENCODING_NONE));
-      return $stream;
     }
 
     /**
