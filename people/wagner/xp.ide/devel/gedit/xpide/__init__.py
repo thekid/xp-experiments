@@ -34,7 +34,7 @@ class XpIdePlugin(gedit.Plugin):
         except AttributeError:
             dialog.TextCalltip(window).setText("Document has no specified language").run()
 
-        if (0 == len(result)): return
+        if (0 == len(result) or 0 == len(result[2])): return
 
         err_line= int(result.pop(0)) - 1
         err_col=  int(result.pop(0))
