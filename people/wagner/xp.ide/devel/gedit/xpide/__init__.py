@@ -30,7 +30,7 @@ class XpIdePlugin(gedit.Plugin):
               stdout=subprocess.PIPE
           ).communicate(tb.get_text(tb.get_start_iter(), tb.get_end_iter()))[0].splitlines()
         except KeyError:
-            dialog.TextCalltip(window).setText("Lint for " + window.get_active_document().get_language().get_id() + " does not exist").run()
+            dialog.TextCalltip(window).setText("Lint for " + window.get_active_document().get_language().get_name() + " does not exist").run()
         except AttributeError:
             dialog.TextCalltip(window).setText("Document has no specified language").run()
 
