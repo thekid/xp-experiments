@@ -26,7 +26,7 @@
      * @return xp.ide.lint.Error[]
      */
     public function checkSyntax(InputStream $stream) {
-      with ($cl= $this->getClass()->getClassLoader(), $tmp= new TempFile()); {
+      with ($cl= $this->getClass()->getPackage()->getPackage('js'), $tmp= new TempFile()); {
         $tmp->open(FILE_MODE_WRITE);
         $tmp->write($cl->getResource('fulljslint.js'));
         $tmp->write($cl->getResource('spidermonkey.js'));

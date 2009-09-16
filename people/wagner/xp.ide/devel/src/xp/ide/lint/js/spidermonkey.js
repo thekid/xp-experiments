@@ -1,8 +1,8 @@
 /**
-/* This script is part of the XP framework
+ * This script is part of the XP framework
  *
- * $Id$
-
+ * $Id$+
+ *
  * Get data from stdin and pass it to
  * the JSLINT object
  *
