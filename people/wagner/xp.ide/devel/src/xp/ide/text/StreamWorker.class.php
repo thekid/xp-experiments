@@ -19,11 +19,11 @@
     /**
      * grep a class name from $this->inputStream
      *
-     * @param  xp.ide.text.IInputStream input
+     * @param  xp.ide.streams.IEncodedInputStream input
      * @param  xp.ide.Cursor cursor
      * @return xp.ide.text.Snippet
      */
-    public function grepClassName(xp·ide·text·IInputStream $stream, xp·ide·Cursor $cursor) {
+    public function grepClassName(xp·ide·streams·IEncodedInputStream $stream, xp·ide·Cursor $cursor) {
       $buffer= '';
       while ($stream->available() && $this->eStrlen($buffer, $stream->getEncoding()) < $cursor->getPosition()) {
         $buffer.= $stream->read($cursor->getPosition() - $this->eStrlen($buffer, $stream->getEncoding()));
@@ -53,7 +53,7 @@
      * @return  bool
      */
     private function eStrlen(&$string, $encoding) {
-      return xp·ide·text·IInputStream::ENCODING_NONE == $encoding ? strlen($string) : iconv_strlen($string, $encoding);
+      return xp·ide·streams·IEncodedStream::ENCODING_NONE == $encoding ? strlen($string) : iconv_strlen($string, $encoding);
     }
 
     /**

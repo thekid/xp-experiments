@@ -40,16 +40,44 @@
     /**
      * set input stream
      *
-     * @param  xp.ide.text.IInputStream stream
+     * @param  xp.ide.streams.IEncodedInputStream in
      */
-    public function setIn(xp·ide·text·IInputStream $in);
+    public function setIn(xp·ide·streams·IEncodedInputStream $in);
 
     /**
      * get input stream
      *
-     * @return xp.ide.text.IInputStream
+     * @return xp.ide.streams.IEncodedInputStream
      */
     public function getIn();
+
+    /**
+     * set output stream
+     *
+     * @param  xp.ide.streams.IEncodedOutputStream out
+     */
+    public function setOut(xp·ide·streams·IEncodedOutputStream $out);
+
+    /**
+     * get output stream
+     *
+     * @return xp.ide.streams.IEncodedOutputStream
+     */
+    public function getOut();
+
+    /**
+     * set error stream
+     *
+     * @param  xp.ide.streams.IEncodedOutputStream err
+     */
+    public function setErr(xp·ide·streams·IEncodedOutputStream $err);
+
+    /**
+     * get error stream
+     *
+     * @return xp.ide.streams.IEncodedOutputStream
+     */
+    public function getErr();
 
   }
 ?>

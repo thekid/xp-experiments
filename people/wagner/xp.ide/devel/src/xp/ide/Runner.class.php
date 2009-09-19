@@ -6,12 +6,16 @@
   $package= 'xp.ide';
   
   uses(
-    'lang.XPClass',
-    'util.cmd.Console',
+    'xp.ide.XpIde',
+    'xp.ide.streams.EncodedInputStreamWrapper',
+    'xp.ide.streams.EncodedOutputStreamWrapper',
     'xp.ide.Cursor',
     'xp.ide.info.InfoType',
-    'util.cmd.ParamString',
-    'xp.ide.XpIde'
+    'io.streams.ChannelInputStream',
+    'io.streams.ChannelOutputStream',
+    'lang.XPClass',
+    'util.cmd.Console',
+    'util.cmd.ParamString'
   );
   
   /**
@@ -36,26 +40,31 @@
     public static function main(array $args) {
       if (2 > sizeOf($args)) return self::usage();
 
-      $inst= new xp·ide·XpIde();
-      $class= $inst->getClass();
-
-      $proxy= XPClass::forName('xp.ide.proxy.'.array_shift($args))->newInstance($inst);
+      $proxy= XPClass::forName('xp.ide.proxy.'.array_shift($args))->newInstance($inst= new xp·ide·XpIde(
+        new xp·ide·streams·EncodedInputStreamWrapper(new ChannelInputStream('stdin')),
+        new xp·ide·streams·EncodedOutputStreamWrapper(new ChannelOutputStream('stdout')),
+        new xp·ide·streams·EncodedOutputStreamWrapper(new ChannelOutputStream('stderr'))
+      ));
       if (!$proxy instanceof xp·ide·IXpIde) throw new IllegalArgumentException(sprintf('%s does not implement xp·ide·IXpIde', $proxy->getClassName()));
 
       $action= array_shift($args);
-
       $actionMethods= array();
-      foreach ($class->getMethods() as $method) {
-        if ($method->hasAnnotation('action')) $actionMethods[$method->getAnnotation('action', 'name')]= $method;
+      with ($class= $inst->getClass()); {
+        foreach ($class->getMethods() as $method) {
+          if ($method->hasAnnotation('action')) $actionMethods[$method->getAnnotation('action', 'name')]= $method;
+        }
+        if (!isset($actionMethods[$action])) throw new IllegalArgumentException(sprintf('action %s not found', $action));
       }
-      if (!isset($actionMethods[$action])) throw new IllegalArgumentException(sprintf('action %s not found', $action));
+
+      $params= new ParamString($args);
+      with ($enc= $params->value('stream-encoding', 'se', xp·ide·streams·IEncodedStream::ENCODING_NONE)); {
+        $proxy->getIn()->setEncoding($enc);
+        $proxy->getOut()->setEncoding($enc);
+        $proxy->getErr()->setEncoding($enc);
+      }
 
       // assemble arguments
       $action_args= array();
-
-      $params= new ParamString($args);
-      $proxy->getIn()->setEncoding($params->value('stream-encoding', 'se', xp·ide·text·IInputStream::ENCODING_NONE));
-
       if ($actionMethods[$action]->hasAnnotation('action', 'args')) {
         foreach (explode(',', $actionMethods[$action]->getAnnotation('action', 'args')) as $arg) {
           $arg= trim($arg);

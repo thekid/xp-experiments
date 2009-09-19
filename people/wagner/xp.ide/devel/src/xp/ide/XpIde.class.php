@@ -8,12 +8,10 @@
   uses(
     'xp.ide.source.parser.ClassFileParser',
     'xp.ide.source.parser.ClassFileLexer',
-    'io.streams.MemoryInputStream',
     'xp.ide.IXpIde',
     'xp.ide.resolve.Resolver',
     'xp.ide.completion.PackageClassCompleter',
     'xp.ide.completion.UncompletePackageClass',
-    'xp.ide.text.ChannelInputStream',
     'xp.ide.text.StreamWorker',
     'xp.ide.info.MemberInfoVisitor',
     'xp.ide.resolve.Response',
@@ -35,28 +33,68 @@
     /**
      * Constructor
      *
-     * @param  xp.ide.text.IInputStream stream
+     * @param  xp.ide.streams.IEncodedInputStream in
+     * @param  xp.ide.streams.IEncodedOutputStream out
+     * @param  xp.ide.streams.IEncodedOutputStream err
      */
-    public function __construct(xp·ide·text·IInputStream $in= NULL) {
-      $this->in= is_null($in) ? new xp·ide·text·ChannelInputStream('stdin') : $in;
+    public function __construct(xp·ide·streams·IEncodedInputStream $in, xp·ide·streams·IEncodedOutputStream $out, xp·ide·streams·IEncodedOutputStream $err) {
+      $this->in= $in;
+      $this->out= $out;
+      $this->err= $err;
     }
 
     /**
      * set input stream
      *
-     * @param  xp.ide.text.IInputStream stream
+     * @param  xp.ide.streams.IEncodedInputStream stream
      */
-    public function setIn(xp·ide·text·IInputStream $in) {
+    public function setIn(xp·ide·streams·IEncodedInputStream $in) {
       $this->in= $in;
     }
 
     /**
      * get input stream
      *
-     * @return xp.ide.text.IInputStream stream
+     * @return xp.ide.streams.IEncodedInputStream in
      */
     public function getIn() {
       return $this->in;
+    }
+
+    /**
+     * set output stream
+     *
+     * @param  xp.ide.streams.IEncodedOutputStream out
+     */
+    public function setOut(xp·ide·streams·IEncodedOutputStream $out) {
+      $this->out= $out;
+    }
+
+    /**
+     * get output stream
+     *
+     * @return xp.ide.streams.IEncodedOutputStream
+     */
+    public function getOut() {
+      return $this->out;
+    }
+
+    /**
+     * set error stream
+     *
+     * @param  xp.ide.streams.IEncodedOutputStream err
+     */
+    public function setErr(xp·ide·streams·IEncodedOutputStream $err) {
+      $this->err= $err;
+    }
+
+    /**
+     * get error stream
+     *
+     * @return xp.ide.streams.IEncodedOutputStream
+     */
+    public function getErr() {
+      return $this->err;
     }
 
     /**
@@ -80,7 +118,7 @@
      * grep the file URI where the XP class
      * under the cursor if defined
      *
-     * @param  xp.ide.text.IInputStream stream
+     * @param  xp.ide.streams.IEncodedInputStream stream
      * @param  xp.ide.Cursor cursor
      * @return xp.ide.resolve.Response
      */

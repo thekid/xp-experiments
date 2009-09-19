@@ -1,20 +1,16 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: IInputStream.class.php 11317 2009-08-07 12:34:15Z ruben $ 
  */
-  $package= 'xp.ide.text';
-  
-  uses(
-    'io.streams.InputStream'
-  );
-  
+  $package= 'xp.ide.streams';
+
   /**
-   * input stream interface with encoding meta information
+   * stream interface with encoding meta information
    *
    * @purpose  IDE
    */
-  interface xp·ide·text·IInputStream extends InputStream {
+  interface xp·ide·streams·IEncodedStream {
     const ENCODING_NONE= "BINARY";
 
     /**
