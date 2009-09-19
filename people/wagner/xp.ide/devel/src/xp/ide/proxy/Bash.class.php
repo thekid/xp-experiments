@@ -26,7 +26,7 @@
      */
     public function complete(xp·ide·Cursor $cursor) {
       $response= $this->ide->complete($cursor);
-      Console::$out->write(implode(PHP_EOL, $response->getSuggestions()));
+      $this->out->write(implode(PHP_EOL, $response->getSuggestions()));
       return $response;
     }
 
@@ -45,14 +45,14 @@
         } catch (IllegalArgumentException $e) {
           continue;
         } catch (xp·ide·resolve·NoSourceException $e) {
-          Console::$err->writeLine($e->getMessage());
+          $this->err->write($e->getMessage().PHP_EOL);
           continue;
         }
         list($scheme, $rest)= explode('://', $response->getUri(), 2);
-        if ('file' !== $scheme) Console::$err->writeLine(sprintf('Cannot open class "%s" from location %s', $response->getSnippet()->getText(), $response->getUri()));
+        if ('file' !== $scheme) $this->err->write(sprintf('Cannot open class "%s" from location %s'.PHP_EOL, $response->getSnippet()->getText(), $response->getUri()));
         $result[]= $rest;
       } while ($this->in->available());
-      Console::$out->write(implode(' ', $result));
+      $this->out->write(implode(' ', $result));
       return $result;
     }
 

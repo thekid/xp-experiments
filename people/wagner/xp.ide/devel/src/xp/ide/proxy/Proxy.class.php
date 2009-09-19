@@ -7,7 +7,6 @@
 
   uses(
     'xp.ide.IXpIde',
-    'util.cmd.Console',
     'peer.URL'
   );
 

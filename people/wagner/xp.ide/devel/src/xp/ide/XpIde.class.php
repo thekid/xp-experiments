@@ -153,7 +153,7 @@
 
       switch ($itype) {
         case xp·ide·info·InfoType::$MEMBER:
-        create(new xp·ide·info·MemberInfoVisitor(new ConsoleOutputStream(STDOUT)))->visit($t);
+        create(new xp·ide·info·MemberInfoVisitor($this->out))->visit($t);
       }
     }
 

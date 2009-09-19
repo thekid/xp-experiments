@@ -21,14 +21,16 @@
      * complete the source under the cursor
      *
      * @param  xp.ide.Cursor cursor
-     * @return xp.ide.completion.Respone
+     * @return xp.ide.completion.Respon
      */
     public function complete(xp·ide·Cursor $cursor) {
       $response= $this->ide->complete($cursor);
-      Console::$out->writeLine($response->getSnippet()->getPosition());
-      Console::$out->writeLine(strlen($response->getSnippet()->getText()));
-      Console::$out->writeLine(count($response->getSuggestions()));
-      Console::$out->write(implode(PHP_EOL, $response->getSuggestions()));
+      $this->out->write(
+        $response->getSnippet()->getPosition().PHP_EOL
+        .strlen($response->getSnippet()->getText()).PHP_EOL
+        .count($response->getSuggestions()).PHP_EOL
+        .implode(PHP_EOL, $response->getSuggestions())
+      );
       return $response;
     }
 
@@ -43,7 +45,7 @@
       $response= $this->ide->grepClassFileUri($cursor);
       list($scheme, $rest)= explode('://', $response->getUri(), 2);
       if ('file' !== $scheme) throw new IllegalArgumentException(sprintf('Cannot open class "%s" from location %s', $response->getSnippet()->getText(), $response->getUri()));
-      Console::$out->write($response->getUri());
+      $this->out->write($response->getUri());
       return $response;
     }
 
@@ -56,16 +58,18 @@
     public function checkSyntax(xp·ide·lint·ILanguage $language) {
       $errors= $this->ide->checkSyntax($language);
       if (0 == sizeOf($errors)) {
-        Console::$out->writeLine("0".PHP_EOL."0".PHP_EOL);
+        $this->out->write("0".PHP_EOL."0".PHP_EOL.PHP_EOL);
         return;
       }
       $e= array_shift($errors);
-      Console::$out->writeLine($e->getLine());
-      Console::$out->writeLine($e->getColumn());
-      Console::$out->writeLine($e->getText());
+      $this->out->write(
+        $e->getLine().PHP_EOL
+        .$e->getColumn().PHP_EOL
+        .$e->getText().PHP_EOL
+      );
       foreach ($errors as $e) {
-        Console::$out->writeLine(sprintf(
-          '- %d(%d): %s',
+        $this->out->write(sprintf(
+          '- %d(%d): %s'.PHP_EOL,
           $e->getLine(),
           $e->getColumn(),
           $e->getText()
