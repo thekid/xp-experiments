@@ -80,13 +80,13 @@ class XpIdePlugin(gedit.Plugin):
 
         ma_dialog= dialog.MakeAccessor(window)
         for line in result.splitlines():
-            (final, static, scope, name, mtype)= line.split(':')
-            ma_dialog.addMember(name);
+            (m_final, m_static, m_scope, m_name, m_type)= line.split(':')
+            ma_dialog.addMember(m_name, m_type);
         ma_list= ma_dialog.run()
         if (ma_list is None): return
 
         for r in ma_list:
-            (ma_name, ma_get, ma_set)= r
+            (ma_name, ma_type, ma_get, ma_set)= r
 
     def activate(self, window):
         self._ui= XpIdeUi(self, window)

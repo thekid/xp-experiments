@@ -58,17 +58,23 @@ class MakeAccessor(Calltip):
         Calltip.__init__(self, "MakeAccessor", master, title)
 
         list_col_name= gtk.TreeViewColumn("Name", gtk.CellRendererText(), text= 0)
-        self._renderer_set= gtk.CellRendererToggle()
-        self._renderer_set.connect("toggled", self.toggleCol, 1)
-        self._renderer_get= gtk.CellRendererToggle()
-        self._renderer_get.connect("toggled", self.toggleCol, 2)
-        list_col_setter= gtk.TreeViewColumn("set", self._renderer_set, active= 1)
-        list_col_getter= gtk.TreeViewColumn("get", self._renderer_get, active= 2)
         list_col_name.set_sort_order(gtk.SORT_ASCENDING)
-        self._list= gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_BOOLEAN, gobject.TYPE_BOOLEAN)
+
+        list_col_type= gtk.TreeViewColumn("Type", gtk.CellRendererText(), text= 1)
+
+        self._renderer_set= gtk.CellRendererToggle()
+        self._renderer_set.connect("toggled", self.toggleCol, 2)
+        list_col_setter= gtk.TreeViewColumn("set", self._renderer_set, active= 2)
+
+        self._renderer_get= gtk.CellRendererToggle()
+        self._renderer_get.connect("toggled", self.toggleCol, 3)
+        list_col_getter= gtk.TreeViewColumn("get", self._renderer_get, active= 3)
+
+        self._list= gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_BOOLEAN, gobject.TYPE_BOOLEAN)
         self._view= self._builder.get_object("members")
         self._view.set_model(self._list)
         self._view.append_column(list_col_name)
+        self._view.append_column(list_col_type)
         self._view.append_column(list_col_setter)
         self._view.append_column(list_col_getter)
 
@@ -76,8 +82,8 @@ class MakeAccessor(Calltip):
         self._list[path][col]= not self._list[path][col]
         return
 
-    def addMember(self, text):
-        self._list.set(self._list.append(), 0, text, 1, False, 2, False)
+    def addMember(self, text, type):
+        self._list.set(self._list.append(), 0, text, 1, type, 2, True, 3, True)
         return self
 
     def run(self):
