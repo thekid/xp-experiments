@@ -144,6 +144,7 @@
      * get class info
      *
      * @param  xp.ide.info.InfoType itype
+     * @return xp.ide.source.Element[]
      */
     #[@action(name='info', args="Infotype")]
     public function info(xp·ide·info·InfoType $itype) {
@@ -153,7 +154,7 @@
 
       switch ($itype) {
         case xp·ide·info·InfoType::$MEMBER:
-        create(new xp·ide·info·MemberInfoVisitor($this->out))->visit($t);
+        return create(new xp·ide·info·MemberInfoVisitor())->visit($t);
       }
     }
 

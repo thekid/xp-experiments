@@ -8,7 +8,6 @@ class Calltip():
         self._builder= gtk.Builder()
         self._builder.add_from_file(os.path.join(os.path.dirname(__file__), "dialog", dialog + ".ui"))
         self._dialog= self._builder.get_object(dialog)
-        self._dialog= self._builder.get_object(dialog)
         if master: self._dialog.set_transient_for(master)
         if title:  self._dialog.set_title(title)
 
@@ -53,6 +52,38 @@ class TextSelectCalltip(Calltip):
             self._dialog.response(gtk.RESPONSE_OK);
             return True
         return False
+
+class MakeAccessor(Calltip):
+    def __init__(self, master, title=None):
+        Calltip.__init__(self, "MakeAccessor", master, title)
+
+        list_col_name= gtk.TreeViewColumn("Name", gtk.CellRendererText(), text= 0)
+        self._renderer_set= gtk.CellRendererToggle()
+        self._renderer_set.connect("toggled", self.toggleCol, 1)
+        self._renderer_get= gtk.CellRendererToggle()
+        self._renderer_get.connect("toggled", self.toggleCol, 2)
+        list_col_setter= gtk.TreeViewColumn("set", self._renderer_set, active= 1)
+        list_col_getter= gtk.TreeViewColumn("get", self._renderer_get, active= 2)
+        list_col_name.set_sort_order(gtk.SORT_ASCENDING)
+        self._list= gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_BOOLEAN, gobject.TYPE_BOOLEAN)
+        self._view= self._builder.get_object("members")
+        self._view.set_model(self._list)
+        self._view.append_column(list_col_name)
+        self._view.append_column(list_col_setter)
+        self._view.append_column(list_col_getter)
+
+    def toggleCol(self, cell, path, col):
+        self._list[path][col]= not self._list[path][col]
+        return
+
+    def addMember(self, text):
+        self._list.set(self._list.append(), 0, text, 1, False, 2, False)
+        return self
+
+    def run(self):
+        ret= Calltip.run(self)
+        if (0 != ret): return None
+        return self._list
 
 class TextCalltip(Calltip):
     def __init__(self, master, title=None):

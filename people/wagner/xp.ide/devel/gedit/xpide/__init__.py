@@ -18,23 +18,18 @@ class XpIdePlugin(gedit.Plugin):
         result= []
         tb= window.get_active_document()
         try:
-          result= subprocess.Popen(
-              [
-                  "xpide",
-                  "Gedit",
-                  "checksyntax",
-                  "-se", "UTF-8",
-                  "-ln", self.lint_map[tb.get_language().get_id()]
-              ],
-              stdin=subprocess.PIPE,
-              stdout=subprocess.PIPE
-          ).communicate(tb.get_text(tb.get_start_iter(), tb.get_end_iter()))[0].splitlines()
+          (returncode, result, error)= self.xpidedoc(window, 'checksyntax', ["-ln", self.lint_map[tb.get_language().get_id()]])
+          result= result.splitlines()
         except KeyError:
             dialog.TextCalltip(window).setText("Lint for " + window.get_active_document().get_language().get_name() + " does not exist").run()
         except AttributeError:
             dialog.TextCalltip(window).setText("Document has no specified language").run()
 
-        if (0 == len(result) or 0 == len(result[2])): return
+        if (0 != returncode):
+            dialog.TextCalltip(window).setText(error).run()
+            return
+
+        if (0 == len(result[2])): return
 
         err_line= int(result.pop(0)) - 1
         err_col=  int(result.pop(0))
@@ -44,45 +39,20 @@ class XpIdePlugin(gedit.Plugin):
         dialog.TextCalltip(window).setText("\n".join(result)).run()
 
     def openclass(self, action, window):
-        tb= window.get_active_document()
-        cursor= tb.get_iter_at_mark(tb.get_insert())
-        textproc= subprocess.Popen(
-            [
-                "xpide",
-                "Gedit",
-                "grepclassfile",
-                "-se", "UTF-8",
-                "-cp", str(cursor.get_offset()),
-                "-cl", str(cursor.get_line()),
-                "-cc", str(cursor.get_line_offset()),
-            ],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        (result, error)= textproc.communicate(tb.get_text(tb.get_start_iter(), tb.get_end_iter()))
-        if (0 == textproc.returncode):
-            window.create_tab_from_uri(result, tb.get_encoding(), 0, False, True)
+        (returncode, result, error)= self.xpidedoc(window, 'grepclassfile')
+        if (0 == returncode):
+            window.create_tab_from_uri(result, window.get_active_document().get_encoding(), 0, False, True)
         else:
             dialog.TextCalltip(window).setText(error).run()
 
     def complete(self, action, window):
         tb= window.get_active_document()
-        cursor= tb.get_iter_at_mark(tb.get_insert())
-        result= subprocess.Popen(
-            [
-                "xpide",
-                "Gedit",
-                "complete",
-                "-se", "UTF-8",
-                "-cp", str(cursor.get_offset()),
-                "-cl", str(cursor.get_line()),
-                "-cc", str(cursor.get_line_offset()),
-            ],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE
-        ).communicate(tb.get_text(tb.get_start_iter(), tb.get_end_iter()))[0].splitlines()
-        
+        (returncode, result, error)= self.xpidedoc(window, 'complete')
+        if (0 != returncode):
+            dialog.TextCalltip(window).setText(error).run()
+            return
+
+        result= result.splitlines()
         rep_pos= int(result.pop(0))
         rep_len= int(result.pop(0))
         sug_cnt= int(result.pop(0))
@@ -102,6 +72,22 @@ class XpIdePlugin(gedit.Plugin):
         )
         tb.insert(tb.get_iter_at_offset(rep_pos), suggestion)
 
+    def makeAccessors(self, action, window):
+        (returncode, result, error)= self.xpidedoc(window, 'info', ['-it', 'member'])
+        if (0 != returncode):
+            dialog.TextCalltip(window).setText(error).run()
+            return
+
+        ma_dialog= dialog.MakeAccessor(window)
+        for line in result.splitlines():
+            (final, static, scope, name, mtype)= line.split(':')
+            ma_dialog.addMember(name);
+        ma_list= ma_dialog.run()
+        if (ma_list is None): return
+
+        for r in ma_list:
+            (ma_name, ma_get, ma_set)= r
+
     def activate(self, window):
         self._ui= XpIdeUi(self, window)
 
@@ -110,7 +96,31 @@ class XpIdePlugin(gedit.Plugin):
 
     def update_ui(self, window):
         pass
-        
+
+    def xpidedoc(self, window, command, args= []):
+        tb= window.get_active_document()
+        return self.xpide(window, command, tb.get_text(tb.get_start_iter(), tb.get_end_iter()), args)
+
+    def xpide(self, window, command, text, args= []):
+        tb= window.get_active_document()
+        cursor= tb.get_iter_at_mark(tb.get_insert())
+        proc= subprocess.Popen(
+            [
+                "xpide",
+                "Gedit",
+                command,
+                "-se", "UTF-8",
+                "-cp", str(cursor.get_offset()),
+                "-cl", str(cursor.get_line()),
+                "-cc", str(cursor.get_line_offset()),
+            ] + args,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        (result, error)= proc.communicate(text)
+        return (proc.returncode, result, error)
+
 class XpIdeUi:
     def __init__(self, plugin, window):
         self._window= window
@@ -121,17 +131,21 @@ class XpIdeUi:
         self._window.get_ui_manager().insert_action_group(self._ag, -1);
         self._ag.add_action(gtk.Action("XpIde", "XP", None, None))
         
-        completeAction= gtk.Action("XpIdeComplete", "complete", None, None)
-        self._ag.add_action_with_accel(completeAction, "<Shift><Control>space")
-        completeAction.connect("activate", self._plugin.complete, self._window)
+        action= gtk.Action("XpIdeComplete", "complete", None, None)
+        self._ag.add_action_with_accel(action, "<Shift><Control>space")
+        action.connect("activate", self._plugin.complete, self._window)
 
-        completeAction= gtk.Action("XpIdeOpenClass", "open XP class", None, None)
-        self._ag.add_action_with_accel(completeAction, "<Shift><Control>o")
-        completeAction.connect("activate", self._plugin.openclass, self._window)
+        action= gtk.Action("XpIdeOpenClass", "open XP class", None, None)
+        self._ag.add_action_with_accel(action, "<Shift><Control>o")
+        action.connect("activate", self._plugin.openclass, self._window)
 
-        completeAction= gtk.Action("XpIdeLint", "lint", None, None)
-        self._ag.add_action_with_accel(completeAction, "<Alt>c")
-        completeAction.connect("activate", self._plugin.lint, self._window)
+        action= gtk.Action("XpIdeLint", "lint", None, None)
+        self._ag.add_action_with_accel(action, "<Alt>c")
+        action.connect("activate", self._plugin.lint, self._window)
+
+        action= gtk.Action("XpIdeMkAccessors", "make accessors", None, None)
+        self._ag.add_action_with_accel(action, "<Shift><Control>a")
+        action.connect("activate", self._plugin.makeAccessors, self._window)
 
     def shutdown(self):
         self._window.get_ui_manager().remove_ui(self._ui)

@@ -38,42 +38,42 @@
      * @param   string[] args
      */
     public static function main(array $args) {
-      if (2 > sizeOf($args)) return self::usage();
-
-      $proxy= XPClass::forName('xp.ide.proxy.'.array_shift($args))->newInstance($inst= new xp·ide·XpIde(
-        new xp·ide·streams·EncodedInputStreamWrapper(new ChannelInputStream('stdin')),
-        new xp·ide·streams·EncodedOutputStreamWrapper(new ChannelOutputStream('stdout')),
-        new xp·ide·streams·EncodedOutputStreamWrapper(new ChannelOutputStream('stderr'))
-      ));
-      if (!$proxy instanceof xp·ide·IXpIde) throw new IllegalArgumentException(sprintf('%s does not implement xp·ide·IXpIde', $proxy->getClassName()));
-
-      $action= array_shift($args);
-      $actionMethods= array();
-      with ($class= $inst->getClass()); {
-        foreach ($class->getMethods() as $method) {
-          if ($method->hasAnnotation('action')) $actionMethods[$method->getAnnotation('action', 'name')]= $method;
-        }
-        if (!isset($actionMethods[$action])) throw new IllegalArgumentException(sprintf('action %s not found', $action));
-      }
-
-      $params= new ParamString($args);
-      with ($enc= $params->value('stream-encoding', 'se', xp·ide·streams·IEncodedStream::ENCODING_NONE)); {
-        $proxy->getIn()->setEncoding($enc);
-        $proxy->getOut()->setEncoding($enc);
-        $proxy->getErr()->setEncoding($enc);
-      }
-
-      // assemble arguments
-      $action_args= array();
-      if ($actionMethods[$action]->hasAnnotation('action', 'args')) {
-        foreach (explode(',', $actionMethods[$action]->getAnnotation('action', 'args')) as $arg) {
-          $arg= trim($arg);
-          if (!isset(self::$artefacts[$arg])) throw new IllegalStateException(sprintf('unknown artefact "%s" requested by action "%s"', $arg, $action));
-          $action_args[]= call_user_func_array(array(__CLASS__, self::$artefacts[$arg]), array($params));
-        }
-      }
-
       try {
+        if (2 > sizeOf($args)) return self::usage();
+
+        $proxy= XPClass::forName('xp.ide.proxy.'.array_shift($args))->newInstance($inst= new xp·ide·XpIde(
+          new xp·ide·streams·EncodedInputStreamWrapper(new ChannelInputStream('stdin')),
+          new xp·ide·streams·EncodedOutputStreamWrapper(new ChannelOutputStream('stdout')),
+          new xp·ide·streams·EncodedOutputStreamWrapper(new ChannelOutputStream('stderr'))
+        ));
+        if (!$proxy instanceof xp·ide·IXpIde) throw new IllegalArgumentException(sprintf('%s does not implement xp·ide·IXpIde', $proxy->getClassName()));
+
+        $action= array_shift($args);
+        $actionMethods= array();
+        with ($class= $inst->getClass()); {
+          foreach ($class->getMethods() as $method) {
+            if ($method->hasAnnotation('action')) $actionMethods[$method->getAnnotation('action', 'name')]= $method;
+          }
+          if (!isset($actionMethods[$action])) throw new IllegalArgumentException(sprintf('action %s not found', $action));
+        }
+
+        $params= new ParamString($args);
+        with ($enc= $params->value('stream-encoding', 'se', xp·ide·streams·IEncodedStream::ENCODING_NONE)); {
+          $proxy->getIn()->setEncoding($enc);
+          $proxy->getOut()->setEncoding($enc);
+          $proxy->getErr()->setEncoding($enc);
+        }
+
+        // assemble arguments
+        $action_args= array();
+        if ($actionMethods[$action]->hasAnnotation('action', 'args')) {
+          foreach (explode(',', $actionMethods[$action]->getAnnotation('action', 'args')) as $arg) {
+            $arg= trim($arg);
+            if (!isset(self::$artefacts[$arg])) throw new IllegalStateException(sprintf('unknown artefact "%s" requested by action "%s"', $arg, $action));
+            $action_args[]= call_user_func_array(array(__CLASS__, self::$artefacts[$arg]), array($params));
+          }
+        }
+
         call_user_func_array(array($proxy, $actionMethods[$action]->getName()), $action_args);
       } catch (XPException $e) {
         Console::$err->write($e->getMessage());

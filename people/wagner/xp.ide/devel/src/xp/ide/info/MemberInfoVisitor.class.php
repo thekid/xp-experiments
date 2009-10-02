@@ -8,7 +8,7 @@
   uses(
     'xp.ide.source.parser.ClassParser',
     'xp.ide.source.parser.ClassLexer',
-    'io.streams.StringWriter',
+    'io.streams.MemoryInputStream',
     'xp.ide.source.IElementVisitor'
   );
 
@@ -21,39 +21,31 @@
   class xp·ide·info·MemberInfoVisitor extends Object implements xp·ide·source·IElementVisitor {
 
     private
-      $output_stream= NULL,
-      $out= NULL;
+      $members= array();
 
-    public function __construct(OutputStream $output_stream) {
-      $this->output_stream= $output_stream;
-      $this->out= new StringWriter($this->output_stream);
-    }
-
-    public function getOutputStream() {
-      return $this->output_stream;
-    }
-
-    public function setOutputStream(OutputStream $output_stream) {
-      $this->output_stream= $output_stream;
-      $this->out= new StringWriter($this->output_stream);
-    }
-
+    /**
+     * get class info
+     *
+     * @param  xp.ide.source.Element e
+     * @return xp.ide.source.Element[]
+     */
     public function visit(xp·ide·source·Element $e) {
       switch ($e->getClassName()) {
-        case 'xp.ide.source.element.ClassFile':        return $this->visitClassFile($e);
-        case 'xp.ide.source.element.Package':          return $this->visitPackage($e);
-        case 'xp.ide.source.element.BlockComment':     return $this->visitBlockComment($e);
-        case 'xp.ide.source.element.Uses':             return $this->visitUses($e);
-        case 'xp.ide.source.element.Classdef':         return $this->visitClassdef($e);
-        case 'xp.ide.source.element.Apidoc':           return $this->visitApidoc($e);
-        case 'xp.ide.source.element.ApidocDirective':  return $this->visitApidocDirective($e);
-        case 'xp.ide.source.element.Annotation':       return $this->visitAnnotation($e);
-        case 'xp.ide.source.element.Classmembergroup': return $this->visitClassmembergroup($e);
-        case 'xp.ide.source.element.Classmember':      return $this->visitClassmember($e);
-        case 'xp.ide.source.element.Array':            return $this->visitArray($e);
-        case 'xp.ide.source.element.Classmethod':      return $this->visitMethod($e);
-        case 'xp.ide.source.element.Classmethodparam': return $this->visitMethodparam($e);
+        case 'xp.ide.source.element.ClassFile':        $this->visitClassFile($e); break;
+        case 'xp.ide.source.element.Package':          $this->visitPackage($e); break;
+        case 'xp.ide.source.element.BlockComment':     $this->visitBlockComment($e); break;
+        case 'xp.ide.source.element.Uses':             $this->visitUses($e); break;
+        case 'xp.ide.source.element.Classdef':         $this->visitClassdef($e); break;
+        case 'xp.ide.source.element.Apidoc':           $this->visitApidoc($e); break;
+        case 'xp.ide.source.element.ApidocDirective':  $this->visitApidocDirective($e); break;
+        case 'xp.ide.source.element.Annotation':       $this->visitAnnotation($e); break;
+        case 'xp.ide.source.element.Classmembergroup': $this->visitClassmembergroup($e); break;
+        case 'xp.ide.source.element.Classmember':      $this->visitClassmember($e); break;
+        case 'xp.ide.source.element.Array':            $this->visitArray($e); break;
+        case 'xp.ide.source.element.Classmethod':      $this->visitMethod($e); break;
+        case 'xp.ide.source.element.Classmethodparam': $this->visitMethodparam($e); break;
       }
+      return $this->members;
     }
 
     private function visitMethodparam($e) {
@@ -66,11 +58,10 @@
     }
 
     private function visitClassmember($e) {
-      var_dump($e);
     }
 
     private function visitClassmembergroup($e) {
-      var_dump($e);
+      $this->members[]= $e;
     }
 
     private function visitAnnotation($e) {
@@ -98,11 +89,6 @@
           $g->accept($this);
         }
       }
-      if ($mes= $e->getMethods()) {
-        foreach ($mes as $me) {
-          $me->accept($this);
-        }
-      }
     }
 
     private function visitUses($e) {
@@ -115,6 +101,7 @@
     }
 
     private function visitClassFile($e) {
+      $this->members= array();
       if ($e->getClassdef()) {
         $e->getClassdef()->accept($this);
       }

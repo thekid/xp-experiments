@@ -82,9 +82,26 @@
      * get class info
      *
      * @param  xp.ide.info.InfoType itype
+     * @return xp.ide.source.Element[]
      */
     public function info(xp·ide·info·InfoType $itype) {
-      $this->ide->info($itype);
+      $mgs= $this->ide->info($itype);
+      $mis= array();
+      foreach ($mgs as $mg) foreach ($mg->getMembers() as $m) {
+        $mi= array((int)$mg->isFinal(), (int)$mg->isStatic(), $mg->getScope()->name(), $m->getName());
+        with ($i= $m->getInit()); {
+          if (is_null($i)) $mi[]= 'none';
+          else if ($i instanceof xp·ide·source·element·Array) $mi[]= 'array';
+          else if (is_numeric($i)) $mi[]= 'number';
+          else if ('NULL' == $i)   $mi[]= 'object';
+          else if ('TRUE' == strToUpper($i)) $mi[]= 'bool';
+          else if ('FALSE' == strToUpper($i)) $mi[]= 'bool';
+          else $mi[]= 'string';
+        }
+        $mis[]= $mi;
+      }
+      foreach ($mis as $mi) $this->out->write(implode(':', $mi).PHP_EOL);
+      return $mgs;
     }
   }
 ?>
