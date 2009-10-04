@@ -15,7 +15,9 @@
     'xp.ide.text.StreamWorker',
     'xp.ide.info.MemberInfoVisitor',
     'xp.ide.resolve.Response',
-    'xp.ide.completion.Response'
+    'xp.ide.completion.Response',
+    'xp.ide.source.element.Classmethod',
+    'xp.ide.source.Scope'
   );
 
   /**
@@ -155,6 +157,23 @@
       switch ($itype) {
         case xp·ide·info·InfoType::$MEMBER:
         return create(new xp·ide·info·MemberInfoVisitor())->visit($t);
+      }
+    }
+
+    /**
+     * create accessors
+     *
+     */
+    #[@action(name='createAccessors')]
+    public function createAccessors() {
+      $confs= '';
+      while ($this->in->available()) $confs.= $this->in->read();
+      if (!$confs) return;
+      $confs= explode(PHP_EOL, $confs);
+      foreach ($confs as $conf) {
+        list($name, $type, $acc)= explode(':', $conf);
+        $me= new xp·ide·source·element·Classmethod($name);
+        var_dump($me);
       }
     }
 

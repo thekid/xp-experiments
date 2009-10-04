@@ -82,8 +82,8 @@ class MakeAccessor(Calltip):
         self._list[path][col]= not self._list[path][col]
         return
 
-    def addMember(self, text, type):
-        self._list.set(self._list.append(), 0, text, 1, type, 2, True, 3, True)
+    def addMember(self, text, type, getter, setter):
+        self._list.set(self._list.append(), 0, text, 1, type, 2, setter, 3, setter)
         return self
 
     def run(self):

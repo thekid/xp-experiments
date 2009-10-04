@@ -46,5 +46,64 @@
     public function testComplete() {
     }
 
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createAccessorsEmpty() {
+      $this->ide->createAccessors();
+      $this->assertEquals('', $this->ide->getOut()->getStream()->getBytes());
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createAccessorsSetOne() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('in:string:set'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createSetter('in', 'string'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createAccessorsSetTwo() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('in:string:set'."\n".'out:string:set'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createSetter('in', 'string').PHP_EOL.
+        $this->createSetter('out', 'string'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
+     * create a setter
+     *
+     * @param string name
+     * @param string type
+     */
+    private function createSetter($name, $type) {
+      return sprintf(
+        '    /**'.PHP_EOL.
+        '     * set member $%1$s'.PHP_EOL.
+        '     *'.PHP_EOL.
+        '     * @param %3s %1$s'.PHP_EOL.
+        '     */'.PHP_EOL.
+        '    public function set%2$s($%1$s) {'.PHP_EOL.
+        '      $this->%1$s= $%1$s;'.PHP_EOL.
+        '    }'.PHP_EOL,
+        $name, ucfirst($name), $type
+      );
+    }
+
   }
 ?>

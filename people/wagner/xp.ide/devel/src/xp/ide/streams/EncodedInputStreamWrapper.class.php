@@ -22,9 +22,18 @@
     /**
      * Constructor
      *
-     * @param   io.stream.InputStream stream
+     * @param   io.streams.InputStream stream
      */
     public function __construct(InputStream $stream) {
+      $this->stream= $stream;
+    }
+
+    /**
+     * set stream
+     *
+     * @param   io.stream.InputStream stream
+     */
+    public function setStream(InputStream $stream) {
       $this->stream= $stream;
     }
 
@@ -44,7 +53,7 @@
      *
      */
     public function available() {
-      return $this->stream->Available();
+      return $this->stream->available();
     }
 
     /**

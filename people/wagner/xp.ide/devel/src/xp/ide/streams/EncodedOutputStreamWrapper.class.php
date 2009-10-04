@@ -29,6 +29,24 @@
     }
 
     /**
+     * set stream
+     *
+     * @param   io.streams.OutputStream stream
+     */
+    public function setStream(OutputStream $stream) {
+      $this->stream= $stream;
+    }
+
+    /**
+     * set stream
+     *
+     * @return  io.streams.OutputStream stream
+     */
+    public function getStream() {
+      return $this->stream;
+    }
+
+    /**
      * Write a string
      *
      * @param   mixed arg
