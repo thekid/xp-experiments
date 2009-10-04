@@ -124,7 +124,6 @@
       if (!isset($this->scope[0]->statics[$inv->name])) {
         if (!($resolved= $this->scope[0]->resolveStatic($inv->name))) {
           $this->error('T501', 'Cannot resolve '.$inv->name.'()', $inv);
-          $inv->free || xp::stringOf(NULL); //  oel_push_value($op, NULL);        // Prevent fatal
           return;
         }
         $this->scope[0]->statics[$inv->name]= $resolved;         // Cache information
@@ -141,7 +140,6 @@
         $this->emitParameters($op, (array)$inv->parameters);
         $this->scope[0]->setType($inv, $ptr->returns);
       }
-      $inv->free && xp::stringOf(NULL); //  oel_add_free($op);
     }
     
     /**
@@ -215,10 +213,10 @@
     protected function emitConstant($op, ConstantNode $const) {
       $this->warn('T203', 'Global constants ('.$const->value.') are discouraged', $const);
       try {
-        // oel_push_value($op, $const->resolve());
+        $op->concat(var_export($const->resolve(), TRUE));
       } catch (IllegalStateException $e) {
         $this->warn('T201', 'Constant lookup for '.$const->value.' deferred until runtime', $const);
-        // oel_push_constant($op, $const->value);
+        $op->concat($const->value);
       }
     }
 
@@ -230,31 +228,24 @@
      */
     protected function emitCast($op, CastNode $cast) {
       static $primitives= array(
-        'int'     => '(int)', // oel_OP_TO_INT,
-        'double'  => '(double)', // oel_OP_TO_DOUBLE,
-        'string'  => '(string)', // oel_OP_TO_STRING,
-        'array'   => '(array)', // oel_OP_TO_ARRAY,
-        'bool'    => '(bool)', // oel_OP_TO_BOOL,
+        'int'     => '(int)',
+        'double'  => '(double)',
+        'string'  => '(string)',
+        'array'   => '(array)',
+        'bool'    => '(bool)',
         // Missing intentionally: object and unset casts
       );
 
       if (isset($primitives[$cast->type->name])) {
+        $op->concat($primitives[$cast->type->name]);
         $this->emitOne($op, $cast->expression);
-        // oel_add_cast_op($op, $primitives[$cast->type->name]);
       } else {
-        // oel_add_begin_function_call($op, 'cast'
-{
-          $this->emitOne($op, $cast->expression);
-          // oel_add_pass_param($op, 1);
-
-          // oel_push_value($op, $this->resolveType($cast->type)->name());
-          // oel_add_pass_param($op, 2);
-        }
-        // oel_add_end_function_call($op, 2);
+        $op->concat('cast(');
+        $this->emitOne($op, $cast->expression);
+        $op->concat(', ')->concat($this->resolveType($cast->type)->name());
       }
       
       $this->scope[0]->setType($cast, $cast->type);
-      $cast->free && xp::stringOf(NULL); //  oel_add_free($op);
     }
 
     /**
@@ -375,41 +366,10 @@
         } else if ($this->scope[0]->hasExtension($ptr, $access->name)) {
           $ext= $this->scope[0]->getExtension($ptr, $access->name);
 
-          // FIXME: Slow access via __call()
+          // FIXME: Slow access via __call() - would need look-ahead
+          // inside emitChain here!
           $op->concat('->'.$access->name);
           $this->emitParameters($op, (array)$access->parameters);
-          return $ext->returns;
-          
-          // Assign this to a temporary variable
-          //
-          // The statement:
-          //   $r= $a.b().c().d;
-          //
-          // will become:
-          //  $t= $a.b();
-          //  $r= Extension::method($t, ...);
-          //  $r.d;
-          //
-          // when c() is an extension method to b()'s return type
-          $temp= $access->hashCode();
-          // oel_add_begin_variable_parse($op);
-          // oel_push_variable($op, $temp);
-          // oel_add_assign($op);
-          // oel_add_free($op);
-
-          // Call Extension::method($temp [, $args0 [, $arg1 [, ...]]]);
-          // oel_add_begin_static_method_call($op, $ext->name, $ext->holder->literal());
-          $n= $this->emitParameters($op, array_merge(
-            array(new VariableNode($temp)),
-            (array)$access->parameters
-          ));
-          // oel_add_end_static_method_call($op, $n);
-
-          // Push result
-          // oel_add_begin_variable_parse($op);
-          // oel_push_variable($op, 'R');
-          // oel_add_assign($op);
-          
           return $ext->returns;
         } else {
           $this->warn('T201', 'No such method '.$access->name.'() in '.$type->compoundName(), $accesss);
@@ -463,7 +423,6 @@
       isset($insertion[0]) && $op->concat($insertion[0]);
       
       // Emit chain members
-      // oel_add_begin_variable_parse($op);
       $t= $this->scope[0]->typeOf($chain->elements[0]);
       for ($i= 1; $i < $s; $i++) {
         $c= $chain->elements[$i];
@@ -488,10 +447,6 @@
       
       // Record type
       $this->scope[0]->setType($chain, $t);
-      
-      // If chain is used in read context, do not end variable parse
-      $chain->read || xp::stringOf(NULL); //  oel_add_end_variable_parse($op);
-      $chain->free && xp::stringOf(NULL); //  oel_add_free($op);
     }
 
     /**
@@ -513,8 +468,8 @@
         '^'   => '^',
       );
       static $lop= array(
-        '&&'  => '&&', // oel_OP_BOOL_AND,
-        '||'  => '||', // oel_OP_BOOL_OR,
+        '&&'  => '&&',
+        '||'  => '||',
       );
       
       // Check for logical operations. TODO: LogicalOperationNode?
@@ -529,7 +484,6 @@
         $op->concat(' '.$bop[$bin->op].' ');
         $this->emitOne($op, $bin->rhs);
       }
-      $bin->free && xp::stringOf(NULL); //  oel_add_free($op);
     }
 
     /**
@@ -1009,9 +963,7 @@
       }
       
       $op->concat('new '.$ptr->literal());
-      $n= $this->emitParameters($op, (array)$new->parameters);
-
-      $new->free && xp::stringOf(NULL); //  oel_add_free($op);
+      $this->emitParameters($op, (array)$new->parameters);
     }
     
     /**
@@ -1206,7 +1158,6 @@
         DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$method->comment),
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$method->annotations)
       );
-      // oel_finalize($mop);
 
       array_shift($this->method);
       $this->leave();
@@ -1257,7 +1208,7 @@
         DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$constructor->comment),
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$constructor->annotations)
       );
-      // oel_finalize($cop);
+
       array_shift($this->method);
       $this->leave();
     }
@@ -1395,15 +1346,8 @@
         $op->concat('static ');
       }
       $op->concat('$'.$field->name);
+      $init && $op->concat('= ')->concat(var_export($init, TRUE));
       $op->concat(';');
-
-      /*// oel_add_declare_property(
-        $op, 
-        $field->name,
-        $init,
-        $static,
-        $field->modifiers
-      );*/
     }
 
     /**
@@ -1685,8 +1629,7 @@
      */
     protected function emitInstanceOf($op, InstanceOfNode $instanceof) {
       $this->emitOne($op, $instanceof->expression);
-      // oel_add_instanceof($op, $this->resolveType($instanceof->type)->literal());
-      $instanceof->free && xp::stringOf(NULL); //  oel_add_free($op);
+      $op->concat(' instanceof ')->concat($this->resolveType($instanceof->type)->literal());
     }
 
     /**
@@ -1904,8 +1847,6 @@
       }
 
       // Finalize
-      // oel_finalize($op);
-      
       return new xp·compiler·emit·source·Result($bytes);
     }    
   }
