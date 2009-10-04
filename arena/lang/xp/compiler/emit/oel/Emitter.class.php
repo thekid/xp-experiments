@@ -1002,7 +1002,7 @@
           $p= array('parent' => $new->type, 'implements' => NULL);
         }
         
-        $unique= new TypeName($parent->name().'$'.++$i);
+        $unique= new TypeName($parent->name().'··'.++$i);
         $decl= new ClassNode(0, NULL, $unique, $p['parent'], $p['implements'], $new->body);
         $ptr= new TypeDeclaration(new ParseTree(NULL, array(), $decl), $parent);
         $this->scope[0]->declarations[]= $decl;
@@ -1200,7 +1200,7 @@
      * @param   xp.compiler.ast.MethodNode method
      */
     protected function emitMethod($op, MethodNode $method) {
-      if (!$method->comment && !strstr($this->scope[0]->declarations[0]->name->name, '$')) {
+      if (!$method->comment && !strstr($this->scope[0]->declarations[0]->name->name, '··')) {
         $this->warn('D201', 'No api doc for '.$this->scope[0]->declarations[0]->name->name.'::'.$method->name.'()', $method);
       }
       if ($this->scope[0]->declarations[0] instanceof InterfaceNode && $method->body) {
@@ -1267,7 +1267,7 @@
      * @param   xp.compiler.ast.ConstructorNode constructor
      */
     protected function emitConstructor($op, ConstructorNode $constructor) {
-      if (!$constructor->comment && !strstr($this->scope[0]->declarations[0]->name->name, '$')) {
+      if (!$constructor->comment && !strstr($this->scope[0]->declarations[0]->name->name, '··')) {
         $this->warn('D201', 'No api doc for '.$this->scope[0]->declarations[0]->name->name.'\'s constructor', $constructor);
       }
 
@@ -1563,7 +1563,7 @@
             $this->error('E403', 'Only abstract enums can contain members with bodies ('.$member->name.')');
             // Continues so declaration is clodes
           }
-          $classes[]= $declaration->name->name.'$'.$member->name;
+          $classes[]= $declaration->name->name.'··'.$member->name;
         } else {
           $classes[]= $declaration->name->name;
         }
@@ -1670,7 +1670,7 @@
      * @param   xp.compiler.ast.ClassNode declaration
      */
     protected function emitClass($op, ClassNode $declaration) {
-      if (!$declaration->comment && !strstr($declaration->name->name, '$')) {
+      if (!$declaration->comment && !strstr($declaration->name->name, '··')) {
         $this->warn('D201', 'No api doc for class '.$declaration->name->name, $declaration);
       }
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Object');
