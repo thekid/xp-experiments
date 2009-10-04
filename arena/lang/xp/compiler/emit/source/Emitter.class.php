@@ -83,18 +83,17 @@
       
       $n= 0;
       $this->cat && $this->cat->debug('uses(', $types, ')');
-      // oel_add_begin_function_call($op, 'uses');
-      foreach ($types as $type) {
+      $op->concat('uses(');
+      $s= sizeof($types)- 1;
+      foreach ($types as $i => $type) {
         try {
-          $name= $this->resolveType($type, FALSE)->name();
-          // oel_push_value($op, $name);
-          // oel_add_pass_param($op, ++$n);
+          $op->concat("'")->concat($this->resolveType($type, FALSE)->name())->concat("'");
+          $i < $s && $op->concat(',');
         } catch (Throwable $e) {
           $this->error('0424', $e->toString());
         }      
       }
-      // oel_add_end_function_call($op, $n);
-      // oel_add_free($op);
+      $op->concat(');');
     }
     
     /**
@@ -444,20 +443,24 @@
       
       // Rewrite for unsupported syntax:
       // - $a.getMethods()[2] to array_slice($a.getMethods(), 2, 1)
-      // - $a.get()[2].all()[3] to array_slice(array_slice($a.get(), 2, 1).all(), 3, 1)
+      // - new Date().toString() to create(new Date()).toString()
       $insertion= array();
-      for ($i= 1; $i < $s; $i++) {
+      for ($i= 0; $i < $s; $i++) {
         if ($chain->elements[$i] instanceof InvocationNode && $chain->elements[$i+ 1] instanceof ArrayAccessNode) {
           $op->concat('current(array_slice(');
           $insertion[$i]= new String(', ');
           $this->emitOne($insertion[$i], $chain->elements[$i+ 1]->offset);
           $insertion[$i]->concat(', 1))');
           $chain->elements[$i+ 1]= new NoopNode();
+        } else if ($chain->elements[$i] instanceof InstanceCreationNode) {
+          $op->concat('create(');
+          $insertion[$i]= new String(')');
         }
       }
     
       // Emit first node
       $this->emitOne($op, $chain->elements[0]);
+      isset($insertion[0]) && $op->concat($insertion[0]);
       
       // Emit chain members
       // oel_add_begin_variable_parse($op);
@@ -655,14 +658,7 @@
      */
     protected function emitForeach($op, ForeachNode $loop) {
       $op->concat('foreach (');
-      
-      // Special case when iterating on variables: Do not end variable parse 
-      if ($loop->expression instanceof VariableNode) {
-        // oel_add_begin_variable_parse($op);
-        // oel_push_variable($op, $loop->expression->name);
-      } else {
-        $this->emitOne($op, $loop->expression);
-      }
+      $this->emitOne($op, $loop->expression);
       
       // Assign type. TODO: Depending on what the expression returns, this might
       // be something different!
@@ -1199,10 +1195,10 @@
       array_unshift($this->method, $method);
 
       // Arguments, body
-      $this->emitArguments($op, (array)$method->arguments, $empty ? ';' : '{');
+      $this->emitArguments($op, (array)$method->arguments, $empty ? ';' : "{\n");
       if (!$empty) {
         $this->emitAll($op, (array)$method->body);
-        $op->concat('}');
+        $op->concat("\n}");
       }
       
       // Finalize
@@ -1587,7 +1583,7 @@
       
       // Ensure parent class and interfaces are loaded
       $this->emitUses($op, array_merge(
-        array($parent), 
+        $declaration->parent ? array($parent) : array(),
         (array)$declaration->implements
       ));
     
@@ -1617,7 +1613,7 @@
         }
       }
       
-      $op->concat('{');
+      $op->concat("{\n");
       $op->concat($body);
 
       // Static initializer blocks (array<Statement[]>)
