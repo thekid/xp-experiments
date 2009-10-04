@@ -841,14 +841,11 @@
       } else if ($ref->member instanceof ConstantNode) {
 
         // Class constant
-        // oel_push_constant($op, $ref->member->value, $ptr->literal());
+        $op->concat($ptr->literal().'::'.$ref->member->value);
       } else {
         $this->error('M405', 'Cannot emit class member '.xp::stringOf($ref->member), $ref);
-        // oel_push_value($op, NULL);
         return;
       }
-
-      $ref->free && xp::stringOf(NULL); //  oel_add_free($op);
     }
     
     /**
