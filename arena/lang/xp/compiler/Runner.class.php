@@ -30,6 +30,9 @@
    *   <li>-cp [path]: 
    *     Add path to classpath
    *   </li>
+   *   <li>-e [emitter]: 
+   *     Use emitter, one of "oel" or "source"
+   *   </li>
    *   <li>-t [level[,level[...]]]:
    *     Set trace level (all, none, info, warn, error, debug)
    *   </li>
@@ -72,6 +75,7 @@
       if (empty($args)) self::showUsage();
       
       $c= new Compiler();
+      $emitter= 'oel';
       
       // Handle arguments
       $files= array();
@@ -93,6 +97,8 @@
             }
           }');
           $c->setTrace(Logger::getInstance()->getCategory()->withAppender($appender, $levels));
+        } else if ('-e' === $args[$i]) {
+          $emitter= $args[++$i];
         } else {
           $files[]= new FileSource(new File($args[$i]));
         }
@@ -105,7 +111,12 @@
       }
       
       // Compile files
-      $c->compile($files, $listener, new FileManager(), new xp·compiler·emit·oel·Emitter());
+      $c->compile(
+        $files, 
+        $listener, 
+        new FileManager(), 
+        Package::forName('xp.compiler.emit')->getPackage($emitter)->loadClass('Emitter')->newInstance()
+      );
     }
   }
 ?>
