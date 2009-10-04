@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.oel';
 
-  uses('tests.execution.ExecutionTest');
+  uses('tests.execution.oel.ExecutionTest');
 
   /**
    * Tests class instance creation
    *
    */
-  class tests·execution·InstanceCreationTest extends ExecutionTest {
+  class tests·execution·oel·InstanceCreationTest extends tests·execution·oel·ExecutionTest {
 
     /**
      * Assert a given instance is an anonymous instance
@@ -23,7 +23,7 @@
      */
     protected function assertAnonymousInstanceOf($name, Generic $instance) {
       $this->assertSubclass($instance, $name);
-      $this->assertTrue((bool)strstr($instance->getClassName(), '$'), $instance->getClassName());
+      $this->assertTrue((bool)strstr($instance->getClassName(), '··'), $instance->getClassName());
     }
     
     /**

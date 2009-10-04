@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.source';
 
-  uses('tests.execution.ExecutionTest');
+  uses('tests.execution.source.ExecutionTest');
 
   /**
    * Tests interface declarations
    *
    */
-  class tests·execution·InterfaceDeclarationTest extends ExecutionTest {
+  class tests·execution·source·InterfaceDeclarationTest extends ExecutionTest {
     
     /**
      * Test declaring an interface

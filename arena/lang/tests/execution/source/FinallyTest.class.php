@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.source';
 
-  uses('tests.execution.ExecutionTest');
+  uses('tests.execution.source.ExecutionTest');
 
   /**
    * Tests arrays
    *
    */
-  class tests·execution·FinallyTest extends ExecutionTest {
+  class tests·execution·source·FinallyTest extends ExecutionTest {
     
     /**
      * Test try ... finally

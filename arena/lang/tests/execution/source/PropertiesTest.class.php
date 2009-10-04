@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.source';
 
-  uses('tests.execution.ExecutionTest');
+  uses('tests.execution.source.ExecutionTest');
 
   /**
    * Tests properties
    *
    */
-  class tests·execution·PropertiesTest extends ExecutionTest {
+  class tests·execution·source·PropertiesTest extends ExecutionTest {
     protected $fixture= NULL;
 
 

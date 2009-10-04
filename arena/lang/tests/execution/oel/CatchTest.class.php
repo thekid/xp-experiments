@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.oel';
 
-  uses('tests.execution.ExecutionTest');
+  uses('tests.execution.oel.ExecutionTest');
 
   /**
    * Tests arrays
    *
    */
-  class tests·execution·CatchTest extends ExecutionTest {
+  class tests·execution·oel·CatchTest extends tests·execution·oel·ExecutionTest {
     
     /**
      * Test try ... catch

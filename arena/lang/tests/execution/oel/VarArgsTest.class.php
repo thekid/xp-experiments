@@ -4,16 +4,16 @@
  * $Id$
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.oel';
 
-  uses('tests.execution.ExecutionTest');
+  uses('tests.execution.oel.ExecutionTest');
 
   /**
    * Tests varargs
    *
    * @see   http://java.sun.com/j2se/1.5.0/docs/guide/language/varargs.html
    */
-  class tests·execution·VarArgsTest extends ExecutionTest {
+  class tests·execution·oel·VarArgsTest extends tests·execution·oel·ExecutionTest {
 
     /**
      * Test 

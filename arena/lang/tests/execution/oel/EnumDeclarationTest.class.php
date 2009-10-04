@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.oel';
 
-  uses('tests.execution.ExecutionTest', 'lang.Enum');
+  uses('tests.execution.oel.ExecutionTest', 'lang.Enum');
 
   /**
    * Tests class declarations
    *
    */
-  class tests·execution·EnumDeclarationTest extends ExecutionTest {
+  class tests·execution·oel·EnumDeclarationTest extends tests·execution·oel·ExecutionTest {
 
     /**
      * Test declaring an enum

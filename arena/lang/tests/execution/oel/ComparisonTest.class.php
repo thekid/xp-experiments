@@ -4,15 +4,15 @@
  * $Id$ 
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.oel';
 
-  uses('tests.execution.ExecutionTest');
+  uses('tests.execution.oel.ExecutionTest');
 
   /**
    * Tests comparisons
    *
    */
-  class tests·execution·ComparisonTest extends ExecutionTest {
+  class tests·execution·oel·ComparisonTest extends tests·execution·oel·ExecutionTest {
     
     /**
      * Test constant == a

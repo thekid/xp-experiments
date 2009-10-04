@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.oel';
 
-  uses('tests.execution.ExecutionTest');
+  uses('tests.execution.oel.ExecutionTest');
 
   /**
    * Tests default arguments
    *
    */
-  class tests·execution·DefaultArgsTest extends ExecutionTest {
+  class tests·execution·oel·DefaultArgsTest extends tests·execution·oel·ExecutionTest {
     
     /**
      * Sets up test case and define class to be used in tests

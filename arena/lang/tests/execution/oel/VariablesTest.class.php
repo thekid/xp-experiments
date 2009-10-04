@@ -4,15 +4,15 @@
  * $Id$ 
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.oel';
 
-  uses('tests.execution.ExecutionTest');
+  uses('tests.execution.oel.ExecutionTest');
 
   /**
    * Tests variables
    *
    */
-  class tests·execution·VariablesTest extends ExecutionTest {
+  class tests·execution·oel·VariablesTest extends tests·execution·oel·ExecutionTest {
     
     /**
      * Tests assigning to a regular variable

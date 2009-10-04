@@ -4,15 +4,15 @@
  * $Id$ 
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.source';
 
-  uses('tests.execution.ExecutionTest');
+  uses('tests.execution.source.ExecutionTest');
 
   /**
    * Tests mathematical operations
    *
    */
-  class tests·execution·MathTest extends ExecutionTest {
+  class tests·execution·source·MathTest extends ExecutionTest {
     
     /**
      * Test addition

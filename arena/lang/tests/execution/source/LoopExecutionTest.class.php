@@ -4,15 +4,15 @@
  * $Id$ 
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.source';
 
-  uses('tests.execution.ExecutionTest');
+  uses('tests.execution.source.ExecutionTest');
 
   /**
    * Tests loop executions
    *
    */
-  class tests·execution·LoopExecutionTest extends ExecutionTest {
+  class tests·execution·source·LoopExecutionTest extends ExecutionTest {
     
     /**
      * Test foreach

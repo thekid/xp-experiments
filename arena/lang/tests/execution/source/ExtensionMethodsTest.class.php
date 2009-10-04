@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.source';
 
-  uses('tests.execution.ExecutionTest', 'lang.Enum');
+  uses('tests.execution.source.ExecutionTest', 'lang.Enum');
 
   /**
    * Tests class declarations
    *
    */
-  class tests·execution·ExtensionMethodsTest extends ExecutionTest {
+  class tests·execution·source·ExtensionMethodsTest extends ExecutionTest {
 
     /**
      * Test extending

@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  $package= 'tests.execution.oel';
+
   uses(
     'unittest.TestCase',
     'io.streams.MemoryInputStream',
@@ -19,7 +21,7 @@
    * TestCase
    *
    */
-  abstract class ExecutionTest extends TestCase {
+  abstract class tests·execution·oel·ExecutionTest extends TestCase {
     protected static $syntax;
     protected static $emitter;
     protected static $scope;

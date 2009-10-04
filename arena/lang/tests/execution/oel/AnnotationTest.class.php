@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.oel';
 
-  uses('tests.execution.ExecutionTest');
+  uses('tests.execution.oel.ExecutionTest');
 
   /**
    * Tests annotations
    *
    */
-  class tests·execution·AnnotationTest extends ExecutionTest {
+  class tests·execution·oel·AnnotationTest extends tests·execution·oel·ExecutionTest {
     protected $fixture= NULL;
     
     /**

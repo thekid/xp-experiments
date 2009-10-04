@@ -4,15 +4,15 @@
  * $Id$ 
  */
 
-  $package= 'tests.execution';
+  $package= 'tests.execution.oel';
 
-  uses('tests.execution.ExecutionTest');
+  uses('tests.execution.oel.ExecutionTest');
 
   /**
    * Tests class declarations
    *
    */
-  class tests·execution·ClassDeclarationTest extends ExecutionTest {
+  class tests·execution·oel·ClassDeclarationTest extends tests·execution·oel·ExecutionTest {
     
     /**
      * Test declaring a class
