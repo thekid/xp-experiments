@@ -151,7 +151,7 @@
      * @param   xp.compiler.ast.StringNode str
      */
     protected function emitString($op, StringNode $str) {
-      $op->concat("'".$str->resolve()."'");
+      $op->concat("'".str_replace("'", "\'", $str->resolve())."'");
     }
 
     /**
