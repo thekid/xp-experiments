@@ -1218,7 +1218,7 @@
      *
      * <code>
      *   xp::$registry['class.'.$name]= $qualified;
-     *   xp::$registry['details.'.$name]= $meta;
+     *   xp::$registry['details.'.$qualified]= $meta;
      * </code>
      *
      * @param   resource op
@@ -1232,7 +1232,7 @@
       unset($this->metadata[0]['EXT']);
       $op->concat('xp::$registry[\'class.'.$name.'\']= \''.$qualified.'\';');
       $op->concat('xp::$registry[\'classloader.'.$qualified.'\']= \'compiled://\';');
-      $op->concat('xp::$registry[\'details.'.$name.'\']= '.var_export($this->metadata[0], TRUE).';');
+      $op->concat('xp::$registry[\'details.'.$qualified.'\']= '.var_export($this->metadata[0], TRUE).';');
       
     }
 
