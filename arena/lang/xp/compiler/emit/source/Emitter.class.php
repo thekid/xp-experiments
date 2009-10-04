@@ -25,21 +25,21 @@
   /**
    * Emits sourcecode using PHP sourcecode
    *
-   * @test     xp://tests.execution.ArrayTest
-   * @test     xp://tests.execution.CatchTest
-   * @test     xp://tests.execution.ClassDeclarationTest
-   * @test     xp://tests.execution.ComparisonTest
-   * @test     xp://tests.execution.EnumDeclarationTest
-   * @test     xp://tests.execution.ExecutionTest
-   * @test     xp://tests.execution.ExtensionMethodsTest
-   * @test     xp://tests.execution.FinallyTest
-   * @test     xp://tests.execution.InstanceCreationTest
-   * @test     xp://tests.execution.InterfaceDeclarationTest
-   * @test     xp://tests.execution.LoopExecutionTest
-   * @test     xp://tests.execution.MathTest
-   * @test     xp://tests.execution.MultiCatchTest
-   * @test     xp://tests.execution.PropertiesTest
-   * @test     xp://tests.execution.VariablesTest
+   * @test     xp://tests.execution.source.ArrayTest
+   * @test     xp://tests.execution.source.CatchTest
+   * @test     xp://tests.execution.source.ClassDeclarationTest
+   * @test     xp://tests.execution.source.ComparisonTest
+   * @test     xp://tests.execution.source.EnumDeclarationTest
+   * @test     xp://tests.execution.source.ExecutionTest
+   * @test     xp://tests.execution.source.ExtensionMethodsTest
+   * @test     xp://tests.execution.source.FinallyTest
+   * @test     xp://tests.execution.source.InstanceCreationTest
+   * @test     xp://tests.execution.source.InterfaceDeclarationTest
+   * @test     xp://tests.execution.source.LoopExecutionTest
+   * @test     xp://tests.execution.source.MathTest
+   * @test     xp://tests.execution.source.MultiCatchTest
+   * @test     xp://tests.execution.source.PropertiesTest
+   * @test     xp://tests.execution.source.VariablesTest
    * @ext      // oel
    * @see      xp://xp.compiler.ast.Node
    */
