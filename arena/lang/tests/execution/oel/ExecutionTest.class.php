@@ -34,6 +34,9 @@
      */
     #[@beforeClass]
     public static function setupCompilerApi() {
+      if (!function_exists('oel_new_op_array')) {
+        throw new PrerequisitesNotMetError('OEL extension not loaded', NULL, 'oel');
+      }
       self::$syntax= Syntax::forName('xp');
       self::$emitter= new xp·compiler·emit·oel·Emitter();
       self::$scope= new TaskScope(new CompilationTask(
