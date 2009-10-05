@@ -153,7 +153,10 @@
      */
     public function hasField($name) {
       foreach ($this->tree->declaration->body as $member) {
-        if ($member instanceof FieldNode && $member->name === $name) return TRUE;
+        if (
+          ($member instanceof FieldNode && $member->name === $name) ||
+          ($member instanceof EnumMemberNode && $member->name === $name)
+        ) return TRUE;
       }
       return $this->parent ? $this->parent->hasField($name) : FALSE;
     }
@@ -170,6 +173,12 @@
           $f= new xp·compiler·types·Field();
           $f->name= $member->name;
           $f->type= $member->type;
+          $f->holder= $this;
+          return $f;
+        } else if ($member instanceof EnumMemberNode) {
+          $f= new xp·compiler·types·Field();
+          $f->name= $member->name;
+          $f->type= $this->tree->declaration->name;
           $f->holder= $this;
           return $f;
         }
