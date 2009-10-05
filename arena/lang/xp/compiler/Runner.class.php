@@ -31,7 +31,7 @@
    *     Add path to classpath
    *   </li>
    *   <li>-e [emitter]: 
-   *     Use emitter, one of "oel" or "source"
+   *     Use emitter, one of "oel" or "source", defaults to "source"
    *   </li>
    *   <li>-t [level[,level[...]]]:
    *     Set trace level (all, none, info, warn, error, debug)
@@ -75,7 +75,7 @@
       if (empty($args)) self::showUsage();
       
       $c= new Compiler();
-      $emitter= 'oel';
+      $emitter= 'source';
       
       // Handle arguments
       $files= array();
