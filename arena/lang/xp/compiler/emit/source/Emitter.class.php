@@ -474,17 +474,17 @@
       );
       
       // Check for logical operations. TODO: LogicalOperationNode?
+      $op->append('(');
       if (isset($lop[$bin->op])) {
-        $op->append('(');
         $this->emitOne($op, $bin->lhs);
         $op->append(') '.$lop[$bin->op].' (');
         $this->emitOne($op, $bin->rhs);
-        $op->append(')');
       } else {
         $this->emitOne($op, $bin->lhs);
-        $op->append(' '.$bop[$bin->op].' ');
+        $op->append(') '.$bop[$bin->op].' (');
         $this->emitOne($op, $bin->rhs);
       }
+      $op->append(')');
     }
 
     /**
