@@ -23,7 +23,7 @@
       $class= $this->define('interface', 'Comparable', NULL, '{
         public int compareTo(Generic $in);
       }');
-      $this->assertEquals('Comparable', $class->getName());
+      $this->assertEquals('OelComparable', $class->getName());
       $this->assertTrue($class->isInterface());
       
       with ($method= $class->getMethod('compareTo')); {

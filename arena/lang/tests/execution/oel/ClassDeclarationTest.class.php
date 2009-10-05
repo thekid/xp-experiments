@@ -25,7 +25,7 @@
           return $args;
         }
       }');
-      $this->assertEquals('EchoClass', $class->getName());
+      $this->assertEquals('OelEchoClass', $class->getName());
       $this->assertFalse($class->isInterface());
       $this->assertFalse($class->isEnum());
       
@@ -53,7 +53,7 @@
       $class= $this->define('interface', 'Paintable', NULL, '{
         public void paint(Generic $canvas);
       }');
-      $this->assertEquals('Paintable', $class->getName());
+      $this->assertEquals('OelPaintable', $class->getName());
       $this->assertTrue($class->isInterface());
       $this->assertFalse($class->isEnum());
       

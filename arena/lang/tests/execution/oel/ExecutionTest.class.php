@@ -83,6 +83,7 @@
      * @return  lang.XPClass
      */
     protected function define($type, $class, $parent, $src, array $imports= array()) {
+      $class= 'Oel'.$class;
       $r= self::$emitter->emit(
         self::$syntax->parse(new MemoryInputStream(
           implode("\n", $imports).

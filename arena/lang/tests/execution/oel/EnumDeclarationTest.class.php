@@ -27,7 +27,7 @@
           return $this.ordinal > self::$FRI.ordinal;
         }
       }');
-      $this->assertEquals('WeekDay', $class->getName());
+      $this->assertEquals('OelWeekDay', $class->getName());
       $this->assertTrue($class->isEnum());
       
       with ($method= $class->getMethod('isWeekend')); {
@@ -64,7 +64,7 @@
           }
         }
       }');
-      $this->assertEquals('Coin', $class->getName());
+      $this->assertEquals('OelCoin', $class->getName());
       $this->assertTrue($class->isEnum());
       
       // Test values
@@ -97,7 +97,7 @@
         
         public abstract int evaluate(int $x, int $y);
       }');
-      $this->assertEquals('Operation', $class->getName());
+      $this->assertEquals('OelOperation', $class->getName());
       $this->assertTrue($class->isEnum());
 
       $plus= Enum::valueOf($class, 'plus');
@@ -120,7 +120,7 @@
         
         public abstract int evaluate(int $x, int $y);
       }');
-      $this->assertEquals('PartialOperation', $class->getName());
+      $this->assertEquals('OelPartialOperation', $class->getName());
       $this->assertTrue($class->isEnum());
 
       $plus= Enum::valueOf($class, 'plus');
