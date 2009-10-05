@@ -1452,7 +1452,24 @@
       $op->append(' {');
       
       // public static self[] values() { return parent::membersOf(__CLASS__) }
-      $op->append('public static function values() { return parent::membersOf(__CLASS__); }');
+      $declaration->body[]= new MethodNode(array(
+        'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
+        'annotations'=> NULL,
+        'name'       => 'values',
+        'returns'    => new TypeName('self[]'),
+        'arguments'  => NULL,
+        'throws'     => NULL,
+        'body'       => array(
+          new ReturnNode(array('expression' => new ClassMemberNode(array(
+            'class'   => new TypeName('parent'),
+            'member'  => new InvocationNode(array('name' => 'membersOf', 'parameters' => array(
+              new StringNode(array('value' => $this->resolveType($declaration->name, FALSE)->literal()))
+            )))
+          ))))
+        ),
+        'extension'  => NULL,
+        'comment'    => '(Generated)'
+      ));
 
       // Members
       $this->emitAll($op, (array)$declaration->body);
