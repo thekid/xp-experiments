@@ -31,20 +31,40 @@
       return $this->name === $o->getName();
     }
 
-    public function setName($name) {
-      $this->name= $name;
-    }
-
-    public function getName() {
-      return $this->name;
-    }
-
+    /**
+     * set member $typehint
+     * 
+     * @param string typehint
+     */
     public function setTypehint($typehint) {
       $this->typehint= $typehint;
     }
 
+    /**
+     * get member $typehint
+     * 
+     * @return string
+     */
     public function getTypehint() {
       return $this->typehint;
+    }
+
+    /**
+     * set member $name
+     * 
+     * @param string name
+     */
+    public function setName($name) {
+      $this->name= $name;
+    }
+
+    /**
+     * get member $name
+     * 
+     * @return string
+     */
+    public function getName() {
+      return $this->name;
     }
 
     public function setInit($init) {

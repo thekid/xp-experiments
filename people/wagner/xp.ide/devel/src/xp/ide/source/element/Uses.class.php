@@ -18,16 +18,26 @@
     private
       $classnames= array();
 
-    public function __construct(array $classes= array()) {
-      $this->classes= $classes;
+    public function __construct(array $classnames= array()) {
+      $this->classnames= $classnames;
     }
 
-    public function setClassnames(array $classes) {
-      $this->classes= $classes;
+    /**
+     * set member $classnames
+     * 
+     * @param array classnames
+     */
+    public function setClassnames(array $classnames) {
+      $this->classnames= $classnames;
     }
 
+    /**
+     * get member $classnames
+     * 
+     * @return array
+     */
     public function getClassnames() {
-      return $this->classes;
+      return $this->classnames;
     }
 
   }

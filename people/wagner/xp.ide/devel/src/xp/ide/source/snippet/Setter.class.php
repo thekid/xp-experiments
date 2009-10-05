@@ -26,8 +26,12 @@
       $this->element= new xp·ide·source·element·Classmethod('set'.ucfirst($name));
       $this->element->setApidoc(new xp·ide·source·element·Apidoc(sprintf('set member $%s'.PHP_EOL, $name)));
       $this->element->getApidoc()->setDirectives(array(new xp·ide·source·element·ApidocDirective(sprintf('@param %s %s', $type, $name))));
-      $this->element->setParams(array(new xp·ide·source·element·Classmethodparam($name)));
+      $this->element->setParams($this->getParams($name, $type));
       $this->element->setContent(sprintf('$this->%1$s= $%1$s;', $name));
+    }
+
+    protected function getParams($name, $type) {
+      return array(new xp·ide·source·element·Classmethodparam($name));
     }
   }
 

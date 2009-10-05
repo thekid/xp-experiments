@@ -22,14 +22,23 @@
       $this->name= $name;
     }
 
+    /**
+     * set member $name
+     * 
+     * @param string name
+     */
     public function setName($name) {
       $this->name= $name;
     }
 
+    /**
+     * get member $name
+     * 
+     * @return string
+     */
     public function getName() {
       return $this->name;
     }
-
   }
 
 ?>

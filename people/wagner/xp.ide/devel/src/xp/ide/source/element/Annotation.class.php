@@ -30,21 +30,42 @@
       return $this->name= $o->getName() && $this->params == $o->getParams();
     }
 
-    public function setParams(array $params) {
-      $this->params= $params;
-    }
-
-    public function getParams() {
-      return $this->params;
-    }
-
+    /**
+     * set member $name
+     * 
+     * @param string name
+     */
     public function setName($name) {
       $this->name= $name;
     }
 
+    /**
+     * get member $name
+     * 
+     * @return string
+     */
     public function getName() {
       return $this->name;
     }
+
+    /**
+     * set member $params
+     * 
+     * @param array params
+     */
+    public function setParams(array $params) {
+      $this->params= $params;
+    }
+
+    /**
+     * get member $params
+     * 
+     * @return array
+     */
+    public function getParams() {
+      return $this->params;
+    }
+
   }
 
 ?>

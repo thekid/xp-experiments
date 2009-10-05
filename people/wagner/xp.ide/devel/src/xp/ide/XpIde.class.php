@@ -17,7 +17,7 @@
     'xp.ide.resolve.Response',
     'xp.ide.completion.Response',
     'xp.ide.source.snippet.GetterFactory',
-    'xp.ide.source.snippet.Setter',
+    'xp.ide.source.snippet.SetterFactory',
     'xp.ide.source.Generator'
   );
 
@@ -180,7 +180,7 @@
         list($name, $type, $accs)= $parts;
         foreach (explode('+', $accs) as $acc) switch ($acc) {
           case 'set':
-          $me= new xp搏de新ource新nippet惹etter($name, $type);
+          $me= xp搏de新ource新nippet惹etterFactory::create($name, $type);
           $me->accept($gen);
           $this->out->write(PHP_EOL.PHP_EOL);
           break;

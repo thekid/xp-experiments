@@ -191,22 +191,38 @@
     }
 
     /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createSetterGetterArray() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('names:array:set+get'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createSetter('names', 'array', 'array').
+        $this->createGetter('names', 'array'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
      * create a setter
      *
      * @param string name
      * @param string type
+     * @param string hint
      */
-    private function createSetter($name, $type) {
+    private function createSetter($name, $type, $hint= '') {
       return sprintf(
         '    /**'.PHP_EOL.
         '     * set member $%1$s'.PHP_EOL.
         '     * '.PHP_EOL.
         '     * @param %3$s %1$s'.PHP_EOL.
         '     */'.PHP_EOL.
-        '    public function set%2$s($%1$s) {'.PHP_EOL.
+        '    public function set%2$s('.($hint ? '%4$s ' : '').'$%1$s) {'.PHP_EOL.
         '      $this->%1$s= $%1$s;'.PHP_EOL.
         '    }'.PHP_EOL.PHP_EOL,
-        $name, ucfirst($name), $type
+        $name, ucfirst($name), $type, $hint
       );
     }
 
