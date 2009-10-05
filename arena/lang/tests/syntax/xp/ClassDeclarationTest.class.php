@@ -46,6 +46,28 @@
      *
      */
     #[@test]
+    public function classWithStaticInitializer() {
+      $this->assertEquals(
+        new ClassNode(
+          0,                          // Modifiers
+          NULL,                       // Annotations
+          new TypeName('Driver'),     // Name
+          NULL,                       // Parent
+          array(),                    // Implements
+          array(
+            new StaticInitializerNode(array(
+            ))
+          )
+        ), 
+        $this->parse('class Driver { static { } }')
+      );
+    }
+
+    /**
+     * Test class declaration
+     *
+     */
+    #[@test]
     public function annotatedClass() {
       $this->assertEquals(
         new ClassNode(

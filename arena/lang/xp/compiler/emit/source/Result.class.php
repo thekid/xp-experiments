@@ -14,15 +14,15 @@
    * @ext   oel
    */
   class xp·compiler·emit·source·Result extends Object {
-    protected $bytes= NULL;
+    protected $source= NULL;
     
     /**
      * Constructor.
      *
-     * @param   resource op
+     * @param   xp.compiler.emit.source.Buffer source
      */
-    public function __construct($bytes) {
-      $this->bytes= $bytes->getBytes('iso-8859-1');
+    public function __construct($source) {
+      $this->source= $source;
     }
     
     /**
@@ -31,8 +31,8 @@
      * @param   io.streams.OutputStream out
      */
     public function writeTo(OutputStream $out) {
-      $out->write("<?php\n");
-      $out->write($this->bytes);
+      $out->write('<?php');
+      $out->write($this->source);
       $out->write("\n?>\n");
     }
 
@@ -43,8 +43,8 @@
      * @return  var
      */    
     public function executeWith(array $env= array()) {
-      if (FALSE === eval($this->bytes)) {
-        xp::error(xp::stringOf(new FormatException($this->bytes)));
+      if (FALSE === eval($this->source)) {
+        xp::error(xp::stringOf(new FormatException($this->source)));
       }
       // call static initializer
     }

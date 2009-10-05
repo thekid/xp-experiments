@@ -83,7 +83,7 @@
      * @return  bool
      */
     public function hasConstructor() {
-      foreach ($this->tree->declaration->body['methods'] as $member) {
+      foreach ($this->tree->declaration->body as $member) {
         if ($member instanceof ConstructorNode) return TRUE;
       }
       return $this->parent ? $this->parent->hasMethod($name) : FALSE;
@@ -95,7 +95,7 @@
      * @return  xp.compiler.types.Constructor
      */
     public function getConstructor() {
-      foreach ($this->tree->declaration->body['methods'] as $member) {
+      foreach ($this->tree->declaration->body as $member) {
         if ($member instanceof ConstructorNode) {
           $c= new xp·compiler·types·Constructor();
           $c->modifiers= $member->modifiers;
@@ -116,7 +116,7 @@
      * @return  bool
      */
     public function hasMethod($name) {
-      foreach ($this->tree->declaration->body['methods'] as $member) {
+      foreach ($this->tree->declaration->body as $member) {
         if ($member instanceof MethodNode && $member->name === $name) return TRUE;
       }
       return $this->parent ? $this->parent->hasMethod($name) : FALSE;
@@ -129,7 +129,7 @@
      * @return  xp.compiler.types.Method
      */
     public function getMethod($name) {
-      foreach ($this->tree->declaration->body['methods'] as $member) {
+      foreach ($this->tree->declaration->body as $member) {
         if ($member instanceof MethodNode && $member->name === $name) {
           $m= new xp·compiler·types·Method();
           $m->name= $member->name;
@@ -152,7 +152,7 @@
      * @return  bool
      */
     public function hasField($name) {
-      foreach ($this->tree->declaration->body['fields'] as $member) {
+      foreach ($this->tree->declaration->body as $member) {
         if ($member instanceof FieldNode && $member->name === $name) return TRUE;
       }
       return $this->parent ? $this->parent->hasField($name) : FALSE;
@@ -165,7 +165,7 @@
      * @return  xp.compiler.types.Field
      */
     public function getField($name) {
-      foreach ($this->tree->declaration->body['fields'] as $member) {
+      foreach ($this->tree->declaration->body as $member) {
         if ($member instanceof FieldNode && $member->name === $name) {
           $f= new xp·compiler·types·Field();
           $f->name= $member->name;

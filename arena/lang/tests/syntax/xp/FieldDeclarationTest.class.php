@@ -19,7 +19,7 @@
      * @return  xp.compiler.Node[]
      */
     protected function parse($src) {
-      return create(new xp搾ompiler新yntax暖p感arser())->parse(new xp搾ompiler新yntax暖p微exer($src, '<string:'.$this->name.'>'))->declaration->body['fields'];
+      return create(new xp搾ompiler新yntax暖p感arser())->parse(new xp搾ompiler新yntax暖p微exer($src, '<string:'.$this->name.'>'))->declaration->body;
     }
 
     /**

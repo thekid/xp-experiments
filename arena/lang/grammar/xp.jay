@@ -55,7 +55,8 @@
     'xp.compiler.ast.ContinueNode',
     'xp.compiler.ast.CloneNode',
     'xp.compiler.ast.IfNode',
-    'xp.compiler.ast.ElseNode'
+    'xp.compiler.ast.ElseNode',
+    'xp.compiler.ast.StaticInitializerNode'
   );
 %}
 
@@ -261,19 +262,19 @@ classbody_opt:
 ;
 
 classbody:
-    classbody classmember { $k= key($2); $$[$k][]= $2[$k]; }
+    classbody classmember { $$[]= $2; }
   | /* empty */ { $$= NULL; }
 ;
 
 classmember:
-    field { $$= array('fields' => $1); }
-  | method { $$= array('methods' => $1); }
-  | T_STATIC '{' statements_opt '}' { $$= array('static' => $3); }
+    field { $$= $1; }
+  | method { $$= $1; }
+  | T_STATIC '{' statements_opt '}' { $$= $yyLex->create(new StaticInitializerNode($3)); }
 ;
 
 enumbody:
-    enummembers ';' classbody { $3['members']= $1; $$= $3; }
-  | enummembers { $$= array('members' => $1); }
+    enummembers ';' classbody { $$= array_merge($1, $3); }
+  | enummembers { $$= $1; }
   | /* empty */ { $$= NULL; }
 ;
 

@@ -1261,6 +1261,32 @@
     }
 
     /**
+     * Emit static initializer
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.StaticInitializerNode initializer
+     */
+    protected function emitStaticInitializer($op, StaticInitializerNode $initializer) {
+      $sop= oel_new_method($op, '__static', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
+      oel_set_source_file($sop, $this->origins[0]);
+      
+      // Static initializations outside of initializer
+      if ($this->inits[0][TRUE]) {
+        foreach ($this->inits[0][TRUE] as $field) {
+          $this->emitOne($op, new AssignmentNode(array(
+            'variable'   => new ClassMemberNode(array('class' => new TypeName('self'), 'member' => new VariableNode($field->name))),
+            'expression' => $field->initialization,
+            'free'       => TRUE,
+            'op'         => '=',
+          )));
+        }
+        unset($this->inits[0][TRUE]);
+      }
+      $this->emitAll($op, (array)$initializer->statements);
+      oel_finalize($sop);
+    }
+
+    /**
      * Emit a constructor
      *
      * @param   resource op
@@ -1466,6 +1492,16 @@
         $this->leave();
       }
     }
+
+    /**
+     * Emit an enum member
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.EnumMemberNode member
+     */
+    protected function emitEnumMember($op, EnumMemberNode $member) {
+      oel_add_declare_property($op, $member->name, NULL, TRUE, MODIFIER_PUBLIC);
+    }  
     
     /**
      * Emit a class field
@@ -1556,8 +1592,8 @@
       
       // Member declaration
       $classes= array();
-      foreach ($declaration->body['members'] as $member) { 
-        oel_add_declare_property($op, $member->name, NULL, TRUE, MODIFIER_PUBLIC);
+      foreach ($declaration->body as $member) { 
+        if (!$member instanceof EnumMemberNode) continue;
         if ($member->body) {
           if (!$abstract) {
             $this->error('E403', 'Only abstract enums can contain members with bodies ('.$member->name.')');
@@ -1581,14 +1617,14 @@
       oel_finalize($vop);
 
       // Members
-      $this->emitAll($op, (array)$declaration->body['fields']);
-      $this->emitAll($op, (array)$declaration->body['methods']);
+      $this->emitAll($op, (array)$declaration->body);
       $this->emitProperties($op, $this->properties[0]);
 
       // Create static initializer
       $sop= oel_new_method($op, '__static', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
       oel_set_source_file($sop, $this->origins[0]);
-      foreach ($declaration->body['members'] as $i => $member) { 
+      foreach ($declaration->body as $i => $member) { 
+        if (!$member instanceof EnumMemberNode) continue;
         oel_add_begin_new_object($sop, $classes[$i]); {
           if ($member->value) {
             $this->emitOne($sop, $member->value);
@@ -1613,9 +1649,10 @@
         // FIXME segfault oel_add_end_abstract_class_declaration($op);
         oel_add_end_class_declaration($op);
         
-        foreach ($declaration->body['members'] as $i => $member) { 
+        foreach ($declaration->body as $i => $member) { 
+          if (!$member instanceof EnumMemberNode) continue;
           oel_add_begin_class_declaration($op, $classes[$i], $declaration->name->name);
-          $this->emitAll($op, $member->body['methods']);
+          $this->emitAll($op, $member->body);
           oel_add_end_class_declaration($op);
         }
       } else {      
@@ -1638,9 +1675,13 @@
       if (!$declaration->comment) {
         $this->warn('D201', 'No api doc for interface '.$declaration->name->name, $declaration);
       }
-      if (isset($declaration->body['fields'])) {
-        $this->error('I403', 'Interfaces may not have field declarations', $declaration);
-        return;
+
+      // Verify: The only type of node we want to find are methods
+      foreach ($declaration->body as $node) {
+        if (!$node instanceof MethodNode) {
+          $this->error('I403', 'Interfaces may not have field declarations', $declaration);
+          return;
+        }
       }
       $this->enter(new TypeDeclarationScope());    
 
@@ -1654,7 +1695,7 @@
         oel_add_parent_interface($op, $this->resolveType($type, FALSE)->literal());
       }
 
-      $this->emitAll($op, (array)$declaration->body['methods']);
+      $this->emitAll($op, (array)$declaration->body);
       
       oel_add_end_interface_declaration($op);
       
@@ -1700,31 +1741,13 @@
       }
       
       // Members
-      isset($declaration->body['fields']) && $this->emitAll($op, $declaration->body['fields']);
-      isset($declaration->body['methods']) && $this->emitAll($op, $declaration->body['methods']);
+      $this->emitAll($op, (array)$declaration->body);
       $this->emitProperties($op, $this->properties[0]);
 
-      // Static initializer blocks (array<Statement[]>)
-      if (isset($declaration->body['static']) || $this->inits[0][TRUE]) {
-        $sop= oel_new_method($op, '__static', FALSE, TRUE, MODIFIER_PUBLIC, FALSE);
-        oel_set_source_file($sop, $this->origins[0]);
-        foreach ($this->inits[0][TRUE] as $field) {
-          $this->emitOne($sop, new AssignmentNode(array(
-            'variable'   => new ClassMemberNode(array('class' => new TypeName('self'), 'member' => new VariableNode($field->name))),
-            'expression' => $field->initialization,
-            'free'       => TRUE,
-            'op'         => '=',
-          )));
-        }
-        foreach ((array)$declaration->body['static'] as $statements) {
-          $this->emitAll($sop, (array)$statements);
-        }
-        oel_finalize($sop);
-      }
-      
-      // Generate a constructor if initializations are available.
-      // They will have already been emitted if a constructor exists!
       if ($this->inits[0][FALSE]) {
+
+        // Generate a constructor if initializations are available.
+        // They will have already been emitted if a constructor exists!
         if ($parentType->hasConstructor()) {
           $arguments= array();
           $parameters= array();
@@ -1752,6 +1775,11 @@
           'comment'      => '(Generated)',
           'position'     => $declaration->position
         )));
+      } else if ($this->inits[0][TRUE]) {
+
+        // Generate a static initializer if initializations are available.
+        // They will have already been emitted if a static initializer exists!
+        $this->emitOne($op, new StaticInitializerNode(NULL));
       }
       
       // Finish

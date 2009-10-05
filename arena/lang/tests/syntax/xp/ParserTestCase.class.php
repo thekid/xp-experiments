@@ -29,7 +29,7 @@
           public void method() {
             '.$src.'
           }
-        }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->body;
+        }', '<string:'.$this->name.'>'))->declaration->body[0]->body;
       } catch (ParseException $e) {
         throw $e->getCause();
       }

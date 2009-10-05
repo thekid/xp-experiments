@@ -40,7 +40,7 @@
         new EnumMemberNode(array('name' => 'friday', 'body' => NULL)),
         new EnumMemberNode(array('name' => 'saturday', 'body' => NULL)),
         new EnumMemberNode(array('name' => 'sunday', 'body' => NULL)),
-      ), $this->parse('enum Days { monday, tuesday, wednedsday, thursday, friday, saturday, sunday }')->body['members']);
+      ), $this->parse('enum Days { monday, tuesday, wednedsday, thursday, friday, saturday, sunday }')->body);
     }
 
     /**
@@ -56,40 +56,36 @@
         'parent'      => NULL,
         'implements'  => array(),
         'body'        => array(
-          'members'   => array(
-            new EnumMemberNode(array(
-              'name'      => 'penny', 
-              'value'     => new IntegerNode(array('value' => '1')),
-              'body'      => NULL
-            )),
-            new EnumMemberNode(array(
-              'name'      => 'nickel', 
-              'value'     => new IntegerNode(array('value' => '2')),
-              'body'      => NULL
-            )),
-            new EnumMemberNode(array(
-              'name'      => 'dime', 
-              'value'     => new IntegerNode(array('value' => '10')),
-              'body'      => NULL
-            )),
-            new EnumMemberNode(array(
-              'name'      => 'quarter', 
-              'value'     => new IntegerNode(array('value' => '25')),
-              'body'      => NULL
-            )),
-          ),
-          'methods'   => array(
-            new MethodNode(array(
-              'modifiers'    => MODIFIER_PUBLIC,
-              'annotations'  => NULL,
-              'returns'      => new TypeName('string'),
-              'name'         => 'color',
-              'arguments'    => NULL,
-              'throws'       => NULL,
-              'body'         => NULL,
-              'extension'    => NULL
-            ))
-          )
+          new EnumMemberNode(array(
+            'name'      => 'penny', 
+            'value'     => new IntegerNode(array('value' => '1')),
+            'body'      => NULL
+          )),
+          new EnumMemberNode(array(
+            'name'      => 'nickel', 
+            'value'     => new IntegerNode(array('value' => '2')),
+            'body'      => NULL
+          )),
+          new EnumMemberNode(array(
+            'name'      => 'dime', 
+            'value'     => new IntegerNode(array('value' => '10')),
+            'body'      => NULL
+          )),
+          new EnumMemberNode(array(
+            'name'      => 'quarter', 
+            'value'     => new IntegerNode(array('value' => '25')),
+            'body'      => NULL
+          )),
+          new MethodNode(array(
+            'modifiers'    => MODIFIER_PUBLIC,
+            'annotations'  => NULL,
+            'returns'      => new TypeName('string'),
+            'name'         => 'color',
+            'arguments'    => NULL,
+            'throws'       => NULL,
+            'body'         => NULL,
+            'extension'    => NULL
+          ))
         )
       )), $this->parse('enum Coin { 
         penny(1), nickel(2), dime(10), quarter(25);

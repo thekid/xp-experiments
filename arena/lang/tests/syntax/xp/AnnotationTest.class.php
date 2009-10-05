@@ -22,7 +22,7 @@
       return create(new xp·compiler·syntax·xp·Parser())->parse(new xp·compiler·syntax·xp·Lexer('abstract class Container {
         '.$annotations.'
         public abstract void method();
-      }', '<string:'.$this->name.'>'))->declaration->body['methods'][0]->annotations;
+      }', '<string:'.$this->name.'>'))->declaration->body[0]->annotations;
     }
 
     /**

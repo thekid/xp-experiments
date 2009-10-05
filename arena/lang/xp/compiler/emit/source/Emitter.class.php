@@ -9,6 +9,7 @@
   uses(
     'xp.compiler.emit.Emitter', 
     'xp.compiler.emit.NativeImporter',
+    'xp.compiler.emit.source.Buffer', 
     'xp.compiler.emit.source.Result', 
     'xp.compiler.syntax.php.Lexer',
     'xp.compiler.syntax.php.Parser',
@@ -83,17 +84,17 @@
       
       $n= 0;
       $this->cat && $this->cat->debug('uses(', $types, ')');
-      $op->concat('uses(');
+      $op->append('uses(');
       $s= sizeof($types)- 1;
       foreach ($types as $i => $type) {
         try {
-          $op->concat("'")->concat($this->resolveType($type, FALSE)->name())->concat("'");
-          $i < $s && $op->concat(',');
+          $op->append("'")->append($this->resolveType($type, FALSE)->name())->append("'");
+          $i < $s && $op->append(',');
         } catch (Throwable $e) {
           $this->error('0424', $e->toString());
         }      
       }
-      $op->concat(');');
+      $op->append(');');
     }
     
     /**
@@ -104,13 +105,13 @@
      * @return  int
      */
     protected function emitParameters($op, array $params) {
-      $op->concat('(');
+      $op->append('(');
       $s= sizeof($params)- 1;
       foreach ($params as $i => $param) {
         $this->emitOne($op, $param);
-        $i < $s && $op->concat(',');
+        $i < $s && $op->append(',');
       }
-      $op->concat(')');
+      $op->append(')');
       return sizeof($params);
     }
     
@@ -132,11 +133,11 @@
 
       // Static method call vs. function call
       if (TRUE === $ptr) {
-        $op->concat($inv->name);
+        $op->append($inv->name);
         $this->emitParameters($op, (array)$inv->parameters);
         $this->scope[0]->setType($inv, TypeName::$VAR);
       } else {
-        $op->concat($ptr->holder->literal().'::'.$ptr->name());
+        $op->append($ptr->holder->literal().'::'.$ptr->name());
         $this->emitParameters($op, (array)$inv->parameters);
         $this->scope[0]->setType($inv, $ptr->returns);
       }
@@ -149,7 +150,7 @@
      * @param   xp.compiler.ast.StringNode str
      */
     protected function emitString($op, StringNode $str) {
-      $op->concat("'".str_replace("'", "\'", $str->resolve())."'");
+      $op->append("'".str_replace("'", "\'", $str->resolve())."'");
     }
 
     /**
@@ -159,12 +160,12 @@
      * @param   xp.compiler.ast.ArrayNode arr
      */
     protected function emitArray($op, ArrayNode $arr) {
-      $op->concat('array(');
+      $op->append('array(');
       foreach ((array)$arr->values as $value) {
         $this->emitOne($op, $value);
-        $op->concat(',');
+        $op->append(',');
       }
-      $op->concat(')');
+      $op->append(')');
     }
 
     /**
@@ -174,14 +175,14 @@
      * @param   xp.compiler.ast.MapNode map
      */
     protected function emitMap($op, MapNode $map) {
-      $op->concat('array(');
+      $op->append('array(');
       foreach ((array)$map->elements as $pair) {
         $this->emitOne($op, $pair[0]);
-        $op->concat(' => ');
+        $op->append(' => ');
         $this->emitOne($op, $pair[1]);
-        $op->concat(',');
+        $op->append(',');
       }
-      $op->concat(')');
+      $op->append(')');
     }
 
     /**
@@ -191,7 +192,7 @@
      * @param   xp.compiler.ast.BooleanNode const
      */
     protected function emitBoolean($op, BooleanNode $const) {
-      $op->concat($const->resolve() ? 'TRUE' : 'FALSE');
+      $op->append($const->resolve() ? 'TRUE' : 'FALSE');
     }
 
     /**
@@ -201,7 +202,7 @@
      * @param   xp.compiler.ast.NullNode const
      */
     protected function emitNull($op, NullNode $const) {
-      $op->concat('NULL');
+      $op->append('NULL');
     }
     
     /**
@@ -213,10 +214,10 @@
     protected function emitConstant($op, ConstantNode $const) {
       $this->warn('T203', 'Global constants ('.$const->value.') are discouraged', $const);
       try {
-        $op->concat(var_export($const->resolve(), TRUE));
+        $op->append(var_export($const->resolve(), TRUE));
       } catch (IllegalStateException $e) {
         $this->warn('T201', 'Constant lookup for '.$const->value.' deferred until runtime', $const);
-        $op->concat($const->value);
+        $op->append($const->value);
       }
     }
 
@@ -237,12 +238,12 @@
       );
 
       if (isset($primitives[$cast->type->name])) {
-        $op->concat($primitives[$cast->type->name]);
+        $op->append($primitives[$cast->type->name]);
         $this->emitOne($op, $cast->expression);
       } else {
-        $op->concat('cast(');
+        $op->append('cast(');
         $this->emitOne($op, $cast->expression);
-        $op->concat(', ')->concat($this->resolveType($cast->type)->name());
+        $op->append(', ')->append($this->resolveType($cast->type)->name());
       }
       
       $this->scope[0]->setType($cast, $cast->type);
@@ -255,7 +256,7 @@
      * @param   xp.compiler.ast.IntegerNode num
      */
     protected function emitInteger($op, IntegerNode $num) {
-      $op->concat($num->resolve());
+      $op->append($num->resolve());
     }
 
     /**
@@ -266,10 +267,10 @@
      */
     protected function emitDecimal($op, DecimalNode $num) {
       $r= $num->resolve();
-      $op->concat($r);
+      $op->append($r);
       
       // Prevent float(2) being dumped as "2" and thus an int literal
-      strstr($r, '.') || $op->concat('.0');
+      strstr($r, '.') || $op->append('.0');
     }
 
     /**
@@ -279,7 +280,7 @@
      * @param   xp.compiler.ast.HexNode num
      */
     protected function emitHex($op, HexNode $num) {
-      $op->concat($num->resolve());
+      $op->append($num->resolve());
     }
     
     /**
@@ -289,7 +290,7 @@
      * @param   xp.compiler.ast.VariableNode var
      */
     protected function emitVariable($op, VariableNode $var) {
-      $op->concat('$'.$var->name);
+      $op->append('$'.$var->name);
     }
 
     /**
@@ -314,11 +315,11 @@
         $this->warn('T305', 'Using array-access on unsupported type '.$type->toString(), $access);
       }
       
-      $op->concat('[');
+      $op->append('[');
       if ($access->offset) {
         $this->emitOne($op, $access->offset);
       }
-      $op->concat(']');
+      $op->append(']');
       return $result;
     }
 
@@ -345,7 +346,7 @@
         $this->warn('T305', 'Using member access on unsupported type '.$type->toString(), $access);
       }
 
-      $op->concat('->'.$access->name);
+      $op->append('->'.$access->name);
       return $result;
     }
 
@@ -368,7 +369,7 @@
 
           // FIXME: Slow access via __call() - would need look-ahead
           // inside emitChain here!
-          $op->concat('->'.$access->name);
+          $op->append('->'.$access->name);
           $this->emitParameters($op, (array)$access->parameters);
           return $ext->returns;
         } else {
@@ -380,7 +381,7 @@
         $this->warn('T305', 'Using member calls on unsupported type '.$type->toString(), $access);
       }
 
-      $op->concat('->'.$access->name);
+      $op->append('->'.$access->name);
       $this->emitParameters($op, (array)$access->parameters);
       return $result;
     }
@@ -407,20 +408,20 @@
       $insertion= array();
       for ($i= 0; $i < $s; $i++) {
         if ($chain->elements[$i] instanceof InvocationNode && $chain->elements[$i+ 1] instanceof ArrayAccessNode) {
-          $op->concat('current(array_slice(');
-          $insertion[$i]= new String(', ');
+          $op->append('current(array_slice(');
+          $insertion[$i]= new xp·compiler·emit·source·Buffer(', ', $op->line);
           $this->emitOne($insertion[$i], $chain->elements[$i+ 1]->offset);
-          $insertion[$i]->concat(', 1))');
+          $insertion[$i]->append(', 1))');
           $chain->elements[$i+ 1]= new NoopNode();
         } else if ($chain->elements[$i] instanceof InstanceCreationNode) {
-          $op->concat('create(');
-          $insertion[$i]= new String(')');
+          $op->append('create(');
+          $insertion[$i]= new xp·compiler·emit·source·Buffer(')', $op->line);
         }
       }
     
       // Emit first node
       $this->emitOne($op, $chain->elements[0]);
-      isset($insertion[0]) && $op->concat($insertion[0]);
+      isset($insertion[0]) && $op->append($insertion[0]);
       
       // Emit chain members
       $t= $this->scope[0]->typeOf($chain->elements[0]);
@@ -442,7 +443,7 @@
         } else if ($c instanceof InvocationNode) {
           $t= $this->emitMemberCall($op, $c, $t);
         }
-        isset($insertion[$i]) && $op->concat($insertion[$i]);
+        isset($insertion[$i]) && $op->append($insertion[$i]);
       }
       
       // Record type
@@ -474,14 +475,14 @@
       
       // Check for logical operations. TODO: LogicalOperationNode?
       if (isset($lop[$bin->op])) {
-        $op->concat('(');
+        $op->append('(');
         $this->emitOne($op, $bin->lhs);
-        $op->concat(') '.$lop[$bin->op].' (');
+        $op->append(') '.$lop[$bin->op].' (');
         $this->emitOne($op, $bin->rhs);
-        $op->concat(')');
+        $op->append(')');
       } else {
         $this->emitOne($op, $bin->lhs);
-        $op->concat(' '.$bop[$bin->op].' ');
+        $op->append(' '.$bop[$bin->op].' ');
         $this->emitOne($op, $bin->rhs);
       }
     }
@@ -499,7 +500,7 @@
       );
       
       if ('!' === $un->op) {      // FIXME: Use NotNode for this?
-        $op->concat('!');
+        $op->append('!');
         $this->emitOne($op, $un->expression);
         return;
       } else if ('-' === $un->op) {
@@ -515,9 +516,9 @@
       }
 
       if ($un->postfix) {
-        $op->concat('$'.$un->expression->name.$ops[$un->op]);
+        $op->append('$'.$un->expression->name.$ops[$un->op]);
       } else {
-        $op->concat($ops[$un->op].'$'.$un->expression->name);
+        $op->append($ops[$un->op].'$'.$un->expression->name);
       }
     }
 
@@ -535,9 +536,9 @@
      */
     protected function emitTernary($op, TernaryNode $ternary) {
       $this->emitOne($op, $ternary->condition);
-      $op->concat('?');
+      $op->append('?');
       $this->emitOne($op, $ternary->expression ? $ternary->expression : $ternary->condition);
-      $op->concat(':');
+      $op->append(':');
       $this->emitOne($op, $ternary->conditional);
     }
 
@@ -560,7 +561,7 @@
       );
 
       $this->emitOne($op, $cmp->lhs);
-      $op->concat(' '.$ops[$cmp->op].' ');
+      $op->append(' '.$ops[$cmp->op].' ');
       $this->emitOne($op, $cmp->rhs);
     }
 
@@ -571,7 +572,7 @@
      * @param   xp.compiler.ast.ContinueNode statement
      */
     protected function emitContinue($op, ContinueNode $statement) {
-      $op->concat('continue;');
+      $op->append('continue;');
     }
 
     /**
@@ -581,7 +582,7 @@
      * @param   xp.compiler.ast.BreakNode statement
      */
     protected function emitBreak($op, BreakNode $statement) {
-      $op->concat('break;');
+      $op->append('break;');
     }
 
     /**
@@ -611,7 +612,7 @@
      * @param   xp.compiler.ast.ForeachNode loop
      */
     protected function emitForeach($op, ForeachNode $loop) {
-      $op->concat('foreach (');
+      $op->append('foreach (');
       $this->emitOne($op, $loop->expression);
       
       // Assign type. TODO: Depending on what the expression returns, this might
@@ -629,13 +630,13 @@
       }
       $this->scope[0]->setType(new VariableNode($loop->assignment['value']), $it);
 
-      $op->concat(' as ');
+      $op->append(' as ');
       if (isset($loop->assignment['key'])) {
-        $op->concat('$'.$loop->assignment['key'].' => ');
+        $op->append('$'.$loop->assignment['key'].' => ');
       }
-      $op->concat('$'.$loop->assignment['value'].') {');
+      $op->append('$'.$loop->assignment['value'].') {');
       $this->emitAll($op, (array)$loop->statements);
-      $op->concat('}');
+      $op->append('}');
     }
 
     /**
@@ -645,11 +646,11 @@
      * @param   xp.compiler.ast.DoNode loop
      */
     protected function emitDo($op, DoNode $loop) {
-      $op->concat('do {');
+      $op->append('do {');
       $this->emitAll($op, (array)$loop->statements);
-      $op->concat('} while (');
+      $op->append('} while (');
       $this->emitOne($op, $loop->expression);
-      $op->concat(');');
+      $op->append(');');
     }
 
     /**
@@ -659,11 +660,11 @@
      * @param   xp.compiler.ast.WhileNode loop
      */
     protected function emitWhile($op, WhileNode $loop) {
-      $op->concat('while (');
+      $op->append('while (');
       $this->emitOne($op, $loop->expression);
-      $op->concat(') {');
+      $op->append(') {');
       $this->emitAll($op, (array)$loop->statements);
-      $op->concat('}');
+      $op->append('}');
     }
     
     protected function emitForComponent($op, array $nodes) {
@@ -671,7 +672,7 @@
       foreach ($nodes as $node) {
         $node->free= FALSE;
         $this->emitOne($op, $node);
-        $i < $s && $op->concat(', ');
+        $i < $s && $op->append(', ');
       }
     }
 
@@ -682,15 +683,15 @@
      * @param   xp.compiler.ast.ForNode loop
      */
     protected function emitFor($op, ForNode $loop) {
-      $op->concat('for (');
+      $op->append('for (');
       $this->emitForComponent($op, (array)$loop->initialization);
-      $op->concat(';');
+      $op->append(';');
       $this->emitForComponent($op, (array)$loop->condition);
-      $op->concat(';');
+      $op->append(';');
       $this->emitForComponent($op, (array)$loop->loop);
-      $op->concat(') {');
+      $op->append(') {');
       $this->emitAll($op, (array)$loop->statements);
-      $op->concat('}');
+      $op->append('}');
     }
     
     /**
@@ -700,15 +701,15 @@
      * @param   xp.compiler.ast.IfNode if
      */
     protected function emitIf($op, IfNode $if) {
-      $op->concat('if (');
+      $op->append('if (');
       $this->emitOne($op, $if->condition);
-      $op->concat(') {');
+      $op->append(') {');
       $this->emitAll($op, (array)$if->statements);
-      $op->concat('}');
+      $op->append('}');
       if ($if->otherwise) {
-        $op->concat('else {');
+        $op->append('else {');
         $this->emitAll($op, (array)$if->otherwise->statements);
-        $op->concat('}');
+        $op->append('}');
       }
     }
 
@@ -719,9 +720,9 @@
      * @param   xp.compiler.ast.CaseNode case
      */
     protected function emitCase($op, CaseNode $case) {
-      $op->concat('case ');
+      $op->append('case ');
       $this->emitOne($op, $case->expression);
-      $op->concat(': ');
+      $op->append(': ');
       $this->emitAll($op, (array)$case->statements);
     }
 
@@ -732,7 +733,7 @@
      * @param   xp.compiler.ast.DefaultNode default
      */
     protected function emitDefault($op, DefaultNode $default) {
-      $op->concat('default: ');
+      $op->append('default: ');
       $this->emitAll($op, (array)$default->statements);
     }
 
@@ -743,11 +744,11 @@
      * @param   xp.compiler.ast.SwitchNode switch
      */
     protected function emitSwitch($op, SwitchNode $switch) {
-      $op->concat('switch (');
+      $op->append('switch (');
       $this->emitOne($op, $switch->expression);
-      $op->concat(') {');
+      $op->append(') {');
       $this->emitAll($op, (array)$switch->cases);
-      $op->concat('}');
+      $op->append('}');
     }
     
     /**
@@ -774,7 +775,7 @@
           $this->scope[0]->setType($ref, $m->returns);
         }
 
-        $op->concat($ptr->literal().'::'.$ref->member->name);
+        $op->append($ptr->literal().'::'.$ref->member->name);
         $this->emitParameters($op, (array)$ref->member->parameters);
       } else if ($ref->member instanceof VariableNode) {
       
@@ -786,16 +787,16 @@
           $this->scope[0]->setType($ref, $f->type);
         }
 
-        $op->concat($ptr->literal().'::$'.$ref->member->name);
+        $op->append($ptr->literal().'::$'.$ref->member->name);
       } else if ($ref->member instanceof ConstantNode && 'class' === $ref->member->value) {
         
         // Magic "class" member
-        $op->concat('XPClass::forName(\''.$ptr->name().'\')');
+        $op->append('XPClass::forName(\''.$ptr->name().'\')');
         $this->scope[0]->setType($ref, new TypeName('lang.XPClass'));
       } else if ($ref->member instanceof ConstantNode) {
 
         // Class constant
-        $op->concat($ptr->literal().'::'.$ref->member->value);
+        $op->append($ptr->literal().'::'.$ref->member->value);
       } else {
         $this->error('M405', 'Cannot emit class member '.xp::stringOf($ref->member), $ref);
         return;
@@ -876,13 +877,13 @@
         $this->scope[0]->setType(new VariableNode($first->variable), $first->type);
       }
 
-      $op->concat('try {'); {
+      $op->append('try {'); {
         $this->emitAll($op, (array)$try->statements);
         $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
       }
       
       // First catch.
-      $op->concat('} catch('.$this->resolveType($first->type)->literal().' $'.$first->variable.') {'); {
+      $op->append('} catch('.$this->resolveType($first->type)->literal().' $'.$first->variable.') {'); {
         $this->scope[0]->setType(new VariableNode($first->variable->variable), $first->type);
         $this->emitAll($op, (array)$first->statements);
         $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
@@ -890,14 +891,14 @@
       
       // Additional catches
       for ($i= 1; $i < $numHandlers; $i++) {
-        $op->concat('} catch('.$this->resolveType($try->handling[$i]->type)->literal().' $'.$try->handling[$i]->variable.') {'); {
+        $op->append('} catch('.$this->resolveType($try->handling[$i]->type)->literal().' $'.$try->handling[$i]->variable.') {'); {
           $this->scope[0]->setType(new VariableNode($try->handling[$i]->variable), $try->handling[$i]->type);
           $this->emitAll($op, (array)$try->handling[$i]->statements);
           $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
         }
       }
       
-      $op->concat('}');
+      $op->append('}');
       array_shift($this->finalizers);
     }
     
@@ -908,9 +909,9 @@
      * @param   xp.compiler.ast.ThrowNode throw
      */
     protected function emitThrow($op, ThrowNode $throw) {
-      $op->concat('throw ');
+      $op->append('throw ');
       $this->emitOne($op, $throw->expression);
-      $op->concat(';');
+      $op->append(';');
     }
 
     /**
@@ -962,7 +963,7 @@
         $this->scope[0]->setType($new, $new->type);
       }
       
-      $op->concat('new '.$ptr->literal());
+      $op->append('new '.$ptr->literal());
       $this->emitParameters($op, (array)$new->parameters);
     }
     
@@ -984,7 +985,7 @@
       );
       
       $this->emitOne($op, $assign->variable);
-      $op->concat($ops[$assign->op]);
+      $op->append($ops[$assign->op]);
       $this->emitOne($op, $assign->expression);
       $this->scope[0]->setType($assign->variable, $this->scope[0]->typeOf($assign->expression));
     }
@@ -1007,7 +1008,7 @@
      * @param   string delim
      */
     protected function emitArguments($op, array $arguments, $delim) {
-      $op->concat('(');
+      $op->append('(');
       $s= sizeof($arguments)- 1;
       $defer= array();
       foreach ($arguments as $i => $arg) {
@@ -1018,42 +1019,42 @@
             $defer[]= '$'.$arg['name'].'= func_get_args();';
           }
           $this->scope[0]->setType(new VariableNode($arg['name']), new TypeName($arg['type']->name.'[]'));
-          $op->concat('$··= NULL');
+          $op->append('$··= NULL');
           break;
         }
         
-        $op->concat('$'.$arg['name']);
+        $op->append('$'.$arg['name']);
         if (isset($arg['default'])) {
-          $op->concat('= ');
+          $op->append('= ');
           $resolveable= FALSE; 
           if ($arg['default'] instanceof Resolveable) {
             try {
               $init= $arg['default']->resolve();
-              $op->concat(var_export($init, TRUE));
+              $op->append(var_export($init, TRUE));
               $resolveable= TRUE; 
             } catch (IllegalStateException $e) {
             }
           }
           if (!$resolveable) {
-            $op->concat('NULL');
-            $init= new String();
-            $init->concat('if (func_num_args() < ')->concat($i + 1)->concat(') { ');
-            $init->concat('$')->concat($arg['name'])->concat('= ');
+            $op->append('NULL');
+            $init= new xp·compiler·emit·source·Buffer('', $op->line);
+            $init->append('if (func_num_args() < ')->append($i + 1)->append(') { ');
+            $init->append('$')->append($arg['name'])->append('= ');
             $this->emitOne($init, $arg['default']);
-            $init->concat('; }');
+            $init->append('; }');
             $defer[]= $init;
           }
         }
-        $i < $s && $op->concat(',');
+        $i < $s && $op->append(',');
         
         // FIXME: Emit type hint if type is a class, interface or enum
         $this->scope[0]->setType(new VariableNode($arg['name']), $arg['type'] ? $arg['type'] : TypeName::$VAR);
       }
-      $op->concat(')');
-      $op->concat($delim);
+      $op->append(')');
+      $op->append($delim);
       
       foreach ($defer as $src) {
-        $op->concat($src);
+        $op->append($src);
       }
     }
 
@@ -1131,8 +1132,8 @@
         );
         $this->metadata[0]['EXT'][$method->name]= $type->literal();   // HACK, this should be accessible in scope
       }
-      $op->concat(implode(' ', Modifiers::namesOf($method->modifiers)));
-      $op->concat(' function '.$method->name);
+      $op->append(implode(' ', Modifiers::namesOf($method->modifiers)));
+      $op->append(' function '.$method->name);
       
       // Begin
       $this->enter(new MethodScope());
@@ -1147,7 +1148,7 @@
       $this->emitArguments($op, (array)$method->arguments, $empty ? ';' : "{\n");
       if (!$empty) {
         $this->emitAll($op, (array)$method->body);
-        $op->concat("\n}");
+        $op->append("\n}");
       }
       
       // Finalize
@@ -1164,23 +1165,47 @@
     }
 
     /**
+     * Emit static initializer
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.StaticInitializerNode initializer
+     */
+    protected function emitStaticInitializer($op, StaticInitializerNode $initializer) {
+      $op->append('static function __static() {');
+      
+      // Static initializations outside of initializer
+      if ($this->inits[0][TRUE]) {
+        foreach ($this->inits[0][TRUE] as $field) {
+          $this->emitOne($op, new AssignmentNode(array(
+            'variable'   => new ClassMemberNode(array('class' => new TypeName('self'), 'member' => new VariableNode($field->name))),
+            'expression' => $field->initialization,
+            'free'       => TRUE,
+            'op'         => '=',
+          )));
+        }
+        unset($this->inits[0][TRUE]);
+      }
+      $this->emitAll($op, (array)$initializer->statements);
+      $op->append('}');
+    }
+
+    /**
      * Emit a constructor
      *
      * @param   resource op
      * @param   xp.compiler.ast.ConstructorNode constructor
      */
     protected function emitConstructor($op, ConstructorNode $constructor) {
-      if (!$constructor->comment && !strstr($this->scope[0]->declarations[0]->name->name, '$')) {
+      if (!$constructor->comment && !strstr($this->scope[0]->declarations[0]->name->name, '··')) {
         $this->warn('D201', 'No api doc for '.$this->scope[0]->declarations[0]->name->name.'\'s constructor', $constructor);
       }
 
-      $op->concat(implode(' ', Modifiers::namesOf($method->modifiers)));
-      $op->concat(' function __construct');
+      $op->append(implode(' ', Modifiers::namesOf($method->modifiers)));
+      $op->append(' function __construct');
       
       // Begin
       $this->enter(new MethodScope());
       $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
-      // oel_set_source_file($cop, $this->origins[0]);
       array_unshift($this->method, $constructor);
 
       // Arguments, initializations, body
@@ -1197,8 +1222,7 @@
         unset($this->inits[0][FALSE]);
       }
       $this->emitAll($op, (array)$constructor->body);
-      $op->concat(';');   // XXX FIXME!!! This should not be necessary!!! XXX
-      $op->concat('}');
+      $op->append('}');
       
       // Finalize
       $this->metadata[0][1]['__construct']= array(
@@ -1227,12 +1251,12 @@
      */
     protected function registerClass($op, $name, $qualified) {
       foreach ($this->metadata[0]['EXT'] as $method => $for) {   // HACK, this should be accessible in scope
-        $op->concat('xp::$registry[\''.$for.'::'.$method.'\']= new ReflectionMethod(\''.$name.'\', \''.$method.'\');');
+        $op->append('xp::$registry[\''.$for.'::'.$method.'\']= new ReflectionMethod(\''.$name.'\', \''.$method.'\');');
       }
       unset($this->metadata[0]['EXT']);
-      $op->concat('xp::$registry[\'class.'.$name.'\']= \''.$qualified.'\';');
-      $op->concat('xp::$registry[\'classloader.'.$qualified.'\']= \'compiled://\';');
-      $op->concat('xp::$registry[\'details.'.$qualified.'\']= '.var_export($this->metadata[0], TRUE).';');
+      $op->append('xp::$registry[\'class.'.$name.'\']= \''.$qualified.'\';');
+      $op->append('xp::$registry[\'classloader.'.$qualified.'\']= \'compiled://\';');
+      $op->append('xp::$registry[\'details.'.$qualified.'\']= '.var_export($this->metadata[0], TRUE).';');
       
     }
 
@@ -1246,21 +1270,21 @@
       if ('this' === $property->name && $property->arguments) {
 
         // Indexer - fixme: Maybe use IndexerPropertyNode?
-        $this->scope[0]->declarations[0]->implements[]= 'ArrayAccess';
-        
-        foreach (array(
+        $defines= array(
           'get'   => array('offsetGet', $property->arguments),
           'set'   => array('offsetSet', array_merge($property->arguments, array(array('name' => 'value', 'type' => $property->type)))),
           'isset' => array('offsetExists', $property->arguments),
           'unset' => array('offsetUnset', $property->arguments),
-        ) as $handler => $def) {
-          $op->concat('function '.$def[0]);
-          $this->emitArguments($op, $def[1], '{');
+        );
+        
+        foreach ($property->handlers as $name => $statements) {   
+          $op->append('function '.$defines[$name][0]);
+          $this->emitArguments($op, $defines[$name][1], '{');
           $this->enter(new MethodScope());
           $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
-          $this->emitAll($op, $property->handlers[$handler]);
+          $this->emitAll($op, $statements);
           $this->leave();
-          $op->concat('}');
+          $op->append('}');
         }
       } else {
         foreach ($property->handlers as $name => $statements) {   
@@ -1289,33 +1313,41 @@
     protected function emitProperties($op, array $properties) {
       static $mangled= '··name';
       
-      if (isset($properties['get'])) {
-        $op->concat('function __get($'.$mangled.') {');
+      if (!empty($properties['get'])) {
+        $op->append('function __get($'.$mangled.') {');
         $this->enter(new MethodScope());
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
-        // oel_set_source_file($gop, $this->origins[0]);
         foreach ($properties['get'] as $name => $statements) {
-          $op->concat('if (\''.$name.'\' === $'.$mangled.') {');
+          $op->append('if (\''.$name.'\' === $'.$mangled.') {');
           $this->emitAll($op, (array)$statements);
-          $op->concat('} else ');
+          $op->append('} else ');
         }
-        $op->concat('return parent::__get($'.$mangled.'); }');
+        $op->append('return parent::__get($'.$mangled.'); }');
         $this->leave();
       }
-      if (isset($properties['set'])) {
-        $op->concat('function __set($'.$mangled.', $value) {');
+      if (!empty($properties['set'])) {
+        $op->append('function __set($'.$mangled.', $value) {');
         $this->enter(new MethodScope());
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
-        // oel_set_source_file($gop, $this->origins[0]);
         foreach ($properties['set'] as $name => $statements) {
-          $op->concat('if (\''.$name.'\' === $'.$mangled.') {');
+          $op->append('if (\''.$name.'\' === $'.$mangled.') {');
           $this->emitAll($op, (array)$statements);
-          $op->concat('} else ');
+          $op->append('} else ');
         }
-        $op->concat('parent::__set($'.$mangled.', $value); }');
+        $op->append('parent::__set($'.$mangled.', $value); }');
         $this->leave();
       }
     }
+
+    /**
+     * Emit an enum member
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.EnumMemberNode member
+     */
+    protected function emitEnumMember($op, EnumMemberNode $member) {
+      $op->append('public static $'.$member->name.';');
+    }  
     
     /**
      * Emit a class field
@@ -1336,18 +1368,18 @@
       }
       
       if (Modifiers::isPublic($field->modifiers)) {
-        $op->concat('public ');
+        $op->append('public ');
       } else if (Modifiers::isProtected($field->modifiers)) {
-        $op->concat('protected ');
+        $op->append('protected ');
       } else if (Modifiers::isPrivate($field->modifiers)) {
-        $op->concat('private ');
+        $op->append('private ');
       }
       if (Modifiers::isStatic($field->modifiers)) {
-        $op->concat('static ');
+        $op->append('static ');
       }
-      $op->concat('$'.$field->name);
-      $init && $op->concat('= ')->concat(var_export($init, TRUE));
-      $op->concat(';');
+      $op->append('$'.$field->name);
+      $init && $op->append('= ')->append(var_export($init, TRUE));
+      $op->append(';');
     }
 
     /**
@@ -1397,72 +1429,69 @@
       ));
 
       if (Modifiers::isAbstract($declaration->modifiers)) {
-        $op->concat('abstract ');
+        $op->append('abstract ');
         $abstract= TRUE;
       } else if (Modifiers::isFinal($declaration->modifiers)) {
-        $op->concat('final ');
+        $op->append('final ');
       }
-      $op->concat(' class '.$declaration->name->name.' extends '.$parentType->literal());
+      $op->append(' class '.$declaration->name->name.' extends '.$parentType->literal());
       array_unshift($this->metadata, array(array(), array()));
       array_unshift($this->properties, array('get' => array(), 'set' => array()));
 
       // Interfaces
       if ($declaration->implements) {
-        $op->concat(' implements ');
+        $op->append(' implements ');
         $s= sizeof($declaration->implements)- 1;
         foreach ($declaration->implements as $i => $type) {
-          $op->concat($this->resolveType($type, FALSE)->literal());
-          $i < $s && $op->concat(', ');
+          $op->append($this->resolveType($type, FALSE)->literal());
+          $i < $s && $op->append(', ');
         }
       }
       
       // Member declaration
-      $op->concat(' {');
-      foreach ($declaration->body['members'] as $i => $member) {
-        $op->concat('public static $'.$member->name.';');
-      }
+      $op->append(' {');
+      
+      // public static self[] values() { return parent::membersOf(__CLASS__) }
+      $op->append('public static function values() { return parent::membersOf(__CLASS__); }');
 
-      $op->concat('static function __static() {');
-      // oel_set_source_file($sop, $this->origins[0]);
-      foreach ($declaration->body['members'] as $i => $member) {
-        $op->concat('self::$'.$member->name.'= ');
+      // Members
+      $this->emitAll($op, (array)$declaration->body);
+      $this->emitProperties($op, $this->properties[0]);
+      
+      // Initialization
+      $op->append('static function __static() {');
+      foreach ($declaration->body as $i => $member) {
+        if (!$member instanceof EnumMemberNode) continue;
+        $op->append('self::$'.$member->name.'= ');
         if ($member->body) {
           if (!$abstract) {
             $this->error('E403', 'Only abstract enums can contain members with bodies ('.$member->name.')');
             // Continues so declaration is closed
           }
-          $op->concat('newinstance(__CLASS__, array(');
+          $op->append('newinstance(__CLASS__, array(');
         } else {
-          $op->concat('new self(');
+          $op->append('new self(');
         }
         if ($member->value) {
           $this->emitOne($op, $member->value);
         } else {
-          $op->concat($i);
+          $op->append($i);
         }
-        $op->concat(', \''.$member->name.'\')');
+        $op->append(', \''.$member->name.'\')');
         if ($member->body) {
-          $op->concat(', \'{ static function __static() { }');
-          $sop= new String('');
-          $this->emitAll($sop, $member->body['methods']);
-          $op->concat($sop->replace("'", "\'"));
-          $op->concat('}\');');
+          $op->append(', \'{ static function __static() { }');
+          $sop= new xp·compiler·emit·source·Buffer('', $op->line);
+          $this->emitAll($sop, $member->body);
+          $op->append($sop->replace("'", "\'"));
+          $op->append('}\');');
         } else {
-          $op->concat(';');
+          $op->append(';');
         }
       }
-      $op->concat('}');
-      
-      // public static self[] values() { return parent::membersOf(__CLASS__) }
-      $op->concat('public static function values() { return parent::membersOf(__CLASS__); }');
-
-      // Members
-      $this->emitAll($op, (array)$declaration->body['fields']);
-      $this->emitAll($op, (array)$declaration->body['methods']);
-      $this->emitProperties($op, $this->properties[0]);
+      $op->append('}');
 
       // Finish
-      $op->concat('}');
+      $op->append('}');
       
       $this->leave();
       $this->registerClass($op, $declaration->name->name, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
@@ -1480,28 +1509,32 @@
       if (!$declaration->comment) {
         $this->warn('D201', 'No api doc for interface '.$declaration->name->name, $declaration);
       }
-      if (isset($declaration->body['fields'])) {
-        $this->error('I403', 'Interfaces may not have field declarations', $declaration);
-        return;
+      
+      // Verify: The only type of node we want to find are methods
+      foreach ($declaration->body as $node) {
+        if (!$node instanceof MethodNode) {
+          $this->error('I403', 'Interfaces may not have field declarations', $declaration);
+          return;
+        }
       }
       $this->enter(new TypeDeclarationScope());    
 
       // Ensure parent interfaces are loaded
       $this->emitUses($op, (array)$declaration->parents);
 
-      $op->concat('interface '.$declaration->name->name);
+      $op->append('interface '.$declaration->name->name);
       array_unshift($this->metadata, array(array(), array()));
       if ($declaration->parents) {
-        $op->concat(' extends ');
+        $op->append(' extends ');
         $s= sizeof($declaration->parents)- 1;
         foreach ((array)$declaration->parents as $i => $type) {
-          $op->concat($this->resolveType($type, FALSE)->literal());
-          $i < $s && $op->concat(', ');
+          $op->append($this->resolveType($type, FALSE)->literal());
+          $i < $s && $op->append(', ');
         }
       }
-      $op->concat(' {');
-      $this->emitAll($op, (array)$declaration->body['methods']);
-      $op->concat('}');
+      $op->append(' {');
+      $this->emitAll($op, (array)$declaration->body);
+      $op->append('}');
       
       $this->leave();
       $this->registerClass($op, $declaration->name->name, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
@@ -1515,7 +1548,7 @@
      * @param   xp.compiler.ast.ClassNode declaration
      */
     protected function emitClass($op, ClassNode $declaration) {
-      if (!$declaration->comment && !strstr($declaration->name->name, '$')) {
+      if (!$declaration->comment && !strstr($declaration->name->name, '··')) {
         $this->warn('D201', 'No api doc for class '.$declaration->name->name, $declaration);
       }
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Object');
@@ -1529,55 +1562,41 @@
       ));
     
       if (Modifiers::isAbstract($declaration->modifiers)) {
-        $op->concat('abstract ');
+        $op->append('abstract ');
       } else if (Modifiers::isFinal($declaration->modifiers)) {
-        $op->concat('final ');
+        $op->append('final ');
       }
-      $op->concat(' class '.$declaration->name->name.' extends '.$parentType->literal());
+      $op->append(' class '.$declaration->name->name.' extends '.$parentType->literal());
       array_unshift($this->metadata, array(array(), array()));
       array_unshift($this->properties, array());
       array_unshift($this->inits, array(FALSE => array(), TRUE => array()));
       
-      // Members
-      $body= new String();
-      isset($declaration->body['fields']) && $this->emitAll($body, $declaration->body['fields']);
-      isset($declaration->body['methods']) && $this->emitAll($body, $declaration->body['methods']);
-      $this->emitProperties($body, $this->properties[0]);
-
+      // Check if we need to implement ArrayAccess
+      foreach ($declaration->body as $node) {
+        if ($node instanceof PropertyNode && 'this' === $node->name && $node->arguments) {
+          $declaration->implements[]= 'ArrayAccess';
+        }
+      }
+      
       // Interfaces
       if ($declaration->implements) {
-        $op->concat(' implements ');
+        $op->append(' implements ');
         $s= sizeof($declaration->implements)- 1;
         foreach ($declaration->implements as $i => $type) {
-          $op->concat($type instanceof TypeName ? $this->resolveType($type, FALSE)->literal() : $type);
-          $i < $s && $op->concat(', ');
+          $op->append($type instanceof TypeName ? $this->resolveType($type, FALSE)->literal() : $type);
+          $i < $s && $op->append(', ');
         }
       }
       
-      $op->concat("{\n");
-      $op->concat($body);
-
-      // Static initializer blocks (array<Statement[]>)
-      if (isset($declaration->body['static']) || $this->inits[0][TRUE]) {
-        $op->concat('static function __static() {');
-        // oel_set_source_file($sop, $this->origins[0]);
-        foreach ($this->inits[0][TRUE] as $field) {
-          $this->emitOne($op, new AssignmentNode(array(
-            'variable'   => new ClassMemberNode(array('class' => new TypeName('self'), 'member' => new VariableNode($field->name))),
-            'expression' => $field->initialization,
-            'free'       => TRUE,
-            'op'         => '=',
-          )));
-        }
-        foreach ((array)$declaration->body['static'] as $statements) {
-          $this->emitAll($op, (array)$statements);
-        }
-        $op->concat('}');
-      }
+      // Members
+      $op->append("{\n");
+      isset($declaration->body) && $this->emitAll($op, $declaration->body);
+      $this->emitProperties($op, $this->properties[0]);
       
-      // Generate a constructor if initializations are available.
-      // They will have already been emitted if a constructor exists!
       if ($this->inits[0][FALSE]) {
+
+        // Generate a constructor if initializations are available.
+        // They will have already been emitted if a constructor exists!
         if ($parentType->hasConstructor()) {
           $arguments= array();
           $parameters= array();
@@ -1605,10 +1624,15 @@
           'comment'      => '(Generated)',
           'position'     => $declaration->position
         )));
+      } else if ($this->inits[0][TRUE]) {
+
+        // Generate a static initializer if initializations are available.
+        // They will have already been emitted if a static initializer exists!
+        $this->emitOne($op, new StaticInitializerNode(NULL));
       }
       
       // Finish
-      $op->concat('}');
+      $op->append('}');
       
       $this->metadata[0]['class']= array(
         DETAIL_COMMENT => preg_replace('/\n\s+\* ?/', "\n", "\n ".$declaration->comment)
@@ -1629,7 +1653,7 @@
      */
     protected function emitInstanceOf($op, InstanceOfNode $instanceof) {
       $this->emitOne($op, $instanceof->expression);
-      $op->concat(' instanceof ')->concat($this->resolveType($instanceof->type)->literal());
+      $op->append(' instanceof ')->append($this->resolveType($instanceof->type)->literal());
     }
 
     /**
@@ -1639,7 +1663,7 @@
      * @param   xp.compiler.ast.CloneNode clone
      */
     protected function emitClone($op, CloneNode $clone) {
-      $op->concat('clone ');
+      $op->append('clone ');
       $this->emitOne($op, $clone->expression);
     }
 
@@ -1710,12 +1734,12 @@
       $this->finalizers[0] && $this->emitOne($op, $this->finalizers[0]);
       
       if (!$return->expression) {
-        $op->concat('return');
+        $op->append('return');
       } else {
-        $op->concat('return ');
+        $op->append('return ');
         $this->emitOne($op, $return->expression);
       }
-      $op->concat(';');
+      $op->append(';');
     }
     
     /**
@@ -1731,7 +1755,7 @@
       // Search emission method
       $target= 'emit'.substr(get_class($node), 0, -strlen('Node'));
       if (method_exists($this, $target)) {
-        // oel_set_source_line($op, $node->position[0]);
+        $op->position($node->position);
         $this->cat && $this->cat->debugf(
           '@%-3d Emit %s(free= %d): %s',
           $node->position[0], 
@@ -1745,7 +1769,7 @@
           $this->error('0500', $e->toString(), $node);
           return 0;
         }
-        $node->free && $op->concat(';');
+        $node->free && $op->append(';');
         return 1;
       } else {
         $this->error('0422', 'Cannot emit '.$node->getClassName(), $node);
@@ -1799,7 +1823,7 @@
       );
       
       // Create and initialize op array
-      $bytes= new String('');
+      $bytes= new xp·compiler·emit·source·Buffer('', 1);
       // oel_set_source_file($op, $tree->origin);
       // oel_set_source_line($op, 0);
       

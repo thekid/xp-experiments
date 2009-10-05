@@ -125,13 +125,11 @@
           new TypeName('lang.Object'),
           NULL,
           array(
-            'methods' => array(
-              new ConstructorNode(array(
-              )),
-              new MethodNode(array(
-                'name' => 'substring'
-              ))
-            )
+            new ConstructorNode(array(
+            )),
+            new MethodNode(array(
+              'name' => 'substring'
+            ))
           )
         )),
         $this->objectClass()
@@ -152,11 +150,9 @@
           NULL,
           NULL,
           array(
-            'methods' => array(
-              new MethodNode(array(
-                'name' => 'equals'
-              ))
-            )
+            new MethodNode(array(
+              'name' => 'equals'
+            ))
           )
         ))
       );

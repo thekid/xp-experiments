@@ -38,18 +38,16 @@
           'type'       => new TypeName('Runnable'),
           'parameters' => NULL,
           'body'       => array(
-            'methods'    => array(
-              new MethodNode(array(
-                'modifiers'   => MODIFIER_PUBLIC,
-                'annotations' => NULL,
-                'name'        => 'run',
-                'returns'     => new TypeName('void'),
-                'arguments'   => NULL,
-                'throws'      => NULL,
-                'body'        => NULL,
-                'extension'   => NULL,
-              ))
-            )
+            new MethodNode(array(
+              'modifiers'   => MODIFIER_PUBLIC,
+              'annotations' => NULL,
+              'name'        => 'run',
+              'returns'     => new TypeName('void'),
+              'arguments'   => NULL,
+              'throws'      => NULL,
+              'body'        => NULL,
+              'extension'   => NULL,
+            ))
           )
         ))),
         $this->parse('new Runnable() {
