@@ -89,12 +89,16 @@ class XpIdePlugin(gedit.Plugin):
         ma_list= ma_dialog.run()
         if (ma_list is None): return
 
+        confs= []
         for r in ma_list:
-            (ma_name, ma_type, ma_get, ma_set)= r
-            if (not ma_get): del l_get[ma_name]
-            if (not ma_set): del l_set[ma_name]
+            (ma_name, ma_type, ma_set, ma_get)= r
+            accs= []
+            if (ma_set): accs.append('set')
+            if (ma_get): accs.append('get')
+            confs.append(ma_name + ':' + ma_type + ':' + '+'.join(accs))
 
-        print(str((l_get, l_set)))
+        (returncode, result, error)= self.xpide(window, 'createAccessors', os.linesep.join(confs))
+        window.get_active_document().insert_at_cursor(result)
 
     def activate(self, window):
         self._ui= XpIdeUi(self, window)

@@ -27,10 +27,20 @@
       return $this->text == $o->getText();
     }
 
+    /**
+     * set member $text
+     * 
+     * @param string text
+     */
     public function setText($text) {
       $this->text= $text;
     }
 
+    /**
+     * get member $text
+     * 
+     * @return string
+     */
     public function getText() {
       return $this->text;
     }

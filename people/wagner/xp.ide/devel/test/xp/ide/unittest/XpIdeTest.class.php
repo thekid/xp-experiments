@@ -60,8 +60,22 @@
      * Test ide class
      *
      */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function createAccessorsNoSet() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('in:string'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createSetter('in', 'string'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
+     * Test ide class
+     *
+     */
     #[@test]
-    public function createAccessorsSetOne() {
+    public function createSettterOne() {
       $this->ide->getIn()->setStream(new MemoryInputStream('in:string:set'));
       $this->ide->createAccessors();
       $this->assertEquals(
@@ -75,12 +89,103 @@
      *
      */
     #[@test]
-    public function createAccessorsSetTwo() {
+    public function createSetterTwo() {
       $this->ide->getIn()->setStream(new MemoryInputStream('in:string:set'."\n".'out:string:set'));
       $this->ide->createAccessors();
       $this->assertEquals(
-        $this->createSetter('in', 'string').PHP_EOL.
+        $this->createSetter('in', 'string').
         $this->createSetter('out', 'string'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createGetterOne() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('in:string:get'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createGetter('in', 'string'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createGetterTwo() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('in:string:get'."\n".'out:string:get'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createGetter('in', 'string').
+        $this->createGetter('out', 'string'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createSetterGetterOne() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('in:string:set+get'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createSetter('in', 'string').
+        $this->createGetter('in', 'string'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createSetterGetterTwo() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('in:string:set+get'.PHP_EOL.'out:string:set+get'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createSetter('in', 'string').
+        $this->createGetter('in', 'string').
+        $this->createSetter('out', 'string').
+        $this->createGetter('out', 'string'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createSetterGetterInt() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('count:integer:set+get'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createSetter('count', 'integer').
+        $this->createGetter('count', 'integer'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createSetterGetterBool() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('final:bool:set+get'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createSetter('final', 'bool').
+        $this->createGetter('final', 'bool'),
         $this->ide->getOut()->getStream()->getBytes()
       );
     }
@@ -95,13 +200,33 @@
       return sprintf(
         '    /**'.PHP_EOL.
         '     * set member $%1$s'.PHP_EOL.
-        '     *'.PHP_EOL.
-        '     * @param %3s %1$s'.PHP_EOL.
+        '     * '.PHP_EOL.
+        '     * @param %3$s %1$s'.PHP_EOL.
         '     */'.PHP_EOL.
         '    public function set%2$s($%1$s) {'.PHP_EOL.
         '      $this->%1$s= $%1$s;'.PHP_EOL.
-        '    }'.PHP_EOL,
+        '    }'.PHP_EOL.PHP_EOL,
         $name, ucfirst($name), $type
+      );
+    }
+
+    /**
+     * create a getter
+     *
+     * @param string name
+     * @param string type
+     */
+    private function createGetter($name, $type) {
+      return sprintf(
+        '    /**'.PHP_EOL.
+        '     * get member $%1$s'.PHP_EOL.
+        '     * '.PHP_EOL.
+        '     * @return %3$s'.PHP_EOL.
+        '     */'.PHP_EOL.
+        '    public function %4$s%2$s() {'.PHP_EOL.
+        '      return $this->%1$s;'.PHP_EOL.
+        '    }'.PHP_EOL.PHP_EOL,
+        $name, ucfirst($name), $type, ('bool' == $type ? 'is' : 'get')
       );
     }
 

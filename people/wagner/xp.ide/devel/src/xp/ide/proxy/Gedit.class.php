@@ -103,5 +103,13 @@
       foreach ($mis as $mi) $this->out->write(implode(':', $mi).PHP_EOL);
       return $mgs;
     }
+
+    /**
+     * create accessors
+     *
+     */
+    public function createAccessors() {
+      return $this->ide->createAccessors();
+    }
   }
 ?>

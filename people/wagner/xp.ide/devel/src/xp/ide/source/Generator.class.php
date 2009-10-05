@@ -38,6 +38,14 @@
       $this->out= new StringWriter($this->output_stream);
     }
 
+    public function setIndent($indent) {
+      $this->indent= $indent;
+    }
+
+    public function getIndent() {
+      return $this->indent;
+    }
+
     private function indention() {
       $this->out->write(str_repeat($this->iSign, $this->indent));
     }
@@ -86,7 +94,10 @@
         }
       }
       $this->out->write(') {');
-      if ($c= $e->getContent()) $this->generateContent($c);
+      if ($c= $e->getContent()) {
+        $this->generateContent($c);
+        $this->indention();
+      }
       $this->out->write('}');
     }
 
@@ -302,7 +313,6 @@
     }
 
     private function generateApidoc($a) {
-      $this->indention();
       $a->accept($this);
       $this->out->writeLine();
     }

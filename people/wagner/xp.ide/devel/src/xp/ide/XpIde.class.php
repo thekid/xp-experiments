@@ -16,8 +16,9 @@
     'xp.ide.info.MemberInfoVisitor',
     'xp.ide.resolve.Response',
     'xp.ide.completion.Response',
-    'xp.ide.source.element.Classmethod',
-    'xp.ide.source.Scope'
+    'xp.ide.source.snippet.GetterFactory',
+    'xp.ide.source.snippet.Setter',
+    'xp.ide.source.Generator'
   );
 
   /**
@@ -163,6 +164,7 @@
     /**
      * create accessors
      *
+     * @throw lang.IllegalArgumentException
      */
     #[@action(name='createAccessors')]
     public function createAccessors() {
@@ -171,11 +173,25 @@
       if (!$confs) return;
       $confs= explode(PHP_EOL, $confs);
       foreach ($confs as $conf) {
-        list($name, $type, $acc)= explode(':', $conf);
-        $me= new xp搏de新ource搪lement嵩lassmethod($name);
-        var_dump($me);
+        $gen= new xp搏de新ource廉enerator($this->out);
+        $gen->setIndent(2);
+        $parts= explode(':', $conf);
+        if (3 !== count($parts)) throw new IllegalArgumentException(sprintf('cannot parse "%s" into three pieces', $conf));
+        list($name, $type, $accs)= $parts;
+        foreach (explode('+', $accs) as $acc) switch ($acc) {
+          case 'set':
+          $me= new xp搏de新ource新nippet惹etter($name, $type);
+          $me->accept($gen);
+          $this->out->write(PHP_EOL.PHP_EOL);
+          break;
+
+          case 'get':
+          $me= xp搏de新ource新nippet廉etterFactory::create($name, $type);
+          $me->accept($gen);
+          $this->out->write(PHP_EOL.PHP_EOL);
+          break;
+        }
       }
     }
-
   }
 ?>
