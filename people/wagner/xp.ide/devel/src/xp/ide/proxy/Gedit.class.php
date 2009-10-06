@@ -92,10 +92,11 @@
         with ($i= $m->getInit()); {
           if (is_null($i)) $mi[]= 'none';
           else if ($i instanceof xp·ide·source·element·Array) $mi[]= 'array';
-          else if (is_numeric($i)) $mi[]= 'number';
+          else if (is_numeric($i) &&($i == (int)$i)) $mi[]= 'integer';
+          else if (is_numeric($i)) $mi[]= 'double';
           else if ('NULL' == $i)   $mi[]= 'object';
-          else if ('TRUE' == strToUpper($i)) $mi[]= 'bool';
-          else if ('FALSE' == strToUpper($i)) $mi[]= 'bool';
+          else if ('TRUE' == strToUpper($i)) $mi[]= 'boolean';
+          else if ('FALSE' == strToUpper($i)) $mi[]= 'boolean';
           else $mi[]= 'string';
         }
         $mis[]= $mi;

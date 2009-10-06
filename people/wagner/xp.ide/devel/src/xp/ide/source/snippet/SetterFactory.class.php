@@ -7,7 +7,8 @@
 
   uses(
     'xp.ide.source.snippet.Setter',
-    'xp.ide.source.snippet.SetterArray'
+    'xp.ide.source.snippet.SetterArray',
+    'xp.ide.source.snippet.SetterObject'
   );
 
   /**
@@ -23,8 +24,15 @@
         case 'array':
         return new xp搏de新ource新nippet惹etterArray($name, $type);
 
-        default:
+        case 'integer':
+        case 'double':
+        case 'string':
+        case 'boolean':
         return new xp搏de新ource新nippet惹etter($name, $type);
+
+        default:
+        return new xp搏de新ource新nippet惹etterObject($name, $type);
+
       }
     }
 

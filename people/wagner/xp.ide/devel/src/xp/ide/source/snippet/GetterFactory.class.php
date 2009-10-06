@@ -20,7 +20,6 @@
   
     public static function create($name, $type) {
       switch ($type) {
-        case 'bool':
         case 'boolean':
         return new xp·ide·source·snippet·GetterBool($name, $type);
 

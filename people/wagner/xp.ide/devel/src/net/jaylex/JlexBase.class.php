@@ -44,6 +44,8 @@
       'MATCH' => "Error: Unmatched input.\n"
     );
 
+    public $fileName= '';
+
     protected
       $yy_reader= NULL,
       $yy_buffer= "",
@@ -67,6 +69,7 @@
      */
     public function __construct(InputStream $stream) {
       $this->yy_reader= $stream;
+      $this->fileName= xp::stringOf($stream);
     }
 
     /**

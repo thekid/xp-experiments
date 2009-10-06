@@ -181,11 +181,41 @@
      */
     #[@test]
     public function createSetterGetterBool() {
-      $this->ide->getIn()->setStream(new MemoryInputStream('final:bool:set+get'));
+      $this->ide->getIn()->setStream(new MemoryInputStream('final:boolean:set+get'));
       $this->ide->createAccessors();
       $this->assertEquals(
-        $this->createSetter('final', 'bool').
-        $this->createGetter('final', 'bool'),
+        $this->createSetter('final', 'boolean').
+        $this->createGetter('final', 'boolean'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createSetterGetterObject() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('root:lang.Object:set+get'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createSetter('root', 'lang.Object', 'Object').
+        $this->createGetter('root', 'lang.Object'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createSetterGetterNamespaceObject() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('ide:xp.ide.XpIde:set+get'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createSetter('ide', 'xp.ide.XpIde', 'xp·ide·XpIde').
+        $this->createGetter('ide', 'xp.ide.XpIde'),
         $this->ide->getOut()->getStream()->getBytes()
       );
     }
@@ -242,7 +272,7 @@
         '    public function %4$s%2$s() {'.PHP_EOL.
         '      return $this->%1$s;'.PHP_EOL.
         '    }'.PHP_EOL.PHP_EOL,
-        $name, ucfirst($name), $type, ('bool' == $type ? 'is' : 'get')
+        $name, ucfirst($name), $type, ('boolean' == $type ? 'is' : 'get')
       );
     }
 
