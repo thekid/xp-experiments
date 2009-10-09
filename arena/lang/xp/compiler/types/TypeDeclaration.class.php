@@ -78,6 +78,18 @@
     }
 
     /**
+     * Returns whether this type is enumerable (that is: usable in foreach)
+     *
+     * @return  bool
+     */
+    public function isEnumerable() {
+      foreach ($this->tree->declaration->implements as $interface) {
+        // TBI
+      }
+      return FALSE;
+    }
+
+    /**
      * Returns whether a constructor exists
      *
      * @return  bool
