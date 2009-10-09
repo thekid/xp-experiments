@@ -28,11 +28,13 @@
      */
     public function resolve() {
       if (!defined($this->value)) {
-
-        // FIXME: Lookup also in some kind of compilation context
         throw new IllegalStateException('Undefined constant '.$this->value);
       }
-      return constant($this->value);
+      $resolved= constant($this->value);
+      if (is_resource($resolved) || is_object($resolved)) {
+        throw new IllegalStateException('Constant '.$this->value.' resolves to non-primitive type '.xp::typeOf($resolved));
+      }
+      return $resolved;
     }
   }
 ?>
