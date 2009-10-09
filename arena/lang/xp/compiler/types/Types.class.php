@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.types.Method', 'xp.compiler.types.Constructor', 'xp.compiler.types.Field');
+  uses(
+    'xp.compiler.types.Method', 
+    'xp.compiler.types.Constructor', 
+    'xp.compiler.types.Field'
+  );
 
   /**
    * Abstract base class
@@ -12,12 +16,13 @@
    */
   abstract class Types extends Object {
     const 
+      PRIMITIVE_KIND    = 0,
       CLASS_KIND        = 1,
       INTERFACE_KIND    = 2,
       ENUM_KIND         = 3;
     
     const
-      UNKNOWN_KIND      = 0;
+      UNKNOWN_KIND      = -1;
 
     /**
      * Returns name
@@ -46,6 +51,13 @@
      * @return  string
      */
     public abstract function kind();
+
+    /**
+     * Returns whether this type is enumerable (that is: usable in foreach)
+     *
+     * @return  bool
+     */
+    public abstract function isEnumerable();
 
     /**
      * Returns whether a constructor exists
