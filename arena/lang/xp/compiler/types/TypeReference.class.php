@@ -11,16 +11,16 @@
    *
    */
   class TypeReference extends Types {
-    protected $name= '';
+    protected $type= NULL;
     
     /**
      * Constructor
      *
-     * @param   string name
+     * @param   xp.compiler.types.TypeName
      * @param   int kind
      */
-    public function __construct($name, $kind= parent::CLASS_KIND) {
-      $this->name= $name;
+    public function __construct(TypeName $type, $kind= parent::CLASS_KIND) {
+      $this->type= $type;
       $this->kind= $kind;
     }
 
@@ -39,7 +39,7 @@
      * @return  string
      */
     public function name() {
-      return $this->name;
+      return $this->type->name;
     }
 
     /**
@@ -48,7 +48,7 @@
      * @return  string
      */
     public function literal() {
-      return $this->name;
+      return $this->type->name;
     }
 
     /**
@@ -58,6 +58,15 @@
      */
     public function kind() {
       return $this->kind;
+    }
+
+    /**
+     * Returns whether this type is enumerable (that is: usable in foreach)
+     *
+     * @return  bool
+     */
+    public function isEnumerable() {
+      return $this->type->isArray() || $this->type->isMap();
     }
 
     /**
