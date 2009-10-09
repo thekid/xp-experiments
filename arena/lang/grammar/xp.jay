@@ -56,7 +56,8 @@
     'xp.compiler.ast.CloneNode',
     'xp.compiler.ast.IfNode',
     'xp.compiler.ast.ElseNode',
-    'xp.compiler.ast.StaticInitializerNode'
+    'xp.compiler.ast.StaticInitializerNode',
+    'xp.compiler.ast.LambdaNode'
   );
 %}
 
@@ -738,6 +739,14 @@ expression:
       $$= $yyLex->create(new InstanceOfNode()); 
       $$->expression= $1; 
       $$->type= $3; 
+    }
+  | lambda
+;
+
+lambda:
+    T_VARIABLE T_DOUBLE_ARROW expression %prec T_INC {
+      $3->free= TRUE;
+      $$= $yyLex->create(new LambdaNode(array(new VariableNode($1)), array($3)));
     }
 ;
 

@@ -1107,6 +1107,26 @@
     }    
 
     /**
+     * Emit a lambda
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.LambdaNode lambda
+     */
+    protected function emitLambda($op, LambdaNode $lambda) {
+      $op->append('create_function(\'');
+      $s= sizeof($lambda->parameters)- 1;
+      foreach ($lambda->parameters as $i => $param) {
+        $op->append('$')->append($param->name);
+        if ($i < $s) $s->append(',');
+      }
+      $op->append('\', \'');
+      $sop= new xp·compiler·emit·source·Buffer('', $op->line);
+      $this->emitAll($sop, $lambda->statements);
+      $op->append($sop->replace("'", "\'"));
+      $op->append('\')');
+    }
+
+    /**
      * Emit a method
      *
      * @param   resource op
