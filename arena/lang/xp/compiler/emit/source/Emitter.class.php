@@ -216,7 +216,7 @@
       try {
         $op->append(var_export($const->resolve(), TRUE));
       } catch (IllegalStateException $e) {
-        $this->warn('T201', 'Constant lookup for '.$const->value.' deferred until runtime', $const);
+        $this->warn('T201', 'Constant lookup for '.$const->value.' deferred until runtime: '.$e->getMessage(), $const);
         $op->append($const->value);
       }
     }
@@ -622,7 +622,7 @@
         $it= $t->arrayComponentType();
       } else if ($t->isVariable()) {
         $it= TypeName::$VAR;
-      } else if ('lang.Iterable' === $this->resolveType($t)->name()) {
+      } else if ($this->resolveType($t)->isEnumerable()) {
         $it= isset($t->components[0]) ? $t->components[0] : TypeName::$VAR;;
       } else {
         $this->warn('T300', 'Illegal type '.$t->toString().' for loop expression '.$loop->expression->getClassName().'['.$loop->expression->hashCode().']', $loop);
@@ -1154,7 +1154,7 @@
       // Finalize
       $this->metadata[0][1][$method->name]= array(
         DETAIL_ARGUMENTS    => $this->parametersAsMetadata((array)$method->arguments),
-        DETAIL_RETURNS      => $method->returns->name,
+        DETAIL_RETURNS      => $this->resolveType($method->returns)->literal(),
         DETAIL_THROWS       => array(),
         DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$method->comment),
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$method->annotations)
@@ -1347,6 +1347,12 @@
      */
     protected function emitEnumMember($op, EnumMemberNode $member) {
       $op->append('public static $'.$member->name.';');
+
+      // Add field metadata (type, stored in @type annotation, see
+      // lang.reflect.Field and lang.XPClass::detailsForField())
+      $this->metadata[0][0][$member->name]= array(
+        DETAIL_ANNOTATIONS  => array('type' => $this->resolveType(new TypeName('self'))->name())
+      );
     }  
     
     /**
@@ -1380,6 +1386,12 @@
       $op->append('$'.$field->name);
       $init && $op->append('= ')->append(var_export($init, TRUE));
       $op->append(';');
+
+      // Add field metadata (type, stored in @type annotation, see
+      // lang.reflect.Field and lang.XPClass::detailsForField())
+      $this->metadata[0][0][$field->name]= array(
+        DETAIL_ANNOTATIONS  => array('type' => $this->resolveType($field->type)->name())
+      );
     }
 
     /**
@@ -1822,7 +1834,7 @@
         return $this->scope[0]->resolveType($t);
       } catch (ResolveException $e) {
         $this->error('R'.$e->getKind(), $e->compoundMessage());
-        return new TypeReference($t->name, Types::UNKNOWN_KIND);
+        return new TypeReference($t, Types::UNKNOWN_KIND);
       }
     }
 
