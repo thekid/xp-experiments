@@ -1,0 +1,40 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+import native standard.call_user_func;
+
+/**
+ * Demonstrates lambdas
+ *
+ */
+public class Lambda {
+  protected string[] $elements;
+
+  /**
+   * Constructor
+   *
+   */
+  public __construct(string... $args) {
+    $this.elements= $args;
+  }
+  
+  /**
+   * Calls block for each element
+   *
+   */
+  public void each(var $block) {
+    foreach ($element in $this.elements) {
+      call_user_func($block, $element);   // FIXME: $bock() raises a parse error
+    }
+  }
+
+  /**
+   * Entry point method
+   *
+   */
+  public static void main(string[] $args) {
+    new self($args).each($e => util.cmd.Console::writeLine($e));
+  }
+}
