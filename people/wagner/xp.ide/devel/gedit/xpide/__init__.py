@@ -91,11 +91,13 @@ class XpIdePlugin(gedit.Plugin):
 
         confs= []
         for r in ma_list:
-            (ma_name, ma_type, ma_set, ma_get)= r
+            (ma_name, ma_type, ma_set, ma_get, ma_xtype, ma_edit, ma_bg)= r
             accs= []
             if (ma_set): accs.append('set')
             if (ma_get): accs.append('get')
-            confs.append(ma_name + ':' + ma_type + ':' + '+'.join(accs))
+            if (ma_type in ['object']): ma_type= ma_xtype
+            print str((':'.join([ma_name, ma_type, '+'.join(accs)])))
+            confs.append(':'.join([ma_name, ma_type, '+'.join(accs)]))
 
         (returncode, result, error)= self.xpide(window, 'createAccessors', os.linesep.join(confs))
         window.get_active_document().insert_at_cursor(result)
