@@ -66,6 +66,18 @@
         return parent::CLASS_KIND;
       }
     }
+
+    /**
+     * Returns whether this type is enumerable (that is: usable in foreach)
+     *
+     * @return  bool
+     */
+    public function isEnumerable() {
+      return (
+        $this->class->_reflect->implementsInterface('Iterator') || 
+        $this->class->_reflect->implementsInterface('IteratorAggregate')
+      );
+    }
     
     /**
      * Create a type name object from a type name string. Corrects old 
