@@ -801,6 +801,8 @@ comparison:
   | expression T_GE expression         /* >= */ { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
   | expression T_EQUALS expression     /* == */ { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
   | expression T_NOT_EQUALS expression /* != */ { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression T_EQUALS '=' expression       /* === */ { $$= array('lhs' => $1, 'rhs' => $4, 'op' => $2.'='); }
+  | expression T_NOT_EQUALS '=' expression   /* !== */ { $$= array('lhs' => $1, 'rhs' => $4, 'op' => $2.'='); }
 ;
 
 binary_operation: 
