@@ -23,21 +23,21 @@
       $this->fixture= $this->define('class', 'AnnotationsFor'.$this->name, NULL, '{
       
         [@test]
-        public function getAll() { }
+        public void getAll() { }
         
         [@test, @ignore("Risky")]
-        public function deleteAll() { }
+        public void deleteAll() { }
 
         [@test, @limit(time = 0.1)]
-        public function updateAll() { }
+        public void updateAll() { }
 
         // TODO: Support this grammatically
         //
         // [@test, @expect(lang.FormatException::class)]
-        // public function findBy() { }
+        // public void findBy() { }
 
         [@restricted(roles = ["admin", "root"])]
-        public function reset() { }
+        public void reset() { }
       }');
     }
     
