@@ -201,6 +201,9 @@
      */
     public function resolveType(TypeName $name, $register= TRUE) {
       $cl= ClassLoader::getDefault();
+      if (!$name->isClass()) {
+        return new TypeReference($name, Types::PRIMITIVE_KIND);
+      }
       if ('self' === $name->name || ($this->declarations && $name->name === $this->declarations[0]->name->name)) {
         switch ($decl= $this->declarations[0]) {
           case $decl instanceof ClassNode: 
@@ -224,10 +227,10 @@
           case $decl instanceof EnumNode:
             return $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Enum'));
           default:
-            return new TypeReference('parent', Types::UNKNOWN_KIND);
+            return new TypeReference($name, Types::UNKNOWN_KIND);
         }
       } else if ('xp' === $name->name) {
-        return new TypeReference($name->name, Types::UNKNOWN_KIND);
+        return new TypeReference($name, Types::UNKNOWN_KIND);
       } else if (strpos($name->name, '.')) {
         $qualified= $name->name;
       } else if (isset($this->imports[$name->name])) {
