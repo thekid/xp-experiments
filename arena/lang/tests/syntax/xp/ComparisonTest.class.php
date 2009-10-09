@@ -28,6 +28,36 @@
     }
 
     /**
+     * Test identity comparison <tt>$i === 10</tt>
+     *
+     */
+    #[@test]
+    public function identity() {
+      $this->assertEquals(array(new ComparisonNode(array(
+        'lhs'           => new VariableNode('i'),
+        'rhs'           => new IntegerNode(array('value' => '10')),
+        'op'            => '==='
+      ))), $this->parse('
+        $i === 10;
+      '));
+    }
+
+    /**
+     * Test negative identity comparison <tt>$i !== 10</tt>
+     *
+     */
+    #[@test]
+    public function notIdentity() {
+      $this->assertEquals(array(new ComparisonNode(array(
+        'lhs'           => new VariableNode('i'),
+        'rhs'           => new IntegerNode(array('value' => '10')),
+        'op'            => '!=='
+      ))), $this->parse('
+        $i !== 10;
+      '));
+    }
+
+    /**
      * Test equality comparison <tt>-10 == $i</tt>
      *
      */
