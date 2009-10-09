@@ -3,9 +3,9 @@
  * $Id$ 
  */
 
+import io.collections.IOCollection;
 import io.collections.FileCollection;
 import io.collections.iterate.*;
-import static util.cmd.Console.*;
 import native standard.strtr;
 
 /**
@@ -43,7 +43,7 @@ public class Find extends util.cmd.Command {
    */
   public void run() {
     foreach ($e in new FilteredIOCollectionIterator($this.collection, $this.filter, true)) {
-      writeLine($e);
+      $this.out.writeLine($e);
     }
   }
 }
