@@ -76,5 +76,45 @@
         'op'            => '%'
       ))), $this->parse('$i % 10;'));
     }
+
+    /**
+     * Test brackets used for precedence
+     *
+     */
+    #[@test]
+    public function bracketsUsedForPrecedence() {
+      $this->assertEquals(
+        array(new BinaryOpNode(array(
+          'lhs' => new BinaryOpNode(array(
+            'lhs'    => new IntegerNode(array('value' => '5')),
+            'rhs'    => new IntegerNode(array('value' => '6')),
+            'op'     => '+'
+          )),
+          'rhs' => new IntegerNode(array('value' => '3')),
+          'op'  => '*'
+        ))), 
+        $this->parse('(5 + 6) * 3;')
+      );
+    }
+
+    /**
+     * Test brackets used for precedence
+     *
+     */
+    #[@test]
+    public function bracketsUsedForPrecedenceWithVariable() {
+      $this->assertEquals(
+        array(new BinaryOpNode(array(
+          'lhs' => new BinaryOpNode(array(
+            'lhs'    => new VariableNode('i'),
+            'rhs'    => new IntegerNode(array('value' => '6')),
+            'op'     => '+'
+          )),
+          'rhs' => new IntegerNode(array('value' => '3')),
+          'op'  => '*'
+        ))), 
+        $this->parse('($i + 6) * 3;')
+      );
+    }
   }
 ?>
