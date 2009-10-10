@@ -243,7 +243,7 @@
       } else {
         $op->append('cast(');
         $this->emitOne($op, $cast->expression);
-        $op->append(', ')->append($this->resolveType($cast->type)->name());
+        $op->append(', \'')->append($this->resolveType($cast->type)->name())->append('\')');
       }
       
       $this->scope[0]->setType($cast, $cast->type);
