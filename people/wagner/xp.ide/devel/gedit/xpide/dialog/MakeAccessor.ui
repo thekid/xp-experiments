@@ -3,6 +3,7 @@
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkDialog" id="MakeAccessor">
+    <property name="has_focus">True</property>
     <property name="border_width">5</property>
     <property name="type">popup</property>
     <property name="title" translatable="yes">make accessors</property>
@@ -53,6 +54,7 @@
                 <property name="label" translatable="yes">gtk-apply</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="has_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
               </object>

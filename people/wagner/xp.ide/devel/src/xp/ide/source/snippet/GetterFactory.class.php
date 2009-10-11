@@ -7,7 +7,8 @@
 
   uses(
     'xp.ide.source.snippet.Getter',
-    'xp.ide.source.snippet.GetterBool'
+    'xp.ide.source.snippet.GetterBool',
+    'xp.ide.source.snippet.GetterArray'
   );
 
   /**
@@ -18,13 +19,24 @@
    */
   class xp搏de新ource新nippet廉etterFactory extends Object {
   
-    public static function create($name, $type) {
+    public static function create($name, $type, $xtype, $dim) {
       switch ($type) {
         case 'boolean':
-        return new xp搏de新ource新nippet廉etterBool($name, $type);
+        return new xp搏de新ource新nippet廉etterBool($name, $type, $xtype, $dim);
+
+        case 'array':
+        return new xp搏de新ource新nippet廉etterArray($name, $type, $xtype, $dim);
+
+        case 'object':
+        return new xp搏de新ource新nippet廉etterObject($name, $type, $xtype, $dim);
+
+        case 'integer':
+        case 'double':
+        case 'string':
+        return new xp搏de新ource新nippet廉etter($name, $type, $xtype, $dim);
 
         default:
-        return new xp搏de新ource新nippet廉etter($name, $type);
+        throw new IllegalArgumentException($type.': unknowen type for getter');
       }
     }
 

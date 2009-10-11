@@ -22,16 +22,20 @@
    */
   class xp·ide·source·snippet·Setter extends xp·ide·source·Snippet {
 
-    public function __construct($name, $type) {
+    public function __construct($name, $type, $xtype, $dim) {
       $this->element= new xp·ide·source·element·Classmethod('set'.ucfirst($name));
       $this->element->setApidoc(new xp·ide·source·element·Apidoc(sprintf('set member $%s'.PHP_EOL, $name)));
-      $this->element->getApidoc()->setDirectives(array(new xp·ide·source·element·ApidocDirective(sprintf('@param %s %s', $type, $name))));
-      $this->element->setParams($this->getParams($name, $type));
+      $this->element->getApidoc()->setDirectives($this->getApidocParams($name, $type, $xtype, $dim));
+      $this->element->setParams($this->getParams($name, $type, $xtype, $dim));
       $this->element->setContent(sprintf('$this->%1$s= $%1$s;', $name));
     }
 
-    protected function getParams($name, $type) {
+    protected function getParams($name, $type, $xtype, $dim) {
       return array(new xp·ide·source·element·Classmethodparam($name));
+    }
+
+    protected function getApidocParams($name, $type, $xtype, $dim) {
+      return array(new xp·ide·source·element·ApidocDirective(sprintf('@param %s %s', $type, $name)));
     }
   }
 

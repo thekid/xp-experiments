@@ -22,17 +22,19 @@
    */
   class xp·ide·source·snippet·Getter extends xp·ide·source·Snippet {
 
-    public function __construct($name, $type) {
-      $this->element= $this->getBaseMethod($name, $type);
+    public function __construct($name, $type, $xtype, $dim) {
+      $this->element= $this->getBaseMethod($name, $type, $xtype, $dim);
       $this->element->setApidoc(new xp·ide·source·element·Apidoc(sprintf('get member $%s'.PHP_EOL, $name)));
-      $this->element->getApidoc()->setDirectives(array(
-        new xp·ide·source·element·ApidocDirective(sprintf('@return %s', $type))
-      ));
+      $this->element->getApidoc()->setDirectives(array($this->getApidicReturn($name, $type, $xtype, $dim)));
       $this->element->setContent(sprintf('return $this->%1$s;', $name));
     }
 
-    protected function getBaseMethod($name, $type) {
+    protected function getBaseMethod($name, $type, $xtype, $dim) {
       return new xp·ide·source·element·Classmethod('get'.ucfirst($name));
+    }
+
+    protected function getApidicReturn($name, $type, $xtype, $dim) {
+      return new xp·ide·source·element·ApidocDirective(sprintf('@return %s', $type));
     }
 
   }

@@ -19,7 +19,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class XpIdeTest extends xp·ide·unittest·TestCase {
+  class XpIdeMakeAccessorTest extends xp·ide·unittest·TestCase {
     private
       $ide= NULL,
       $in=  NULL,
@@ -36,14 +36,6 @@
         $this->out= new xp·ide·streams·EncodedOutputStreamWrapper(new MemoryOutputStream()),
         $this->err= new xp·ide·streams·EncodedOutputStreamWrapper(new MemoryOutputStream())
       );
-    }
-
-    /**
-     * Test ide class
-     *
-     */
-    #[@test]
-    public function testComplete() {
     }
 
     /**
@@ -76,7 +68,7 @@
      */
     #[@test]
     public function createSettterOne() {
-      $this->ide->getIn()->setStream(new MemoryInputStream('in:string:set'));
+      $this->ide->getIn()->setStream(new MemoryInputStream('in:string::0:set'));
       $this->ide->createAccessors();
       $this->assertEquals(
         $this->createSetter('in', 'string'),
@@ -90,7 +82,7 @@
      */
     #[@test]
     public function createSetterTwo() {
-      $this->ide->getIn()->setStream(new MemoryInputStream('in:string:set'."\n".'out:string:set'));
+      $this->ide->getIn()->setStream(new MemoryInputStream('in:string::0:set'."\n".'out:string::0:set'));
       $this->ide->createAccessors();
       $this->assertEquals(
         $this->createSetter('in', 'string').
@@ -105,7 +97,7 @@
      */
     #[@test]
     public function createGetterOne() {
-      $this->ide->getIn()->setStream(new MemoryInputStream('in:string:get'));
+      $this->ide->getIn()->setStream(new MemoryInputStream('in:string::0:get'));
       $this->ide->createAccessors();
       $this->assertEquals(
         $this->createGetter('in', 'string'),
@@ -119,7 +111,7 @@
      */
     #[@test]
     public function createGetterTwo() {
-      $this->ide->getIn()->setStream(new MemoryInputStream('in:string:get'."\n".'out:string:get'));
+      $this->ide->getIn()->setStream(new MemoryInputStream('in:string::0:get'."\n".'out:string::0:get'));
       $this->ide->createAccessors();
       $this->assertEquals(
         $this->createGetter('in', 'string').
@@ -134,7 +126,7 @@
      */
     #[@test]
     public function createSetterGetterOne() {
-      $this->ide->getIn()->setStream(new MemoryInputStream('in:string:set+get'));
+      $this->ide->getIn()->setStream(new MemoryInputStream('in:string::0:set+get'));
       $this->ide->createAccessors();
       $this->assertEquals(
         $this->createSetter('in', 'string').
@@ -149,7 +141,7 @@
      */
     #[@test]
     public function createSetterGetterTwo() {
-      $this->ide->getIn()->setStream(new MemoryInputStream('in:string:set+get'.PHP_EOL.'out:string:set+get'));
+      $this->ide->getIn()->setStream(new MemoryInputStream('in:string::0:set+get'.PHP_EOL.'out:string::0:set+get'));
       $this->ide->createAccessors();
       $this->assertEquals(
         $this->createSetter('in', 'string').
@@ -166,7 +158,7 @@
      */
     #[@test]
     public function createSetterGetterInt() {
-      $this->ide->getIn()->setStream(new MemoryInputStream('count:integer:set+get'));
+      $this->ide->getIn()->setStream(new MemoryInputStream('count:integer::0:set+get'));
       $this->ide->createAccessors();
       $this->assertEquals(
         $this->createSetter('count', 'integer').
@@ -181,7 +173,7 @@
      */
     #[@test]
     public function createSetterGetterBool() {
-      $this->ide->getIn()->setStream(new MemoryInputStream('final:boolean:set+get'));
+      $this->ide->getIn()->setStream(new MemoryInputStream('final:boolean::0:set+get'));
       $this->ide->createAccessors();
       $this->assertEquals(
         $this->createSetter('final', 'boolean').
@@ -196,7 +188,7 @@
      */
     #[@test]
     public function createSetterGetterObject() {
-      $this->ide->getIn()->setStream(new MemoryInputStream('root:lang.Object:set+get'));
+      $this->ide->getIn()->setStream(new MemoryInputStream('root:object:lang.Object:0:set+get'));
       $this->ide->createAccessors();
       $this->assertEquals(
         $this->createSetter('root', 'lang.Object', 'Object').
@@ -211,7 +203,7 @@
      */
     #[@test]
     public function createSetterGetterNamespaceObject() {
-      $this->ide->getIn()->setStream(new MemoryInputStream('ide:xp.ide.XpIde:set+get'));
+      $this->ide->getIn()->setStream(new MemoryInputStream('ide:object:xp.ide.XpIde:0:set+get'));
       $this->ide->createAccessors();
       $this->assertEquals(
         $this->createSetter('ide', 'xp.ide.XpIde', 'xp·ide·XpIde').
@@ -226,11 +218,41 @@
      */
     #[@test]
     public function createSetterGetterArray() {
-      $this->ide->getIn()->setStream(new MemoryInputStream('names:array:set+get'));
+      $this->ide->getIn()->setStream(new MemoryInputStream('names:array:string:1:set+get'));
       $this->ide->createAccessors();
       $this->assertEquals(
-        $this->createSetter('names', 'array', 'array').
-        $this->createGetter('names', 'array'),
+        $this->createSetter('names', 'string[]', 'array').
+        $this->createGetter('names', 'string[]'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createSetterGetterArrayDim2() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('names:array:string:2:set+get'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createSetter('names', 'string[][]', 'array').
+        $this->createGetter('names', 'string[][]'),
+        $this->ide->getOut()->getStream()->getBytes()
+      );
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createSetterGetterArrayObject() {
+      $this->ide->getIn()->setStream(new MemoryInputStream('names:array:lang.Object:1:set+get'));
+      $this->ide->createAccessors();
+      $this->assertEquals(
+        $this->createSetter('names', 'lang.Object[]', 'array').
+        $this->createGetter('names', 'lang.Object[]'),
         $this->ide->getOut()->getStream()->getBytes()
       );
     }

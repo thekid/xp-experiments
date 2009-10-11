@@ -171,22 +171,22 @@
       $confs= '';
       while ($this->in->available()) $confs.= $this->in->read();
       if (!$confs) return;
+      $gen= new xp搏de新ource廉enerator($this->out);
       $confs= explode(PHP_EOL, $confs);
       foreach ($confs as $conf) {
-        $gen= new xp搏de新ource廉enerator($this->out);
         $gen->setIndent(2);
         $parts= explode(':', $conf);
-        if (3 !== count($parts)) throw new IllegalArgumentException(sprintf('cannot parse "%s" into three pieces', $conf));
-        list($name, $type, $accs)= $parts;
+        if (5 !== count($parts)) throw new IllegalArgumentException(sprintf('cannot parse "%s" into five pieces', $conf));
+        list($name, $type, $xtype, $dim, $accs)= $parts;
         foreach (explode('+', $accs) as $acc) switch ($acc) {
           case 'set':
-          $me= xp搏de新ource新nippet惹etterFactory::create($name, $type);
+          $me= xp搏de新ource新nippet惹etterFactory::create($name, $type, $xtype, $dim);
           $me->accept($gen);
           $this->out->write(PHP_EOL.PHP_EOL);
           break;
 
           case 'get':
-          $me= xp搏de新ource新nippet廉etterFactory::create($name, $type);
+          $me= xp搏de新ource新nippet廉etterFactory::create($name, $type, $xtype, $dim);
           $me->accept($gen);
           $this->out->write(PHP_EOL.PHP_EOL);
           break;

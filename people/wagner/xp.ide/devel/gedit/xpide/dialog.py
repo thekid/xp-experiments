@@ -71,9 +71,14 @@ class MakeAccessor(Calltip):
         list_col_getter= gtk.TreeViewColumn("get", self._renderer_get, active= 3)
 
         self._renderer_extendedtype= gtk.CellRendererText()
+        self._renderer_extendedtype.set_property("editable", True)
         self._renderer_extendedtype.connect("edited", self.editCol, 4)
-        self._renderer_extendedtype.set_property("cell-background", "lightgray")
-        list_col_extendedtype= gtk.TreeViewColumn("extended Type", self._renderer_extendedtype, text= 4, editable= 5, cell_background_set= 6)
+        list_col_extendedtype= gtk.TreeViewColumn("extended Type", self._renderer_extendedtype, text= 4, visible= 5)
+
+        self._renderer_dim= gtk.CellRendererSpin()
+        self._renderer_dim.set_property("editable", True)
+        list_col_dim= gtk.TreeViewColumn("dimension", self._renderer_dim, adjustment= 6, visible= 7)
+        list_col_dim.set_cell_data_func(self._renderer_dim, self.adjustCol)
 
         self._list= gtk.ListStore(
             gobject.TYPE_STRING, 
@@ -82,6 +87,7 @@ class MakeAccessor(Calltip):
             gobject.TYPE_BOOLEAN,
             gobject.TYPE_STRING,
             gobject.TYPE_BOOLEAN,
+            gobject.TYPE_OBJECT,
             gobject.TYPE_BOOLEAN
         )
         self._view= self._builder.get_object("members")
@@ -91,6 +97,7 @@ class MakeAccessor(Calltip):
         self._view.append_column(list_col_setter)
         self._view.append_column(list_col_getter)
         self._view.append_column(list_col_extendedtype)
+        self._view.append_column(list_col_dim)
 
     def toggleCol(self, cell, path, col):
         self._list[path][col]= not self._list[path][col]
@@ -100,11 +107,20 @@ class MakeAccessor(Calltip):
         self._list[path][col]= newval
         return
 
+    def adjustCol(self, col, cell, model, miter):
+        cell.set_property('text', int(cell.get_property('adjustment').get_value()))
+        return
+
     def addMember(self, text, type, setter, getter):
-        edit= type in ['object']
-        editinit= ''
-        if (edit): editinit= 'lang.Object'
-        self._list.set(self._list.append([text, type, setter, getter, editinit, edit, not edit]))
+        xtype= type in ['object', 'array']
+        xtype_init= ''
+        if (xtype): xtype_init= 'lang.Object'
+
+        dim= type in ['array']
+        dim_init= gtk.Adjustment(0 ,0, 0, 0, 0)
+        if (dim): dim_init.set_all(1, 1, 10, 1, 1)
+
+        self._list.set(self._list.append([text, type, setter, getter, xtype_init, xtype, dim_init, dim]))
         return self
 
     def run(self):

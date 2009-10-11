@@ -17,8 +17,12 @@
    * @purpose  IDE
    */
   class xp搏de新ource新nippet惹etterArray extends xp搏de新ource新nippet惹etter {
-    protected function getParams($name, $type) {
+    protected function getParams($name, $type, $xtype, $dim) {
       return array(new xp搏de新ource搪lement嵩lassmethodparam($name, 'array'));
+    }
+
+    protected function getApidocParams($name, $type, $xtype, $dim) {
+      return array(new xp搏de新ource搪lement嫂pidocDirective(sprintf('@param %s%s %s', $xtype, str_repeat('[]', $dim), $name)));
     }
   }
 

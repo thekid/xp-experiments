@@ -33,6 +33,14 @@
       $this->parent= $parent;
     }
 
+    public function getMembergroup($i) {
+      return $this->membergroups[$i];
+    }
+
+    public function getMethod($i) {
+      return $this->methods[$i];
+    }
+
     public function setApidoc(xp·ide·source·element·Apidoc $apidoc= NULL) {
       $this->apidoc= $apidoc;
     }
@@ -81,20 +89,12 @@
       return $this->methods;
     }
 
-    public function getMethod($i) {
-      return $this->methods[$i];
-    }
-
     public function setMembergroups(array $membergroups) {
       $this->membergroups= $membergroups;
     }
 
     public function getMembergroups() {
       return $this->membergroups;
-    }
-
-    public function getMembergroup($i) {
-      return $this->membergroups[$i];
     }
 
     public function setConstants(array $constants) {

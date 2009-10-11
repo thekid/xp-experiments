@@ -6,7 +6,7 @@
   $package="xp.ide.source";
 
   uses(
-    'io.streams.StringWriter',
+    'xp.ide.streams.EncodedStreamWriter',
     'xp.ide.source.IElementVisitor'
   );
 
@@ -24,9 +24,9 @@
       $indent= 0,
       $iSign= '  ';
 
-    public function __construct(OutputStream $output_stream) {
+    public function __construct(xp·ide·streams·IEncodedOutputStream $output_stream) {
       $this->output_stream= $output_stream;
-      $this->out= new StringWriter($this->output_stream);
+      $this->out= new xp·ide·streams·EncodedStreamWriter($this->output_stream);
     }
 
     public function getOutputStream() {

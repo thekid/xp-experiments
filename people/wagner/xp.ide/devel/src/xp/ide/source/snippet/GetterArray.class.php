@@ -6,6 +6,7 @@
   $package="xp.ide.source.snippet";
 
   uses(
+    'xp.ide.source.element.ApidocDirective',
     'xp.ide.source.snippet.Getter'
   );
 
@@ -15,10 +16,10 @@
    *
    * @purpose  IDE
    */
-  class xp搏de新ource新nippet廉etterBool extends xp搏de新ource新nippet廉etter {
+  class xp搏de新ource新nippet廉etterArray extends xp搏de新ource新nippet廉etter {
 
-    protected function  getBaseMethod($name, $type, $xtype, $dim) {
-      return new xp搏de新ource搪lement嵩lassmethod('is'.ucfirst($name));
+    protected function getApidicReturn($name, $type, $xtype, $dim) {
+      return new xp搏de新ource搪lement嫂pidocDirective(sprintf('@return %s%s', $xtype, str_repeat('[]', $dim)));
     }
 
   }
