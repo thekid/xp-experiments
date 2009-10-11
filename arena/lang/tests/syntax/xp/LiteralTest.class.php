@@ -126,6 +126,18 @@
      *
      */
     #[@test]
+    public function booleanTrueLiteralInBraces() {
+      $this->assertEquals(
+        array(new BooleanNode(TRUE)),
+        $this->parse('(true);')
+      );
+    }
+
+    /**
+     * Test true
+     *
+     */
+    #[@test]
     public function booleanFalseLiteral() {
       $this->assertEquals(
         array(new BooleanNode(FALSE)),
