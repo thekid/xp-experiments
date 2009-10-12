@@ -8,7 +8,8 @@
   uses(
     'xp.ide.source.snippet.Getter',
     'xp.ide.source.snippet.GetterBool',
-    'xp.ide.source.snippet.GetterArray'
+    'xp.ide.source.snippet.GetterArray',
+    'xp.ide.source.snippet.GetterObject'
   );
 
   /**
