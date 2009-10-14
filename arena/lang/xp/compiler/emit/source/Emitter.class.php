@@ -102,16 +102,17 @@
      *
      * @param   resource op
      * @param   xp.compiler.ast.Node[] params
+     * @param   bool brackets
      * @return  int
      */
-    protected function emitParameters($op, array $params) {
-      $op->append('(');
+    protected function emitParameters($op, array $params, $brackets= TRUE) {
+      $brackets && $op->append('(');
       $s= sizeof($params)- 1;
       foreach ($params as $i => $param) {
         $this->emitOne($op, $param);
         $i < $s && $op->append(',');
       }
-      $op->append(')');
+      $brackets && $op->append(')');
       return sizeof($params);
     }
     
@@ -308,7 +309,12 @@
       } else if ($type->isMap()) {
         // OK, TODO: Further verification
       } else if ($type->isClass()) {
-        // Check for this[] indexer property
+        $ptr= $this->resolveType($type);
+        if ($ptr->hasMethod('offsetGet')) {   // FIXME: Use hasIndexer
+          $result= $ptr->getMethod('offsetGet')->returns;
+        } else {
+          $this->warn('T305', 'Type '.$ptr->name().' does not support offset access', $accesss);
+        }
       } else if ($type->isVariable()) {
         $this->warn('T203', 'Array access (var)'.$access->hashCode().' verification deferred until runtime', $accesss);
       } else {
@@ -963,8 +969,26 @@
         $this->scope[0]->setType($new, $new->type);
       }
       
-      $op->append('new '.$ptr->literal());
-      $this->emitParameters($op, (array)$new->parameters);
+      // If generic instance is created, use the create(spec, args*)
+      // core functionality. If this a compiled generic type we may
+      // do quite a bit better - but how do we detect this?
+      if ($new->type->components) {
+        $op->append('create(\'new '.$ptr->name().'<');
+        $s= sizeof($new->type->components)- 1;
+        foreach ($new->type->components as $i => $component) {
+          $op->append($this->resolveType($component)->name());
+          $i < $s && $op->append(',');
+        }
+        $op->append('>\'');
+        if ($new->parameters) {
+          $op->append(',');
+          $this->emitParameters($op, (array)$new->parameters, FALSE);
+        }
+        $op->append(')');
+      } else {
+        $op->append('new '.$ptr->literal());
+        $this->emitParameters($op, (array)$new->parameters);
+      }
     }
     
     /**
@@ -1174,7 +1198,7 @@
       // Finalize
       $this->metadata[0][1][$method->name]= array(
         DETAIL_ARGUMENTS    => $this->parametersAsMetadata((array)$method->arguments),
-        DETAIL_RETURNS      => $this->resolveType($method->returns)->literal(),
+        DETAIL_RETURNS      => $this->resolveType($method->returns)->name(),
         DETAIL_THROWS       => array(),
         DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$method->comment),
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$method->annotations)
@@ -1408,7 +1432,12 @@
       $op->append(';');
 
       // Add field metadata (type, stored in @type annotation, see
-      // lang.reflect.Field and lang.XPClass::detailsForField())
+      // lang.reflect.Field and lang.XPClass::detailsForField()). If
+      // the field is "var" and we have an initialization, determine
+      // the type from that
+      if ($field->type->isVariable() && $field->initialization) {
+        $field->type= $this->scope[0]->typeOf($field->initialization);
+      }
       $this->metadata[0][0][$field->name]= array(
         DETAIL_ANNOTATIONS  => array('type' => $this->resolveType($field->type)->name())
       );
