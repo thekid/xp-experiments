@@ -311,6 +311,8 @@
         return new TypeName('bool');
       } else if ($node instanceof ComparisonNode) {
         return new TypeName('bool');
+      } else if ($node instanceof InstanceCreationNode) {
+        return $node->type;
       } else if ($this->types->containsKey($node)) {
         return $this->types[$node];
       }
