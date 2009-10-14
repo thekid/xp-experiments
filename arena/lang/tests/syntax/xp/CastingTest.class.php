@@ -18,7 +18,7 @@
      * Test prefix notation
      *
      */
-    #[@test]
+    #[@test, @ignore('Prefix casting unsupported')]
     public function prefixIntCast() {
       $this->assertEquals(
         array(new AssignmentNode(array(
@@ -37,7 +37,7 @@
      * Test prefix notation
      *
      */
-    #[@test]
+    #[@test, @ignore('Prefix casting unsupported')]
     public function prefixIntCastBracketedLiteral() {
       $this->assertEquals(
         array(new AssignmentNode(array(
@@ -56,7 +56,7 @@
      * Test prefix notation
      *
      */
-    #[@test]
+    #[@test, @ignore('Prefix casting unsupported')]
     public function prefixIntArrayCast() {
       $this->assertEquals(
         array(new AssignmentNode(array(
@@ -75,7 +75,7 @@
      * Test prefix notation
      *
      */
-    #[@test]
+    #[@test, @ignore('Prefix casting unsupported')]
     public function prefixGenericCast() {
       $this->assertEquals(
         array(new AssignmentNode(array(
@@ -95,7 +95,7 @@
      * Test prefix notation
      *
      */
-    #[@test]
+    #[@test, @ignore('Prefix casting unsupported')]
     public function prefixQualifiedCast() {
       $this->assertEquals(
         array(new AssignmentNode(array(
