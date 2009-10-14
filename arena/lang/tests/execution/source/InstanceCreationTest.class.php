@@ -36,6 +36,17 @@
     }
 
     /**
+     * Test creating a new generic hashtable
+     *
+     */
+    #[@test]
+    public function newGeneric() {
+      $hash= $this->run('return new util.collections.HashTable<lang.types.String, lang.Generic>();');
+      $this->assertClass($hash, 'util.collections.HashTable');
+      $this->assertEquals(array('String', 'Generic'), $hash->__generic);
+    }
+
+    /**
      * Test creating a new object
      *
      */
