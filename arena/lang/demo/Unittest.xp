@@ -33,12 +33,12 @@ public class Unittest {
    *
    */
   public void assertEquals(var $a, var $b) throws AssertionFailedError {
-    if ($a instanceof lang.Generic) {
-      $eq= $a.equals($b);
+    if ($a instanceof Generic) {
+      $eq= ($a as Generic).equals($b);
     } else {
       $eq= $a == $b;
     }
-    if (!$eq) throw new AssertionFailedError($a, $b);
+    if (!$eq) throw new AssertionFailedError('Not equal', $a, $b);
   }
   
   /**
