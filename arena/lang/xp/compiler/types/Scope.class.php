@@ -261,13 +261,9 @@
                 $t= new TypeDeclaration($tree, NULL);
                 break;
             }
-          } catch (FormatException $e) {
+          } catch (CompilationException $e) {
             throw new ResolveException('Cannot resolve '.$name->toString(), 424, $e);
-          } catch (ParseException $e) {
-            throw new ResolveException('Cannot resolve '.$name->toString(), 400, $e);
-          } catch (ClassNotFoundException $e) {
-            throw new ResolveException('Cannot resolve '.$name->toString(), 404, $e);
-          } catch (IOException $e) {
+          } catch (Throwable $e) {
             throw new ResolveException('Cannot resolve '.$name->toString(), 507, $e);
           }
           $this->resolved[$qualified]= $t;

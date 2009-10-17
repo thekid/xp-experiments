@@ -27,14 +27,21 @@
      * @param   xp.compiler.diagnostic.DiagnosticListener listener
      * @param   xp.compiler.io.FileManager manager
      * @param   xp.compiler.emit.Emitter emitter
+     * @return  bool success if all files compiled correctly, TRUE, FALSE otherwise
      */
     public function compile(array $sources, DiagnosticListener $listener, FileManager $manager, Emitter $emitter) {
       $emitter->setTrace($this->cat);
       $listener->runStarted();
+      $errors= 0;
       foreach ($sources as $source) {
-        create(new CompilationTask($source, $listener, $manager, $emitter))->run();
+        try {
+          create(new CompilationTask($source, $listener, $manager, $emitter))->run();
+        } catch (CompilationException $e) {
+          $errors++;
+        }
       }
       $listener->runFinished();
+      return 0 === $errors;
     }
     
     /**

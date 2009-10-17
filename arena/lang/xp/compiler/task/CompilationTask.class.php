@@ -9,6 +9,7 @@
     'xp.compiler.emit.Emitter',
     'xp.compiler.types.TaskScope',
     'xp.compiler.diagnostic.DiagnosticListener',
+    'xp.compiler.CompilationException',
     'xp.compiler.io.Source',
     'xp.compiler.io.FileManager',
     'io.File'
@@ -63,6 +64,7 @@
      * Run this task and emit compiled code using a given emitter
      *
      * @return  var
+     * @throws  xp.compiler.CompilationException
      */
     public function run() {
       $scope= new TaskScope($this);
@@ -78,10 +80,16 @@
         $this->listener->compilationSucceeded($this->source, $target, $this->emitter->messages());
       } catch (ParseException $e) {
         $this->listener->parsingFailed($this->source, $e);
+        throw new CompilationException('Parse error', $e);
       } catch (FormatException $e) {
         $this->listener->emittingFailed($this->source, $e);
+        throw new CompilationException('Emitting error', $e);
+      } catch (IOException $e) {
+        $this->listener->compilationFailed($this->source, $e);
+        throw new CompilationException('I/O error', $e);
       } catch (Throwable $e) {
         $this->listener->compilationFailed($this->source, $e);
+        throw new CompilationException('Unknown error', $e);
       }
       
       return $ast;    // FIXME: Should return compiled type

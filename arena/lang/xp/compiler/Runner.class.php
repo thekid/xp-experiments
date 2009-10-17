@@ -63,7 +63,7 @@
      */
     protected function showUsage() {
       Console::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
-      exit(1);
+      exit(2);
     }
     
     /**
@@ -111,12 +111,13 @@
       }
       
       // Compile files
-      $c->compile(
+      $success= $c->compile(
         $files, 
         $listener, 
         new FileManager(), 
         Package::forName('xp.compiler.emit')->getPackage($emitter)->loadClass('Emitter')->newInstance()
       );
+      exit($success ? 0 : 1);
     }
   }
 ?>
