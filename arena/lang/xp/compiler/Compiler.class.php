@@ -18,6 +18,7 @@
    *
    */
   class Compiler extends Object implements Traceable {
+    protected $cat= NULL;
   
     /**
      * Compile a set of files
