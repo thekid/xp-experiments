@@ -3,20 +3,20 @@
  *
  * $Id$ 
  */
-  $package= 'xp.ide.proxy';
+  $package= 'xp.ide.wrapper';
 
   uses(
     'xp.ide.IXpIde',
-    'xp.ide.proxy.Proxy',
+    'xp.ide.wrapper.Wrapper',
     'lang.IllegalArgumentException'
   );
 
   /**
-   * Bash ide Proxy
+   * Bash ide Wrapper
    *
    * @purpose IDE
    */
-  class xp·ide·proxy·Bash extends xp·ide·proxy·Proxy implements xp·ide·IXpIde {
+  class xp·ide·wrapper·Bash extends xp·ide·wrapper·Wrapper implements xp·ide·IXpIde {
 
     /**
      * complete the source under the cursor
@@ -64,7 +64,7 @@
      * @throws lang.IllegalArgumentException
      */
     public function checkSyntax(xp·ide·lint·ILanguage $language) {
-      throw new IllegalArgumentException('checkSyntax is not implemented for bash proxy');
+      throw new IllegalArgumentException('checkSyntax is not implemented for bash wrapper');
     }
   }
 ?>

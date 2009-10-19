@@ -14,7 +14,7 @@
    *
    * @purpose  IDE
    */
-  class xp·ide·streams·EncodedOutputStreamWrapper extends Object implements xp·ide·streams·IEncodedOutputStream {
+  class xp·ide·streams·EncodedOutputStreamDecorator extends Object implements xp·ide·streams·IEncodedOutputStream {
     private
       $encoding= xp·ide·streams·IEncodedOutputStream::ENCODING_NONE,
       $stream= NULL;

@@ -3,7 +3,7 @@
  *
  * $Id$ 
  */
-  $package= 'xp.ide.proxy';
+  $package= 'xp.ide.wrapper';
 
   uses(
     'xp.ide.IXpIde',
@@ -11,11 +11,11 @@
   );
 
   /**
-   * abstract ide Proxy
+   * abstract ide Wrapper
    *
    * @purpose IDE
    */
-  abstract class xp·ide·proxy·Proxy extends Object {
+  abstract class xp·ide·wrapper·Wrapper extends Object {
 
     protected
       $in= NULL,

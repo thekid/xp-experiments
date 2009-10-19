@@ -7,8 +7,8 @@
   
   uses(
     'xp.ide.XpIde',
-    'xp.ide.streams.EncodedInputStreamWrapper',
-    'xp.ide.streams.EncodedOutputStreamWrapper',
+    'xp.ide.streams.EncodedInputStreamDecorator',
+    'xp.ide.streams.EncodedOutputStreamDecorator',
     'xp.ide.Cursor',
     'xp.ide.info.InfoType',
     'io.streams.ChannelInputStream',
@@ -41,12 +41,12 @@
       try {
         if (2 > sizeOf($args)) return self::usage();
 
-        $proxy= XPClass::forName('xp.ide.proxy.'.array_shift($args))->newInstance($inst= new xp·ide·XpIde(
-          new xp·ide·streams·EncodedInputStreamWrapper(new ChannelInputStream('stdin')),
-          new xp·ide·streams·EncodedOutputStreamWrapper(new ChannelOutputStream('stdout')),
-          new xp·ide·streams·EncodedOutputStreamWrapper(new ChannelOutputStream('stderr'))
+        $wrapper= XPClass::forName('xp.ide.wrapper.'.array_shift($args))->newInstance($inst= new xp·ide·XpIde(
+          new xp·ide·streams·EncodedInputStreamDecorator(new ChannelInputStream('stdin')),
+          new xp·ide·streams·EncodedOutputStreamDecorator(new ChannelOutputStream('stdout')),
+          new xp·ide·streams·EncodedOutputStreamDecorator(new ChannelOutputStream('stderr'))
         ));
-        if (!$proxy instanceof xp·ide·IXpIde) throw new IllegalArgumentException(sprintf('%s does not implement xp·ide·IXpIde', $proxy->getClassName()));
+        if (!$wrapper instanceof xp·ide·IXpIde) throw new IllegalArgumentException(sprintf('%s does not implement xp·ide·IXpIde', $wrapper->getClassName()));
 
         $action= array_shift($args);
         $actionMethods= array();
@@ -59,9 +59,9 @@
 
         $params= new ParamString($args);
         with ($enc= $params->value('stream-encoding', 'se', xp·ide·streams·IEncodedStream::ENCODING_NONE)); {
-          $proxy->getIn()->setEncoding($enc);
-          $proxy->getOut()->setEncoding($enc);
-          $proxy->getErr()->setEncoding($enc);
+          $wrapper->getIn()->setEncoding($enc);
+          $wrapper->getOut()->setEncoding($enc);
+          $wrapper->getErr()->setEncoding($enc);
         }
 
         // assemble arguments
@@ -74,7 +74,7 @@
           }
         }
 
-        call_user_func_array(array($proxy, $actionMethods[$action]->getName()), $action_args);
+        call_user_func_array(array($wrapper, $actionMethods[$action]->getName()), $action_args);
       } catch (XPException $e) {
         Console::$err->write($e->getMessage());
         return 1;
@@ -120,8 +120,8 @@
      * Show usage
      */
     public static function usage() {
-      Console::$out->writeLine('** Usage: xpide xp.ide.Runner "proxy" "action" [--stream-encoding] [--cursor-position --cursor-line --cursor-column] [--language-name]');
-      Console::$out->writeLine('   - proxy: a classname from the namespace xp.ide.proxy (e.g. "Nedit")');
+      Console::$out->writeLine('** Usage: xpide xp.ide.Runner "wrapper" "action" [--stream-encoding] [--cursor-position --cursor-line --cursor-column] [--language-name]');
+      Console::$out->writeLine('   - wrapper: a classname from the namespace xp.ide.wrapper (e.g. "Nedit")');
       Console::$out->writeLine('   - action: XpIde action');
       Console::$out->writeLine(' * Stream: parameters to assamble the input stream');
       Console::$out->writeLine('   - stream-encoding (se): input stream encoding (defaults to binary)');

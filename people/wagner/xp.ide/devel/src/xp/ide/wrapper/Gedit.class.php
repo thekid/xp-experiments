@@ -3,19 +3,19 @@
  *
  * $Id$ 
  */
-  $package= 'xp.ide.proxy';
+  $package= 'xp.ide.wrapper';
 
   uses(
     'xp.ide.IXpIde',
-    'xp.ide.proxy.Proxy'
+    'xp.ide.wrapper.Wrapper'
   );
 
   /**
-   * Gedit ide Proxy
+   * Gedit ide Wrapper
    *
    * @purpose IDE
    */
-  class xp·ide·proxy·Gedit extends xp·ide·proxy·Proxy implements xp·ide·IXpIde {
+  class xp·ide·wrapper·Gedit extends xp·ide·wrapper·Wrapper implements xp·ide·IXpIde {
 
     /**
      * complete the source under the cursor

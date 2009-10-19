@@ -7,8 +7,8 @@
   uses(
     'xp.ide.unittest.TestCase',
     'xp.ide.XpIde',
-    'xp.ide.streams.EncodedInputStreamWrapper',
-    'xp.ide.streams.EncodedOutputStreamWrapper',
+    'xp.ide.streams.EncodedInputStreamDecorator',
+    'xp.ide.streams.EncodedOutputStreamDecorator',
     'io.streams.MemoryInputStream',
     'io.streams.MemoryOutputStream'
   );
@@ -32,9 +32,9 @@
      */
     public function setUp() {
       $this->ide= new xp·ide·XpIde(
-        $this->in= new xp·ide·streams·EncodedInputStreamWrapper(new MemoryInputStream('')),
-        $this->out= new xp·ide·streams·EncodedOutputStreamWrapper(new MemoryOutputStream()),
-        $this->err= new xp·ide·streams·EncodedOutputStreamWrapper(new MemoryOutputStream())
+        $this->in= new xp·ide·streams·EncodedInputStreamDecorator(new MemoryInputStream('')),
+        $this->out= new xp·ide·streams·EncodedOutputStreamDecorator(new MemoryOutputStream()),
+        $this->err= new xp·ide·streams·EncodedOutputStreamDecorator(new MemoryOutputStream())
       );
     }
 
