@@ -8,7 +8,6 @@
   uses(
     'xp.ide.source.parser.ClassFileParser',
     'xp.ide.source.parser.ClassFileLexer',
-    'xp.ide.IXpIde',
     'xp.ide.resolve.Resolver',
     'xp.ide.completion.PackageClassCompleter',
     'xp.ide.completion.UncompletePackageClass',
@@ -26,7 +25,7 @@
    *
    * @purpose IDE
    */
-  class xp·ide·XpIde extends Object implements xp·ide·IXpIde {
+  class xp·ide·XpIde extends Object {
 
     private
       $in= NULL,

@@ -6,7 +6,6 @@
   $package= 'xp.ide.wrapper';
 
   uses(
-    'xp.ide.IXpIde',
     'xp.ide.wrapper.Wrapper',
     'lang.IllegalArgumentException'
   );
@@ -16,7 +15,7 @@
    *
    * @purpose IDE
    */
-  class xp·ide·wrapper·Bash extends xp·ide·wrapper·Wrapper implements xp·ide·IXpIde {
+  class xp·ide·wrapper·Bash extends xp·ide·wrapper·Wrapper {
 
     /**
      * complete the source under the cursor

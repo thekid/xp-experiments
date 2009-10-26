@@ -6,7 +6,6 @@
   $package= 'xp.ide';
   
   uses(
-    'xp.ide.XpIde',
     'xp.ide.streams.EncodedInputStreamDecorator',
     'xp.ide.streams.EncodedOutputStreamDecorator',
     'xp.ide.Cursor',
@@ -46,7 +45,7 @@
           new xp·ide·streams·EncodedOutputStreamDecorator(new ChannelOutputStream('stdout')),
           new xp·ide·streams·EncodedOutputStreamDecorator(new ChannelOutputStream('stderr'))
         ));
-        if (!$wrapper instanceof xp·ide·IXpIde) throw new IllegalArgumentException(sprintf('%s does not implement xp·ide·IXpIde', $wrapper->getClassName()));
+        if (!$wrapper instanceof xp·ide·wrapper·Wrapper) throw new IllegalArgumentException(sprintf('%s does not implement xp·ide·wrapper·Wrapper', $wrapper->getClassName()));
 
         $action= array_shift($args);
         $actionMethods= array();

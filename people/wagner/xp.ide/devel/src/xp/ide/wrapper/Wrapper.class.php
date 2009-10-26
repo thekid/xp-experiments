@@ -6,7 +6,6 @@
   $package= 'xp.ide.wrapper';
 
   uses(
-    'xp.ide.IXpIde',
     'peer.URL'
   );
 
