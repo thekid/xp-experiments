@@ -8,11 +8,13 @@
   uses(
     'xp.ide.source.parser.ClassFileParser',
     'xp.ide.source.parser.ClassFileLexer',
+    'xp.ide.source.parser.ClassParser',
+    'xp.ide.source.parser.ClassLexer',
     'xp.ide.resolve.Resolver',
     'xp.ide.completion.PackageClassCompleter',
     'xp.ide.completion.UncompletePackageClass',
     'xp.ide.text.StreamWorker',
-    'xp.ide.info.MemberInfoVisitor',
+    'xp.ide.info.MemberInfo',
     'xp.ide.resolve.Response',
     'xp.ide.completion.Response',
     'xp.ide.source.snippet.GetterFactory',
@@ -140,20 +142,35 @@
     }
 
     /**
-     * get class info
+     * get member Info
      *
-     * @param  xp.ide.info.InfoType itype
-     * @return xp.ide.source.Element[]
+     * @return xp.ide.info.MemberInfo[]
      */
-    public function info(xp·ide·info·InfoType $itype) {
+    public function memberInfo() {
       $p= new xp·ide·source·parser·ClassFileParser();
-      $p->setTopElement($t= new xp·ide·source·element·ClassFile());
+      $p->setTopElement($cf= new xp·ide·source·element·ClassFile());
       $p->parse(new xp·ide·source·parser·ClassFileLexer($this->in));
 
-      switch ($itype) {
-        case xp·ide·info·InfoType::$MEMBER:
-        return create(new xp·ide·info·MemberInfoVisitor())->visit($t);
+      $cp= new xp·ide·source·parser·ClassParser();
+      $cp->setTopElement($cf->getClassdef());
+      try {
+        $cp->parse(new xp·ide·source·parser·ClassLexer(new MemoryInputStream($cf->getClassdef()->getContent())));
+      } catch (ParseException $pe) {
+        return array();
       }
+
+      $mis= array();
+      foreach ($cf->getClassdef()->getMembergroups() as $mg) foreach ($mg->getMembers() as $m) {
+        $mis[]= new xp·ide·info·MemberInfo(
+          $mg->isFinal(),
+          $mg->isStatic(),
+          $mg->getScope(),
+          $m->getName(),
+          $this->dataTypeFromInit($m->getInit())
+        );
+      }
+      return $mis;
+
     }
 
     /**
@@ -176,6 +193,23 @@
           $this->out->write(PHP_EOL.PHP_EOL);
         }
       }
+    }
+
+    /**
+     * detects the data type from the init value
+     *
+     * @param string i
+     * @return string
+     */
+    private function dataTypeFromInit($i) {
+      if (is_null($i)) return 'none';
+      if ($i instanceof xp·ide·source·element·Array) return 'array';
+      if (is_numeric($i) &&($i == (int)$i)) return 'integer';
+      if (is_numeric($i)) return 'double';
+      if ('NULL' == $i) return 'object';
+      if ('TRUE' == strToUpper($i)) return 'boolean';
+      if ('FALSE' == strToUpper($i)) return 'boolean';
+      return 'string';
     }
   }
 ?>

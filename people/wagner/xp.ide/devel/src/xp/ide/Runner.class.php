@@ -10,7 +10,6 @@
     'xp.ide.streams.EncodedOutputStreamDecorator',
     'xp.ide.Cursor',
     'xp.ide.XpIde',
-    'xp.ide.info.InfoType',
     'io.streams.ChannelInputStream',
     'io.streams.ChannelOutputStream',
     'lang.XPClass',
@@ -29,7 +28,6 @@
       $artefacts= array(
         'Cursor'      => 'getCursor',
         'Language'    => 'getLanguage',
-        'Infotype'    => 'getInfotype',
       );
 
     /**
@@ -104,16 +102,6 @@
      */
     public static function getLanguage(ParamString $params) {
       return XPClass::forName('xp.ide.lint.'.ucFirst(strToLower($params->value('language-name', 'ln'))))->newInstance();
-    }
-
-    /**
-     * get requsted info type
-     *
-     * @param util.cmd.ParamString params
-     * @return xp.ide.info.InfoType
-     */
-    public static function getInfotype(ParamString $params) {
-      return xp·ide·info·InfoType::${strToUpper($params->value('info-type', 'it'))};
     }
 
     /**

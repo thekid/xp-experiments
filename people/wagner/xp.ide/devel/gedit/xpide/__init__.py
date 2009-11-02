@@ -75,7 +75,7 @@ class XpIdePlugin(gedit.Plugin):
     def makeAccessors(self, action, window):
         l_get= {}
         l_set= {}
-        (returncode, result, error)= self.xpidedoc(window, 'info', ['-it', 'member'])
+        (returncode, result, error)= self.xpidedoc(window, 'memberInfo')
         if (0 != returncode):
             dialog.TextCalltip(window).setText(error).run()
             return

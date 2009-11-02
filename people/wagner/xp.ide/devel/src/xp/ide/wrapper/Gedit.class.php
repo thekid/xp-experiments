@@ -76,29 +76,21 @@
     }
 
     /**
-     * get class info
+     * get class member info
      *
-     * @param  xp.ide.info.InfoType itype
      */
-    #[@action(name='info', args="Infotype")]
-    public function info(xp·ide·info·InfoType $itype) {
-      $mgs= $this->ide->info($itype);
-      $mis= array();
-      foreach ($mgs as $mg) foreach ($mg->getMembers() as $m) {
-        $mi= array((int)$mg->isFinal(), (int)$mg->isStatic(), $mg->getScope()->name(), $m->getName());
-        with ($i= $m->getInit()); {
-          if (is_null($i)) $mi[]= 'none';
-          else if ($i instanceof xp·ide·source·element·Array) $mi[]= 'array';
-          else if (is_numeric($i) &&($i == (int)$i)) $mi[]= 'integer';
-          else if (is_numeric($i)) $mi[]= 'double';
-          else if ('NULL' == $i)   $mi[]= 'object';
-          else if ('TRUE' == strToUpper($i)) $mi[]= 'boolean';
-          else if ('FALSE' == strToUpper($i)) $mi[]= 'boolean';
-          else $mi[]= 'string';
-        }
-        $mis[]= $mi;
+    #[@action(name='memberInfo')]
+    public function memberInfo() {
+      $mis= $this->ide->memberInfo($itype);
+      foreach ($mis as $mi) {
+        $this->out->write(sprintf('%d:%d:%s:%s:%s'.PHP_EOL,
+          $mi->isFinal(),
+          $mi->isStatic(),
+          $mi->getScope()->name(),
+          $mi->getName(),
+          $mi->getType()
+        ));
       }
-      foreach ($mis as $mi) $this->out->write(implode(':', $mi).PHP_EOL);
     }
 
     /**
