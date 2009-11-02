@@ -21,12 +21,11 @@
      * complete the source under the cursor
      *
      * @param  xp.ide.Cursor cursor
-     * @return xp.ide.completion.Response
      */
+    #[@action(name='complete', args="Cursor")]
     public function complete(xp·ide·Cursor $cursor) {
       $response= $this->ide->complete($cursor);
       $this->out->write(implode(PHP_EOL, $response->getSuggestions()));
-      return $response;
     }
 
     /**
@@ -34,8 +33,8 @@
      * under the cursor if defined
      *
      * @param  xp.ide.Cursor cursor
-     * @return xp.ide.resolve.Response
      */
+    #[@action(name='grepclassfile', args="Cursor")]
     public function grepClassFileUri(xp·ide·Cursor $cursor) {
       $result= array();
       do {
@@ -52,18 +51,6 @@
         $result[]= $rest;
       } while ($this->in->available());
       $this->out->write(implode(' ', $result));
-      return $result;
-    }
-
-    /**
-     * check syntax
-     *
-     * @param  xp.ide.lint.ILanguage language
-     * @return xp.ide.lint.Error[]
-     * @throws lang.IllegalArgumentException
-     */
-    public function checkSyntax(xp·ide·lint·ILanguage $language) {
-      throw new IllegalArgumentException('checkSyntax is not implemented for bash wrapper');
     }
   }
 ?>

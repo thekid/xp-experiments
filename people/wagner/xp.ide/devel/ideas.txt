@@ -1,6 +1,10 @@
 - make a classname from a package name
 - turn selected source code to a method
 - templates
+  - XpCLI
+  - Tests
+  - Class
 - reformat source (with dialog)
 - sort methods and members
 - lint perl
+- make API doc

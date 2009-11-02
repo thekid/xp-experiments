@@ -9,6 +9,7 @@
     'xp.ide.streams.EncodedInputStreamDecorator',
     'xp.ide.streams.EncodedOutputStreamDecorator',
     'xp.ide.Cursor',
+    'xp.ide.XpIde',
     'xp.ide.info.InfoType',
     'io.streams.ChannelInputStream',
     'io.streams.ChannelOutputStream',
@@ -40,7 +41,7 @@
       try {
         if (2 > sizeOf($args)) return self::usage();
 
-        $wrapper= XPClass::forName('xp.ide.wrapper.'.array_shift($args))->newInstance($inst= new xp·ide·XpIde(
+        $wrapper= XPClass::forName('xp.ide.wrapper.'.array_shift($args))->newInstance(new xp·ide·XpIde(
           new xp·ide·streams·EncodedInputStreamDecorator(new ChannelInputStream('stdin')),
           new xp·ide·streams·EncodedOutputStreamDecorator(new ChannelOutputStream('stdout')),
           new xp·ide·streams·EncodedOutputStreamDecorator(new ChannelOutputStream('stderr'))
@@ -49,7 +50,7 @@
 
         $action= array_shift($args);
         $actionMethods= array();
-        with ($class= $inst->getClass()); {
+        with ($class= $wrapper->getClass()); {
           foreach ($class->getMethods() as $method) {
             if ($method->hasAnnotation('action')) $actionMethods[$method->getAnnotation('action', 'name')]= $method;
           }

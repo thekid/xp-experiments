@@ -20,8 +20,8 @@
      * complete the source under the cursor
      *
      * @param  xp.ide.Cursor cursor
-     * @return xp.ide.completion.Response
      */
+    #[@action(name='complete', args="Cursor")]
     public function complete(xp·ide·Cursor $cursor) {
       $response= $this->ide->complete($cursor);
       $this->out->write(
@@ -30,7 +30,6 @@
         .count($response->getSuggestions()).PHP_EOL
         .implode(PHP_EOL, $response->getSuggestions())
       );
-      return $response;
     }
 
     /**
@@ -38,22 +37,21 @@
      * under the cursor if defined
      *
      * @param  xp.ide.Cursor cursor
-     * @return xp.ide.resolve.Response
      */
+    #[@action(name='grepclassfile', args="Cursor")]
     public function grepClassFileUri(xp·ide·Cursor $cursor) {
       $response= $this->ide->grepClassFileUri($cursor);
       list($scheme, $rest)= explode('://', $response->getUri(), 2);
       if ('file' !== $scheme) throw new IllegalArgumentException(sprintf('Cannot open class "%s" from location %s', $response->getSnippet()->getText(), $response->getUri()));
       $this->out->write($rest);
-      return $response;
     }
 
     /**
      * check syntax
      *
      * @param  xp.ide.lint.ILanguage language
-     * @return xp.ide.lint.Error[]
      */
+    #[@action(name='checksyntax', args="Language")]
     public function checkSyntax(xp·ide·lint·ILanguage $language) {
       $errors= $this->ide->checkSyntax($language);
       if (0 == sizeOf($errors)) {
@@ -67,7 +65,6 @@
           .$e->getText()
         );
       }
-      return $errors;
     }
   }
 ?>

@@ -27,7 +27,7 @@
      *
      * @param xp.ide.IXpIde
      */
-    public function __construct(xp·ide·IXpIde $ide) {
+    public function __construct(xp·ide·XpIde $ide) {
       $this->ide= $ide;
       $this->in= $this->ide->getIn();
       $this->out= $this->ide->getOut();
@@ -90,6 +90,5 @@
     public function getErr() {
       return $this->err;
     }
-
   }
 ?>

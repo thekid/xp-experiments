@@ -105,7 +105,6 @@
      * @param  xp.ide.Cursor cursor
      * @return xp.ide.completion.Response
      */
-    #[@action(name='complete', args="Cursor")]
     public function complete(xp·ide·Cursor $cursor) {
       $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($this->in, $cursor);
       return new xp·ide·completion·Response(
@@ -124,7 +123,6 @@
      * @param  xp.ide.Cursor cursor
      * @return xp.ide.resolve.Response
      */
-    #[@action(name='grepclassfile', args="Cursor")]
     public function grepClassFileUri(xp·ide·Cursor $cursor) {
       $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($this->in, $cursor);
       $resolver= new xp·ide·resolve·Resolver();
@@ -137,7 +135,6 @@
      * @param  xp.ide.lint.ILanguage language
      * @return xp.ide.lint.Error[]
      */
-    #[@action(name='checksyntax', args="Language")]
     public function checkSyntax(xp·ide·lint·ILanguage $language) {
       return $language->checkSyntax($this->in);
     }
@@ -148,7 +145,6 @@
      * @param  xp.ide.info.InfoType itype
      * @return xp.ide.source.Element[]
      */
-    #[@action(name='info', args="Infotype")]
     public function info(xp·ide·info·InfoType $itype) {
       $p= new xp·ide·source·parser·ClassFileParser();
       $p->setTopElement($t= new xp·ide·source·element·ClassFile());
@@ -163,32 +159,21 @@
     /**
      * create accessors
      *
-     * @throw lang.IllegalArgumentException
+     * @param xp·ide·AccessorConfig[]
      */
-    #[@action(name='createAccessors')]
-    public function createAccessors() {
-      $confs= '';
-      while ($this->in->available()) $confs.= $this->in->read();
-      if (!$confs) return;
+    public function createAccessors(array $accInfos) {
       $gen= new xp·ide·source·Generator($this->out);
-      $confs= explode(PHP_EOL, $confs);
-      foreach ($confs as $conf) {
-        $gen->setIndent(2);
-        $parts= explode(':', $conf);
-        if (5 !== count($parts)) throw new IllegalArgumentException(sprintf('cannot parse "%s" into five pieces', $conf));
-        list($name, $type, $xtype, $dim, $accs)= $parts;
-        foreach (explode('+', $accs) as $acc) switch ($acc) {
-          case 'set':
-          $me= xp·ide·source·snippet·SetterFactory::create($name, $type, $xtype, $dim);
+      $gen->setIndent(2);
+      foreach ($accInfos as $accInfo) {
+        if ($accInfo->hasAccess(xp·ide·AccessorConfig::ACCESS_SET)) {
+          $me= xp·ide·source·snippet·SetterFactory::create($accInfo->getName(), $accInfo->getType(), $accInfo->getType2(), $accInfo->getDim());
           $me->accept($gen);
           $this->out->write(PHP_EOL.PHP_EOL);
-          break;
-
-          case 'get':
-          $me= xp·ide·source·snippet·GetterFactory::create($name, $type, $xtype, $dim);
+        }
+        if ($accInfo->hasAccess(xp·ide·AccessorConfig::ACCESS_GET)) {
+          $me= xp·ide·source·snippet·GetterFactory::create($accInfo->getName(), $accInfo->getType(), $accInfo->getType2(), $accInfo->getDim());
           $me->accept($gen);
           $this->out->write(PHP_EOL.PHP_EOL);
-          break;
         }
       }
     }
