@@ -6,6 +6,7 @@
   $package="xp.ide.source.snippet";
 
   uses(
+    'xp.ide.source.snippet.SetterName',
     'xp.ide.source.element.Classmethod',
     'xp.ide.source.element.Classmethodparam',
     'xp.ide.source.element.Apidoc',
@@ -23,7 +24,7 @@
   class xp·ide·source·snippet·Setter extends xp·ide·source·Snippet {
 
     public function __construct($name, $type, $xtype, $dim) {
-      $this->element= new xp·ide·source·element·Classmethod('set'.ucfirst($name));
+      $this->element= new xp·ide·source·element·Classmethod(xp·ide·source·snippet·SetterName::getByType($name, $type));
       $this->element->setApidoc(new xp·ide·source·element·Apidoc(sprintf('set member $%s'.PHP_EOL, $name)));
       $this->element->getApidoc()->setDirectives($this->getApidocParams($name, $type, $xtype, $dim));
       $this->element->setParams($this->getParams($name, $type, $xtype, $dim));

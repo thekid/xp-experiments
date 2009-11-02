@@ -18,7 +18,9 @@
     'xp.ide.resolve.Response',
     'xp.ide.completion.Response',
     'xp.ide.source.snippet.GetterFactory',
+    'xp.ide.source.snippet.GetterName',
     'xp.ide.source.snippet.SetterFactory',
+    'xp.ide.source.snippet.SetterName',
     'xp.ide.source.Generator'
   );
 
@@ -160,14 +162,17 @@
       }
 
       $mis= array();
+      $mens= array_map(create_function('$e', 'return $e->getName();'), $cf->getClassdef()->getMethods());
       foreach ($cf->getClassdef()->getMembergroups() as $mg) foreach ($mg->getMembers() as $m) {
-        $mis[]= new xp·ide·info·MemberInfo(
+        $mis[]= $mi= new xp·ide·info·MemberInfo(
           $mg->isFinal(),
           $mg->isStatic(),
           $mg->getScope(),
           $m->getName(),
           $this->dataTypeFromInit($m->getInit())
         );
+        if (in_array(xp·ide·source·snippet·GetterName::getByType($mi->getName(), $mi->getType()), $mens)) $mi->addAccess(xp·ide·AccessorConfig::ACCESS_GET);
+        if (in_array(xp·ide·source·snippet·SetterName::getByType($mi->getName(), $mi->getType()), $mens)) $mi->addAccess(xp·ide·AccessorConfig::ACCESS_SET);
       }
       return $mis;
 

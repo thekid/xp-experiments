@@ -17,7 +17,8 @@
       $static= FALSE,
       $scope= NULL,
       $name= '',
-      $type= '';
+      $type= '',
+      $access= 0;
 
     /**
      * Constructor
@@ -124,6 +125,25 @@
      */
     public function getType() {
       return $this->type;
+    }
+
+    /**
+     * add member $access
+     * 
+     * @param integer access
+     */
+    public function addAccess($access) {
+      $this->access |= $access;
+    }
+
+    /**
+     * test member $access
+     * 
+     * @param integer access
+     * @return boolean
+     */
+    public function hasAccess($access) {
+      return (boolean)($this->access & $access);
     }
 
   }

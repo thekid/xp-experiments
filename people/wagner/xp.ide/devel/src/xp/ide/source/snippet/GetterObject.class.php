@@ -18,7 +18,7 @@
    */
   class xp搏de新ource新nippet廉etterObject extends xp搏de新ource新nippet廉etter {
 
-    protected function getApidicReturn($name, $type, $xtype, $dim) {
+    protected function getApidocReturn($name, $type, $xtype, $dim) {
       return new xp搏de新ource搪lement嫂pidocDirective(sprintf('@return %s', $xtype));
     }
 

@@ -73,8 +73,6 @@ class XpIdePlugin(gedit.Plugin):
         tb.insert(tb.get_iter_at_offset(rep_pos), suggestion)
 
     def makeAccessors(self, action, window):
-        l_get= {}
-        l_set= {}
         (returncode, result, error)= self.xpidedoc(window, 'memberInfo')
         if (0 != returncode):
             dialog.TextCalltip(window).setText(error).run()
@@ -82,10 +80,8 @@ class XpIdePlugin(gedit.Plugin):
 
         ma_dialog= dialog.MakeAccessor(window)
         for line in result.splitlines():
-            (m_final, m_static, m_scope, m_name, m_type)= line.split(':')
-            l_set[m_name]= (m_final, m_static, m_scope, m_name, m_type)
-            l_get[m_name]= (m_final, m_static, m_scope, m_name, m_type)
-            ma_dialog.addMember(m_name, m_type, True, True);
+            (m_final, m_static, m_scope, m_name, m_type, ma_set, ma_get)= line.split(':')
+            ma_dialog.addMember(m_name, m_type, not bool(int(ma_set)), not bool(int(ma_get)));
         ma_list= ma_dialog.run()
         if (ma_list is None): return
 

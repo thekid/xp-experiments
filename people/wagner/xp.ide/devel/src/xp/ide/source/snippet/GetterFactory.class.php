@@ -7,7 +7,6 @@
 
   uses(
     'xp.ide.source.snippet.Getter',
-    'xp.ide.source.snippet.GetterBool',
     'xp.ide.source.snippet.GetterArray',
     'xp.ide.source.snippet.GetterObject'
   );
@@ -22,15 +21,13 @@
   
     public static function create($name, $type, $xtype, $dim) {
       switch ($type) {
-        case 'boolean':
-        return new xp搏de新ource新nippet廉etterBool($name, $type, $xtype, $dim);
-
         case 'array':
         return new xp搏de新ource新nippet廉etterArray($name, $type, $xtype, $dim);
 
         case 'object':
         return new xp搏de新ource新nippet廉etterObject($name, $type, $xtype, $dim);
 
+        case 'boolean':
         case 'integer':
         case 'double':
         case 'string':

@@ -83,12 +83,14 @@
     public function memberInfo() {
       $mis= $this->ide->memberInfo($itype);
       foreach ($mis as $mi) {
-        $this->out->write(sprintf('%d:%d:%s:%s:%s'.PHP_EOL,
+        $this->out->write(sprintf('%d:%d:%s:%s:%s:%d:%d'.PHP_EOL,
           $mi->isFinal(),
           $mi->isStatic(),
           $mi->getScope()->name(),
           $mi->getName(),
-          $mi->getType()
+          $mi->getType(),
+          $mi->hasAccess(xp·ide·AccessorConfig::ACCESS_SET),
+          $mi->hasAccess(xp·ide·AccessorConfig::ACCESS_GET)
         ));
       }
     }
