@@ -1,10 +1,17 @@
-- make a classname from a package name
-- turn selected source code to a method
-- templates
-  - XpCLI
-  - Tests
-  - Class
+[X] complete classname
+[X] open class under cursor
+[*] lint
+  [X] xml
+  [X] javascript
+  [X] php
+  [ ] perl
+[X] make accessors
+[ ] make a classname from a package name
+[ ] turn selected source code to a method
+[*] templates
+  [ ] XpCLI
+  [ ] Tests
+  [ ] Class
 - reformat source (with dialog)
 - sort methods and members
-- lint perl
 - make API doc
