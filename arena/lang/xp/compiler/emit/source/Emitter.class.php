@@ -1927,6 +1927,8 @@
         'delete'      => TRUE,
         'cast'        => TRUE,
         'is'          => TRUE,
+        'isset'       => TRUE,
+        'unset'       => TRUE,
       );
 
       // Import and declarations
