@@ -36,7 +36,7 @@
      * Test [1, 2].length
      *
      */
-    #[@test, @ignore('Causes "Invalid opcode 82/2/1" - primitive extensions needed')]
+    #[@test]
     public function arrayLength() {
       $this->assertEquals(2, $this->run('return [1, 2].length;'));
     }

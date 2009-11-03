@@ -348,6 +348,10 @@
         }
       } else if ($type->isVariable()) {
         $this->warn('T203', 'Member access (var).'.$access->name.' verification deferred until runtime', $accesss);
+      } else if ($type->isArray() && 'length' === $access->name) {
+        $op->insertAtMark('sizeof(');
+        $op->append(')');
+        return new TypeName('int');
       } else {
         $this->warn('T305', 'Using member access on unsupported type '.$type->toString(), $access);
       }
@@ -407,9 +411,10 @@
      */
     public function emitChain($op, ChainNode $chain) {
       $s= sizeof($chain->elements);
+      $op->mark();
       
       // Rewrite for unsupported syntax:
-      // - $a.getMethods()[2] to array_slice($a.getMethods(), 2, 1)
+      // - $a.getMethods()[2] to current(array_slice($a.getMethods(), 2, 1))
       // - new Date().toString() to create(new Date()).toString()
       $insertion= array();
       for ($i= 0; $i < $s; $i++) {
@@ -449,6 +454,7 @@
         } else if ($c instanceof InvocationNode) {
           $t= $this->emitMemberCall($op, $c, $t);
         }
+        
         isset($insertion[$i]) && $op->append($insertion[$i]);
       }
       
