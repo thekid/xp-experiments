@@ -30,4 +30,7 @@ nedit.macroCommands: \
 	}\n\
 	XpIDE>open class source@PHP:Shift+Ctrl+O::: {\n\
 		xp_ide_open_xpclass()\n\
+	}\n\
+	XpIDE>insert missing accessors@PHP:Shift+Ctrl+A::: {\n\
+		xp_ide_make_accessors()\n\
 	}

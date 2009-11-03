@@ -6,7 +6,8 @@
   $package= 'xp.ide.wrapper';
 
   uses(
-    'xp.ide.wrapper.Wrapper'
+    'xp.ide.wrapper.Wrapper',
+    'xp.ide.AccessorConfig'
   );
 
   /**
@@ -65,6 +66,23 @@
           .$e->getText()
         );
       }
+    }
+
+    /**
+     * create accessors
+     *
+     * @throw lang.IllegalArgumentException
+     */
+    #[@action(name='createAccessors')]
+    public function createAccessors() {
+      $mis= $this->ide->memberInfo();
+      $accInfos= array();
+      foreach ($mis as $mi) {
+        $accInfos[]= $accInfo= new xp·ide·AccessorConfig($mi->getName(), $mi->getType(), 'lang.Object', 1);
+        if (!$mi->hasAccess(xp·ide·AccessorConfig::ACCESS_SET)) $accInfo->addAccess(xp·ide·AccessorConfig::ACCESS_SET);
+        if (!$mi->hasAccess(xp·ide·AccessorConfig::ACCESS_GET)) $accInfo->addAccess(xp·ide·AccessorConfig::ACCESS_GET);
+      }
+      return $this->ide->createAccessors($accInfos);
     }
   }
 ?>

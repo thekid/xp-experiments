@@ -120,3 +120,20 @@ define xp_ide_open_xpclass {
     calltip(result)
   }
 }
+
+##
+# create accessors which do not exist yet
+# for all class members
+# insert at cursor position
+#
+##
+define xp_ide_make_accessors {
+  result= shell_command("xpide Nedit createAccessors", get_range(0, $text_length))
+  kill_calltip()
+
+  if (0 == $shell_cmd_status) {
+    replace_range($cursor, $cursor, result)
+  } else {
+    calltip(result)
+  }
+}

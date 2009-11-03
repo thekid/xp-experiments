@@ -81,7 +81,7 @@
      */
     #[@action(name='memberInfo')]
     public function memberInfo() {
-      $mis= $this->ide->memberInfo($itype);
+      $mis= $this->ide->memberInfo();
       foreach ($mis as $mi) {
         $this->out->write(sprintf('%d:%d:%s:%s:%s:%d:%d'.PHP_EOL,
           $mi->isFinal(),

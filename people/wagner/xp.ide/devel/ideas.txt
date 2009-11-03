@@ -5,14 +5,19 @@
   [X] javascript
   [X] php
   [ ] perl
-[X] make accessors
+[*] make accessors
+  [ ] Gedit: type2 completion
+  [X] Nedit
+  [ ] Array accessors (getXs(), getX($i), setXs($v), setX($i, $v), hasX($v), addX($v))
 [ ] make a classname from a package name
-[ ] turn selected source code to a method
 [*] templates
   [ ] XpCLI
   [ ] Tests
   [ ] Class
   [ ] Enums
+[ ] make method skeleton and Apidoc for methods from interfaces and abstract parents
+[ ] turn selected source code to a method
 [ ] reformat source (with dialog)
 [ ] sort methods and members
 [ ] make API doc
+
