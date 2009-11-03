@@ -12,6 +12,7 @@
    */
   class xp·compiler·emit·source·Buffer extends Object {
     protected $source= '';
+    protected $mark= -1;
     public $line= 1;
     
     /**
@@ -34,6 +35,36 @@
       $this->source.= $arg;
       $this->line+= substr_count($arg, "\n");
       return $this;
+    }
+
+    /**
+     * Insert source at a given position and return this buffer
+     *
+     * @param   string arg
+     * @param   int pos
+     * @return  xp.compiler.emit.source.Buffer this
+     */
+    public function insert($arg, $pos) {
+      $this->source= substr($this->source, 0, $pos).$arg.substr($this->source, $pos);
+      $this->line+= substr_count($arg, "\n");
+      return $this;
+    }
+    
+    /**
+     * Marks current position for insertion operations
+     *
+     */
+    public function mark() {
+      $this->mark= strlen($this->source);
+    }
+
+    /**
+     * Insert source at marked position and return this buffer
+     *
+     * @param   string arg
+     */
+    public function insertAtMark($arg) {
+      $this->insert($arg, $this->mark);
     }
     
     /**
