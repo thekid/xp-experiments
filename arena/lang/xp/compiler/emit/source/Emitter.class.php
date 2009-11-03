@@ -679,9 +679,15 @@
       $op->append('}');
     }
     
+    /**
+     * Emit components inside a for() statement
+     *
+     * @param   resource op
+     * @return  xp.compiler.ast.Node[] nodes
+     */
     protected function emitForComponent($op, array $nodes) {
       $s= sizeof($nodes)- 1;
-      foreach ($nodes as $node) {
+      foreach ($nodes as $i => $node) {
         $node->free= FALSE;
         $this->emitOne($op, $node);
         $i < $s && $op->append(', ');
