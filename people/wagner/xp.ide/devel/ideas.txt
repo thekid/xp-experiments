@@ -13,6 +13,6 @@
   [ ] Tests
   [ ] Class
   [ ] Enums
-- reformat source (with dialog)
-- sort methods and members
-- make API doc
+[ ] reformat source (with dialog)
+[ ] sort methods and members
+[ ] make API doc
