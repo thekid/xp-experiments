@@ -153,7 +153,7 @@ class XpIdeUi:
         action.connect("activate", self._plugin.lint, self._window)
 
         action= gtk.Action("XpIdeMkAccessors", "make accessors", None, None)
-        self._ag.add_action_with_accel(action, "<Shift><Control>a")
+        self._ag.add_action_with_accel(action, "<Shift><Alt>a")
         action.connect("activate", self._plugin.makeAccessors, self._window)
 
     def shutdown(self):
