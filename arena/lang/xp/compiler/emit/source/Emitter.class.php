@@ -313,10 +313,10 @@
         if ($ptr->hasMethod('offsetGet')) {   // FIXME: Use hasIndexer
           $result= $ptr->getMethod('offsetGet')->returns;
         } else {
-          $this->warn('T305', 'Type '.$ptr->name().' does not support offset access', $accesss);
+          $this->warn('T305', 'Type '.$ptr->name().' does not support offset access', $access);
         }
       } else if ($type->isVariable()) {
-        $this->warn('T203', 'Array access (var)'.$access->hashCode().' verification deferred until runtime', $accesss);
+        $this->warn('T203', 'Array access (var)'.$access->hashCode().' verification deferred until runtime', $access);
       } else {
         $this->warn('T305', 'Using array-access on unsupported type '.$type->toString(), $access);
       }
@@ -344,10 +344,10 @@
         if ($ptr->hasField($access->name)) {
           $result= $ptr->getField($access->name)->type;
         } else {
-          $this->warn('T201', 'No such field '.$access->name.' in '.$type->toString(), $accesss);
+          $this->warn('T201', 'No such field '.$access->name.' in '.$type->toString(), $access);
         }
       } else if ($type->isVariable()) {
-        $this->warn('T203', 'Member access (var).'.$access->name.' verification deferred until runtime', $accesss);
+        $this->warn('T203', 'Member access (var).'.$access->name.' verification deferred until runtime', $access);
       } else if ($type->isArray() && 'length' === $access->name) {
         $op->insertAtMark('sizeof(');
         $op->append(')');
@@ -383,10 +383,10 @@
           $this->emitParameters($op, (array)$access->parameters);
           return $ext->returns;
         } else {
-          $this->warn('T201', 'No such method '.$access->name.'() in '.$type->compoundName(), $accesss);
+          $this->warn('T201', 'No such method '.$access->name.'() in '.$type->compoundName(), $access);
         }
       } else if ($type->isVariable()) {
-        $this->warn('T203', 'Member call (var).'.$access->name.'() verification deferred until runtime', $accesss);
+        $this->warn('T203', 'Member call (var).'.$access->name.'() verification deferred until runtime', $access);
       } else {
         $this->warn('T305', 'Using member calls on unsupported type '.$type->toString(), $access);
       }
