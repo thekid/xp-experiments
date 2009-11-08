@@ -1256,7 +1256,7 @@
         $this->warn('D201', 'No api doc for '.$this->scope[0]->declarations[0]->name->name.'\'s constructor', $constructor);
       }
 
-      $op->append(implode(' ', Modifiers::namesOf($method->modifiers)));
+      $op->append(implode(' ', Modifiers::namesOf($constructor->modifiers)));
       $op->append(' function __construct');
       
       // Begin
