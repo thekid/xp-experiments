@@ -246,7 +246,11 @@
       // JitClassLoader?
       if (!$this->resolved->containsKey($qualified)) {
         if ($cl->providesClass($qualified)) {
-          $this->resolved[$qualified]= new TypeReflection(XPClass::forName($qualified));
+          try {
+            $this->resolved[$qualified]= new TypeReflection(XPClass::forName($qualified));
+          } catch (Throwable $e) {
+            throw new ResolveException($e->getMessage().' for '.$name->toString(), 507, $e);
+          }
         } else {
           try {
             $tree= $this->task->newSubTask($qualified)->run($this);
