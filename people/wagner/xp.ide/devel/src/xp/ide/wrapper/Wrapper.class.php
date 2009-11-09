@@ -25,7 +25,7 @@
     /**
      * constructor
      *
-     * @param xp.ide.IXpIde
+     * @param xp.ide.XpIde
      */
     public function __construct(xp·ide·XpIde $ide) {
       $this->ide= $ide;
@@ -37,9 +37,9 @@
     /**
      * set input stream
      *
-     * @param  xp.ide.streams.IEncodedInputStream in
+     * @param  io.streams.TextReader in
      */
-    public function setIn(xp·ide·streams·IEncodedInputStream $in) {
+    public function setIn(TextReader $in) {
       $this->in= $in;
       $this->ide->setIn($this->in);
     }
@@ -47,7 +47,7 @@
     /**
      * get input stream
      *
-     * @return xp.ide.streams.IEncodedInputStream
+     * @return io.streams.TextReader
      */
     public function getIn() {
       return $this->in;
@@ -56,9 +56,9 @@
     /**
      * set output stream
      *
-     * @param  xp.ide.streams.IEncodedOutputStream out
+     * @param  io.streams.TextWriter out
      */
-    public function setOut(xp·ide·streams·IEncodedOutputStream $out) {
+    public function setOut(TextWriter $out) {
       $this->out= $out;
       $this->ide->setOut($this->out);
     }
@@ -66,7 +66,7 @@
     /**
      * get output stream
      *
-     * @return xp.ide.streams.IEncodedOutputStream
+     * @return io.streams.TextWriter
      */
     public function getOut() {
       return $this->out;
@@ -75,17 +75,17 @@
     /**
      * set error stream
      *
-     * @param  xp.ide.streams.IEncodedOutputStream err
+     * @param  io.streams.TextWriter err
      */
-    public function setErr(xp·ide·streams·IEncodedOutputStream $err) {
+    public function setErr(TextWriter $err) {
       $this->err= $err;
       $this->ide->setErr($this->err);
     }
 
     /**
-     * get error stream
+     * get error stream writer
      *
-     * @return xp.ide.streams.IEncodedOutputStream
+     * @return io.streams.TextWriter
      */
     public function getErr() {
       return $this->err;

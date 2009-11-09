@@ -6,8 +6,8 @@
   $package="xp.ide.source";
 
   uses(
-    'xp.ide.streams.EncodedStreamWriter',
-    'xp.ide.source.IElementVisitor'
+    'xp.ide.source.IElementVisitor',
+    'io.streams.StringWriter'
   );
 
   /**
@@ -19,23 +19,20 @@
   class xp·ide·source·Generator extends Object implements xp·ide·source·IElementVisitor {
 
     private
-      $output_stream= NULL,
       $out= NULL,
       $indent= 0,
       $iSign= '  ';
 
-    public function __construct(xp·ide·streams·IEncodedOutputStream $output_stream) {
-      $this->output_stream= $output_stream;
-      $this->out= new xp·ide·streams·EncodedStreamWriter($this->output_stream);
+    public function __construct(TextWriter $output) {
+      $this->out= $output;
     }
 
-    public function getOutputStream() {
-      return $this->output_stream;
+    public function getOutput() {
+      return $this->out;
     }
 
-    public function setOutputStream(OutputStream $output_stream) {
-      $this->output_stream= $output_stream;
-      $this->out= new StringWriter($this->output_stream);
+    public function setOutput(TextWriter $output) {
+      $this->out= $output;
     }
 
     public function setIndent($indent) {
@@ -69,8 +66,8 @@
     }
 
     private function visitMethodparam($e) {
-      if ($h= $e->getTypehint()) $this->out->write($h, ' ');
-      $this->out->write('$', $e->getName());
+      if ($h= $e->getTypehint()) $this->out->write($h.' ');
+      $this->out->write('$'.$e->getName());
       if ($i= $e->getInit()) {
         $this->out->write('= ');
         $this->generateRightInit($i);
@@ -85,7 +82,7 @@
       if ($e->isAbstract()) $this->out->write('abstract ');
       $this->generateScope($e->getScope());
       if ($e->isStatic()) $this->out->write(' static');
-      $this->out->write(' function ', $e->getName(), '(');
+      $this->out->write(' function '.$e->getName().'(');
       if ($ps= $e->getParams()) {
         $i= 1; $m= sizeOf($ps);
         foreach ($ps as $p) {
@@ -109,7 +106,7 @@
         $i= 1; $m= sizeOf($vs);
         foreach ($vs as $k => $v) {
           $this->indention();
-          $this->out->write($k, ' => ');
+          $this->out->write($k.' => ');
           $this->generateRightInit($v);
           $this->out->writeLine($i++ !== $m ? ',' : '');
         }
@@ -120,7 +117,7 @@
     }
 
     private function visitClassmember($e) {
-      $this->out->write('$', $e->getName());
+      $this->out->write('$'.$e->getName());
       if ($i= $e->getInit()) {
         $this->out->write('= ');
         $this->generateRightInit($i);
@@ -146,14 +143,14 @@
     }
 
     private function visitAnnotation($e) {
-      $this->out->write('@', $e->getName());
+      $this->out->write('@'.$e->getName());
       $s= sizeOf($e->getParams());
       if (0 == $s) return;
       $this->out->write("(");
       $i= 1;
       foreach($e->getParams() as $k => $v) {
-        if (!is_integer($k)) $this->out->write($k, '=');
-        $this->out->write("'", $v, "'");
+        if (!is_integer($k)) $this->out->write($k.'=');
+        $this->out->write("'".$v."'");
         if ($i++ < $s) $this->out->write(',');
       }
       $this->out->write(")");
@@ -187,7 +184,7 @@
       $this->indention();
       if ($e->isFinal()) $this->out->write('final ');
       if ($e->isAbstract()) $this->out->write('abstract ');
-      $this->out->writef('class %s extends %s ', $e->getName(), $e->getParent());
+      $this->out->write(sprintf('class %s extends %s ', $e->getName(), $e->getParent()));
       if ($e->getInterfaces()) {
         $this->out->write('implements ');
         $this->out->write(implode(', ', $e->getInterfaces()).' ');
@@ -205,7 +202,7 @@
           $i= 1; $m= sizeOf($cs);
           foreach ($cs as $n => $v) {
             $this->indention();
-            $this->out->writef('%s= %s', $n, $v);
+            $this->out->write(sprintf('%s= %s', $n, $v));
             $this->out->writeLine($i++ !== $m ? ',' : ';');
           }
           $this->indent -= 2;
@@ -240,7 +237,7 @@
       $this->indent++;
       for ($i= 0, $lines= $e->getClassnames(), $m= sizeOf($lines); $i < $m; $i++) {
         $this->indention();
-        $this->out->writef("'%s'", $lines[$i]);
+        $this->out->write(sprintf("'%s'", $lines[$i]));
         if ($i !== $m - 1) $this->out->write(',');
         $this->out->writeLine('');
       }
@@ -265,7 +262,7 @@
 
     private function visitPackage($e) {
       $this->indention();
-      $this->out->writef("\$package= '%s';", $e->getName());
+      $this->out->write(sprintf("\$package= '%s';", $e->getName()));
     }
 
     private function visitClassFile($e) {

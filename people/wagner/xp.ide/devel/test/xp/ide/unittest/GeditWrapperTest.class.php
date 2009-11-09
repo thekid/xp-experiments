@@ -8,8 +8,8 @@
     'xp.ide.unittest.TestCase',
     'xp.ide.wrapper.Gedit',
     'xp.ide.XpIde',
-    'xp.ide.streams.EncodedInputStreamDecorator',
-    'xp.ide.streams.EncodedOutputStreamDecorator',
+    'io.streams.TextReader',
+    'io.streams.TextWriter',
     'io.streams.MemoryInputStream',
     'io.streams.MemoryOutputStream'
   );
@@ -33,9 +33,9 @@
      */
     public function setUp() {
       $this->ide= new xp·ide·XpIde(
-        $this->in= new xp·ide·streams·EncodedInputStreamDecorator(new MemoryInputStream('')),
-        $this->out= new xp·ide·streams·EncodedOutputStreamDecorator(new MemoryOutputStream()),
-        $this->err= new xp·ide·streams·EncodedOutputStreamDecorator(new MemoryOutputStream())
+        $this->in= new TextReader(new MemoryInputStream('')),
+        $this->out= new TextWriter(new MemoryOutputStream()),
+        $this->err= new TextWriter(new MemoryOutputStream())
       );
       $this->wrapper= new xp·ide·wrapper·Gedit($this->ide);
     }
@@ -56,7 +56,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function createAccessorsNoSet() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('in:string'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createSetter('in', 'string'),
@@ -70,7 +70,7 @@
      */
     #[@test]
     public function createSettterOne() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('in:string::0:set'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string::0:set')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createSetter('in', 'string'),
@@ -84,7 +84,7 @@
      */
     #[@test]
     public function createSetterTwo() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('in:string::0:set'."\n".'out:string::0:set'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string::0:set'."\n".'out:string::0:set')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createSetter('in', 'string').
@@ -99,7 +99,7 @@
      */
     #[@test]
     public function createGetterOne() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('in:string::0:get'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string::0:get')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createGetter('in', 'string'),
@@ -113,7 +113,7 @@
      */
     #[@test]
     public function createGetterTwo() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('in:string::0:get'."\n".'out:string::0:get'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string::0:get'."\n".'out:string::0:get')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createGetter('in', 'string').
@@ -128,7 +128,7 @@
      */
     #[@test]
     public function createSetterGetterOne() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('in:string::0:set+get'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string::0:set+get')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createSetter('in', 'string').
@@ -143,7 +143,7 @@
      */
     #[@test]
     public function createSetterGetterTwo() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('in:string::0:set+get'.PHP_EOL.'out:string::0:set+get'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string::0:set+get'.PHP_EOL.'out:string::0:set+get')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createSetter('in', 'string').
@@ -160,7 +160,7 @@
      */
     #[@test]
     public function createSetterGetterInt() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('count:integer::0:set+get'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('count:integer::0:set+get')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createSetter('count', 'integer').
@@ -175,7 +175,7 @@
      */
     #[@test]
     public function createSetterGetterBool() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('final:boolean::0:set+get'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('final:boolean::0:set+get')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createSetter('final', 'boolean').
@@ -190,7 +190,7 @@
      */
     #[@test]
     public function createSetterGetterObject() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('root:object:lang.Object:0:set+get'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('root:object:lang.Object:0:set+get')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createSetter('root', 'lang.Object', 'Object').
@@ -205,7 +205,7 @@
      */
     #[@test]
     public function createSetterGetterNamespaceObject() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('ide:object:xp.ide.XpIde:0:set+get'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('ide:object:xp.ide.XpIde:0:set+get')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createSetter('ide', 'xp.ide.XpIde', 'xp·ide·XpIde').
@@ -220,7 +220,7 @@
      */
     #[@test]
     public function createSetterGetterArray() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('names:array:string:1:set+get'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('names:array:string:1:set+get')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createSetter('names', 'string[]', 'array').
@@ -235,7 +235,7 @@
      */
     #[@test]
     public function createSetterGetterArrayDim2() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('names:array:string:2:set+get'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('names:array:string:2:set+get')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createSetter('names', 'string[][]', 'array').
@@ -250,7 +250,7 @@
      */
     #[@test]
     public function createSetterGetterArrayObject() {
-      $this->wrapper->getIn()->setStream(new MemoryInputStream('names:array:lang.Object:1:set+get'));
+      $this->wrapper->setIn(new TextReader(new MemoryInputStream('names:array:lang.Object:1:set+get')));
       $this->wrapper->createAccessors();
       $this->assertEquals(
         $this->createSetter('names', 'lang.Object[]', 'array').

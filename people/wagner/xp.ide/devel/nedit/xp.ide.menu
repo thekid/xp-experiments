@@ -16,6 +16,9 @@ nedit.macroCommands: \
 	XpIDE>complete@PHP:Shift+Ctrl+Space::: {\n\
 		xp_ide_complete()\n\
 	}\n\
+	XpIDE>complete@PHP:Shift+Ctrl+T::: {\n\
+		xp_ide_toggle()\n\
+	}\n\
 	XpIDE>check syntax@PHP:Alt+C::: {\n\
 		xp_ide_lint_php()\n\
 	}\n\

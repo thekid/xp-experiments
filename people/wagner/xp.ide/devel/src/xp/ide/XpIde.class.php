@@ -6,10 +6,6 @@
   $package= 'xp.ide';
 
   uses(
-    'xp.ide.source.parser.ClassFileParser',
-    'xp.ide.source.parser.ClassFileLexer',
-    'xp.ide.source.parser.ClassParser',
-    'xp.ide.source.parser.ClassLexer',
     'xp.ide.resolve.Resolver',
     'xp.ide.completion.PackageClassCompleter',
     'xp.ide.completion.UncompletePackageClass',
@@ -17,6 +13,9 @@
     'xp.ide.info.MemberInfo',
     'xp.ide.resolve.Response',
     'xp.ide.completion.Response',
+    'xp.ide.toggle.Response',
+    'xp.ide.source.element.ClassFile',
+    'xp.ide.source.element.Classdef',
     'xp.ide.source.snippet.GetterFactory',
     'xp.ide.source.snippet.GetterName',
     'xp.ide.source.snippet.SetterFactory',
@@ -39,65 +38,65 @@
     /**
      * Constructor
      *
-     * @param  xp.ide.streams.IEncodedInputStream in
-     * @param  xp.ide.streams.IEncodedOutputStream out
-     * @param  xp.ide.streams.IEncodedOutputStream err
+     * @param  io.streams.TextReader in
+     * @param  io.streams.TextWriter out
+     * @param  io.streams.TextWriter err
      */
-    public function __construct(xp·ide·streams·IEncodedInputStream $in, xp·ide·streams·IEncodedOutputStream $out, xp·ide·streams·IEncodedOutputStream $err) {
+    public function __construct(TextReader $in, TextWriter $out, TextWriter $err) {
       $this->in= $in;
       $this->out= $out;
       $this->err= $err;
     }
 
     /**
-     * set input stream
+     * set input stream reader
      *
-     * @param  xp.ide.streams.IEncodedInputStream stream
+     * @param  io.streams.TextReader in
      */
-    public function setIn(xp·ide·streams·IEncodedInputStream $in) {
+    public function setIn(TextReader $in) {
       $this->in= $in;
     }
 
     /**
-     * get input stream
+     * get input stream reader
      *
-     * @return xp.ide.streams.IEncodedInputStream in
+     * @return io.streams.TextReader
      */
     public function getIn() {
       return $this->in;
     }
 
     /**
-     * set output stream
+     * set output stream writer
      *
-     * @param  xp.ide.streams.IEncodedOutputStream out
+     * @param  io.streams.TextWriter out
      */
-    public function setOut(xp·ide·streams·IEncodedOutputStream $out) {
+    public function setOut(TextWriter $out) {
       $this->out= $out;
     }
 
     /**
-     * get output stream
+     * get output stream writer
      *
-     * @return xp.ide.streams.IEncodedOutputStream
+     * @return io.streams.TextWriter
      */
     public function getOut() {
       return $this->out;
     }
 
     /**
-     * set error stream
+     * set error stream writer
      *
-     * @param  xp.ide.streams.IEncodedOutputStream err
+     * @param  io.streams.TextWriter err
      */
-    public function setErr(xp·ide·streams·IEncodedOutputStream $err) {
+    public function setErr(TextWriter $err) {
       $this->err= $err;
     }
 
     /**
-     * get error stream
+     * get error stream writer
      *
-     * @return xp.ide.streams.IEncodedOutputStream
+     * @return io.streams.TextWriter
      */
     public function getErr() {
       return $this->err;
@@ -119,11 +118,31 @@
       );
     }
 
+    /** TextReader
+     * toggle classname and class locator
+     *
+     * @param  xp.ide.Cursor cursor
+     * @throws lang.IllegalArgumentException
+     * @param  xp.ide.toggle.Response
+     */
+    public function toggleClass(xp·ide·Cursor $cursor) {
+      $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($this->in, $cursor);
+      if (ClassLoader::getDefault()->providesClass($searchWord->getText())) {
+        $typename= '';
+        try {
+          $typename= xp·ide·source·element·ClassFile::fromClasslocator($searchWord->getText())->getClassdef()->getName();
+        } catch (XPException $e) {
+          $typename= 'Object';
+        }
+        return new xp·ide·toggle·Response($searchWord, $typename);
+      }
+      throw new IllegalArgumentException(sprintf('%s is not a class location', $searchWord->getText()));
+    }
+
     /**
      * grep the file URI where the XP class
      * under the cursor if defined
      *
-     * @param  xp.ide.streams.IEncodedInputStream stream
      * @param  xp.ide.Cursor cursor
      * @return xp.ide.resolve.Response
      */
@@ -149,14 +168,9 @@
      * @return xp.ide.info.MemberInfo[]
      */
     public function memberInfo() {
-      $p= new xp·ide·source·parser·ClassFileParser();
-      $p->setTopElement($cf= new xp·ide·source·element·ClassFile());
-      $p->parse(new xp·ide·source·parser·ClassFileLexer($this->in));
-
-      $cp= new xp·ide·source·parser·ClassParser();
-      $cp->setTopElement($cf->getClassdef());
+      $cf= xp·ide·source·element·ClassFile::fromStream($this->in);
       try {
-        $cp->parse(new xp·ide·source·parser·ClassLexer(new MemoryInputStream($cf->getClassdef()->getContent())));
+        $cf->parseClassdefContent();
       } catch (ParseException $pe) {
         return array();
       }

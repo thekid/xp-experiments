@@ -6,7 +6,14 @@
   $package="xp.ide.source.element";
 
   uses(
-    'xp.ide.source.Element'
+    'xp.ide.source.Element',
+    'xp.ide.source.parser.ClassFileParser',
+    'xp.ide.source.parser.ClassFileLexer',
+    'xp.ide.source.parser.ClassParser',
+    'xp.ide.source.parser.ClassLexer',
+    'lang.ClassLoader',
+    'io.streams.MemoryInputStream',
+    'io.streams.TextReader'
   );
 
   /**
@@ -20,6 +27,27 @@
       $header= NULL,
       $uses= NUll,
       $classdef= NUll;
+
+    public static function fromClasslocator($cl) {
+      return self::fromStream(new TextReader(new MemoryInputStream(
+        ClassLoader::getDefault()->findClass($cl)->loadClassBytes($cl)
+      )));
+    }
+
+    public static function fromStream(TextReader $reader) {
+      $p= new xp·ide·source·parser·ClassFileParser();
+      $p->setTopElement($t= new self());
+      $p->parse(new xp·ide·source·parser·ClassFileLexer($reader));
+      return $t;
+    }
+
+    public function parseClassdefContent() {
+      $cp= new xp·ide·source·parser·ClassParser();
+      $cp->setTopElement($this->getClassdef());
+      $cp->parse(new xp·ide·source·parser·ClassLexer(
+        new TextReader(new MemoryInputStream($this->getClassdef()->getContent()))
+      ));
+    }
 
     public function setPackage(xp·ide·source·element·Package $package) {
       $this->package= $package;

@@ -34,6 +34,21 @@
     }
 
     /**
+     * toggle classname and class locator
+     *
+     * @param  xp.ide.Cursor cursor
+     */
+    #[@action(name='toggleClass', args="Cursor")]
+    public function toggleClass(xp·ide·Cursor $cursor) {
+      $response= $this->ide->toggleClass($cursor);
+      $this->out->write(
+        $response->getSnippet()->getPosition().PHP_EOL
+        .strlen($response->getSnippet()->getText()).PHP_EOL
+        .$response->getToggle()
+      );
+    }
+
+    /**
      * grep the file URI where the XP class
      * under the cursor if defined
      *
@@ -103,7 +118,7 @@
     #[@action(name='createAccessors')]
     public function createAccessors() {
       $confs= '';
-      while ($this->in->available()) $confs.= $this->in->read();
+      while (NULL !== $buf= $this->in->read()) $confs.= $buf;
       if (!$confs) return;
 
       $accInfos= array();
@@ -117,7 +132,7 @@
           case 'get': $accInfo->addAccess(xp·ide·AccessorConfig::ACCESS_GET); break;
         }
       }
-      return $this->ide->createAccessors($accInfos);
+      $this->ide->createAccessors($accInfos);
     }
   }
 ?>

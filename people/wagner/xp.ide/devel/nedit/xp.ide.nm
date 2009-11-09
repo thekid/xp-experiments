@@ -106,6 +106,29 @@ define xp_ide_complete {
 }
 
 ##
+# toggle the class locator (flly qualified class name)
+# to the real class name
+#
+# @return  int 1
+##
+define xp_ide_toggle {
+  result= shell_command("xpide Nedit toggleClass -cp " $cursor " -cl " $line " -cc " $column, get_range(0, $text_length))
+  kill_calltip()
+  if (0 != $shell_cmd_status) {
+    calltip(result)
+    return
+  }
+
+  res_list= split(result, "\n")
+  replacepos= res_list[0]
+  replacelen= res_list[1]
+  classname=  res_list[2]
+
+  replace_range(replacepos, replacepos + replacelen, classname)
+  set_cursor_pos(replacepos + length(classname))
+}
+
+##
 # try to open the class which full
 # qualified class name is under the cursor
 #

@@ -7,9 +7,6 @@
 
   uses(
     'lang.ClassLoader',
-    'io.streams.MemoryInputStream',
-    'xp.ide.source.parser.ClassFileParser',
-    'xp.ide.source.parser.ClassFileLexer',
     'xp.ide.source.element.ClassFile',
     'xp.ide.source.element.Classmethodparam',
     'xp.ide.source.snippet.Setter'
@@ -25,11 +22,7 @@
     protected function getParams($name, $type, $xtype, $dim) {
       $typename= '';
       try {
-        $classBytes= ClassLoader::getDefault()->findClass($xtype)->loadClassBytes($xtype);
-        $p= new xp·ide·source·parser·ClassFileParser();
-        $p->setTopElement($t= new xp·ide·source·element·ClassFile());
-        $p->parse(new xp·ide·source·parser·ClassFileLexer(new MemoryInputStream($classBytes)));
-        $typename= $t->getClassdef()->getName();
+        $typename= xp·ide·source·element·ClassFile::fromClasslocator($xtype)->getClassdef()->getName();
       } catch (XPException $e) {
         $typename= 'Object';
       }

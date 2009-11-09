@@ -23,14 +23,14 @@
     /**
      * check source code
      *
-     * @param   io.streams.InputStream
+     * @param   io.streams.TextReader
      * @return xp.ide.lint.Error[]
      */
-    public function checkSyntax(InputStream $stream) {
+    public function checkSyntax(TextReader $stream) {
       $errors= array();
       $f= new File(tempnam(System::getProperty('os.tempdir'), 'xil'));
       $f->open(FILE_MODE_WRITE);
-      while ($stream->available()) $f->write($stream->read());
+      while (NULL !== $buff= $stream->read()) $in->write($buff);
       $f->close();
 
       $p= new Process('sh', array('-n', $f->getUri()));

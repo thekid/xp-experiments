@@ -6,6 +6,7 @@
 
   uses(
     'io.streams.MemoryInputStream',
+    'io.streams.TextReader',
     'xp.ide.unittest.TestCase',
     'xp.ide.source.parser.ClassFileParser',
     'xp.ide.source.parser.ClassFileLexer',
@@ -29,7 +30,7 @@
      * @return text.parser.generic.AbstractLexer
      */
     private function getLexer($exp) {
-      return new xp·ide·source·parser·ClassFileLexer(new MemoryInputStream($exp));
+      return new xp·ide·source·parser·ClassFileLexer(new TextReader(new MemoryInputStream($exp)));
     }
 
     /**

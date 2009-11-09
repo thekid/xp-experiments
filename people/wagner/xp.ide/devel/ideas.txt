@@ -9,7 +9,7 @@
   [ ] Gedit: type2 completion
   [X] Nedit
   [ ] Array accessors (getXs(), getX($i), setXs($v), setX($i, $v), hasX($v), addX($v))
-[ ] make a classname from a package name
+[X] make a classname from a package name
 [*] templates
   [ ] XpCLI
   [ ] Tests

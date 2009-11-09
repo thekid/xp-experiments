@@ -65,11 +65,11 @@
     /**
      * Constructor
      *
-     * @param io.streams.InputStream
+     * @param io.streams.TextReader in
      */
-    public function __construct(InputStream $stream) {
-      $this->yy_reader= $stream;
-      $this->fileName= xp::stringOf($stream);
+    public function __construct(TextReader $in) {
+      $this->yy_reader= $in;
+      $this->fileName= xp::stringOf($in->getStream());
     }
 
     /**
@@ -121,15 +121,13 @@
         $this->yy_buffer_read= $j;
         $this->yy_buffer_index= $j;
 
-        if (!$this->yy_reader->available()) return $this->YY_EOF;
-        $data= $this->yy_reader->read();
+        if (NULL === $data= $this->yy_reader->read()) return $this->YY_EOF;
         $this->yy_buffer .= $data;
         $this->yy_buffer_read .= strlen($data);
       }
 
       while ($this->yy_buffer_index >= $this->yy_buffer_read) {
-        if (!$this->yy_reader->available()) return $this->YY_EOF;
-        $data= $this->yy_reader->read();
+        if (NULL === $data= $this->yy_reader->read()) return $this->YY_EOF;
         $this->yy_buffer .= $data;
         $this->yy_buffer_read .= strlen($data);
       }

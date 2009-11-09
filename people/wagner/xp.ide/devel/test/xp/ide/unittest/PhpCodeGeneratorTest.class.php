@@ -20,7 +20,7 @@
     'xp.ide.source.element.Classmethodparam',
     'xp.ide.unittest.TestCase',
     'io.streams.MemoryOutputStream',
-    'xp.ide.streams.EncodedOutputStreamDecorator',
+    'io.streams.TextWriter',
     'xp.ide.source.Generator'
   );
 
@@ -39,7 +39,7 @@
      */
     public function setUp() {
       $this->o= new MemoryOutputStream();
-      $this->g= new xp·ide·source·Generator(new xp·ide·streams·EncodedOutputStreamDecorator($this->o));
+      $this->g= new xp·ide·source·Generator(new TextWriter($this->o), 'ISO-8859-1');
       $this->e_cf= new xp·ide·source·element·ClassFile();
       $this->e_pg= new xp·ide·source·element·Package('xp.ide.test');
       $this->e_ch= new xp·ide·source·element·BlockComment(" This class is part of the XP framework\n *\n * \$Id:\$\n ");
@@ -734,8 +734,8 @@
     #[@test]
     public function out() {
       $this->assertSubclass(
-        $this->g->getOutputStream(),
-        'io.streams.OutputStream'
+        $this->g->getOutput(),
+        'TextWriter'
       );
     }
 

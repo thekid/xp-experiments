@@ -21,14 +21,14 @@
     /**
      * check source code
      *
-     * @param   io.streams.InputStream
+     * @param   io.streams.TextReader
      * @return xp.ide.lint.Error[]
      */
-    public function checkSyntax(InputStream $stream) {
+    public function checkSyntax(TextReader $stream) {
       $errors= array();
       $p= new Process('xmllint', array('-noout', '-'));
       $in= $p->getInputStream();
-      while ($stream->available()) $in->write($stream->read());
+      while (NULL !== $buff= $stream->read()) $in->write($buff);
       $in->close();
 
       $out= $p->getErrorStream();

@@ -22,10 +22,10 @@
     /**
      * check source code
      *
-     * @param   io.streams.InputStream
+     * @param   io.streams.TextReader
      * @return xp.ide.lint.Error[]
      */
-    public function checkSyntax(InputStream $stream) {
+    public function checkSyntax(TextReader $stream) {
       with ($cl= $this->getClass()->getPackage()->getPackage('js'), $tmp= new TempFile()); {
         $tmp->open(FILE_MODE_WRITE);
         $tmp->write($cl->getResource('fulljslint.js'));
@@ -36,7 +36,7 @@
       $errors= array();
       $p= new Process('js', array($tmp->getURI()));
       $in= $p->getInputStream();
-      while ($stream->available()) $in->write($stream->read());
+      while (NULL !== $buff= $stream->read()) $in->write($buff);
       $in->close();
 
       $out= $p->getOutputStream();

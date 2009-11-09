@@ -6,10 +6,10 @@
   $package= 'xp.ide';
   
   uses(
-    'xp.ide.streams.EncodedInputStreamDecorator',
-    'xp.ide.streams.EncodedOutputStreamDecorator',
     'xp.ide.Cursor',
     'xp.ide.XpIde',
+    'io.streams.TextWriter',
+    'io.streams.TextReader',
     'io.streams.ChannelInputStream',
     'io.streams.ChannelOutputStream',
     'lang.XPClass',
@@ -28,7 +28,10 @@
       $artefacts= array(
         'Cursor'      => 'getCursor',
         'Language'    => 'getLanguage',
-      );
+      ),
+      $in= NULL,
+      $out= NULL,
+      $err= NULL;
 
     /**
      * Main runner method
@@ -36,14 +39,17 @@
      * @param   string[] args
      */
     public static function main(array $args) {
+      $params= new ParamString($args);
+      with ($enc= $params->value('stream-encoding', 'se', 'ISO-8859-1')); {
+        self::$in= new TextReader(new ChannelInputStream('stdin'), $enc);
+        self::$out= new TextWriter(new ChannelOutputStream('stdout'), $enc);
+        self::$err= new TextWriter(new ChannelOutputStream('stderr'), $enc);
+      }
+
       try {
         if (2 > sizeOf($args)) return self::usage();
 
-        $wrapper= XPClass::forName('xp.ide.wrapper.'.array_shift($args))->newInstance(new xp·ide·XpIde(
-          new xp·ide·streams·EncodedInputStreamDecorator(new ChannelInputStream('stdin')),
-          new xp·ide·streams·EncodedOutputStreamDecorator(new ChannelOutputStream('stdout')),
-          new xp·ide·streams·EncodedOutputStreamDecorator(new ChannelOutputStream('stderr'))
-        ));
+        $wrapper= XPClass::forName('xp.ide.wrapper.'.array_shift($args))->newInstance(new xp·ide·XpIde(self::$in, self::$out, self::$err));
         if (!$wrapper instanceof xp·ide·wrapper·Wrapper) throw new IllegalArgumentException(sprintf('%s does not implement xp·ide·wrapper·Wrapper', $wrapper->getClassName()));
 
         $action= array_shift($args);
@@ -53,13 +59,6 @@
             if ($method->hasAnnotation('action')) $actionMethods[$method->getAnnotation('action', 'name')]= $method;
           }
           if (!isset($actionMethods[$action])) throw new IllegalArgumentException(sprintf('action %s not found', $action));
-        }
-
-        $params= new ParamString($args);
-        with ($enc= $params->value('stream-encoding', 'se', xp·ide·streams·IEncodedStream::ENCODING_NONE)); {
-          $wrapper->getIn()->setEncoding($enc);
-          $wrapper->getOut()->setEncoding($enc);
-          $wrapper->getErr()->setEncoding($enc);
         }
 
         // assemble arguments
@@ -74,7 +73,7 @@
 
         call_user_func_array(array($wrapper, $actionMethods[$action]->getName()), $action_args);
       } catch (XPException $e) {
-        Console::$err->write($e->getMessage());
+        self::$err->write($e->getMessage());
         return 1;
       }
       return 0;
@@ -112,7 +111,7 @@
       Console::$out->writeLine('   - wrapper: a classname from the namespace xp.ide.wrapper (e.g. "Nedit")');
       Console::$out->writeLine('   - action: XpIde action');
       Console::$out->writeLine(' * Stream: parameters to assamble the input stream');
-      Console::$out->writeLine('   - stream-encoding (se): input stream encoding (defaults to binary)');
+      Console::$out->writeLine('   - stream-encoding (se): input/output/error stream encoding (defaults to ISO-8859-1)');
       Console::$out->writeLine(' * Cursor: parameters to assamble the cursor');
       Console::$out->writeLine('   - cursor-position (cp): Cursor char position in the text buffer');
       Console::$out->writeLine('   - cursor-line (cl):     Cursor line');

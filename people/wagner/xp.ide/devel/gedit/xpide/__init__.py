@@ -72,6 +72,24 @@ class XpIdePlugin(gedit.Plugin):
         )
         tb.insert(tb.get_iter_at_offset(rep_pos), suggestion)
 
+    def toggleClass(self, action, window):
+        tb= window.get_active_document()
+        (returncode, result, error)= self.xpidedoc(window, 'toggleClass')
+        if (0 != returncode):
+            dialog.TextCalltip(window).setText(error).run()
+            return
+
+        result= result.splitlines()
+        rep_pos= int(result.pop(0))
+        rep_len= int(result.pop(0))
+        rep_toggle= result.pop(0)
+
+        tb.delete(
+            tb.get_iter_at_offset(rep_pos),
+            tb.get_iter_at_offset(rep_pos + rep_len)
+        )
+        tb.insert(tb.get_iter_at_offset(rep_pos), rep_toggle)
+
     def makeAccessors(self, action, window):
         (returncode, result, error)= self.xpidedoc(window, 'memberInfo')
         if (0 != returncode):
@@ -143,6 +161,10 @@ class XpIdeUi:
         action= gtk.Action("XpIdeComplete", "complete", None, None)
         self._ag.add_action_with_accel(action, "<Shift><Control>space")
         action.connect("activate", self._plugin.complete, self._window)
+
+        action= gtk.Action("XpIdeToggleClass", "toggle class", None, None)
+        self._ag.add_action_with_accel(action, "<Shift><Control>t")
+        action.connect("activate", self._plugin.toggleClass, self._window)
 
         action= gtk.Action("XpIdeOpenClass", "open XP class", None, None)
         self._ag.add_action_with_accel(action, "<Shift><Control>o")

@@ -14,7 +14,8 @@
     'xp.ide.source.element.Classconstant',
     'xp.ide.source.element.Classmethod',
     'xp.ide.source.element.Annotation',
-    'io.streams.MemoryInputStream'
+    'io.streams.MemoryInputStream',
+    'io.streams.TextReader'
   );
 
   /**
@@ -34,7 +35,7 @@
      * @return xp.ide.source.parser.Lexer
      */
     private function getLexer($exp) {
-      return new xp·ide·source·parser·ClassLexer(new MemoryInputStream($exp));
+      return new xp·ide·source·parser·ClassLexer(new TextReader(new MemoryInputStream($exp)));
     }
 
     /**

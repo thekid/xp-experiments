@@ -15,8 +15,8 @@
     /**
      * check source code
      *
-     * @param   io.streams.InputStream
+     * @param   io.streams.TextReader
      */
-    public function checkSyntax(InputStream $stream);
+    public function checkSyntax(TextReader $stream);
   }
 ?>

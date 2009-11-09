@@ -40,16 +40,18 @@
       do {
         try {
           $response= $this->ide->grepClassFileUri($cursor);
+          list($scheme, $rest)= explode('://', $response->getUri(), 2);
+          if ('file' !== $scheme) $this->err->write(sprintf('Cannot open class "%s" from location %s'.PHP_EOL, $response->getSnippet()->getText(), $response->getUri()));
+          $result[]= $rest;
+        } catch (IllegalStateException $e) {
+          break;
         } catch (IllegalArgumentException $e) {
           continue;
         } catch (xp·ide·resolve·NoSourceException $e) {
           $this->err->write($e->getMessage().PHP_EOL);
           continue;
         }
-        list($scheme, $rest)= explode('://', $response->getUri(), 2);
-        if ('file' !== $scheme) $this->err->write(sprintf('Cannot open class "%s" from location %s'.PHP_EOL, $response->getSnippet()->getText(), $response->getUri()));
-        $result[]= $rest;
-      } while ($this->in->available());
+      } while (TRUE);
       $this->out->write(implode(' ', $result));
     }
   }
