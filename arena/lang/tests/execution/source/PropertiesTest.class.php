@@ -22,47 +22,51 @@
      */
     public function setUp() {
       parent::setUp();
-      $this->fixture= $this->define('class', 'StringBufferFor'.$this->name, NULL, '{
-        protected string $buffer;
-        
-        public __construct(string $initial) {
-          $this.buffer= $initial;
-        }
-        
-        public int length {
-          get { return strlen($this.buffer); }
-          set { throw new lang.IllegalAccessException("Cannot set string length"); }
-        }
+      try {
+        $this->fixture= $this->define('class', 'StringBufferFor'.$this->name, NULL, '{
+          protected string $buffer;
 
-        public string[] chars {
-          get { return str_split($this.buffer); }
-          set { $this.buffer= implode("", $value); }
-        }
+          public __construct(string $initial) {
+            $this.buffer= $initial;
+          }
 
-        public string this[int $offset] {
-          get {
-            return $offset >= 0 && $offset < $this.length ? $this.buffer[$offset] : null;
+          public int length {
+            get { return strlen($this.buffer); }
+            set { throw new lang.IllegalAccessException("Cannot set string length"); }
           }
-          set {
-            $this.buffer= substr($this.buffer, 0, $offset) ~ $value ~ substr($this.buffer, $offset+ 1);
+
+          public string[] chars {
+            get { return str_split($this.buffer); }
+            set { $this.buffer= implode("", $value); }
           }
-          unset {
-            throw new lang.IllegalAccessException("Cannot remove string offsets");
+
+          public string this[int $offset] {
+            get {
+              return $offset >= 0 && $offset < $this.length ? $this.buffer[$offset] : null;
+            }
+            set {
+              $this.buffer= substr($this.buffer, 0, $offset) ~ $value ~ substr($this.buffer, $offset+ 1);
+            }
+            unset {
+              throw new lang.IllegalAccessException("Cannot remove string offsets");
+            }
+            isset {
+              return $offset >= 0 && $offset < $this.length;
+            }
           }
-          isset {
-            return $offset >= 0 && $offset < $this.length;
+
+          public string toString() {
+            return $this.buffer;
           }
-        }
-        
-        public string toString() {
-          return $this.buffer;
-        }
-      }', array(
-        'import native core.strlen;', 
-        'import native standard.str_split;',
-        'import native standard.substr;',
-        'import native standard.implode;',
-      ));
+        }', array(
+          'import native core.strlen;', 
+          'import native standard.str_split;',
+          'import native standard.substr;',
+          'import native standard.implode;',
+        ));
+      } catch (Throwable $e) {
+        throw new PrerequisitesNotMetError($e->getMessage(), $e);
+      }
     }
     
     /**
