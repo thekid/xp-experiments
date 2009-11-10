@@ -59,6 +59,24 @@
     }
 
     /**
+     * Test a non-empty untyped array
+     *
+     */
+    #[@test]
+    public function untypedArrayWithDanglingComma() {
+      $this->assertEquals(array(new ArrayNode(array(
+        'values'        => array(
+          new IntegerNode(array('value' => '1')),
+          new IntegerNode(array('value' => '2')),
+          new IntegerNode(array('value' => '3')),
+        ),
+        'type'          => NULL,
+      ))), $this->parse('
+        [1, 2, 3, ];
+      '));
+    }
+
+    /**
      * Test a non-empty typed array
      *
      */

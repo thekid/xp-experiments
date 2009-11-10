@@ -616,7 +616,7 @@ expressionlist_opt:
 
 expressionlist:
     expression { $$= array($1); }
-  | expressionlist ',' expression { $$= array_merge($1, array($3)); }
+  | expressionlist ',' expression_opt { $$= $3 ? array_merge($1, array($3)) : $1; }
 ;
 
 expression_opt:
