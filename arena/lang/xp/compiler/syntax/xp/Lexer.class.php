@@ -92,8 +92,11 @@
     const 
       DELIMITERS = " ^|&?!.:;,@%~=<>(){}[]#+-*/\"'\r\n\t";
           
-    private
-      $comment = NULL;
+    protected
+      $comment   = NULL,
+      $tokenizer = NULL,
+      $fileName  = NULL,
+      $forward   = array();
 
     /**
      * Constructor
