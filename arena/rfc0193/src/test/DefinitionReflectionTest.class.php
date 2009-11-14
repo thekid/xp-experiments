@@ -131,5 +131,33 @@
         ))
       );
     }
+
+    /**
+     * Test newGenericType()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function missingArguments() {
+      $this->fixture->newGenericType(array());
+    }
+
+    /**
+     * Test newGenericType()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function missingArgument() {
+      $this->fixture->newGenericType(array($this->getClass()));
+    }
+
+    /**
+     * Test newGenericType()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function tooManyArguments() {
+      $c= $this->getClass();
+      $this->fixture->newGenericType(array($c, $c, $c));
+    }
   }
 ?>

@@ -659,12 +659,24 @@
      * @param   lang.Type[] arguments
      * @return  lang.XPClass
      * @throws  lang.IllegalStateException if this class is not a generic definition
+     * @throws  lang.IllegalArgumentException if number of arguments does not match components
      */
     public function newGenericType(array $arguments= array()) {
       if ($this->_reflect->hasProperty('__generic')) return $this;    // BC XXX
 
+      // Verify
       if (!$this->isGenericDefinition()) {
         throw new IllegalStateException('Class '.$this->name.' is not a generic definition');
+      }
+      $components= $this->genericComponents();
+      if (sizeof($components) != sizeof($arguments)) {
+        throw new IllegalArgumentException(sprintf(
+          'Class %s expects %d component(s) <%s>, %d argument(s) given',
+          $this->name,
+          sizeof($components),
+          implode(', ', $components),
+          sizeof($arguments)
+        ));
       }
     
       // Compose name
@@ -682,8 +694,8 @@
       
         // Parse placeholders into a lookup map
         $placeholders= array();
-        foreach (explode(',', $this->getAnnotation('generic', 'self')) as $i => $placeholder) {
-          $placeholders[ltrim($placeholder)]= $arguments[$i]->getName();
+        foreach ($components as $i => $component) {
+          $placeholders[$component]= $arguments[$i]->getName();
         }
       
         // Generate constructor
