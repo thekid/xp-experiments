@@ -93,7 +93,7 @@
     #[@test]
     public function classesFromReflectionAndCreateAreEqual() {
       $this->assertEquals(
-        create('new Lookup<String, TestCase')->getClass(),
+        create('new Lookup<String, TestCase>()')->getClass(),
         $this->fixture->newGenericType(array(
           XPClass::forName('lang.types.String'), 
           XPClass::forName('unittest.TestCase')
