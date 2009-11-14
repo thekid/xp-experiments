@@ -67,8 +67,10 @@
         XPClass::forName('lang.types.String'), 
         XPClass::forName('unittest.TestCase')
       );
-      $t= $this->fixture->newGenericType($arguments);
-      $this->assertEquals($arguments, $t->genericArguments());
+      $this->assertEquals(
+        $arguments, 
+        $this->fixture->newGenericType($arguments)->genericArguments()
+      );
     }
 
     /**
@@ -81,8 +83,10 @@
         XPClass::forName('lang.types.String'), 
         XPClass::forName('lang.Object')
       );
-      $t= $this->fixture->newGenericType($arguments);
-      $this->assertEquals($arguments, $t->genericArguments());
+      $this->assertEquals(
+        $arguments, 
+        $this->fixture->newGenericType($arguments)->genericArguments()
+      );
     }
 
     /**
