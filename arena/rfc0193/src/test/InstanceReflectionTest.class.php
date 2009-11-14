@@ -69,5 +69,17 @@
     public function instanceIsNoGenericDefinition() {
       $this->assertFalse($this->fixture->getClass()->isGenericDefinition());
     }
+
+    /**
+     * Test isGenericDefinition()
+     *
+     */
+    #[@test]
+    public function genericArguments() {
+      $this->assertEquals(
+        array(XPClass::forName('lang.types.String'), XPClass::forName('unittest.TestCase')),
+        $this->fixture->getClass()->genericArguments()
+      );
+    }
   }
 ?>

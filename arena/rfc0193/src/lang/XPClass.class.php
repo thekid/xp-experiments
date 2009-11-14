@@ -669,7 +669,7 @@
       $name= xp::reflect($this->name).'··'.substr($composed, 1);
       $qname= $this->name.'··'.substr($composed, 1);
       $meta= array(
-        'class' => array(DETAIL_GENERIC => TRUE)
+        'class' => array(DETAIL_GENERIC => $arguments)
       );
       
       if (!class_exists($name, FALSE)) {
@@ -755,6 +755,16 @@
     public function isGenericDefinition() {
       if (!($details= self::detailsForClass($this->name))) return FALSE;
       return isset($details['class'][DETAIL_ANNOTATIONS]['generic']);
+    }
+
+    /**
+     * Returns generic type arguments
+     *
+     * @return  lang.Type[]
+     */
+    public function genericArguments() {
+      if (!($details= self::detailsForClass($this->name))) return NULL;
+      return @$details['class'][DETAIL_GENERIC];
     }
         
     /**
