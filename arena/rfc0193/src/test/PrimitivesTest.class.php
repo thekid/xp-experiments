@@ -27,5 +27,18 @@
       ));
       $this->assertEquals($this, $l->get('this'));
     }
+
+    /**
+     * Test getClass()
+     *
+     */
+    #[@test]
+    public function nameOfClass() {
+      $type= XPClass::forName('collections.Lookup')->newGenericType(array(
+        Primitive::$STRING,
+        XPClass::forName('unittest.TestCase')
+      ));
+      $this->assertEquals('collections.Lookup`2[string,unittest.TestCase]', $type->getName());
+    }
   }
 ?>
