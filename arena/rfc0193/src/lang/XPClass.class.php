@@ -658,8 +658,14 @@
      *
      * @param   lang.Type[] arguments
      * @return  lang.XPClass
+     * @throws  lang.IllegalStateException if this class is not a generic definition
      */
     public function newGenericType(array $arguments= array()) {
+      if ($this->_reflect->hasProperty('__generic')) return $this;    // BC XXX
+
+      if (!$this->isGenericDefinition()) {
+        throw new IllegalStateException('Class '.$this->name.' is not a generic definition');
+      }
     
       // Compose name
       $composed= '';
@@ -673,11 +679,6 @@
       );
       
       if (!class_exists($name, FALSE)) {
-      
-        // XXX HACK
-        if ($this->_reflect->hasProperty('__generic')) {
-          return $this;
-        }
       
         // Parse placeholders into a lookup map
         $placeholders= array();
@@ -756,13 +757,28 @@
     }
 
     /**
+     * Returns generic type components
+     *
+     * @return  string[]
+     */
+    public function genericComponents() {
+      if (!$this->isGenericDefinition()) {
+        throw new IllegalStateException('Class '.$this->name.' is not a generic definition');
+      }
+      $components= array();
+      foreach (explode(',', $this->getAnnotation('generic', 'self')) as $name) {
+        $components[]= ltrim($name);
+      }
+      return $components;
+    }
+
+    /**
      * Returns whether this class is a generic definition
      *
      * @return  bool
      */
     public function isGenericDefinition() {
-      if (!($details= self::detailsForClass($this->name))) return FALSE;
-      return isset($details['class'][DETAIL_ANNOTATIONS]['generic']);
+      return $this->hasAnnotation('generic', 'self');
     }
 
     /**
@@ -772,6 +788,9 @@
      */
     public function genericArguments() {
       if (!($details= self::detailsForClass($this->name))) return NULL;
+      if (!isset($details['class'][DETAIL_GENERIC])) {
+        throw new IllegalStateException('Class '.$this->name.' is not generic');
+      }
       return @$details['class'][DETAIL_GENERIC];
     }
         

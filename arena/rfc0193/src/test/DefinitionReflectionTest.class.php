@@ -45,6 +45,15 @@
     }
 
     /**
+     * Test genericComponents()
+     *
+     */
+    #[@test]
+    public function components() {
+      $this->assertEquals(array('K', 'V'), $this->fixture->genericComponents());
+    }
+
+    /**
      * Test newGenericType()
      *
      */
