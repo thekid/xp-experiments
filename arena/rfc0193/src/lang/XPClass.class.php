@@ -692,6 +692,8 @@
         foreach ($this->getMethods() as $method) {
           if (!$method->getDeclaringClass()->equals($this)) continue;
 
+          // Declare method
+          $details= self::detailsForMethod($this->_class, $method->getName());
           $src.= '  ';
           $src.= (
             implode(' ', Modifiers::namesOf($method->getModifiers())).
@@ -702,11 +704,14 @@
 
           // Replace parameter placeholders. Given [lang.types.String] as type arguments, 
           // "T" will become "String".
-          $generic= array('params' => array(), 'return' => NULL);          
-          if ($method->hasAnnotation('generic')) {
-            foreach (explode(',', $method->getAnnotation('generic', 'params')) as $placeholder) {
-              $generic['params'][]= strtr(ltrim($placeholder), $placeholders);
+          $generic= array();
+          if ($method->hasAnnotation('generic', 'params')) {
+            foreach (explode(',', $method->getAnnotation('generic', 'params')) as $i => $placeholder) {
+              $details[DETAIL_ARGUMENTS][$i]= $generic[$i]= strtr(ltrim($placeholder), $placeholders);
             }
+          }
+          if ($method->hasAnnotation('generic', 'return')) {
+            $details[DETAIL_RETURNS]= strtr($method->getAnnotation('generic', 'return'), $placeholders);
           }
           
           // Create argument signature
@@ -714,8 +719,8 @@
           foreach ($method->getParameters() as $i => $param) {
             if ($t= $param->getTypeRestriction()) {
               $sig[]= xp::reflect($t->getName()).' $·'.$i;
-            } else if (isset($generic['params'][$i])) {
-              $sig[]= xp::reflect($generic['params'][$i]).' $·'.$i;
+            } else if (isset($generic[$i])) {     // Replace type
+              $sig[]= xp::reflect($generic[$i]).' $·'.$i;
             } else {
               $sig[]= '$·'.$i;
             }
@@ -726,6 +731,9 @@
           $src.= 'return $this->delegate->'.$method->getName().'('.implode(',', $pass).');';
           $src.= '}';
           $src.= "\n";
+
+          // Register meta information
+          $meta[1][$method->getName()]= $details;
         }
         
         $impl= array();

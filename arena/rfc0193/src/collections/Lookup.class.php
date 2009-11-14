@@ -33,6 +33,7 @@
      * @return  V value
      * @throws  util.NoSuchElementException
      */
+    #[@generic(params= 'K', return= 'V')]
     public function get($key) {
       $offset= $key instanceof Generic ? $key->hashCode() : $key;
       if (!isset($this->elements[$offset])) {

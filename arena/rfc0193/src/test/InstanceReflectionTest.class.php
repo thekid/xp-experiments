@@ -94,5 +94,29 @@
         $this->fixture->getClass()->genericArguments()
       );
     }
+
+    /**
+     * Test parameter reflection
+     *
+     */
+    #[@test]
+    public function putParameters() {
+      $params= $this->fixture->getClass()->getMethod('put')->getParameters();
+      $this->assertEquals(2, sizeof($params));
+      $this->assertEquals(XPClass::forName('lang.types.String'), $params[0]->getType());
+      $this->assertEquals(XPClass::forName('unittest.TestCase'), $params[1]->getType());
+    }
+
+    /**
+     * Test return type reflection
+     *
+     */
+    #[@test]
+    public function getReturnType() {
+      $this->assertEquals(
+        XPClass::forName('unittest.TestCase'),
+        $this->fixture->getClass()->getMethod('get')->getReturnType()
+      );
+    }
   }
 ?>
