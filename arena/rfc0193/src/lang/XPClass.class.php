@@ -19,6 +19,7 @@
   define('DETAIL_COMMENT',        4);
   define('DETAIL_ANNOTATIONS',    5);
   define('DETAIL_NAME',           6);
+  define('DETAIL_GENERIC',        7);
  
   /**
    * Represents classes. Every instance of an XP class has an method
@@ -666,6 +667,10 @@
         $composed.= '¸'.xp::reflect($typearg->getName());
       }
       $name= xp::reflect($this->name).'··'.substr($composed, 1);
+      $qname= $this->name.'··'.substr($composed, 1);
+      $meta= array(
+        'class' => array(DETAIL_GENERIC => TRUE)
+      );
       
       if (!class_exists($name, FALSE)) {
       
@@ -735,10 +740,31 @@
           ($impl ? ' implements '.implode(', ', $impl) : '').
           ' {'.$src.'}'
         );
-        xp::$registry['class.'.$name]= substr($this->name, 0, strrpos($this->name, '.')).'.'.$name;
+        xp::$registry['details.'.$qname]= $meta;
+        xp::$registry['class.'.$name]= $qname;
       }
       
       return new XPClass(new ReflectionClass($name));
+    }
+
+    /**
+     * Returns whether this class is a generic definition
+     *
+     * @return  bool
+     */
+    public function isGenericDefinition() {
+      if (!($details= self::detailsForClass($this->name))) return FALSE;
+      return isset($details['class'][DETAIL_ANNOTATIONS]['generic']);
+    }
+        
+    /**
+     * Returns whether this class is generic
+     *
+     * @return  bool
+     */
+    public function isGeneric() {
+      if (!($details= self::detailsForClass($this->name))) return FALSE;
+      return isset($details['class'][DETAIL_GENERIC]);
     }
     
     /**

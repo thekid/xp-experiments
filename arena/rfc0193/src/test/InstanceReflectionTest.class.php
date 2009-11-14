@@ -51,5 +51,23 @@
         $class->getName()
       );
     }
+
+    /**
+     * Test isGeneric()
+     *
+     */
+    #[@test]
+    public function instanceIsGeneric() {
+      $this->assertTrue($this->fixture->getClass()->isGeneric());
+    }
+
+    /**
+     * Test isGenericDefinition()
+     *
+     */
+    #[@test]
+    public function instanceIsNoGenericDefinition() {
+      $this->assertFalse($this->fixture->getClass()->isGenericDefinition());
+    }
   }
 ?>
