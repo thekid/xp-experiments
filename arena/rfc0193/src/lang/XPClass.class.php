@@ -760,6 +760,7 @@
      * Returns generic type components
      *
      * @return  string[]
+     * @throws  lang.IllegalStateException if this class is not a generic definition
      */
     public function genericComponents() {
       if (!$this->isGenericDefinition()) {
@@ -785,6 +786,7 @@
      * Returns generic type arguments
      *
      * @return  lang.Type[]
+     * @throws  lang.IllegalStateException if this class is not a generic
      */
     public function genericArguments() {
       if (!($details= self::detailsForClass($this->name))) return NULL;
