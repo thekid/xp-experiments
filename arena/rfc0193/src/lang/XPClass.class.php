@@ -687,7 +687,9 @@
       $name= xp::reflect($this->name).'··'.substr($composed, 1);
       $qname= $this->name.'··'.substr($composed, 1);
       $meta= array(
-        'class' => array(DETAIL_GENERIC => $arguments)
+        'class' => array(DETAIL_GENERIC => $arguments),
+        0       => array(),
+        1       => array()
       );
       
       if (!class_exists($name, FALSE)) {
