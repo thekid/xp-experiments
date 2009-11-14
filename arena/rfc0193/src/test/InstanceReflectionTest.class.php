@@ -114,8 +114,8 @@
     #[@test]
     public function getReturnType() {
       $this->assertEquals(
-        XPClass::forName('unittest.TestCase'),
-        $this->fixture->getClass()->getMethod('get')->getReturnType()
+        'unittest.TestCase',
+        $this->fixture->getClass()->getMethod('get')->getReturnTypeName()
       );
     }
 
@@ -126,8 +126,8 @@
     #[@test]
     public function valuesReturnType() {
       $this->assertEquals(
-        Primitive::$ARRAY,
-        $this->fixture->getClass()->getMethod('values')->getReturnType()
+        'unittest.TestCase[]',
+        $this->fixture->getClass()->getMethod('values')->getReturnTypeName()
       );
     }
   }
