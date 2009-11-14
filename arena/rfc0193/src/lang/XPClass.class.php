@@ -683,8 +683,10 @@
         // Generate constructor
         $src= 'public function __construct() { $this->delegate= new '.xp::reflect($this->name).'(); }'."\n";
         
-        // Generate methods
+        // Generate delegating methods declared in this class
         foreach ($this->getMethods() as $method) {
+          if (!$method->getDeclaringClass()->equals($this)) continue;
+
           $src.= '  ';
           $src.= (
             implode(' ', Modifiers::namesOf($method->getModifiers())).
@@ -733,6 +735,7 @@
           ($impl ? ' implements '.implode(', ', $impl) : '').
           ' {'.$src.'}'
         );
+        xp::$registry['class.'.$name]= substr($this->name, 0, strrpos($this->name, '.')).'.'.$name;
       }
       
       return new XPClass(new ReflectionClass($name));
