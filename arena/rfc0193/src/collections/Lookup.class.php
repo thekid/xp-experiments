@@ -41,5 +41,15 @@
       }
       return $this->elements[$offset];
     }
+
+    /**
+     * Returns all values
+     *
+     * @return  V[] values
+     */
+    #[@generic(return= 'V[]')]
+    public function values() {
+      return array_values($this->elements);
+    }
   }
 ?>

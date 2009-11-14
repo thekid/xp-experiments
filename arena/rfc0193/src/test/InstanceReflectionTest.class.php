@@ -118,5 +118,17 @@
         $this->fixture->getClass()->getMethod('get')->getReturnType()
       );
     }
+
+    /**
+     * Test return type reflection
+     *
+     */
+    #[@test]
+    public function valuesReturnType() {
+      $this->assertEquals(
+        Primitive::$ARRAY,
+        $this->fixture->getClass()->getMethod('values')->getReturnType()
+      );
+    }
   }
 ?>
