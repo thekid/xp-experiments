@@ -44,11 +44,24 @@
      *
      */
     #[@test]
-    public function getClassMethod() {
+    public function nameOfClass() {
       $class= $this->fixture->getClass();
       $this->assertEquals(
         'collections.Lookup··String¸TestCase', 
         $class->getName()
+      );
+    }
+
+    /**
+     * Test getClass()
+     *
+     */
+    #[@test]
+    public function simpleNameOfClass() {
+      $class= $this->fixture->getClass();
+      $this->assertEquals(
+        'Lookup··String¸TestCase', 
+        $class->getSimpleName()
       );
     }
 
