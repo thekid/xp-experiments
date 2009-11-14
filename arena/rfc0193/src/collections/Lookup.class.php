@@ -13,6 +13,17 @@
   #[@generic(self= 'K, V')]
   class Lookup extends Object {
     protected $elements= array();
+    
+    /**
+     * Constructor
+     *
+     * @param   array<string, var> initial
+     */
+    public function __construct($initial= array()) {
+      foreach ($initial as $key => $value) {
+        $this->put($key, $value);
+      }
+    }
    
     /**
      * Put a key/value pairt
