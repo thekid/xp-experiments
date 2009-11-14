@@ -96,10 +96,7 @@
      * @return  string
      */
     public function getSimpleName() {
-      return FALSE === ($p= strrpos($this->name, '.')) 
-        ? $this->name                   // Already unqualified
-        : substr($this->name, $p+ 1)    // Full name
-      ;
+      return xp::reflect($this->name);
     }
     
     /**
@@ -669,30 +666,33 @@
         throw new IllegalStateException('Class '.$this->name.' is not a generic definition');
       }
       $components= $this->genericComponents();
-      if (sizeof($components) != sizeof($arguments)) {
+      $cs= sizeof($components);
+      if ($cs != sizeof($arguments)) {
         throw new IllegalArgumentException(sprintf(
           'Class %s expects %d component(s) <%s>, %d argument(s) given',
           $this->name,
-          sizeof($components),
+          $cs,
           implode(', ', $components),
           sizeof($arguments)
         ));
       }
     
-      // Compose name
-      $composed= '';
+      // Compose names
+      $cn= $qc= '';
       foreach ($arguments as $typearg) {
-        $composed.= '¸'.xp::reflect($typearg->getName());
+        $cn.= '¸'.($typearg instanceof Primitive ? 'þ' : '').xp::reflect($typearg->getName());
+        $qc.= ','.$typearg->getName();
       }
-      $name= xp::reflect($this->name).'··'.substr($composed, 1);
-      $qname= $this->name.'··'.substr($composed, 1);
-      $meta= array(
-        'class' => array(DETAIL_GENERIC => $arguments),
-        0       => array(),
-        1       => array()
-      );
-      
+      $name= xp::reflect($this->name).'··'.substr($cn, 1);
+      $qname= $this->name.'`'.$cs.'['.substr($qc, 1).']';
+
+      // Create class if it doesn't exist yet      
       if (!class_exists($name, FALSE)) {
+        $meta= array(
+          'class' => array(DETAIL_GENERIC => $arguments),
+          0       => array(),
+          1       => array()
+        );
       
         // Parse placeholders into a lookup map
         $placeholders= array();
@@ -701,7 +701,25 @@
         }
       
         // Generate constructor
-        $src= 'public function __construct() { $this->delegate= new '.xp::reflect($this->name).'(); }'."\n";
+        $sig= $pass= array();
+        if ($this->hasConstructor()) {
+          foreach ($this->getConstructor()->getParameters() as $i => $param) {
+            if ($t= $param->getTypeRestriction()) {
+              $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
+            } else if (isset($generic[$i]) && $generic[$i] instanceof XPClass) {
+              $sig[$i]= $generic[$i]->getSimpleName().' $·'.$i;
+            } else {
+              $sig[$i]= '$·'.$i;
+            }
+            $param->isOptional() && $sig[$i].= '= '.var_export($param->getDefaultValue(), TRUE);
+            $pass[$i]= '$·'.$i;
+          }
+        }
+        $src= (
+          'public function __construct('.implode(',', $sig).') { '.
+          '$this->delegate= new '.xp::reflect($this->name).
+          '('.implode(',', $pass).'); }'."\n"
+        );
         
         // Generate delegating methods declared in this class
         foreach ($this->getMethods() as $method) {
@@ -722,7 +740,9 @@
           $generic= array();
           if ($method->hasAnnotation('generic', 'params')) {
             foreach (explode(',', $method->getAnnotation('generic', 'params')) as $i => $placeholder) {
-              $details[DETAIL_ARGUMENTS][$i]= $generic[$i]= strtr(ltrim($placeholder), $placeholders);
+              $replaced= strtr(ltrim($placeholder), $placeholders);
+              $details[DETAIL_ARGUMENTS][$i]= $replaced;
+              $generic[$i]= Type::forName($replaced);
             }
           }
           if ($method->hasAnnotation('generic', 'return')) {
@@ -733,13 +753,14 @@
           $sig= $pass= array();
           foreach ($method->getParameters() as $i => $param) {
             if ($t= $param->getTypeRestriction()) {
-              $sig[]= xp::reflect($t->getName()).' $·'.$i;
-            } else if (isset($generic[$i])) {     // Replace type
-              $sig[]= xp::reflect($generic[$i]).' $·'.$i;
+              $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
+            } else if (isset($generic[$i]) && $generic[$i] instanceof XPClass) {
+              $sig[$i]= $generic[$i]->getSimpleName().' $·'.$i;
             } else {
-              $sig[]= '$·'.$i;
+              $sig[$i]= '$·'.$i;
             }
-            $pass[]= '$·'.$i;
+            $param->isOptional() && $sig[$i].= '= '.var_export($param->getDefaultValue(), TRUE);
+            $pass[$i]= '$·'.$i;
           }
           $src.= implode(',', $sig);
           $src.= ') {';
@@ -757,7 +778,7 @@
         }
       
         // Create class
-        echo '> ', $src, "\n";
+        // DEBUG echo '> ', $name, "\n  ", $src, "\n";
         eval(
           'class '.$name.' extends Object '.
           ($impl ? ' implements '.implode(', ', $impl) : '').

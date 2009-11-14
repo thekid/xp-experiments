@@ -34,7 +34,7 @@
     #[@test]
     public function getClassNameMethod() {
       $this->assertEquals(
-        'collections.Lookup··String¸TestCase', 
+        'collections.Lookup`2[lang.types.String,unittest.TestCase]', 
         $this->fixture->getClassName()
       );
     }
@@ -47,7 +47,7 @@
     public function nameOfClass() {
       $class= $this->fixture->getClass();
       $this->assertEquals(
-        'collections.Lookup··String¸TestCase', 
+        'collections.Lookup`2[lang.types.String,unittest.TestCase]', 
         $class->getName()
       );
     }
