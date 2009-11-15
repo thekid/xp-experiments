@@ -774,7 +774,7 @@
         // Handle parent class and interfaces
         $impl= array();
         foreach ($self->getInterfaces() as $iface) {
-          $declared= xp::reflect($iface->getName());
+          $declared= $iface->getSimpleName();
           if ($self->hasAnnotation('generic', $declared)) {
             $impl[]= self::createGenericType($iface, $arguments)->getSimpleName();
           } else {
@@ -783,8 +783,7 @@
         }
       
         // Create class
-        // DEBUG 
-        echo '> ', $name, "\n  ", $src, "\n";
+        // DEBUG echo '> ', $name, "\n  ", $src, "\n";
         eval(
           ($self->isInterface() ? 'interface '.$name : 'class '.$name.' extends Object ').
           ($impl ? ' implements '.implode(', ', $impl) : '').
