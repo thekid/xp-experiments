@@ -698,25 +698,28 @@
         }
       
         // Generate constructor
-        $sig= $pass= array();
-        if ($self->hasConstructor()) {
-          foreach ($self->getConstructor()->getParameters() as $i => $param) {
-            if ($t= $param->getTypeRestriction()) {
-              $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
-            } else if (isset($generic[$i]) && $generic[$i] instanceof XPClass) {
-              $sig[$i]= $generic[$i]->getSimpleName().' $·'.$i;
-            } else {
-              $sig[$i]= '$·'.$i;
+        $src= '';
+        if (!$self->isInterface()) {
+          $sig= $pass= array();
+          if ($self->hasConstructor()) {
+            foreach ($self->getConstructor()->getParameters() as $i => $param) {
+              if ($t= $param->getTypeRestriction()) {
+                $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
+              } else if (isset($generic[$i]) && $generic[$i] instanceof XPClass) {
+                $sig[$i]= $generic[$i]->getSimpleName().' $·'.$i;
+              } else {
+                $sig[$i]= '$·'.$i;
+              }
+              $param->isOptional() && $sig[$i].= '= '.var_export($param->getDefaultValue(), TRUE);
+              $pass[$i]= '$·'.$i;
             }
-            $param->isOptional() && $sig[$i].= '= '.var_export($param->getDefaultValue(), TRUE);
-            $pass[$i]= '$·'.$i;
           }
+          $src.= (
+            'public function __construct('.implode(',', $sig).') { '.
+            '$this->delegate= new '.xp::reflect($self->name).
+            '('.implode(',', $pass).'); }'."\n"
+          );
         }
-        $src= (
-          'public function __construct('.implode(',', $sig).') { '.
-          '$this->delegate= new '.xp::reflect($self->name).
-          '('.implode(',', $pass).'); }'."\n"
-        );
         
         // Generate delegating methods declared in this class
         foreach ($self->getMethods() as $method) {
@@ -725,12 +728,8 @@
           // Declare method
           $details= self::detailsForMethod($self->_class, $method->getName());
           $src.= '  ';
-          $src.= (
-            implode(' ', Modifiers::namesOf($method->getModifiers())).
-            ' function '.
-            $method->getName().
-            '('
-          );
+          $self->isInterface() || $src.= implode(' ', Modifiers::namesOf($method->getModifiers()));
+          $src.= ' function '.$method->getName().'(';
 
           // Replace parameter placeholders. Given [lang.types.String] as type arguments, 
           // "T" will become "String".
@@ -760,24 +759,34 @@
             $pass[$i]= '$·'.$i;
           }
           $src.= implode(',', $sig);
-          $src.= ') {';
-          $src.= 'return $this->delegate->'.$method->getName().'('.implode(',', $pass).');';
-          $src.= '}';
+          
+          if (Modifiers::isAbstract($method->getModifiers())) {
+            $src.= ');';
+          } else {
+            $src.= ') { return $this->delegate->'.$method->getName().'('.implode(',', $pass).');}';
+          }
           $src.= "\n";
 
           // Register meta information
           $meta[1][$method->getName()]= $details;
         }
         
+        // Handle parent class and interfaces
         $impl= array();
         foreach ($self->getInterfaces() as $iface) {
-          $impl[]= xp::reflect($iface->getName());
+          $declared= xp::reflect($iface->getName());
+          if ($self->hasAnnotation('generic', $declared)) {
+            $impl[]= self::createGenericType($iface, $arguments)->getSimpleName();
+          } else {
+            $impl[]= $declared;
+          }
         }
       
         // Create class
-        // DEBUG echo '> ', $name, "\n  ", $src, "\n";
+        // DEBUG 
+        echo '> ', $name, "\n  ", $src, "\n";
         eval(
-          'class '.$name.' extends Object '.
+          ($self->isInterface() ? 'interface '.$name : 'class '.$name.' extends Object ').
           ($impl ? ' implements '.implode(', ', $impl) : '').
           ' {'.$src.'}'
         );

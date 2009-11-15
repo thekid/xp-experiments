@@ -4,14 +4,14 @@
  * $Id$ 
  */
 
-  uses('util.NoSuchElementException');
+  uses('util.NoSuchElementException', 'collections.IDictionary');
 
   /**
    * Lookup map
    *
    */
-  #[@generic(self= 'K, V')]
-  class Lookup extends Object {
+  #[@generic(self= 'K, V', IDictionary= 'K, V')]
+  class Lookup extends Object implements IDictionary {
     protected $elements= array();
     
     /**
