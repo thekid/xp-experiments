@@ -20,7 +20,7 @@
       $name= '',
       $type= '',
       $type2= '',
-      $dim= 1,
+      $dim= 0,
       $access= 0;
 
     /**
@@ -31,11 +31,22 @@
      * @param string type2
      * @param integer dim
      */
-    public function __construct($name, $type, $type2, $dim) {
+    public function __construct($name, $type, $type2= '', $dim= 0) {
       $this->name= $name;
       $this->type= $type;
       $this->type2= $type2;
       $this->dim= $dim;
+    }
+
+    public function equals($o) {
+      if (!$o instanceof self) return FALSE;
+      return (
+        $this->name === $o->getName()
+        && $this->type === $o->getType()
+        && $this->type2 === $o->getType2()
+        && $this->dim === $o->getDim()
+        && $this->access === $o->getAccess()
+      );
     }
 
     /**

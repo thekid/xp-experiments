@@ -27,7 +27,7 @@
      *
      * @param xp.ide.XpIde
      */
-    public function __construct(xp·ide·XpIde $ide) {
+    public function __construct(xp·ide·IXpIde $ide) {
       $this->ide= $ide;
       $this->in= $this->ide->getIn();
       $this->out= $this->ide->getOut();

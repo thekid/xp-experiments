@@ -6,21 +6,24 @@
   $package= 'xp.ide';
 
   uses(
-    'xp.ide.resolve.Resolver',
+    'lang.ClassLoader',
+    'xp.ide.ClassPathScanner',
     'xp.ide.completion.PackageClassCompleter',
-    'xp.ide.completion.UncompletePackageClass',
-    'xp.ide.text.StreamWorker',
-    'xp.ide.info.MemberInfo',
-    'xp.ide.resolve.Response',
     'xp.ide.completion.Response',
-    'xp.ide.toggle.Response',
-    'xp.ide.source.element.ClassFile',
+    'xp.ide.completion.UncompletePackageClass',
+    'xp.ide.IXpIde',
+    'xp.ide.info.MemberInfo',
+    'xp.ide.resolve.Resolver',
+    'xp.ide.resolve.Response',
     'xp.ide.source.element.Classdef',
+    'xp.ide.source.element.ClassFile',
+    'xp.ide.source.Generator',
     'xp.ide.source.snippet.GetterFactory',
     'xp.ide.source.snippet.GetterName',
     'xp.ide.source.snippet.SetterFactory',
     'xp.ide.source.snippet.SetterName',
-    'xp.ide.source.Generator'
+    'xp.ide.text.StreamWorker',
+    'xp.ide.toggle.Response'
   );
 
   /**
@@ -28,7 +31,7 @@
    *
    * @purpose IDE
    */
-  class xp·ide·XpIde extends Object {
+  class xp·ide·XpIde extends Object implements xp·ide·IXpIde {
 
     private
       $in= NULL,
@@ -106,9 +109,11 @@
      * complete the source under the cursor
      *
      * @param  xp.ide.Cursor cursor
+     * @param  io.Folder cwd
      * @return xp.ide.completion.Response
      */
-    public function complete(xp·ide·Cursor $cursor) {
+    public function complete(xp·ide·Cursor $cursor, Folder $cwd) {
+      create(new xp·ide·ClassPathScanner())->fromFolder($cwd);
       $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($this->in, $cursor);
       return new xp·ide·completion·Response(
         $searchWord,
@@ -118,14 +123,16 @@
       );
     }
 
-    /** TextReader
+    /**
      * toggle classname and class locator
      *
      * @param  xp.ide.Cursor cursor
+     * @param  io.Folder cwd
      * @throws lang.IllegalArgumentException
-     * @param  xp.ide.toggle.Response
+     * @return  xp.ide.toggle.Response
      */
-    public function toggleClass(xp·ide·Cursor $cursor) {
+    public function toggleClass(xp·ide·Cursor $cursor, Folder $cwd) {
+      create(new xp·ide·ClassPathScanner())->fromFolder($cwd);
       $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($this->in, $cursor);
       if (ClassLoader::getDefault()->providesClass($searchWord->getText())) {
         $typename= '';
@@ -136,7 +143,11 @@
         }
         return new xp·ide·toggle·Response($searchWord, $typename);
       }
-      throw new IllegalArgumentException(sprintf('%s is not a class location', $searchWord->getText()));
+      throw new IllegalArgumentException(sprintf(
+        '%s is not a class location.'.PHP_EOL.PHP_EOL.'Registered ClassLoaders:'.PHP_EOL.'%s',
+        $searchWord->getText(),
+        implode(PHP_EOL, array_map(array('xp', 'stringOf'), ClassLoader::getDefault()->getLoaders()))
+      ));
     }
 
     /**
@@ -144,9 +155,11 @@
      * under the cursor if defined
      *
      * @param  xp.ide.Cursor cursor
+     * @param  io.Folder cwd
      * @return xp.ide.resolve.Response
      */
-    public function grepClassFileUri(xp·ide·Cursor $cursor) {
+    public function grepClassFileUri(xp·ide·Cursor $cursor, Folder $cwd) {
+      create(new xp·ide·ClassPathScanner())->fromFolder($cwd);
       $searchWord= create(new xp·ide·text·StreamWorker())->grepClassName($this->in, $cursor);
       $resolver= new xp·ide·resolve·Resolver();
       return new xp·ide·resolve·Response($searchWord, $resolver->getSourceUri($searchWord->getText()));

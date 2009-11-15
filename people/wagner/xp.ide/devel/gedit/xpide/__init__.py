@@ -137,6 +137,7 @@ class XpIdePlugin(gedit.Plugin):
                 "Gedit",
                 command,
                 "-se", "UTF-8",
+                "-fc", os.path.dirname(tb.get_uri()),
                 "-cp", str(cursor.get_offset()),
                 "-cl", str(cursor.get_line()),
                 "-cc", str(cursor.get_line_offset()),

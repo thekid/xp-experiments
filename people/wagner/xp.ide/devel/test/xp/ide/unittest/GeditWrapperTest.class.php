@@ -5,9 +5,10 @@
  */
 
   uses(
-    'xp.ide.unittest.TestCase',
     'xp.ide.wrapper.Gedit',
-    'xp.ide.XpIde',
+    'xp.ide.AccessorConfig',
+    'xp.ide.unittest.TestCase',
+    'xp.ide.unittest.mock.XpIde',
     'io.streams.TextReader',
     'io.streams.TextWriter',
     'io.streams.MemoryInputStream',
@@ -32,7 +33,7 @@
      *
      */
     public function setUp() {
-      $this->ide= new xp·ide·XpIde(
+      $this->ide= new xp·ide·unittest·mock·XpIde(
         $this->in= new TextReader(new MemoryInputStream('')),
         $this->out= new TextWriter(new MemoryOutputStream()),
         $this->err= new TextWriter(new MemoryOutputStream())
@@ -45,9 +46,82 @@
      *
      */
     #[@test]
-    public function createAccessorsEmpty() {
+    public function createAccessorSetterGetterTwo() {
+      $this->setInput('in:integer:::get+set'.PHP_EOL.'number:integer:::get+set');
       $this->wrapper->createAccessors();
-      $this->assertEquals('', $this->wrapper->getOut()->getStream()->getBytes());
+
+      $conf= array(
+        new xp·ide·AccessorConfig('in', 'integer'),
+        new xp·ide·AccessorConfig('number', 'integer'),
+      );
+      $conf[0]->addAccess(xp·ide·AccessorConfig::ACCESS_GET);
+      $conf[0]->addAccess(xp·ide·AccessorConfig::ACCESS_SET);
+      $conf[1]->addAccess(xp·ide·AccessorConfig::ACCESS_GET);
+      $conf[1]->addAccess(xp·ide·AccessorConfig::ACCESS_SET);
+      $this->assertEquals($conf, $this->ide->getAccessorConfig());
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createAccessorGetterTwo() {
+      $this->setInput('in:integer:::get'.PHP_EOL.'number:integer:::get');
+      $this->wrapper->createAccessors();
+
+      $conf= array(
+        new xp·ide·AccessorConfig('in', 'integer'),
+        new xp·ide·AccessorConfig('number', 'integer'),
+      );
+      $conf[0]->addAccess(xp·ide·AccessorConfig::ACCESS_GET);
+      $conf[1]->addAccess(xp·ide·AccessorConfig::ACCESS_GET);
+      $this->assertEquals($conf, $this->ide->getAccessorConfig());
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createAccessorSetterTwo() {
+      $this->setInput('in:integer:::set'.PHP_EOL.'number:integer:::set');
+      $this->wrapper->createAccessors();
+
+      $conf= array(
+        new xp·ide·AccessorConfig('in', 'integer'),
+        new xp·ide·AccessorConfig('number', 'integer'),
+      );
+      $conf[0]->addAccess(xp·ide·AccessorConfig::ACCESS_SET);
+      $conf[1]->addAccess(xp·ide·AccessorConfig::ACCESS_SET);
+      $this->assertEquals($conf, $this->ide->getAccessorConfig());
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createAccessorSetterOne() {
+      $this->setInput('in:integer:::set');
+      $this->wrapper->createAccessors();
+
+      $conf= array(new xp·ide·AccessorConfig('in', 'integer'));
+      $conf[0]->addAccess(xp·ide·AccessorConfig::ACCESS_SET);
+      $this->assertEquals($conf, $this->ide->getAccessorConfig());
+    }
+
+    /**
+     * Test ide class
+     *
+     */
+    #[@test]
+    public function createAccessorNone() {
+      $this->setInput('in:integer:::');
+      $this->wrapper->createAccessors();
+      $this->assertEquals(array(
+        new xp·ide·AccessorConfig('in', 'integer'),
+      ), $this->ide->getAccessorConfig());
     }
 
     /**
@@ -55,13 +129,9 @@
      *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    public function createAccessorsNoSet() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string')));
+    public function createAccessorLessFields() {
+      $this->setInput('in:integer::');
       $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createSetter('in', 'string'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
     }
 
     /**
@@ -69,236 +139,19 @@
      *
      */
     #[@test]
-    public function createSettterOne() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string::0:set')));
+    public function createAccessorEmpty() {
       $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createSetter('in', 'string'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
+      $this->assertEquals(array(), $this->ide->getAccessorConfig());
     }
 
     /**
-     * Test ide class
+     * prepare input stream
      *
+     * param string input
      */
-    #[@test]
-    public function createSetterTwo() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string::0:set'."\n".'out:string::0:set')));
-      $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createSetter('in', 'string').
-        $this->createSetter('out', 'string'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
+    private function setInput($input) {
+      $this->in= new TextReader(new MemoryInputStream($input));
+      $this->wrapper->setIn($this->in);
     }
-
-    /**
-     * Test ide class
-     *
-     */
-    #[@test]
-    public function createGetterOne() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string::0:get')));
-      $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createGetter('in', 'string'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
-    }
-
-    /**
-     * Test ide class
-     *
-     */
-    #[@test]
-    public function createGetterTwo() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string::0:get'."\n".'out:string::0:get')));
-      $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createGetter('in', 'string').
-        $this->createGetter('out', 'string'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
-    }
-
-    /**
-     * Test ide class
-     *
-     */
-    #[@test]
-    public function createSetterGetterOne() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string::0:set+get')));
-      $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createSetter('in', 'string').
-        $this->createGetter('in', 'string'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
-    }
-
-    /**
-     * Test ide class
-     *
-     */
-    #[@test]
-    public function createSetterGetterTwo() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('in:string::0:set+get'.PHP_EOL.'out:string::0:set+get')));
-      $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createSetter('in', 'string').
-        $this->createGetter('in', 'string').
-        $this->createSetter('out', 'string').
-        $this->createGetter('out', 'string'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
-    }
-
-    /**
-     * Test ide class
-     *
-     */
-    #[@test]
-    public function createSetterGetterInt() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('count:integer::0:set+get')));
-      $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createSetter('count', 'integer').
-        $this->createGetter('count', 'integer'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
-    }
-
-    /**
-     * Test ide class
-     *
-     */
-    #[@test]
-    public function createSetterGetterBool() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('final:boolean::0:set+get')));
-      $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createSetter('final', 'boolean').
-        $this->createGetter('final', 'boolean'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
-    }
-
-    /**
-     * Test ide class
-     *
-     */
-    #[@test]
-    public function createSetterGetterObject() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('root:object:lang.Object:0:set+get')));
-      $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createSetter('root', 'lang.Object', 'Object').
-        $this->createGetter('root', 'lang.Object'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
-    }
-
-    /**
-     * Test ide class
-     *
-     */
-    #[@test]
-    public function createSetterGetterNamespaceObject() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('ide:object:xp.ide.XpIde:0:set+get')));
-      $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createSetter('ide', 'xp.ide.XpIde', 'xp·ide·XpIde').
-        $this->createGetter('ide', 'xp.ide.XpIde'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
-    }
-
-    /**
-     * Test ide class
-     *
-     */
-    #[@test]
-    public function createSetterGetterArray() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('names:array:string:1:set+get')));
-      $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createSetter('names', 'string[]', 'array').
-        $this->createGetter('names', 'string[]'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
-    }
-
-    /**
-     * Test ide class
-     *
-     */
-    #[@test]
-    public function createSetterGetterArrayDim2() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('names:array:string:2:set+get')));
-      $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createSetter('names', 'string[][]', 'array').
-        $this->createGetter('names', 'string[][]'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
-    }
-
-    /**
-     * Test ide class
-     *
-     */
-    #[@test]
-    public function createSetterGetterArrayObject() {
-      $this->wrapper->setIn(new TextReader(new MemoryInputStream('names:array:lang.Object:1:set+get')));
-      $this->wrapper->createAccessors();
-      $this->assertEquals(
-        $this->createSetter('names', 'lang.Object[]', 'array').
-        $this->createGetter('names', 'lang.Object[]'),
-        $this->wrapper->getOut()->getStream()->getBytes()
-      );
-    }
-
-    /**
-     * create a setter
-     *
-     * @param string name
-     * @param string type
-     * @param string hint
-     */
-    private function createSetter($name, $type, $hint= '') {
-      return sprintf(
-        '    /**'.PHP_EOL.
-        '     * set member $%1$s'.PHP_EOL.
-        '     * '.PHP_EOL.
-        '     * @param %3$s %1$s'.PHP_EOL.
-        '     */'.PHP_EOL.
-        '    public function set%2$s('.($hint ? '%4$s ' : '').'$%1$s) {'.PHP_EOL.
-        '      $this->%1$s= $%1$s;'.PHP_EOL.
-        '    }'.PHP_EOL.PHP_EOL,
-        $name, ucfirst($name), $type, $hint
-      );
-    }
-
-    /**
-     * create a getter
-     *
-     * @param string name
-     * @param string type
-     */
-    private function createGetter($name, $type) {
-      return sprintf(
-        '    /**'.PHP_EOL.
-        '     * get member $%1$s'.PHP_EOL.
-        '     * '.PHP_EOL.
-        '     * @return %3$s'.PHP_EOL.
-        '     */'.PHP_EOL.
-        '    public function %4$s%2$s() {'.PHP_EOL.
-        '      return $this->%1$s;'.PHP_EOL.
-        '    }'.PHP_EOL.PHP_EOL,
-        $name, ucfirst($name), $type, ('boolean' == $type ? 'is' : 'get')
-      );
-    }
-
   }
 ?>

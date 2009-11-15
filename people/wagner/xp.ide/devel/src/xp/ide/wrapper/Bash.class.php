@@ -7,6 +7,7 @@
 
   uses(
     'xp.ide.wrapper.Wrapper',
+    'io.Folder',
     'lang.IllegalArgumentException'
   );
 
@@ -24,7 +25,7 @@
      */
     #[@action(name='complete', args="Cursor")]
     public function complete(xp·ide·Cursor $cursor) {
-      $response= $this->ide->complete($cursor);
+      $response= $this->ide->complete($cursor, new Folder('file://'.getcwd()));
       $this->out->write(implode(PHP_EOL, $response->getSuggestions()));
     }
 
@@ -39,7 +40,7 @@
       $result= array();
       do {
         try {
-          $response= $this->ide->grepClassFileUri($cursor);
+          $response= $this->ide->grepClassFileUri($cursor, new Folder('file://'.getcwd()));
           list($scheme, $rest)= explode('://', $response->getUri(), 2);
           if ('file' !== $scheme) $this->err->write(sprintf('Cannot open class "%s" from location %s'.PHP_EOL, $response->getSnippet()->getText(), $response->getUri()));
           $result[]= $rest;

@@ -8,6 +8,7 @@
   uses(
     'xp.ide.Cursor',
     'xp.ide.XpIde',
+    'io.Folder',
     'io.streams.TextWriter',
     'io.streams.TextReader',
     'io.streams.ChannelInputStream',
@@ -26,8 +27,9 @@
 
     private static
       $artefacts= array(
-        'Cursor'      => 'getCursor',
-        'Language'    => 'getLanguage',
+        'Cursor'   => 'getCursor',
+        'Language' => 'getLanguage',
+        'CWD'      => 'getCwd',
       ),
       $in= NULL,
       $out= NULL,
@@ -94,6 +96,16 @@
     }
 
     /**
+     * get current working directory
+     *
+     * @param util.cmd.ParamString params
+     * @return io.Folder
+     */
+    public static function getCwd(ParamString $params) {
+      return new Folder($params->value('filesystem-cwd', 'fc'));
+    }
+
+    /**
      * get source language
      *
      * @param util.cmd.ParamString params
@@ -112,6 +124,8 @@
       Console::$out->writeLine('   - action: XpIde action');
       Console::$out->writeLine(' * Stream: parameters to assamble the input stream');
       Console::$out->writeLine('   - stream-encoding (se): input/output/error stream encoding (defaults to ISO-8859-1)');
+      Console::$out->writeLine(' * Filesystem: parameters to get the current working dir');
+      Console::$out->writeLine('   - filesystem-cwd (fc): current working uri');
       Console::$out->writeLine(' * Cursor: parameters to assamble the cursor');
       Console::$out->writeLine('   - cursor-position (cp): Cursor char position in the text buffer');
       Console::$out->writeLine('   - cursor-line (cl):     Cursor line');

@@ -21,4 +21,5 @@
 [ ] reformat source (with dialog)
 [ ] sort methods and members
 [ ] make API doc
+[ ] toggle ignore unittest
 

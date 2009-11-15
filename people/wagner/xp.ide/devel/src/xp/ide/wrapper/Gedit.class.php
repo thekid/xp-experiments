@@ -21,10 +21,11 @@
      * complete the source under the cursor
      *
      * @param  xp.ide.Cursor cursor
+     * @param  io.Folder cwd
      */
-    #[@action(name='complete', args="Cursor")]
-    public function complete(xp·ide·Cursor $cursor) {
-      $response= $this->ide->complete($cursor);
+    #[@action(name='complete', args="Cursor, CWD")]
+    public function complete(xp·ide·Cursor $cursor, Folder $cwd) {
+      $response= $this->ide->complete($cursor, $cwd);
       $this->out->write(
         $response->getSnippet()->getPosition().PHP_EOL
         .strlen($response->getSnippet()->getText()).PHP_EOL
@@ -37,10 +38,11 @@
      * toggle classname and class locator
      *
      * @param  xp.ide.Cursor cursor
+     * @param  io.Folder cwd
      */
-    #[@action(name='toggleClass', args="Cursor")]
-    public function toggleClass(xp·ide·Cursor $cursor) {
-      $response= $this->ide->toggleClass($cursor);
+    #[@action(name='toggleClass', args="Cursor, CWD")]
+    public function toggleClass(xp·ide·Cursor $cursor, Folder $cwd) {
+      $response= $this->ide->toggleClass($cursor, $cwd);
       $this->out->write(
         $response->getSnippet()->getPosition().PHP_EOL
         .strlen($response->getSnippet()->getText()).PHP_EOL
@@ -53,10 +55,11 @@
      * under the cursor if defined
      *
      * @param  xp.ide.Cursor cursor
+     * @param  io.Folder cwd
      */
-    #[@action(name='grepclassfile', args="Cursor")]
-    public function grepClassFileUri(xp·ide·Cursor $cursor) {
-      $response= $this->ide->grepClassFileUri($cursor);
+    #[@action(name='grepclassfile', args="Cursor, CWD")]
+    public function grepClassFileUri(xp·ide·Cursor $cursor, Folder $cwd) {
+      $response= $this->ide->grepClassFileUri($cursor, $cwd);
       list($scheme, $rest)= explode('://', $response->getUri(), 2);
       if ('file' !== $scheme) throw new IllegalArgumentException(sprintf('Cannot open class "%s" from location %s', $response->getSnippet()->getText(), $response->getUri()));
       $this->out->write($response->getUri());
@@ -126,7 +129,7 @@
         $parts= explode(':', $conf);
         if (5 !== count($parts)) throw new IllegalArgumentException(sprintf('cannot parse "%s" into five pieces', $conf));
         list($name, $type, $type2, $dim, $accs)= $parts;
-        $accInfos[]= $accInfo= new xp·ide·AccessorConfig($name, $type, $type2, $dim);
+        $accInfos[]= $accInfo= new xp·ide·AccessorConfig($name, $type, $type2, (int)$dim);
         foreach (explode('+', $accs) as $acc) switch ($acc) {
           case 'set': $accInfo->addAccess(xp·ide·AccessorConfig::ACCESS_SET); break;
           case 'get': $accInfo->addAccess(xp·ide·AccessorConfig::ACCESS_GET); break;

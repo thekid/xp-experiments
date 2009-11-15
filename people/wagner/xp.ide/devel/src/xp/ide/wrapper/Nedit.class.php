@@ -24,7 +24,7 @@
      */
     #[@action(name='complete', args="Cursor")]
     public function complete(xp·ide·Cursor $cursor) {
-      $response= $this->ide->complete($cursor);
+      $response= $this->ide->complete($cursor, new Folder('file://'.getcwd()));
       $this->out->write(
         $response->getSnippet()->getPosition().PHP_EOL
         .strlen($response->getSnippet()->getText()).PHP_EOL
@@ -40,7 +40,7 @@
      */
     #[@action(name='toggleClass', args="Cursor")]
     public function toggleClass(xp·ide·Cursor $cursor) {
-      $response= $this->ide->toggleClass($cursor);
+      $response= $this->ide->toggleClass($cursor, new Folder('file://'.getcwd()));
       $this->out->write(
         $response->getSnippet()->getPosition().PHP_EOL
         .strlen($response->getSnippet()->getText()).PHP_EOL
@@ -56,7 +56,7 @@
      */
     #[@action(name='grepclassfile', args="Cursor")]
     public function grepClassFileUri(xp·ide·Cursor $cursor) {
-      $response= $this->ide->grepClassFileUri($cursor);
+      $response= $this->ide->grepClassFileUri($cursor, new Folder('file://'.getcwd()));
       list($scheme, $rest)= explode('://', $response->getUri(), 2);
       if ('file' !== $scheme) throw new IllegalArgumentException(sprintf('Cannot open class "%s" from location %s', $response->getSnippet()->getText(), $response->getUri()));
       $this->out->write($rest);
