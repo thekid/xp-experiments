@@ -772,23 +772,36 @@
         }
         
         // Handle parent class and interfaces
-        $impl= array();
-        foreach ($self->getInterfaces() as $iface) {
-          $declared= $iface->getSimpleName();
-          if ($self->hasAnnotation('generic', $declared)) {
-            $impl[]= self::createGenericType($iface, $arguments)->getSimpleName();
-          } else {
-            $impl[]= $declared;
+        if ($self->isInterface()) {
+          $decl= 'interface '.$name;
+        } else {
+          $parent= $self->getParentClass();
+          $impl= array();
+          foreach ($self->getInterfaces() as $iface) {
+            if ($parent->isSubclassOf($iface)) continue;
+            
+            $declared= $iface->getSimpleName();
+            if ($self->hasAnnotation('generic', $declared)) {
+              $impl[]= self::createGenericType($iface, $arguments)->getSimpleName();
+            } else {
+              $impl[]= $declared;
+            }
           }
+
+          $decl= '';
+          Modifiers::isAbstract($self->getModifiers()) && $decl.= 'abstract ';
+          $decl.= 'class '.$name.' extends ';
+          if ($self->hasAnnotation('generic', 'parent')) {
+            $decl.= self::createGenericType($parent, $arguments)->getSimpleName();
+          } else {
+            $decl.= $parent->getSimpleName();
+          }
+          $impl && $decl.= ' implements '.implode(', ', $impl);
         }
       
         // Create class
-        // DEBUG echo '> ', $name, "\n  ", $src, "\n";
-        eval(
-          ($self->isInterface() ? 'interface '.$name : 'class '.$name.' extends Object ').
-          ($impl ? ' implements '.implode(', ', $impl) : '').
-          ' {'.$src.'}'
-        );
+        // DEBUG echo '> ', $decl, "\n  ", $src, "\n";
+        eval($decl.' {'.$src.'}');
         xp::$registry['details.'.$qname]= $meta;
         xp::$registry['class.'.$name]= $qname;
       }

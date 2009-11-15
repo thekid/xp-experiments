@@ -4,27 +4,16 @@
  * $Id$ 
  */
 
-  uses('util.NoSuchElementException', 'collections.IDictionary');
+  uses('util.NoSuchElementException', 'collections.AbstractDictionary');
 
   /**
    * Lookup map
    *
    */
-  #[@generic(self= 'K, V', IDictionary= 'K, V')]
-  class Lookup extends Object implements IDictionary {
+  #[@generic(self= 'K, V', parent= 'K, V')]
+  class Lookup extends AbstractDictionary {
     protected $elements= array();
     
-    /**
-     * Constructor
-     *
-     * @param   array<string, var> initial
-     */
-    public function __construct($initial= array()) {
-      foreach ($initial as $key => $value) {
-        $this->put($key, $value);
-      }
-    }
-   
     /**
      * Put a key/value pairt
      *
