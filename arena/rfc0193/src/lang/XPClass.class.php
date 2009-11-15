@@ -818,8 +818,6 @@
      * @throws  lang.IllegalArgumentException if number of arguments does not match components
      */
     public function newGenericType(array $arguments) {
-      if ($this->_reflect->hasProperty('__generic')) return $this;    // BC XXX
-
       return self::createGenericType($this, $arguments);
     }
 

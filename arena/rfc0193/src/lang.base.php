@@ -516,14 +516,41 @@
 
     // Parse type specification
     sscanf($spec, 'new %[^<]<%[^>]>', $classname, $types);
+
     $typeargs= array();
     foreach (explode(',', $types) as $type) {
       $typeargs[]= Type::forName(ltrim($type));
     }
     
+    // BC check: For classes with __generic field, instanciate without 
+    // invoking the constructor and pass type information. This is done 
+    // so that the constructur can already use generic types.
+    $class= XPClass::forName(strstr($classname, '.') ? $classname : xp::nameOf($classname));
+    if ($class->hasField('__generic')) {
+      $__id= microtime();
+      $name= xp::reflect($classname);
+      $instance= unserialize('O:'.strlen($name).':"'.$name.'":1:{s:4:"__id";s:'.strlen($__id).':"'.$__id.'";}');
+      foreach ($typeargs as $type) {
+        $instance->__generic[]= xp::reflect($type->getName());
+      }
+
+      // Call constructor if available
+      if (method_exists($instance, '__construct')) {
+        $a= func_get_args();
+        call_user_func_array(array($instance, '__construct'), array_slice($a, 1));
+      }
+
+      return $instance;
+    }
+    
+    // BC: Wrap IllegalStateExceptions into IllegalArgumentExceptions
+    try {
+      $type= $class->newGenericType($typeargs);
+    } catch (IllegalStateException $e) {
+      throw new IllegalArgumentException($e->getMessage());
+    }
+
     // Instantiate
-    if (!strstr($classname, '.')) $classname= xp::nameOf($classname);
-    $type= XPClass::forName($classname)->newGenericType($typeargs);
     if ($type->hasConstructor()) {
       $args= func_get_args();
       return $type->getConstructor()->newInstance(array_slice($args, 1));
