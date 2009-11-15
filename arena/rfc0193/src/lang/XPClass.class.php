@@ -651,26 +651,23 @@
     }
     
     /**
-     * Reflectively creates a new type
+     * (Insert method's description here)
      *
-     * @param   lang.Type[] arguments
-     * @return  lang.XPClass
-     * @throws  lang.IllegalStateException if this class is not a generic definition
-     * @throws  lang.IllegalArgumentException if number of arguments does not match components
+     * @param   
+     * @return  
      */
-    public function newGenericType(array $arguments= array()) {
-      if ($this->_reflect->hasProperty('__generic')) return $this;    // BC XXX
+    public static function createGenericType(XPClass $self, array $arguments) {
 
       // Verify
-      if (!$this->isGenericDefinition()) {
-        throw new IllegalStateException('Class '.$this->name.' is not a generic definition');
+      if (!$self->isGenericDefinition()) {
+        throw new IllegalStateException('Class '.$self->name.' is not a generic definition');
       }
-      $components= $this->genericComponents();
+      $components= $self->genericComponents();
       $cs= sizeof($components);
       if ($cs != sizeof($arguments)) {
         throw new IllegalArgumentException(sprintf(
           'Class %s expects %d component(s) <%s>, %d argument(s) given',
-          $this->name,
+          $self->name,
           $cs,
           implode(', ', $components),
           sizeof($arguments)
@@ -683,8 +680,8 @@
         $cn.= '¸'.($typearg instanceof Primitive ? 'þ' : '').xp::reflect($typearg->getName());
         $qc.= ','.$typearg->getName();
       }
-      $name= xp::reflect($this->name).'··'.substr($cn, 1);
-      $qname= $this->name.'`'.$cs.'['.substr($qc, 1).']';
+      $name= xp::reflect($self->name).'··'.substr($cn, 1);
+      $qname= $self->name.'`'.$cs.'['.substr($qc, 1).']';
 
       // Create class if it doesn't exist yet      
       if (!class_exists($name, FALSE)) {
@@ -702,8 +699,8 @@
       
         // Generate constructor
         $sig= $pass= array();
-        if ($this->hasConstructor()) {
-          foreach ($this->getConstructor()->getParameters() as $i => $param) {
+        if ($self->hasConstructor()) {
+          foreach ($self->getConstructor()->getParameters() as $i => $param) {
             if ($t= $param->getTypeRestriction()) {
               $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
             } else if (isset($generic[$i]) && $generic[$i] instanceof XPClass) {
@@ -717,16 +714,16 @@
         }
         $src= (
           'public function __construct('.implode(',', $sig).') { '.
-          '$this->delegate= new '.xp::reflect($this->name).
+          '$this->delegate= new '.xp::reflect($self->name).
           '('.implode(',', $pass).'); }'."\n"
         );
         
         // Generate delegating methods declared in this class
-        foreach ($this->getMethods() as $method) {
-          if (!$method->getDeclaringClass()->equals($this)) continue;
+        foreach ($self->getMethods() as $method) {
+          if (!$method->getDeclaringClass()->equals($self)) continue;
 
           // Declare method
-          $details= self::detailsForMethod($this->_class, $method->getName());
+          $details= self::detailsForMethod($self->_class, $method->getName());
           $src.= '  ';
           $src.= (
             implode(' ', Modifiers::namesOf($method->getModifiers())).
@@ -773,7 +770,7 @@
         }
         
         $impl= array();
-        foreach ($this->getInterfaces() as $iface) {
+        foreach ($self->getInterfaces() as $iface) {
           $impl[]= xp::reflect($iface->getName());
         }
       
@@ -789,6 +786,20 @@
       }
       
       return new XPClass(new ReflectionClass($name));
+    }
+    
+    /**
+     * Reflectively creates a new type
+     *
+     * @param   lang.Type[] arguments
+     * @return  lang.XPClass
+     * @throws  lang.IllegalStateException if this class is not a generic definition
+     * @throws  lang.IllegalArgumentException if number of arguments does not match components
+     */
+    public function newGenericType(array $arguments) {
+      if ($this->_reflect->hasProperty('__generic')) return $this;    // BC XXX
+
+      return self::createGenericType($this, $arguments);
     }
 
     /**
