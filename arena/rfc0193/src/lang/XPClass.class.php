@@ -773,6 +773,8 @@
         // Generate public constructor
         $src= '';
         if (!$self->isInterface()) {
+          $src.= 'private $delegate; ';
+          $block= '$this->delegate= new '.xp::reflect($self->name).'(%s);';
           if ($self->hasConstructor()) {
             $src.= self::createDelegate(
               $self,
@@ -780,8 +782,10 @@
               MODIFIER_PUBLIC, 
               $placeholders,
               $meta,
-              '$this->delegate= new '.xp::reflect($self->name).'(%s);'
+              $block
             );
+          } else {
+            $src.= 'public function __construct() {'.sprintf($block, '').'}';       
           }
         }
         
