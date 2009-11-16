@@ -701,12 +701,25 @@
         $src= '';
         if (!$self->isInterface()) {
           $sig= $pass= array();
+          $verify= '';
           if ($self->hasConstructor()) {
             foreach ($self->getConstructor()->getParameters() as $i => $param) {
               if ($t= $param->getTypeRestriction()) {
                 $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
-              } else if (isset($generic[$i]) && $generic[$i] instanceof XPClass) {
-                $sig[$i]= $generic[$i]->getSimpleName().' $·'.$i;
+              } else if (isset($generic[$i])) {
+                if ($generic[$i] instanceof XPClass) {
+                  $sig[$i]= $generic[$i]->getSimpleName().' ';
+                } else if ($generic[$i] instanceof Primitive) {
+                  $sig[$i]= '';
+                  $p= $generic[$i]->getName();
+                  $verify.= (
+                    ' if (!is_'.$p.'($·'.$i.')) throw new IllegalArgumentException('.
+                    '"Argument '.($i + 1).' passed to '.$name.'::'.$method->getName().
+                    ' must be of '.$p.', ".xp::typeOf($·'.$i.')." given"'.
+                    ');'
+                  );
+                }
+                $sig[$i].= '$·'.$i;
               } else {
                 $sig[$i]= '$·'.$i;
               }
@@ -715,8 +728,8 @@
             }
           }
           $src.= (
-            'public function __construct('.implode(',', $sig).') { '.
-            '$this->delegate= new '.xp::reflect($self->name).
+            'public function __construct('.implode(',', $sig).') {'.$verify.
+            ' $this->delegate= new '.xp::reflect($self->name).
             '('.implode(',', $pass).'); }'."\n"
           );
         }
@@ -747,11 +760,24 @@
           
           // Create argument signature
           $sig= $pass= array();
+          $verify= '';
           foreach ($method->getParameters() as $i => $param) {
             if ($t= $param->getTypeRestriction()) {
               $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
-            } else if (isset($generic[$i]) && $generic[$i] instanceof XPClass) {
-              $sig[$i]= $generic[$i]->getSimpleName().' $·'.$i;
+            } else if (isset($generic[$i])) {
+              if ($generic[$i] instanceof XPClass) {
+                $sig[$i]= $generic[$i]->getSimpleName().' ';
+              } else if ($generic[$i] instanceof Primitive) {
+                $sig[$i]= '';
+                $p= $generic[$i]->getName();
+                $verify.= (
+                  ' if (!is_'.$p.'($·'.$i.')) throw new IllegalArgumentException('.
+                  '"Argument '.($i + 1).' passed to '.$name.'::'.$method->getName().
+                  ' must be of '.$p.', ".xp::typeOf($·'.$i.')." given"'.
+                  ');'
+                );
+              }
+              $sig[$i].= '$·'.$i;
             } else {
               $sig[$i]= '$·'.$i;
             }
@@ -763,7 +789,7 @@
           if (Modifiers::isAbstract($method->getModifiers())) {
             $src.= ');';
           } else {
-            $src.= ') { return $this->delegate->'.$method->getName().'('.implode(',', $pass).');}';
+            $src.= ') {'.$verify.' return $this->delegate->'.$method->getName().'('.implode(',', $pass).');}';
           }
           $src.= "\n";
 

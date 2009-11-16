@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'collections.Lookup'
+    'collections.Lookup',
+    'lang.types.String'
   );
 
   /**
@@ -29,6 +30,26 @@
     }
 
     /**
+     * Test put() does not accept another primitive
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function primitiveVerification() {
+      $l= create('new Lookup<string, TestCase>()');
+      $l->put(1, $this);
+    }
+
+    /**
+     * Test put() does not accept instance
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function instanceVerification() {
+      $l= create('new Lookup<string, TestCase>()');
+      $l->put(new String('Hello'), $this);
+    }
+
+    /**
      * Test getClass()
      *
      */
@@ -39,6 +60,18 @@
         XPClass::forName('unittest.TestCase')
       ));
       $this->assertEquals('collections.Lookup`2[string,unittest.TestCase]', $type->getName());
+    }
+
+    /**
+     * Test genericArguments()
+     *
+     */
+    #[@test]
+    public function typeArguments() {
+      $this->assertEquals(
+        array(Primitive::$STRING, XPClass::forName('unittest.TestCase')),
+        create('new Lookup<string, TestCase>()')->getClass()->genericArguments()
+      );
     }
   }
 ?>
