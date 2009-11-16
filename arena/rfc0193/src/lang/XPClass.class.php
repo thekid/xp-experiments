@@ -651,6 +651,77 @@
     }
     
     /**
+     * Creates a delegating routine implementation
+     *
+     * @param   lang.XPClass self
+     * @param   lang.reflect.Routine routine
+     * @param   array<string, string> placeholders
+     * @param   var meta
+     * @param   string block
+     * @return  src
+     */
+    public static function createDelegate($self, $routine, $placeholders, &$meta, $block) {
+      $src= '';
+      
+      $details= self::detailsForMethod($self->_class, $routine->getName());
+      $self->isInterface() || $src.= implode(' ', Modifiers::namesOf($routine->getModifiers()));
+      $src.= ' function '.$routine->getName().'(';
+
+      // Replace parameter placeholders. Given [lang.types.String] as type arguments, 
+      // "T" will become "String".
+      $generic= array();
+      if ($routine->hasAnnotation('generic', 'params')) {
+        foreach (explode(',', $routine->getAnnotation('generic', 'params')) as $i => $placeholder) {
+          $replaced= strtr(ltrim($placeholder), $placeholders);
+          $details[DETAIL_ARGUMENTS][$i]= $replaced;
+          $generic[$i]= Type::forName($replaced);
+        }
+      }
+      if ($routine->hasAnnotation('generic', 'return')) {
+        $details[DETAIL_RETURNS]= strtr($routine->getAnnotation('generic', 'return'), $placeholders);
+      }
+
+      // Create argument signature
+      $sig= $pass= array();
+      $verify= '';
+      foreach ($routine->getParameters() as $i => $param) {
+        if ($t= $param->getTypeRestriction()) {
+          $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
+        } else if (isset($generic[$i])) {
+          if ($generic[$i] instanceof XPClass) {
+            $sig[$i]= $generic[$i]->getSimpleName().' ';
+          } else if ($generic[$i] instanceof Primitive) {
+            $sig[$i]= '';
+            $p= $generic[$i]->getName();
+            $verify.= (
+              ' if (!is_'.$p.'($·'.$i.')) throw new IllegalArgumentException('.
+              '"Argument '.($i + 1).' passed to '.$self->getSimpleName().'::'.$routine->getName().
+              ' must be of '.$p.', ".xp::typeOf($·'.$i.')." given"'.
+              ');'
+            );
+          }
+          $sig[$i].= '$·'.$i;
+        } else {
+          $sig[$i]= '$·'.$i;
+        }
+        $param->isOptional() && $sig[$i].= '= '.var_export($param->getDefaultValue(), TRUE);
+        $pass[$i]= '$·'.$i;
+      }
+      $src.= implode(',', $sig);
+
+      if (Modifiers::isAbstract($routine->getModifiers())) {
+        $src.= ');';
+      } else {
+        $src.= ') {'.$verify.sprintf($block, implode(',', $pass)).'}';
+      }
+      $src.= "\n";
+
+      // Register meta information
+      $meta[1][$routine->getName()]= $details;
+      return $src;
+    }
+    
+    /**
      * Creates a generic type
      *
      * @param   lang.XPClass self
@@ -701,101 +772,27 @@
         // Generate constructor
         $src= '';
         if (!$self->isInterface()) {
-          $sig= $pass= array();
-          $verify= '';
           if ($self->hasConstructor()) {
-            foreach ($self->getConstructor()->getParameters() as $i => $param) {
-              if ($t= $param->getTypeRestriction()) {
-                $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
-              } else if (isset($generic[$i])) {
-                if ($generic[$i] instanceof XPClass) {
-                  $sig[$i]= $generic[$i]->getSimpleName().' ';
-                } else if ($generic[$i] instanceof Primitive) {
-                  $sig[$i]= '';
-                  $p= $generic[$i]->getName();
-                  $verify.= (
-                    ' if (!is_'.$p.'($·'.$i.')) throw new IllegalArgumentException('.
-                    '"Argument '.($i + 1).' passed to '.$name.'::'.$method->getName().
-                    ' must be of '.$p.', ".xp::typeOf($·'.$i.')." given"'.
-                    ');'
-                  );
-                }
-                $sig[$i].= '$·'.$i;
-              } else {
-                $sig[$i]= '$·'.$i;
-              }
-              $param->isOptional() && $sig[$i].= '= '.var_export($param->getDefaultValue(), TRUE);
-              $pass[$i]= '$·'.$i;
-            }
+            $src.= self::createDelegate(
+              $self,
+              $self->getConstructor(), 
+              $placeholders,
+              $meta,
+              '$this->delegate= new '.xp::reflect($self->name).'(%s);'
+            );
           }
-          $src.= (
-            'public function __construct('.implode(',', $sig).') {'.$verify.
-            ' $this->delegate= new '.xp::reflect($self->name).
-            '('.implode(',', $pass).'); }'."\n"
-          );
         }
         
         // Generate delegating methods declared in this class
         foreach ($self->getMethods() as $method) {
           if (!$method->getDeclaringClass()->equals($self)) continue;
-
-          // Declare method
-          $details= self::detailsForMethod($self->_class, $method->getName());
-          $src.= '  ';
-          $self->isInterface() || $src.= implode(' ', Modifiers::namesOf($method->getModifiers()));
-          $src.= ' function '.$method->getName().'(';
-
-          // Replace parameter placeholders. Given [lang.types.String] as type arguments, 
-          // "T" will become "String".
-          $generic= array();
-          if ($method->hasAnnotation('generic', 'params')) {
-            foreach (explode(',', $method->getAnnotation('generic', 'params')) as $i => $placeholder) {
-              $replaced= strtr(ltrim($placeholder), $placeholders);
-              $details[DETAIL_ARGUMENTS][$i]= $replaced;
-              $generic[$i]= Type::forName($replaced);
-            }
-          }
-          if ($method->hasAnnotation('generic', 'return')) {
-            $details[DETAIL_RETURNS]= strtr($method->getAnnotation('generic', 'return'), $placeholders);
-          }
-          
-          // Create argument signature
-          $sig= $pass= array();
-          $verify= '';
-          foreach ($method->getParameters() as $i => $param) {
-            if ($t= $param->getTypeRestriction()) {
-              $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
-            } else if (isset($generic[$i])) {
-              if ($generic[$i] instanceof XPClass) {
-                $sig[$i]= $generic[$i]->getSimpleName().' ';
-              } else if ($generic[$i] instanceof Primitive) {
-                $sig[$i]= '';
-                $p= $generic[$i]->getName();
-                $verify.= (
-                  ' if (!is_'.$p.'($·'.$i.')) throw new IllegalArgumentException('.
-                  '"Argument '.($i + 1).' passed to '.$name.'::'.$method->getName().
-                  ' must be of '.$p.', ".xp::typeOf($·'.$i.')." given"'.
-                  ');'
-                );
-              }
-              $sig[$i].= '$·'.$i;
-            } else {
-              $sig[$i]= '$·'.$i;
-            }
-            $param->isOptional() && $sig[$i].= '= '.var_export($param->getDefaultValue(), TRUE);
-            $pass[$i]= '$·'.$i;
-          }
-          $src.= implode(',', $sig);
-          
-          if (Modifiers::isAbstract($method->getModifiers())) {
-            $src.= ');';
-          } else {
-            $src.= ') {'.$verify.' return $this->delegate->'.$method->getName().'('.implode(',', $pass).');}';
-          }
-          $src.= "\n";
-
-          // Register meta information
-          $meta[1][$method->getName()]= $details;
+          $src.= self::createDelegate(
+            $self, 
+            $method, 
+            $placeholders,
+            $meta,
+            'return $this->delegate->'.$method->getName().'(%s);'
+          );
         }
         
         // Handle parent class and interfaces
