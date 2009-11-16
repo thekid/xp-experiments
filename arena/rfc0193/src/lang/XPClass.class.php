@@ -774,6 +774,7 @@
         $src= '';
         if (!$self->isInterface()) {
           $src.= 'private $delegate; ';
+          $meta[0]['delegate']= array(DETAIL_ANNOTATIONS => array('type' => $self->name));
           $block= '$this->delegate= new '.xp::reflect($self->name).'(%s);';
           if ($self->hasConstructor()) {
             $src.= self::createDelegate(
@@ -876,6 +877,20 @@
      */
     public function isGenericDefinition() {
       return $this->hasAnnotation('generic', 'self');
+    }
+
+    /**
+     * Returns generic type definition
+     *
+     * @return  lang.XPClass
+     * @throws  lang.IllegalStateException if this class is not a generic
+     */
+    public function genericDefinition() {
+      if (!($details= self::detailsForClass($this->name))) return NULL;
+      if (!isset($details['class'][DETAIL_GENERIC])) {
+        throw new IllegalStateException('Class '.$this->name.' is not generic');
+      }
+      return XPClass::forName($details[0]['delegate'][DETAIL_ANNOTATIONS]['type']);
     }
 
     /**

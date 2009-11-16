@@ -84,6 +84,18 @@
     }
 
     /**
+     * Test genericDefinition()
+     *
+     */
+    #[@test]
+    public function genericDefinition() {
+      $this->assertEquals(
+        XPClass::forName('collections.Lookup'),
+        $this->fixture->getClass()->genericDefinition()
+      );
+    }
+
+    /**
      * Test isGenericDefinition()
      *
      */
@@ -92,6 +104,18 @@
       $this->assertEquals(
         array(XPClass::forName('lang.types.String'), XPClass::forName('unittest.TestCase')),
         $this->fixture->getClass()->genericArguments()
+      );
+    }
+
+    /**
+     * Test parameter reflection
+     *
+     */
+    #[@test]
+    public function delegateFieldType() {
+      $this->assertEquals(
+        'collections.Lookup',
+        $this->fixture->getClass()->getField('delegate')->getType()
       );
     }
 
