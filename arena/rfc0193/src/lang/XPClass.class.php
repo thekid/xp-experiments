@@ -651,10 +651,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Creates a generic type
      *
-     * @param   
-     * @return  
+     * @param   lang.XPClass self
+     * @param   lang.Type[] arguments
+     * @return  lang.XPClass
      */
     public static function createGenericType(XPClass $self, array $arguments) {
 
