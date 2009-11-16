@@ -655,16 +655,17 @@
      *
      * @param   lang.XPClass self
      * @param   lang.reflect.Routine routine
+     * @param   int modifiers
      * @param   array<string, string> placeholders
      * @param   var meta
      * @param   string block
      * @return  src
      */
-    public static function createDelegate($self, $routine, $placeholders, &$meta, $block) {
+    public static function createDelegate($self, $routine, $modifiers, $placeholders, &$meta, $block) {
       $src= '';
       
       $details= self::detailsForMethod($self->_class, $routine->getName());
-      $self->isInterface() || $src.= implode(' ', Modifiers::namesOf($routine->getModifiers()));
+      $self->isInterface() || $src.= implode(' ', Modifiers::namesOf($modifiers));
       $src.= ' function '.$routine->getName().'(';
 
       // Replace parameter placeholders. Given [lang.types.String] as type arguments, 
@@ -709,7 +710,7 @@
       }
       $src.= implode(',', $sig);
 
-      if (Modifiers::isAbstract($routine->getModifiers())) {
+      if (Modifiers::isAbstract($modifiers)) {
         $src.= ');';
       } else {
         $src.= ') {'.$verify.sprintf($block, implode(',', $pass)).'}';
@@ -769,13 +770,14 @@
           $placeholders[$component]= $arguments[$i]->getName();
         }
       
-        // Generate constructor
+        // Generate public constructor
         $src= '';
         if (!$self->isInterface()) {
           if ($self->hasConstructor()) {
             $src.= self::createDelegate(
               $self,
-              $self->getConstructor(), 
+              $self->getConstructor(),
+              MODIFIER_PUBLIC, 
               $placeholders,
               $meta,
               '$this->delegate= new '.xp::reflect($self->name).'(%s);'
@@ -789,6 +791,7 @@
           $src.= self::createDelegate(
             $self, 
             $method, 
+            $method->getModifiers(),
             $placeholders,
             $meta,
             'return $this->delegate->'.$method->getName().'(%s);'
