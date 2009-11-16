@@ -17,6 +17,7 @@
   [ ] Enums
 [ ] make method skeleton and Apidoc for methods from interfaces and abstract parents
 [ ] turn selected source code to a method
+[ ] wrap selected code into a try-catch-block
 [ ] start unittest
 [ ] reformat source (with dialog)
 [ ] sort methods and members
