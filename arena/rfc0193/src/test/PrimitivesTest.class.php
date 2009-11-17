@@ -30,6 +30,17 @@
     }
 
     /**
+     * Test put() and get() methods with a primitive string as key
+     *
+     */
+    #[@test]
+    public function primitiveStringValue() {
+      $l= create('new Lookup<TestCase, string>()');
+      $l->put($this, 'this');
+      $this->assertEquals('this', $l->get($this));
+    }
+
+    /**
      * Test put() does not accept another primitive
      *
      */
