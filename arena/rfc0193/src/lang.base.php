@@ -67,7 +67,7 @@
     //     Returns the fully qualified name
     static function nameOf($name) {
       $k= 'class.'.$name;
-      return isset(xp::$registry[$k]) ? xp::$registry[$k] : 'php.'.$nam
+      return isset(xp::$registry[$k]) ? xp::$registry[$k] : 'php.'.$name;
     }
     // }}}
 
