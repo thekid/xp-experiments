@@ -64,6 +64,8 @@
         'break'         => xp搾ompiler新yntax暖p感arser::T_BREAK,
         'continue'      => xp搾ompiler新yntax暖p感arser::T_CONTINUE,
 
+        'with'          => xp搾ompiler新yntax暖p感arser::T_WITH,
+
         'if'            => xp搾ompiler新yntax暖p感arser::T_IF,
         'else'          => xp搾ompiler新yntax暖p感arser::T_ELSE,
         'switch'        => xp搾ompiler新yntax暖p感arser::T_SWITCH,

@@ -57,7 +57,8 @@
     'xp.compiler.ast.IfNode',
     'xp.compiler.ast.ElseNode',
     'xp.compiler.ast.StaticInitializerNode',
-    'xp.compiler.ast.LambdaNode'
+    'xp.compiler.ast.LambdaNode',
+    'xp.compiler.ast.WithNode'
   );
 %}
 
@@ -156,6 +157,8 @@
 %token T_XOR_EQUAL 419
 %token T_SHR 420
 %token T_SHL 421
+
+%token T_WITH 430
 
 %%
 
@@ -533,7 +536,21 @@ statement:
   | T_THROW { $1= $yyLex->create(new ThrowNode()); } expression ';' {
       $1->expression= $3;
     }
+  | T_WITH '(' withassignments ')' '{' statements_opt '}' {
+      $$= $yyLex->create(new WithNode($3, $6 ? $6 : array()));
+    }
   | expression ';' { $1->free= TRUE; }
+;
+
+withassignments:
+    withassignment { $$= array($1); }
+  | withassignments ',' withassignment { $$= array_merge($1, array($3)); }
+;
+
+withassignment:
+    T_VARIABLE '=' expression {
+      $$= $yyLex->create(new AssignmentNode(array('op' => '=', 'variable' => new VariableNode($1), 'expression' => $3))); 
+    }
 ;
 
 cases_opt:
