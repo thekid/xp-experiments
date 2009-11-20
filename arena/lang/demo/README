@@ -388,6 +388,30 @@ impact.
 Still to be discussed would be how to create extension properties, like 
 <tt>$list.length</tt>.
 
+Using statement
+~~~~~~~~~~~~~~~
+Auto-close shorthand:
+<code>
+  using ($file= new File('...')) {
+    $file->write('...');
+  }
+  
+  $file= new File('...');
+  try {
+    $file->write('...');
+  } finally {
+    $file->close();
+  }
+</code>
+
+Scoped import
+~~~~~~~~~~~~~
+<code>
+  import (rdbms.Restrictions) {
+    $criteria.add(not(equals('bz_id', 20000)));
+  }
+</code>
+
 Closures
 ~~~~~~~~
 PHP 5.3 offers closures by using a block after the <tt>function</tt> keyword,
