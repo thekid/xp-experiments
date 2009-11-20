@@ -290,6 +290,38 @@
     }
 
     /**
+     * Test writeCharacters() method
+     *
+     */
+    #[@test]
+    public function writeUtf8Characters() {
+      $this->writer->startDocument('utf-8');
+      $this->writer->startNode('root');
+      $this->writer->writeCharacters('Übercoder');
+      $this->writer->closeNode();
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="utf-8"?><root>Ãœbercoder</root>', 
+        $this->stream->getBytes()
+      );
+    }
+
+    /**
+     * Test writeCharacters() method
+     *
+     */
+    #[@test]
+    public function writeLatin1Characters() {
+      $this->writer->startDocument('iso-8859-1');
+      $this->writer->startNode('root');
+      $this->writer->writeCharacters('Übercoder');
+      $this->writer->closeNode();
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="iso-8859-1"?><root>Übercoder</root>', 
+        $this->stream->getBytes()
+      );
+    }
+
+    /**
      * Test writeCData() method
      *
      */

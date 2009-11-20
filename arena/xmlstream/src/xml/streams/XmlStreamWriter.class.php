@@ -14,6 +14,7 @@
   class XmlStreamWriter extends Object {
     protected $stream= NULL;
     protected $opened= NULL;
+    protected $encoding= '';
     
     /**
      * Creates a new XML stream writer
@@ -35,6 +36,7 @@
         throw new IllegalStateException('Document already started');
       }
       $this->stream->write('<?xml version="1.0" encoding="'.$encoding.'"?>');
+      $this->encoding= $encoding;
       $this->opened= array();
     }
 
@@ -91,7 +93,7 @@
      * @param   string text
      */
     public function writeCharacters($text) {
-      $this->stream->write(htmlspecialchars($text, ENT_NOQUOTES));
+      $this->stream->write(htmlspecialchars(iconv('iso-8859-1', $this->encoding, $text), ENT_NOQUOTES));
     }
 
     /**
