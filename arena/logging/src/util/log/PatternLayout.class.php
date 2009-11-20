@@ -57,6 +57,18 @@
     }
 
     /**
+     * Creates a string representation of the given argument. For any 
+     * string given, the result is the string itself, for any other type,
+     * the result is the xp::stringOf() output.
+     *
+     * @param   var arg
+     * @return  string
+     */
+    protected function stringOf($arg) {
+      return is_string($arg) ? $arg : xp::stringOf($arg);
+    }
+
+    /**
      * Formats a logging event according to this layout
      *
      * @param   util.log.LoggingEvent event
@@ -66,7 +78,7 @@
       $out= '';
       foreach ($this->format as $token) {
         switch ($token) {
-          case '%m': $out.= $event->getMessage(); break;
+          case '%m': $out.= implode(' ', array_map(array($this, 'stringOf'), $event->getArguments())); break;
           case '%t': $out.= gmdate('H:i:s', $event->getTimestamp()); break;
           case '%c': $out.= $event->getCategory()->identifier; break;
           case '%l': $out.= $event->getCategory()->_indicators[$event->getLevel()]; break;

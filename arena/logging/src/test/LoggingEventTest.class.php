@@ -68,12 +68,12 @@
     }
 
     /**
-     * Test getMessage() method
+     * Test getArguments() method
      *
      */
     #[@test]
-    public function getMessage() {
-      $this->assertEquals('Hello', $this->fixture->getMessage());
+    public function getArguments() {
+      $this->assertEquals(array('Hello'), $this->fixture->getArguments());
     }
   }
 ?>
