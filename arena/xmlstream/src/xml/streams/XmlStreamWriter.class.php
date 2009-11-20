@@ -13,10 +13,11 @@
    * @test     xp://test.XmlStreamWriterTest
    */
   class XmlStreamWriter extends Object {
-    protected $stream   = NULL;
-    protected $opened   = NULL;
-    protected $encoding = '';
-    protected $newLine  = '';
+    protected $stream       = NULL;
+    protected $opened       = NULL;
+    protected $encoding     = '';
+    protected $newLine      = '';
+    protected $textContent  = FALSE;
     
     /**
      * Creates a new XML stream writer
@@ -78,6 +79,7 @@
       }
       $this->stream->write('>');
       $this->opened[]= $name;
+      $this->textContent= FALSE;
     }
     
     /**
@@ -85,7 +87,10 @@
      *
      */
     public function endNode() {
-      $this->stream->write($this->newLine.'</'.array_pop($this->opened).'>');
+      if (!$this->textContent) {
+        $this->stream->write($this->newLine);
+      }
+      $this->stream->write('</'.array_pop($this->opened).'>');
     }
 
     /**
@@ -104,6 +109,7 @@
      */
     public function writeCharacters($text) {
       $this->stream->write(htmlspecialchars(iconv('iso-8859-1', $this->encoding, $text), ENT_NOQUOTES));
+      $this->textContent= TRUE;
     }
 
     /**
@@ -141,6 +147,7 @@
      */
     public function writeEntityRef($name) {
       $this->stream->write('&'.$name.';');
+      $this->textContent= TRUE;
     }
   }
 ?>

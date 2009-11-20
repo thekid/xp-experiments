@@ -420,5 +420,41 @@
         $this->stream->getBytes()
       );
     }
+
+    /**
+     * Test setNewLines() method
+     *
+     */
+    #[@test]
+    public function newLinesDoNotSurroundContent() {
+      $this->writer->setNewLines();
+      $this->writer->startDocument();
+      $this->writer->startNode('root');
+      $this->writer->writeCharacters('Hello');
+      $this->writer->endNode();
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="iso-8859-1"?>'."\n".
+        '<root>Hello</root>',
+        $this->stream->getBytes()
+      );
+    }
+
+    /**
+     * Test writing markup
+     *
+     */
+    #[@test]
+    public function markup() {
+      $this->writer->startDocument();
+      $this->writer->startNode('root');
+      $this->writer->writeCharacters('Hello');
+      $this->writer->writeEmptyNode('br');
+      $this->writer->writeCharacters('World');
+      $this->writer->endNode();
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="iso-8859-1"?><root>Hello<br/>World</root>',
+        $this->stream->getBytes()
+      );
+    }
   }
 ?>
