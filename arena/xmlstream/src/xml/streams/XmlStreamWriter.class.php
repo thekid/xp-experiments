@@ -7,7 +7,7 @@
   uses('io.streams.OutputStream');
 
   /**
-   * Writes XML
+   * Writes XML in a streaming fashion
    *
    * @test     xp://test.XmlStreamWriterTest
    */
@@ -123,10 +123,9 @@
     }
 
     /**
-     * Write processing instruction
+     * Write an entity reference
      *
-     * @param   string target
-     * @param   string text
+     * @param   string name
      */
     public function writeEntityRef($name) {
       $this->stream->write('&'.$name.';');
