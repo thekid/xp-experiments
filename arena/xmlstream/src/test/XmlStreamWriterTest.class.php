@@ -242,6 +242,24 @@
     }
 
     /**
+     * Test writeCharacters() method
+     *
+     */
+    #[@test]
+    public function writeCharactersMultipleCallsConcatenate() {
+      $this->writer->startDocument();
+      $this->writer->startNode('root');
+      $this->writer->writeCharacters('Hello');
+      $this->writer->writeCharacters(' ');
+      $this->writer->writeCharacters('World');
+      $this->writer->endNode();
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="iso-8859-1"?><root>Hello World</root>', 
+        $this->stream->getBytes()
+      );
+    }
+
+    /**
      * Test writeCharacters() method escapes special chars
      *
      */
