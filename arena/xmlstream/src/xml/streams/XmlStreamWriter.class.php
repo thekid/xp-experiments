@@ -9,6 +9,7 @@
   /**
    * Writes XML in a streaming fashion
    *
+   * @ext      iconv
    * @test     xp://test.XmlStreamWriterTest
    */
   class XmlStreamWriter extends Object {
