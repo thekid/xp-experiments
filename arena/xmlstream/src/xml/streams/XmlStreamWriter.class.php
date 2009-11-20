@@ -83,7 +83,6 @@
     /**
      * Closes a node
      *
-     * @param   string name
      */
     public function endNode() {
       $this->stream->write($this->newLine.'</'.array_pop($this->opened).'>');
