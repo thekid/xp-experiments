@@ -45,7 +45,7 @@
      */
     public function closeDocument() {
       if (NULL === $this->opened) {
-        throw new IllegalStateException('Document already started');
+        throw new IllegalStateException('Document not yet started');
       }
       while ($name= array_pop($this->opened)) {
         $this->stream->write('</'.$name.'>');
