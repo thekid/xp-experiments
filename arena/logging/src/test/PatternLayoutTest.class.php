@@ -49,7 +49,7 @@
           1258733284, 
           1, 
           LogLevel::WARN, 
-          'Hello'
+          array('Hello')
         ))
       );
     }
@@ -69,7 +69,7 @@
           1258733284, 
           1214, 
           LogLevel::INFO, 
-          'Hello'
+          array('Hello')
         ))
       );
     }

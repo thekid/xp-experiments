@@ -59,6 +59,16 @@
      *
      */
     #[@test]
+    public function infoWithMultipleArguments() {
+      $this->fixture->info('Hello', 'World');
+      $this->assertEquals(new String('[info] Hello World'), $this->events[0]);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function warn() {
       $this->fixture->warn('Hello');
       $this->assertEquals(new String('[warn] Hello'), $this->events[0]);

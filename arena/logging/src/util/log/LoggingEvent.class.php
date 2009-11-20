@@ -16,7 +16,7 @@
     protected $timestamp= 0;
     protected $processId= 0;
     protected $level= 0;
-    protected $message= '';
+    protected $arguments= array();
     
     /**
      * Creates a new logging event
@@ -25,14 +25,14 @@
      * @param   int timestamp
      * @param   int processId
      * @param   int level one debug, info, warn or error
-     * @param   string message
+     * @param   var[] arguments
      */
-    public function __construct($category, $timestamp, $processId, $level, $message) {
+    public function __construct($category, $timestamp, $processId, $level, array $arguments) {
       $this->category= $category;
       $this->timestamp= $timestamp;
       $this->processId= $processId;
       $this->level= $level;
-      $this->message= $message;
+      $this->message= implode(' ', array_map(array('xp', 'stringOf'), $arguments));
     }
         
     /**

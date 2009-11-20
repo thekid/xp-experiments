@@ -27,7 +27,7 @@
         1258733284, 
         1, 
         LogLevel::INFO, 
-        'Hello'
+        array('Hello')
       );
     }
   

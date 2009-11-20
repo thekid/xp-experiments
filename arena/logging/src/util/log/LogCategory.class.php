@@ -200,7 +200,7 @@
       if (!($this->flags & LogLevel::INFO)) return;
 
       $args= func_get_args();
-      $this->callAppenders(new LoggingEvent($this, time(), getmypid(), LogLevel::INFO, $args[0]));
+      $this->callAppenders(new LoggingEvent($this, time(), getmypid(), LogLevel::INFO, $args));
     }
 
     /**
@@ -228,7 +228,7 @@
       if (!($this->flags & LogLevel::WARN)) return;
 
       $args= func_get_args();
-      $this->callAppenders(new LoggingEvent($this, time(), getmypid(), LogLevel::WARN, $args[0]));
+      $this->callAppenders(new LoggingEvent($this, time(), getmypid(), LogLevel::WARN, $args));
     }
 
     /**
@@ -251,7 +251,7 @@
       if (!($this->flags & LogLevel::ERROR)) return;
 
       $args= func_get_args();
-      $this->callAppenders(new LoggingEvent($this, time(), getmypid(), LogLevel::ERROR, $args[0]));
+      $this->callAppenders(new LoggingEvent($this, time(), getmypid(), LogLevel::ERROR, $args));
     }
 
     /**
@@ -274,7 +274,7 @@
       if (!($this->flags & LogLevel::DEBUG)) return;
 
       $args= func_get_args();
-      $this->callAppenders(new LoggingEvent($this, time(), getmypid(), LogLevel::DEBUG, $args[0]));
+      $this->callAppenders(new LoggingEvent($this, time(), getmypid(), LogLevel::DEBUG, $args));
     }
  
     /**
