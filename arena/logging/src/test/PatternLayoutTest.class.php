@@ -33,44 +33,59 @@
     public function unterminatedFormatToken() {
       new PatternLayout('%');
     }
+    
+    /**
+     * Creates a new logging event
+     *
+     * @return  util.log.LoggingEvent
+     */
+    protected function newLoggingEvent() {
+      return new LoggingEvent(
+        new LogCategory('default', NULL, NULL, 0), 
+        1258733284, 
+        1214, 
+        LogLevel::WARN, 
+        array('Hello')
+      );   
+    }
+
+    /**
+     * Test literal percent
+     * 
+     */
+    #[@test]
+    public function literalPercent() {
+      $this->assertEquals(
+        '100%',
+        create(new PatternLayout('100%%'))->format($this->newLoggingEvent())
+      );
+    }
 
     /**
      * Test simple format:
      * <pre>
-     *    WARN [default] Hello
+     *   INFO [default] Hello
      * </pre>
      */
     #[@test]
     public function simpleFormat() {
       $this->assertEquals(
         'WARN [default] Hello',
-        create(new PatternLayout('%L [%c] %m'))->format(new LoggingEvent(
-          new LogCategory('default', NULL, NULL, 0), 
-          1258733284, 
-          1, 
-          LogLevel::WARN, 
-          array('Hello')
-        ))
+        create(new PatternLayout('%L [%c] %m'))->format($this->newLoggingEvent())
       );
     }
 
     /**
      * Test default format:
      * <pre>
-     *   [16:08:04 1214 info] Hello
+     *   [16:08:04 1214 warn] Hello
      * </pre>
      */
     #[@test]
     public function defaultFormat() {
       $this->assertEquals(
-        '[16:08:04 1214 info] Hello',
-        create(new PatternLayout('[%t %p %l] %m'))->format(new LoggingEvent(
-          new LogCategory('default', NULL, NULL, 0), 
-          1258733284, 
-          1214, 
-          LogLevel::INFO, 
-          array('Hello')
-        ))
+        '[16:08:04 1214 warn] Hello',
+        create(new PatternLayout('[%t %p %l] %m'))->format($this->newLoggingEvent())
       );
     }
   }
