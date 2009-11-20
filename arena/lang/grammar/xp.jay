@@ -549,7 +549,7 @@ withassignments:
 
 withassignment:
     T_VARIABLE '=' expression {
-      $$= $yyLex->create(new AssignmentNode(array('op' => '=', 'variable' => new VariableNode($1), 'expression' => $3))); 
+      $$= $yyLex->create(new AssignmentNode(array('free' => TRUE, 'op' => '=', 'variable' => new VariableNode($1), 'expression' => $3))); 
     }
 ;
 

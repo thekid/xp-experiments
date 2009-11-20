@@ -608,6 +608,17 @@
     }
 
     /**
+     * Emit with statement
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.WithNode with
+     */
+    protected function emitWith($op, WithNode $with) {
+      $this->emitAll($op, $with->assignments);
+      $this->emitAll($op, $with->statements);
+    }
+
+    /**
      * Emit statements
      *
      * @param   resource op

@@ -2162,7 +2162,7 @@
 
     case 123:  #line 551 "grammar/xp.jay"
     {
-      $yyVal= $yyLex->create(new AssignmentNode(array('op' => '=', 'variable' => new VariableNode($yyVals[-2+$yyTop]), 'expression' => $yyVals[0+$yyTop]))); 
+      $yyVal= $yyLex->create(new AssignmentNode(array('free' => TRUE, 'op' => '=', 'variable' => new VariableNode($yyVals[-2+$yyTop]), 'expression' => $yyVals[0+$yyTop]))); 
     } break;
 
     case 124:  #line 557 "grammar/xp.jay"
