@@ -4,7 +4,7 @@
  * $Id: LogCategory.class.php 13756 2009-10-30 11:13:29Z kiesel $
  */
 
-  uses('util.log.LogLevel');
+  uses('util.log.LogLevel', 'util.log.LoggingEvent');
 
   define('LOGGER_FLAG_INFO',    0x0001);
   define('LOGGER_FLAG_WARN',    0x0002);
@@ -91,28 +91,15 @@
     }
     
     /**
-     * Private helper function
+     * Calls all appenders
      *
      */
-    public function callAppenders() {
-      $args= func_get_args();
-      $flag= $args[0];
-      if (!($this->flags & $flag)) return;
-      
-      $args[0]= sprintf(
-        $this->format,
-        date($this->dateformat),
-        $this->identifier,
-        $this->_indicators[$flag]
-      );
-      
+    protected function callAppenders($event) {
+      $level= $event->getLevel();
       foreach (array_keys($this->_appenders) as $appflag) {
-        if (!($flag & $appflag)) continue;
-        foreach (array_keys($this->_appenders[$appflag]) as $idx) {
-          call_user_func_array(
-            array($this->_appenders[$appflag][$idx], 'append'),
-            $args
-          );
+        if (!($level & $appflag)) continue;
+        foreach ($this->_appenders[$appflag] as $appender) {
+          $appender->append($event);
         }
       }
     }
@@ -132,8 +119,8 @@
      */
     public function finalize() {
       foreach ($this->_appenders as $flags => $appenders) {
-        foreach (array_keys($appenders) as $idx) {
-          $appenders[$idx]->finalize();
+        foreach ($this->_appenders[$appflag] as $appender) {
+          $appender->finalize();
         }
       }
     }
@@ -210,9 +197,10 @@
      * @param   mixed* args
      */
     public function info() {
+      if (!($this->flags & LogLevel::INFO)) return;
+
       $args= func_get_args();
-      array_unshift($args, LogLevel::INFO);
-      call_user_func_array(array($this, 'callAppenders'), $args);
+      $this->callAppenders(new LoggingEvent($this, time(), getmypid(), LogLevel::INFO, $args[0]));
     }
 
     /**
@@ -237,9 +225,10 @@
      * @param   mixed* args
      */
     public function warn() {
+      if (!($this->flags & LogLevel::WARN)) return;
+
       $args= func_get_args();
-      array_unshift($args, LogLevel::WARN);
-      call_user_func_array(array($this, 'callAppenders'), $args);
+      $this->callAppenders(new LoggingEvent($this, time(), getmypid(), LogLevel::WARN, $args[0]));
     }
 
     /**
@@ -259,9 +248,10 @@
      * @param   mixed* args
      */
     public function error() {
+      if (!($this->flags & LogLevel::ERROR)) return;
+
       $args= func_get_args();
-      array_unshift($args, LogLevel::ERROR);
-      call_user_func_array(array($this, 'callAppenders'), $args);
+      $this->callAppenders(new LoggingEvent($this, time(), getmypid(), LogLevel::ERROR, $args[0]));
     }
 
     /**
@@ -281,9 +271,10 @@
      * @param   mixed* args
      */
     public function debug() {
+      if (!($this->flags & LogLevel::DEBUG)) return;
+
       $args= func_get_args();
-      array_unshift($args, LogLevel::DEBUG);
-      call_user_func_array(array($this, 'callAppenders'), $args);
+      $this->callAppenders(new LoggingEvent($this, time(), getmypid(), LogLevel::DEBUG, $args[0]));
     }
  
     /**
