@@ -400,5 +400,25 @@
         $this->stream->getBytes()
       );
     }
+
+    /**
+     * Test setNewLines() method
+     *
+     */
+    #[@test]
+    public function setNewLines() {
+      $this->writer->setNewLines();
+      $this->writer->startDocument();
+      $this->writer->startNode('root');
+      $this->writer->writeEmptyNode('child');
+      $this->writer->endNode();
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="iso-8859-1"?>'."\n".
+        '<root>'."\n".
+        '<child/>'."\n".
+        '</root>',
+        $this->stream->getBytes()
+      );
+    }
   }
 ?>

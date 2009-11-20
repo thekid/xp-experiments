@@ -13,9 +13,10 @@
    * @test     xp://test.XmlStreamWriterTest
    */
   class XmlStreamWriter extends Object {
-    protected $stream= NULL;
-    protected $opened= NULL;
-    protected $encoding= '';
+    protected $stream   = NULL;
+    protected $opened   = NULL;
+    protected $encoding = '';
+    protected $newLine  = '';
     
     /**
      * Creates a new XML stream writer
@@ -25,7 +26,16 @@
     public function __construct(OutputStream $stream) {
       $this->stream= $stream;
     }
-    
+ 
+    /**
+     * Sets newline character
+     *
+     * @param   string newLine default "\n"
+     */
+    public function setNewLines($newLine= "\n") {
+      $this->newLine= $newLine;
+    }
+
     /**
      * Starts document
      *
@@ -62,7 +72,7 @@
      * @param   array<string, string> attributes
      */
     public function startNode($name, array $attributes= array()) {
-      $this->stream->write('<'.$name);
+      $this->stream->write($this->newLine.'<'.$name);
       foreach ($attributes as $attribute => $value)  {
         $this->stream->write(' '.$attribute.'="'.htmlspecialchars($value, ENT_QUOTES).'"');
       }
@@ -76,7 +86,7 @@
      * @param   string name
      */
     public function endNode() {
-      $this->stream->write('</'.array_pop($this->opened).'>');
+      $this->stream->write($this->newLine.'</'.array_pop($this->opened).'>');
     }
 
     /**
@@ -85,7 +95,7 @@
      * @param   string name
      */
     public function writeEmptyNode($name) {
-      $this->stream->write('<'.$name.'/>');
+      $this->stream->write($this->newLine.'<'.$name.'/>');
     }
 
     /**
