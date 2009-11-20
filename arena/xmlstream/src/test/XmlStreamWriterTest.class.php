@@ -72,13 +72,13 @@
     }
 
     /**
-     * Test closeDocument() method
+     * Test endDocument() method
      *
      */
     #[@test]
-    public function closeDocument() {
+    public function endDocument() {
       $this->writer->startDocument();
-      $this->writer->closeDocument();
+      $this->writer->endDocument();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?>', 
         $this->stream->getBytes()
@@ -86,23 +86,23 @@
     }
 
     /**
-     * Test closeDocument() method
+     * Test endDocument() method
      *
      */
     #[@test, @expect('lang.IllegalStateException')]
-    public function closeDocumentBeforeStart() {
-      $this->writer->closeDocument();
+    public function endDocumentBeforeStart() {
+      $this->writer->endDocument();
     }
 
     /**
-     * Test closeDocument() method
+     * Test endDocument() method
      *
      */
     #[@test]
-    public function closeDocumentClosesOpenTags() {
+    public function endDocumentClosesOpenTags() {
       $this->writer->startDocument();
       $this->writer->startNode('root');
-      $this->writer->closeDocument();
+      $this->writer->endDocument();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?><root></root>', 
         $this->stream->getBytes()
@@ -194,14 +194,14 @@
     }
 
     /**
-     * Test startNode() and closeNode() methods
+     * Test startNode() and endNode() methods
      *
      */
     #[@test]
     public function completeRootNode() {
       $this->writer->startDocument();
       $this->writer->startNode('root');
-      $this->writer->closeNode();
+      $this->writer->endNode();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?><root></root>', 
         $this->stream->getBytes()
@@ -209,7 +209,7 @@
     }
 
     /**
-     * Test startNode() and closeNode() methods
+     * Test startNode() and endNode() methods
      *
      */
     #[@test]
@@ -217,8 +217,8 @@
       $this->writer->startDocument();
       $this->writer->startNode('root');
       $this->writer->startNode('document');
-      $this->writer->closeNode();
-      $this->writer->closeNode();
+      $this->writer->endNode();
+      $this->writer->endNode();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?><root><document></document></root>', 
         $this->stream->getBytes()
@@ -234,7 +234,7 @@
       $this->writer->startDocument();
       $this->writer->startNode('root');
       $this->writer->writeCharacters('Hello');
-      $this->writer->closeNode();
+      $this->writer->endNode();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?><root>Hello</root>', 
         $this->stream->getBytes()
@@ -250,7 +250,7 @@
       $this->writer->startDocument();
       $this->writer->startNode('root');
       $this->writer->writeCharacters('<nedit&>');
-      $this->writer->closeNode();
+      $this->writer->endNode();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?><root>&lt;nedit&amp;&gt;</root>', 
         $this->stream->getBytes()
@@ -266,7 +266,7 @@
       $this->writer->startDocument();
       $this->writer->startNode('root');
       $this->writer->writeCharacters('"Hello"');
-      $this->writer->closeNode();
+      $this->writer->endNode();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?><root>"Hello"</root>', 
         $this->stream->getBytes()
@@ -282,7 +282,7 @@
       $this->writer->startDocument();
       $this->writer->startNode('root');
       $this->writer->writeCharacters('\'Hello\'');
-      $this->writer->closeNode();
+      $this->writer->endNode();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?><root>\'Hello\'</root>', 
         $this->stream->getBytes()
@@ -298,7 +298,7 @@
       $this->writer->startDocument('utf-8');
       $this->writer->startNode('root');
       $this->writer->writeCharacters('Übercoder');
-      $this->writer->closeNode();
+      $this->writer->endNode();
       $this->assertEquals(
         '<?xml version="1.0" encoding="utf-8"?><root>Ãœbercoder</root>', 
         $this->stream->getBytes()
@@ -314,7 +314,7 @@
       $this->writer->startDocument('iso-8859-1');
       $this->writer->startNode('root');
       $this->writer->writeCharacters('Übercoder');
-      $this->writer->closeNode();
+      $this->writer->endNode();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?><root>Übercoder</root>', 
         $this->stream->getBytes()
@@ -330,7 +330,7 @@
       $this->writer->startDocument();
       $this->writer->startNode('root');
       $this->writer->writeCData('Hello');
-      $this->writer->closeNode();
+      $this->writer->endNode();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?><root><![CDATA[Hello]]></root>', 
         $this->stream->getBytes()
@@ -346,7 +346,7 @@
       $this->writer->startDocument();
       $this->writer->startNode('root');
       $this->writer->writeCData('Hello]]>');
-      $this->writer->closeNode();
+      $this->writer->endNode();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?><root><![CDATA[Hello]]]]><![CDATA[>]]></root>', 
         $this->stream->getBytes()
@@ -362,7 +362,7 @@
       $this->writer->startDocument();
       $this->writer->startNode('root');
       $this->writer->writeComment('Hello');
-      $this->writer->closeNode();
+      $this->writer->endNode();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?><root><!-- Hello --></root>', 
         $this->stream->getBytes()
@@ -378,7 +378,7 @@
       $this->writer->startDocument();
       $this->writer->startNode('root');
       $this->writer->writeProcessingInstruction('php', 'echo "Hello";');
-      $this->writer->closeNode();
+      $this->writer->endNode();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?><root><?php echo "Hello"; ?></root>', 
         $this->stream->getBytes()
@@ -394,7 +394,7 @@
       $this->writer->startDocument();
       $this->writer->startNode('root');
       $this->writer->writeEntityRef('data');
-      $this->writer->closeNode();
+      $this->writer->endNode();
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?><root>&data;</root>', 
         $this->stream->getBytes()

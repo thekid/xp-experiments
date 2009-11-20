@@ -45,7 +45,7 @@
      *
      * @throws  lang.IllegalStateException in case document has not yet been started
      */
-    public function closeDocument() {
+    public function endDocument() {
       if (NULL === $this->opened) {
         throw new IllegalStateException('Document not yet started');
       }
@@ -74,7 +74,7 @@
      *
      * @param   string name
      */
-    public function closeNode() {
+    public function endNode() {
       $this->stream->write('</'.array_pop($this->opened).'>');
     }
 
