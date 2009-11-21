@@ -16,6 +16,7 @@
     protected $stream       = NULL;
     protected $opened       = NULL;
     protected $encoding     = '';
+    protected $state        = 0;
     
     /**
      * Creates a new XML stream writer
@@ -33,11 +34,12 @@
      * @throws  lang.IllegalStateException in case document has already been started
      */
     public function startDocument($encoding= 'iso-8859-1') {
-      if (NULL !== $this->opened) {
+      if (0 !== $this->state) {
         throw new IllegalStateException('Document already started');
       }
       $this->stream->write('<?xml version="1.0" encoding="'.$encoding.'"?>');
       $this->encoding= $encoding;
+      $this->state= 1;
       $this->opened= array();
     }
 
@@ -55,12 +57,13 @@
      * @throws  lang.IllegalStateException in case document has not yet been started
      */
     public function endDocument() {
-      if (NULL === $this->opened) {
+      if (1 !== $this->state) {
         throw new IllegalStateException('Document not yet started');
       }
       while ($name= array_pop($this->opened)) {
         $this->writeEnd($name);
       }
+      $this->state= -1;
     }
 
     /**
@@ -69,8 +72,12 @@
      * @param   string name
      * @param   string publicId
      * @param   string systemId
+     * @throws  lang.IllegalStateException in case document has not yet been started
      */
     public function writeDocType($name, $publicId, $systemId) {
+      if (1 !== $this->state) {
+        throw new IllegalStateException('Document not yet started');
+      }
       $this->stream->write('<!DOCTYPE '.$name);
       if ($publicId) {
         $this->stream->write(' PUBLIC "'.$publicId.'" "'.$systemId.'"');

@@ -135,6 +135,15 @@
      * Test writeDocType() method
      *
      */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function writeDocTypeBeforDocumentStart() {
+      $this->writer->writeDocType('any', NULL, 'any.dtd');
+    }
+
+    /**
+     * Test writeDocType() method
+     *
+     */
     #[@test]
     public function systemDocType() {
       $this->writer->startDocument();
