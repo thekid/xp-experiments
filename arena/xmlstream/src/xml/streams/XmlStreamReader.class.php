@@ -33,23 +33,55 @@
       xml_set_processing_instruction_handler($this->parser, 'onProcessingInstruction');
     }
     
-    protected function onStartElement($parser, $name, $attr) {
+    /**
+     * Start element
+     *
+     * @param   resource parser
+     * @param   string name
+     * @param   array<string, string> attributes
+     */
+    protected function onStartElement($parser, $name, $attributes) {
       $this->events[]= XmlEvent::$START_ELEMENT;
     }
 
+    /**
+     * End element
+     *
+     * @param   resource parser
+     * @param   string name
+     */
     protected function onEndElement($parser, $name) {
       $this->events[]= XmlEvent::$END_ELEMENT;
     }
 
+    /**
+     * Character data handler
+     *
+     * @param   resource parser
+     * @param   string text
+     */
     protected function onCData($parser, $text) {
       $this->events[]= XmlEvent::$CHARACTERS;
     }
 
+    /**
+     * Default handler
+     *
+     * @param   resource parser
+     * @param   string text
+     */
     protected function onDefault($parser, $text) {
       $this->events[]= XmlEvent::$COMMENT;
     }
  
-    protected function onProcessingInstruction($parser, $text) {
+    /**
+     * Processing instruction
+     *
+     * @param   resource parser
+     * @param   string target
+     * @param   string text
+     */
+    protected function onProcessingInstruction($parser, $target, $text) {
       $this->events[]= XmlEvent::$PROCESSING_INSTRUCTION;
     }
     
