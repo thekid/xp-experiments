@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.streams.InputStream', 'xml.XMLFormatException');
+  uses('io.streams.InputStream', 'xml.XMLFormatException', 'xml.streams.XmlEvent');
 
   /**
    * Writes XML in a streaming fashion
@@ -34,29 +34,39 @@
     }
     
     protected function onStartElement($parser, $name, $attr) {
-      $this->events[]= 1;
+      $this->events[]= XmlEvent::$START_ELEMENT;
     }
 
     protected function onEndElement($parser, $name) {
-      $this->events[]= 2;
+      $this->events[]= XmlEvent::$END_ELEMENT;
     }
 
     protected function onCData($parser, $text) {
-      $this->events[]= 3;
+      $this->events[]= XmlEvent::$CHARACTERS;
     }
 
     protected function onDefault($parser, $text) {
-      $this->events[]= 4;
+      $this->events[]= XmlEvent::$COMMENT;
     }
  
     protected function onProcessingInstruction($parser, $text) {
-      $this->events[]= 5;
+      $this->events[]= XmlEvent::$PROCESSING_INSTRUCTION;
     }
     
+    /**
+     * Checks whether there are more elements
+     *
+     * @return  bool
+     */
     public function hasNext() {
       return $this->events || $this->stream->available() > 0;
     }
     
+    /**
+     * Returns next element
+     *
+     * @return  
+     */
     public function next() {
       if (!$this->events) {
         if ($this->stream->available()) {
@@ -72,7 +82,7 @@
           libxml_clear_errors();
           throw new XMLFormatException(xml_error_string($type), $type, $this->stream->toString(), $line, $column);
         }
-        if (!$this->events) return 0;
+        if (!$this->events) return XmlEvent::$END_DOCUMENT;
       }
       return array_shift($this->events);
     }

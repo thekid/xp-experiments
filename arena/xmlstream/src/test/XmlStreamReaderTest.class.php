@@ -44,7 +44,7 @@
     #[@test, @expect('xml.XMLFormatException')]
     public function unclosedElement() {
       $r= $this->newReader('<root>');
-      $this->assertEquals(1, $r->next());
+      $this->assertEquals(XmlEvent::$START_ELEMENT, $r->next());
       $r->next();
     }
 
@@ -55,7 +55,7 @@
     #[@test]
     public function declarationOnly() {
       $r= $this->newReader(self::XML_DECLARATION);
-      $this->assertEquals(0, $r->next());
+      $this->assertEquals(XmlEvent::$END_DOCUMENT, $r->next());
     }
 
     /**
@@ -65,9 +65,9 @@
     #[@test]
     public function rootNode() {
       $r= $this->newReader(self::XML_DECLARATION.'<root></root>');
-      $this->assertEquals(1, $r->next());
-      $this->assertEquals(2, $r->next());
-      $this->assertEquals(0, $r->next());
+      $this->assertEquals(XmlEvent::$START_ELEMENT, $r->next());
+      $this->assertEquals(XmlEvent::$END_ELEMENT, $r->next());
+      $this->assertEquals(XmlEvent::$END_DOCUMENT, $r->next());
     }
 
     /**
@@ -77,9 +77,9 @@
     #[@test]
     public function documentWithoutDeclaration() {
       $r= $this->newReader('<root></root>');
-      $this->assertEquals(1, $r->next());
-      $this->assertEquals(2, $r->next());
-      $this->assertEquals(0, $r->next());
+      $this->assertEquals(XmlEvent::$START_ELEMENT, $r->next());
+      $this->assertEquals(XmlEvent::$END_ELEMENT, $r->next());
+      $this->assertEquals(XmlEvent::$END_DOCUMENT, $r->next());
     }
 
     /**
@@ -89,9 +89,9 @@
     #[@test]
     public function emptyRootNode() {
       $r= $this->newReader(self::XML_DECLARATION.'<root/>');
-      $this->assertEquals(1, $r->next());
-      $this->assertEquals(2, $r->next());
-      $this->assertEquals(0, $r->next());
+      $this->assertEquals(XmlEvent::$START_ELEMENT, $r->next());
+      $this->assertEquals(XmlEvent::$END_ELEMENT, $r->next());
+      $this->assertEquals(XmlEvent::$END_DOCUMENT, $r->next());
     }
 
     /**
@@ -101,11 +101,11 @@
     #[@test]
     public function rootAndEmptyChild() {
       $r= $this->newReader(self::XML_DECLARATION.'<root><child/></root>');
-      $this->assertEquals(1, $r->next());
-      $this->assertEquals(1, $r->next());
-      $this->assertEquals(2, $r->next());
-      $this->assertEquals(2, $r->next());
-      $this->assertEquals(0, $r->next());
+      $this->assertEquals(XmlEvent::$START_ELEMENT, $r->next());
+      $this->assertEquals(XmlEvent::$START_ELEMENT, $r->next());
+      $this->assertEquals(XmlEvent::$END_ELEMENT, $r->next());
+      $this->assertEquals(XmlEvent::$END_ELEMENT, $r->next());
+      $this->assertEquals(XmlEvent::$END_DOCUMENT, $r->next());
     }
   }
 ?>
