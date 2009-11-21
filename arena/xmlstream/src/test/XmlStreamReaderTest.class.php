@@ -19,7 +19,7 @@
     const XML_DECLARATION = '<?xml version="1.0" encoding="iso-8859-1"?>';
   
     /**
-     * Creates a
+     * Creates a new XML stream reader
      *
      * @param     string xml
      * @return    xml.streams.XmlStreamReader
