@@ -11,7 +11,10 @@
     'xml.streams.XmlEventType',
     'xml.streams.events.StartDocument',
     'xml.streams.events.EndDocument',
-    'xml.streams.events.StartElement'
+    'xml.streams.events.StartElement',
+    'xml.streams.events.EndElement',
+    'xml.streams.events.Characters',
+    'xml.streams.events.Comment'
   );
 
   /**
@@ -113,12 +116,12 @@
             $this->events[]= XmlEventType::$CDATA;   // FIXME: <> allowed
             $this->tokenizer->nextToken(' ');
           } else if ('/' === $tag{0}) {
-            $this->events[]= XmlEventType::$END_ELEMENT;
+            $this->events[]= new EndElement();
             $this->open--;
           } else {
             if ('/' === $tag{strlen($tag)- 1}) {
               $this->events[]= new StartElement(substr($tag, 0, -1));   // XXX attributes
-              $this->events[]= XmlEventType::$END_ELEMENT;
+              $this->events[]= new EndElement();
             } else {
               $this->events[]= new StartElement($tag);                  // XXX attributes
               $this->open++;
@@ -130,18 +133,18 @@
           if ('>' !== $content) {
             $skip= $this->tokenizer->nextToken('>');
           } else if ('/' === $content{strlen($content)- 1}) {
-            $this->events[]= XmlEventType::$END_ELEMENT; 
+            $this->events[]= new EndElement(); 
           }
         } else if ('&' === $t) {
           $entity= $this->tokenizer->nextToken(';');
           if (isset(self::$entities[$entity])) {
-            $this->events[]= XmlEventType::$CHARACTERS;
+            $this->events[]= new Characters(self::$entities[$entity]);
           } else {
             $this->events[]= XmlEventType::$ENTITY_REF;
           }
           $this->tokenizer->nextToken(';');
         } else {
-          $this->events[]= XmlEventType::$CHARACTERS;
+          $this->events[]= new Characters($t);
         }
       }
       
