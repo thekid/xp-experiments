@@ -53,8 +53,10 @@
           } else if ($this->open) {
             throw new XMLFormatException('Unclosed tag');
           }
-          $this->events[]= XmlEventType::$END_DOCUMENT;
-        } else if ('<' === $t) {
+          return XmlEventType::$END_DOCUMENT;
+        } 
+        
+        if ('<' === $t) {
           -1 === $this->open && $this->open= 0;
 
           // <?xml ......>  => Declaration
