@@ -32,7 +32,7 @@
      * Test
      *
      */
-    #[@test, @ignore, @expect('xml.XMLFormatException')]
+    #[@test, @expect('xml.XMLFormatException')]
     public function parseEmpty() {
       $this->newReader('')->next();
     }
@@ -112,7 +112,7 @@
      *
      */
     #[@test]
-    public function rootNodeWithText() {
+    public function text() {
       $r= $this->newReader(self::XML_DECLARATION.'<root>Hello</root>');
       $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
@@ -126,7 +126,7 @@
      *
      */
     #[@test]
-    public function rootNodeWithComment() {
+    public function comment() {
       $r= $this->newReader(self::XML_DECLARATION.'<root><!-- Hello --></root>');
       $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
@@ -140,7 +140,7 @@
      *
      */
     #[@test]
-    public function rootNodeWithPI() {
+    public function processingInstruction() {
       $r= $this->newReader(self::XML_DECLARATION.'<root><?php echo "Hello"; ?></root>');
       $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
@@ -154,7 +154,7 @@
      *
      */
     #[@test]
-    public function rootNodeWithEntityRef() {
+    public function entityRef() {
       $r= $this->newReader(self::XML_DECLARATION.'<root>&content;</root>');
       $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
@@ -168,7 +168,7 @@
      *
      */
     #[@test]
-    public function rootNodeWithEntityRefInsideText() {
+    public function entityRefInsideText() {
       $r= $this->newReader(self::XML_DECLARATION.'<root>Content [&content;]</root>');
       $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
@@ -184,7 +184,7 @@
      *
      */
     #[@test]
-    public function rootNodeCData() {
+    public function cData() {
       $r= $this->newReader(self::XML_DECLARATION.'<root><![CDATA[ Hello ]]></root>');
       $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());

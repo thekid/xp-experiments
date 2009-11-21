@@ -20,7 +20,7 @@
   class XmlStreamReader extends Object {
     protected $tokenizer = NULL;
     protected $events    = array();
-    protected $open      = 0;
+    protected $open      = -1;
     
     /**
      * Creates a new XML stream writer
@@ -37,7 +37,7 @@
      * @return  bool
      */
     public function hasNext() {
-      return $this->tokenizer->hasMoreTokens();
+      return $this->events || $this->tokenizer->hasMoreTokens();
     }
     
     /**
@@ -48,11 +48,14 @@
     public function next() {
       if (!$this->events) {
         if (NULL === ($t= $this->tokenizer->nextToken())) {
-          if ($this->open) {
+          if (-1 === $this->open) {
+            throw new XMLFormatException('Empty document');
+          } else if ($this->open) {
             throw new XMLFormatException('Unclosed tag');
           }
           $this->events[]= XmlEventType::$END_DOCUMENT;
         } else if ('<' === $t) {
+          -1 === $this->open && $this->open= 0;
 
           // <?xml ......>  => Declaration
           // <?target ...>  => Processing instruction
