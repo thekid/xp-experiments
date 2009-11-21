@@ -66,6 +66,7 @@
       while ($name= array_pop($this->opened)) {
         $this->writeEnd($name);
       }
+      $this->flush();
       $this->state= -1;
     }
 
@@ -170,6 +171,14 @@
      */
     public function writeEntityRef($name) {
       $this->stream->write('&'.$name.';');
+    }
+
+    /**
+     * Flush any cached data on the underlying output stream
+     *
+     */
+    public function flush() {
+      $this->stream->flush();
     }
   }
 ?>
