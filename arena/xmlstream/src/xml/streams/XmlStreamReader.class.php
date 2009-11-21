@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.streams.InputStream', 'xml.XMLFormatException', 'xml.streams.XmlEvent');
+  uses('io.streams.InputStream', 'xml.XMLFormatException', 'xml.streams.XmlEventType');
 
   /**
    * Writes XML in a streaming fashion
@@ -41,7 +41,7 @@
      * @param   array<string, string> attributes
      */
     protected function onStartElement($parser, $name, $attributes) {
-      $this->events[]= XmlEvent::$START_ELEMENT;
+      $this->events[]= XmlEventType::$START_ELEMENT;
     }
 
     /**
@@ -51,7 +51,7 @@
      * @param   string name
      */
     protected function onEndElement($parser, $name) {
-      $this->events[]= XmlEvent::$END_ELEMENT;
+      $this->events[]= XmlEventType::$END_ELEMENT;
     }
 
     /**
@@ -61,7 +61,7 @@
      * @param   string text
      */
     protected function onCData($parser, $text) {
-      $this->events[]= XmlEvent::$CHARACTERS;
+      $this->events[]= XmlEventType::$CHARACTERS;
     }
 
     /**
@@ -71,7 +71,7 @@
      * @param   string text
      */
     protected function onDefault($parser, $text) {
-      $this->events[]= XmlEvent::$COMMENT;
+      $this->events[]= XmlEventType::$COMMENT;
     }
  
     /**
@@ -82,7 +82,7 @@
      * @param   string text
      */
     protected function onProcessingInstruction($parser, $target, $text) {
-      $this->events[]= XmlEvent::$PROCESSING_INSTRUCTION;
+      $this->events[]= XmlEventType::$PROCESSING_INSTRUCTION;
     }
     
     /**
@@ -114,7 +114,7 @@
           libxml_clear_errors();
           throw new XMLFormatException(xml_error_string($type), $type, $this->stream->toString(), $line, $column);
         }
-        if (!$this->events) return XmlEvent::$END_DOCUMENT;
+        if (!$this->events) return XmlEventType::$END_DOCUMENT;
       }
       return array_shift($this->events);
     }

@@ -7,11 +7,11 @@
   uses('lang.Enum');
 
   /**
-   * (Insert class' description here)
+   * XML event types enumeration
    *
    * @see      xp://xml.streams.XmlStreamReader
    */
-  class XmlEvent extends Enum {
+  class XmlEventType extends Enum {
     public static 
       $START_ELEMENT,
       $END_ELEMENT,
