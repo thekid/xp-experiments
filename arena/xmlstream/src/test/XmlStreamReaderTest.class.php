@@ -168,6 +168,24 @@
      *
      */
     #[@test]
+    public function knownEntitiesReportedAsText() {
+      $r= $this->newReader(self::XML_DECLARATION.'<root>&amp;&quot;&apos;&lt;&gt;</root>');
+      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
+      $this->assertEquals(XmlEventType::$CHARACTERS, $r->next());
+      $this->assertEquals(XmlEventType::$CHARACTERS, $r->next());
+      $this->assertEquals(XmlEventType::$CHARACTERS, $r->next());
+      $this->assertEquals(XmlEventType::$CHARACTERS, $r->next());
+      $this->assertEquals(XmlEventType::$CHARACTERS, $r->next());
+      $this->assertEquals(XmlEventType::$END_ELEMENT, $r->next());
+      $this->assertEquals(XmlEventType::$END_DOCUMENT, $r->next());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function entityRefInsideText() {
       $r= $this->newReader(self::XML_DECLARATION.'<root>Content [&content;]</root>');
       $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());

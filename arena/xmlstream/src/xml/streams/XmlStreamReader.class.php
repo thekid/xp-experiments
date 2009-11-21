@@ -22,6 +22,14 @@
     protected $events    = array();
     protected $open      = -1;
     
+    protected static $entities = array(
+      'lt'    => '<',
+      'gt'    => '>',
+      'amp'   => '&',
+      'quot'  => '"',
+      'apos'  => '\'',
+    );
+    
     /**
      * Creates a new XML stream writer
      *
@@ -103,7 +111,11 @@
           }
         } else if ('&' === $t) {
           $entity= $this->tokenizer->nextToken(';');
-          $this->events[]= XmlEventType::$ENTITY_REF;
+          if (isset(self::$entities[$entity])) {
+            $this->events[]= XmlEventType::$CHARACTERS;
+          } else {
+            $this->events[]= XmlEventType::$ENTITY_REF;
+          }
           $this->tokenizer->nextToken(';');
         } else {
           $this->events[]= XmlEventType::$CHARACTERS;
