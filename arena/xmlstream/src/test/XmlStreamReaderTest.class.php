@@ -52,6 +52,16 @@
      * Test
      *
      */
+    #[@test, @expect('xml.XMLFormatException')]
+    public function unclosedTag() {
+      $r= $this->newReader('<root');
+      $r->next();
+    }
+
+    /**
+     * Test
+     *
+     */
     #[@test]
     public function declarationOnly() {
       $r= $this->newReader(self::XML_DECLARATION);
