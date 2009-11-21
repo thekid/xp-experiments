@@ -18,6 +18,9 @@
     protected $encoding     = '';
     protected $newLine      = '';
     protected $textContent  = FALSE;
+    protected $indent       = -1;
+    protected $indentWith   = '';
+    protected $prefix       = '';
     
     /**
      * Creates a new XML stream writer
@@ -35,6 +38,23 @@
      */
     public function setNewLines($newLine= "\n") {
       $this->newLine= $newLine;
+      $this->prefix= $this->newLine;
+    }
+
+    /**
+     * Sets indenting
+     *
+     * @param   string indent pass NULL for no indenting
+     */
+    public function setIndent($indent) {
+      if (NULL === $indent) {
+        $this->indent= -1;
+        $this->indentWith= '';
+      } else {
+        $this->indent= 0;
+        $this->indentWith= $indent;
+        $this->prefix= $this->newLine;
+      }
     }
 
     /**
@@ -53,6 +73,18 @@
     }
 
     /**
+     * Closes a node
+     *
+     */
+    protected function writeEnd($name) {
+      $this->indent < 0 || $this->prefix= $this->newLine.str_repeat('  ', --$this->indent);
+      if (!$this->textContent) {
+        $this->stream->write($this->prefix);
+      }
+      $this->stream->write('</'.$name.'>');
+    }
+
+    /**
      * Ends document. Closes any open tags
      *
      * @throws  lang.IllegalStateException in case document has not yet been started
@@ -62,7 +94,7 @@
         throw new IllegalStateException('Document not yet started');
       }
       while ($name= array_pop($this->opened)) {
-        $this->stream->write('</'.$name.'>');
+        $this->writeEnd($name);
       }
     }
 
@@ -73,12 +105,13 @@
      * @param   array<string, string> attributes
      */
     public function startNode($name, array $attributes= array()) {
-      $this->stream->write($this->newLine.'<'.$name);
+      $this->stream->write($this->prefix.'<'.$name);
       foreach ($attributes as $attribute => $value)  {
         $this->stream->write(' '.$attribute.'="'.htmlspecialchars($value, ENT_QUOTES).'"');
       }
       $this->stream->write('>');
       $this->opened[]= $name;
+      $this->indent < 0 || $this->prefix= $this->newLine.str_repeat($this->indentWith, ++$this->indent);
       $this->textContent= FALSE;
     }
     
@@ -87,10 +120,7 @@
      *
      */
     public function endNode() {
-      if (!$this->textContent) {
-        $this->stream->write($this->newLine);
-      }
-      $this->stream->write('</'.array_pop($this->opened).'>');
+      $this->writeEnd(array_pop($this->opened));
     }
 
     /**
@@ -99,7 +129,7 @@
      * @param   string name
      */
     public function writeEmptyNode($name) {
-      $this->stream->write($this->newLine.'<'.$name.'/>');
+      $this->stream->write($this->newLine.$this->indentWith.'<'.$name.'/>');
     }
 
     /**
