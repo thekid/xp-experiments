@@ -18,7 +18,9 @@
       $PROCESSING_INSTRUCTION,
       $CHARACTERS,
       $COMMENT,
-      $END_DOCUMENT;
+      $START_DOCUMENT,
+      $END_DOCUMENT,
+      $DOCTYPE;
     
     static function __static() {
       self::$START_ELEMENT= new self(1, 'START_ELEMENT');
@@ -26,7 +28,9 @@
       self::$PROCESSING_INSTRUCTION= new self(3, 'PROCESSING_INSTRUCTION');
       self::$CHARACTERS= new self(4, 'CHARACTERS');
       self::$COMMENT= new self(5, 'COMMENT');
-      self::$END_DOCUMENT= new self(6, 'END_DOCUMENT');
+      self::$START_DOCUMENT= new self(6, 'START_DOCUMENT');
+      self::$END_DOCUMENT= new self(7, 'END_DOCUMENT');
+      self::$DOCTYPE= new self(8, 'DOCTYPE');
     }
     
     /**
