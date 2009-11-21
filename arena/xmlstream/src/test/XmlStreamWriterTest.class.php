@@ -91,8 +91,19 @@
      * Test endDocument() method
      *
      */
-    #[@test, @expect('lang.IllegalStateException')]
+    #[@test, @expect(class= 'lang.IllegalStateException', withMessage= 'Document not yet started')]
     public function endDocumentBeforeStart() {
+      $this->writer->endDocument();
+    }
+
+    /**
+     * Test endDocument() method
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalStateException', withMessage= 'Document previously ended')]
+    public function endAlreadyEndedDocument() {
+      $this->writer->startDocument();
+      $this->writer->endDocument();
       $this->writer->endDocument();
     }
 

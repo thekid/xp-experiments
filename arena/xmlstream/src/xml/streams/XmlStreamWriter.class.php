@@ -58,7 +58,10 @@
      */
     public function endDocument() {
       if (1 !== $this->state) {
-        throw new IllegalStateException('Document not yet started');
+        throw new IllegalStateException('Document '.(-1 === $this->state
+          ? 'previously ended'
+          : 'not yet started'
+        ));
       }
       while ($name= array_pop($this->opened)) {
         $this->writeEnd($name);
