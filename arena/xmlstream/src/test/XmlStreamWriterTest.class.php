@@ -16,6 +16,8 @@
    * @see      xp://xml.streams.XmlStreamWriter
    */
   class XmlStreamWriterTest extends TestCase {
+    protected $stream= NULL;
+    protected $writer= NULL;
   
     /**
      * Sets up test case
