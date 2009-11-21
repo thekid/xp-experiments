@@ -9,7 +9,9 @@
     'text.StreamTokenizer', 
     'xml.XMLFormatException', 
     'xml.streams.XmlEventType',
-    'xml.streams.events.StartDocument'
+    'xml.streams.events.StartDocument',
+    'xml.streams.events.EndDocument',
+    'xml.streams.events.StartElement'
   );
 
   /**
@@ -82,7 +84,7 @@
           } else if ($this->open) {
             throw new XMLFormatException('Unclosed tag');
           }
-          return XmlEventType::$END_DOCUMENT;
+          return new EndDocument();
         } 
         
         if ('<' === $t) {
@@ -114,10 +116,11 @@
             $this->events[]= XmlEventType::$END_ELEMENT;
             $this->open--;
           } else {
-            $this->events[]= XmlEventType::$START_ELEMENT;
             if ('/' === $tag{strlen($tag)- 1}) {
+              $this->events[]= new StartElement(substr($tag, 0, -1));   // XXX attributes
               $this->events[]= XmlEventType::$END_ELEMENT;
             } else {
+              $this->events[]= new StartElement($tag);                  // XXX attributes
               $this->open++;
             }
           }

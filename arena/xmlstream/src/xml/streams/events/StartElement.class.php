@@ -7,18 +7,21 @@
   uses('xml.streams.XmlEvent');
 
   /**
-   * Represents the START_DOCUMENT event
+   * Represents the START_ELEMENT event
    *
    */
-  class StartDocument extends XmlEvent {
+  class StartElement extends XmlEvent {
+    protected $name= '';
     protected $attributes= array();
     
     /**
      * Constructor
      *
+     * @param   string name
      * @param   array<string, string> attributes
      */
-    public function __construct($attributes) {
+    public function __construct($name, $attributes= array()) {
+      $this->name= $name;
       $this->attributes= $attributes;
     }
     
@@ -28,7 +31,7 @@
      * @return  xml.streams.XmlEventType
      */
     public function type() {
-      return XmlEventType::$START_DOCUMENT;
+      return XmlEventType::$START_ELEMENT;
     }
     
     /**
@@ -38,16 +41,11 @@
      * @return  bool
      */
     public function equals($cmp) {
-      return $cmp instanceof self && $cmp->attributes == $this->attributes;
-    }
-    
-    /**
-     * Creates a string representation of this object
-     *
-     * @return  string
-     */
-    public function toString() {
-      return $this->getClassName().'@'.xp::stringOf($this->attributes, '  ');
+      return (
+        $cmp instanceof self && 
+        $cmp->name === $this->name && 
+        $cmp->attributes == $this->attributes
+      );
     }
   }
 ?>
