@@ -28,7 +28,7 @@
      * @param   io.streams.OutputStream stream
      */
     public function __construct(InputStream $stream) {
-      $this->tokenizer= new StreamTokenizer($stream, '<', TRUE);
+      $this->tokenizer= new StreamTokenizer($stream, '<&', TRUE);
     }
     
     /**
@@ -96,6 +96,10 @@
           } else if ('/' === $content{strlen($content)- 1}) {
             $this->events[]= XmlEventType::$END_ELEMENT; 
           }
+        } else if ('&' === $t) {
+          $entity= $this->tokenizer->nextToken(';');
+          $this->events[]= XmlEventType::$ENTITY_REF;
+          $this->tokenizer->nextToken(';');
         } else {
           $this->events[]= XmlEventType::$CHARACTERS;
         }

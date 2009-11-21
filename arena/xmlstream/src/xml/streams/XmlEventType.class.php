@@ -20,7 +20,8 @@
       $COMMENT,
       $START_DOCUMENT,
       $END_DOCUMENT,
-      $DOCTYPE;
+      $DOCTYPE,
+      $ENTITY_REF;
     
     static function __static() {
       self::$START_ELEMENT= new self(1, 'START_ELEMENT');
@@ -31,6 +32,7 @@
       self::$START_DOCUMENT= new self(6, 'START_DOCUMENT');
       self::$END_DOCUMENT= new self(7, 'END_DOCUMENT');
       self::$DOCTYPE= new self(8, 'DOCTYPE');
+      self::$ENTITY_REF= new self(9, 'ENTITY_REF');
     }
     
     /**

@@ -154,6 +154,20 @@
      *
      */
     #[@test]
+    public function rootNodeWithEntityRef() {
+      $r= $this->newReader(self::XML_DECLARATION.'<root>&content;</root>');
+      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
+      $this->assertEquals(XmlEventType::$ENTITY_REF, $r->next());
+      $this->assertEquals(XmlEventType::$END_ELEMENT, $r->next());
+      $this->assertEquals(XmlEventType::$END_DOCUMENT, $r->next());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function rootAndEmptyChild() {
       $r= $this->newReader(self::XML_DECLARATION.'<root><child/></root>');
       $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
