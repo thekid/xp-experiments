@@ -256,6 +256,28 @@
     }
 
     /**
+     * Test endNode() method
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function endNodeWithoutStart() {
+      $this->writer->startDocument();
+      $this->writer->endNode();
+    }
+
+    /**
+     * Test endNode() method
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function endNodeTooOften() {
+      $this->writer->startDocument();
+      $this->writer->startNode('root');
+      $this->writer->endNode();
+      $this->writer->endNode();
+    }
+
+    /**
      * Test startNode() and endNode() methods
      *
      */

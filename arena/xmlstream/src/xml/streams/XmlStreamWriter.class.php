@@ -105,9 +105,13 @@
     /**
      * Closes a node
      *
+     * @throws  lang.IllegalStateException when no open nodes are to be closed
      */
     public function endNode() {
-      $this->writeEnd(array_pop($this->opened));
+      if (NULL === ($opened= array_pop($this->opened))) {
+        throw new IllegalStateException('No open nodes to close');
+      }
+      $this->writeEnd($opened);
     }
 
     /**
