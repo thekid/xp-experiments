@@ -41,7 +41,7 @@
      * Test
      *
      */
-    #[@test, @ignore, @expect('xml.XMLFormatException')]
+    #[@test, @expect('xml.XMLFormatException')]
     public function unclosedElement() {
       $r= $this->newReader('<root>');
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());

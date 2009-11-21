@@ -20,6 +20,7 @@
   class XmlStreamReader extends Object {
     protected $tokenizer = NULL;
     protected $events    = array();
+    protected $open      = 0;
     
     /**
      * Creates a new XML stream writer
@@ -47,17 +48,19 @@
     public function next() {
       if (!$this->events) {
         if (NULL === ($t= $this->tokenizer->nextToken())) {
+          if ($this->open) {
+            throw new XMLFormatException('Unclosed tag');
+          }
           $this->events[]= XmlEventType::$END_DOCUMENT;
-        }
+        } else if ('<' === $t) {
 
-        // <?xml ......>  => Declaration
-        // <?target ...>  => Processing instruction
-        // <!DOCTYPE ..>  => Doctype
-        // <!-- .......>  => Comment
-        // <![CDATA[ ..>  => CDATA
-        // <name ......>  => Node
-        // <name/>        => Empty node
-        if ('<' === $t) {
+          // <?xml ......>  => Declaration
+          // <?target ...>  => Processing instruction
+          // <!DOCTYPE ..>  => Doctype
+          // <!-- .......>  => Comment
+          // <![CDATA[ ..>  => CDATA
+          // <name ......>  => Node
+          // <name/>        => Empty node
           $tag= $this->tokenizer->nextToken(' >');
           if ('?xml' === $tag) {
             $this->events[]= XmlEventType::$START_DOCUMENT;
@@ -76,10 +79,13 @@
             $this->tokenizer->nextToken(' ');
           } else if ('/' === $tag{0}) {
             $this->events[]= XmlEventType::$END_ELEMENT;
+            $this->open--;
           } else {
             $this->events[]= XmlEventType::$START_ELEMENT;
             if ('/' === $tag{strlen($tag)- 1}) {
               $this->events[]= XmlEventType::$END_ELEMENT;
+            } else {
+              $this->open++;
             }
           }
           if (NULL === ($content= $this->tokenizer->nextToken('>'))) {
@@ -94,6 +100,7 @@
           $this->events[]= XmlEventType::$CHARACTERS;
         }
       }
+      
       return array_shift($this->events);
     }
   }
