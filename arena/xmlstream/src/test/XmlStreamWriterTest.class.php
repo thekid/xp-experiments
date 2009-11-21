@@ -423,7 +423,7 @@
      * Test setNewLines() method
      *
      */
-    #[@test]
+    #[@test, @ignore('Newlines and indenting not supported currently')]
     public function setNewLines() {
       $this->writer->setNewLines();
       $this->writer->startDocument();
@@ -443,7 +443,7 @@
      * Test setNewLines() method
      *
      */
-    #[@test]
+    #[@test, @ignore('Newlines and indenting not supported currently')]
     public function setNewLinesAndIndent() {
       $this->writer->setNewLines();
       $this->writer->setIndent('  ');
@@ -464,7 +464,7 @@
      * Test setNewLines() method
      *
      */
-    #[@test]
+    #[@test, @ignore('Newlines and indenting not supported currently')]
     public function newLinesDoNotSurroundContent() {
       $this->writer->setNewLines();
       $this->writer->startDocument();

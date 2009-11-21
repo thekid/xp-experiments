@@ -16,11 +16,6 @@
     protected $stream       = NULL;
     protected $opened       = NULL;
     protected $encoding     = '';
-    protected $newLine      = '';
-    protected $textContent  = FALSE;
-    protected $indent       = -1;
-    protected $indentWith   = '';
-    protected $prefix       = '';
     
     /**
      * Creates a new XML stream writer
@@ -31,32 +26,6 @@
       $this->stream= $stream;
     }
  
-    /**
-     * Sets newline character
-     *
-     * @param   string newLine default "\n"
-     */
-    public function setNewLines($newLine= "\n") {
-      $this->newLine= $newLine;
-      $this->prefix= $this->newLine;
-    }
-
-    /**
-     * Sets indenting
-     *
-     * @param   string indent pass NULL for no indenting
-     */
-    public function setIndent($indent) {
-      if (NULL === $indent) {
-        $this->indent= -1;
-        $this->indentWith= '';
-      } else {
-        $this->indent= 0;
-        $this->indentWith= $indent;
-        $this->prefix= $this->newLine;
-      }
-    }
-
     /**
      * Starts document
      *
@@ -77,10 +46,6 @@
      *
      */
     protected function writeEnd($name) {
-      $this->indent < 0 || $this->prefix= $this->newLine.str_repeat('  ', --$this->indent);
-      if (!$this->textContent) {
-        $this->stream->write($this->prefix);
-      }
       $this->stream->write('</'.$name.'>');
     }
 
@@ -105,14 +70,12 @@
      * @param   array<string, string> attributes
      */
     public function startNode($name, array $attributes= array()) {
-      $this->stream->write($this->prefix.'<'.$name);
+      $this->stream->write('<'.$name);
       foreach ($attributes as $attribute => $value)  {
         $this->stream->write(' '.$attribute.'="'.htmlspecialchars($value, ENT_QUOTES).'"');
       }
       $this->stream->write('>');
       $this->opened[]= $name;
-      $this->indent < 0 || $this->prefix= $this->newLine.str_repeat($this->indentWith, ++$this->indent);
-      $this->textContent= FALSE;
     }
     
     /**
@@ -129,7 +92,7 @@
      * @param   string name
      */
     public function writeEmptyNode($name) {
-      $this->stream->write($this->newLine.$this->indentWith.'<'.$name.'/>');
+      $this->stream->write('<'.$name.'/>');
     }
 
     /**
@@ -139,7 +102,6 @@
      */
     public function writeCharacters($text) {
       $this->stream->write(htmlspecialchars(iconv('iso-8859-1', $this->encoding, $text), ENT_NOQUOTES));
-      $this->textContent= TRUE;
     }
 
     /**
@@ -177,7 +139,6 @@
      */
     public function writeEntityRef($name) {
       $this->stream->write('&'.$name.';');
-      $this->textContent= TRUE;
     }
   }
 ?>
