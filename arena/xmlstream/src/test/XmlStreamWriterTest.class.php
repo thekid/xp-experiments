@@ -110,6 +110,46 @@
     }
 
     /**
+     * Test writeDocType() method
+     *
+     */
+    #[@test]
+    public function xhtmlTransitionalDocType() {
+      $this->writer->startDocument();
+      $this->writer->writeDocType(
+        'html', 
+        '-//W3C//DTD XHTML 1.0 Transitional//EN', 
+        'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'
+      );
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="iso-8859-1"?>'.
+        '<!DOCTYPE html PUBLIC'.
+        ' "-//W3C//DTD XHTML 1.0 Transitional//EN"'.
+        ' "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"'.
+        '>',
+        $this->stream->getBytes()
+      );
+    }
+
+    /**
+     * Test writeDocType() method
+     *
+     */
+    #[@test]
+    public function systemDocType() {
+      $this->writer->startDocument();
+      $this->writer->writeDocType(
+        'book', 
+        NULL,
+        'book.dtd'
+      );
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="iso-8859-1"?><!DOCTYPE book SYSTEM "book.dtd">',
+        $this->stream->getBytes()
+      );
+    }
+
+    /**
      * Test startNode() method
      *
      */

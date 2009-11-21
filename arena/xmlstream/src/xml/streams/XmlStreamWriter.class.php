@@ -64,6 +64,23 @@
     }
 
     /**
+     * Writes a DOCTYPE
+     *
+     * @param   string name
+     * @param   string publicId
+     * @param   string systemId
+     */
+    public function writeDocType($name, $publicId, $systemId) {
+      $this->stream->write('<!DOCTYPE '.$name);
+      if ($publicId) {
+        $this->stream->write(' PUBLIC "'.$publicId.'" "'.$systemId.'"');
+      } else if ($systemId) {
+        $this->stream->write(' SYSTEM "'.$systemId.'"');
+      }
+      $this->stream->write('>');
+    }
+
+    /**
      * Starts a node
      *
      * @param   string name
