@@ -16,7 +16,16 @@
    * @see      xp://xml.streams.XmlStreamReader
    */
   class XmlStreamReaderTest extends TestCase {
-    const XML_DECLARATION = '<?xml version="1.0" encoding="iso-8859-1"?>';
+    protected static $DECL_STRING = '';
+    protected static $DECL_EVENT  = NULL;
+    
+    static function __static() {
+      self::$DECL_STRING= '<?xml version="1.0" encoding="iso-8859-1"?>';
+      self::$DECL_EVENT= new StartDocument(array(
+        'version'   => '1.0', 
+        'encoding'  => 'iso-8859-1')
+      );
+    }
   
     /**
      * Creates a new XML stream reader
@@ -64,8 +73,8 @@
      */
     #[@test]
     public function declarationOnly() {
-      $r= $this->newReader(self::XML_DECLARATION);
-      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $r= $this->newReader(self::$DECL_STRING);
+      $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(XmlEventType::$END_DOCUMENT, $r->next());
     }
 
@@ -75,8 +84,8 @@
      */
     #[@test]
     public function rootNode() {
-      $r= $this->newReader(self::XML_DECLARATION.'<root></root>');
-      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $r= $this->newReader(self::$DECL_STRING.'<root></root>');
+      $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$END_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$END_DOCUMENT, $r->next());
@@ -100,8 +109,8 @@
      */
     #[@test]
     public function emptyRootNode() {
-      $r= $this->newReader(self::XML_DECLARATION.'<root/>');
-      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $r= $this->newReader(self::$DECL_STRING.'<root/>');
+      $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$END_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$END_DOCUMENT, $r->next());
@@ -113,8 +122,8 @@
      */
     #[@test]
     public function text() {
-      $r= $this->newReader(self::XML_DECLARATION.'<root>Hello</root>');
-      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $r= $this->newReader(self::$DECL_STRING.'<root>Hello</root>');
+      $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$CHARACTERS, $r->next());
       $this->assertEquals(XmlEventType::$END_ELEMENT, $r->next());
@@ -127,8 +136,8 @@
      */
     #[@test]
     public function comment() {
-      $r= $this->newReader(self::XML_DECLARATION.'<root><!-- Hello --></root>');
-      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $r= $this->newReader(self::$DECL_STRING.'<root><!-- Hello --></root>');
+      $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$COMMENT, $r->next());
       $this->assertEquals(XmlEventType::$END_ELEMENT, $r->next());
@@ -141,8 +150,8 @@
      */
     #[@test]
     public function processingInstruction() {
-      $r= $this->newReader(self::XML_DECLARATION.'<root><?php echo "Hello"; ?></root>');
-      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $r= $this->newReader(self::$DECL_STRING.'<root><?php echo "Hello"; ?></root>');
+      $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$PROCESSING_INSTRUCTION, $r->next());
       $this->assertEquals(XmlEventType::$END_ELEMENT, $r->next());
@@ -155,8 +164,8 @@
      */
     #[@test]
     public function entityRef() {
-      $r= $this->newReader(self::XML_DECLARATION.'<root>&content;</root>');
-      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $r= $this->newReader(self::$DECL_STRING.'<root>&content;</root>');
+      $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$ENTITY_REF, $r->next());
       $this->assertEquals(XmlEventType::$END_ELEMENT, $r->next());
@@ -169,8 +178,8 @@
      */
     #[@test]
     public function knownEntitiesReportedAsText() {
-      $r= $this->newReader(self::XML_DECLARATION.'<root>&amp;&quot;&apos;&lt;&gt;</root>');
-      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $r= $this->newReader(self::$DECL_STRING.'<root>&amp;&quot;&apos;&lt;&gt;</root>');
+      $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$CHARACTERS, $r->next());
       $this->assertEquals(XmlEventType::$CHARACTERS, $r->next());
@@ -187,8 +196,8 @@
      */
     #[@test]
     public function entityRefInsideText() {
-      $r= $this->newReader(self::XML_DECLARATION.'<root>Content [&content;]</root>');
-      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $r= $this->newReader(self::$DECL_STRING.'<root>Content [&content;]</root>');
+      $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$CHARACTERS, $r->next());
       $this->assertEquals(XmlEventType::$ENTITY_REF, $r->next());
@@ -203,8 +212,8 @@
      */
     #[@test]
     public function cData() {
-      $r= $this->newReader(self::XML_DECLARATION.'<root><![CDATA[ Hello ]]></root>');
-      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $r= $this->newReader(self::$DECL_STRING.'<root><![CDATA[ Hello ]]></root>');
+      $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$CDATA, $r->next());
       $this->assertEquals(XmlEventType::$END_ELEMENT, $r->next());
@@ -217,8 +226,8 @@
      */
     #[@test]
     public function rootAndEmptyChild() {
-      $r= $this->newReader(self::XML_DECLARATION.'<root><child/></root>');
-      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $r= $this->newReader(self::$DECL_STRING.'<root><child/></root>');
+      $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$END_ELEMENT, $r->next());
@@ -232,8 +241,8 @@
      */
     #[@test]
     public function docType() {
-      $r= $this->newReader(self::XML_DECLARATION.'<!DOCTYPE book SYSTEM "book.dtd"><root/>');
-      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $r= $this->newReader(self::$DECL_STRING.'<!DOCTYPE book SYSTEM "book.dtd"><root/>');
+      $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(XmlEventType::$DOCTYPE, $r->next());
       $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
       $this->assertEquals(XmlEventType::$END_ELEMENT, $r->next());

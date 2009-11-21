@@ -8,7 +8,8 @@
     'io.streams.InputStream',
     'text.StreamTokenizer', 
     'xml.XMLFormatException', 
-    'xml.streams.XmlEventType'
+    'xml.streams.XmlEventType',
+    'xml.streams.events.StartDocument'
   );
 
   /**
@@ -36,7 +37,7 @@
      * @param   io.streams.OutputStream stream
      */
     public function __construct(InputStream $stream) {
-      $this->tokenizer= new StreamTokenizer($stream, '<&', TRUE);
+      $this->tokenizer= new StreamTokenizer($stream, '<&>', TRUE);
     }
     
     /**
@@ -46,6 +47,26 @@
      */
     public function hasNext() {
       return $this->events || $this->tokenizer->hasMoreTokens();
+    }
+    
+    /**
+     * Parses attributes
+     *
+     * @param   text.Tokenizer t
+     * @return  array<string, string>
+     */
+    public function parseAttributes($t) {
+      $attributes= array();
+      while (' ' === $t->nextToken(' >')) {
+        $name= $t->nextToken('=');
+        $t->nextToken('=');
+        $q= $t->nextToken('\'"');
+        $value= $t->nextToken($q);
+        $t->nextToken($q);
+
+        $attributes[$name]= $value;
+      }
+      return $attributes;
     }
     
     /**
@@ -76,8 +97,7 @@
           // <name/>        => Empty node
           $tag= $this->tokenizer->nextToken(' >');
           if ('?xml' === $tag) {
-            $this->events[]= XmlEventType::$START_DOCUMENT;
-            $this->tokenizer->nextToken(' ');
+            $this->events[]= new StartDocument($this->parseAttributes($this->tokenizer));
           } else if ('?' === $tag{0}) {
             $this->events[]= XmlEventType::$PROCESSING_INSTRUCTION;
             $this->tokenizer->nextToken(' ');
