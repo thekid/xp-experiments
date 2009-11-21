@@ -184,6 +184,20 @@
      *
      */
     #[@test]
+    public function rootNodeCData() {
+      $r= $this->newReader(self::XML_DECLARATION.'<root><![CDATA[ Hello ]]></root>');
+      $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());
+      $this->assertEquals(XmlEventType::$START_ELEMENT, $r->next());
+      $this->assertEquals(XmlEventType::$CDATA, $r->next());
+      $this->assertEquals(XmlEventType::$END_ELEMENT, $r->next());
+      $this->assertEquals(XmlEventType::$END_DOCUMENT, $r->next());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function rootAndEmptyChild() {
       $r= $this->newReader(self::XML_DECLARATION.'<root><child/></root>');
       $this->assertEquals(XmlEventType::$START_DOCUMENT, $r->next());

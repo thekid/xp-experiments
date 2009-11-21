@@ -75,7 +75,7 @@
             $this->events[]= XmlEventType::$DOCTYPE;
             $this->tokenizer->nextToken(' ');
           } else if ('![CDATA[' === $tag) {
-            $this->events[]= XmlEventType::$CHARACTERS;   // FIXME: <> allowed
+            $this->events[]= XmlEventType::$CDATA;   // FIXME: <> allowed
             $this->tokenizer->nextToken(' ');
           } else if ('/' === $tag{0}) {
             $this->events[]= XmlEventType::$END_ELEMENT;
