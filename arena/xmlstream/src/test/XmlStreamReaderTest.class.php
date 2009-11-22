@@ -153,7 +153,7 @@
       $r= $this->newReader(self::$DECL_STRING.'<root><?php echo "Hello"; ?></root>');
       $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(new StartElement('root'), $r->next());
-      $this->assertEquals(XmlEventType::$PROCESSING_INSTRUCTION, $r->next());
+      $this->assertEquals(new ProcessingInstruction('php', NULL), $r->next());
       $this->assertEquals(new EndElement(), $r->next());
       $this->assertEquals(new EndDocument(), $r->next());
     }

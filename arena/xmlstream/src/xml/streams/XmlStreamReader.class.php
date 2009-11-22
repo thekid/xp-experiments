@@ -14,7 +14,8 @@
     'xml.streams.events.StartElement',
     'xml.streams.events.EndElement',
     'xml.streams.events.Characters',
-    'xml.streams.events.Comment'
+    'xml.streams.events.Comment',
+    'xml.streams.events.ProcessingInstruction'
   );
 
   /**
@@ -104,7 +105,7 @@
           if ('?xml' === $tag) {
             $this->events[]= new StartDocument($this->parseAttributes($this->tokenizer));
           } else if ('?' === $tag{0}) {
-            $this->events[]= XmlEventType::$PROCESSING_INSTRUCTION;
+            $this->events[]= new ProcessingInstruction(substr($tag, 1), NULL);
             $this->tokenizer->nextToken(' ');
           } else if ('!--' === $tag) {
             $this->events[]= XmlEventType::$COMMENT;
