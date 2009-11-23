@@ -64,19 +64,31 @@
      * Parses attributes
      *
      * @param   text.Tokenizer t
+     * @param   string end
      * @return  array<string, string>
      */
-    public function parseAttributes($t) {
+    public function parseAttributes($t, $end) {
       $attributes= array();
-      while (' ' === $t->nextToken(' >')) {
-        $name= $t->nextToken('=');
+      
+      // Parse attributes
+      while ($t->hasMoreTokens() && !strspn($tok= $t->nextToken('='.$end), $end)) {
         $t->nextToken('=');
         $q= $t->nextToken('\'"');
         $value= $t->nextToken($q);
         $t->nextToken($q);
-
-        $attributes[$name]= $value;
+        $attributes[trim($tok)]= $value;
       }
+      
+      // Check if we've arrived at the end
+      if (NULL === $tok) {
+        throw new XMLFormatException('Unclosed tag');
+      }
+      
+      // Swallow end string
+      while ($t->hasMoreTokens() && $tok !== $end) {
+        $tok.= $t->nextToken($end);
+      }
+      
       return $attributes;
     }
     
@@ -105,12 +117,14 @@
           // <!-- .......>  => Comment
           // <![CDATA[ ..>  => CDATA
           // <name ......>  => Node
+          // <name>         => Node without attributes
           // <name/>        => Empty node
           $tag= $this->tokenizer->nextToken(' >');
           if ('?xml' === $tag) {
-            $start= new StartDocument($this->parseAttributes($this->tokenizer));
+            $this->tokenizer->nextToken(' ');
+            $start= new StartDocument($this->parseAttributes($this->tokenizer, '?>'));
             $this->encoding= $start->attribute('encoding', 'utf-8');
-            $this->events[]= $start;
+            return $start;
           } else if ('?' === $tag{0}) {
             $this->events[]= new ProcessingInstruction(substr($tag, 1), NULL);
             $this->tokenizer->nextToken(' ');
@@ -137,13 +151,15 @@
             $this->events[]= new EndElement();
             $this->open--;
           } else {
+            $attributes= $this->parseAttributes($this->tokenizer, '>');
             if ('/' === $tag{strlen($tag)- 1}) {
-              $this->events[]= new StartElement(substr($tag, 0, -1));   // XXX attributes
+              $start= new StartElement(substr($tag, 0, -1), $attributes);
               $this->events[]= new EndElement();
             } else {
-              $this->events[]= new StartElement($tag);                  // XXX attributes
+              $start= new StartElement($tag, $attributes);
               $this->open++;
             }
+            return $start;
           }
           if (NULL === ($content= $this->tokenizer->nextToken('>'))) {
             throw new XMLFormatException('Unclosed tag');
