@@ -672,11 +672,6 @@ staticmember:
 ;
 
 expression:
-    variable
-  | expr
-;
-
-variable:
     T_VARIABLE { $1= $yyLex->create(new VariableNode($1)); } chain_opt {
       if ($3) {
         $$= $yyLex->create(new ChainNode());
@@ -685,10 +680,7 @@ variable:
         $$= $1;
       }
     }
-;
-
-expr:
-    literal chain_opt {
+  | literal chain_opt {
       if ($2) {
         $$= $yyLex->create(new ChainNode());
         $$->elements= array_merge(array($1), $2);
@@ -765,39 +757,24 @@ expr:
       $$->expression= $1; 
       $$->type= $3; 
     }
-  | '(' T_VARIABLE ')' lambda_body_opt {
-      // Ambiguous: ($a) => $a + 1 is a lambda, ($a) is a bracketed variable
-      if (NULL !== $4) {
-        $$= $yyLex->create(new LambdaNode(array(new VariableNode($2)), $4));
-      } else {
-        $$= new VariableNode($2);
-      }
+  | '{' lambda_input T_DOUBLE_ARROW lambda_body '}' {
+      $$= $yyLex->create(new LambdaNode($2, $4));
     }
-  | lambda_input lambda_body {
-      $$= $yyLex->create(new LambdaNode($1, $2));
-    }
-  | '(' expr ')' { $$= $2; }
-;
-
-lambda_body_opt:
-    /* empty */ { $$= NULL; }
-  | lambda_body
+  | '(' expression ')' { $$= $2; }
 ;
 
 lambda_body:
-    T_DOUBLE_ARROW expression {
-      $$= array(new ReturnNode(array('expression' => $2)));
+    expression {
+      $$= array(new ReturnNode(array('expression' => $1)));
     }
-  | T_DOUBLE_ARROW '{' statements_opt '}' {
-      $$= (array)$3;
+  | '{' statements_opt '}' {
+      $$= (array)$2;
     }
 ;
 
 lambda_input:
-    T_VARIABLE { $$= array(new VariableNode($1)); }
-  | '(' ')' { $$= array(); }
-  | '(' typeref T_VARIABLE ')' { $$= array(new VariableNode($3)); }
-  | '(' lambda_input_parameters ',' lambda_input_parameter ')' { $$= array_merge($2, array($4)); }
+    /* empty */ { $$= array(); }
+  | lambda_input_parameters 
 ;
 
 lambda_input_parameters:

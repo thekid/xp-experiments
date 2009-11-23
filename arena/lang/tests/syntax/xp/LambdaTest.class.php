@@ -27,7 +27,7 @@
             'op'  => '+'
           )))))
         )), 
-        $this->parse('$a => $a + 1;')
+        $this->parse('{ $a => $a + 1 };')
       );
     }
 
@@ -46,7 +46,7 @@
             'op'  => '+'
           )))))
         )), 
-        $this->parse('$a => { return $a + 1; };')
+        $this->parse('{ $a => { return $a + 1; } };')
       );
     }
 
@@ -68,7 +68,7 @@
             new ReturnNode(array('expression' => new VariableNode('a')))
           )
         )), 
-        $this->parse('$a => { $a+= 1; return $a; };')
+        $this->parse('{ $a => { $a+= 1; return $a; } };')
       );
     }
 
@@ -83,26 +83,7 @@
           array(new VariableNode('a')),
           array()
         )), 
-        $this->parse('$a => { };')
-      );
-    }
-
-    /**
-     * Test parameter enclosed with brackets
-     *
-     */
-    #[@test]
-    public function parameterWithBrackets() {
-      $this->assertEquals(
-        array(new LambdaNode(
-          array(new VariableNode('a')),
-          array(new ReturnNode(array('expression' => new BinaryOpNode(array(
-            'lhs' => new VariableNode('a'),
-            'rhs' => new IntegerNode(array('value' => '1')),
-            'op'  => '+'
-          )))))
-        )), 
-        $this->parse('($a) => { return $a + 1; };')
+        $this->parse('{ $a => { } };')
       );
     }
 
@@ -121,7 +102,7 @@
             'op'  => '+'
           )))))
         )), 
-        $this->parse('(int $a) => { return $a + 1; };')
+        $this->parse('{ int $a => { return $a + 1; } };')
       );
     }
 
@@ -140,7 +121,7 @@
             'op'  => '+'
           )))))
         )), 
-        $this->parse('($a, $b) => { return $a + $b; };')
+        $this->parse('{ $a, $b => { return $a + $b; } };')
       );
     }
 
@@ -159,20 +140,20 @@
             'op'  => '+'
           )))))
         )), 
-        $this->parse('(int $a, int $b) => { return $a + $b; };')
+        $this->parse('{ int $a, int $b => { return $a + $b; } };')
       );
     }
 
     /**
-     * Test parameters enclosed with brackets
+     * Test parameters
      *
      */
     #[@test]
-    public function emptyParametersWithBrackets() {
+    public function emptyParameters() {
       $this->assertEquals(
         array(new LambdaNode(
           array(),
-          array(new ClassMemberNode(array(
+          array(new ReturnNode(array('expression' => new ClassMemberNode(array(
             'class'   => new TypeName('Console'),
             'member'  => new InvocationNode(array(
               'name'        => 'write',
@@ -180,33 +161,9 @@
                 new StringNode(array('value' => 'Hello'))
               )
             ))
-          )))
+          )))))
         )), 
-        $this->parse('() => { Console::write("Hello"); };')
-      );
-    }
-
-    /**
-     * Test ($a) is not incorrectly detected as lambda parameters
-     *
-     */
-    #[@test]
-    public function variableInBraces() {
-      $this->assertEquals(
-        array(new VariableNode('a')),
-        $this->parse('($a);')
-      );
-    }
-
-    /**
-     * Test $a is not incorrectly detected as lambda parameters
-     *
-     */
-    #[@test]
-    public function variable() {
-      $this->assertEquals(
-        array(new VariableNode('a')),
-        $this->parse('$a;')
+        $this->parse('{ => Console::write("Hello") };')
       );
     }
   }
