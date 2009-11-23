@@ -38,7 +38,7 @@
     }
 
     /**
-     * Test
+     * Test an empty document is considered not well-formed
      *
      */
     #[@test, @expect('xml.XMLFormatException')]
@@ -47,7 +47,7 @@
     }
 
     /**
-     * Test
+     * Test unclosed element are reported as parse error
      *
      */
     #[@test, @expect('xml.XMLFormatException')]
@@ -58,7 +58,7 @@
     }
 
     /**
-     * Test
+     * Test unclosed tags are reported as parse error
      *
      */
     #[@test, @expect('xml.XMLFormatException')]
@@ -68,7 +68,7 @@
     }
 
     /**
-     * Test
+     * Test parsing a document consisting only of a declaration
      *
      */
     #[@test]
@@ -79,7 +79,7 @@
     }
 
     /**
-     * Test
+     * Test parsing a document with declaration and root node
      *
      */
     #[@test]
@@ -92,7 +92,7 @@
     }
 
     /**
-     * Test
+     * Test parsing a document without declaration
      *
      */
     #[@test]
