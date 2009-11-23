@@ -92,6 +92,19 @@
     }
 
     /**
+     * Test parsing a document with declaration and root node
+     *
+     */
+    #[@test]
+    public function rootNodeWithAttributes() {
+      $r= $this->newReader(self::$DECL_STRING.'<root id="AAAE-7F"></root>');
+      $this->assertEquals(self::$DECL_EVENT, $r->next());
+      $this->assertEquals(new StartElement('root', array('id' => 'AAAE-7F')), $r->next());
+      $this->assertEquals(new EndElement(), $r->next());
+      $this->assertEquals(new EndDocument(), $r->next());
+    }
+
+    /**
      * Test parsing a document without declaration
      *
      */

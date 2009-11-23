@@ -60,6 +60,13 @@
       return $this->events || $this->tokenizer->hasMoreTokens();
     }
     
+    public function nextToken($t, $delimiters) {
+      do {
+        $tok= $t->nextToken($delimiters);
+      } while ($t->hasMoreTokens() && ' ' === $tok);
+      return $tok;
+    }
+    
     /**
      * Parses attributes
      *
@@ -71,7 +78,7 @@
       $attributes= array();
       
       // Parse attributes
-      while ($t->hasMoreTokens() && !strspn($tok= $t->nextToken('='.$end), $end)) {
+      while ($t->hasMoreTokens() && !strspn($tok= $this->nextToken($t, '='.$end), $end)) {
         $t->nextToken('=');
         $q= $t->nextToken('\'"');
         $value= $t->nextToken($q);
@@ -83,7 +90,7 @@
       if (NULL === $tok) {
         throw new XMLFormatException('Unclosed tag');
       }
-      
+
       // Swallow end string
       while ($t->hasMoreTokens() && $tok !== $end) {
         $tok.= $t->nextToken($end);
@@ -121,7 +128,6 @@
           // <name/>        => Empty node
           $tag= $this->tokenizer->nextToken(' >');
           if ('?xml' === $tag) {
-            $this->tokenizer->nextToken(' ');
             $start= new StartDocument($this->parseAttributes($this->tokenizer, '?>'));
             $this->encoding= $start->attribute('encoding', 'utf-8');
             return $start;
