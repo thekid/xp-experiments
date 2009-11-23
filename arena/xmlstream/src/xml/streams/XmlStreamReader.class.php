@@ -15,7 +15,11 @@
     'xml.streams.events.EndElement',
     'xml.streams.events.Characters',
     'xml.streams.events.Comment',
-    'xml.streams.events.ProcessingInstruction'
+    'xml.streams.events.ProcessingInstruction',
+    'xml.streams.events.DocTypePublic',
+    'xml.streams.events.DocTypeSystem',
+    'xml.streams.events.CData',
+    'xml.streams.events.EntityRef'
   );
 
   /**
@@ -108,13 +112,23 @@
             $this->events[]= new ProcessingInstruction(substr($tag, 1), NULL);
             $this->tokenizer->nextToken(' ');
           } else if ('!--' === $tag) {
-            $this->events[]= XmlEventType::$COMMENT;
+            $this->events[]= new Comment(NULL);
             $this->tokenizer->nextToken(' ');
           } else if ('!DOCTYPE' === $tag) {
-            $this->events[]= XmlEventType::$DOCTYPE;
+            $this->tokenizer->nextToken(' ');
+            $name= $this->tokenizer->nextToken(' ');
+            $this->tokenizer->nextToken(' ');
+            $id= $this->tokenizer->nextToken(' ');
+            if ('SYSTEM' === $id) {
+              $this->events[]= new DocTypeSystem($name);
+            } else if ('PUBLIC' === $id) {
+              $this->events[]= new DocTypePublic($name);
+            } else {
+              throw new XMLFormatException('Unknown doctype id '.$id);
+            }
             $this->tokenizer->nextToken(' ');
           } else if ('![CDATA[' === $tag) {
-            $this->events[]= XmlEventType::$CDATA;   // FIXME: <> allowed
+            $this->events[]= new CData(NULL);   // FIXME: <> allowed
             $this->tokenizer->nextToken(' ');
           } else if ('/' === $tag{0}) {
             $this->events[]= new EndElement();
@@ -141,7 +155,7 @@
           if (isset(self::$entities[$entity])) {
             $this->events[]= new Characters(self::$entities[$entity]);
           } else {
-            $this->events[]= XmlEventType::$ENTITY_REF;
+            $this->events[]= new EntityRef($entity);
           }
           $this->tokenizer->nextToken(';');
         } else {

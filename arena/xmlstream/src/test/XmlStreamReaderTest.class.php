@@ -139,7 +139,7 @@
       $r= $this->newReader(self::$DECL_STRING.'<root><!-- Hello --></root>');
       $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(new StartElement('root'), $r->next());
-      $this->assertEquals(XmlEventType::$COMMENT, $r->next());
+      $this->assertEquals(new Comment(NULL), $r->next());
       $this->assertEquals(new EndElement(), $r->next());
       $this->assertEquals(new EndDocument(), $r->next());
     }
@@ -167,7 +167,7 @@
       $r= $this->newReader(self::$DECL_STRING.'<root>&content;</root>');
       $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(new StartElement('root'), $r->next());
-      $this->assertEquals(XmlEventType::$ENTITY_REF, $r->next());
+      $this->assertEquals(new EntityRef('content'), $r->next());
       $this->assertEquals(new EndElement(), $r->next());
       $this->assertEquals(new EndDocument(), $r->next());
     }
@@ -200,7 +200,7 @@
       $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(new StartElement('root'), $r->next());
       $this->assertEquals(new Characters('Content ['), $r->next());
-      $this->assertEquals(XmlEventType::$ENTITY_REF, $r->next());
+      $this->assertEquals(new EntityRef('content'), $r->next());
       $this->assertEquals(new Characters(']'), $r->next());
       $this->assertEquals(new EndElement(), $r->next());
       $this->assertEquals(new EndDocument(), $r->next());
@@ -215,7 +215,7 @@
       $r= $this->newReader(self::$DECL_STRING.'<root><![CDATA[ Hello ]]></root>');
       $this->assertEquals(self::$DECL_EVENT, $r->next());
       $this->assertEquals(new StartElement('root'), $r->next());
-      $this->assertEquals(XmlEventType::$CDATA, $r->next());
+      $this->assertEquals(new CData(NULL), $r->next());
       $this->assertEquals(new EndElement(), $r->next());
       $this->assertEquals(new EndDocument(), $r->next());
     }
@@ -243,7 +243,7 @@
     public function docType() {
       $r= $this->newReader(self::$DECL_STRING.'<!DOCTYPE book SYSTEM "book.dtd"><root/>');
       $this->assertEquals(self::$DECL_EVENT, $r->next());
-      $this->assertEquals(XmlEventType::$DOCTYPE, $r->next());
+      $this->assertEquals(new DocTypeSystem('book'), $r->next());
       $this->assertEquals(new StartElement('root'), $r->next());
       $this->assertEquals(new EndElement(), $r->next());
     }
