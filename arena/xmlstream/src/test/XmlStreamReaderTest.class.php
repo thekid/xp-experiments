@@ -247,5 +247,33 @@
       $this->assertEquals(new StartElement('root'), $r->next());
       $this->assertEquals(new EndElement(), $r->next());
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readUtf8EncodedCharacters() {
+      $r= $this->newReader('<?xml version="1.0" encoding="utf-8"?><root>Ãœbercoder</root>');
+      $this->assertEquals(new StartDocument(array('version' => '1.0', 'encoding' => 'utf-8')), $r->next());
+      $this->assertEquals(new StartElement('root'), $r->next());
+      $this->assertEquals(new Characters('Übercoder'), $r->next());
+      $this->assertEquals(new EndElement(), $r->next());
+      $this->assertEquals(new EndDocument(), $r->next());
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readUtf8EncodedCharactersWithoutEncodingDeclaration() {
+      $r= $this->newReader('<?xml version="1.0"?><root>Ãœbercoder</root>');
+      $this->assertEquals(new StartDocument(array('version' => '1.0')), $r->next());
+      $this->assertEquals(new StartElement('root'), $r->next());
+      $this->assertEquals(new Characters('Übercoder'), $r->next());
+      $this->assertEquals(new EndElement(), $r->next());
+      $this->assertEquals(new EndDocument(), $r->next());
+    }
   }
 ?>

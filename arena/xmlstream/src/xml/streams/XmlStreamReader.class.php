@@ -32,7 +32,8 @@
     protected $tokenizer = NULL;
     protected $events    = array();
     protected $open      = -1;
-    
+    protected $encoding  = 'utf-8';
+        
     protected static $entities = array(
       'lt'    => '<',
       'gt'    => '>',
@@ -107,7 +108,9 @@
           // <name/>        => Empty node
           $tag= $this->tokenizer->nextToken(' >');
           if ('?xml' === $tag) {
-            $this->events[]= new StartDocument($this->parseAttributes($this->tokenizer));
+            $start= new StartDocument($this->parseAttributes($this->tokenizer));
+            $this->encoding= $start->attribute('encoding', 'utf-8');
+            $this->events[]= $start;
           } else if ('?' === $tag{0}) {
             $this->events[]= new ProcessingInstruction(substr($tag, 1), NULL);
             $this->tokenizer->nextToken(' ');
@@ -159,7 +162,7 @@
           }
           $this->tokenizer->nextToken(';');
         } else {
-          $this->events[]= new Characters($t);
+          $this->events[]= new Characters(iconv($this->encoding, 'iso-8859-1', $t));
         }
       }
       
