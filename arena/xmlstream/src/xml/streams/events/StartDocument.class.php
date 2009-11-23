@@ -9,6 +9,7 @@
   /**
    * Represents the START_DOCUMENT event
    *
+   * @test    xp://test.StartDocumentEventTest
    */
   class StartDocument extends XmlEvent {
     protected $attributes= array();
@@ -20,6 +21,26 @@
      */
     public function __construct($attributes) {
       $this->attributes= $attributes;
+    }
+    
+    /**
+     * Return an attribute
+     *
+     * @param   string name
+     * @param   string default
+     * @return  string
+     */
+    public function attribute($name, $default= NULL) {
+      return isset($this->attributes[$name]) ? $this->attributes[$name] : $default;
+    }
+
+    /**
+     * Return all attributes
+     *
+     * @return  array<string, string>
+     */
+    public function attributes() {
+      return $this->attributes;
     }
     
     /**
