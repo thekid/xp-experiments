@@ -63,7 +63,7 @@
     /**
      * Run this task and emit compiled code using a given emitter
      *
-     * @return  var
+     * @return  xp.compiler.types.Types
      * @throws  xp.compiler.CompilationException
      */
     public function run() {
@@ -71,11 +71,9 @@
       
       // Start run
       $this->listener->compilationStarted($this->source);
-      $target= $this->manager->getTarget($this->source);
-      $ast= NULL;
       try {
-        $ast= $this->manager->parseFile($this->source);
-        $result= $this->emitter->emit($ast, $scope);
+        $result= $this->emitter->emit($this->manager->parseFile($this->source), $scope);
+        $target= $this->manager->getTarget($result->type(), $this->source);
         $this->manager->write($result, $target);
         $this->listener->compilationSucceeded($this->source, $target, $this->emitter->messages());
       } catch (ParseException $e) {
@@ -92,7 +90,7 @@
         throw new CompilationException('Unknown error', $e);
       }
       
-      return $ast;    // FIXME: Should return compiled type
+      return $result->type();
     }
   }
 ?>

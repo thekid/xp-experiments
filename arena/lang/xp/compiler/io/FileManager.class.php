@@ -10,14 +10,38 @@
     'xp.compiler.io.Source',
     'xp.compiler.io.FileSource',
     'io.streams.FileOutputStream',
+    'io.Folder',
     'io.File'
   );
 
   /**
-   * (Insert class' description here)
+   * File manager takes care of locating and parsing sourcecode and writing
+   * compiled types.
    *
+   * @test    xp://tests.FileManagerTest
    */
   class FileManager extends Object {
+    protected $output= NULL;
+    
+    /**
+     * Sets output folder
+     *
+     * @param   io.Folder
+     */
+    public function setOutput(Folder $output) {
+      $this->output= $output;
+    }
+
+    /**
+     * Sets output folder and returns this file manager instance
+     *
+     * @param   io.Folder
+     * @return  xp.compiler.io.FileManager
+     */
+    public function withOutput(Folder $output) {
+      $this->output= $output;
+      return $this;
+    }
 
     /**
      * Get parse tree for a given qualified class name by looking it
@@ -56,32 +80,55 @@
      *
      * @param   xp.compiler.emit.Result r
      * @param   io.File target
+     * @throws  io.IOException
      */
     public function write($r, File $target) {
+      $folder= new Folder($target->getPath());
+      $folder->exists() || $folder->create();
+      
       $r->writeTo(new FileOutputStream($target));
     }
 
     /**
-     * Get target
+     * Returns a file the compiled type should be written to.
      *
-     * @param   var in
+     * The file name will be calculated by replacing dots (".") in the 
+     * type's fully qualified name by the operating system's directory 
+     * separator and by append xp::CLASS_FILE_EXT. For example:
+     * <pre>
+     *   de.thekid.demo.Value => de/thekid/demo/Value.class.php
+     * </pre>
+     *
+     * This is how this method behaves.
+     * <ul>
+     *   <li>If an output folder is set on this instance, returns a file
+     *       located in the output folder. This can be changed by the 
+     *       compiler's "-o" option.
+     *   </li>
+     *   <li>If a source is given, this method will return a file in the
+     *       folder the source file resides in.
+     *   </li>
+     *   <li>If neither a source nor an output folder is given, the 
+     *       current directory is used as a base.
+     *    </li>
+     * <ul>
+     *
+     * @param   xp.compiler.types.Types type
+     * @param   xp.compiler.io.Source source
      * @return  io.File target
      */
-    public function getTarget($in) {
-      if ($in instanceof ParseTree) {
-        $origin= new File($in->origin);
-      } else if ($in instanceof File) {
-        $origin= $in;
-      } else if ($in instanceof xp·compiler·io·Source) {
-        $origin= new File($in->getURI());
+    public function getTarget(Types $type, xp·compiler·io·Source $source= NULL) {
+      $mapped= strtr($type->name(), '.', DIRECTORY_SEPARATOR);
+      if ($this->output) {
+        $base= $this->output;
+      } else if ($source) {
+        $name= str_replace('/', DIRECTORY_SEPARATOR, $source->getURI());
+        return new File(str_replace(strstr(basename($name), '.'), xp::CLASS_FILE_EXT, $name));
       } else {
-        throw new IllegalArgumentException('In is expected to be either a File, Source or a ParseTree, '.xp::typeOf($in).' given');
+        $base= new Folder('.');
       }
-      return new File($origin->getPath(), str_replace(
-        strstr($origin->getFileName(), '.'), 
-        xp::CLASS_FILE_EXT, 
-        $origin->getFileName())
-      );
+      
+      return new File($base, $mapped.xp::CLASS_FILE_EXT);
     }
   }
 ?>

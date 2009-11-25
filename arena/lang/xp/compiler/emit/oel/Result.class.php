@@ -15,13 +15,16 @@
    */
   class xp·compiler·emit·oel·Result extends Object {
     protected $op= NULL;
+    protected $type= NULL;
     
     /**
      * Constructor.
      *
+     * @param   xp.compiler.types.Types type
      * @param   resource op
      */
-    public function __construct($op) {
+    public function __construct(Types $type, $op) {
+      $this->type= $type;
       $this->op= $op;
     }
     
@@ -38,6 +41,15 @@
     }
 
     /**
+     * Return type
+     *
+     * @return  xp.compiler.types.Types type
+     */
+    public function type() {
+      return $this->type;
+    }
+
+    /**
      * Execute with a given environment settings
      *
      * @param   array<string, var> env
@@ -45,7 +57,8 @@
      */    
     public function executeWith(array $env= array()) {
       oel_execute($this->op);
-      // call static initializer
+      $class= $this->type->literal();
+      method_exists($class, '__static') && call_user_func(array($class, '__static'));
     }
   }
 ?>

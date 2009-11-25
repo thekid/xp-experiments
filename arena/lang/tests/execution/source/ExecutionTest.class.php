@@ -89,7 +89,6 @@
       xp::gc();
 
       $r->executeWith(array());
-      method_exists($class, '__static') && call_user_func(array($class, '__static'));    // FIXME: This should be done in executeWith()
       return new XPClass($class);
     }
   }

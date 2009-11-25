@@ -253,24 +253,13 @@
           }
         } else {
           try {
-            $tree= $this->task->newSubTask($qualified)->run($this);
-            switch ($decl= $tree->declaration) {
-              case $decl instanceof ClassNode: 
-                $t= new TypeDeclaration($tree, $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Object')));
-                break;
-              case $decl instanceof EnumNode:
-                $t= new TypeDeclaration($tree, $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Enum')));
-                break;
-              case $decl instanceof InterfaceNode:
-                $t= new TypeDeclaration($tree, NULL);
-                break;
-            }
+            $type= $this->task->newSubTask($qualified)->run($this);
           } catch (CompilationException $e) {
             throw new ResolveException('Cannot resolve '.$name->toString(), 424, $e);
           } catch (Throwable $e) {
             throw new ResolveException('Cannot resolve '.$name->toString(), 507, $e);
           }
-          $this->resolved[$qualified]= $t;
+          $this->resolved[$qualified]= $type;
         }
         $register && $this->used[]= new TypeName($qualified);
       }

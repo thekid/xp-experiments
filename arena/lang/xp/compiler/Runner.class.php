@@ -33,6 +33,9 @@
    *   <li>-e [emitter]: 
    *     Use emitter, one of "oel" or "source", defaults to "source"
    *   </li>
+   *   <li>-o [outputdir]: 
+   *     Writed compiled files to outputdir
+   *   </li>
    *   <li>-t [level[,level[...]]]:
    *     Set trace level (all, none, info, warn, error, debug)
    *   </li>
@@ -74,7 +77,8 @@
     public static function main(array $args) {
       if (empty($args)) self::showUsage();
       
-      $c= new Compiler();
+      $compiler= new Compiler();
+      $manager= new FileManager();
       $emitter= 'source';
       
       // Handle arguments
@@ -96,9 +100,11 @@
               Console::$err->writeLine("  ", implode(" ", array_map(array($this, "varSource"), $args)));
             }
           }');
-          $c->setTrace(Logger::getInstance()->getCategory()->withAppender($appender, $levels));
+          $compiler->setTrace(Logger::getInstance()->getCategory()->withAppender($appender, $levels));
         } else if ('-e' === $args[$i]) {
           $emitter= $args[++$i];
+        } else if ('-o' === $args[$i]) {
+          $manager->setOutput(new Folder($args[++$i]));
         } else {
           $files[]= new FileSource(new File($args[$i]));
         }
@@ -111,10 +117,10 @@
       }
       
       // Compile files
-      $success= $c->compile(
+      $success= $compiler->compile(
         $files, 
         $listener, 
-        new FileManager(), 
+        $manager, 
         Package::forName('xp.compiler.emit')->getPackage($emitter)->loadClass('Emitter')->newInstance()
       );
       exit($success ? 0 : 1);

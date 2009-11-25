@@ -34,7 +34,7 @@
    * @test     xp://tests.execution.source.ExecutionTest
    * @test     xp://tests.execution.source.ExtensionMethodsTest
    * @test     xp://tests.execution.source.FinallyTest
-   * @test     xp://tests.execution.source.InstanceCreationTest
+   * @test     xp://tests.execution.source.InstanceCreationTestI
    * @test     xp://tests.execution.source.InterfaceDeclarationTest
    * @test     xp://tests.execution.source.LoopExecutionTest
    * @test     xp://tests.execution.source.MathTest
@@ -1958,6 +1958,18 @@
       // Load used classes
       $this->emitUses($bytes, $this->scope[0]->used);
 
+      switch ($decl= $tree->declaration) {
+        case $decl instanceof ClassNode: 
+          $t= new TypeDeclaration($tree, $this->scope[0]->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Object')));
+          break;
+        case $decl instanceof EnumNode:
+          $t= new TypeDeclaration($tree, $this->scope[0]->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Enum')));
+          break;
+        case $decl instanceof InterfaceNode:
+          $t= new TypeDeclaration($tree, NULL);
+          break;
+      }
+      
       // Leave scope
       array_shift($this->origins);
       $this->leave();
@@ -1974,7 +1986,7 @@
       }
 
       // Finalize
-      return new xp搾ompiler搪mit新ource愛esult($bytes);
+      return new xp搾ompiler搪mit新ource愛esult($t, $bytes);
     }    
   }
 ?>

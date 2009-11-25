@@ -15,13 +15,16 @@
    */
   class xp·compiler·emit·source·Result extends Object {
     protected $source= NULL;
+    protected $type= NULL;
     
     /**
      * Constructor.
      *
+     * @param   xp.compiler.types.Types type
      * @param   xp.compiler.emit.source.Buffer source
      */
-    public function __construct($source) {
+    public function __construct(Types $type, $source) {
+      $this->type= $type;
       $this->source= $source;
     }
     
@@ -35,6 +38,15 @@
       $out->write($this->source);
       $out->write("\n?>\n");
     }
+    
+    /**
+     * Return type
+     *
+     * @return  xp.compiler.types.Types type
+     */
+    public function type() {
+      return $this->type;
+    }
 
     /**
      * Execute with a given environment settings
@@ -46,7 +58,8 @@
       if (FALSE === eval($this->source)) {
         xp::error(xp::stringOf(new FormatException($this->source)));
       }
-      // call static initializer
+      $class= $this->type->literal();
+      method_exists($class, '__static') && call_user_func(array($class, '__static'));
     }
   }
 ?>

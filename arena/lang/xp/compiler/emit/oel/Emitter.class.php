@@ -2035,6 +2035,18 @@
       // Load used classes
       $this->emitUses($op, $this->scope[0]->used);
 
+      switch ($decl= $tree->declaration) {
+        case $decl instanceof ClassNode: 
+          $t= new TypeDeclaration($tree, $this->scope[0]->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Object')));
+          break;
+        case $decl instanceof EnumNode:
+          $t= new TypeDeclaration($tree, $this->scope[0]->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Enum')));
+          break;
+        case $decl instanceof InterfaceNode:
+          $t= new TypeDeclaration($tree, NULL);
+          break;
+      }
+
       // Leave scope
       array_shift($this->origins);
       $this->leave();
@@ -2053,7 +2065,7 @@
       // Finalize
       oel_finalize($op);
       
-      return new xp·compiler·emit·oel·Result($op);
+      return new xp·compiler·emit·oel·Result($t, $op);
     }    
   }
 ?>
