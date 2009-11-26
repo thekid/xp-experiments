@@ -3,7 +3,7 @@
   <xsl:output method="text" encoding="iso-8859-1"/>
   <xsl:include href="res://two/ModuleTwo.xsl"/>
   <xsl:include href="simpleinclude.xsl"/>
-  
+
   <xsl:template match="/">
     <xsl:call-template name="call-me"/>
     <xsl:call-template name="call-me-too"/>

@@ -111,7 +111,7 @@
      */
     #[@test]
     public function loadingAsFile() {
-      $added= ClassLoader::getDefault()->registerPath(dirname(__FILE__).'/xsl');
+      $added= ClassLoader::getDefault()->registerPath(dirname(__FILE__).'/res');
       $this->assertEquals('Foobar', trim(FileUtil::getContents(new File('res://one/Dummy.xsl'))));
       ClassLoader::getDefault()->removeLoader($added);
     }
@@ -122,7 +122,7 @@
      */
     #[@test]
     public function fileAsXslFile() {
-      $added= ClassLoader::getDefault()->registerPath(dirname(__FILE__).'/xsl');
+      $added= ClassLoader::getDefault()->registerPath(dirname(__FILE__).'/res');
 	  
       $proc= new DOMXslProcessor();
       $proc->_base= '';
