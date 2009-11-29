@@ -22,6 +22,39 @@ public class PicasaImport extends util.cmd.Command {
   }
 
   public void run() {
+    $this.out.writeLine($this.xml.getDeclaration() ~ "\n" ~ $this.xml.getSource(0));
+
+    $this.importAlbum($this.xml.root);
+  }
+
+  protected HashMap xmlToArray(Node $node) {
+    $array= [];
+    foreach ($child in $node.children) {
+      $array[$child.getName()]= $child.getContent();
+    }
+
+    return $array;
+  }
+
+  protected void importAlbum(Node $albumNode) {
+    // Sort child nodes
+    $cache= $this.xmlToArray($albumNode);
+
+    $this.out.writeLine('===> Album name: ' ~ $cache['albumName']);
+    $this.out.writeLine('---> Number of pictures: ' ~ $cache['albumItemCount']);
+    $this.out.writeLine('---> Beginning import...');
+
+    // Fetch images
+    foreach ($node in $albumNode.children) {
+      if ('images' != $node.getName()) continue;
+
+      foreach ($image in $node.children) {
+        $this.importImage($image);
+      }
+    }
+  }
+
+  protected void importImage(Node $imageNode) {
 
   }
 
