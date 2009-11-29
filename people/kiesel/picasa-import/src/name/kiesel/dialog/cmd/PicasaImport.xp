@@ -8,6 +8,9 @@ package name.kiesel.dialog.cmd;
 import xml.Tree;
 import xml.Node;
 import io.File;
+import util.collections.HashTable;
+
+import native standard.trim;
 
 public class PicasaImport extends util.cmd.Command {
   protected Tree $xml  = NULL;
@@ -27,10 +30,10 @@ public class PicasaImport extends util.cmd.Command {
     $this.importAlbum($this.xml.root);
   }
 
-  protected HashMap xmlToArray(Node $node) {
-    $array= [];
+  protected HashTable xmlLookup(Node $node) {
+    $array= new HashTable();
     foreach ($child in $node.children) {
-      $array[$child.getName()]= $child.getContent();
+      $array[$child.getName()]= $child;
     }
 
     return $array;
@@ -38,24 +41,21 @@ public class PicasaImport extends util.cmd.Command {
 
   protected void importAlbum(Node $albumNode) {
     // Sort child nodes
-    $cache= $this.xmlToArray($albumNode);
+    $cache= $this.xmlLookup($albumNode);
 
-    $this.out.writeLine('===> Album name: ' ~ $cache['albumName']);
-    $this.out.writeLine('---> Number of pictures: ' ~ $cache['albumItemCount']);
+    $this.out.writeLine('===> Album name: ' ~ $cache['albumName'].getContent());
+    $this.out.writeLine('---> Number of pictures: ' ~ $cache['albumItemCount'].getContent());
     $this.out.writeLine('---> Beginning import...');
 
     // Fetch images
-    foreach ($node in $albumNode.children) {
-      if ('images' != $node.getName()) continue;
-
-      foreach ($image in $node.children) {
-        $this.importImage($image);
-      }
+    foreach ($image in $cache['images'].children) {
+      $this.importImage($image);
     }
   }
 
   protected void importImage(Node $imageNode) {
-
+    $info= $this.xmlLookup($imageNode);
+    $this.out.writeLine('---> Importing image ' ~ trim($info['itemCaption'].getContent()));
   }
 
 }
