@@ -1,0 +1,28 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+package name.kiesel.dialog.cmd;
+
+import xml.Tree;
+import xml.Node;
+import io.File;
+
+public class PicasaImport extends util.cmd.Command {
+  protected Tree $xml  = NULL;
+
+  /**
+   * Set file to import from; this file must be in Picasa index.xml format
+   *
+   */
+  [@arg(position= 0)]
+  public void setTree(string $f) {
+    $this.xml= xml.Tree::fromFile(new File($f));
+  }
+
+  public void run() {
+
+  }
+
+}
