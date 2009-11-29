@@ -15,8 +15,6 @@
 
   /**
    * TestCase
-   * TODO
-   *  - define
    *
    * @see      reference
    * @purpose  purpose
@@ -40,6 +38,82 @@
     public function setUp() {
       $this->p= new xp·ide·source·parser·ClassFileParser();
       $this->p->setTopElement(new xp·ide·source·element·ClassFile());
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function interfaceBody() {
+      $this->assertObject($c= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           * Test class definition
+           * 
+           */
+          interface Test extends Papa, Mama { function bla(); }
+        ?>
+      ')), 'xp.ide.source.element.ClassFile');
+      $this->assertObject($c->getClassdef(), 'xp.ide.source.element.Interfacedef');
+      $this->assertEquals(' function bla(); ', $c->getClassdef()->getContent());
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function interfaceParents() {
+      $this->assertObject($c= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           * Test class definition
+           * 
+           */
+          interface Test extends Papa, Mama {}
+        ?>
+      ')), 'xp.ide.source.element.ClassFile');
+      $this->assertObject($c->getClassdef(), 'xp.ide.source.element.Interfacedef');
+      $this->assertEquals(array('Papa', 'Mama'), $c->getClassdef()->getParents());
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function interfaceParent() {
+      $this->assertObject($c= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           * Test class definition
+           * 
+           */
+          interface Test extends Papa {}
+        ?>
+      ')), 'xp.ide.source.element.ClassFile');
+      $this->assertObject($c->getClassdef(), 'xp.ide.source.element.Interfacedef');
+      $this->assertEquals(array('Papa'), $c->getClassdef()->getParents());
+    }
+
+    /**
+     * Test parser parses a classfile
+     *
+     */
+    #[@test]
+    public function interfaceDef() {
+      $this->assertObject($c= $this->p->parse($this->getLexer('
+        <?php
+          /**
+           * Test class definition
+           * 
+           */
+          interface Test {}
+        ?>
+      ')), 'xp.ide.source.element.ClassFile');
+      $this->assertObject($c->getClassdef(), 'xp.ide.source.element.Interfacedef');
+      $this->assertEquals('Test', $c->getClassdef()->getName());
     }
 
     /**

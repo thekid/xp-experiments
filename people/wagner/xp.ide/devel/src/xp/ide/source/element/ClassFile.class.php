@@ -9,8 +9,6 @@
     'xp.ide.source.Element',
     'xp.ide.source.parser.ClassFileParser',
     'xp.ide.source.parser.ClassFileLexer',
-    'xp.ide.source.parser.ClassParser',
-    'xp.ide.source.parser.ClassLexer',
     'lang.ClassLoader',
     'io.streams.MemoryInputStream',
     'io.streams.TextReader'
@@ -26,7 +24,8 @@
       $package= NULL,
       $header= NULL,
       $uses= NUll,
-      $classdef= NUll;
+      $classdef= NUll,
+      $defines= array();
 
     public static function fromClasslocator($cl) {
       return self::fromStream(new TextReader(new MemoryInputStream(
@@ -42,11 +41,7 @@
     }
 
     public function parseClassdefContent() {
-      $cp= new xp·ide·source·parser·ClassParser();
-      $cp->setTopElement($this->getClassdef());
-      $cp->parse(new xp·ide·source·parser·ClassLexer(
-        new TextReader(new MemoryInputStream($this->getClassdef()->getContent()))
-      ));
+      $this->classdef->parseContent();
     }
 
     public function setPackage(xp·ide·source·element·Package $package) {
@@ -73,12 +68,40 @@
       return $this->uses;
     }
 
-    public function setClassdef(xp·ide·source·element·Classdef $classdef) {
+    public function setClassdef(xp·ide·source·element·IClassdef $classdef) {
       $this->classdef= $classdef;
     }
 
     public function getClassdef() {
       return $this->classdef;
+    }
+
+    /**
+     * set member $defines
+     * 
+     * @param lang.Object[] defines
+     */
+    public function setDefines(array $defines) {
+      $this->defines= $defines;
+    }
+
+    /**
+     * get member $defines
+     * 
+     * @return lang.Object[]
+     */
+    public function getDefines() {
+      return $this->defines;
+    }
+
+    /**
+     * get the ith element of the member $defines
+     * 
+     * @param index i
+     * @return lang.Object[]
+     */
+    public function getDefine($i) {
+      return $this->defines[$i];
     }
   }
 

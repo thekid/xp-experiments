@@ -6,7 +6,10 @@
   $package="xp.ide.source.element";
 
   uses(
-    'xp.ide.source.Element'
+    'xp.ide.source.parser.ClassParser',
+    'xp.ide.source.parser.ClassLexer',
+    'xp.ide.source.Element',
+    'xp.ide.source.element.IClassdef'
   );
 
   /**
@@ -14,7 +17,7 @@
    *
    * @purpose  IDE
    */
-  class xp·ide·source·element·Classdef extends xp·ide·source·Element {
+  class xp·ide·source·element·Classdef extends xp·ide·source·Element implements xp·ide·source·element·IClassdef {
     private
       $name= '',
       $parent= '',
@@ -31,6 +34,14 @@
     public function __construct($name, $parent= 'Object') {
       $this->name= $name;
       $this->parent= $parent;
+    }
+
+    public function parseContent() {
+      $cp= new xp·ide·source·parser·ClassParser();
+      $cp->setTopElement($this);
+      $cp->parse(new xp·ide·source·parser·ClassLexer(
+        new TextReader(new MemoryInputStream($this->getContent()))
+      ));
     }
 
     public function getMembergroup($i) {

@@ -22,6 +22,7 @@ help: all
 
 parser: \
   src/xp/ide/source/parser/ClassFileParser.class.php\
+  src/xp/ide/source/parser/InterfaceParser.class.php\
   src/xp/ide/source/parser/ClassParser.class.php
 
 lexer: \

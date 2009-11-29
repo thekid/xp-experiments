@@ -5,6 +5,8 @@
     'xp.ide.source.element.Package',
     'xp.ide.source.element.Uses',
     'xp.ide.source.element.Classdef',
+    'xp.ide.source.element.Define',
+    'xp.ide.source.element.Interfacedef',
     'xp.ide.source.element.ClassFile',
     'xp.ide.source.element.BlockComment',
     'xp.ide.source.element.Annotation',
@@ -15,7 +17,7 @@
 %}
 
 %token
-  T_CLASS T_CLOSE_BCOMMENT T_CLOSE_TAG T_CONTENT_BCOMMENT T_ENCAPSED_STRING
+  T_CLASS T_INTERFACE T_CLOSE_BCOMMENT T_CLOSE_TAG T_CONTENT_BCOMMENT T_ENCAPSED_STRING
   T_EXTENDS T_IMPLEMENTS T_OPEN_BCOMMENT T_OPEN_TAG T_USES  T_CONTENT_INNERBLOCK
   T_VARIABLE T_STRING T_OPEN_APIDOC T_CONTENT_APIDOC T_CLOSE_APIDOC T_DIRECTIVE_APIDOC
   T_START_ANNOTATION T_CLOSE_ANNOTATION T_ANNOTATION
@@ -24,8 +26,29 @@
 %%
 
 start:
-  T_OPEN_TAG meta classDef T_CLOSE_TAG { $$= $2; $$->setClassdef($3); }
-  | T_OPEN_TAG classDef T_CLOSE_TAG { $$= $this->top_element; $$->setClassdef($2); }
+  | T_OPEN_TAG meta iClassDef T_CLOSE_TAG { $$= $this->top_element; $$->setClassdef($3); }
+  | T_OPEN_TAG iClassDef T_CLOSE_TAG { $$= $this->top_element; $$->setClassdef($2); }
+;
+
+iClassDef:
+  classDef { $$= $1; }
+  | interfaceDef { $$= $1; }
+;
+
+interfaceDef:
+  apidoc T_INTERFACE T_STRING '{' T_CONTENT_INNERBLOCK '}' {
+    $$= new xp·ide·source·element·Interfacedef($3->getValue());
+    $$->setContent($5->getValue());
+  }
+  | apidoc T_INTERFACE T_STRING T_EXTENDS interfaceExtends '{' T_CONTENT_INNERBLOCK '}' {
+    $$= new xp·ide·source·element·Interfacedef($3->getValue(), $5);
+    $$->setContent($7->getValue());
+  }
+;
+
+interfaceExtends:
+  interfaceExtends ',' T_STRING { $1[]= $3->getValue(); $$= $1; }
+  | T_STRING { $$= array($1->getValue()); }
 ;
 
 classDef:

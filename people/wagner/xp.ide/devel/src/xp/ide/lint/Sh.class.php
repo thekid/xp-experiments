@@ -30,7 +30,7 @@
       $errors= array();
       $f= new File(tempnam(System::getProperty('os.tempdir'), 'xil'));
       $f->open(FILE_MODE_WRITE);
-      while (NULL !== $buff= $stream->read()) $in->write($buff);
+      while (NULL !== $buff= $stream->read()) $f->write($buff);
       $f->close();
 
       $p= new Process('sh', array('-n', $f->getUri()));
