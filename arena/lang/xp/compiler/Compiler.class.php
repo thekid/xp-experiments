@@ -33,9 +33,10 @@
       $emitter->setTrace($this->cat);
       $listener->runStarted();
       $errors= 0;
+      $done= create('new util.collections.HashTable<xp.compiler.io.Source, xp.compiler.types.Types>()');
       foreach ($sources as $source) {
         try {
-          create(new CompilationTask($source, $listener, $manager, $emitter))->run();
+          create(new CompilationTask($source, $listener, $manager, $emitter, $done))->run();
         } catch (CompilationException $e) {
           $errors++;
         }

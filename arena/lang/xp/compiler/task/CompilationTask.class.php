@@ -26,7 +26,8 @@
       $source     = NULL,
       $manager    = NULL,
       $listener   = NULL,
-      $emitter    = NULL;
+      $emitter    = NULL,
+      $done       = NULL;
 
     /**
      * Constructor
@@ -35,12 +36,20 @@
      * @param   xp.compiler.diagnostic.DiagnosticListener listener
      * @param   xp.compiler.io.FileManager manager
      * @param   xp.compiler.emit.Emitter emitter
+     * @param   util.collections.HashTable<xp.compiler.io.Source, xp.compiler.types.Types> done
      */
-    public function __construct(xp·compiler·io·Source $source, DiagnosticListener $listener, FileManager $manager, Emitter $emitter) {
+    public function __construct(
+      xp·compiler·io·Source $source, 
+      DiagnosticListener $listener, 
+      FileManager $manager, 
+      Emitter $emitter,
+      $done= NULL
+    ) {
       $this->source= $source;
       $this->manager= $manager;
       $this->listener= $listener;
       $this->emitter= $emitter;
+      $this->done= $done ? $done : create('new util.collections.HashTable<xp.compiler.io.Source, xp.compiler.types.Types>()');
     }
 
     /**
@@ -90,7 +99,7 @@
       } else {
         throw new IllegalArgumentException('Expected either a string or a Source object');
       }
-      return new self($source, $this->listener, $this->manager, $this->emitter);
+      return new self($source, $this->listener, $this->manager, $this->emitter, $this->done);
     }
     
     /**
@@ -100,30 +109,34 @@
      * @throws  xp.compiler.CompilationException
      */
     public function run() {
-      $scope= new TaskScope($this);
-      
-      // Start run
-      $this->listener->compilationStarted($this->source);
-      try {
-        $result= $this->emitter->emit($this->manager->parseFile($this->source), $scope);
-        $target= $this->manager->getTarget($result->type(), $this->source);
-        $this->manager->write($result, $target);
-        $this->listener->compilationSucceeded($this->source, $target, $this->emitter->messages());
-      } catch (ParseException $e) {
-        $this->listener->parsingFailed($this->source, $e);
-        throw new CompilationException('Parse error', $e);
-      } catch (FormatException $e) {
-        $this->listener->emittingFailed($this->source, $e);
-        throw new CompilationException('Emitting error', $e);
-      } catch (IOException $e) {
-        $this->listener->compilationFailed($this->source, $e);
-        throw new CompilationException('I/O error', $e);
-      } catch (Throwable $e) {
-        $this->listener->compilationFailed($this->source, $e);
-        throw new CompilationException('Unknown error', $e);
+      if (!$this->done->containsKey($this->source)) {
+        $scope= new TaskScope($this);
+
+        // Start run
+        $this->listener->compilationStarted($this->source);
+        try {
+          $result= $this->emitter->emit($this->manager->parseFile($this->source), $scope);
+          $target= $this->manager->getTarget($result->type(), $this->source);
+          $this->manager->write($result, $target);
+          $this->listener->compilationSucceeded($this->source, $target, $this->emitter->messages());
+        } catch (ParseException $e) {
+          $this->listener->parsingFailed($this->source, $e);
+          throw new CompilationException('Parse error', $e);
+        } catch (FormatException $e) {
+          $this->listener->emittingFailed($this->source, $e);
+          throw new CompilationException('Emitting error', $e);
+        } catch (IOException $e) {
+          $this->listener->compilationFailed($this->source, $e);
+          throw new CompilationException('I/O error', $e);
+        } catch (Throwable $e) {
+          $this->listener->compilationFailed($this->source, $e);
+          throw new CompilationException('Unknown error', $e);
+        }
+
+        // Register type as done
+        $this->done[$this->source]= $result->type();
       }
-      
-      return $result->type();
+      return $this->done[$this->source];
     }
   }
 ?>
