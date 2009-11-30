@@ -453,6 +453,11 @@
           $t= $this->emitArrayAccess($op, $c, $t);
         } else if ($c instanceof InvocationNode) {
           $t= $this->emitMemberCall($op, $c, $t);
+        } else if ($c instanceof NoopNode && $t->isArray()) {
+
+          // See above, Invocation->ArrayAccess is rewritten to a function 
+          // call to dereference and replaced by a Noop.
+          $t= $t->arrayComponentType();
         }
         
         isset($insertion[$i]) && $op->append($insertion[$i]);
