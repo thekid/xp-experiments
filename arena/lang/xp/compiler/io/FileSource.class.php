@@ -61,5 +61,14 @@
     public function toString() {
       return $this->getClassName().'<'.$this->file->getURI().'>';
     }
+
+    /**
+     * Creates a hashcode of this object
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return 'S:'.$this->file->getURI();
+    }
   }
 ?>
