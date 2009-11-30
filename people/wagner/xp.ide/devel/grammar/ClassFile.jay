@@ -5,7 +5,6 @@
     'xp.ide.source.element.Package',
     'xp.ide.source.element.Uses',
     'xp.ide.source.element.Classdef',
-    'xp.ide.source.element.Define',
     'xp.ide.source.element.Interfacedef',
     'xp.ide.source.element.ClassFile',
     'xp.ide.source.element.BlockComment',

@@ -51,7 +51,7 @@ release:
 	@echo "Usage:"
 	@echo "  ${MAKE} release.<version>"
 
-release.%:
+release.%: test
 	@if [ ! -e ../$* ] ; then \
 		mkdir -vp ../$*/gedit ../$*/gedit/xpide ../$*/gedit/xpide/dialog ../$*/nedit ../$*/bin ../$*/lib; \
 		cp -v gedit/xpide.gedit-plugin ../$*/gedit/; \

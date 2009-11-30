@@ -24,8 +24,7 @@
       $package= NULL,
       $header= NULL,
       $uses= NUll,
-      $classdef= NUll,
-      $defines= array();
+      $classdef= NUll;
 
     public static function fromClasslocator($cl) {
       return self::fromStream(new TextReader(new MemoryInputStream(
@@ -74,34 +73,6 @@
 
     public function getClassdef() {
       return $this->classdef;
-    }
-
-    /**
-     * set member $defines
-     * 
-     * @param lang.Object[] defines
-     */
-    public function setDefines(array $defines) {
-      $this->defines= $defines;
-    }
-
-    /**
-     * get member $defines
-     * 
-     * @return lang.Object[]
-     */
-    public function getDefines() {
-      return $this->defines;
-    }
-
-    /**
-     * get the ith element of the member $defines
-     * 
-     * @param index i
-     * @return lang.Object[]
-     */
-    public function getDefine($i) {
-      return $this->defines[$i];
     }
   }
 
