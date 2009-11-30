@@ -792,6 +792,7 @@
      *   lang.types.String::class;  // special "class" member
      *   Tokens::T_STRING;          // class constant
      *   self::$instance;           // static member variable
+     *   parent::__construct();     // super class call, here: constructor
      * </code>
      *
      * @param   resource op
@@ -801,12 +802,21 @@
       $ptr= $this->resolveType($ref->class);
       if ($ref->member instanceof InvocationNode) {
       
-        // Static method call
-        if (!$ptr->hasMethod($ref->member->name)) {
-          $this->warn('T305', 'Cannot resolve '.$ref->member->name.'() in type '.$ptr->toString(), $ref);
+        if ('__construct' === $ref->member->name) {
+
+          // Constructor calls. FIXME: Should this be a 
+          if (!$ptr->hasConstructor()) {
+            $this->warn('T305', 'Type '.$ptr->toString().' has no constructor', $ref);
+          }
         } else {
-          $m= $ptr->getMethod($ref->member->name);
-          $this->scope[0]->setType($ref, $m->returns);
+
+          // Static method call
+          if (!$ptr->hasMethod($ref->member->name)) {
+            $this->warn('T305', 'Cannot resolve '.$ref->member->name.'() in type '.$ptr->toString(), $ref);
+          } else {
+            $m= $ptr->getMethod($ref->member->name);
+            $this->scope[0]->setType($ref, $m->returns);
+          }
         }
 
         $op->append($ptr->literal().'::'.$ref->member->name);
