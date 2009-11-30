@@ -34,6 +34,7 @@
     protected $types= NULL;
     protected $extensions= array();
     protected $resolved= array();
+    protected $packages= array('lang');
     
     public $enclosing= NULL;
     public $importer= NULL;
@@ -71,6 +72,7 @@
       $child->extensions= &$this->extensions;
       $child->declarations= &$this->declarations;
       $child->imports= &$this->imports;
+      $child->packages= &$this->packages;
       $child->used= &$this->used;
       $child->statics= &$this->statics;
 
@@ -116,12 +118,10 @@
      * @throws  xp.compiler.types.ResolveException
      */
     public function addPackageImport($import) {
-    
-      // FIXME: This does not take into calculation other sources
-      // from the manager and really should be done later on!
-      foreach (Package::forName($import)->getClassNames() as $name) {
-        $p= strrpos($name, '.');
-        $this->imports[substr($name, $p+ 1)]= $name;
+      try {
+        $this->packages[]= $this->task->locatePackage($import);
+      } catch (ElementNotFoundException $e) {
+        throw new ResolveException('Cannot import non-existant package '.$import, 507, $e);
       }
     }
     
@@ -235,11 +235,18 @@
         $qualified= $name->name;
       } else if (isset($this->imports[$name->name])) {
         $qualified= $this->imports[$name->name];
-      } else if ($cl->providesClass('lang.'.$name->name)) {
-        $qualified= 'lang.'.$name->name;
       } else {
-        $qualified= ($this->package ? $this->package->name.'.' : '').$name->name;
+        $lookup= $this->package
+          ? array_merge($this->packages, array($this->package->name))
+          : $this->packages
+        ;
+        try {
+          $qualified= $this->task->locateClass($lookup, $name->name);
+        } catch (ElementNotFoundException $e) {
+          throw new ResolveException('Cannot resolve '.$name->toString(), 423, $e);
+        }
       }
+      
       
       // Locate class. If the classloader already knows this class,
       // we can simply use this class. TODO: Use specialized 

@@ -22,6 +22,7 @@
    */
   class FileManager extends Object {
     protected $output= NULL;
+    protected $sourcePaths= array();
     
     /**
      * Sets output folder
@@ -42,6 +43,24 @@
       $this->output= $output;
       return $this;
     }
+    
+    /**
+     * Set source paths
+     *
+     * @param   string[] paths
+     */
+    public function setSourcePaths(array $paths) {
+      $this->sourcePaths= $paths;
+    }
+
+    /**
+     * Add source path
+     *
+     * @param   string path
+     */
+    public function addSourcePath($path) {
+      $this->sourcePaths[]= $path;
+    }
 
     /**
      * Get parse tree for a given qualified class name by looking it
@@ -50,15 +69,30 @@
      * @param   string qualified
      * @return  xp.compiler.io.Source
      */
-    public function locateClass($qualified) {
+    public function findClass($qualified) {
       $name= DIRECTORY_SEPARATOR.strtr($qualified, '.', DIRECTORY_SEPARATOR);
-      foreach (xp::$registry['classpath'] as $path) {
+      foreach ($this->sourcePaths as $path) {
         foreach (Syntax::available() as $ext => $syntax) {
           if (!file_exists($uri= $path.$name.'.'.$ext)) continue;
           return new FileSource(new File($uri), $syntax);   // FIXME: Use class loader / resources
         }
       }
-      throw new ClassNotFoundException('Cannot find class '.$qualified);
+      return NULL;
+    }
+
+    /**
+     * Find a package
+     *
+     * @param   string qualifieds
+     * @param   string
+     */
+    public function findPackage($qualified) {
+      $name= DIRECTORY_SEPARATOR.strtr($qualified, '.', DIRECTORY_SEPARATOR);
+      foreach ($this->sourcePaths as $path) {
+        if (!is_dir($uri= $path.$name)) continue;
+        return $qualified;
+      }
+      return NULL;
     }
   
     /**

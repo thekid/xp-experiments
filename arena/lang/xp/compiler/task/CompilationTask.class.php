@@ -12,6 +12,7 @@
     'xp.compiler.CompilationException',
     'xp.compiler.io.Source',
     'xp.compiler.io.FileManager',
+    'lang.ElementNotFoundException',
     'io.File'
   );
 
@@ -41,6 +42,38 @@
       $this->listener= $listener;
       $this->emitter= $emitter;
     }
+
+    /**
+     * Locate a package
+     *
+     * @param   string name
+     * @return  string qualified
+     * @throws  lang.ElementNotFoundException
+     */
+    public function locatePackage($name) {
+      if (ClassLoader::getDefault()->providesPackage($name) || $this->manager->findPackage($name)) {
+        return $name;
+      }
+      throw new ElementNotFoundException('Could not locate package '.$name);
+    }
+    
+    /**
+     * Locate a class
+     *
+     * @param   string[] packages
+     * @param   string name
+     * @return  string qualified
+     * @throws  lang.ElementNotFoundException
+     */
+    public function locateClass($packages, $local) {
+      $cl= ClassLoader::getDefault();
+      foreach ($packages as $package) {
+        $qualified= $package.'.'.$local;
+        if (!$cl->providesClass($qualified) && !$this->manager->findClass($qualified)) continue;
+        return $qualified;
+      }
+      throw new ElementNotFoundException('Could not locate class '.$local.' in '.xp::stringOf($packages));
+    }
     
     /**
      * Returns a subtask (overloaded)
@@ -53,7 +86,7 @@
       if ($arg instanceof xp·compiler·io·Source) {
         $source= $arg;
       } else if (is_string($arg)) {
-        $source= $this->manager->locateClass($arg);
+        $source= $this->manager->findClass($arg);
       } else {
         throw new IllegalArgumentException('Expected either a string or a Source object');
       }

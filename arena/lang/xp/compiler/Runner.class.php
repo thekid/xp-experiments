@@ -30,6 +30,9 @@
    *   <li>-cp [path]: 
    *     Add path to classpath
    *   </li>
+   *   <li>-sp [path]: 
+   *     Adds path to source path (source path will equal classpath initially)
+   *   </li>
    *   <li>-e [emitter]: 
    *     Use emitter, one of "oel" or "source", defaults to "source"
    *   </li>
@@ -79,6 +82,7 @@
       
       $compiler= new Compiler();
       $manager= new FileManager();
+      $manager->setSourcePaths(xp::$registry['classpath']);
       $emitter= 'source';
       
       // Handle arguments
@@ -89,6 +93,8 @@
           self::showUsage();
         } else if ('-cp' === $args[$i]) {
           ClassLoader::registerPath($args[++$i]);
+        } else if ('-sp' === $args[$i]) {
+          $manager->addSourcePath($args[++$i]);
         } else if ('-t' === $args[$i]) {
           $levels= LogLevel::NONE;
           foreach (explode(',', $args[++$i]) as $level) {
