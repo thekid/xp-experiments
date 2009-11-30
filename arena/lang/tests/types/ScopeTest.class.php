@@ -178,12 +178,22 @@
     }
 
     /**
-     * Test addTypeImport
+     * Test addTypeImport()
      *
      */
     #[@test, @expect('xp.compiler.types.ResolveException')]
-    public function importNonExistant() {
+    public function importNonExistantType() {
       $this->fixture->addTypeImport('util.cmd.@@NON_EXISTANT@@');
+    }
+
+
+    /**
+     * Test addPackageImport()
+     *
+     */
+    #[@test, @expect('xp.compiler.types.ResolveException')]
+    public function importNonExistantPackage() {
+      $this->fixture->addPackageImport('util.cmd.@@NON_EXISTANT@@');
     }
 
     /**
