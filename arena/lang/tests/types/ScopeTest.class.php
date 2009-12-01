@@ -235,6 +235,55 @@
     }
 
     /**
+     * Test resolve()
+     *
+     */
+    #[@test]
+    public function resolveArrayType() {
+      $this->assertEquals(
+        new TypeReference(new TypeName('util.cmd.Command[]'), Types::ARRAY_KIND), 
+        $this->fixture->resolveType(new TypeName('util.cmd.Command[]'))
+      );
+    }
+
+    /**
+     * Test resolve()
+     *
+     */
+    #[@test]
+    public function resolveUnqualifiedArrayType() {
+      $this->fixture->addPackageImport('util.cmd');
+      $this->assertEquals(
+        new TypeReference(new TypeName('util.cmd.Command[]'), Types::ARRAY_KIND), 
+        $this->fixture->resolveType(new TypeName('Command[]'))
+      );
+    }
+
+    /**
+     * Test resolve()
+     *
+     */
+    #[@test]
+    public function resolveStringType() {
+      $this->assertEquals(
+        new TypeReference(new TypeName('string'), Types::PRIMITIVE_KIND), 
+        $this->fixture->resolveType(new TypeName('string'))
+      );
+    }
+
+    /**
+     * Test resolve()
+     *
+     */
+    #[@test]
+    public function resolveStringArrayType() {
+      $this->assertEquals(
+        new TypeReference(new TypeName('string[]'), Types::ARRAY_KIND), 
+        $this->fixture->resolveType(new TypeName('string[]'))
+      );
+    }
+
+    /**
      * Test used list
      *
      */
