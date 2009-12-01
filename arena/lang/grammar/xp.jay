@@ -424,6 +424,7 @@ annotationmembers:
 
 annotationmember:
     T_WORD '=' literal { $$= array($1 => $3); }
+  | T_CLASS '=' literal { $$= array($1 => $3); }
 ;
 
 methodbody:
