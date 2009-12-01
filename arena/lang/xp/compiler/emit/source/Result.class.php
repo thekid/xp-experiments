@@ -60,6 +60,7 @@
       }
       $class= $this->type->literal();
       method_exists($class, '__static') && call_user_func(array($class, '__static'));
+      xp::$registry['classloader.'.$this->type->name()]= 'compiled://'.$this->hashCode();
     }
   }
 ?>

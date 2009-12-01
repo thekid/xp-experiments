@@ -1337,9 +1337,7 @@
       }
       unset($this->metadata[0]['EXT']);
       $op->append('xp::$registry[\'class.'.$name.'\']= \''.$qualified.'\';');
-      $op->append('xp::$registry[\'classloader.'.$qualified.'\']= \'compiled://\';');
       $op->append('xp::$registry[\'details.'.$qualified.'\']= '.var_export($this->metadata[0], TRUE).';');
-      
     }
 
     /**
