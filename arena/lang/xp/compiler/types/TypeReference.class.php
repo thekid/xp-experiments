@@ -145,7 +145,17 @@
      * @return  string
      */    
     public function toString() {
-      return $this->getClassName().'@(*->'.$this->name.')';
+      return $this->getClassName().'@(*->'.$this->type->toString().')';
+    }
+    
+    /**
+     * Returns whether anither object is equal to this
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $cmp->type->equals($this->type);
     }
   }
 ?>
