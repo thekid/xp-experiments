@@ -201,7 +201,10 @@
      */
     public function resolveType(TypeName $name, $register= TRUE) {
       $cl= ClassLoader::getDefault();
-      if (!$name->isClass()) {
+      if ($name->isArray()) {
+        $resolved= $this->resolveType($name->arrayComponentType());
+        return new TypeReference(new TypeName($resolved->name().'[]'), $resolved->kind());
+      } else if (!$name->isClass()) {
         return new TypeReference($name, Types::PRIMITIVE_KIND);
       }
       if ('self' === $name->name || ($this->declarations && $name->name === $this->declarations[0]->name->name)) {
