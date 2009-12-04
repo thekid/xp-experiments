@@ -104,16 +104,15 @@
       $this->assertEquals('net/xp_framework/already/translated.xsl', $this->adapter()->translatePath('res://net/xp_framework/already/translated.xsl'));
     }
 
-    
     /**
      * Test
      *
      */
     #[@test]
     public function loadingAsFile() {
-      $added= ClassLoader::getDefault()->registerPath(dirname(__FILE__).'/res');
+      $added= ClassLoader::registerPath(dirname(__FILE__).'/res');
       $this->assertEquals('Foobar', trim(FileUtil::getContents(new File('res://one/Dummy.xsl'))));
-      ClassLoader::getDefault()->removeLoader($added);
+      ClassLoader::removeLoader($added);
     }
  
     /**
@@ -122,7 +121,7 @@
      */
     #[@test]
     public function fileAsXslFile() {
-      $added= ClassLoader::getDefault()->registerPath(dirname(__FILE__).'/res');
+      $added= ClassLoader::registerPath(dirname(__FILE__).'/res');
 	  
       $proc= new DOMXslProcessor();
       $proc->_base= '';
@@ -133,7 +132,7 @@
       $this->assertTrue(0 < strpos($proc->output(), 'I\'ve been called.'));
       $this->assertTrue(0 < strpos($proc->output(), 'I have been called, too.'));
 
-      ClassLoader::getDefault()->removeLoader($added);
+      ClassLoader::removeLoader($added);
     }
   }
 ?>
