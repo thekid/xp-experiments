@@ -1125,7 +1125,6 @@
         }
         $i < $s && $op->append(',');
         
-        // FIXME: Emit type hint if type is a class, interface or enum
         $this->scope[0]->setType(new VariableNode($arg['name']), $t);
       }
       $op->append(')');
