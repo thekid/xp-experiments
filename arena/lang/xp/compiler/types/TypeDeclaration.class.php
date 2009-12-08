@@ -199,6 +199,38 @@
     }
 
     /**
+     * Returns whether this class has an indexer
+     *
+     * @return  bool
+     */
+    public function hasIndexer() {
+      foreach ($this->tree->declaration->body as $member) {
+        if ($member instanceof IndexerNode) return TRUE;
+      }
+      return FALSE;
+    }
+
+    /**
+     * Returns indexer
+     *
+     * @return  xp.compiler.types.Indexer
+     */
+    public function getIndexer() {
+      foreach ($this->tree->declaration->body as $member) {
+        if (!$member instanceof IndexerNode) continue;
+        $i= new xp·compiler·types·Indexer();
+        $i->type= $member->type;
+        $i->parameters= array();
+        foreach ($member->parameters as $p) {
+          $i->parameters[]= $p['type'];
+        }
+        $i->holder= $this;
+        return $i;
+      }
+      return NULL;
+    }
+
+    /**
      * Creates a string representation of this object
      *
      * @return  string

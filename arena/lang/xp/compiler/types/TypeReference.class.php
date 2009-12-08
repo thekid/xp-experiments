@@ -70,6 +70,37 @@
     }
 
     /**
+     * Returns whether this class has an indexer
+     *
+     * @return  bool
+     */
+    public function hasIndexer() {
+      return $this->type->isArray() || $this->type->isMap();
+    }
+
+    /**
+     * Returns indexer
+     *
+     * @return  xp.compiler.types.Indexer
+     */
+    public function getIndexer() {
+      if ($this->type->isArray()) {
+        $i= new xp·compiler·types·Indexer();
+        $i->type= $this->type->arrayComponentType();
+        $i->parameters= array(new Typename('int'));
+        $i->holder= $this;
+        return $i;
+      } else if ($this->type->isMap()) {
+        $i= new xp·compiler·types·Indexer();
+        $i->type= TypeName::$VAR;
+        $i->parameters= array(TypeName::$VAR);
+        $i->holder= $this;
+        return $i;
+      }
+      return NULL;
+    }
+
+    /**
      * Returns whether a constructor exists
      *
      * @return  bool

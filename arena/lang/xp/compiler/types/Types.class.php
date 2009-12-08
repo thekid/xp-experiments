@@ -7,7 +7,8 @@
   uses(
     'xp.compiler.types.Method', 
     'xp.compiler.types.Constructor', 
-    'xp.compiler.types.Field'
+    'xp.compiler.types.Field',
+    'xp.compiler.types.Indexer'
   );
 
   /**
@@ -104,5 +105,19 @@
      * @return  xp.compiler.types.Field
      */
     public abstract function getField($name);
+
+    /**
+     * Returns whether this class has an indexer
+     *
+     * @return  bool
+     */
+    public abstract function hasIndexer();
+
+    /**
+     * Returns indexer
+     *
+     * @return  xp.compiler.types.Indexer
+     */
+    public abstract function getIndexer();
   }
 ?>

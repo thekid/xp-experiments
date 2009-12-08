@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.types.Types');
+  uses('xp.compiler.types.Types', 'xp.compiler.types.TypeName');
 
   /**
    * (Insert class' description here)
@@ -183,6 +183,35 @@
       }
       $f->holder= $this;
       return $f;
+    }
+
+    /**
+     * Returns whether this class has an indexer
+     *
+     * @return  bool
+     */
+    public function hasIndexer() {
+      return $this->class->_reflect->implementsInterface('ArrayAccess');
+    }
+
+    /**
+     * Returns indexer
+     *
+     * @return  xp.compiler.types.Indexer
+     */
+    public function getIndexer() {
+      if (!$this->class->_reflect->implementsInterface('ArrayAccess')) return NULL;
+
+      with ($method= $this->class->getMethod('offsetGet')); {
+        $i= new xp·compiler·types·Indexer();
+        $i->type= $this->typeNameOf($method->getReturnTypeName());
+        $i->parameters= array();
+        foreach ($method->getParameters() as $p) {
+          $i->parameters[]= $this->typeNameOf($p->getTypeName());
+        }
+        $i->holder= $this;
+      }
+      return $i;
     }
 
     /**
