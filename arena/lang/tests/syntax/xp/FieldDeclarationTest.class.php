@@ -155,8 +155,9 @@
           'name'       => 'this',
           'arguments'  => array(
             array(
-              'name' => 'offset',
-              'type' => new TypeName('int')
+              'name'  => 'offset',
+              'type'  => new TypeName('int'),
+              'check' => TRUE
             )
           ),
           'handlers'   => array(

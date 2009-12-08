@@ -58,8 +58,9 @@
         'name'       => 'equals',
         'returns'    => new TypeName('bool'),
         'arguments'  => array(array(
-          'name' => 'cmp',
-          'type' => new TypeName('Object')
+          'name'  => 'cmp',
+          'type'  => new TypeName('Object'),
+          'check' => TRUE
         )),
         'throws'     => NULL,
         'body'       => NULL,
@@ -81,8 +82,9 @@
         'name'       => 'setTrace',
         'returns'    => new TypeName('void'),
         'arguments'  => array(array(
-          'name' => 'cat',
-          'type' => new TypeName('util.log.LogCategory')
+          'name'  => 'cat',
+          'type'  => new TypeName('util.log.LogCategory'),
+          'check' => TRUE
         )),
         'throws'     => NULL,
         'body'       => NULL,
@@ -104,8 +106,9 @@
         'name'       => 'compareTo',
         'returns'    => new TypeName('int'),
         'arguments'  => array(array(
-          'name' => 'other',
-          'type' => new TypeName('Object')
+          'name'  => 'other',
+          'type'  => new TypeName('Object'),
+          'check' => TRUE
         )),
         'throws'     => NULL,
         'body'       => NULL,
@@ -127,8 +130,9 @@
         'name'       => 'loadClass',
         'returns'    => new TypeName('Class', array(new TypeName('T'))),
         'arguments'  => array(array(
-          'name' => 'name',
-          'type' => new TypeName('string')
+          'name'  => 'name',
+          'type'  => new TypeName('string'),
+          'check' => TRUE
         )),
         'throws'     => array(new TypeName('ClassNotFoundException'), new TypeName('SecurityException')),
         'body'       => NULL,
@@ -145,21 +149,23 @@
     #[@test]
     public function printfMethod() {
       $this->assertEquals(array(new MethodNode(array(
-        'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
-        'annotations'=> NULL,
-        'name'       => 'printf',
-        'returns'    => new TypeName('string'),
-        'arguments'  => array(array(
-          'name'   => 'format',
-          'type'   => new TypeName('string')
+        'modifiers'   => MODIFIER_PUBLIC | MODIFIER_STATIC,
+        'annotations' => NULL,
+        'name'        => 'printf',
+        'returns'     => new TypeName('string'),
+        'arguments'   => array(array(
+          'name'      => 'format',
+          'type'      => new TypeName('string'),
+          'check'     => TRUE
         ), array(
-          'name'   => 'args',
-          'type'   => new TypeName('string'),
-          'vararg' => TRUE
+          'name'      => 'args',
+          'type'      => new TypeName('string'),
+          'vararg'    => TRUE,
+          'check'     => TRUE
         )), 
-        'throws'     => NULL,
-        'body'       => NULL,
-        'extension'  => NULL
+        'throws'      => NULL,
+        'body'        => NULL,
+        'extension'   => NULL
       ))), $this->parse('class Format { 
         public static string printf(string $format, string... $args) {
         
@@ -180,7 +186,8 @@
         'returns'    => new TypeName('void'),
         'arguments'  => array(array(
           'name'   => 'elements',
-          'type'   => new TypeName('T[]')      // XXX FIXME this is probably not a good representation
+          'type'   => new TypeName('T[]'),  // XXX FIXME this is probably not a good representation
+          'check'  => TRUE      
         )), 
         'throws'     => NULL,
         'body'       => NULL,
@@ -202,11 +209,13 @@
         'symbol'     => '+',
         'returns'    => new TypeName('self'),
         'arguments'  => array(array(
-          'name' => 'a',
-          'type' => new TypeName('self')
+          'name'  => 'a',
+          'type'  => new TypeName('self'),
+          'check' => TRUE
         ), array(
-          'name' => 'b',
-          'type' => new TypeName('self')
+          'name'  => 'b',
+          'type'  => new TypeName('self'),
+          'check' => TRUE
         )),
         'throws'     => NULL,
         'body'       => NULL
@@ -222,6 +231,30 @@
     #[@test, @expect('text.parser.generic.ParseException')]
     public function missingReturnType() {
       $this->parse('class Broken { public run() { }}');
+    }
+
+    /**
+     * Test method declaration
+     *
+     */
+    #[@test]
+    public function noRuntimeTypeCheck() {
+      $this->assertEquals(array(new MethodNode(array(
+        'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
+        'name'       => 'equals',
+        'returns'    => new TypeName('bool'),
+        'arguments'  => array(array(
+          'name'  => 'cmp',
+          'type'  => new TypeName('Generic'),
+          'check' => FALSE
+        )),
+        'throws'     => NULL,
+        'body'       => NULL,
+        'extension'  => NULL
+      ))), $this->parse('class Test { 
+        public bool equals(Generic? $cmp) { }
+      }'));
     }
   }
 ?>

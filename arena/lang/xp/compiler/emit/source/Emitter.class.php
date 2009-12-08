@@ -41,7 +41,6 @@
    * @test     xp://tests.execution.source.MultiCatchTest
    * @test     xp://tests.execution.source.PropertiesTest
    * @test     xp://tests.execution.source.VariablesTest
-   * @ext      // oel
    * @see      xp://xp.compiler.ast.Node
    */
   class xp·compiler·emit·source·Emitter extends Emitter {
@@ -1074,13 +1073,30 @@
       $s= sizeof($arguments)- 1;
       $defer= array();
       foreach ($arguments as $i => $arg) {
+        if (!$arg['type']) {
+          $t= TypeName::$VAR;
+        } else {
+          if (!$arg['check']) {
+            // No runtime type checks
+          } else if ($arg['type']->isArray()) {
+            $op->append('array ');
+          } else if ($arg['type']->isClass()) {
+            // FIXME Resolving type causes endless recursion
+            // $op->append($this->resolveType($arg['type'])->literal())->append(' ');
+            $op->append(xp::reflect($arg['type']->name))->append(' ');
+          } else {
+            // No restriction on primitives possible in PHP
+          }
+          $t= $arg['type'];
+        }
+        
         if (isset($arg['vararg'])) {
           if ($i > 0) {
             $defer[]= '$'.$arg['name'].'= array_slice(func_get_args(), '.$i.');';
           } else {
             $defer[]= '$'.$arg['name'].'= func_get_args();';
           }
-          $this->scope[0]->setType(new VariableNode($arg['name']), new TypeName($arg['type']->name.'[]'));
+          $this->scope[0]->setType(new VariableNode($arg['name']), new TypeName($t->name.'[]'));
           $op->append('$··= NULL');
           break;
         }
@@ -1110,7 +1126,7 @@
         $i < $s && $op->append(',');
         
         // FIXME: Emit type hint if type is a class, interface or enum
-        $this->scope[0]->setType(new VariableNode($arg['name']), $arg['type'] ? $arg['type'] : TypeName::$VAR);
+        $this->scope[0]->setType(new VariableNode($arg['name']), $t);
       }
       $op->append(')');
       $op->append($delim);
@@ -1195,7 +1211,7 @@
      * @param   xp.compiler.ast.MethodNode method
      */
     protected function emitMethod($op, MethodNode $method) {
-      if (!$method->comment && !strstr($this->scope[0]->declarations[0]->name->name, '$')) {
+      if (!$method->comment && !strstr($this->scope[0]->declarations[0]->name->name, '··')) {
         $this->warn('D201', 'No api doc for '.$this->scope[0]->declarations[0]->name->name.'::'.$method->name.'()', $method);
       }
       if ($this->scope[0]->declarations[0] instanceof InterfaceNode) {
