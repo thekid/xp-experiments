@@ -119,5 +119,36 @@
       $this->assertTrue($decl->hasMethod('substring'), 'substring');
       $this->assertFalse($decl->hasMethod('getName'), 'getName');
     }
+
+    /**
+     * Test hasIndexer() method
+     *
+     */
+    #[@test]
+    public function stringClassHasIndexer() {
+      $decl= new TypeReflection(XPClass::forName('lang.types.String'));
+      $this->assertTrue($decl->hasIndexer());
+    }
+
+    /**
+     * Test hasIndexer() method
+     *
+     */
+    #[@test]
+    public function objectClassDoesNotHaveIndexer() {
+      $decl= new TypeReflection(XPClass::forName('lang.Object'));
+      $this->assertFalse($decl->hasIndexer());
+    }
+
+    /**
+     * Test getIndexer() method
+     *
+     */
+    #[@test]
+    public function stringClassIndexer() {
+      $indexer= create(new TypeReflection(XPClass::forName('lang.types.String')))->getIndexer();
+      $this->assertEquals(new TypeName('lang.types.Character'), $indexer->type);
+      $this->assertEquals(array(new TypeName('int')), $indexer->parameters);
+    }
   }
 ?>

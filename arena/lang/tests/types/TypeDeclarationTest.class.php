@@ -129,6 +129,14 @@
             )),
             new MethodNode(array(
               'name' => 'substring'
+            )),
+            new IndexerNode(array(
+              'type'       => new TypeName('string'),
+              'parameters' => array(array(
+                'name'  => 'offset',
+                'type'  => new TypeName('int'),
+                'check' => TRUE
+              ))
             ))
           )
         )),
@@ -220,6 +228,37 @@
       $this->assertTrue($decl->hasMethod('equals'), 'equals');
       $this->assertTrue($decl->hasMethod('substring'), 'substring');
       $this->assertFalse($decl->hasMethod('getName'), 'getName');
+    }
+
+    /**
+     * Test hasIndexer() method
+     *
+     */
+    #[@test]
+    public function stringClassHasIndexer() {
+      $decl= $this->stringClass();
+      $this->assertTrue($decl->hasIndexer());
+    }
+
+    /**
+     * Test hasIndexer() method
+     *
+     */
+    #[@test]
+    public function objectClassDoesNotHaveIndexer() {
+      $decl= $this->objectClass();
+      $this->assertFalse($decl->hasIndexer());
+    }
+
+    /**
+     * Test getIndexer() method
+     *
+     */
+    #[@test]
+    public function stringClassIndexer() {
+      $indexer= $this->stringClass()->getIndexer();
+      $this->assertEquals(new TypeName('string'), $indexer->type);
+      $this->assertEquals(array(new TypeName('int')), $indexer->parameters);
     }
   }
 ?>
