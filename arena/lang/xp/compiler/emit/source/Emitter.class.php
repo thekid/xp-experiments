@@ -309,8 +309,8 @@
         // OK, TODO: Further verification
       } else if ($type->isClass()) {
         $ptr= $this->resolveType($type);
-        if ($ptr->hasMethod('offsetGet')) {   // FIXME: Use hasIndexer
-          $result= $ptr->getMethod('offsetGet')->returns;
+        if ($ptr->hasIndexer()) {
+          $result= $ptr->getIndexer()->type;
         } else {
           $this->warn('T305', 'Type '.$ptr->name().' does not support offset access', $access);
         }
