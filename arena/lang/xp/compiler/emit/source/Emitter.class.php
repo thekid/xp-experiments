@@ -342,8 +342,10 @@
         $ptr= $this->resolveType($type);
         if ($ptr->hasField($access->name)) {
           $result= $ptr->getField($access->name)->type;
+        } else if ($ptr->hasProperty($access->name)) {
+          $result= $ptr->getProperty($access->name)->type;
         } else {
-          $this->warn('T201', 'No such field '.$access->name.' in '.$type->toString(), $access);
+          $this->warn('T201', 'No such field or property '.$access->name.' in '.$type->toString(), $access);
         }
       } else if ($type->isVariable()) {
         $this->warn('T203', 'Member access (var).'.$access->name.' verification deferred until runtime', $access);

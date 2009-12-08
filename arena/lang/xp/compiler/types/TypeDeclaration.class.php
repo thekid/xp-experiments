@@ -199,6 +199,38 @@
     }
 
     /**
+     * Returns a property by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasProperty($name) {
+      foreach ($this->tree->declaration->body as $member) {
+        if ($member instanceof PropertyNode && $member->name === $name) return TRUE;
+      }
+      return $this->parent ? $this->parent->hasProperty($name) : FALSE;
+    }
+    
+    /**
+     * Returns a property by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.types.Property
+     */
+    public function getProperty($name) {
+      foreach ($this->tree->declaration->body as $member) {
+        if ($member instanceof PropertyNode && $member->name === $name) {
+          $p= new xp·compiler·types·Property();
+          $p->name= $member->name;
+          $p->type= $member->type;
+          $p->holder= $this;
+          return $p;
+        }
+      }
+      return $this->parent ? $this->parent->hasProperty($name) : FALSE;
+    }
+
+    /**
      * Returns whether this class has an indexer
      *
      * @return  bool

@@ -8,6 +8,7 @@
     'xp.compiler.types.Method', 
     'xp.compiler.types.Constructor', 
     'xp.compiler.types.Field',
+    'xp.compiler.types.Property',
     'xp.compiler.types.Indexer'
   );
 
@@ -105,6 +106,22 @@
      * @return  xp.compiler.types.Field
      */
     public abstract function getField($name);
+
+    /**
+     * Returns a property by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public abstract function hasProperty($name);
+    
+    /**
+     * Returns a property by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.types.Property
+     */
+    public abstract function getProperty($name);
 
     /**
      * Returns whether this class has an indexer

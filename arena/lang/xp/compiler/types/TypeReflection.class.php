@@ -186,6 +186,26 @@
     }
 
     /**
+     * Returns a property by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasProperty($name) {
+      return FALSE;
+    }
+    
+    /**
+     * Returns a property by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.types.Property
+     */
+    public function getProperty($name) {
+      return NULL;
+    }
+
+    /**
      * Returns whether this class has an indexer
      *
      * @return  bool
