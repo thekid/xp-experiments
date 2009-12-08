@@ -7,16 +7,15 @@
   $package= 'xp.compiler.types';
 
   /**
-   * Represents a method
+   * Represents a field
    *
    * @see      xp://xp.compiler.types.Types
    */
   class xp·compiler·types·Field extends Object {
     public
       $name       = '',
-      $returns    = NULL,
-      $modifiers  = 0,
-      $parameters = array();
+      $type       = NULL,
+      $modifiers  = 0;
 
     /**
      * Returns name
