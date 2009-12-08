@@ -375,11 +375,10 @@
           $result= $ptr->getMethod($access->name)->returns;
         } else if ($this->scope[0]->hasExtension($ptr, $access->name)) {
           $ext= $this->scope[0]->getExtension($ptr, $access->name);
-
-          // FIXME: Slow access via __call() - would need look-ahead
-          // inside emitChain here!
-          $op->append('->'.$access->name);
+          $op->insertAtMark($ext->holder->name().'::'.$access->name.'(');
+          $op->append(', ');
           $this->emitParameters($op, (array)$access->parameters);
+          $op->append(')');
           return $ext->returns;
         } else {
           $this->warn('T201', 'No such method '.$access->name.'() in '.$type->compoundName(), $access);
@@ -419,6 +418,7 @@
       for ($i= 0; $i < $s; $i++) {
         if ($i < $s- 1 && $chain->elements[$i] instanceof InvocationNode && $chain->elements[$i+ 1] instanceof ArrayAccessNode) {
           $op->append('current(array_slice(');
+          $op->mark();
           $insertion[$i]= new xp·compiler·emit·source·Buffer(', ', $op->line);
           $this->emitOne($insertion[$i], $chain->elements[$i+ 1]->offset);
           $insertion[$i]->append(', 1))');
