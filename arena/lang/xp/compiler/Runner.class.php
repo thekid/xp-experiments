@@ -100,10 +100,9 @@
           foreach (explode(',', $args[++$i]) as $level) {
             $levels |= LogLevel::named($level);
           }
-          $appender= newinstance('util.log.LogAppender', array(), '{
-            public function append() {
-              $args= func_get_args();
-              Console::$err->writeLine("  ", implode(" ", array_map(array($this, "varSource"), $args)));
+          $appender= newinstance('util.log.Appender', array(), '{
+            public function append(LoggingEvent $event) {
+              Console::$err->write($this->layout->format($event));
             }
           }');
           $compiler->setTrace(Logger::getInstance()->getCategory()->withAppender($appender, $levels));
