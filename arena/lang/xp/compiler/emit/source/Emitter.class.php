@@ -1360,32 +1360,36 @@
      * Emit a class property
      *
      * @param   resource op
+     * @param   xp.compiler.ast.IndexerNode indexer
+     */
+    protected function emitIndexer($op, IndexerNode $indexer) {
+      $defines= array(
+        'get'   => array('offsetGet', $indexer->parameters),
+        'set'   => array('offsetSet', array_merge($indexer->parameters, array(array('name' => 'value', 'type' => $indexer->type)))),
+        'isset' => array('offsetExists', $indexer->parameters),
+        'unset' => array('offsetUnset', $indexer->parameters),
+      );
+
+      foreach ($indexer->handlers as $name => $statements) {   
+        $op->append('function '.$defines[$name][0]);
+        $this->emitArguments($op, $defines[$name][1], '{');
+        $this->enter(new MethodScope());
+        $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
+        $this->emitAll($op, $statements);
+        $this->leave();
+        $op->append('}');
+      }
+    }
+
+    /**
+     * Emit a class property
+     *
+     * @param   resource op
      * @param   xp.compiler.ast.PropertyNode property
      */
     protected function emitProperty($op, PropertyNode $property) {
-      if ('this' === $property->name && $property->arguments) {
-
-        // Indexer - fixme: Maybe use IndexerPropertyNode?
-        $defines= array(
-          'get'   => array('offsetGet', $property->arguments),
-          'set'   => array('offsetSet', array_merge($property->arguments, array(array('name' => 'value', 'type' => $property->type)))),
-          'isset' => array('offsetExists', $property->arguments),
-          'unset' => array('offsetUnset', $property->arguments),
-        );
-        
-        foreach ($property->handlers as $name => $statements) {   
-          $op->append('function '.$defines[$name][0]);
-          $this->emitArguments($op, $defines[$name][1], '{');
-          $this->enter(new MethodScope());
-          $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
-          $this->emitAll($op, $statements);
-          $this->leave();
-          $op->append('}');
-        }
-      } else {
-        foreach ($property->handlers as $name => $statements) {   
-          $this->properties[0][$name][$property->name]= $statements;
-        }
+      foreach ($property->handlers as $name => $statements) {   
+        $this->properties[0][$name][$property->name]= $statements;
       }
     }    
 
@@ -1703,7 +1707,7 @@
       
       // Check if we need to implement ArrayAccess
       foreach ($declaration->body as $node) {
-        if ($node instanceof PropertyNode && 'this' === $node->name && $node->arguments) {
+        if ($node instanceof IndexerNode) {
           $declaration->implements[]= 'ArrayAccess';
         }
       }

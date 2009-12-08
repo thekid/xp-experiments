@@ -142,18 +142,17 @@
     }
 
     /**
-     * Test indexer property declaration
+     * Test indexer declaration
      *
      */
     #[@test]
-    public function indexerProperty() {
+    public function indexer() {
       $this->assertEquals(array(
-        new PropertyNode(array(
+        new IndexerNode(array(
           'modifiers'  => MODIFIER_PUBLIC,
           'annotations'=> NULL,
           'type'       => new TypeName('T'),
-          'name'       => 'this',
-          'arguments'  => array(
+          'parameters' => array(
             array(
               'name'  => 'offset',
               'type'  => new TypeName('int'),

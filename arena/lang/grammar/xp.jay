@@ -14,6 +14,7 @@
     'xp.compiler.ast.InterfaceNode',
     'xp.compiler.ast.FieldNode',
     'xp.compiler.ast.PropertyNode',
+    'xp.compiler.ast.IndexerNode',
     'xp.compiler.ast.ConstructorNode',
     'xp.compiler.ast.MethodNode',
     'xp.compiler.ast.OperatorNode',
@@ -320,7 +321,7 @@ field:
 
 property:
     T_WORD { $$= $yyLex->create(new PropertyNode(array('name' => $1))); }
-  | T_WORD '[' arguments ']' { $$= $yyLex->create(new PropertyNode(array('name' => $1, 'arguments' => $3))); }
+  | T_WORD '[' arguments ']' { $$= $yyLex->create(new IndexerNode(array('parameters' => $3))); }
 ;
 
 getsets:
