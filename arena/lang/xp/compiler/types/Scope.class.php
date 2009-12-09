@@ -271,6 +271,17 @@
           }
           $this->resolved[$qualified]= $type;
         }
+        
+        // Check if this import created extension methods
+        // FIXME: Use $this->resolved[$qualified]->getExtensions()
+        foreach (xp::$registry as $k => $value) {
+          if ($value instanceof ReflectionMethod && $qualified === xp::nameOf($value->class)) {
+            $this->addExtension(
+              $this->resolveType(new TypeName(substr($k, 0, strpos($k, '::')))), 
+              $this->resolved[$qualified]->getMethod($value->name)
+            );
+          }
+        }
         $register && $this->used[]= new TypeName($qualified);
       }
       
