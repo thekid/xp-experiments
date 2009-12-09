@@ -49,7 +49,7 @@
      * @return  string
      */
     public function literal() {
-      return $this->class->getSimpleName();
+      return xp::reflect($this->class->getName());
     }
     
     /**
