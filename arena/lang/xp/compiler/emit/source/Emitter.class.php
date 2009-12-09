@@ -377,7 +377,7 @@
           $result= $ptr->getMethod($access->name)->returns;
         } else if ($this->scope[0]->hasExtension($ptr, $access->name)) {
           $ext= $this->scope[0]->getExtension($ptr, $access->name);
-          $op->insertAtMark($ext->holder->name().'::'.$access->name.'(');
+          $op->insertAtMark($ext->holder->literal().'::'.$access->name.'(');
           $op->append(', ');
           $this->emitParameters($op, (array)$access->parameters);
           $op->append(')');
@@ -1183,7 +1183,34 @@
         $meta[$i]= $param['type']->compoundName();
       }
       return $meta;
-    }    
+    }
+    
+    /**
+     * Promote all variables used inside a node to member variables except for
+     * the ones passed in as excludes, returning all replacements.
+     *
+     * @param   xp.compiler.ast.Node node
+     * @return  array<string, bool> excludes
+     * @return  array<string, xp.compiler.ast.ChainNode> replaced
+     */
+    protected function promoteVariablesToMembers($node, $exclude= array()) {
+      $replaced= array();
+      $vthis= new VariableNode('this');
+      foreach ((array)$node as $member => $type) {
+        if ($type instanceof VariableNode) {
+          if (!isset($exclude[$type->name])) {
+            $replaced['$'.$type->name]= $node->{$member}= new ChainNode(array($vthis, $type));
+          }
+        } else if ($type instanceof xp·compiler·ast·Node) {
+          $replaced= array_merge($replaced, $this->promoteVariablesToMembers($node->{$member}, $exclude));
+        } else if (is_array($type) && !empty($type) && $type[0] instanceof xp·compiler·ast·Node) {
+          foreach ($type as $value) {
+            $replaced= array_merge($replaced, $this->promoteVariablesToMembers($value, $exclude));
+          }
+        }
+      }
+      return $replaced;
+    }
 
     /**
      * Emit a lambda
@@ -1192,17 +1219,45 @@
      * @param   xp.compiler.ast.LambdaNode lambda
      */
     protected function emitLambda($op, LambdaNode $lambda) {
-      $op->append('create_function(\'');
-      $s= sizeof($lambda->parameters)- 1;
-      foreach ($lambda->parameters as $i => $param) {
-        $op->append('$')->append($param->name);
-        if ($i < $s) $s->append(',');
+      $unique= new TypeName('Lambda··'.md5($lambda->hashCode()));
+      
+      // Visit all statements, promoting local variable used within tp members
+      $parameters= $excludes= $replaced= array();
+      foreach ($lambda->parameters as $parameter) {
+        $parameters[]= array('name' => $parameter->name, 'type' => TypeName::$VAR);
+        $excludes[$parameter->name]= TRUE;
       }
-      $op->append('\', \'');
-      $sop= new xp·compiler·emit·source·Buffer('', $op->line);
-      $this->emitAll($sop, $lambda->statements);
-      $op->append($sop->replace("'", "\'"));
-      $op->append('\')');
+      foreach ($lambda->statements as $stmt) {
+        $replaced= array_merge($replaced, $this->promoteVariablesToMembers($stmt, $excludes));
+      }
+      $cparameters= $cstmt= array();
+      foreach ($replaced as $name => $member) {
+        $cparameters[]= array('name' => substr($name, 1), 'type' => TypeName::$VAR);
+        $cstmt[]= new AssignmentNode(array(
+          'variable'    => $member, 
+          'expression'  => new VariableNode(substr($name, 1)), 
+          'op'          => '=',
+          'free'        => TRUE
+        ));
+      }
+      
+      // Generate an anonymous lambda class
+      $decl= new ClassNode(0, NULL, $unique, NULL, NULL, array(
+        new ConstructorNode(array(
+          'arguments'  => $cparameters,
+          'body'       => $cstmt
+        )),
+        new MethodNode(array(
+          'name'        => 'invoke', 
+          'arguments'   => $parameters,
+          'body'        => $lambda->statements,
+          'returns'     => TypeName::$VAR
+        ))
+      ));
+      $this->scope[0]->declarations[]= $decl;
+      
+      // Finally emit array(new [UNIQUE]([CAPTURE], "method")
+      $op->append('array(new '.$unique->name.'('.implode(',', array_keys($replaced)).'), \'invoke\')');
     }
 
     /**
