@@ -75,6 +75,51 @@
     }
 
     /**
+     * Test "\b"
+     *
+     */
+    #[@test]
+    public function backspace() {
+      $this->assertEquals("Hello\bWorld", Strings::expandEscapesIn('Hello\bWorld'));
+    }
+
+    /**
+     * Test "\f"
+     *
+     */
+    #[@test]
+    public function formFeed() {
+      $this->assertEquals("Hello\fWorld", Strings::expandEscapesIn('Hello\fWorld'));
+    }
+
+    /**
+     * Test "\0"
+     *
+     */
+    #[@test]
+    public function nul() {
+      $this->assertEquals("Hello\0World", Strings::expandEscapesIn('Hello\0World'));
+    }
+
+    /**
+     * Test "\377" octal escape (0xFF)
+     *
+     */
+    #[@test]
+    public function ff() {
+      $this->assertEquals("Hello\377World", Strings::expandEscapesIn('Hello\377World'));
+    }
+
+    /**
+     * Test "\400" octal escape is out of range
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function octalNumberOutOfRange() {
+      Strings::expandEscapesIn('Hello\400World');
+    }
+
+    /**
      * Test "\\"
      *
      */

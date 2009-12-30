@@ -7,6 +7,17 @@
   /**
    * String emittance utilities
    *
+   * String escapes
+   * --------------
+   * <pre>
+   *   \\       A literal \
+   *   \b       Backspace
+   *   \t       Tab
+   *   \n       Newline
+   *   \f       Formfeed
+   *   \r       Carriage retrn
+   *   \X{1,3}  Octal escape (X is an octal number), \0 .. \377
+   * </pre>
    */
   class Strings extends Object {
     
@@ -29,10 +40,20 @@
           $out.= '\\';
         } else if ('r' === $in{$offset}) {
           $out.= "\r";
+        } else if ('b' === $in{$offset}) {
+          $out.= "\b";
         } else if ('n' === $in{$offset}) {
           $out.= "\n";
         } else if ('t' === $in{$offset}) {
           $out.= "\t";
+        } else if ('f' === $in{$offset}) {
+          $out.= chr(12);   // Not all PHP versions have "\f"
+        } else if ($p= strspn($in, '01234567', $offset)) {
+          if (($n= octdec(substr($in, $offset, $p))) > 0xFF) {
+            throw new FormatException('Octal number out of range (\0 .. \377) in '.$in);
+          }
+          $out.= chr($n);
+          $offset+= $p- 1;
         } else {
           throw new FormatException('Illegal escape sequence \\'.$in{$offset}.' in '.$in);
         }
