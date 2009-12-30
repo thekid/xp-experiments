@@ -1196,7 +1196,6 @@
       $unique= new TypeName('Lambda··'.md5($lambda->hashCode()));
       
       // Visit all statements, promoting local variable used within tp members
-      // FIXME: Use xp.compiler.ast.Visitor for this!
       $promoter= new LocalsToMemberPromoter();
       $parameters= $replaced= array();
       foreach ($lambda->parameters as $parameter) {
@@ -1232,7 +1231,7 @@
       ));
       $this->scope[0]->declarations[]= $decl;
       
-      // Finally emit array(new [UNIQUE]([CAPTURE], "method")
+      // Finally emit array(new [UNIQUE]([CAPTURE]), "method")
       $op->append('array(new '.$unique->name.'('.implode(',', array_keys($replaced)).'), \'invoke\')');
     }
 
