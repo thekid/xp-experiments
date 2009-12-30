@@ -1222,6 +1222,7 @@
       $unique= new TypeName('Lambda··'.md5($lambda->hashCode()));
       
       // Visit all statements, promoting local variable used within tp members
+      // FIXME: Use xp.compiler.ast.Visitor for this!
       $parameters= $excludes= $replaced= array();
       foreach ($lambda->parameters as $parameter) {
         $parameters[]= array('name' => $parameter->name, 'type' => TypeName::$VAR);
