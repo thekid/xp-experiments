@@ -4,8 +4,69 @@
  * $Id$ 
  */
 
+  uses(
+    'xp.compiler.ast.PackageNode',
+    'xp.compiler.ast.ImportNode',
+    'xp.compiler.ast.StaticImportNode',
+    'xp.compiler.ast.NativeImportNode',
+    'xp.compiler.ast.AnnotationNode',
+    'xp.compiler.ast.ChainNode',
+    'xp.compiler.ast.ClassNode',
+    'xp.compiler.ast.EnumNode',
+    'xp.compiler.ast.EnumMemberNode',
+    'xp.compiler.ast.InterfaceNode',
+    'xp.compiler.ast.FieldNode',
+    'xp.compiler.ast.PropertyNode',
+    'xp.compiler.ast.IndexerNode',
+    'xp.compiler.ast.ConstructorNode',
+    'xp.compiler.ast.MethodNode',
+    'xp.compiler.ast.OperatorNode',
+    'xp.compiler.ast.ReturnNode',
+    'xp.compiler.ast.InstanceCreationNode',
+    'xp.compiler.ast.VariableNode',
+    'xp.compiler.ast.ArrayAccessNode',
+    'xp.compiler.ast.CastNode',
+    'xp.compiler.ast.TryNode',
+    'xp.compiler.ast.CatchNode',
+    'xp.compiler.ast.ThrowNode',
+    'xp.compiler.ast.FinallyNode',
+    'xp.compiler.ast.ForNode',
+    'xp.compiler.ast.ForeachNode',
+    'xp.compiler.ast.DoNode',
+    'xp.compiler.ast.WhileNode',
+    'xp.compiler.ast.AssignmentNode',
+    'xp.compiler.ast.InvocationNode',
+    'xp.compiler.ast.ConstantNode',
+    'xp.compiler.ast.IntegerNode',
+    'xp.compiler.ast.HexNode',
+    'xp.compiler.ast.DecimalNode',
+    'xp.compiler.ast.StringNode',
+    'xp.compiler.ast.BooleanNode',
+    'xp.compiler.ast.NullNode',
+    'xp.compiler.ast.ArrayNode',
+    'xp.compiler.ast.MapNode',
+    'xp.compiler.ast.ClassMemberNode',
+    'xp.compiler.ast.InstanceOfNode',
+    'xp.compiler.ast.ComparisonNode',
+    'xp.compiler.ast.BinaryOpNode',
+    'xp.compiler.ast.BooleanOpNode',
+    'xp.compiler.ast.UnaryOpNode',
+    'xp.compiler.ast.TernaryNode',
+    'xp.compiler.ast.SwitchNode',
+    'xp.compiler.ast.CaseNode',
+    'xp.compiler.ast.DefaultNode',
+    'xp.compiler.ast.BreakNode',
+    'xp.compiler.ast.ContinueNode',
+    'xp.compiler.ast.CloneNode',
+    'xp.compiler.ast.IfNode',
+    'xp.compiler.ast.ElseNode',
+    'xp.compiler.ast.StaticInitializerNode',
+    'xp.compiler.ast.LambdaNode',
+    'xp.compiler.ast.WithNode'
+  );
+
   /**
-   * (Insert class' description here)
+   * Visits a parse tree
    *
    */
   class Visitor extends Object {
