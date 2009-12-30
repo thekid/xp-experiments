@@ -26,6 +26,33 @@
     }
 
     /**
+     * Promote all variables used inside a node to member variables except for
+     * the ones passed in as excludes, returning all replacements.
+     *
+     * @param   xp.compiler.ast.Node node
+     * @return  array<string, bool> excludes
+     * @return  array<string, xp.compiler.ast.ChainNode> replaced
+     */
+    protected function promoteVariablesToMembers($node, $exclude= array()) {
+      $replaced= array();
+      foreach ((array)$node as $member => $type) {
+        if ($type instanceof VariableNode) {
+          if (!isset($exclude[$type->name])) {
+            $replaced['$'.$type->name]= $node->{$member}= new ChainNode(array(self::$vthis, $type));
+          }
+        } else if ($type instanceof xp·compiler·ast·Node) {
+          $replaced= array_merge($replaced, $this->promoteVariablesToMembers($node->{$member}, $exclude));
+        } else if (is_array($type) && !empty($type) && $type[0] instanceof xp·compiler·ast·Node) {
+          foreach ($type as $value) {
+            $replaced= array_merge($replaced, $this->promoteVariablesToMembers($value, $exclude));
+          }
+        }
+      }
+      return $replaced;
+    }
+
+
+    /**
      * Visit a variable
      *
      * @param   xp.compiler.ast.Node node
@@ -53,9 +80,7 @@
      * @return  array<string, xp.compiler.ast.ChainNode> replaced
      */
     public function promote($node) {
-      $this->replacements= array();
-      $this->visitOne($node);
-      return $this->replacements;
+      return $this->promoteVariablesToMembers($node, $this->excludes);    // FIXME: Use visitor
     }
   }
 ?>

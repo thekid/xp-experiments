@@ -16,6 +16,7 @@
     'xp.compiler.syntax.xp.Lexer',
     'xp.compiler.syntax.xp.Parser',
     'xp.compiler.ast.StatementsNode',
+    'xp.compiler.ast.LocalsToMemberPromoter',
     'xp.compiler.types.CompilationUnitScope',
     'xp.compiler.types.TypeDeclarationScope',
     'xp.compiler.types.MethodScope',
@@ -1186,33 +1187,6 @@
     }
     
     /**
-     * Promote all variables used inside a node to member variables except for
-     * the ones passed in as excludes, returning all replacements.
-     *
-     * @param   xp.compiler.ast.Node node
-     * @return  array<string, bool> excludes
-     * @return  array<string, xp.compiler.ast.ChainNode> replaced
-     */
-    protected function promoteVariablesToMembers($node, $exclude= array()) {
-      $replaced= array();
-      $vthis= new VariableNode('this');
-      foreach ((array)$node as $member => $type) {
-        if ($type instanceof VariableNode) {
-          if (!isset($exclude[$type->name])) {
-            $replaced['$'.$type->name]= $node->{$member}= new ChainNode(array($vthis, $type));
-          }
-        } else if ($type instanceof xp·compiler·ast·Node) {
-          $replaced= array_merge($replaced, $this->promoteVariablesToMembers($node->{$member}, $exclude));
-        } else if (is_array($type) && !empty($type) && $type[0] instanceof xp·compiler·ast·Node) {
-          foreach ($type as $value) {
-            $replaced= array_merge($replaced, $this->promoteVariablesToMembers($value, $exclude));
-          }
-        }
-      }
-      return $replaced;
-    }
-
-    /**
      * Emit a lambda
      *
      * @param   resource op
@@ -1223,14 +1197,15 @@
       
       // Visit all statements, promoting local variable used within tp members
       // FIXME: Use xp.compiler.ast.Visitor for this!
-      $parameters= $excludes= $replaced= array();
+      $promoter= new LocalsToMemberPromoter();
+      $parameters= $replaced= array();
       foreach ($lambda->parameters as $parameter) {
         $parameters[]= array('name' => $parameter->name, 'type' => TypeName::$VAR);
-        $excludes[$parameter->name]= TRUE;
+        $promoter->exclude($parameter->name);
       }
-      foreach ($lambda->statements as $stmt) {
-        $replaced= array_merge($replaced, $this->promoteVariablesToMembers($stmt, $excludes));
-      }
+      $replaced= $promoter->promote($lambda, $excludes);
+      
+      // Generate constructor
       $cparameters= $cstmt= array();
       foreach ($replaced as $name => $member) {
         $cparameters[]= array('name' => substr($name, 1), 'type' => TypeName::$VAR);
