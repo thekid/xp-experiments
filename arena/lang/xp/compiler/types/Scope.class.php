@@ -88,6 +88,15 @@
     public function addResolved($type, Types $resolved) {
       $this->resolved[$type]= $resolved;
     }
+
+    /**
+     * Gets list of resolved types
+     *
+     * @return  util.collections.HashTable<lang.types.String, xp.compiler.types.Types>
+     */
+    public function resolvedTypes() {
+      return $this->resolved;
+    }
     
     /**
      * Add an extension method
@@ -189,7 +198,6 @@
       }
       return NULL;
     }
-    
 
     /**
      * Resolve a type name
