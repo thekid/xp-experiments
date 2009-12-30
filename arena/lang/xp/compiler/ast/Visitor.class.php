@@ -627,8 +627,8 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitWith(WithNode $node) {
-      $this->visitAll($op, (array)$with->assignments);
-      $this->visitAll($op, (array)$with->statements);
+      $this->visitAll($op, (array)$node->assignments);
+      $this->visitAll($op, (array)$node->statements);
     }
     
     /**
@@ -641,7 +641,7 @@
       if (!method_exists($this, $target)) {
         throw new IllegalArgumentException('Don\'t know how to visit '.$node->getClassName().'s');
       }
-      call_user_func_array(array($this, $target), array($node));
+      call_user_func(array($this, $target), $node);
     }
 
     /**
