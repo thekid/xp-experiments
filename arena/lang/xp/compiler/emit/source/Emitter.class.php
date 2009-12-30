@@ -1593,7 +1593,10 @@
 
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Enum');
       $parentType= $this->resolveType($parent, FALSE);
-      $this->enter(new TypeDeclarationScope());    
+      $thisType= $this->resolveType($declaration->name, FALSE);
+      $this->scope[0]->addResolved($declaration->name->name, $thisType);
+      $this->scope[0]->imports[$declaration->name->name]= $declaration->name->name;   // FIXME: ???
+      $this->enter(new TypeDeclarationScope());
 
       // Ensure parent class and interfaces are loaded
       $this->emitUses($op, array_merge(
@@ -1636,7 +1639,7 @@
           new ReturnNode(array('expression' => new ClassMemberNode(array(
             'class'   => new TypeName('parent'),
             'member'  => new InvocationNode(array('name' => 'membersOf', 'parameters' => array(
-              new StringNode(array('value' => $this->resolveType($declaration->name, FALSE)->literal()))
+              new StringNode(array('value' => $thisType->literal()))
             )))
           ))))
         ),
@@ -1658,7 +1661,13 @@
             $this->error('E403', 'Only abstract enums can contain members with bodies ('.$member->name.')');
             // Continues so declaration is closed
           }
-          $op->append('newinstance(__CLASS__, array(');
+          
+          $unique= new TypeName($declaration->name->name.'··'.$member->name);
+          $decl= new ClassNode(0, NULL, $unique, $declaration->name, array(), $member->body);
+          $ptr= new TypeDeclaration(new ParseTree(NULL, array(), $decl), $thisType);
+          $this->scope[0]->declarations[]= $decl;
+          $this->scope[0]->addResolved($unique->name, $ptr);
+          $op->append('new '.$unique->name.'(');
         } else {
           $op->append('new self(');
         }
@@ -1667,16 +1676,7 @@
         } else {
           $op->append($i);
         }
-        $op->append(', \''.$member->name.'\')');
-        if ($member->body) {
-          $op->append(', \'{ static function __static() { }');
-          $sop= new xp·compiler·emit·source·Buffer('', $op->line);
-          $this->emitAll($sop, $member->body);
-          $op->append($sop->replace("'", "\'"));
-          $op->append('}\');');
-        } else {
-          $op->append(';');
-        }
+        $op->append(', \''.$member->name.'\');');
       }
       $op->append('}');
 
@@ -1746,10 +1746,12 @@
       $this->enter(new TypeDeclarationScope());    
       
       // Ensure parent class and interfaces are loaded
-      $this->emitUses($op, array_merge(
-        $declaration->parent ? array($parent) : array(),
-        (array)$declaration->implements
-      ));
+      if (!strstr($declaration->name->name, '··')) {
+        $this->emitUses($op, array_merge(
+          $declaration->parent ? array($parent) : array(),
+          (array)$declaration->implements
+        ));
+      }
     
       if (Modifiers::isAbstract($declaration->modifiers)) {
         $op->append('abstract ');
