@@ -69,7 +69,7 @@
    * Visits a parse tree
    *
    */
-  class Visitor extends Object {
+  abstract class Visitor extends Object {
 
     /**
      * Visit an annotation
