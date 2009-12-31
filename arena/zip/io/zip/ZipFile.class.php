@@ -4,46 +4,63 @@
  * $Id$ 
  */
 
-  uses('io.zip.ZipEntry');
+  uses(
+    'io.zip.ZipFile',
+    'io.zip.ZipDir',
+    'io.zip.ZipArchiveWriter',
+    'io.zip.ZipArchiveReader',
+    'io.streams.OutputStream',
+    'io.streams.InputStream'
+  );
 
   /**
-   * Represents a file entry in a zip archive
+   * Zip archives hanadling
    *
-   * @see      xp://io.zip.ZipEntry
-   * @purpose  Interface
+   * Usage (creating a zip file)
+   * ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   * <code>
+   *   $z= ZipFile::create(new FileOutputStream(new File('dist.zip')));
+   *   $z->addEntry(new ZipDirEntry('META-INF'));
+   *   $z->addEntry(new ZipFileEntry('META-INF/version.txt'))->write($contents);
+   *   $z->close();
+   * </code>
+   *
+   * Usage (reading a zip file)
+   * ~~~~~~~~~~~~~~~~~~~~~~~~~~
+   * <code>
+   *   $z= ZipFile::open(new FileInputStream(new File('dist.zip')));
+   *   foreach ($z->entries() as $entry) {
+   *     if ($entry->isDirectory()) {
+   *       // Create dir
+   *     } else {
+   *       // Extract
+   *     }
+   *   }
+   * </code>
+   *
+   * @see      http://www.pkware.com/documents/casestudies/APPNOTE.TXT
+   * @purpose  Entry point class
    */
-  class ZipFile extends Object implements ZipEntry {
-    protected 
-      $name = '', 
-      $mod  = NULL;
-        
-    /**
-     * Constructor
-     *
-     * @param   string name
-     * @param   util.Date modified default NULL
-     */
-    public function __construct($name, Date $modified= NULL) {
-      $this->name= str_replace('\\', '/', $name);
-      $this->mod= $modified ? $modified : Date::now();
-    }
+  abstract class ZipFile extends Object {
     
     /**
-     * Gets a zip entry's name
+     * Creation constructor
      *
-     * @return  string
+     * @param   io.streams.OutputStream stream
+     * @return  io.zip.ZipArchiveWriter
      */
-    public function getName() {
-      return $this->name;
+    public static function create(OutputStream $stream) {
+      return new ZipArchiveWriter($stream);
     }
-    
+
     /**
-     * Gets a zip entry's last modification time
+     * Read constructor
      *
-     * @return  util.Date
+     * @param   io.streams.InputStream stream
+     * @return  io.zip.ZipArchiveReader
      */
-    public function lastModified() {
-      return $this->mod;
-    }
+    public static function open(InputStream $stream) {
+      return new ZipArchiveReader($stream);
+    }   
   }
 ?>
