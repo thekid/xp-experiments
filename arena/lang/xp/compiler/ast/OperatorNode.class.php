@@ -4,14 +4,14 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.RoutineNode');
 
   /**
    * (Insert class' description here)
    *
    * @purpose  purpose
    */
-  class OperatorNode extends xp·compiler·ast·Node {
+  class OperatorNode extends RoutineNode {
     
   }
 ?>

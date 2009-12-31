@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.RoutineNode');
 
   /**
    * Represents a method
    *
    */
-  class MethodNode extends xp·compiler·ast·Node {
+  class MethodNode extends RoutineNode {
     public
       $name       = '',
       $modifiers  = 0,

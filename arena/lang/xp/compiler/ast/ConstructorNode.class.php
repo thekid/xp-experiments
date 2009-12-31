@@ -4,13 +4,13 @@
  * $Id$
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.RoutineNode');
 
   /**
    * Represents a constructor
    *
    */
-  class ConstructorNode extends xp·compiler·ast·Node {
+  class ConstructorNode extends RoutineNode {
     public
       $modifiers  = 0,
       $parameters = array();
