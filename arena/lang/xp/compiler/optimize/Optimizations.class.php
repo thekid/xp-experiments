@@ -60,5 +60,18 @@
         return $this->impl[$key]->optimize($in, $this);
       }
     }
+    
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      $s= $this->getClassName().'('.$this->impl->size().")@{\n";
+      foreach ($this->impl->keys() as $key) {
+        $s.= sprintf("  [%-20s] %s\n", $key->getSimpleName(), $this->impl->get($key)->getClassName());
+      }
+      return $s.'}';
+    }
   }
 ?>
