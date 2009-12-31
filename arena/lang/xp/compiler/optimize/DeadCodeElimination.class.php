@@ -5,7 +5,7 @@
  */
 
   uses(
-    'xp.compiler.ast.MethodNode',
+    'xp.compiler.ast.RoutineNode',
     'xp.compiler.optimize.Optimization'
   );
 
@@ -23,10 +23,8 @@
    * </code>
    *
    * @see      http://en.wikipedia.org/wiki/Dead_code_elimination
-   * @test     xp://tests.optimization.BinaryOptimizationTest
    */
   class DeadCodeElimination extends Object implements Optimization {
-    
     
     /**
      * Return node this optimization works on
@@ -34,7 +32,7 @@
      * @return  lang.XPClass<? extends xp.compiler.ast.Node>
      */
     public function node() {
-      return XPClass::forName('xp.compiler.ast.MethodNode');
+      return XPClass::forName('xp.compiler.ast.RoutineNode');
     }
     
     /**
@@ -45,7 +43,7 @@
      * @param   xp.compiler.ast.Node optimized
      */
     public function optimize(xp·compiler·ast·Node $in, Optimizations $optimizations) {
-      $method= cast($in, 'xp.compiler.ast.MethodNode');
+      $method= cast($in, 'xp.compiler.ast.RoutineNode');
 
       // Search for return statement, then see if anything comes after it
       $s= sizeof($method->body);
