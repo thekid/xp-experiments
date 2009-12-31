@@ -22,9 +22,9 @@
      * Constructor
      *
      * @param   io.zip.ZipArchiveWriter writer
-     * @param   io.zip.ZipFile file
+     * @param   io.zip.ZipFileEntry file
      */
-    public function __construct(ZipArchiveWriter $writer, ZipFile $file) {
+    public function __construct(ZipArchiveWriter $writer, ZipFileEntry $file) {
       $this->writer= $writer;
       $this->file= $file;
       $this->compression= Compression::$NONE;
