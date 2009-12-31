@@ -5,8 +5,8 @@
  */
 
   uses(
-    'io.zip.ZipFile',
-    'io.zip.ZipDir',
+    'io.zip.ZipFileEntry',
+    'io.zip.ZipDirEntry',
     'io.zip.ZipArchiveWriter',
     'io.zip.ZipArchiveReader',
     'io.streams.OutputStream',
