@@ -36,11 +36,11 @@
     /**
      * Adds a directory entry
      *
-     * @param   io.zip.ZipDir entry
-     * @return  io.zip.ZipDir the added directory
+     * @param   io.zip.ZipDirEntry entry
+     * @return  io.zip.ZipDirEntry the added directory
      * @throws  lang.IllegalArgumentException in case the filename is longer than 65535 bytes
      */
-    public function addDir(ZipDir $entry) {
+    public function addDir(ZipDirEntry $entry) {
       if (strlen($entry->getName()) > 0xFFFF) {
         throw new IllegalArgumentException('Filename too long ('.$nameLength.')');
       }
@@ -78,11 +78,11 @@
     /**
      * Adds a file entry
      *
-     * @param   io.zip.ZipFile entry
+     * @param   io.zip.ZipFileEntry entry
      * @return  io.zip.ZipFileOutputStream
      * @throws  lang.IllegalArgumentException in case the filename is longer than 65535 bytes
      */
-    public function addFile(ZipFile $entry) {
+    public function addFile(ZipFileEntry $entry) {
       if (strlen($entry->getName()) > 0xFFFF) {
         throw new IllegalArgumentException('Filename too long ('.$nameLength.')');
       }
@@ -127,7 +127,7 @@
      * @param   io.zip.Compression Compression
      * @param   string data
      */
-    public function writeFile(ZipFile $file, Compression $Compression, $data) {
+    public function writeFile(ZipFileEntry $file, Compression $Compression, $data) {
       $mod= $file->lastModified();
       $name= str_replace('\\', '/', $file->getName());
       $nameLength= strlen($name);
@@ -201,6 +201,11 @@
       $this->stream->write($comment);
     }
     
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
     public function toString() {
       $s= $this->getClassName().'('.$this->stream->toString().")@{\n";
       foreach ($this->dir as $name => $entry) {
