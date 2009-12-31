@@ -12,7 +12,7 @@
    * @see      xp://io.zip.ZipEntry
    * @purpose  Interface
    */
-  class ZipDir extends Object implements ZipEntry {
+  class ZipDirEntry extends Object implements ZipEntry {
     protected 
       $name = '', 
       $mod  = NULL;
