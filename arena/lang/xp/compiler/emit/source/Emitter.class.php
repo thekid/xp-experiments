@@ -1202,11 +1202,11 @@
         $parameters[]= array('name' => $parameter->name, 'type' => TypeName::$VAR);
         $promoter->exclude($parameter->name);
       }
-      $replaced= $promoter->promote($lambda, $excludes);
+      $promoted= $promoter->promote($lambda);
       
       // Generate constructor
       $cparameters= $cstmt= array();
-      foreach ($replaced as $name => $member) {
+      foreach ($promoted['replaced'] as $name => $member) {
         $cparameters[]= array('name' => substr($name, 1), 'type' => TypeName::$VAR);
         $cstmt[]= new AssignmentNode(array(
           'variable'    => $member, 
@@ -1225,14 +1225,14 @@
         new MethodNode(array(
           'name'        => 'invoke', 
           'arguments'   => $parameters,
-          'body'        => $lambda->statements,
+          'body'        => $promoted['node']->statements,
           'returns'     => TypeName::$VAR
         ))
       ));
       $this->scope[0]->declarations[]= $decl;
       
       // Finally emit array(new [UNIQUE]([CAPTURE]), "method")
-      $op->append('array(new '.$unique->name.'('.implode(',', array_keys($replaced)).'), \'invoke\')');
+      $op->append('array(new '.$unique->name.'('.implode(',', array_keys($promoted['replaced'])).'), \'invoke\')');
     }
 
     /**
@@ -1931,7 +1931,7 @@
           $node->hashCode()
         );
         try {
-          call_user_func_array(array($this, $target), array($op, $node));
+          call_user_func(array($this, $target), $op, $node);
         } catch (Throwable $e) {
           $this->error('0500', $e->toString(), $node);
           return 0;

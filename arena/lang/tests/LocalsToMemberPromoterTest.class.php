@@ -39,7 +39,7 @@
     protected function memberNode($name) {
       return new ChainNode(array(new VariableNode('this'), new VariableNode($name)));
     }
-  
+
     /**
      * Test
      *
@@ -51,15 +51,15 @@
         'expression'    => new IntegerNode(array('value' => '0')),
         'op'            => '='
       ));
-      $replaced= $this->fixture->promote($assignment);
-      $this->assertEquals(array('$i' => $this->memberNode('i')), $replaced);
+      $promoted= $this->fixture->promote($assignment);
+      $this->assertEquals(array('$i' => $this->memberNode('i')), $promoted['replaced']);
       $this->assertEquals(
         new AssignmentNode(array(
           'variable'      => $this->memberNode('i'),
           'expression'    => new IntegerNode(array('value' => '0')),
           'op'            => '='
         )),
-        $assignment
+        $promoted['node']
       );
     }
 
@@ -75,15 +75,15 @@
         'op'            => '='
       ));
       $this->fixture->exclude('a');
-      $replaced= $this->fixture->promote($assignment);
-      $this->assertEquals(array('$i' => $this->memberNode('i')), $replaced);
+      $promoted= $this->fixture->promote($assignment);
+      $this->assertEquals(array('$i' => $this->memberNode('i')), $promoted['replaced']);
       $this->assertEquals(
         new AssignmentNode(array(
           'variable'      => $this->memberNode('i'),
           'expression'    => new VariableNode('a'),
           'op'            => '='
         )),
-        $assignment
+        $promoted['node']
       );
     }
 
@@ -98,15 +98,15 @@
         'expression'    => $this->memberNode('i'),
         'op'            => '='
       ));
-      $replaced= $this->fixture->promote($assignment);
-      $this->assertEquals(array('$i' => $this->memberNode('i')), $replaced);
+      $promoted= $this->fixture->promote($assignment);
+      $this->assertEquals(array('$i' => $this->memberNode('i')), $promoted['replaced']);
       $this->assertEquals(
         new AssignmentNode(array(
           'variable'      => $this->memberNode('i'),
           'expression'    => $this->memberNode('i'),
           'op'            => '='
         )),
-        $assignment
+        $promoted['node']
       );
     }
   }

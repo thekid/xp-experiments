@@ -19,38 +19,11 @@
     protected $excludes= array('this' => TRUE);
     protected $replacements= array();
 
-    protected static $vthis;
+    protected static $THIS;
     
     static function __static() {
-      self::$vthis= new VariableNode('this');
+      self::$THIS= new VariableNode('this');
     }
-
-    /**
-     * Promote all variables used inside a node to member variables except for
-     * the ones passed in as excludes, returning all replacements.
-     *
-     * @param   xp.compiler.ast.Node node
-     * @return  array<string, bool> excludes
-     * @return  array<string, xp.compiler.ast.ChainNode> replaced
-     */
-    protected function promoteVariablesToMembers($node, $exclude= array()) {
-      $replaced= array();
-      foreach ((array)$node as $member => $type) {
-        if ($type instanceof VariableNode) {
-          if (!isset($exclude[$type->name])) {
-            $replaced['$'.$type->name]= $node->{$member}= new ChainNode(array(self::$vthis, $type));
-          }
-        } else if ($type instanceof xp·compiler·ast·Node) {
-          $replaced= array_merge($replaced, $this->promoteVariablesToMembers($node->{$member}, $exclude));
-        } else if (is_array($type) && !empty($type) && $type[0] instanceof xp·compiler·ast·Node) {
-          foreach ($type as $value) {
-            $replaced= array_merge($replaced, $this->promoteVariablesToMembers($value, $exclude));
-          }
-        }
-      }
-      return $replaced;
-    }
-
 
     /**
      * Visit a variable
@@ -60,7 +33,25 @@
     protected function visitVariable(VariableNode $node) {
       $n= $node->name;
       if (!isset($this->excludes[$n])) {
-        $this->replacements['$'.$n]= $node= new ChainNode(array(self::$vthis, $node));
+        $this->replacements['$'.$n]= $node= new ChainNode(array(self::$THIS, $node));
+      }
+      return $node;
+    }
+
+    /**
+     * Visit a chain
+     *
+     * @param   xp.compiler.ast.Node node
+     */
+    protected function visitChain(ChainNode $node) {
+      if (self::$THIS->equals($node->elements[0]) && $node->elements[1] instanceof VariableNode) {
+      
+        // $this->i = Chain(Var(this), Var(i))
+        $shift= array(array_shift($node->elements), array_shift($node->elements));
+        $node->elements= array_merge($shift, $this->visitAll((array)$node->elements));
+        return $node;
+      } else {
+        return parent::visitChain($node);
       }
     }
 
@@ -76,11 +67,13 @@
     /**
      * Run
      *
-     * @param   xp.compiler.ast.Node node
+     * @param   xp.compiler.ast.Node nodes
      * @return  array<string, xp.compiler.ast.ChainNode> replaced
      */
     public function promote($node) {
-      return $this->promoteVariablesToMembers($node, $this->excludes);    // FIXME: Use visitor
+      $this->replacements= array();
+      $node= $this->visitOne($node);
+      return array('replaced' => $this->replacements, 'node' => $node);
     }
   }
 ?>
