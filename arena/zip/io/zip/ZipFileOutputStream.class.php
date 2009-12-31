@@ -14,8 +14,8 @@
    */
   class ZipFileOutputStream extends Object implements OutputStream {
     protected
-      $writer     = NULL,
-      $data       = NULL,
+      $writer      = NULL,
+      $data        = NULL,
       $compression = NULL;
     
     /**
