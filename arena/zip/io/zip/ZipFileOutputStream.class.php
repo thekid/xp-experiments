@@ -16,7 +16,7 @@
     protected
       $writer     = NULL,
       $data       = NULL,
-      $Compression = NULL;
+      $compression = NULL;
     
     /**
      * Constructor
@@ -27,27 +27,27 @@
     public function __construct(ZipArchiveWriter $writer, ZipFile $file) {
       $this->writer= $writer;
       $this->file= $file;
-      $this->Compression= Compression::$NONE;
+      $this->compression= Compression::$NONE;
       $this->data= '';
     }
     
     /**
-     * Use a given Compression
+     * Use a given compression
      *
-     * @param   io.zip.Compression Compression
+     * @param   io.zip.Compression compression
      */
-    public function setCompression(Compression $Compression) {
-      $this->Compression= $Compression;
+    public function setCompression(Compression $compression) {
+      $this->compression= $compression;
     }
 
     /**
-     * Use a given Compression and return this stream
+     * Use a given compression and return this stream
      *
-     * @param   io.zip.Compression Compression
+     * @param   io.zip.Compression compression
      * @return  io.zip.ZipFileOutputStream this stream
      */
-    public function withCompression(Compression $Compression) {
-      $this->Compression= $Compression;
+    public function withCompression(Compression $compression) {
+      $this->compression= $compression;
       return $this;
     }
 
@@ -73,7 +73,7 @@
      *
      */
     public function close() {
-      $this->writer->writeFile($this->file, $this->Compression, $this->data);
+      $this->writer->writeFile($this->file, $this->compression, $this->data);
       $this->data= NULL;
     }
   }
