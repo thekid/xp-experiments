@@ -45,5 +45,21 @@
     public function lastModified() {
       return $this->mod;
     }
+    
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        "%s(%s)@{\n".
+        "  [lastModified] %s\n".
+        "}",
+        $this->getClassName(),
+        $this->name,
+        xp::stringOf($this->mod)
+      );
+    }
   }
 ?>
