@@ -24,6 +24,10 @@
         protected function doCompress($data, $level) {
           return $data;
         }
+
+        protected function doDecompress($data, $level) {
+          return $data;
+        }
       }');
       self::$GZ= newinstance(__CLASS__, array(8, 'GZ'), '{
         static function __static() { }
@@ -31,12 +35,20 @@
         protected function doCompress($data, $level) {
           return gzdeflate($data, $level);
         }
+
+        protected function doDecompress($data, $level) {
+          return gzinflate($data, $level);
+        }
       }');
       self::$BZ= newinstance(__CLASS__, array(12, 'BZ'), '{
         static function __static() { }
         
         protected function doCompress($data, $level) {
           return bzcompress($data, $level);
+        }
+
+        protected function doDecompress($data, $level) {
+          return bzdecompress($data, $level);
         }
       }');
     }
@@ -72,5 +84,39 @@
      * @return  string compress
      */
     protected abstract function doCompress($data, $level);
+
+    /**
+     * Decompresses data
+     *
+     * @param   string compressed The compressed data
+     * @return  string data
+     */
+    public function decompress($compressed) {
+      return $this->doDecompress($compressed);
+    }
+
+
+    /**
+     * Decompresses data. Implemented in members.
+     *
+     * @param   string compressed The compressed data
+     * @return  string data
+     */
+    protected abstract function doDecompress($data, $level);
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   int n
+     * @return  
+     */
+    public static function getInstance($n) {
+      switch ($n) {
+        case 0: return self::$NONE;
+        case 8: return self::$GZ;
+        case 12: return self::$BZ;
+        default: throw new IllegalArgumentException('Unknown compression algorithm #'.$n);
+      }
+    }
   }
 ?>
