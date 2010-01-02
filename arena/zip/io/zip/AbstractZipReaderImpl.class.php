@@ -6,7 +6,9 @@
 
   uses(
     'io.streams.InputStream', 
-    'io.zip.Compression', 
+    'io.zip.Compression',
+    'io.zip.ZipDirEntry',
+    'io.zip.ZipFileEntry',
     'util.Date'
   );
 
@@ -49,39 +51,53 @@
         ($time << 1) & 0x1E
       );
     }
+
+    /**
+     * Get first entry
+     *
+     * @return  io.zip.ZipEntry
+     */
+    public abstract function firstEntry();
     
     /**
-     * Read local file header
+     * Get next entry
      *
-     * @return  array<string, var>
+     * @return  io.zip.ZipEntry
      */
-    protected function readLocalFileHeader() {
-      $header= unpack(
-        'vversion/vflags/vcompression/vtime/vdate/Vcrc/Vcompressed/Vuncompressed/vnamelen/vextralen', 
-        $this->stream->read(26)
-      );
-      
-      $header['name']= iconv('cp437', 'iso-8859-1', $this->stream->read($header['namelen']));
-      $header['extra']= $this->stream->read($header['extralen']);
+    public abstract function nextEntry();
 
-      Console::writeLinef(
-        '- %s: %.2f kB / %s @ %s',
-        $header['name'], 
-        $header['uncompressed'] / 1024,
-        Compression::getInstance($header['compression'])->name(),
-        $this->dateFromDosDateTime($header['date'], $header['time'])->toString('Y-m-d H:i:s')
-      );
-      Console::writeLine(xp::stringOf($header));
-      return $header;
-    }
-
+    /**
+     * Gets current entry
+     *
+     * @return  io.zip.ZipEntry
+     */
     public function currentEntry() {
       $type= $this->stream->read(4);
       switch ($type) {
         case self::FHDR: {      // Entry
-          $header= $this->readLocalFileHeader();
+          $header= unpack(
+            'vversion/vflags/vcompression/vtime/vdate/Vcrc/Vcompressed/Vuncompressed/vnamelen/vextralen', 
+            $this->stream->read(26)
+          );
+          $name= iconv('cp437', 'iso-8859-1', $this->stream->read($header['namelen']));
+          $extra= $this->stream->read($header['extralen']);
+          $date= $this->dateFromDosDateTime($header['date'], $header['time']);
+
+          Console::writeLinef(
+            '- %s: %.2f kB / %s @ %s',
+            $name, 
+            $header['uncompressed'] / 1024,
+            Compression::getInstance($header['compression'])->name(),
+            $date->toString('Y-m-d H:i:s')
+          );
+          Console::writeLine(xp::stringOf($header));
+
           $this->skip= $header['compressed'];
-          return new ZipFileEntry($header['name'], $this->dateFromDosDateTime($header['date'], $header['time']));
+          if ('/' === substr($name, -1)) {
+            return new ZipDirEntry($name, $date);
+          } else {
+            return new ZipFileEntry($name, $date);
+          }
         }
         case self::DHDR: {      // Zip directory
           return NULL;          // XXX: For the moment, ignore directory and stop here
