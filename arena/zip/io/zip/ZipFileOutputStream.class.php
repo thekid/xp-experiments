@@ -73,6 +73,8 @@
      *
      */
     public function close() {
+      if (NULL === $this->data) return;     // Already written
+
       $this->writer->writeFile($this->file, $this->compression, $this->data);
       $this->data= NULL;
     }
