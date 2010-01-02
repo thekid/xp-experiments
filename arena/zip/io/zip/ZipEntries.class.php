@@ -5,7 +5,7 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Iterates on ZIP archive entries
    *
    */
   class ZipEntries extends Object implements Iterator {
@@ -26,7 +26,7 @@
     /**
      * Returns current value of iteration
      *
-     * @return  var
+     * @return  io.zip.ZipEntry
      */
     public function current() { 
       return $this->entry;
@@ -42,7 +42,7 @@
     }
 
     /**
-     * Returns current value of iteration
+     * Goes to next
      *
      */
     public function next() { 
@@ -51,7 +51,7 @@
     }
 
     /**
-     * Returns current value of iteration
+     * Rewinds
      *
      */
     public function rewind() { 
@@ -67,6 +67,5 @@
     public function valid() { 
       return NULL !== $this->entry; 
     }
-    
   }
 ?>
