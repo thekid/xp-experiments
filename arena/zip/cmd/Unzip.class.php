@@ -7,6 +7,7 @@
   uses(
     'util.cmd.Command',
     'io.archive.zip.ZipFile',
+    'io.streams.Streams',
     'io.File',
     'io.Folder',
     'peer.http.HttpConnection'
@@ -76,9 +77,7 @@
           
           $out= $f->getOutputStream();
           $in= $entry->getInputStream();
-          while ($in->available()) {
-            $out->write($in->read());
-          }
+          Streams::transferTo($in, $out);
           $in->close();
           $out->close();
         }

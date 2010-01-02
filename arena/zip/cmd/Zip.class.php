@@ -8,6 +8,7 @@
     'util.cmd.Command',
     'io.archive.zip.ZipFile',
     'io.Folder',
+    'io.streams.Streams',
     'io.collections.FileCollection',
     'io.collections.FileElement',
     'io.collections.iterate.IOCollectionIterator',
@@ -55,9 +56,7 @@
       $out= $entry->getOutputStream();
       $out->setCompression(Compression::$GZ); 
       $in= $element->getInputStream();
-      while ($in->available()) {
-        $out->write($in->read());
-      }
+      Streams::transferTo($in, $out);
       $in->close();
       $out->close();
     }
