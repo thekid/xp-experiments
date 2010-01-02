@@ -135,26 +135,28 @@
       $compressionMethod= $compression->ordinal();
       $compressed= $compression->compress($data);
       $compressedLength= strlen($compressed);
+      $extraLength= 0;
+      $extra= '';
 
       $info= pack(
-        'vvvVVVv',
+        'vvvVVVvv',
         $compressionMethod,       // compression method, 0 = none, 8 = gz, 12 = bz
         $this->dosTime($mod),     // last modified dostime
         $this->dosDate($mod),     // last modified dosdate
         $crc32,                   // CRC32 checksum
         $compressedLength,        // compressed size
         strlen($data),            // uncompressed size
-        $nameLength               // filename length
+        $nameLength,              // filename length
+        $extraLength              // extra field length
       );
 
-      $this->stream->write(self::FHDR.$info."\x00\x00".$name);
+      $this->stream->write(self::FHDR.$info.$name.$extra);
       $this->stream->write($compressed);
       
       $this->dir[$name]= array('info' => $info, 'pointer' => $this->pointer, 'type' => 0x20);
       $this->pointer+= (
         strlen(self::FHDR) + 
         strlen($info) + 
-        strlen("\x00\x00") + 
         $nameLength + 
         $compressedLength
       );
