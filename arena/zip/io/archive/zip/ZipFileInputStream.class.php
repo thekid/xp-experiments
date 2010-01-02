@@ -15,19 +15,16 @@
     protected 
       $reader      = NULL,
       $pos         = 0,
-      $length      = 0,
-      $compression = NULL;
+      $length      = 0;
 
     /**
      * Constructor
      *
      * @param   io.archive.zip.AbstractZipReaderImpl reader
-     * @param   io.archive.zip.Compression compression
      * @param   int length
      */
-    public function __construct(AbstractZipReaderImpl $reader, Compression $compression, $length) {
+    public function __construct(AbstractZipReaderImpl $reader, $length) {
       $this->reader= $reader;
-      $this->compression= $compression;
       $this->length= $length;
     }
 
@@ -41,15 +38,11 @@
       if ($this->pos >= $this->length) {
         throw new IOException('EOF');
       }
-      $data= '';
-      while ($this->available() > 0) {
-        $chunk= $this->reader->streamRead($this->length- $this->pos);
-        $read= strlen($chunk);
-        $this->pos+= $read;
-        $this->reader->skip-= $read;
-        $data.= $chunk;
-      }
-      return $this->compression->decompress($data);
+      $chunk= $this->reader->streamRead(min($limit, $this->length- $this->pos));
+      $l= strlen($chunk);
+      $this->pos+= $l;
+      $this->reader->skip-= $l;
+      return $chunk;
     }
 
     /**

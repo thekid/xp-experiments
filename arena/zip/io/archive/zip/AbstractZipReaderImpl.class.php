@@ -110,11 +110,9 @@
             return new ZipDirEntry($name, $date);
           } else {
             $e= new ZipFileEntry($name, $date);
-            $e->is= new ZipFileInputStream(
-              $this, 
-              Compression::getInstance($header['compression']),
-              $header['compressed']
-            );
+            $e->is= Compression::getInstance($header['compression'])->getDecompressionStream(
+              new ZipFileInputStream($this, $header['compressed']
+            ));
             return $e;
           }
         }

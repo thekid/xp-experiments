@@ -4,7 +4,11 @@
  * $Id: Compression.class.php 11831 2010-01-02 12:58:24Z friebe $ 
  */
 
-  uses('lang.Enum');
+  uses(
+    'lang.Enum', 
+    'io.streams.InputStream', 
+    'io.streams.InflatingInputStream'
+  );
 
   /**
    * Compression algorithm enumeration
@@ -25,8 +29,8 @@
           return $data;
         }
 
-        protected function doDecompress($data) {
-          return $data;
+        public function getDecompressionStream(InputStream $stream) {
+          return $stream;
         }
       }');
       self::$GZ= newinstance(__CLASS__, array(8, 'GZ'), '{
@@ -36,8 +40,8 @@
           return gzdeflate($data, $level);
         }
 
-        protected function doDecompress($data) {
-          return gzinflate($data);
+        public function getDecompressionStream(InputStream $stream) {
+          return new InflatingInputStream($stream);
         }
       }');
       self::$BZ= newinstance(__CLASS__, array(12, 'BZ'), '{
@@ -47,8 +51,8 @@
           return bzcompress($data, $level);
         }
 
-        protected function doDecompress($data) {
-          return bzdecompress($data);
+        public function getDecompressionStream(InputStream $stream) {
+          // Not yet implemented
         }
       }');
     }
@@ -86,29 +90,19 @@
     protected abstract function doCompress($data, $level);
 
     /**
-     * Decompresses data
+     * Gets decompression stream. Implemented in members.
      *
-     * @param   string compressed The compressed data
-     * @return  string data
+     * @param   io.streams.InputStream
+     * @return  io.streams.InputStream
      */
-    public function decompress($compressed) {
-      return $this->doDecompress($compressed);
-    }
-
+    public abstract function getDecompressionStream(InputStream $in);
 
     /**
-     * Decompresses data. Implemented in members.
-     *
-     * @param   string compressed The compressed data
-     * @return  string data
-     */
-    protected abstract function doDecompress($data);
-    
-    /**
-     * (Insert method's description here)
+     * Get a compression instance by a given id
      *
      * @param   int n
-     * @return  
+     * @return  io.archive.zip.Compression
+     * @throws  lang.IllegalArgumentException
      */
     public static function getInstance($n) {
       switch ($n) {
