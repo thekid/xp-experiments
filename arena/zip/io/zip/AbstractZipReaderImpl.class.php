@@ -103,16 +103,6 @@
           $name= iconv('cp437', 'iso-8859-1', $this->stream->read($header['namelen']));
           $extra= $this->stream->read($header['extralen']);
           $date= $this->dateFromDosDateTime($header['date'], $header['time']);
-
-          Console::writeLinef(
-            '- %s: %.2f kB / %s @ %s',
-            $name, 
-            $header['uncompressed'] / 1024,
-            Compression::getInstance($header['compression'])->name(),
-            $date->toString('Y-m-d H:i:s')
-          );
-          Console::writeLine(xp::stringOf($header));
-
           $this->skip= $header['compressed'];
           if ('/' === substr($name, -1)) {
             return new ZipDirEntry($name, $date);
