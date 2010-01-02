@@ -33,7 +33,13 @@
      * @return  io.zip.ZipEntry[]
      */
     public function entries() {
-      return $this->impl->entries();
+      $entries= array();
+      $entry= $this->impl->firstEntry();
+      while ($entry) {
+        $entries[]= $entry;
+        $entry= $this->impl->nextEntry();
+      }
+      return $entries;
     }
   }
 ?>

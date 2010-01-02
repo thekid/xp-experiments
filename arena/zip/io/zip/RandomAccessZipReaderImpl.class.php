@@ -11,6 +11,7 @@
    *
    */
   class RandomAccessZipReaderImpl extends AbstractZipReaderImpl {
+    protected $skip= 0;
 
     /**
      * Creation constructor
@@ -21,38 +22,37 @@
       parent::__construct(cast($stream, 'io.streams.Seekable'));
     }
     
-    /**
-     * Returns a list of all entries in this zip file
-     *
-     * @return  io.zip.ZipEntry[]
-     */
-    public function entries() {
-      $done= FALSE;
-      $r= array();
+    public function firstEntry() {
       $this->stream->seek(0, SEEK_SET);
-      do {
-        $header= $this->stream->read(4);
-        switch ($header) {
-          case self::FHDR: {      // Entry
-            $header= $this->readLocalFileHeader();
-            $this->stream->seek($header['compressed'], SEEK_CUR);
-            $r[]= new ZipFileEntry($header['name'], $this->dateFromDosDateTime($header['date'], $header['time']));
-            break;
-          }
-          case self::DHDR: {      // Zip directory
-            $done= TRUE;          // XXX: For the moment, ignore directory and stop here
-            break;
-          }
-          case self::EOCD: {      // End of central directory
-            $done= TRUE;
-            break;
-          }
-          default: {
-            throw new FormatException('Unknown byte sequence '.addcslashes($header, "\0..\17"));
-          }
+      return $this->currentEntry();
+    }
+    
+    public function nextEntry() {
+      $this->skip && $this->stream->seek($this->skip, SEEK_CUR);
+      return $this->currentEntry();
+    }
+    
+    public function currentEntry() {
+      $type= $this->stream->read(4);
+      switch ($type) {
+        case self::FHDR: {      // Entry
+          $header= $this->readLocalFileHeader();
+          $this->skip= $header['compressed'];
+          return new ZipFileEntry($header['name'], $this->dateFromDosDateTime($header['date'], $header['time']));
         }
-      } while (!$done);
-      return $r;
+        case self::DHDR: {      // Zip directory
+          return NULL;          // XXX: For the moment, ignore directory and stop here
+          break;
+        }
+        case self::EOCD: {      // End of central directory
+          return NULL;
+          break;
+        }
+        default: {
+          throw new FormatException('Unknown byte sequence '.addcslashes($type, "\0..\17"));
+        }
+      }
+      return NULL;
     }
   }
 ?>
