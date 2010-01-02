@@ -8,7 +8,8 @@
     'util.cmd.Command',
     'io.zip.ZipFile',
     'io.File',
-    'io.Folder'
+    'io.Folder',
+    'peer.http.HttpConnection'
   );
 
   /**
@@ -37,7 +38,12 @@
      */
     #[@arg(position= 0)]
     public function setFile($file) {
-      $this->zip= ZipFile::open(create(new File($file))->getInputStream());
+      if (strstr($file, '://')) {
+        $input= create(new HttpConnection($file))->get()->getInputStream();
+      } else {
+        $input= create(new File($file))->getInputStream();
+      }
+      $this->zip= ZipFile::open($input);
     }
 
     /**
