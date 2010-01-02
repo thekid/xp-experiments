@@ -1,15 +1,15 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: AbstractZipReaderImpl.class.php 11845 2010-01-02 14:16:36Z friebe $ 
  */
 
   uses(
     'io.streams.InputStream', 
-    'io.zip.ZipFileInputStream', 
-    'io.zip.Compression',
-    'io.zip.ZipDirEntry',
-    'io.zip.ZipFileEntry',
+    'io.archive.zip.ZipFileInputStream', 
+    'io.archive.zip.Compression',
+    'io.archive.zip.ZipDirEntry',
+    'io.archive.zip.ZipFileEntry',
     'util.Date'
   );
 
@@ -76,21 +76,21 @@
     /**
      * Get first entry
      *
-     * @return  io.zip.ZipEntry
+     * @return  io.archive.zip.ZipEntry
      */
     public abstract function firstEntry();
     
     /**
      * Get next entry
      *
-     * @return  io.zip.ZipEntry
+     * @return  io.archive.zip.ZipEntry
      */
     public abstract function nextEntry();
 
     /**
      * Gets current entry
      *
-     * @return  io.zip.ZipEntry
+     * @return  io.archive.zip.ZipEntry
      */
     public function currentEntry() {
       $type= $this->stream->read(4);

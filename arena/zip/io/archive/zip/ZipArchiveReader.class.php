@@ -1,15 +1,15 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: ZipArchiveReader.class.php 11833 2010-01-02 13:17:41Z friebe $ 
  */
 
-  uses('io.zip.RandomAccessZipReaderImpl', 'io.zip.SequentialZipReaderImpl', 'io.zip.ZipEntries');
+  uses('io.archive.zip.RandomAccessZipReaderImpl', 'io.archive.zip.SequentialZipReaderImpl', 'io.archive.zip.ZipEntries');
 
   /**
    * Read from a zip file
    *
-   * @see      xp://io.zip.ZipArchive#open
+   * @see      xp://io.archive.zip.ZipArchive#open
    * @purpose  Write to a zip archive
    */
   class ZipArchiveReader extends Object {
@@ -30,7 +30,7 @@
     /**
      * Returns a list of all entries in this zip file
      *
-     * @return  io.zip.ZipEntries
+     * @return  io.archive.zip.ZipEntries
      */
     public function entries() {
       return new ZipEntries($this->impl);

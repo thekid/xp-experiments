@@ -1,10 +1,10 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: ZipEntries.class.php 11847 2010-01-02 14:21:16Z friebe $ 
  */
 
-  uses('io.zip.ZipEntry');
+  uses('io.archive.zip.ZipEntry');
 
   /**
    * Iterates on ZIP archive entries
@@ -18,7 +18,7 @@
     /**
      * Constructor
      *
-     * @param   io.zip.AbstractZipReaderImpl impl
+     * @param   io.archive.zip.AbstractZipReaderImpl impl
      */
     public function __construct($impl) {
       $this->impl= $impl;
@@ -28,7 +28,7 @@
     /**
      * Returns current value of iteration
      *
-     * @return  io.zip.ZipEntry
+     * @return  io.archive.zip.ZipEntry
      */
     public function current() { 
       return $this->entry;

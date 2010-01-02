@@ -1,14 +1,14 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: ZipFile.class.php 11833 2010-01-02 13:17:41Z friebe $ 
  */
 
   uses(
-    'io.zip.ZipFileEntry',
-    'io.zip.ZipDirEntry',
-    'io.zip.ZipArchiveWriter',
-    'io.zip.ZipArchiveReader',
+    'io.archive.zip.ZipFileEntry',
+    'io.archive.zip.ZipDirEntry',
+    'io.archive.zip.ZipArchiveWriter',
+    'io.archive.zip.ZipArchiveReader',
     'io.streams.OutputStream',
     'io.streams.InputStream'
   );
@@ -48,7 +48,7 @@
      * Creation constructor
      *
      * @param   io.streams.OutputStream stream
-     * @return  io.zip.ZipArchiveWriter
+     * @return  io.archive.zip.ZipArchiveWriter
      */
     public static function create(OutputStream $stream) {
       return new ZipArchiveWriter($stream);
@@ -58,7 +58,7 @@
      * Read constructor
      *
      * @param   io.streams.InputStream stream
-     * @return  io.zip.ZipArchiveReader
+     * @return  io.archive.zip.ZipArchiveReader
      */
     public static function open(InputStream $stream) {
       return new ZipArchiveReader($stream);

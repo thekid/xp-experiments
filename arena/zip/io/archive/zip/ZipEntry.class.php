@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: ZipEntry.class.php 11840 2010-01-02 13:58:25Z friebe $ 
  */
 
   uses('util.Date');
@@ -9,7 +9,7 @@
   /**
    * Represents an entry in a zip archive
    *
-   * @see      xp://io.zip.ZipArchive
+   * @see      xp://io.archive.zip.ZipArchive
    * @purpose  Interface
    */
   interface ZipEntry {

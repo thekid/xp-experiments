@@ -1,10 +1,10 @@
 <?php
 /* This file is part of the XP framework
  *
- * $Id$
+ * $Id: ZipFileInputStream.class.php 11836 2010-01-02 13:51:25Z friebe $
  */
 
-  uses('io.streams.InputStream', 'io.zip.Compression');
+  uses('io.streams.InputStream', 'io.archive.zip.Compression');
 
   /**
    * Zip File input stream
@@ -21,8 +21,8 @@
     /**
      * Constructor
      *
-     * @param   io.zip.AbstractZipReaderImpl reader
-     * @param   io.zip.Compression compression
+     * @param   io.archive.zip.AbstractZipReaderImpl reader
+     * @param   io.archive.zip.Compression compression
      * @param   int length
      */
     public function __construct(AbstractZipReaderImpl $reader, Compression $compression, $length) {

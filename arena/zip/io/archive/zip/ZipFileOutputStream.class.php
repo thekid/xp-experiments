@@ -1,15 +1,15 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: ZipFileOutputStream.class.php 11849 2010-01-02 15:09:20Z friebe $ 
  */
 
-  uses('io.streams.OutputStream', 'io.zip.Compression');
+  uses('io.streams.OutputStream', 'io.archive.zip.Compression');
 
   /**
    * Output stream for files
    *
-   * @see      xp://io.zip.ZipArchiveWriter#addEntry
+   * @see      xp://io.archive.zip.ZipArchiveWriter#addEntry
    * @purpose  Stream
    */
   class ZipFileOutputStream extends Object implements OutputStream {
@@ -21,8 +21,8 @@
     /**
      * Constructor
      *
-     * @param   io.zip.ZipArchiveWriter writer
-     * @param   io.zip.ZipFileEntry file
+     * @param   io.archive.zip.ZipArchiveWriter writer
+     * @param   io.archive.zip.ZipFileEntry file
      */
     public function __construct(ZipArchiveWriter $writer, ZipFileEntry $file) {
       $this->writer= $writer;
@@ -34,7 +34,7 @@
     /**
      * Use a given compression
      *
-     * @param   io.zip.Compression compression
+     * @param   io.archive.zip.Compression compression
      */
     public function setCompression(Compression $compression) {
       $this->compression= $compression;
@@ -43,8 +43,8 @@
     /**
      * Use a given compression and return this stream
      *
-     * @param   io.zip.Compression compression
-     * @return  io.zip.ZipFileOutputStream this stream
+     * @param   io.archive.zip.Compression compression
+     * @return  io.archive.zip.ZipFileOutputStream this stream
      */
     public function withCompression(Compression $compression) {
       $this->compression= $compression;

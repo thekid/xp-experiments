@@ -6,7 +6,7 @@
 
   uses(
     'util.cmd.Command',
-    'io.zip.ZipFile',
+    'io.archive.zip.ZipFile',
     'io.File',
     'io.Folder',
     'peer.http.HttpConnection'

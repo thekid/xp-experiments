@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: Compression.class.php 11831 2010-01-02 12:58:24Z friebe $ 
  */
 
   uses('lang.Enum');
@@ -11,7 +11,7 @@
    *
    * @ext      bz2
    * @ext      zlib
-   * @see      xp://io.zip.ZipArchive
+   * @see      xp://io.archive.zip.ZipArchive
    * @purpose  Compressions
    */
   abstract class Compression extends Enum {

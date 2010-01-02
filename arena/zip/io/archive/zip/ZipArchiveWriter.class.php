@@ -1,16 +1,16 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: ZipArchiveWriter.class.php 11848 2010-01-02 14:59:45Z friebe $ 
  */
 
-  uses('io.zip.ZipEntry', 'io.zip.Compression', 'io.zip.ZipFileOutputStream');
+  uses('io.archive.zip.ZipEntry', 'io.archive.zip.Compression', 'io.archive.zip.ZipFileOutputStream');
 
 
   /**
    * Writes to a ZIP archive
    *
-   * @see      xp://io.zip.ZipArchive#create
+   * @see      xp://io.archive.zip.ZipArchive#create
    * @purpose  Write to a zip archive
    */
   class ZipArchiveWriter extends Object {
@@ -36,8 +36,8 @@
     /**
      * Adds a directory entry
      *
-     * @param   io.zip.ZipDirEntry entry
-     * @return  io.zip.ZipDirEntry the added directory
+     * @param   io.archive.zip.ZipDirEntry entry
+     * @return  io.archive.zip.ZipDirEntry the added directory
      * @throws  lang.IllegalArgumentException in case the filename is longer than 65535 bytes
      */
     public function addDir(ZipDirEntry $entry) {
@@ -81,8 +81,8 @@
     /**
      * Adds a file entry
      *
-     * @param   io.zip.ZipFileEntry entry
-     * @return  io.zip.ZipFileOutputStream
+     * @param   io.archive.zip.ZipFileEntry entry
+     * @return  io.archive.zip.ZipFileOutputStream
      * @throws  lang.IllegalArgumentException in case the filename is longer than 65535 bytes
      */
     public function addFile(ZipFileEntry $entry) {
@@ -126,8 +126,8 @@
     /**
      * Write a file entry
      *
-     * @param   io.zip.ZipFile file
-     * @param   io.zip.Compression compression
+     * @param   io.archive.zip.ZipFile file
+     * @param   io.archive.zip.Compression compression
      * @param   string data
      */
     public function writeFile(ZipFileEntry $file, Compression $compression, $data) {

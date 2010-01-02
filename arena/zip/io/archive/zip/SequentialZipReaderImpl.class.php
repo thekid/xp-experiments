@@ -1,10 +1,10 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: SequentialZipReaderImpl.class.php 11833 2010-01-02 13:17:41Z friebe $ 
  */
 
-  uses('io.zip.AbstractZipReaderImpl', 'io.streams.Seekable');
+  uses('io.archive.zip.AbstractZipReaderImpl', 'io.streams.Seekable');
 
   /**
    * Zip archive reader that works on any input stream.
@@ -16,7 +16,7 @@
     /**
      * Get first entry
      *
-     * @return  io.zip.ZipEntry
+     * @return  io.archive.zip.ZipEntry
      */
     public function firstEntry() {
       if (!$this->initial) {
@@ -29,7 +29,7 @@
     /**
      * Get next entry
      *
-     * @return  io.zip.ZipEntry
+     * @return  io.archive.zip.ZipEntry
      */
     public function nextEntry() {
       $this->skip && $this->stream->read($this->skip);

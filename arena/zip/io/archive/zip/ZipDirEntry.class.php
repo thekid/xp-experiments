@@ -1,18 +1,18 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: ZipDirEntry.class.php 11840 2010-01-02 13:58:25Z friebe $ 
  */
 
-  uses('io.zip.ZipEntry');
+  uses('io.archive.zip.ZipEntry');
 
   /**
-   * Represents a file entry in a zip archive
+   * Represents a Dir entry in a zip archive
    *
-   * @see      xp://io.zip.ZipEntry
+   * @see      xp://io.archive.zip.ZipEntry
    * @purpose  Interface
    */
-  class ZipFileEntry extends Object implements ZipEntry {
+  class ZipDirEntry extends Object implements ZipEntry {
     protected 
       $name = '', 
       $mod  = NULL;
@@ -24,7 +24,7 @@
      * @param   util.Date modified default NULL
      */
     public function __construct($name, Date $modified= NULL) {
-      $this->name= str_replace('\\', '/', $name);
+      $this->name= rtrim(str_replace('\\', '/', $name), '/').'/';
       $this->mod= $modified ? $modified : Date::now();
     }
     
@@ -52,18 +52,9 @@
      * @return  bool
      */
     public function isDirectory() {
-      return FALSE;
+      return TRUE;
     }
 
-    /**
-     * Returns an input stream for reading from this entry
-     *
-     * @return  io.streams.InputStream
-     */
-    public function getInputStream() {
-      return $this->is;
-    }
-    
     /**
      * Creates a string representation of this object
      *
