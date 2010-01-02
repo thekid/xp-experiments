@@ -27,5 +27,12 @@
      * @return  util.Date
      */
     public function lastModified();
+
+    /**
+     * Returns whether this entry is a directory
+     *
+     * @return  bool
+     */
+    public function isDirectory();
   }
 ?>

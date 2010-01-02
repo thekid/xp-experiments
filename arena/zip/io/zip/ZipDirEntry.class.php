@@ -47,6 +47,15 @@
     }
 
     /**
+     * Returns whether this entry is a directory
+     *
+     * @return  bool
+     */
+    public function isDirectory() {
+      return TRUE;
+    }
+
+    /**
      * Creates a string representation of this object
      *
      * @return  string

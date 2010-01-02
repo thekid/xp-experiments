@@ -47,6 +47,15 @@
     }
 
     /**
+     * Returns whether this entry is a directory
+     *
+     * @return  bool
+     */
+    public function isDirectory() {
+      return FALSE;
+    }
+
+    /**
      * Returns an input stream for reading from this entry
      *
      * @return  io.streams.InputStream
