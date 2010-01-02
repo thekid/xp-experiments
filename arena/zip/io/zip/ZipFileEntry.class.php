@@ -46,6 +46,11 @@
       return $this->mod;
     }
 
+    /**
+     * Returns an input stream for reading from this entry
+     *
+     * @return  io.streams.InputStream
+     */
     public function getInputStream() {
       return $this->is;
     }

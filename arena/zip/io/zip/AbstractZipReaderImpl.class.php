@@ -54,10 +54,21 @@
       );
     }
     
+    /**
+     * Returns how many bytes can be read from the stream
+     *
+     * @return  int
+     */
     public function streamAvailable() {
       return $this->stream->available();
     }
 
+    /**
+     * Reads from a stream
+     *
+     * @param   int limit
+     * @return  string
+     */
     public function streamRead($limit) {
       return $this->stream->read($limit);
     }
