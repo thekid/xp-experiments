@@ -32,7 +32,7 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Calculates relative name for use inside ZIP file
      *
      * @param   io.IOElement e
      * @return  string
@@ -59,7 +59,7 @@
     }
 
     /**
-     * Add an entire folder
+     * Add an entire folder (recursively)
      *
      * @param   io.IOElement e
      */
