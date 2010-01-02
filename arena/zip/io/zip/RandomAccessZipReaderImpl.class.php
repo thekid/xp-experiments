@@ -36,7 +36,7 @@
           case self::FHDR: {      // Entry
             $header= $this->readLocalFileHeader();
             $this->stream->seek($header['compressed'], SEEK_CUR);
-            $r[]= new ZipFileEntry($name, $this->dateFromDosDateTime($info['date'], $info['time']));
+            $r[]= new ZipFileEntry($header['name'], $this->dateFromDosDateTime($header['date'], $header['time']));
             break;
           }
           case self::DHDR: {      // Zip directory

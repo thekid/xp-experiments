@@ -29,7 +29,7 @@
           case self::FHDR: {      // Entry
             $header= $this->readLocalFileHeader();
             $this->stream->read($header['compressed']);
-            $this->entries[]= new ZipFileEntry($name, $this->dateFromDosDateTime($info['date'], $info['time']));
+            $this->entries[]= new ZipFileEntry($header['name'], $this->dateFromDosDateTime($header['date'], $header['time']));
             break;
           }
           case self::DHDR: {      // Zip directory
