@@ -27,23 +27,8 @@
         $header= $this->stream->read(4);
         switch ($header) {
           case self::FHDR: {      // Entry
-            $info= unpack(
-              'vversion/vflags/vcompression/vtime/vdate/Vcrc/Vcompressed/Vuncompressed/vnamelen/vextralen', 
-              $this->stream->read(26)
-            );
-            $name= $this->stream->read($info['namelen']);
-            $extra= $this->stream->read($info['extralen']);
-            $this->stream->read($info['compressed']);
-            
-            /*
-              Console::writeLinef(
-                '%s: %.2f kB / %s @ %s',
-                $name, 
-                $info['uncompressed'] / 1024,
-                Compression::getInstance($info['compression'])->name(),
-                $this->dateFromDosDateTime($info['date'], $info['time'])->toString('Y-m-d H:i:s')
-              );
-            */
+            $header= $this->readLocalFileHeader();
+            $this->stream->read($header['compressed']);
             $this->entries[]= new ZipFileEntry($name, $this->dateFromDosDateTime($info['date'], $info['time']));
             break;
           }
