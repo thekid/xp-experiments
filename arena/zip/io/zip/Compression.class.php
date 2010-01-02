@@ -25,7 +25,7 @@
           return $data;
         }
 
-        protected function doDecompress($data, $level) {
+        protected function doDecompress($data) {
           return $data;
         }
       }');
@@ -36,8 +36,8 @@
           return gzdeflate($data, $level);
         }
 
-        protected function doDecompress($data, $level) {
-          return gzinflate($data, $level);
+        protected function doDecompress($data) {
+          return gzinflate($data);
         }
       }');
       self::$BZ= newinstance(__CLASS__, array(12, 'BZ'), '{
@@ -47,8 +47,8 @@
           return bzcompress($data, $level);
         }
 
-        protected function doDecompress($data, $level) {
-          return bzdecompress($data, $level);
+        protected function doDecompress($data) {
+          return bzdecompress($data);
         }
       }');
     }
@@ -102,7 +102,7 @@
      * @param   string compressed The compressed data
      * @return  string data
      */
-    protected abstract function doDecompress($data, $level);
+    protected abstract function doDecompress($data);
     
     /**
      * (Insert method's description here)
