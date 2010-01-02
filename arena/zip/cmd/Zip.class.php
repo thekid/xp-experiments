@@ -10,8 +10,8 @@
     'io.Folder',
     'io.collections.FileCollection',
     'io.collections.FileElement',
-    'io.collections.CollectionComposite',
-    'io.collections.iterate.IOCollectionIterator'
+    'io.collections.iterate.IOCollectionIterator',
+    'io.collections.iterate.RegexFilter'
   );
 
   /**
@@ -21,7 +21,8 @@
   class Zip extends Command {
     protected $zip= NULL;
     protected $base= NULL;
-    protected $collection= NULL;
+    protected $origins= array();
+    protected $exclude= NULL;
     
     /**
      * Constructor
@@ -47,6 +48,8 @@
      * @param   io.IOElement e
      */
     protected function addFile(IOElement $element) {
+      if ($this->exclude && $this->exclude->accept($element)) return;
+
       $this->out->writeLine('F ', $this->relativeName($element));
       $out= $this->zip->addFile(new ZipFileEntry($this->relativeName($element), $element->lastModified()));
       $out->setCompression(Compression::$GZ); 
@@ -64,6 +67,8 @@
      * @param   io.IOElement e
      */
     protected function addFolder(IOCollection $element) {
+      if ($this->exclude && $this->exclude->accept($element)) return;
+      
       $this->out->writeLine('D ', $this->relativeName($element));
       $this->zip->addDir(new ZipDirEntry($this->relativeName($element), $element->lastModified()));
       foreach (new IOCollectionIterator($element, TRUE) as $child) {
@@ -86,13 +91,31 @@
     }
 
     /**
+     * Sets exclude pattern
+     *
+     * @param   string pattern
+     */
+    #[@arg(short= 'x')]
+    public function setExclude($pattern= NULL) {
+      if (NULL !== $pattern) {
+        $this->exclude= new RegexFilter('#'.$pattern.'#');
+      }
+    }
+
+    /**
      * Sets origins
      *
      * @param   string[] origins
      */
     #[@args(select= '[1..]')]
     public function setOrigins($origins) {
-      $this->origins= $origins;
+      for ($i= 0, $s= sizeof($origins); $i < $s; $i++) {
+        if ('-x' === $origins[$i]) {    // Exclude option
+          $i+= 2;
+        } else {
+          $this->origins[]= $origins[$i];
+        }
+      }
     }
 
     /**
