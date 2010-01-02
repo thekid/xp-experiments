@@ -60,12 +60,13 @@
         'vversion/vflags/vcompression/vtime/vdate/Vcrc/Vcompressed/Vuncompressed/vnamelen/vextralen', 
         $this->stream->read(26)
       );
+      
       $header['name']= iconv('cp437', 'iso-8859-1', $this->stream->read($header['namelen']));
       $header['extra']= $this->stream->read($header['extralen']);
 
       Console::writeLinef(
         '- %s: %.2f kB / %s @ %s',
-        $name, 
+        $header['name'], 
         $header['uncompressed'] / 1024,
         Compression::getInstance($header['compression'])->name(),
         $this->dateFromDosDateTime($header['date'], $header['time'])->toString('Y-m-d H:i:s')
