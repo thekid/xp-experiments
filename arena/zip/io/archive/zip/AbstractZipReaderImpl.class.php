@@ -107,12 +107,13 @@
           
           // Create ZipEntry object and return it
           if ('/' === substr($name, -1)) {
-            return new ZipDirEntry($name, $date);
+            return new ZipDirEntry($name, $date, $header['uncompressed']);
           } else {
-            $e= new ZipFileEntry($name, $date);
-            $e->is= Compression::getInstance($header['compression'])->getDecompressionStream(
-              new ZipFileInputStream($this, $header['compressed']
-            ));
+            $e= new ZipFileEntry($name);
+            $e->setLastModified($date);
+            $e->setSize($header['uncompressed']);
+            $e->setCompression(Compression::getInstance($header['compression']));
+            $e->is= new ZipFileInputStream($this, $header['compressed']);
             return $e;
           }
         }

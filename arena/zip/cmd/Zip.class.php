@@ -52,11 +52,11 @@
       if ($this->exclude && $this->exclude->accept($element)) return;
 
       $this->out->writeLine('F ', $this->relativeName($element));
-      $entry= $this->zip->addFile(new ZipFileEntry($this->relativeName($element), $element->lastModified()));
-      $out= $entry->getOutputStream();
-      $out->setCompression(Compression::$GZ); 
+      $entry= $this->zip->addFile(new ZipFileEntry($this->relativeName($element)));
+      $entry->setLastModified($element->lastModified());
+      $entry->setCompression(Compression::$GZ);
 
-      $t= new StreamTransfer($element->getInputStream(), $out);
+      $t= new StreamTransfer($element->getInputStream(), $entry->getOutputStream());
       try {
         $t->transferAll();
       } catch (IOException $e) {
@@ -74,7 +74,9 @@
       if ($this->exclude && $this->exclude->accept($element)) return;
       
       $this->out->writeLine('D ', $this->relativeName($element));
-      $this->zip->addDir(new ZipDirEntry($this->relativeName($element), $element->lastModified()));
+      $this->zip->addDir(new ZipDirEntry($this->relativeName($element)))
+        ->setLastModified($element->lastModified())
+      ;
       foreach (new IOCollectionIterator($element, TRUE) as $child) {
         if ($child instanceof IOCollection) {
           $this->addFolder($child);

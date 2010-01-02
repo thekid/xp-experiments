@@ -25,11 +25,11 @@
      * Constructor
      *
      * @param   string name
-     * @param   util.Date modified default NULL
      */
-    public function __construct($name, Date $modified= NULL) {
+    public function __construct($name) {
       $this->name= str_replace('\\', '/', $name);
-      $this->mod= $modified ? $modified : Date::now();
+      $this->mod= Date::now();
+      $this->compression= Compression::$NONE;
     }
     
     /**
@@ -46,8 +46,53 @@
      *
      * @return  util.Date
      */
-    public function lastModified() {
+    public function getLastModified() {
       return $this->mod;
+    }
+
+    /**
+     * Sets a zip entry's last modification time
+     *
+     * @param   util.Date lastModified
+     */
+    public function setLastModified(Date $lastModified) {
+      $this->mod= $lastModified;
+    }
+
+    /**
+     * Returns which compression was used
+     *
+     * @return  io.archive.zip.Compression
+     */
+    public function getCompression() {
+      return $this->compression;
+    }
+
+    /**
+     * Use a given compression
+     *
+     * @param   io.archive.zip.Compression compression
+     */
+    public function setCompression(Compression $compression) {
+      $this->compression= $compression;
+    }
+
+    /**
+     * Gets a zip entry's size
+     *
+     * @return  int
+     */
+    public function getSize() {
+      return $this->size;
+    }
+
+    /**
+     * Sets a zip entry's size
+     *
+     * @param   int size
+     */
+    public function setSize($size) {
+      $this->size= size;
     }
 
     /**
@@ -65,7 +110,7 @@
      * @return  io.streams.InputStream
      */
     public function getInputStream() {
-      return $this->is;
+      return $this->compression->getDecompressionStream($this->is);
     }
 
     /**
@@ -74,7 +119,7 @@
      * @return  io.streams.OutputStream
      */
     public function getOutputStream() {
-      return $this->os;
+      return $this->os->withCompression($this->compression);
     }
     
     /**
@@ -86,10 +131,14 @@
       return sprintf(
         "%s(%s)@{\n".
         "  [lastModified] %s\n".
+        "  [compression ] %s\n".
+        "  [size        ] %d\n".
         "}",
         $this->getClassName(),
         $this->name,
-        xp::stringOf($this->mod)
+        xp::stringOf($this->mod),
+        $this->mod->name(),
+        $this->size
       );
     }
   }

@@ -14,18 +14,19 @@
    */
   class ZipDirEntry extends Object implements ZipEntry {
     protected 
-      $name = '', 
-      $mod  = NULL;
+      $name        = '', 
+      $mod         = NULL,
+      $compression = NULL;
         
     /**
      * Constructor
      *
      * @param   string name
-     * @param   util.Date modified default NULL
      */
-    public function __construct($name, Date $modified= NULL) {
+    public function __construct($name) {
       $this->name= rtrim(str_replace('\\', '/', $name), '/').'/';
-      $this->mod= $modified ? $modified : Date::now();
+      $this->mod= Date::now();
+      $this->compression= Compression::$NONE;
     }
     
     /**
@@ -42,8 +43,53 @@
      *
      * @return  util.Date
      */
-    public function lastModified() {
+    public function getLastModified() {
       return $this->mod;
+    }
+
+    /**
+     * Sets a zip entry's last modification time
+     *
+     * @param   util.Date lastModified
+     */
+    public function setLastModified(Date $lastModified) {
+      $this->mod= $lastModified;
+    }
+
+    /**
+     * Returns which compression was used
+     *
+     * @return  io.archive.zip.Compression
+     */
+    public function getCompression() {
+      return $this->compression;
+    }
+    
+    /**
+     * Use a given compression
+     *
+     * @param   io.archive.zip.Compression compression
+     */
+    public function setCompression(Compression $compression) {
+      $this->compression= $compression;
+    }
+
+    /**
+     * Gets a zip entry's size
+     *
+     * @return  int
+     */
+    public function getSize() {
+      return 0;
+    }
+
+    /**
+     * Sets a zip entry's size
+     *
+     * @param   int size
+     */
+    public function setSize($size) {
+      // NOOP
     }
 
     /**

@@ -48,7 +48,7 @@
       $this->out && $this->out->close();
       $this->out= NULL;
       
-      $mod= $entry->lastModified();
+      $mod= $entry->getLastModified();
       $name= $entry->getName();
       $nameLength= strlen($name);
       $extraLength= 0;
@@ -128,41 +128,40 @@
      * Write a file entry
      *
      * @param   io.archive.zip.ZipFile file
-     * @param   io.archive.zip.Compression compression
+     * @param   int size
+     * @param   int compressed
+     * @param   int crc32
      * @param   string data
      */
-    public function writeFile(ZipFileEntry $file, Compression $compression, $data) {
-      $mod= $file->lastModified();
+    public function writeFile($file, $size, $compressed, $crc32, $data) {
+      $mod= $file->getLastModified();
       $name= str_replace('\\', '/', $file->getName());
       $nameLength= strlen($name);
-      $crc32= crc32($data);
-      $compressionMethod= $compression->ordinal();
-      $compressed= $compression->compress($data);
-      $compressedLength= strlen($compressed);
+      $method= $file->getCompression()->ordinal();
       $extraLength= 0;
       $extra= '';
 
       $info= pack(
         'vvvVVVvv',
-        $compressionMethod,       // compression method, 0 = none, 8 = gz, 12 = bz
+        $method,                  // compression method, 0 = none, 8 = gz, 12 = bz
         $this->dosTime($mod),     // last modified dostime
         $this->dosDate($mod),     // last modified dosdate
         $crc32,                   // CRC32 checksum
-        $compressedLength,        // compressed size
-        strlen($data),            // uncompressed size
+        $compressed,              // compressed size
+        $size,                    // uncompressed size
         $nameLength,              // filename length
         $extraLength              // extra field length
       );
 
       $this->stream->write(self::FHDR.$info.$name.$extra);
-      $this->stream->write($compressed);
+      $this->stream->write($data);
       
       $this->dir[$name]= array('info' => $info, 'pointer' => $this->pointer, 'type' => 0x20);
       $this->pointer+= (
         strlen(self::FHDR) + 
         strlen($info) + 
         $nameLength + 
-        $compressedLength
+        $compressed
       );
     }
 

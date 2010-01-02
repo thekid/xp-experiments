@@ -7,7 +7,8 @@
   uses(
     'lang.Enum', 
     'io.streams.InputStream', 
-    'io.streams.InflatingInputStream'
+    'io.streams.InflatingInputStream',
+    'io.streams.DeflatingOutputStream'
   );
 
   /**
@@ -25,33 +26,33 @@
       self::$NONE= newinstance(__CLASS__, array(0, 'NONE'), '{
         static function __static() { }
         
-        protected function doCompress($data, $level) {
-          return $data;
+        protected function getCompressionStream0($stream, $level) {
+          return $stream;
         }
 
-        public function getDecompressionStream(InputStream $stream) {
+        protected function getDecompressionStream0($stream) {
           return $stream;
         }
       }');
       self::$GZ= newinstance(__CLASS__, array(8, 'GZ'), '{
         static function __static() { }
         
-        protected function doCompress($data, $level) {
-          return gzdeflate($data, $level);
+        protected function getCompressionStream0($stream, $level) {
+          return new DeflatingOutputStream($stream, $level);
         }
 
-        public function getDecompressionStream(InputStream $stream) {
+        protected function getDecompressionStream0($stream) {
           return new InflatingInputStream($stream);
         }
       }');
       self::$BZ= newinstance(__CLASS__, array(12, 'BZ'), '{
         static function __static() { }
         
-        protected function doCompress($data, $level) {
-          return bzcompress($data, $level);
+        protected function getCompressionStream0($stream, $level) {
+          // Not yet implemented
         }
 
-        public function getDecompressionStream(InputStream $stream) {
+        protected function getDecompressionStream0($stream) {
           // Not yet implemented
         }
       }');
@@ -67,35 +68,46 @@
     }
 
     /**
-     * Compresses data
+     * Gets compression stream
      *
-     * @param   string data The data to be compressed
+     * @param   io.streams.OutputStream out
      * @param   int level default 6 the compression level
-     * @return  string compress
+     * @return  io.streams.OutputStream
+     * @throws  lang.IllegalArgumentException if the level is not between 0 and 9
      */
-    public function compress($data, $level= 6) {
+    public function getCompressionStream(OutputStream $out, $level= 6) {
       if ($level < 0 || $level > 9) {
         throw new IllegalArgumentException('Level '.$level.' out of range [0..9]');
       }
-      return $this->doCompress($data, $level);
+      return $this->getCompressionStream0($out, $level);
     }
 
     /**
-     * Compresses data. Implemented in members.
+     * Gets compression stream. Implemented in members.
      *
-     * @param   string data The data to be compressed
+     * @param   io.streams.OutputStream stream
      * @param   int level the compression level
-     * @return  string compress
+     * @return  io.streams.OutputStream
      */
-    protected abstract function doCompress($data, $level);
+    protected abstract function getCompressionStream0($stream, $level);
+
+    /**
+     * Gets decompression stream.
+     *
+     * @param   io.streams.InputStream in
+     * @return  io.streams.InputStream
+     */
+    public function getDecompressionStream(InputStream $in) {
+      return $this->getDecompressionStream0($in);
+    }
 
     /**
      * Gets decompression stream. Implemented in members.
      *
-     * @param   io.streams.InputStream
+     * @param   io.streams.InputStream stream
      * @return  io.streams.InputStream
      */
-    public abstract function getDecompressionStream(InputStream $in);
+    protected abstract function getDecompressionStream0($stream);
 
     /**
      * Get a compression instance by a given id
