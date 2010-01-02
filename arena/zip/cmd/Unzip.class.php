@@ -75,6 +75,7 @@
             $out->write($in->read());
           }
           $in->close();
+          $out->close();
         }
       }
     }
