@@ -101,17 +101,12 @@
         }
         case self::DHDR: {      // Zip directory
           return NULL;          // XXX: For the moment, ignore directory and stop here
-          break;
         }
         case self::EOCD: {      // End of central directory
           return NULL;
-          break;
-        }
-        default: {
-          throw new FormatException('Unknown byte sequence '.addcslashes($type, "\0..\17"));
         }
       }
-      return NULL;
+      throw new FormatException('Unknown byte sequence '.addcslashes($type, "\0..\17"));
     }
   }
 ?>
