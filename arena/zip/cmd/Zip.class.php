@@ -1,0 +1,115 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+  uses(
+    'util.cmd.Command',
+    'io.zip.ZipFile',
+    'io.Folder',
+    'io.collections.FileCollection',
+    'io.collections.FileElement',
+    'io.collections.CollectionComposite',
+    'io.collections.iterate.IOCollectionIterator'
+  );
+
+  /**
+   * Creates a ZIPfile
+   * 
+   */
+  class Zip extends Command {
+    protected $zip= NULL;
+    protected $base= NULL;
+    protected $collection= NULL;
+    
+    /**
+     * Constructor
+     *
+     */
+    public function __construct() {
+      $this->base= new Folder(getcwd());
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   io.IOElement e
+     * @return  string
+     */
+    protected function relativeName(IOElement $e) {
+      return str_replace($this->base->getURI(), '', $e->getURI());
+    }
+    
+    /**
+     * Add a single file
+     *
+     * @param   io.IOElement e
+     */
+    protected function addFile(IOElement $element) {
+      $this->out->writeLine('F ', $this->relativeName($element));
+      $out= $this->zip->addFile(new ZipFileEntry($this->relativeName($element), $element->lastModified()));
+      $out->setCompression(Compression::$GZ); 
+      $in= $element->getInputStream();
+      while ($in->available()) {
+        $out->write($in->read());
+      }
+      $in->close();
+      $out->close();
+    }
+
+    /**
+     * Add an entire folder
+     *
+     * @param   io.IOElement e
+     */
+    protected function addFolder(IOCollection $element) {
+      $this->out->writeLine('D ', $this->relativeName($element));
+      $this->zip->addDir(new ZipDirEntry($this->relativeName($element), $element->lastModified()));
+      foreach (new IOCollectionIterator($element, TRUE) as $child) {
+        if ($child instanceof IOCollection) {
+          $this->addFolder($child);
+        } else {
+          $this->addFile($child);
+        }
+      } 
+    }
+    
+    /**
+     * Sets zip file
+     *
+     * @param   string file
+     */
+    #[@arg(position= 0)]
+    public function setFile($file) {
+      $this->zip= ZipFile::create(create(new File($file))->getOutputStream());
+    }
+
+    /**
+     * Sets origins
+     *
+     * @param   string[] origins
+     */
+    #[@args(select= '[1..]')]
+    public function setOrigins($origins) {
+      $this->origins= $origins;
+    }
+
+    /**
+     * Main runner method
+     *
+     */
+    public function run() {
+      foreach ($this->origins as $origin) {
+        if (is_file($origin)) {
+          $this->addFile(new FileElement($origin));
+        } else if (is_dir($origin)) {
+          $this->addFolder(new FileCollection($origin));
+        } else {
+          throw new IOException('Cannot handle "'.$origin.'"');
+        }
+      }
+      $this->zip->close();
+    }
+  }
+?>
