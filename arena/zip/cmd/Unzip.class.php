@@ -14,7 +14,12 @@
 
   /**
    * Unzips a ZIPfile
-   *
+   * 
+   * Examples:
+   * <pre>
+   *   $ xpcli cmd.Unzip xp-snapshot-20100102.zip -t xp-snapshot/
+   *   $ xpcli cmd.Unzip http://example.com/downloads.zip
+   * </pre>
    */
   class Unzip extends Command {
     protected $zip= NULL;
