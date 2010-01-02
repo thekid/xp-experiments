@@ -124,16 +124,16 @@
      * Write a file entry
      *
      * @param   io.zip.ZipFile file
-     * @param   io.zip.Compression Compression
+     * @param   io.zip.Compression compression
      * @param   string data
      */
-    public function writeFile(ZipFileEntry $file, Compression $Compression, $data) {
+    public function writeFile(ZipFileEntry $file, Compression $compression, $data) {
       $mod= $file->lastModified();
       $name= str_replace('\\', '/', $file->getName());
       $nameLength= strlen($name);
       $crc32= crc32($data);
-      $compressionMethod= $Compression->ordinal();
-      $compressed= $Compression->compress($data);
+      $compressionMethod= $compression->ordinal();
+      $compressed= $compression->compress($data);
       $compressedLength= strlen($compressed);
 
       $info= pack(
