@@ -17,6 +17,7 @@
    */
   class Unzip extends Command {
     protected $zip= NULL;
+    protected $target= NULL;
   
     /**
      * Sets zip file
