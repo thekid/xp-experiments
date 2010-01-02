@@ -11,7 +11,6 @@
    *
    */
   class RandomAccessZipReaderImpl extends AbstractZipReaderImpl {
-    protected $skip= 0;
 
     /**
      * Creation constructor

@@ -45,6 +45,10 @@
     public function lastModified() {
       return $this->mod;
     }
+
+    public function getInputStream() {
+      return $this->is;
+    }
     
     /**
      * Creates a string representation of this object

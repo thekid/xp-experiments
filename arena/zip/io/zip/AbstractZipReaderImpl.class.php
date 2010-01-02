@@ -6,6 +6,7 @@
 
   uses(
     'io.streams.InputStream', 
+    'io.streams.ZipFileInputStream', 
     'io.zip.Compression',
     'io.zip.ZipDirEntry',
     'io.zip.ZipFileEntry',
@@ -19,6 +20,7 @@
    */
   abstract class AbstractZipReaderImpl extends Object {
     protected $stream= NULL;
+    public $skip= 0;
 
     const EOCD = "\x50\x4b\x05\x06";
     const FHDR = "\x50\x4b\x03\x04";
@@ -50,6 +52,14 @@
         ($time >> 5) & 0x3F,
         ($time << 1) & 0x1E
       );
+    }
+    
+    public function streamAvailable() {
+      return $this->stream->available();
+    }
+
+    public function streamRead($limit) {
+      return $this->stream->read($limit);
     }
 
     /**
@@ -96,7 +106,13 @@
           if ('/' === substr($name, -1)) {
             return new ZipDirEntry($name, $date);
           } else {
-            return new ZipFileEntry($name, $date);
+            $e= new ZipFileEntry($name, $date);
+            $e->is= new ZipFileInputStream(
+              $this, 
+              Compression::getInstance($header['compression']),
+              $header['compressed']
+            );
+            return $e;
           }
         }
         case self::DHDR: {      // Zip directory

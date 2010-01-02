@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.zip.RandomAccessZipReaderImpl', 'io.zip.SequentialZipReaderImpl');
+  uses('io.zip.RandomAccessZipReaderImpl', 'io.zip.SequentialZipReaderImpl', 'io.zip.ZipEntries');
 
   /**
    * Read from a zip file
@@ -30,16 +30,10 @@
     /**
      * Returns a list of all entries in this zip file
      *
-     * @return  io.zip.ZipEntry[]
+     * @return  io.zip.ZipEntries
      */
     public function entries() {
-      $entries= array();
-      $entry= $this->impl->firstEntry();
-      while ($entry) {
-        $entries[]= $entry;
-        $entry= $this->impl->nextEntry();
-      }
-      return $entries;
+      return new ZipEntries($this->impl);
     }
   }
 ?>

@@ -34,6 +34,7 @@
    *       // Create dir
    *     } else {
    *       // Extract
+   *       Streams::readAll($entry->getInputStream());
    *     }
    *   }
    * </code>

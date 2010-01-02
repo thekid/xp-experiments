@@ -11,7 +11,6 @@
    *
    */
   class SequentialZipReaderImpl extends AbstractZipReaderImpl {
-    protected $skip= 0;
     private $initial= TRUE;
 
     /**
