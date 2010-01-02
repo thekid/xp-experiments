@@ -7,7 +7,8 @@
   uses('io.streams.InputStream', 'io.archive.zip.Compression');
 
   /**
-   * Zip File input stream
+   * Zip File input stream. Reads from the current position up until a
+   * certain length.
    *
    * @purpose  InputStream implementation
    */
@@ -59,7 +60,7 @@
      *
      */
     public function close() {
-      // NOOP, leave
+      // NOOP, leave underlying stream open
     }
   }
 ?>
