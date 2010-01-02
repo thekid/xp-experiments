@@ -13,6 +13,7 @@
   /**
    * Abstract base class for zip reader implementations
    *
+   * @ext   iconv
    */
   abstract class AbstractZipReaderImpl extends Object {
     protected $stream= NULL;
