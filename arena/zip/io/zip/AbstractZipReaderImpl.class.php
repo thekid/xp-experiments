@@ -6,7 +6,7 @@
 
   uses(
     'io.streams.InputStream', 
-    'io.streams.ZipFileInputStream', 
+    'io.zip.ZipFileInputStream', 
     'io.zip.Compression',
     'io.zip.ZipDirEntry',
     'io.zip.ZipFileEntry',
