@@ -104,6 +104,8 @@
           $extra= $this->stream->read($header['extralen']);
           $date= $this->dateFromDosDateTime($header['date'], $header['time']);
           $this->skip= $header['compressed'];
+          
+          // Create ZipEntry object and return it
           if ('/' === substr($name, -1)) {
             return new ZipDirEntry($name, $date);
           } else {
