@@ -51,24 +51,27 @@
       $mod= $entry->lastModified();
       $name= $entry->getName();
       $nameLength= strlen($name);
+      $extraLength= 0;
+      $extra= '';
+      
       $info= pack(
-        'vvvVVVv',
+        'vvvVVVvv',
         0,                        // compression method
         $this->dosTime($mod),     // last modified dostime
         $this->dosDate($mod),     // last modified dosdate
         0,                        // CRC32 checksum
         0,                        // compressed size
         0,                        // uncompressed size
-        $nameLength               // filename length
+        $nameLength,              // filename length
+        $extraLength              // extra field length
       );
 
-      $this->stream->write(self::FHDR.$info."\x00\x00".$name);
+      $this->stream->write(self::FHDR.$info.$name.$extra);
       
       $this->dir[$name]= array('info' => $info, 'pointer' => $this->pointer, 'type' => 0x10);
       $this->pointer+= (
         strlen(self::FHDR) + 
         strlen($info) + 
-        strlen("\x00\x00") + 
         $nameLength
       );
       
@@ -178,7 +181,6 @@
           self::DHDR.
           "\x00\x00".           // general purpose bit flag
           $entry['info'].       // { see writeFile() }
-          "\x00\x00".           // extra field length
           "\x00\x00".           // file comment length
           "\x00\x00".           // disk number start
           "\x01\x00".           // internal file attributes
