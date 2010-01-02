@@ -7,7 +7,7 @@
   uses(
     'util.cmd.Command',
     'io.archive.zip.ZipFile',
-    'io.streams.Streams',
+    'io.streams.StreamTransfer',
     'io.File',
     'io.Folder',
     'peer.http.HttpConnection'
@@ -75,11 +75,13 @@
           $f= new File($this->target, $entry->getName());
           $this->ensureFolder(new Folder($f->getPath()));
           
-          $out= $f->getOutputStream();
-          $in= $entry->getInputStream();
-          Streams::transferTo($in, $out);
-          $in->close();
-          $out->close();
+          $t= new StreamTransfer($entry->getInputStream(), $f->getOutputStream());
+          try {
+            $t->transferAll();
+          } catch (IOException $e) {
+            $this->err->writeLine('*** ', $e);
+          }
+          $t->close();
         }
       }
     }

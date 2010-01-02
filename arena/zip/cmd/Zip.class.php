@@ -8,7 +8,7 @@
     'util.cmd.Command',
     'io.archive.zip.ZipFile',
     'io.Folder',
-    'io.streams.Streams',
+    'io.streams.StreamTransfer',
     'io.collections.FileCollection',
     'io.collections.FileElement',
     'io.collections.iterate.IOCollectionIterator',
@@ -55,10 +55,14 @@
       $entry= $this->zip->addFile(new ZipFileEntry($this->relativeName($element), $element->lastModified()));
       $out= $entry->getOutputStream();
       $out->setCompression(Compression::$GZ); 
-      $in= $element->getInputStream();
-      Streams::transferTo($in, $out);
-      $in->close();
-      $out->close();
+
+      $t= new StreamTransfer($element->getInputStream(), $out);
+      try {
+        $t->transferAll();
+      } catch (IOException $e) {
+        $this->err->writeLine('*** ', $e);
+      }
+      $t->close();
     }
 
     /**
