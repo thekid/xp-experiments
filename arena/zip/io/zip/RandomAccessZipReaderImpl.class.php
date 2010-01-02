@@ -22,37 +22,24 @@
       parent::__construct(cast($stream, 'io.streams.Seekable'));
     }
     
+    /**
+     * Get first entry
+     *
+     * @return  io.zip.ZipEntry
+     */
     public function firstEntry() {
       $this->stream->seek(0, SEEK_SET);
       return $this->currentEntry();
     }
     
+    /**
+     * Get next entry
+     *
+     * @return  io.zip.ZipEntry
+     */
     public function nextEntry() {
       $this->skip && $this->stream->seek($this->skip, SEEK_CUR);
       return $this->currentEntry();
-    }
-    
-    public function currentEntry() {
-      $type= $this->stream->read(4);
-      switch ($type) {
-        case self::FHDR: {      // Entry
-          $header= $this->readLocalFileHeader();
-          $this->skip= $header['compressed'];
-          return new ZipFileEntry($header['name'], $this->dateFromDosDateTime($header['date'], $header['time']));
-        }
-        case self::DHDR: {      // Zip directory
-          return NULL;          // XXX: For the moment, ignore directory and stop here
-          break;
-        }
-        case self::EOCD: {      // End of central directory
-          return NULL;
-          break;
-        }
-        default: {
-          throw new FormatException('Unknown byte sequence '.addcslashes($type, "\0..\17"));
-        }
-      }
-      return NULL;
     }
   }
 ?>

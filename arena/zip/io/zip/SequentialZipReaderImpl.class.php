@@ -14,6 +14,11 @@
     protected $skip= 0;
     private $initial= TRUE;
 
+    /**
+     * Get first entry
+     *
+     * @return  io.zip.ZipEntry
+     */
     public function firstEntry() {
       if (!$this->initial) {
         throw new IllegalStateException('Stream not rewindable');
@@ -22,6 +27,11 @@
       return $this->currentEntry();
     }
     
+    /**
+     * Get next entry
+     *
+     * @return  io.zip.ZipEntry
+     */
     public function nextEntry() {
       $this->skip && $this->stream->read($this->skip);
       return $this->currentEntry();
