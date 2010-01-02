@@ -16,6 +16,10 @@
     protected 
       $name = '', 
       $mod  = NULL;
+    
+    public
+      $is   = NULL,
+      $os   = NULL;
         
     /**
      * Constructor
