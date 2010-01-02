@@ -18,6 +18,17 @@
   class Unzip extends Command {
     protected $zip= NULL;
     protected $target= NULL;
+
+    /**
+     * Ensures a folder exists, creating it otherwise
+     *
+     * @param   io.Folder f
+     * @return  io.Folder the folder given
+     */
+    protected function ensureFolder(Folder $f) {
+      $f->exists() || $f->create();
+      return $f;
+    }
   
     /**
      * Sets zip file
@@ -36,8 +47,7 @@
      */
     #[@arg]
     public function setTarget($folder= '.') {
-      $this->target= new Folder($folder);
-      $this->target->exists() || $this->target->create();
+      $this->target= $this->ensureFolder(new Folder($folder));
     }
     
     /**
@@ -47,12 +57,19 @@
     public function run() {
       foreach ($this->zip->entries() as $entry) {
         $this->out->writeLine('- ', $entry->getName());
-        $out= create(new File($this->target, $entry->getName()))->getOutputStream();
-        $in= $entry->getInputStream();
-        while ($in->available()) {
-          $out->write($in->read());
+        if ($entry->isDirectory()) {
+          $this->ensureFolder(new Folder($this->target, $entry->getName()));
+        } else {
+          $f= new File($this->target, $entry->getName());
+          $this->ensureFolder(new Folder($f->getPath()));
+          
+          $out= $f->getOutputStream();
+          $in= $entry->getInputStream();
+          while ($in->available()) {
+            $out->write($in->read());
+          }
+          $in->close();
         }
-        $in->close();
       }
     }
   }
