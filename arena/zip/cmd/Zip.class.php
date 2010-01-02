@@ -51,7 +51,8 @@
       if ($this->exclude && $this->exclude->accept($element)) return;
 
       $this->out->writeLine('F ', $this->relativeName($element));
-      $out= $this->zip->addFile(new ZipFileEntry($this->relativeName($element), $element->lastModified()));
+      $entry= $this->zip->addFile(new ZipFileEntry($this->relativeName($element), $element->lastModified()));
+      $out= $entry->getOutputStream();
       $out->setCompression(Compression::$GZ); 
       $in= $element->getInputStream();
       while ($in->available()) {

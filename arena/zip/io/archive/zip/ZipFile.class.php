@@ -21,7 +21,8 @@
    * <code>
    *   $z= ZipFile::create(new FileOutputStream(new File('dist.zip')));
    *   $z->addEntry(new ZipDirEntry('META-INF'));
-   *   $z->addEntry(new ZipFileEntry('META-INF/version.txt'))->write($contents);
+   *   $e= $z->addEntry(new ZipFileEntry('META-INF/version.txt'));
+   *   $e->getOutputStream()->write($contents);
    *   $z->close();
    * </code>
    *

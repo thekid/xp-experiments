@@ -82,7 +82,7 @@
      * Adds a file entry
      *
      * @param   io.archive.zip.ZipFileEntry entry
-     * @return  io.archive.zip.ZipFileOutputStream
+     * @return  io.archive.zip.ZipFileEntry entry
      * @throws  lang.IllegalArgumentException in case the filename is longer than 65535 bytes
      */
     public function addFile(ZipFileEntry $entry) {
@@ -92,7 +92,8 @@
 
       $this->out && $this->out->close();
       $this->out= new ZipFileOutputStream($this, $entry);
-      return $this->out;
+      $entry->os= $this->out;
+      return $entry;
     }
     
     /**

@@ -63,6 +63,15 @@
     public function getInputStream() {
       return $this->is;
     }
+
+    /**
+     * Returns an output stream for writing to this entry
+     *
+     * @return  io.streams.OutputStream
+     */
+    public function getOutputStream() {
+      return $this->os;
+    }
     
     /**
      * Creates a string representation of this object
