@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('io.zip.ZipEntry');
+
   /**
    * Iterates on ZIP archive entries
    *
