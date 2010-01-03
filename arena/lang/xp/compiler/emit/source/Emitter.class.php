@@ -90,6 +90,8 @@
     protected function isWriteable($node) {
       if ($node instanceof VariableNode || $node instanceof ArrayAccessNode) {
         return TRUE;
+      } else if ($node instanceof ClassMemberNode) {
+        return $this->isWriteable($node->member);
       } else if ($node instanceof ChainNode) {
         return $this->isWriteable($node->elements[sizeof($node->elements)- 1]);
       }
