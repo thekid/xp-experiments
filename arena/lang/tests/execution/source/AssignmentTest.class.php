@@ -31,6 +31,15 @@
     public function assignToMember() {
       $this->compile('$this.i= 1;');
     }
+
+    /**
+     * Test assigning to a member
+     *
+     */
+    #[@test]
+    public function assignToStaticMember() {
+      $this->compile('self::$id= 0;');
+    }
     
     /**
      * Test assigning to an array offset
