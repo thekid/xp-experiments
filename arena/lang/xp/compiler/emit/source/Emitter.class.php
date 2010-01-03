@@ -1073,12 +1073,15 @@
         '%='   => '%=',
       );
       
+      if (!$this->isWriteable($assign->variable)) {
+        $this->error('U400', 'Cannot assign to '.$assign->variable->getClassName().' via '.$assign->op, $un);
+        return;
+      }
       $this->emitOne($op, $assign->variable);
       $op->append($ops[$assign->op]);
       $this->emitOne($op, $assign->expression);
       $this->scope[0]->setType($assign->variable, $this->scope[0]->typeOf($assign->expression));
     }
-
     /**
      * Emit an operator
      *
