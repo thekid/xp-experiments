@@ -42,6 +42,7 @@
    * @test     xp://tests.execution.source.MultiCatchTest
    * @test     xp://tests.execution.source.PropertiesTest
    * @test     xp://tests.execution.source.VariablesTest
+   * @test     xp://tests.execution.source.AssignmentTest
    * @see      xp://xp.compiler.ast.Node
    */
   class xp·compiler·emit·source·Emitter extends Emitter {
@@ -76,13 +77,6 @@
     /**
      * Check whether a node is writeable - that is: can be the left-hand
      * side of an assignment
-     *
-     * <code>
-     *   $a         // true, simple variable
-     *   $a[0]      // true, array offset
-     *   $a.length  // true, member
-     *   $a.get(0)  // false, method call
-     * </code>
      *
      * @param   xp.compiler.ast.Node node
      * @return  bool
