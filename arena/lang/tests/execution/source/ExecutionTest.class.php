@@ -66,6 +66,23 @@
         $imports
       )->newInstance()->run();
     }
+
+    /**
+     * Compile statements and return type
+     *
+     * @param   string src
+     * @param   string[] imports
+     * @return  lang.XPClass
+     */
+    protected function compile($src, array $imports= array()) {
+      return $this->define(
+        'class', 
+        ucfirst($this->name).'·'.($this->counter++), 
+        NULL,
+        '{ public void run() { '.$src.' }}',
+        $imports
+      );
+    }
     
     /**
      * Define class from a given name and source
