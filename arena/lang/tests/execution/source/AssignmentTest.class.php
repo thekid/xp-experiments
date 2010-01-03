@@ -40,7 +40,7 @@
     public function assignToStaticMember() {
       $this->compile('self::$id= 0;');
     }
-    
+
     /**
      * Test assigning to an array offset
      *
@@ -102,6 +102,24 @@
     #[@test]
     public function assignToMemberReturnedByMethod() {
       $this->compile('self::class.getMethod("equals").accessible= true;');
+    }
+
+    /**
+     * Test assigning to class member call is not allowed
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function assignToClassMember() {
+      $this->compile('self::class= true;');
+    }
+
+    /**
+     * Test assigning to a method call is not allowed
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function assignToStaticMethod() {
+      $this->compile('self::getInstance()= 1;');
     }
   }
 ?>
