@@ -74,6 +74,29 @@
     }
     
     /**
+     * Check whether a node is writeable - that is: can be the left-hand
+     * side of an assignment
+     *
+     * <code>
+     *   $a         // true, simple variable
+     *   $a[0]      // true, array offset
+     *   $a.length  // true, member
+     *   $a.get(0)  // false, method call
+     * </code>
+     *
+     * @param   xp.compiler.ast.Node node
+     * @return  bool
+     */
+    protected function isWriteable($node) {
+      if ($node instanceof VariableNode || $node instanceof ArrayAccessNode) {
+        return TRUE;
+      } else if ($node instanceof ChainNode) {
+        return $this->isWriteable($node->elements[sizeof($node->elements)- 1]);
+      }
+      return FALSE;
+    }
+    
+    /**
      * Emit uses statements for a given list of types
      *
      * @param   resource op
@@ -529,15 +552,17 @@
           'op'  => '*'
         )));
         return;
-      } else if (!$un->expression instanceof VariableNode) {
-        $this->error('U400', 'Cannot perform unary '.$un->op.' on '.$un->getClassName(), $un);
+      } else if (!$this->isWriteable($un->expression)) {
+        $this->error('U400', 'Cannot perform unary '.$un->op.' on '.$un->expression->getClassName(), $un);
         return;
       }
 
       if ($un->postfix) {
-        $op->append('$'.$un->expression->name.$ops[$un->op]);
+        $this->emitOne($op, $un->expression);
+        $op->append($ops[$un->op]);
       } else {
-        $op->append($ops[$un->op].'$'.$un->expression->name);
+        $op->append($ops[$un->op]);
+        $this->emitOne($op, $un->expression);
       }
     }
 
