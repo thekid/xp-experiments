@@ -8,7 +8,9 @@
     'lang.Enum', 
     'io.streams.InputStream', 
     'io.streams.InflatingInputStream',
-    'io.streams.DeflatingOutputStream'
+    'io.streams.DeflatingOutputStream',
+    'io.streams.Bz2DecompressingInputStream',
+    'io.streams.Bz2CompressingOutputStream'
   );
 
   /**
@@ -49,11 +51,11 @@
         static function __static() { }
         
         protected function getCompressionStream0($stream, $level) {
-          // Not yet implemented
+          return new Bz2CompressingOutputStream($stream, $level);
         }
 
         protected function getDecompressionStream0($stream) {
-          // Not yet implemented
+          return new Bz2DecompressingInputStream($stream);
         }
       }');
     }
