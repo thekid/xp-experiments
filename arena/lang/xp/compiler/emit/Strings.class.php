@@ -18,6 +18,8 @@
    *   \r       Carriage retrn
    *   \X{1,3}  Octal escape (X is an octal number), \0 .. \377
    * </pre>
+   *
+   * @see http://java.sun.com/docs/books/jls/third_edition/html/lexical.html#3.10.6
    */
   class Strings extends Object {
     
