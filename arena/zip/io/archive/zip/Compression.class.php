@@ -28,34 +28,34 @@
       self::$NONE= newinstance(__CLASS__, array(0, 'NONE'), '{
         static function __static() { }
         
-        protected function getCompressionStream0($stream, $level) {
-          return $stream;
+        public function getCompressionStream(OutputStream $out, $level= 6) {
+          return $out;
         }
 
-        protected function getDecompressionStream0($stream) {
-          return $stream;
+        public function getDecompressionStream(InputStream $in) {
+          return $in;
         }
       }');
       self::$GZ= newinstance(__CLASS__, array(8, 'GZ'), '{
         static function __static() { }
         
-        protected function getCompressionStream0($stream, $level) {
-          return new DeflatingOutputStream($stream, $level);
+        public function getCompressionStream(OutputStream $out, $level= 6) {
+          return new DeflatingOutputStream($out, $level);
         }
 
-        protected function getDecompressionStream0($stream) {
-          return new InflatingInputStream($stream);
+        public function getDecompressionStream(InputStream $in) {
+          return new InflatingInputStream($in);
         }
       }');
       self::$BZ= newinstance(__CLASS__, array(12, 'BZ'), '{
         static function __static() { }
         
-        protected function getCompressionStream0($stream, $level) {
-          return new Bz2CompressingOutputStream($stream, $level);
+        public function getCompressionStream(OutputStream $out, $level= 6) {
+          return new Bz2CompressingOutputStream($out, $level);
         }
 
-        protected function getDecompressionStream0($stream) {
-          return new Bz2DecompressingInputStream($stream);
+        public function getDecompressionStream(InputStream $in) {
+          return new Bz2DecompressingInputStream($in);
         }
       }');
     }
@@ -70,46 +70,22 @@
     }
 
     /**
-     * Gets compression stream
+     * Gets compression stream. Implemented in members.
      *
      * @param   io.streams.OutputStream out
      * @param   int level default 6 the compression level
      * @return  io.streams.OutputStream
      * @throws  lang.IllegalArgumentException if the level is not between 0 and 9
      */
-    public function getCompressionStream(OutputStream $out, $level= 6) {
-      if ($level < 0 || $level > 9) {
-        throw new IllegalArgumentException('Level '.$level.' out of range [0..9]');
-      }
-      return $this->getCompressionStream0($out, $level);
-    }
-
-    /**
-     * Gets compression stream. Implemented in members.
-     *
-     * @param   io.streams.OutputStream stream
-     * @param   int level the compression level
-     * @return  io.streams.OutputStream
-     */
-    protected abstract function getCompressionStream0($stream, $level);
-
-    /**
-     * Gets decompression stream.
-     *
-     * @param   io.streams.InputStream in
-     * @return  io.streams.InputStream
-     */
-    public function getDecompressionStream(InputStream $in) {
-      return $this->getDecompressionStream0($in);
-    }
+    public abstract function getCompressionStream(OutputStream $out, $level= 6);
 
     /**
      * Gets decompression stream. Implemented in members.
      *
-     * @param   io.streams.InputStream stream
+     * @param   io.streams.InputStream in
      * @return  io.streams.InputStream
      */
-    protected abstract function getDecompressionStream0($stream);
+    public abstract function getDecompressionStream(InputStream $in);
 
     /**
      * Get a compression instance by a given id
