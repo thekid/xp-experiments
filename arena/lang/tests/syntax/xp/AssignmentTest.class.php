@@ -251,5 +251,23 @@
         'op'            => '='
       ))), $this->parse('self::$instance.addAppender().flags= 0;'));
     }
+
+
+    /**
+     * Test chained assignment to variable
+     *
+     */
+    #[@test]
+    public function toAssignment() {
+      $this->assertEquals(array(new AssignmentNode(array(
+        'variable'      => new VariableNode('i'),
+        'expression'    => new AssignmentNode(array(
+          'variable'    => new VariableNode('j'),
+          'expression'  => new IntegerNode(array('value' => '0')),
+          'op'          => '='
+        )),
+        'op'            => '='
+      ))), $this->parse('$i= $j= 0;'));
+    }
   }
 ?>
