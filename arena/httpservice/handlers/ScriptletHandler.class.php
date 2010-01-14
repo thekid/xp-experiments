@@ -61,6 +61,7 @@
       }
       $request->setHeaders($headers);
       
+      // Query string:
       foreach ($url->getParams() as $name => $value) {
         if ($this->isValidUtf8($value)) {
           $request->setParam($name, new String($value, 'utf-8'));
@@ -69,6 +70,16 @@
         }
       }
       
+      // POST data
+      parse_str($data, $out);
+      foreach ($out as $name => $value) {
+        if ($this->isValidUtf8($value)) {
+          $request->setParam($name, new String($value, 'utf-8'));
+        } else {
+          $request->setParam($name, new String($value));
+        }
+      }
+            
       // Create 
       $response= new HttpScriptletResponse();
       
