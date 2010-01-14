@@ -13,26 +13,28 @@
    * @purpose  Handler for HttpProtocol
    */
   class ScriptletHandler extends AbstractUrlHandler {
-    protected 
-      $webroot= '',
-      $docroot= '';
-
-    static function __static() {
-      function getallheaders() { }    // HACK
-    }
+    protected $scriptlet= NULL;
 
     /**
      * Constructor
      *
-     * @param   string webroot document root
-     * @param   string docroot document root
+     * @param   scriptlet.HttpScriptlet scriptlet
      */
-    public function __construct($webroot, $docroot) {
-      $this->webroot= realpath($webroot);
-      $this->docroot= realpath($docroot);
-      foreach (explode(PATH_SEPARATOR, scanpath(array($this->webroot), $this->webroot)) as $path) {
-        ClassLoader::registerPath($path);
-      }
+    public function __construct($name) {
+      $this->scriptlet= XPClass::forName($name)->newInstance();
+      $this->scriptlet->init();
+    }
+    
+    protected function isValidUtf8($bytes) {
+      return preg_match('%(?:
+        [\xC2-\xDF][\x80-\xBF]        # non-overlong 2-byte
+        |\xE0[\xA0-\xBF][\x80-\xBF]               # excluding overlongs
+        |[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}      # straight 3-byte
+        |\xED[\x80-\x9F][\x80-\xBF]               # excluding surrogates
+        |\xF0[\x90-\xBF][\x80-\xBF]{2}    # planes 1-3
+        |[\xF1-\xF3][\x80-\xBF]{3}                  # planes 4-15
+        |\xF4[\x80-\x8F][\x80-\xBF]{2}    # plane 16
+        )+%xs', $bytes);
     }
 
     /**
@@ -45,20 +47,35 @@
      * @param   peer.Socket socket
      */
     public function handleRequest($method, $query, array $headers, $data, Socket $socket) {
-      $url= parse_url($query);
-
-      putenv('SCRIPT_URL='.$url['path']);
-      putenv('REQUEST_URI='.$url['path']);
-      putenv('QUERY_STRING='.$url['query']);
-      putenv('HTTP_HOST='.$headers['host']);
-      putenv('REQUEST_METHOD='.$method);
-      putenv('DOCUMENT_ROOT='.$this->docroot);
-      putenv('SERVER_PROTOCOL=HTTP/1.0');
-      $runner= xp·scriptlet·Runner::setup(array($this->webroot));
+      $url= new URL('http://localhost'.$query);
+      
+      // Create request object
+      $request= new HttpScriptletRequest();
+      $request->method= $method;
+      $request->env['SERVER_PROTOCOL']= 'HTTP/1.1';
+      $request->env['REQUEST_URI']= $query;
+      $request->env['QUERY_STRING']= substr($query, strpos($query, '?')+ 1);
+      $request->env['HTTP_HOST']= $url->getHost();
+      if ('https' === $url->getScheme()) { 
+        $request->env['HTTPS']= 'on';
+      }
+      $request->setHeaders($headers);
+      
+      foreach ($url->getParams() as $name => $value) {
+        if ($this->isValidUtf8($value)) {
+          $request->setParam($name, new String($value, 'utf-8'));
+        } else {
+          $request->setParam($name, new String($value));
+        }
+      }
+      
+      // Create 
+      $response= new HttpScriptletResponse();
+      
       try {
-        $runner->scriptlet->init();
-        $response= $runner->scriptlet->process();
+        $this->scriptlet->service($request, $response);
       } catch (HttpScriptletException $e) {
+        $e->printStackTrace();
         $response= $e->getResponse();
       }
 
@@ -77,7 +94,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'<'.$this->webroot.'|'.$this->docroot.'>';
+      return $this->getClassName().'<'.$this->scriptlet->toString().'>';
     }
   }
 ?>

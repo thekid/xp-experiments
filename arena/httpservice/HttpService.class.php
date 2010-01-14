@@ -83,26 +83,22 @@
     }
     
     /**
-     * Creates an url handler from the config file
+     * Creates an url handler
      *
-     * @param   string namespace
-     * @param   string section
+     * @param   string name
+     * @param   string[] args
      * @return  handlers.AbstractURLHandler
      */
-    protected function urlHandlerFor($namespace, $section) {
-      $args= array();
-      foreach ($this->config->readArray($namespace.'::'.$section, 'args') as $arg) {
-        if ('@' === $arg{0}) {
-          $args[]= $this->urlHandlerFor($namespace, substr($arg, 1));
-        } else {
-          $args[]= $arg;
-        }
+    protected function newUrlHandler($name, $args) {
+      try {
+        return Package::forName('handlers')
+          ->loadClass(ucfirst($name).'Handler')
+          ->getConstructor()
+          ->newInstance($args)
+        ;
+      } catch (ClassNotFoundException $e) {
+        throw new ChainedException('Handler for '.$name, $e);
       }
-      return Package::forName('handlers')
-        ->loadClass($this->config->readString($namespace.'::'.$section, 'handler').'Handler')
-        ->getConstructor()
-        ->newInstance($args)
-      ;
     }
     
     /**
@@ -115,10 +111,16 @@
       $server= $this->model->newInstance($this->ip, $this->port);
       with ($protocol= $server->setProtocol(new HttpProtocol())); {
         $section= $this->config->getFirstSection();
-        $handlers= $this->config->readHash($section, 'handlers');
-        foreach ($handlers->toArray() as $pattern => $mapping) {
-          $protocol->setUrlHandler('°'.$pattern.'°i', $this->urlHandlerFor($section, $mapping));
-        }
+        do {
+          $handler= $this->config->readString($section, 'handler');
+          $args= $this->config->readArray($section, 'args');
+          $host= substr($section, strpos($section, '::')+ 2);
+          try {
+            $protocol->setUrlHandler($host, '/.*/', $this->newUrlHandler($handler, $args));
+          } catch (Throwable $e) {
+            Console::$err->writeLine('*** ', $section, ' ~ ', $e);
+          }
+        } while ($section= $this->config->getNextSection());
         Console::writeLine('---> ', $protocol);
       }
       $server->init();

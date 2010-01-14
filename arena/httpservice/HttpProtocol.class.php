@@ -47,8 +47,11 @@
      * @param   string pattern regex
      * @param   handlers.AbstractUrlHandler handler
      */
-    public function setUrlHandler($pattern, $handler) {
-      $this->handlers[$pattern]= $handler;
+    public function setUrlHandler($host, $pattern, $handler) {
+      if (!isset($this->handlers[$host])) {
+        $this->handlers[$host]= array();
+      }
+      $this->handlers[$host][$pattern]= $handler;
     }
   
     /**
@@ -112,8 +115,12 @@
         strlen($body)
       );
 
+      // Check for vhost
+      $host= strtolower($headers['host']);
+      $handlers= isset($this->handlers[$host]) ? $this->handlers[$host] : $this->handlers['default'];
+
       // Construct response 
-      foreach ($this->handlers as $pattern => $handler) {
+      foreach ($handlers as $pattern => $handler) {
         if (preg_match($pattern, $query)) {
           try {
             $handler->handleRequest($method, $query, $headers, $body, $socket);
@@ -128,7 +135,7 @@
       
       // Cannot find any handler 
       try {
-        $r= '<h1>Could not handle request</h1>';
+        $r= '<h1>Could not handle request (Host: '.$host.')</h1><xmp>'.xp::stringOf($this->handlers).'</xmp>';
         $socket->write("HTTP/1.1 500 Internal Server Error\r\n");
         $socket->write("Content-type: text/html\r\n");
         $socket->write("Content-length: ".strlen($r)."\r\n");
@@ -161,8 +168,12 @@
      */
     public function toString() {
       $s= $this->getClassName()."@{\n";
-      foreach ($this->handlers as $pattern => $handler) {
-        $s.= '  handler<'.$pattern.'> => '.$handler->toString()."\n";
+      foreach ($this->handlers as $host => $handlers) {
+        $s.= '  [host '.$host."] {\n";
+        foreach ($handlers as $pattern => $handler) {
+          $s.= '    handler<'.$pattern.'> => '.$handler->toString()."\n";
+        }
+        $s.= "  }\n";
       }
       return $s.'}';
     }
