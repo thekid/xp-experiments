@@ -47,7 +47,7 @@
         }
       }'));
       
-      $instance= $injector->get($this->fixtureClass);
+      $instance= $injector->getInstance($this->fixtureClass);
       $this->assertInstanceOf($this->fixtureClass, $instance);
       $this->assertInstanceOf('InjecteeImpl', $instance->injectee);
     }
@@ -73,7 +73,7 @@
         }
       }'));
       
-      $instance= $injector->get($this->fixtureClass);
+      $instance= $injector->getInstance($this->fixtureClass);
       $this->assertInstanceOf($this->fixtureClass, $instance);
       $this->assertInstanceOf('InjecteeImpl', $instance->injectee);
     }

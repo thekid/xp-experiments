@@ -33,7 +33,7 @@
       $args= array();
       foreach ($r->getParameters() as $param) {
         $type= $param->getTypeRestriction();
-        $args[]= $this->get($type->getName());
+        $args[]= $this->getInstance($type->getName());
       }
       return $args;
     }
@@ -44,7 +44,7 @@
      * @param   string fqcn
      * @return  lang.Generic instance
      */
-    public function get($fqcn) {
+    public function getInstance($fqcn) {
       $class= $this->module->resolve(XPClass::forName($fqcn));
       $instance= NULL;
       
