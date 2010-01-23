@@ -28,11 +28,19 @@
      *
      * @param   lang.reflect.Routine r
      * @return  var[] args
+     * @throws  lang.IllegalStateException(
      */
     protected function argsFor(Routine $r) {
       $args= array();
       foreach ($r->getParameters() as $param) {
-        $type= $param->getTypeRestriction();
+        if (NULL === ($type= $param->getTypeRestriction())) {
+          throw new IllegalStateException(sprintf(
+            'Cannot determine type for %s:%s()\'s parameter %s',
+            $r->getDeclaringClass()->getName(),
+            $r->getName(),
+            $param->getName()
+          ));
+        }
         $args[]= $this->getInstance($type->getName());
       }
       return $args;
