@@ -33,14 +33,12 @@
     #[@test]
     public function constructorInjection() {
       $class= ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
-        protected $injectee = NULL;
+        public $injectee = NULL;
         
         #[@inject]
         public function __construct(Injectee $i) {
           $this->injectee= $i;
         }
-        
-        public function getInjectee() { return $this->injectee; }
       }');
       
       $injector= IoC::getInjectorFor(newinstance('ioc.AbstractModule', array(), '{
@@ -51,7 +49,7 @@
       
       $instance= $injector->get($this->fixtureClass);
       $this->assertInstanceOf($this->fixtureClass, $instance);
-      $this->assertInstanceOf('InjecteeImpl', $instance->getInjectee());
+      $this->assertInstanceOf('InjecteeImpl', $instance->injectee);
     }
 
     /**
@@ -61,14 +59,12 @@
     #[@test]
     public function methodInjection() {
       $class= ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
-        protected $injectee = NULL;
+        public $injectee = NULL;
         
         #[@inject]
         public function setInjectee(Injectee $i) {
           $this->injectee= $i;
         }
-        
-        public function getInjectee() { return $this->injectee; }
       }');
       
       $injector= IoC::getInjectorFor(newinstance('ioc.AbstractModule', array(), '{
@@ -79,7 +75,7 @@
       
       $instance= $injector->get($this->fixtureClass);
       $this->assertInstanceOf($this->fixtureClass, $instance);
-      $this->assertInstanceOf('InjecteeImpl', $instance->getInjectee());
+      $this->assertInstanceOf('InjecteeImpl', $instance->injectee);
     }
   }
 ?>
