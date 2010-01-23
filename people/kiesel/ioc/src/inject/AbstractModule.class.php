@@ -61,7 +61,7 @@
       foreach ($this->bindings[$n] as $binding) {
         if ($name === $binding->name) return $binding;
       }
-      return $binding;    // FIXME: NoSuchNameException?
+      return NULL;
     }
   }
 ?>

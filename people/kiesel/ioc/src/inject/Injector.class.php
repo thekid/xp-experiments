@@ -6,6 +6,8 @@
 
   $package= 'inject';
   
+  uses('util.NoSuchElementException');
+  
   /**
    * IOC injector
    *
@@ -53,9 +55,12 @@
      * @param   string fqcn
      * @param   string name default NULL
      * @return  lang.Generic instance
+     * @throws  util.NoSuchElementException
      */
     public function getInstance($fqcn, $name= NULL) {
-      $binding= $this->module->resolve(XPClass::forName($fqcn), $name);
+      if (NULL === ($binding= $this->module->resolve(XPClass::forName($fqcn), $name))) {
+        throw new NoSuchElementException('No binding for '.$fqcn.($name ? ' named '.$name : '').')');
+      }
       if (isset($binding->instance)) return $binding->instance;
       
       $class= $binding->impl;

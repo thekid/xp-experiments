@@ -113,5 +113,14 @@
       $this->assertInstanceOf('InjecteeImpl', $instance->injectees[0]);
       $this->assertInstanceOf('InjecteeImpl', $instance->injectees[1]);
     }
+
+    /**
+     * Tests named instance
+     *
+     */
+    #[@test, @expect('util.NoSuchElementException')]
+    public function nonExistantNamedInstance() {
+      $this->injector->getInstance('Injectee', 'hello');
+    }
   }
 ?>
