@@ -28,31 +28,41 @@
       $this->fixtureClass= __CLASS__.'··'.$this->name;
       $this->injector= IoC::getInjectorFor(newinstance('inject.AbstractModule', array(), '{
         protected function configure() {
-          $this->bind(XPClass::forName("rdbms.DBConnection"))->toInstance(
+          $this->bind(XPClass::forName("rdbms.DBConnection"))->named("news")->toInstance(
             DriverManager::getConnection("mysql://localhost")
+          );
+          $this->bind(XPClass::forName("rdbms.DBConnection"))->named("customers")->toInstance(
+            DriverManager::getConnection("sybase://localhost")
           );
         }
       }'));
     }
     
     /**
-     * Tests constructor injection
+     * Tests named injection
      *
      */
     #[@test]
-    public function constructorInjection() {
+    public function namedConnectionInjection() {
       ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
-        public $conn = NULL;
+        public $news = NULL;
+        public $customers = NULL;
         
-        #[@inject]
-        public function __construct(DBConnection $conn) {
-          $this->conn= $conn;
+        #[@inject(name= "news")]
+        public function setNewsConnection(DBConnection $conn) {
+          $this->news= $conn;
+
+        }
+        #[@inject(name= "customers")]
+        public function setCustomersConnection(DBConnection $conn) {
+          $this->customers= $conn;
         }
       }');
       
       $instance= $this->injector->getInstance($this->fixtureClass);
       $this->assertInstanceOf($this->fixtureClass, $instance);
-      $this->assertInstanceOf('rdbms.mysql.MySQLConnection', $instance->conn);
+      $this->assertInstanceOf('rdbms.mysql.MySQLConnection', $instance->news);
+      $this->assertInstanceOf('rdbms.sybase.SybaseConnection', $instance->customers);
     }
   }
 ?>

@@ -12,6 +12,7 @@
    */
   class inject·Binding extends Object {
     public $impl= NULL;
+    public $name= NULL;
     public $instance= NULL;
    
     /**
@@ -23,6 +24,17 @@
     public function to(XPClass $impl) {
       $this->impl= $impl;
       $this->instance= NULL;
+      return $this;
+    }
+
+    /**
+     * Sets name
+     *
+     * @param   string name
+     * @return  inject.Binding this
+     */
+    public function named($name) {
+      $this->name= $name;
       return $this;
     }
 

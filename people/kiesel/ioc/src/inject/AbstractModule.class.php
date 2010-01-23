@@ -34,18 +34,34 @@
      * @return  inject.Binding
      */
     public function bind(XPClass $class) {
-      return $this->bindings[$class->getName()]= new inject·Binding();
+      $n= $class->getName();
+      $binding= new inject·Binding();
+      if (!isset($this->bindings[$n])) {
+        $this->bindings[$n]= array($binding);
+      } else {
+        $this->bindings[$n][]= $binding;
+      }
+      return $binding;
     }
   
     /**
      * Resolves a class
      *
      * @param   lang.XPClass class
+     * @param   string name default NULL
      * @return  inject.Binding
      */
-    public function resolve(XPClass $class) {
+    public function resolve(XPClass $class, $name= NULL) {
       $n= $class->getName();
-      return isset($this->bindings[$n]) ? $this->bindings[$n] : create(new inject·Binding())->to($class);
+      if (!isset($this->bindings[$n])) {
+        return create(new inject·Binding())->to($class);
+      }
+      
+      if (!$name) return $this->bindings[$n][0];
+      foreach ($this->bindings[$n] as $binding) {
+        if ($name === $binding->name) return $binding;
+      }
+      return $binding;    // FIXME: NoSuchNameException?
     }
   }
 ?>
