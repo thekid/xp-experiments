@@ -24,6 +24,21 @@
     }
     
     /**
+     * Returns arguments to pass to a certain routine
+     *
+     * @param   lang.reflect.Routine r
+     * @return  var[] args
+     */
+    protected function argsFor(Routine $r) {
+      $args= array();
+      foreach ($r->getParameters() as $param) {
+        $type= $param->getTypeRestriction();
+        $args[]= $this->get($type->getName());
+      }
+      return $args;
+    }
+    
+    /**
      * Gets an instance
      *
      * @param   string fqcn
@@ -35,26 +50,14 @@
       
       if ($class->hasConstructor() && $class->getConstructor()->numParameters() > 0) {
         $constructor= $class->getConstructor();
-        
-        $args= array();
-        foreach ($constructor->getParameters() as $param) {
-          $type= $param->getTypeRestriction();
-          $args[]= $this->get($type->getName());
-        }
-        $instance= $constructor->newInstance($args);
+        $instance= $constructor->newInstance($this->argsFor($constructor));
       } else {
         $instance= $class->newInstance();
       }
       
       foreach ($class->getMethods() as $method) {
         if (!$method->hasAnnotation('inject')) continue;
-        
-        $args= array();
-        foreach ($method->getParameters() as $param) {
-          $type= $param->getTypeRestriction();
-          $args[]= $this->get($type->getName());
-        }
-        $method->invoke($instance, $args);
+        $method->invoke($instance, $this->argsFor($method));
       }
       
       return $instance;
