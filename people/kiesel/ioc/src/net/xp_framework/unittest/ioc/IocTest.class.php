@@ -38,7 +38,7 @@
      */
     #[@test]
     public function constructorInjection() {
-      $class= ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
+      ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
         public $injectee = NULL;
         
         #[@inject]
@@ -58,7 +58,7 @@
      */
     #[@test]
     public function constructorInjectionWithMultipleParameters() {
-      $class= ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
+      ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
         public $injectees = array(NULL, NULL);
         
         #[@inject]
@@ -79,7 +79,7 @@
      */
     #[@test]
     public function methodInjection() {
-      $class= ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
+      ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
         public $injectee = NULL;
         
         #[@inject]
@@ -99,7 +99,7 @@
      */
     #[@test]
     public function methodInjectionWithMultipleParameters() {
-      $class= ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
+      ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
         public $injectees = array(NULL, NULL);
         
         #[@inject]
