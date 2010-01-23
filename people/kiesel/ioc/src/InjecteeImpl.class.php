@@ -7,7 +7,7 @@
   uses('Injectee');
 
   /**
-   * Injecte eimplementatio
+   * Injectee implementation
    *
    */
   class InjecteeImpl extends Object implements Injectee {
