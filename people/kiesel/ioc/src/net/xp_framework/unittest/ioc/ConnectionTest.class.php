@@ -25,7 +25,7 @@
      *
      */
     public function setUp() {
-      $this->fixtureClass= 'Ioc'.$this->name;
+      $this->fixtureClass= __CLASS__.'··'.$this->name;
       $this->injector= IoC::getInjectorFor(newinstance('inject.AbstractModule', array(), '{
         protected function configure() {
           $this->bind(XPClass::forName("rdbms.DBConnection"))->toInstance(
