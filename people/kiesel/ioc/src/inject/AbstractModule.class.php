@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  uses('ioc.Module', 'ioc.Binding');
+  uses('inject.Module', 'inject.Binding');
   
   /**
    * Abstract base class for modules
    *
    */
-  abstract class AbstractModule extends Object implements ioc·Module {
+  abstract class AbstractModule extends Object implements inject·Module {
     protected $bindings= array();
   
     /**
@@ -31,21 +31,21 @@
      * Binds a class
      *
      * @param   lang.XPClass class
-     * @return  ioc.Binding
+     * @return  inject.Binding
      */
     public function bind(XPClass $class) {
-      return $this->bindings[$class->getName()]= new ioc·Binding();
+      return $this->bindings[$class->getName()]= new inject·Binding();
     }
   
     /**
      * Resolves a class
      *
      * @param   lang.XPClass class
-     * @return  ioc.Binding
+     * @return  inject.Binding
      */
     public function resolve(XPClass $class) {
       $n= $class->getName();
-      return isset($this->bindings[$n]) ? $this->bindings[$n] : create(new ioc·Binding())->to($class);
+      return isset($this->bindings[$n]) ? $this->bindings[$n] : create(new inject·Binding())->to($class);
     }
   }
 ?>

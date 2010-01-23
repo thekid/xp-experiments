@@ -4,22 +4,22 @@
  * $Id$ 
  */
 
-  $package= 'ioc';
+  $package= 'inject';
   
   /**
    * IOC injector
    *
    */
-  class ioc·Injector extends Object {
+  class inject·Injector extends Object {
     protected
       $module = NULL;
       
     /**
      * Creates a new injector for a given module
      *
-     * @param   ioc.Module module
+     * @param   inject.Module module
      */
-    public function __construct(ioc·Module $module) {
+    public function __construct(inject·Module $module) {
       $this->module= $module;
     }
     

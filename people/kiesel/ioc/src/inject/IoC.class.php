@@ -5,8 +5,8 @@
  */
 
   uses(
-    'ioc.Injector',
-    'ioc.Module'
+    'inject.Injector',
+    'inject.Module'
   );
 
   /**
@@ -18,11 +18,11 @@
     /**
      * Creates a new injector for a given module
      *
-     * @param   ioc.Module module
-     * @return  ioc.Injector
+     * @param   inject.Module module
+     * @return  inject.Injector
      */
-    public static function getInjectorFor(ioc·Module $module) {
-      return new ioc·Injector($module);
+    public static function getInjectorFor(inject·Module $module) {
+      return new inject·Injector($module);
     }
   }
 ?>

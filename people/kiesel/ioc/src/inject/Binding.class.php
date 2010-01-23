@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  $package= 'ioc';
+  $package= 'inject';
 
   /**
    * Represents a binding
    *
    */
-  class ioc·Binding extends Object {
+  class inject·Binding extends Object {
     public $impl= NULL;
     public $instance= NULL;
    
@@ -18,7 +18,7 @@
      * Sets implementation
      *
      * @param   lang.XPClass impl
-     * @return  ioc.Binding this
+     * @return  inject.Binding this
      */
     public function to(XPClass $impl) {
       $this->impl= $impl;
@@ -30,7 +30,7 @@
      * Sets instance
      *
      * @param   lang.Generic instance
-     * @return  ioc.Binding this
+     * @return  inject.Binding this
      */
     public function toInstance(Generic $instance) {
       $this->instance= $instance;

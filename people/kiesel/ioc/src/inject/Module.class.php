@@ -4,19 +4,19 @@
  * $Id$ 
  */
 
-  $package= 'ioc';
+  $package= 'inject';
   
   /**
    * Represents a module
    *
    */
-  interface ioc·Module {
+  interface inject·Module {
 
     /**
      * Resolves a class
      *
      * @param   lang.XPClass class
-     * @return  ioc.Binding
+     * @return  inject.Binding
      */
     public function resolve(XPClass $class);
   }

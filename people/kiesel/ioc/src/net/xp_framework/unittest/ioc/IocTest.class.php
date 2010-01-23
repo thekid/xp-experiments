@@ -6,8 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'ioc.IoC',
-    'ioc.AbstractModule',
+    'inject.IoC',
+    'inject.AbstractModule',
     'Injectee'
   );
   
