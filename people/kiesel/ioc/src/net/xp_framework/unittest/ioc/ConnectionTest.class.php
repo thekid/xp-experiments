@@ -9,7 +9,8 @@
     'inject.IoC',
     'inject.AbstractModule',
     'rdbms.DBConnection',
-    'rdbms.DriverManager'
+    'rdbms.mysql.MySQLConnection',
+    'rdbms.sybase.SybaseConnection'
   );
   
   /**
@@ -29,10 +30,10 @@
       $this->injector= IoC::getInjectorFor(newinstance('inject.AbstractModule', array(), '{
         protected function configure() {
           $this->bind(XPClass::forName("rdbms.DBConnection"))->named("news")->toInstance(
-            DriverManager::getConnection("mysql://localhost")
+            new MySQLConnection(new DSN("mysql://localhost"))
           );
           $this->bind(XPClass::forName("rdbms.DBConnection"))->named("customers")->toInstance(
-            DriverManager::getConnection("sybase://localhost")
+            new SybaseConnection(new DSN("sybase://localhost"))
           );
         }
       }'));
