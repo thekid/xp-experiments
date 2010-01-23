@@ -13,7 +13,12 @@
   class ioc·Binding extends Object {
     public $impl= NULL;
    
-    public function to($impl) {
+    /**
+     * Sets implementation
+     *
+     * @param   lang.XPClass impl
+     */
+    public function to(XPClass $impl) {
       $this->impl= $impl;
     }
   }

@@ -1,14 +1,34 @@
 <?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
   $package= 'ioc';
   
+  /**
+   * IOC injector
+   *
+   */
   class ioc·Injector extends Object {
     protected
       $module = NULL;
       
+    /**
+     * Creates a new injector for a given module
+     *
+     * @param   ioc.Module module
+     */
     public function __construct(ioc·Module $module) {
       $this->module= $module;
     }
     
+    /**
+     * Gets an instance
+     *
+     * @param   string fqcn
+     * @return  lang.Generic instance
+     */
     public function get($fqcn) {
       $class= $this->module->resolve(XPClass::forName($fqcn));
       $instance= NULL;
