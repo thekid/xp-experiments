@@ -16,7 +16,7 @@
      * Resolves a class
      *
      * @param   lang.XPClass class
-     * @return  lang.XPClass
+     * @return  ioc.Binding
      */
     public function resolve(XPClass $class);
   }

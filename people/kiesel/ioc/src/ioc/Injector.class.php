@@ -45,9 +45,10 @@
      * @return  lang.Generic instance
      */
     public function getInstance($fqcn) {
-      $class= $this->module->resolve(XPClass::forName($fqcn));
-      $instance= NULL;
+      $binding= $this->module->resolve(XPClass::forName($fqcn));
+      if (isset($binding->instance)) return $binding->instance;
       
+      $class= $binding->impl;
       if ($class->hasConstructor() && $class->getConstructor()->numParameters() > 0) {
         $constructor= $class->getConstructor();
         $instance= $constructor->newInstance($this->argsFor($constructor));

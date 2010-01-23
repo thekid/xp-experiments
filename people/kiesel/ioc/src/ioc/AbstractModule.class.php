@@ -41,11 +41,11 @@
      * Resolves a class
      *
      * @param   lang.XPClass class
-     * @return  lang.XPClass
+     * @return  ioc.Binding
      */
     public function resolve(XPClass $class) {
       $n= $class->getName();
-      return isset($this->bindings[$n]) ? $this->bindings[$n]->impl : $class;
+      return isset($this->bindings[$n]) ? $this->bindings[$n] : create(new ioc·Binding())->to($class);
     }
   }
 ?>
