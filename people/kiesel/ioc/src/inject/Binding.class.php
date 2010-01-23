@@ -37,5 +37,14 @@
       $this->impl= NULL;
       return $this;
     }
+    
+    /**
+     * Creates a string representation of this binding
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'('.($this->impl ? $this->impl->toString() : $this->instance->toString()).')';
+    }
   }
 ?>
