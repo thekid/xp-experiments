@@ -41,8 +41,8 @@
       }'));
       
       $instance= $injector->get('IocSimpleClass');
-      $this->assertClass($instance, 'IocSimpleClass');
-      $this->assertClass($instance->getInjectee(), 'InjecteeImpl');
+      $this->assertInstanceOf('IocSimpleClass', $instance);
+      $this->assertInstanceOf('InjecteeImpl', $instance->getInjectee());
     }
   }
 ?>
