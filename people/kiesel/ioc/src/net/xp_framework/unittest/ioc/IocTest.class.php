@@ -71,5 +71,26 @@
       $this->assertInstanceOf($this->fixtureClass, $instance);
       $this->assertInstanceOf('InjecteeImpl', $instance->injectee);
     }
+
+    /**
+     * Tests method injection
+     *
+     */
+    #[@test]
+    public function methodInjectionWithMultipleParameters() {
+      $class= ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
+        public $injectee = array();
+        
+        #[@inject]
+        public function setInjectee(Injectee $i1, Injectee $i2) {
+          $this->injectees= array($i1, $i2);
+        }
+      }');
+      
+      $instance= $this->injector->getInstance($this->fixtureClass);
+      $this->assertInstanceOf($this->fixtureClass, $instance);
+      $this->assertInstanceOf('InjecteeImpl', $instance->injectees[0]);
+      $this->assertInstanceOf('InjecteeImpl', $instance->injectees[1]);
+    }
   }
 ?>
