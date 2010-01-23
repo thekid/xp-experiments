@@ -53,6 +53,27 @@
     }
 
     /**
+     * Tests constructor injection
+     *
+     */
+    #[@test]
+    public function constructorInjectionWithMultipleParameters() {
+      $class= ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
+        public $injectees = array(NULL, NULL);
+        
+        #[@inject]
+        public function __construct(Injectee $i1, Injectee $i2) {
+          $this->injectees= array($i1, $i2);
+        }
+      }');
+      
+      $instance= $this->injector->getInstance($this->fixtureClass);
+      $this->assertInstanceOf($this->fixtureClass, $instance);
+      $this->assertInstanceOf('InjecteeImpl', $instance->injectees[0]);
+      $this->assertInstanceOf('InjecteeImpl', $instance->injectees[1]);
+    }
+
+    /**
      * Tests method injection
      *
      */
