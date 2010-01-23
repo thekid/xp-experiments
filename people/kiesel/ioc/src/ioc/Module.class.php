@@ -2,6 +2,6 @@
   $package= 'ioc';
   
   interface ioc·Module {
-    public function resolve($fqcn);
+    public function resolve(XPClass $class);
   }
 ?>

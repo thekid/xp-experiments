@@ -21,16 +21,16 @@
           $type= $param->getTypeRestriction();
           $args[]= $this->get($type->getName());
         }
-        $instance= $class->newInstance($args);
+        $instance= $constructor->newInstance($args);
       } else {
         $instance= $class->newInstance();
       }
       
-      /* foreach ($class->getMethods() as $method) {
+      foreach ($class->getMethods() as $method) {
         if ($method->hasAnnotation('inject')) {
           // TBI
         }
-      } */
+      }
       
       return $instance;
     }

@@ -2,7 +2,8 @@
   uses(
     'unittest.TestCase',
     'ioc.IoC',
-    'ioc.AbstractModule'
+    'ioc.AbstractModule',
+    'Injectee'
   );
   
   class IocTest extends TestCase {
@@ -26,7 +27,7 @@
         }
       }');
       
-      $instance= IoC::getInjectorFor($module->newInstance())->get("IocSimpleClass");
+      $instance= IoC::getInjectorFor($module->newInstance())->get('IocSimpleClass');
       $this->assertClass($instance, 'IocSimpleClass');
       $this->assertClass($instance->getInjectee(), 'InjecteeImpl');
     }
