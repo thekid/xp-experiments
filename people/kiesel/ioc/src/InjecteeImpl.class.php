@@ -11,6 +11,14 @@
    *
    */
   class InjecteeImpl extends Object implements Injectee {
-    
+
+    /**
+     * Returns greeting
+     *
+     * @return  string
+     */
+    public function getGreeting() {
+      return 'Hello';
+    }
   }
 ?>

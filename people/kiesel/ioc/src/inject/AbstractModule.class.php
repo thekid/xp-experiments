@@ -4,7 +4,14 @@
  * $Id$ 
  */
 
-  uses('inject.Module', 'inject.Binding');
+  uses(
+    'inject.Module', 
+    'inject.Binding', 
+    'lang.reflect.Proxy',
+    'lang.reflect.InvocationHandler', 
+    'util.invoke.PointCutExpression',
+    'util.invoke.InvocationChain'
+  );
   
   /**
    * Abstract base class for modules
@@ -42,6 +49,39 @@
         $this->bindings[$n][]= $binding;
       }
       return $binding;
+    }
+    
+    /**
+     * Intercept
+     *
+     * @param   string pointcut
+     * @param   util.invoke.InvocationInterceptor interceptor
+     */
+    public function intercept($pointcut, InvocationInterceptor $interceptor) {
+      $pc= new PointCutExpression($pointcut);
+      foreach ($this->bindings as $name => $bindings) {
+        $class= XPClass::forName($name);
+        if (!($class->equals($pc->class) || $class->isSubclassOf($pc->class))) continue;
+
+        $cl= $class->getClassLoader();
+        foreach ($bindings as $i => $binding) {
+          $this->bindings[$name][$i]->toInstance(Proxy::newProxyInstance(
+            $cl, 
+            array($class), 
+            newinstance('lang.reflect.InvocationHandler', array($binding->instance, $interceptor), '{
+              public function __construct($instance, $interceptor) {
+                $this->instance= $instance;
+                $this->chain= new InvocationChain();
+                $this->chain->addInterceptor($interceptor);
+              }
+              
+              public function invoke($instance, $method, $args) {
+                return $this->chain->invoke($this->instance, $this->instance->getClass()->getMethod($method), $args); 
+              }
+            }')
+          ));
+        }
+      }
     }
   
     /**

@@ -10,5 +10,11 @@
    */
   interface Injectee {
     
+    /**
+     * Returns greeting
+     *
+     * @return  string
+     */
+    public function getGreeting();
   }
 ?>
