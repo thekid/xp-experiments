@@ -79,7 +79,7 @@
     #[@test]
     public function methodInjectionWithMultipleParameters() {
       $class= ClassLoader::defineClass($this->fixtureClass, 'lang.Object', array(), '{
-        public $injectee = array();
+        public $injectees = array(NULL, NULL);
         
         #[@inject]
         public function setInjectee(Injectee $i1, Injectee $i2) {
