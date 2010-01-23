@@ -25,7 +25,7 @@
      * Configure method. This is where you register bindings
      *
      */
-    public abstract function configure();
+    protected abstract function configure();
     
     /**
      * Binds a class
