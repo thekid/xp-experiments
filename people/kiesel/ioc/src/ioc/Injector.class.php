@@ -47,9 +47,14 @@
       }
       
       foreach ($class->getMethods() as $method) {
-        if ($method->hasAnnotation('inject')) {
-          // TBI
+        if (!$method->hasAnnotation('inject')) continue;
+        
+        $args= array();
+        foreach ($method->getParameters() as $param) {
+          $type= $param->getTypeRestriction();
+          $args[]= $this->get($type->getName());
         }
+        $method->invoke($instance, $args);
       }
       
       return $instance;
