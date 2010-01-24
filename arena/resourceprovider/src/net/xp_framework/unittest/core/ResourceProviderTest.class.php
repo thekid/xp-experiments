@@ -12,41 +12,12 @@
   );
 
   /**
-   * Transformation
+   * Test resource provider functionality
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://lang.ResourceProvider
+   * @purpose  Provide stream access for classloader-provided files
    */
   class ResourceProviderTest extends TestCase {
-
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public function setUp() {
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @param
-     * @return
-     */
-    protected function adapter() {
-      return ResourceProvider::getInstance();
-    }
-  
-    /**
-     * Test
-     *
-     */
-    #[@test]
-    public function translatePathWithVerySimplePathAndRelativeLink() {
-      $this->assertEquals('Template/somefile.xsl', $this->adapter()->translatePath('res://Template/somefile.xsl'));
-    }
 
     /**
      * Test
@@ -54,7 +25,7 @@
      */
     #[@test]
     public function translatePathWorksWithoutModule() {
-      $this->assertEquals('some/where/file.xsl', $this->adapter()->translatePath('res://some/where/file.xsl'));
+      $this->assertEquals('some/where/file.xsl', ResourceProvider::getInstance()->translatePath('res://some/where/file.xsl'));
     }
 
     /**
@@ -63,7 +34,7 @@
      */
     #[@test]
     public function translatePreservesTranslatedPaths() {
-      $this->assertEquals('net/xp_framework/already/translated.xsl', $this->adapter()->translatePath('res://net/xp_framework/already/translated.xsl'));
+      $this->assertEquals('net/xp_framework/already/translated.xsl', ResourceProvider::getInstance()->translatePath('res://net/xp_framework/already/translated.xsl'));
     }
 
     /**
@@ -76,7 +47,16 @@
       $this->assertEquals('Foobar', trim(FileUtil::getContents(new File('res://one/Dummy.xsl'))));
       ClassLoader::removeLoader($added);
     }
- 
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('io.FileNotFoundException')]
+    public function loadingNonexistantFile() {
+      $this->assertEquals('Foobar', trim(FileUtil::getContents(new File('res://one/Dummy.xsl'))));
+    }
+
     /**
      * Test
      *
@@ -86,7 +66,7 @@
       $added= ClassLoader::registerPath(dirname(__FILE__).'/res');
 	  
       $proc= new DOMXslProcessor();
-      $proc->_base= '';
+      // $proc->_base= '';
       $proc->setXslFile('res://two/ModuleOne.xsl');
       $proc->setXmlBuf('<document/>');
       $proc->run();

@@ -4,8 +4,6 @@
  * $Id$ 
  */
 
-  uses('peer.URL');
-
   /**
    * Provides a resource through a scheme.
    *
@@ -24,6 +22,10 @@
       self::$instance= new self();
     }
 
+    /**
+     * Retrieve instance
+     *
+     */
     public static function getInstance() {
       return self::$instance;
     }
