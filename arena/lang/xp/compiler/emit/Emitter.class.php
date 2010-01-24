@@ -12,7 +12,7 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Base class for emitters
    *
    * @see      xp://xp.compiler.ast.Node
    */
@@ -30,7 +30,28 @@
      */
     public function __construct() {
       $this->optimizations= new Optimizations();
-      $this->optimizations->addAll(Package::forName('xp.compiler.optimize'));
+    }
+
+    /**
+     * Adds an optimization
+     *
+     * @param   xp.compiler.optimize.Optimization o
+     * @return  xp.compiler.optimize.Optimization
+     */
+    public function addOptimization(Optimization $o) {
+      $this->optimizations->add($o);
+      return $o;
+    }
+    
+    /**
+     * Adds an optimization
+     *
+     * @param   xp.compiler.optimize.Optimization o
+     * @return  xp.compiler.emit.Emitter this
+     */
+    public function withOptimization(Optimization $o) {
+      $this->optimizations->add($o);
+      return $this;
     }
     
     /**
@@ -67,13 +88,7 @@
         }
       }
       
-      return sprintf(
-        '[%4s] %s at line %d, offset %d',
-        $code,
-        $message,
-        $pos[0],
-        $pos[1]
-      );
+      return sprintf('[%4s] %s at line %d, offset %d', $code, $message, $pos[0], $pos[1]);
     }
     
     /**

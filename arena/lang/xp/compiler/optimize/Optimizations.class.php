@@ -22,22 +22,6 @@
     }
     
     /**
-     * Adds all optimization implementations inside a given package
-     *
-     * @param   lang.reflect.Package package
-     */
-    public function addAll(Package $package) {
-      foreach ($package->getClasses() as $class) {
-        if (
-          $class->isInterface() || 
-          MODIFIER_PUBLIC != $class->getModifiers() || 
-          !$class->isSubclassOf('xp.compiler.optimize.Optimization')
-        ) continue;
-        $this->add($class->newInstance());
-      }
-    }
-    
-    /**
      * Add an optimization implementation
      *
      * @param   xp.compiler.optimize.Optimization impl

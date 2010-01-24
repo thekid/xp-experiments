@@ -39,6 +39,11 @@
    *   <li>-o [outputdir]: 
    *     Writed compiled files to outputdir
    *   </li>
+   *   <li>-O [optimization[,optimization[...]]]: 
+   *     Load and install the given optimizations (each optimization may
+   *     be either a fully qualified class name or a package reference,
+   *     e.g. "xp.compiler.optimize.*")
+   *   </li>
    *   <li>-t [level[,level[...]]]:
    *     Set trace level (all, none, info, warn, error, debug)
    *   </li>
@@ -84,6 +89,7 @@
       $manager= new FileManager();
       $manager->setSourcePaths(xp::$registry['classpath']);
       $emitter= 'source';
+      $optimization= 'xp.compiler.optimize.Optimization';
       
       // Handle arguments
       $files= array();
@@ -108,6 +114,26 @@
           $compiler->setTrace(Logger::getInstance()->getCategory()->withAppender($appender, $levels));
         } else if ('-e' === $args[$i]) {
           $emitter= $args[++$i];
+        } else if ('-O' === $args[$i]) {
+          foreach (explode(',', $args[++$i]) as $reference) {
+            if ($p= strpos($reference, '.*')) {
+              foreach (Package::forName(substr($reference, 0, $p))->getClasses() as $class) {
+                if (
+                  $class->isInterface() || 
+                  MODIFIER_PUBLIC != $class->getModifiers() || 
+                  !$class->isSubclassOf($optimization)
+                ) continue;
+                $optimizations[]= $class->newInstance();
+              }
+            } else {
+              $class= XPClass::forName($reference);
+              if (!$class->isSubclassOf($optimization)) {
+                Console::$err->writeLine('*** Class ', $class, ' is not an optimization, ignoring');
+              } else {
+                $optimizations[]= $class->newInstance();
+              }
+            }
+          }
         } else if ('-o' === $args[$i]) {
           $manager->setOutput(new Folder($args[++$i]));
         } else {
@@ -121,13 +147,14 @@
         exit(2);
       }
       
+      // Setup emitter and optimizations
+      $emitter= Package::forName('xp.compiler.emit')->getPackage($emitter)->loadClass('Emitter')->newInstance();
+      foreach ($optimizations as $optimization) {
+        $emitter->addOptimization($optimization);
+      }
+      
       // Compile files
-      $success= $compiler->compile(
-        $files, 
-        $listener, 
-        $manager, 
-        Package::forName('xp.compiler.emit')->getPackage($emitter)->loadClass('Emitter')->newInstance()
-      );
+      $success= $compiler->compile($files, $listener, $manager, $emitter);
       exit($success ? 0 : 1);
     }
   }
