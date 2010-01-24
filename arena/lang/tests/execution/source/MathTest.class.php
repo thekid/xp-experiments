@@ -47,7 +47,7 @@
      */
     #[@test]
     public function division() {
-      $this->assertEquals(2.0, $this->run('return 4 / 2;'));
+      $this->assertEquals(2.0, $this->run('return 4.0 / 2.0;'));
     }
 
   }
