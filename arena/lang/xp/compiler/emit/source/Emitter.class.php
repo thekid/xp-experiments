@@ -1003,7 +1003,6 @@
      * @param   xp.compiler.ast.InstanceCreationNode new
      */
     protected function emitInstanceCreation($op, InstanceCreationNode $new) {
-      static $i= 0;
 
       // Anonymous instance creation:
       //
@@ -1024,7 +1023,7 @@
           $p= array('parent' => $new->type, 'implements' => NULL);
         }
         
-        $unique= new TypeName($parent->literal().'··'.++$i);
+        $unique= new TypeName($parent->literal().'··'.uniqid());
         $decl= new ClassNode(0, NULL, $unique, $p['parent'], $p['implements'], $new->body);
         $ptr= new TypeDeclaration(new ParseTree(NULL, array(), $decl), $parent);
         $this->scope[0]->declarations[]= $decl;
@@ -1222,7 +1221,7 @@
      * @param   xp.compiler.ast.LambdaNode lambda
      */
     protected function emitLambda($op, LambdaNode $lambda) {
-      $unique= new TypeName('Lambda··'.md5($lambda->hashCode()));
+      $unique= new TypeName('Lambda··'.uniqid());
       
       // Visit all statements, promoting local variable used within tp members
       $promoter= new LocalsToMemberPromoter();
