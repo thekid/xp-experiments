@@ -27,19 +27,8 @@
      * @return  
      */
     public function setUp() {
-      ResourceProvider::bind('res');
     }
     
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public function tearDown() {
-      ResourceProvider::unbind('res');
-    }
-
     /**
      * (Insert method's description here)
      *
@@ -47,27 +36,9 @@
      * @return
      */
     protected function adapter() {
-      return ResourceProvider::forScheme('res');
+      return ResourceProvider::getInstance();
     }
   
-    /**
-     * Test
-     *
-     */
-    #[@test,@ignore]
-    public function translatePaths() {
-      $this->assertEquals('net/xp_framework/xml/Template.xsl', $this->adapter()->translatePath('res://xsl/net.xp_framework.xml.Template'));
-    }
-
-    /**
-     * Test
-     *
-     */
-    #[@test,@ignore]
-    public function translatePathWithVerySimplePath() {
-      $this->assertEquals('Template.xsl', $this->adapter()->translatePath('res://xsl/Template'));
-    }
-
     /**
      * Test
      *
@@ -77,15 +48,6 @@
       $this->assertEquals('Template/somefile.xsl', $this->adapter()->translatePath('res://Template/somefile.xsl'));
     }
 
-    /**
-     * Test
-     *
-     */
-    #[@test, @ignore]
-    public function translatePathsWorksForRelativeIncludes() {
-      $this->assertEquals('net/xp_framework/xml/somerelativefile.xsl', $this->adapter()->translatePath('xpl://net.xp_framework.xml.Template/somerelativefile.xsl'));
-    }
-    
     /**
      * Test
      *

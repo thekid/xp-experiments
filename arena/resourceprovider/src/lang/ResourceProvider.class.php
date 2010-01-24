@@ -14,86 +14,18 @@
    */
   class ResourceProvider extends Object {
     protected static
-      $instances  = array();
+      $instance   = NULL;
 
     protected
-      $resource   = NULL,
-      $scheme     = NULL,
-      $loader     = NULL;
+      $resource   = NULL;
 
-    /**
-     * Bind instance to protocol. Takes optional classloader that is
-     * then used to resolve file requests
-     *
-     * @param   string scheme
-     * @param   IClassLoader cl default NULL
-     * @return  lang.SchemeResourceProvider
-     */
-    public static function bind($scheme, IClassLoader $cl= NULL) {
-      if (NULL === $cl) $cl= ClassLoader::getDefault();
-      self::$instances[$scheme]= create(new self())->bindInstance($scheme, $cl);
-      return self::$instances[$scheme];
+    static function __static() {
+      stream_wrapper_register('res', __CLASS__);
+      self::$instance= new self();
     }
 
-    /**
-     * Unbind instance
-     *
-     * @param   string scheme
-     */
-    public static function unbind($scheme) {
-      self::forScheme($scheme)->unbindInstance();
-      unset(self::$instances[$scheme]);
-    }
-
-    /**
-     * Retrieve instance for given path
-     *
-     * @param   string path
-     * @return  lang.SchemeResourceProvider
-     */
-    public static function forAny($path) {
-      if (FALSE !== strpos($path, '://')) $path= substr($path, 0, strpos($path, '://'));
-      return self::forScheme($path);
-    }
-
-    /**
-     * Retrieve instance for given scheme
-     *
-     * @param   string scheme
-     * @return  lang.SchemeResourceProvider
-     * @throws  lang.IllegalArgumentException if scheme is not known
-     */
-    public static function forScheme($scheme) {
-      if (!isset(self::$instances[$scheme])) throw new IllegalArgumentException(
-        'Scheme "'.$scheme.'" not known.'
-      );
-
-      return self::$instances[$scheme];
-    }
-
-    /**
-     * Perform binding
-     *
-     * @param   string scheme
-     * @param   lang.IClassLoader cl
-     * @return  lang.SchemeResourceProvider
-     */
-    protected function bindInstance($scheme, IClassLoader $cl) {
-      if (FALSE === stream_wrapper_register($scheme, __CLASS__)) throw new IllegalStateException(
-        'Scheme '.$scheme.' is already bound'
-      );
-
-      $this->scheme= $scheme;
-      $this->loader= $cl;
-      return $this;
-    }
-
-    /**
-     * Perform unbinding
-     *
-     */
-    protected function unbindInstance() {
-      stream_wrapper_unregister($this->scheme);
+    public static function getInstance() {
+      return self::$instance;
     }
 
     /**
@@ -108,32 +40,19 @@
     public function stream_open($path, $mode, $options, &$opened_path) {
       if ($mode !== 'r' && $mode !== 'rb') return FALSE;
 
-      $instance= self::forAny($path);
-      $this->scheme= $instance->getScheme();
-      $this->loader= $instance->getLoader();
-
-      $this->resource= $this->getLoader()->getResourceAsStream($this->translatePath($path));
+      $this->resource= $this->getLoader()->getResourceAsStream(self::$instance->translatePath($path));
       $this->resource->open(FILE_MODE_READ);
 
       return TRUE;
     }
     
     /**
-     * Retrieve scheme
-     *
-     * @return  string
-     */
-    protected function getScheme() {
-      return $this->scheme;
-    }
-
-    /**
      * Retrieve associated loader
      *
      * @return  lang.IClassLoader
      */
     protected function getLoader() {
-      return $this->loader;
+      return ClassLoader::getDefault();
     }
 
     /**
@@ -222,13 +141,11 @@
      * @return  <string,int>[]
      */
     public function url_stat($path, $flags) {
-      $instance= self::forAny($path);
-
-      if (!$instance->getLoader()->providesResource($instance->translatePath($path))) {
+      if (!self::$instance->getLoader()->providesResource(self::$instance->translatePath($path))) {
         return FALSE;
       }
 
-      $hdl= $instance->getLoader()->getResourceAsStream($instance->translatePath($path));
+      $hdl= self::$instance->getLoader()->getResourceAsStream(self::$instance->translatePath($path));
       return array(
         'dev'   => 0,
         'ino'   => 0,
