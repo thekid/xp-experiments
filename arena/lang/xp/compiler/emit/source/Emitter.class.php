@@ -55,7 +55,8 @@
       $properties   = array(NULL),
       $inits        = array(NULL),
       $origins      = array(NULL),
-      $scope        = array(NULL);
+      $scope        = array(NULL),
+      $local        = array(NULL);
     
     /**
      * Enter the given scope
@@ -106,6 +107,10 @@
       $op->append('uses(');
       $s= sizeof($types)- 1;
       foreach ($types as $i => $type) {
+        
+        // Do not add uses() elements for types emitted inside the same sourcefile
+        if (isset($this->local[0][$type->name])) continue;
+        
         try {
           $op->append("'")->append($this->resolveType($type, FALSE)->name())->append("'");
           $i < $s && $op->append(',');
@@ -1743,14 +1748,12 @@
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Object');
       $parentType= $this->resolveType($parent, FALSE);
       $this->enter(new TypeDeclarationScope());    
-      
-      // Ensure parent class and interfaces are loaded
-      if (!strstr($declaration->name->name, '··')) {
-        $this->emitUses($op, array_merge(
-          $declaration->parent ? array($parent) : array(),
-          (array)$declaration->implements
-        ));
-      }
+
+      // Ensure parent class and interfaces are loaded.
+      $this->emitUses($op, array_merge(
+        $declaration->parent ? array($parent) : array(),
+        (array)$declaration->implements
+      ));
     
       if (Modifiers::isAbstract($declaration->modifiers)) {
         $op->append('abstract ');
@@ -2019,6 +2022,7 @@
       // oel_set_source_line($op, 0);
       
       array_unshift($this->origins, $tree->origin);
+      array_unshift($this->local, array());
       array_unshift($this->scope, $scope->enter(new CompilationUnitScope()));
       $this->scope[0]->importer= new NativeImporter();
       $this->scope[0]->declarations= array($tree->declaration);
@@ -2041,7 +2045,9 @@
       // Import and declarations
       $this->emitAll($bytes, (array)$tree->imports);
       while ($this->scope[0]->declarations) {
-        $this->emitOne($bytes, current($this->scope[0]->declarations));
+        $decl= current($this->scope[0]->declarations);
+        $this->local[0][$decl->name->name]= TRUE;
+        $this->emitOne($bytes, $decl);
         array_shift($this->scope[0]->declarations);
       }
 
@@ -2062,6 +2068,7 @@
       
       // Leave scope
       array_shift($this->origins);
+      array_shift($this->local);
       $this->leave();
       
       // Check on errors
