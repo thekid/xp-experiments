@@ -8,7 +8,7 @@
     'unittest.TestCase',
     'inject.IoC',
     'inject.AbstractModule',
-    'Injectee'
+    'net.xp_framework.unittest.ioc.Injectee'
   );
   
   /**
@@ -27,10 +27,10 @@
       $this->fixtureClass= __CLASS__.'··'.$this->name;
       $this->injector= IoC::getInjectorFor(newinstance('inject.AbstractModule', array(), '{
         protected function configure() {
-          $this->bind(XPClass::forName("Injectee"))->toInstance(newinstance("Injectee", array(), "{
+          $this->bind(XPClass::forName("net.xp_framework.unittest.ioc.Injectee"))->toInstance(newinstance("Injectee", array(), "{
             public function getGreeting() { return \"Hello\"; }
           }"));
-          $this->intercept("call:Injectee::getGreeting", newinstance("util.invoke.InvocationInterceptor", array(), "{
+          $this->intercept("call:net.xp_framework.unittest.ioc.Injectee::getGreeting", newinstance("util.invoke.InvocationInterceptor", array(), "{
             public function invoke(InvocationChain \$chain) {
               // throw new IllegalStateException(__FUNCTION__);
               return \$chain->proceed();

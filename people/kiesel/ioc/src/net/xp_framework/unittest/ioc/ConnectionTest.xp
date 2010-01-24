@@ -1,0 +1,67 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package net.xp_framework.unittest.ioc;
+
+import unittest.TestCase;
+import inject.Injector;
+import inject.AbstractModule;
+import rdbms.DBConnection;
+import rdbms.mysql.MySQLConnection;
+import rdbms.sybase.SybaseConnection;
+
+/**
+ * Tests named injections
+ *
+ */
+public class ConnectionTest extends TestCase {
+  protected string $fixtureClass;
+  protected Injector $injector= null;
+
+  /**
+   * Sets up this test case
+   *
+   */
+  public void setUp() {
+    $this.fixtureClass= __CLASS__ ~ '··' ~ $this.name;
+    $this.injector= inject.IoC::getInjectorFor(new AbstractModule() {
+      protected void configure() {
+        $this.bind(DBConnection::class).named('news').toInstance(
+          new MySQLConnection(new rdbms.DSN('mysql://localhost'))
+        );
+        $this.bind(DBConnection::class).named('customers').toInstance(
+          new SybaseConnection(new rdbms.DSN('sybase://localhost'))
+        );
+      }
+    });
+  }
+
+  /**
+   * Tests named injection
+   *
+   */
+  [@test]
+  public void namedConnectionInjection() {
+    ClassLoader::defineClass($this.fixtureClass, 'lang.Object', [], '{
+      public $news = NULL;
+      public $customers = NULL;
+
+      #[@inject(name= "news")]
+      public function setNewsConnection(DBConnection $conn) {
+        $this->news= $conn;
+      }
+
+      #[@inject(name= "customers")]
+      public function setCustomersConnection(DBConnection $conn) {
+        $this->customers= $conn;
+      }
+    }');
+
+    $instance= $this.injector.getInstance($this.fixtureClass);
+    $this.assertInstanceOf($this.fixtureClass, $instance);
+    $this.assertInstanceOf('rdbms.mysql.MySQLConnection', $instance.news);
+    $this.assertInstanceOf('rdbms.sybase.SybaseConnection', $instance.customers);
+  }
+}

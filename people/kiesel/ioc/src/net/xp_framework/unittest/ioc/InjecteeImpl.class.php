@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('Injectee');
+  uses('net.xp_framework.unittest.ioc.Injectee');
 
   /**
    * Injectee implementation

@@ -1,0 +1,123 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package net.xp_framework.unittest.ioc;
+
+import unittest.TestCase;
+import inject.Injector;
+import inject.AbstractModule;
+
+/**
+ * Testcase for DI container
+ *
+ */
+public class IocTest extends TestCase {
+  protected string $fixtureClass;
+  protected Injector $injector= null;
+
+  /**
+   * Sets up this test case
+   *
+   */
+  public void setUp() {
+    $this.fixtureClass= __CLASS__ ~ '··' ~ $this.name;
+    $this.injector= inject.IoC::getInjectorFor(new AbstractModule() {
+      protected void configure() {
+        $this.bind(Injectee::class).to(InjecteeImpl::class);
+      }
+    });
+  }
+
+  /**
+   * Tests constructor injection
+   *
+   */
+  [@test]
+  public void constructorInjection() {
+    ClassLoader::defineClass($this.fixtureClass, 'lang.Object', [], '{
+      public $injectee = NULL;
+
+      #[@inject]
+      public function __construct(Injectee $i) {
+        $this->injectee= $i;
+      }
+    }');
+
+    $instance= $this.injector.getInstance($this.fixtureClass);
+    $this.assertInstanceOf($this.fixtureClass, $instance);
+    $this.assertInstanceOf('net.xp_framework.unittest.ioc.InjecteeImpl', $instance.injectee);
+  }
+
+  /**
+   * Tests constructor injection
+   *
+   */
+  [@test]
+  public void constructorInjectionWithMultipleParameters() {
+    ClassLoader::defineClass($this.fixtureClass, 'lang.Object', [], '{
+      public $injectees = array(NULL, NULL);
+
+      #[@inject]
+      public function __construct(Injectee $i1, Injectee $i2) {
+        $this->injectees= array($i1, $i2);
+      }
+    }');
+
+    $instance= $this.injector.getInstance($this.fixtureClass);
+    $this.assertInstanceOf($this.fixtureClass, $instance);
+    $this.assertInstanceOf('net.xp_framework.unittest.ioc.InjecteeImpl', $instance.injectees[0]);
+    $this.assertInstanceOf('net.xp_framework.unittest.ioc.InjecteeImpl', $instance.injectees[1]);
+  }
+
+  /**
+   * Tests method injection
+   *
+   */
+  [@test]
+  public void methodInjection() {
+    ClassLoader::defineClass($this.fixtureClass, 'lang.Object', [], '{
+      public $injectee = NULL;
+
+      #[@inject]
+      public function setInjectee(Injectee $i) {
+        $this->injectee= $i;
+      }
+    }');
+
+    $instance= $this.injector.getInstance($this.fixtureClass);
+    $this.assertInstanceOf($this.fixtureClass, $instance);
+    $this.assertInstanceOf('net.xp_framework.unittest.ioc.InjecteeImpl', $instance.injectee);
+  }
+
+  /**
+   * Tests method injection
+   *
+   */
+  [@test]
+  public void methodInjectionWithMultipleParameters() {
+    ClassLoader::defineClass($this.fixtureClass, 'lang.Object', [], '{
+      public $injectees = array(NULL, NULL);
+
+      #[@inject]
+      public function setInjectee(Injectee $i1, Injectee $i2) {
+        $this->injectees= array($i1, $i2);
+      }
+    }');
+
+    $instance= $this.injector.getInstance($this.fixtureClass);
+    $this.assertInstanceOf($this.fixtureClass, $instance);
+    $this.assertInstanceOf('net.xp_framework.unittest.ioc.InjecteeImpl', $instance.injectees[0]);
+    $this.assertInstanceOf('net.xp_framework.unittest.ioc.InjecteeImpl', $instance.injectees[1]);
+  }
+
+  /**
+   * Tests named instance
+   *
+   */
+  [@test, @expect('util.NoSuchElementException')]
+  public void nonExistantNamedInstance() {
+    $this.injector.getInstance('net.xp_framework.unittest.ioc.Injectee', 'hello');
+  }
+}
