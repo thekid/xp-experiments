@@ -24,6 +24,21 @@
     public function __construct($docroot) {
       $this->docroot= realpath($docroot);
     }
+    
+    /**
+     * Headers lookup
+     *
+     * @param   array<string, string> headers
+     * @param   string name
+     * @return  string
+     */
+    protected function header($headers, $name) {
+      if (isset($headers[$name])) return $headers[$name];
+      foreach ($headers as $key => $value) {
+        if (0 == strcasecmp($key, $name)) return $value;
+      }
+      return NULL;
+    }
 
     /**
      * Handle a single request
@@ -52,8 +67,8 @@
       $lastModified= $f->lastModified();
 
       // Implement If-Modified-Since/304 Not modified
-      if (isset($headers['if-modified-since'])) {
-        $d= strtotime($headers['if-modified-since']);
+      if ($mod= $this->header($headers, 'If-Modified-Since')) {
+        $d= strtotime($mod);
         if ($lastModified <= $d) {
           $this->sendHeader($socket, 304, 'Not modified', array());
           return;
