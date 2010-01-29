@@ -81,12 +81,10 @@
       $offset= strpos($header, "\r\n")+ 2;
       
       // Parse rest
-      $headers= array(
-        'REQUEST_METHOD' => strtoupper($method)
-      );
+      $headers= array();
       if ($t= strtok(substr($header, $offset, $p- $offset), "\r\n")) do {
         sscanf($t, "%[^:]: %[^\n]", $name, $value);
-        $headers[$name]= $headers[strtolower($name)]= $value;
+        $headers[$name]= $value;
       } while ($t= strtok("\r\n"));
       
       // Read input data (XXX: Delay until requested?)
@@ -116,7 +114,7 @@
       );
 
       // Check for vhost
-      $host= strtolower($headers['host']);
+      $host= strtolower($headers['Host']);
       $handlers= isset($this->handlers[$host]) ? $this->handlers[$host] : $this->handlers['default'];
 
       // Construct response 
