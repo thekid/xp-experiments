@@ -229,11 +229,16 @@
             $this->nextToken("\n");
             continue;
           } else if ('*' === $ahead) {    // Multi-line comment
-            $this->comment= '';
+            $comment= '';
             do { 
               $t= $this->nextToken('/'); 
-              $this->comment.= $t;
+              $comment.= $t;
             } while ('*' !== $t{strlen($t)- 1});
+            
+            // Copy api doc comments
+            if ($comment && '*' === $comment{0}) {
+              $this->comment= $comment;
+            }
             $this->nextToken('/');
             continue;
           } else if ('=' === $ahead) {
