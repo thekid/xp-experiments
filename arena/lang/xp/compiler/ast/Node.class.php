@@ -35,10 +35,8 @@
      * @return  bool
      */
     protected function memberWiseCompare($a1, $a2) {
-      if (sizeof($a1) != sizeof($a2)) return FALSE;
-
       foreach (array_keys((array)$a1) as $k) {
-        if ('position' === $k || 'free' === $k || '__id' === $k) continue;
+        if ('position' === $k || 'holder' === $k || 'free' === $k || '__id' === $k) continue;
 
         switch (TRUE) {
           case !array_key_exists($k, $a2): 
@@ -60,7 +58,7 @@
     }
         
     /**
-     * (Insert method's description here)
+     * Returns whether an object is equal to this node.
      *
      * @param   lang.Generic cmp
      * @return  bool
@@ -79,7 +77,7 @@
     public function toString() {
       $s= $this->getClassName().'(line '.$this->position[0].', offset '.$this->position[1].")@{\n";
       foreach (get_object_vars($this) as $name => $value) {
-        '__id' !== $name && 'position' !== $name && $s.= sprintf(
+        '__id' !== $name && 'position' !== $name && 'holder' !== $name && $s.= sprintf(
           "  [%-20s] %s\n", 
           $name, 
           str_replace("\n", "\n  ", xp::stringOf($value))

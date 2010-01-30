@@ -12,6 +12,14 @@
    * @purpose  purpose
    */
   class OperatorNode extends RoutineNode {
-    
+
+    /**
+     * Returns this routine's name
+     *
+     * @return  string
+     */
+    public function getName() {
+      return 'operator'.$this->symbol;
+    }
   }
 ?>

@@ -20,14 +20,14 @@
      * @param   xp.compiler.ast.AnnotationNode[] annotations
      * @param   xp.compiler.types.TypeName name
      * @param   xp.compiler.types.TypeName[] parents
-     * @param   var<string, xp.compiler.ast.Node> body
+     * @param   xp.compiler.ast.Node[] body
      */
     public function __construct($modifiers= 0, array $annotations= NULL, TypeName $name= NULL, array $parents= NULL, array $body= NULL) {
       $this->modifiers= $modifiers;
       $this->annotations= $annotations;
       $this->name= $name;
       $this->parents= $parents;
-      $this->body= $body;
+      $this->setBody($body);
     }
   }
 ?>

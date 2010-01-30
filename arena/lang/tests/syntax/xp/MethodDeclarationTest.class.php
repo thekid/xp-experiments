@@ -39,7 +39,7 @@
         'returns'    => new TypeName('string'),
         'arguments'  => NULL,
         'throws'     => NULL,
-        'body'       => NULL,
+        'body'       => array(),
         'extension'  => NULL
       ))), $this->parse('class Null { 
         public string toString() { }
@@ -63,7 +63,7 @@
           'check' => TRUE
         )),
         'throws'     => NULL,
-        'body'       => NULL,
+        'body'       => array(),
         'extension'  => NULL
       ))), $this->parse('class Null { 
         public bool equals(Object $cmp) { }
@@ -111,7 +111,7 @@
           'check' => TRUE
         )),
         'throws'     => NULL,
-        'body'       => NULL,
+        'body'       => array(),
         'extension'  => NULL
       ))), $this->parse('interface Comparable { 
         public int compareTo(Object $other) { }
@@ -135,7 +135,7 @@
           'check' => TRUE
         )),
         'throws'     => array(new TypeName('ClassNotFoundException'), new TypeName('SecurityException')),
-        'body'       => NULL,
+        'body'       => array(),
         'extension'  => NULL
       ))), $this->parse('class Class<T> { 
         public static Class<T> loadClass(string $name) throws ClassNotFoundException, SecurityException { }
@@ -164,7 +164,7 @@
           'check'     => TRUE
         )), 
         'throws'      => NULL,
-        'body'        => NULL,
+        'body'        => array(),
         'extension'   => NULL
       ))), $this->parse('class Format { 
         public static string printf(string $format, string... $args) {
@@ -190,7 +190,7 @@
           'check'  => TRUE      
         )), 
         'throws'     => NULL,
-        'body'       => NULL,
+        'body'       => array(),
         'extension'  => NULL
       ))), $this->parse('class List { 
         public void addAll(T[] $elements) { }
@@ -218,7 +218,7 @@
           'check' => TRUE
         )),
         'throws'     => NULL,
-        'body'       => NULL
+        'body'       => array()
       ))), $this->parse('class Integer { 
         public static self operator + (self $a, self $b) { }
       }'));
@@ -250,7 +250,7 @@
           'check' => FALSE
         )),
         'throws'     => NULL,
-        'body'       => NULL,
+        'body'       => array(),
         'extension'  => NULL
       ))), $this->parse('class Test { 
         public bool equals(Generic? $cmp) { }

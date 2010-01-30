@@ -237,7 +237,6 @@
      * @param   xp.compiler.ast.ConstantNode const
      */
     protected function emitConstant($op, ConstantNode $const) {
-      $this->warn('T203', 'Global constants ('.$const->value.') are discouraged', $const);
       try {
         $op->append(var_export($const->resolve(), TRUE));
       } catch (IllegalStateException $e) {
@@ -1025,6 +1024,7 @@
         
         $unique= new TypeName($parent->literal().'··'.uniqid());
         $decl= new ClassNode(0, NULL, $unique, $p['parent'], $p['implements'], $new->body);
+        $decl->synthetic= TRUE;
         $ptr= new TypeDeclaration(new ParseTree(NULL, array(), $decl), $parent);
         $this->scope[0]->declarations[]= $decl;
         $this->scope[0]->setType($new, $unique);
@@ -1073,10 +1073,6 @@
         '%='   => '%=',
       );
       
-      if (!$this->isWriteable($assign->variable)) {
-        $this->error('U400', 'Cannot assign to '.$assign->variable->getClassName().' via '.$assign->op, $un);
-        return;
-      }
       $this->emitOne($op, $assign->variable);
       $op->append($ops[$assign->op]);
       $this->emitOne($op, $assign->expression);
@@ -1089,7 +1085,7 @@
      * @param   xp.compiler.ast.OperatorNode method
      */
     protected function emitOperator($op, OperatorNode $operator) {
-      $this->errors('F501', 'Operator overloading not supported', $operator);
+      $this->error('F501', 'Operator overloading not supported', $operator);
     }
 
     /**
@@ -1270,18 +1266,6 @@
      * @param   xp.compiler.ast.MethodNode method
      */
     protected function emitMethod($op, MethodNode $method) {
-      if (!$method->comment && !strstr($this->scope[0]->declarations[0]->name->name, '··')) {
-        $this->warn('D201', 'No api doc for '.$this->scope[0]->declarations[0]->name->name.'::'.$method->name.'()', $method);
-      }
-      if ($this->scope[0]->declarations[0] instanceof InterfaceNode) {
-        if ($method->body) {
-          $this->error('I403', 'Interface methods may not have a body', $method);
-          return;
-        }
-        $empty= TRUE;
-      } else {
-        $empty= Modifiers::isAbstract($method->modifiers);
-      }
       if ($method->extension) {
         $this->scope[0]->addExtension(
           $type= $this->resolveType($method->extension),
@@ -1302,10 +1286,12 @@
       array_unshift($this->method, $method);
 
       // Arguments, body
-      $this->emitArguments($op, (array)$method->arguments, $empty ? ';' : "{\n");
-      if (!$empty) {
-        $this->emitAll($op, (array)$method->body);
-        $op->append("\n}");
+      if (NULL !== $method->body) {
+        $this->emitArguments($op, (array)$method->arguments, '{');
+        $this->emitAll($op, $method->body);
+        $op->append('}');
+      } else {
+        $this->emitArguments($op, (array)$method->arguments, ';');
       }
       
       // Finalize
@@ -1353,10 +1339,6 @@
      * @param   xp.compiler.ast.ConstructorNode constructor
      */
     protected function emitConstructor($op, ConstructorNode $constructor) {
-      if (!$constructor->comment && !strstr($this->scope[0]->declarations[0]->name->name, '··')) {
-        $this->warn('D201', 'No api doc for '.$this->scope[0]->declarations[0]->name->name.'\'s constructor', $constructor);
-      }
-
       $op->append(implode(' ', Modifiers::namesOf($constructor->modifiers)));
       $op->append(' function __construct');
       
@@ -1590,10 +1572,6 @@
      * @param   xp.compiler.ast.EnumNode declaration
      */
     protected function emitEnum($op, EnumNode $declaration) {
-      if (!$declaration->comment) {
-        $this->warn('D201', 'No api doc for enum '.$declaration->name->name, $declaration);
-      }
-
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Enum');
       $parentType= $this->resolveType($parent, FALSE);
       $thisType= $this->resolveType($declaration->name, FALSE);
@@ -1647,7 +1625,8 @@
           ))))
         ),
         'extension'  => NULL,
-        'comment'    => '(Generated)'
+        'comment'    => '(Generated)',
+        'holder'     => $declaration
       ));
 
       // Members
@@ -1667,6 +1646,7 @@
           
           $unique= new TypeName($declaration->name->name.'··'.$member->name);
           $decl= new ClassNode(0, NULL, $unique, $declaration->name, array(), $member->body);
+          $decl->synthetic= TRUE;
           $ptr= new TypeDeclaration(new ParseTree(NULL, array(), $decl), $thisType);
           $this->scope[0]->declarations[]= $decl;
           $this->scope[0]->addResolved($unique->name, $ptr);
@@ -1699,9 +1679,6 @@
      * @param   xp.compiler.ast.InterfaceNode declaration
      */
     protected function emitInterface($op, InterfaceNode $declaration) {
-      if (!$declaration->comment) {
-        $this->warn('D201', 'No api doc for interface '.$declaration->name->name, $declaration);
-      }
       
       // Verify: The only type of node we want to find are methods
       foreach ($declaration->body as $node) {
@@ -1741,9 +1718,6 @@
      * @param   xp.compiler.ast.ClassNode declaration
      */
     protected function emitClass($op, ClassNode $declaration) {
-      if (!$declaration->comment && !strstr($declaration->name->name, '··')) {
-        $this->warn('D201', 'No api doc for class '.$declaration->name->name, $declaration);
-      }
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Object');
       $parentType= $this->resolveType($parent, FALSE);
       $this->enter(new TypeDeclarationScope());    
@@ -1815,7 +1789,8 @@
           'annotations'  => NULL,
           'body'         => $body,
           'comment'      => '(Generated)',
-          'position'     => $declaration->position
+          'position'     => $declaration->position,
+          'holder'       => $declaration
         )));
       } else if ($this->inits[0][TRUE]) {
 
@@ -1944,7 +1919,7 @@
      */
     protected function emitOne($op, xp·compiler·ast·Node $in) {
       $node= $this->optimizations->optimize($in);
-    
+
       // Search emission method
       $target= 'emit'.substr(get_class($node), 0, -strlen('Node'));
       if (method_exists($this, $target)) {
@@ -1957,7 +1932,7 @@
           $node->hashCode()
         );
         try {
-          call_user_func(array($this, $target), $op, $node);
+          $this->checks->verify($node, $this) && call_user_func(array($this, $target), $op, $node);
         } catch (Throwable $e) {
           $this->error('0500', $e->toString(), $node);
           return 0;

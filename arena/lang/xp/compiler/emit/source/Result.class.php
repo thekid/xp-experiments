@@ -56,7 +56,7 @@
      */    
     public function executeWith(array $env= array()) {
       if (FALSE === eval($this->source)) {
-        xp::error(xp::stringOf(new FormatException($this->source)));
+        xp::error(xp::stringOf(new FormatException((string)$this->source)));
       }
       $class= $this->type->literal();
       method_exists($class, '__static') && call_user_func(array($class, '__static'));

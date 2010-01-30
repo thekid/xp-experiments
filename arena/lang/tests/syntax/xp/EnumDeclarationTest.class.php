@@ -83,7 +83,7 @@
             'name'         => 'color',
             'arguments'    => NULL,
             'throws'       => NULL,
-            'body'         => NULL,
+            'body'         => array(),
             'extension'    => NULL
           ))
         )

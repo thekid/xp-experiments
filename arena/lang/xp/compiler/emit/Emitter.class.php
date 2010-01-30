@@ -8,6 +8,7 @@
     'xp.compiler.ast.Node', 
     'xp.compiler.ast.ParseTree', 
     'xp.compiler.optimize.Optimizations',
+    'xp.compiler.checks.Checks',
     'util.log.Traceable'
   );
 
@@ -23,6 +24,7 @@
       'errors'   => array()
     );
     protected $optimizations= NULL;
+    protected $checks= NULL;
 
     /**
      * Constructor.
@@ -30,6 +32,12 @@
      */
     public function __construct() {
       $this->optimizations= new Optimizations();
+      $this->checks= new Checks();
+      $this->checks->add(XPClass::forName('xp.compiler.checks.IsAssignable')->newInstance(), TRUE);
+      $this->checks->add(XPClass::forName('xp.compiler.checks.TypeHasDocumentation')->newInstance(), FALSE);
+      $this->checks->add(XPClass::forName('xp.compiler.checks.TypeMemberHasDocumentation')->newInstance(), FALSE);
+      $this->checks->add(XPClass::forName('xp.compiler.checks.RoutinesVerification')->newInstance(), TRUE);
+      $this->checks->add(XPClass::forName('xp.compiler.checks.ConstantsAreDiscouraged')->newInstance(), FALSE);
     }
 
     /**

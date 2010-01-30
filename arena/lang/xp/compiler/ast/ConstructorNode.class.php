@@ -15,5 +15,13 @@
       $modifiers  = 0,
       $parameters = array();
     
+    /**
+     * Returns this routine's name
+     *
+     * @return  string
+     */
+    public function getName() {
+      return '__construct';
+    }
   }
 ?>

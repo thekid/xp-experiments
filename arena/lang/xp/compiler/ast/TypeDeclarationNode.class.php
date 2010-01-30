@@ -24,5 +24,19 @@
     public $annotations= NULL;
     public $name= NULL;
     public $body= NULL;
+    public $comment= NULL;
+    public $synthetic= FALSE;
+    
+    /**
+     * Sets this type's body
+     *
+     * @param   xp.compiler.ast.Node[] body
+     */
+    public function setBody(array $body= NULL) {
+      $this->body= $body;
+      if ($this->body) foreach ($this->body as $node) {
+        $node->holder= $this;
+      }
+    }
   }
 ?>

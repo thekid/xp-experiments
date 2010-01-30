@@ -45,7 +45,8 @@
               'returns'     => new TypeName('void'),
               'arguments'   => NULL,
               'throws'      => NULL,
-              'body'        => NULL,
+              'body'        => array(),
+              'comment'     => NULL,
               'extension'   => NULL,
             ))
           )

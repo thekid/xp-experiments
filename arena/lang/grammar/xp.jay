@@ -226,7 +226,7 @@ declaration:
       $2->name= $4;
       $2->parent= $5;
       $2->implements= $6;
-      $2->body= $8;
+      $2->setBody($8);
       $$= $2;
     }
   | decorations T_ENUM { $2= $yyLex->create(new EnumNode(), TRUE); } typename classparents_opt implements_opt '{' enumbody '}' {
@@ -235,7 +235,7 @@ declaration:
       $2->name= $4;
       $2->parent= $5;
       $2->implements= $6;
-      $2->body= $8;
+      $2->setBody($8);
       $$= $2;
     }
   | decorations T_INTERFACE { $2= $yyLex->create(new InterfaceNode(), TRUE); } typename interfaceparents_opt '{' classbody '}' {
@@ -243,7 +243,7 @@ declaration:
       $2->annotations= $1[1];
       $2->name= $4;
       $2->parents= $5;
-      $2->body= $7;
+      $2->setBody($7);
       $$= $2;
     }
 ;
@@ -431,7 +431,7 @@ annotationmember:
 
 methodbody:
     ';' { $$= NULL; }
-  | '{' statements_opt '}' { $$= $2; }
+  | '{' statements_opt '}' { $$= (array)$2; }
 ;
 
 extension_arguments_opt:

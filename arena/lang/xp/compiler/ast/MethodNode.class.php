@@ -16,6 +16,15 @@
       $modifiers  = 0,
       $returns    = NULL,
       $parameters = array();
+
+    /**
+     * Returns this routine's name
+     *
+     * @return  string
+     */
+    public function getName() {
+      return $this->name;
+    }
       
     /**
      * Returns a hashcode

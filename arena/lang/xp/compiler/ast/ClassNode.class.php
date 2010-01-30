@@ -22,7 +22,7 @@
      * @param   xp.compiler.types.TypeName name
      * @param   xp.compiler.types.TypeName parent
      * @param   xp.compiler.types.TypeName[] implements
-     * @param   var<string, xp.compiler.ast.Node> body
+     * @param   xp.compiler.ast.Node[] body
      */
     public function __construct($modifiers= 0, array $annotations= NULL, TypeName $name= NULL, TypeName $parent= NULL, array $implements= NULL, array $body= NULL) {
       $this->modifiers= $modifiers;
@@ -30,7 +30,7 @@
       $this->name= $name;
       $this->parent= $parent;
       $this->implements= $implements;
-      $this->body= $body;
+      $this->setBody($body);
     }
   }
 ?>

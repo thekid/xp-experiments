@@ -14,6 +14,13 @@
    * @see   xp://xp.compiler.ast.OperatorNode
    */
   abstract class RoutineNode extends xp·compiler·ast·Node {
+    public $comment= NULL;
     
+    /**
+     * Returns this routine's name
+     *
+     * @return  string
+     */
+    public abstract function getName();
   }
 ?>
