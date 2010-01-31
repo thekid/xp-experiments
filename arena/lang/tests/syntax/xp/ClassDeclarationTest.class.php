@@ -327,38 +327,6 @@
     }
 
     /**
-     * Test enum declaration
-     *
-     */
-    #[@test]
-    public function emtpyEnum() {
-      $this->assertEquals(new EnumNode(array(
-        'modifiers'  => 0,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Days'),
-        'parent'     => NULL,
-        'implements' => array(),
-        'body'       => NULL
-      )), $this->parse('enum Days { }'));
-    }
-
-    /**
-     * Test enum declaration
-     *
-     */
-    #[@test]
-    public function abstractEnum() {
-      $this->assertEquals(new EnumNode(array(
-        'modifiers'  => MODIFIER_ABSTRACT,
-        'annotations'=> NULL,
-        'name'       => new TypeName('Days'),
-        'parent'     => NULL,
-        'implements' => array(),
-        'body'       => NULL
-      )), $this->parse('abstract enum Days { }'));
-    }
-
-    /**
      * Test array type cannot be used as class name
      *
      */
