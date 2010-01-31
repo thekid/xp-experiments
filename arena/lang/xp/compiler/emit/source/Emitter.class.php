@@ -548,7 +548,7 @@
       } else if ('-' === $un->op) {
         $this->emitOne($op, new BinaryOpNode(array(
           'lhs' => $un->expression,
-          'rhs' => new IntegerNode(array('value' => -1)),
+          'rhs' => new IntegerNode(-1),
           'op'  => '*'
         )));
         return;
@@ -1620,7 +1620,7 @@
           new ReturnNode(array('expression' => new ClassMemberNode(array(
             'class'   => new TypeName('parent'),
             'member'  => new InvocationNode(array('name' => 'membersOf', 'parameters' => array(
-              new StringNode(array('value' => $thisType->literal()))
+              new StringNode($thisType->literal())
             )))
           ))))
         ),

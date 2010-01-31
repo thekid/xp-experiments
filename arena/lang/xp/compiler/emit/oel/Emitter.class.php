@@ -526,7 +526,7 @@
       } else if ('-' === $un->op) {
         $this->emitOne($op, new BinaryOpNode(array(
           'lhs' => $un->expression,
-          'rhs' => new IntegerNode(array('value' => -1)),
+          'rhs' => new IntegerNode(-1),
           'op'  => '*'
         )));
         return;
@@ -830,7 +830,7 @@
         
         // Magic "class" member
         oel_add_begin_new_object($op, 'XPClass');
-        $n= $this->emitParameters($op, array(new StringNode(array('value' => $ptr->literal()))));
+        $n= $this->emitParameters($op, array(new StringNode($ptr->literal())));
         oel_add_end_new_object($op, $n);
         $this->scope[0]->setType($ref, new TypeName('lang.XPClass'));
       } else if ($ref->member instanceof ConstantNode) {
