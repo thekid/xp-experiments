@@ -86,7 +86,7 @@
             'name'           => 'elements',
             'parameters'     => array()
           )),
-          2 => new ArrayAccessNode(new IntegerNode(array('value' => '0'))),
+          2 => new ArrayAccessNode(new IntegerNode('0')),
           3 => new VariableNode('name'),
         ))),
         $this->parse('$l.elements()[0].name;')
@@ -110,7 +110,7 @@
           )),
           1 => new InvocationNode(array(
             'name'       => 'configure',
-            'parameters' => array(new StringNode(array('value' => 'etc')))
+            'parameters' => array(new StringNode('etc'))
           )),
         ))), 
         $this->parse('Logger::getInstance().configure("etc");')

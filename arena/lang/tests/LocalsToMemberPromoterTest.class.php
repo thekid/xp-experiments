@@ -48,7 +48,7 @@
     public function basic() {
       $assignment= new AssignmentNode(array(
         'variable'      => new VariableNode('i'),
-        'expression'    => new IntegerNode(array('value' => '0')),
+        'expression'    => new IntegerNode('0'),
         'op'            => '='
       ));
       $promoted= $this->fixture->promote($assignment);
@@ -56,7 +56,7 @@
       $this->assertEquals(
         new AssignmentNode(array(
           'variable'      => $this->memberNode('i'),
-          'expression'    => new IntegerNode(array('value' => '0')),
+          'expression'    => new IntegerNode('0'),
           'op'            => '='
         )),
         $promoted['node']

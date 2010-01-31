@@ -20,7 +20,7 @@
     public function addition() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'lhs'           => new VariableNode('i'),
-        'rhs'           => new IntegerNode(array('value' => '10')),
+        'rhs'           => new IntegerNode('10'),
         'op'            => '+'
       ))), $this->parse('$i + 10;'));
     }
@@ -33,7 +33,7 @@
     public function subtraction() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'lhs'           => new VariableNode('i'),
-        'rhs'           => new IntegerNode(array('value' => '10')),
+        'rhs'           => new IntegerNode('10'),
         'op'            => '-'
       ))), $this->parse('$i - 10;'));
     }
@@ -46,7 +46,7 @@
     public function multiplication() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'lhs'           => new VariableNode('i'),
-        'rhs'           => new IntegerNode(array('value' => '10')),
+        'rhs'           => new IntegerNode('10'),
         'op'            => '*'
       ))), $this->parse('$i * 10;'));
     }
@@ -59,7 +59,7 @@
     public function division() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'lhs'           => new VariableNode('i'),
-        'rhs'           => new IntegerNode(array('value' => '10')),
+        'rhs'           => new IntegerNode('10'),
         'op'            => '/'
       ))), $this->parse('$i / 10;'));
     }
@@ -72,7 +72,7 @@
     public function modulo() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'lhs'           => new VariableNode('i'),
-        'rhs'           => new IntegerNode(array('value' => '10')),
+        'rhs'           => new IntegerNode('10'),
         'op'            => '%'
       ))), $this->parse('$i % 10;'));
     }
@@ -86,11 +86,11 @@
       $this->assertEquals(
         array(new BinaryOpNode(array(
           'lhs' => new BinaryOpNode(array(
-            'lhs'    => new IntegerNode(array('value' => '5')),
-            'rhs'    => new IntegerNode(array('value' => '6')),
+            'lhs'    => new IntegerNode('5'),
+            'rhs'    => new IntegerNode('6'),
             'op'     => '+'
           )),
-          'rhs' => new IntegerNode(array('value' => '3')),
+          'rhs' => new IntegerNode('3'),
           'op'  => '*'
         ))), 
         $this->parse('(5 + 6) * 3;')
@@ -107,10 +107,10 @@
         array(new BinaryOpNode(array(
           'lhs' => new BinaryOpNode(array(
             'lhs'    => new VariableNode('i'),
-            'rhs'    => new IntegerNode(array('value' => '6')),
+            'rhs'    => new IntegerNode('6'),
             'op'     => '+'
           )),
-          'rhs' => new IntegerNode(array('value' => '3')),
+          'rhs' => new IntegerNode('3'),
           'op'  => '*'
         ))), 
         $this->parse('($i + 6) * 3;')

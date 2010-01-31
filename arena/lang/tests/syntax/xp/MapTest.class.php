@@ -37,16 +37,16 @@
         array(new MapNode(array(
           'elements'      => array(
             array(
-              new IntegerNode(array('value' => '1')),
-              new StringNode(array('value' => 'one')),
+              new IntegerNode('1'),
+              new StringNode('one'),
             ),
             array(
-              new IntegerNode(array('value' => '2')),
-              new StringNode(array('value' => 'two')),
+              new IntegerNode('2'),
+              new StringNode('two'),
             ),
             array(
-              new IntegerNode(array('value' => '3')),
-              new StringNode(array('value' => 'three')),
+              new IntegerNode('3'),
+              new StringNode('three'),
             ),
           ),
           'type'          => NULL,

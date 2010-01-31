@@ -13,57 +13,6 @@
   class NumbersTest extends ParserTestCase {
   
     /**
-     * Test integer
-     *
-     */
-    #[@test]
-    public function integerNumber() {
-      $this->assertEquals(
-        array(new IntegerNode(array('value' => '1'))),
-        $this->parse('1;')
-      );
-    }
-
-    /**
-     * Test negative integer
-     *
-     */
-    #[@test]
-    public function negativeIntegerNumber() {
-      $this->assertEquals(
-        array(new UnaryOpNode(array(
-          'expression'    => new IntegerNode(array('value' => '1')),
-          'op'            => '-'
-        ))), 
-        $this->parse('-1;')
-      );
-    }
-
-    /**
-     * Test decimal
-     *
-     */
-    #[@test]
-    public function decimalNumber() {
-      $this->assertEquals(
-        array(new DecimalNode(array('value' => '1.0'))),
-        $this->parse('1.0;')
-      );
-    }
-
-    /**
-     * Test hex
-     *
-     */
-    #[@test]
-    public function hexNumber() {
-      $this->assertEquals(
-        array(new HexNode(array('value' => '0xFF'))),
-        $this->parse('0xFF;')
-      );
-    }
-
-    /**
      * Test "1.a" raises a parser exception
      *
      */

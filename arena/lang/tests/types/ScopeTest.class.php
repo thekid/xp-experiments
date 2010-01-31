@@ -60,7 +60,7 @@
      */
     #[@test]
     public function stringType() {
-      $this->assertEquals(new TypeName('string'), $this->fixture->typeOf(new StringNode()));
+      $this->assertEquals(new TypeName('string'), $this->fixture->typeOf(new StringNode('')));
     }
     
     /**
@@ -69,7 +69,7 @@
      */
     #[@test]
     public function intType() {
-      $this->assertEquals(new TypeName('int'), $this->fixture->typeOf(new IntegerNode()));
+      $this->assertEquals(new TypeName('int'), $this->fixture->typeOf(new IntegerNode('')));
     }
     
     /**
@@ -78,7 +78,7 @@
      */
     #[@test]
     public function hexType() {
-      $this->assertEquals(new TypeName('int'), $this->fixture->typeOf(new HexNode()));
+      $this->assertEquals(new TypeName('int'), $this->fixture->typeOf(new HexNode('')));
     }
     
     /**
@@ -87,7 +87,7 @@
      */
     #[@test]
     public function decimalType() {
-      $this->assertEquals(new TypeName('double'), $this->fixture->typeOf(new DecimalNode()));
+      $this->assertEquals(new TypeName('double'), $this->fixture->typeOf(new DecimalNode('')));
     }
     
     /**
@@ -105,7 +105,7 @@
      */
     #[@test]
     public function boolType() {
-      $this->assertEquals(new TypeName('bool'), $this->fixture->typeOf(new BooleanNode()));
+      $this->assertEquals(new TypeName('bool'), $this->fixture->typeOf(new BooleanNode(TRUE)));
     }
     
     /**

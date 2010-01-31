@@ -21,12 +21,12 @@
       $this->assertEquals(array(new ForNode(array(
         'initialization' => array(new AssignmentNode(array(
           'variable'       => new VariableNode('i'),
-          'expression'     => new IntegerNode(array('value' => '0')),
+          'expression'     => new IntegerNode('0'),
           'op'             => '='
         ))),
         'condition'      => array(new ComparisonNode(array(
           'lhs'           => new VariableNode('i'),
-          'rhs'           => new IntegerNode(array('value' => '1000')),
+          'rhs'           => new IntegerNode('1000'),
           'op'            => '<'
         ))),
         'loop'           => array(new UnaryOpNode(array(
@@ -68,7 +68,7 @@
             'op'            => '++',
             'postfix'       => TRUE
           )),
-          'rhs'           => new IntegerNode(array('value' => '10000')),
+          'rhs'           => new IntegerNode('10000'),
           'op'            => '<'
         )),
         'statements'    => NULL, 
@@ -90,7 +90,7 @@
             'op'            => '++',
             'postfix'       => TRUE
           )),
-          'rhs'           => new IntegerNode(array('value' => '10000')),
+          'rhs'           => new IntegerNode('10000'),
           'op'            => '<'
         )),
         'statements'    => NULL, 

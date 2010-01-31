@@ -44,7 +44,7 @@
      * @return  xp.compiler.ast.Node result
      */
     protected function evalConcat(Resolveable $l, Resolveable $r) {
-      return new StringNode(array('value' => $l->resolve().$r->resolve()));
+      return new StringNode($l->resolve().$r->resolve());
     }
     
     /**
@@ -56,9 +56,9 @@
      */
     protected function evalAdd(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
-        return new IntegerNode(array('value' => $l->resolve() + $r->resolve()));
+        return new IntegerNode($l->resolve() + $r->resolve());
       } else if (($l instanceof DecimalNode && $r instanceof NumberNode) || ($l instanceof NumberNode && $r instanceof DecimalNode)) {
-        return new DecimalNode(array('value' => $l->resolve() + $r->resolve()));
+        return new DecimalNode($l->resolve() + $r->resolve());
       } else {
         return NULL;  // Not optimizable
       }
@@ -73,9 +73,9 @@
      */
     protected function evalSubtract(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
-        return new IntegerNode(array('value' => $l->resolve() - $r->resolve()));
+        return new IntegerNode($l->resolve() - $r->resolve());
       } else if (($l instanceof DecimalNode && $r instanceof NumberNode) || ($l instanceof NumberNode && $r instanceof DecimalNode)) {
-        return new DecimalNode(array('value' => $l->resolve() - $r->resolve()));
+        return new DecimalNode($l->resolve() - $r->resolve());
       } else {
         return NULL;  // Not optimizable
       }
@@ -90,9 +90,9 @@
      */
     protected function evalMultiply(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
-        return new IntegerNode(array('value' => $l->resolve() * $r->resolve()));
+        return new IntegerNode($l->resolve() * $r->resolve());
       } else if (($l instanceof DecimalNode && $r instanceof NumberNode) || ($l instanceof NumberNode && $r instanceof DecimalNode)) {
-        return new DecimalNode(array('value' => $l->resolve() * $r->resolve()));
+        return new DecimalNode($l->resolve() * $r->resolve());
       } else {
         return NULL;  // Not optimizable
       }
@@ -107,7 +107,7 @@
      */
     protected function evalDivide(Resolveable $l, Resolveable $r) {
       if ($l instanceof NumberNode && $r instanceof NumberNode) {
-        return new DecimalNode(array('value' => $l->resolve() / $r->resolve()));
+        return new DecimalNode($l->resolve() / $r->resolve());
       } else {
         return NULL;  // Not optimizable
       }
@@ -122,7 +122,7 @@
      */
     protected function evalModulo(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
-        return new IntegerNode(array('value' => $l->resolve() % $r->resolve()));
+        return new IntegerNode($l->resolve() % $r->resolve());
       } else {
         return NULL;  // Not optimizable
       }
@@ -137,7 +137,7 @@
      */
     protected function evalShr(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
-        return new IntegerNode(array('value' => $l->resolve() >> $r->resolve()));
+        return new IntegerNode($l->resolve() >> $r->resolve());
       } else {
         return NULL;  // Not optimizable
       }
@@ -152,7 +152,7 @@
      */
     protected function evalShl(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
-        return new IntegerNode(array('value' => $l->resolve() << $r->resolve()));
+        return new IntegerNode($l->resolve() << $r->resolve());
       } else {
         return NULL;  // Not optimizable
       }
@@ -167,7 +167,7 @@
      */
     protected function evalAnd(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
-        return new IntegerNode(array('value' => $l->resolve() & $r->resolve()));
+        return new IntegerNode($l->resolve() & $r->resolve());
       } else {
         return NULL;  // Not optimizable
       }
@@ -182,7 +182,7 @@
      */
     protected function evalOr(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
-        return new IntegerNode(array('value' => $l->resolve() | $r->resolve()));
+        return new IntegerNode($l->resolve() | $r->resolve());
       } else {
         return NULL;  // Not optimizable
       }
@@ -197,7 +197,7 @@
      */
     protected function evalXOr(Resolveable $l, Resolveable $r) {
       if ($l instanceof NaturalNode && $r instanceof NaturalNode) {
-        return new IntegerNode(array('value' => $l->resolve() ^ $r->resolve()));
+        return new IntegerNode($l->resolve() ^ $r->resolve());
       } else {
         return NULL;  // Not optimizable
       }

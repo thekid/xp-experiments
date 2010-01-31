@@ -18,11 +18,7 @@
      */
     #[@test]
     public function doubleQuotedStringLiteral() {
-      $this->assertEquals(array(new StringNode(array(
-        'value'         => 'Hello World',
-      ))), $this->parse('
-        "Hello World";
-      '));
+      $this->assertEquals(array(new StringNode('Hello World')), $this->parse('"Hello World";'));
     }
 
     /**
@@ -31,10 +27,61 @@
      */
     #[@test]
     public function singleQuotedStringLiteral() {
-      $this->assertEquals(array(new StringNode(array(
-        'value'         => 'Hello World',
-      ))), $this->parse("
-        'Hello World';
+      $this->assertEquals(array(new StringNode('Hello World')), $this->parse("'Hello World';"));
+    }
+
+    /**
+     * Test empty strings
+     *
+     */
+    #[@test]
+    public function emptyStrings() {
+      $this->assertEquals(array(
+        new StringNode(''),
+        new StringNode(''),
+      ), $this->parse('""; \'\';'));
+    }
+
+    /**
+     * Test double-quoted string
+     *
+     */
+    #[@test]
+    public function doubleQuotedStringWithEscapes() {
+      $this->assertEquals(
+        array(new StringNode('"Hello", he said')),
+        $this->parse('"\"Hello\", he said";')
+      );
+    }
+    /**
+     * Test single-quoted string
+     *
+     */
+    #[@test]
+    public function singleQuotedStringWithEscapes() {
+      $this->assertEquals(
+        array(new StringNode("Timm's e-mail address")),
+        $this->parse("'Timm\'s e-mail address';")
+      );
+    }
+
+    /**
+     * Test single-quoted string
+     *
+     */
+    #[@test]
+    public function multiLineString() {
+      $this->assertEquals(array(new StringNode('This
+         is 
+         a
+         multiline
+         string'
+      )), $this->parse("
+        'This
+         is 
+         a
+         multiline
+         string';
       "));
     }
 
@@ -44,11 +91,7 @@
      */
     #[@test]
     public function numberLiteral() {
-      $this->assertEquals(array(new IntegerNode(array(
-        'value'         => '1',
-      ))), $this->parse("
-        1;
-      "));
+      $this->assertEquals(array(new IntegerNode('1')), $this->parse('1;'));
     }
 
     /**
@@ -58,9 +101,7 @@
     #[@test]
     public function negativeInt() {
       $this->assertEquals(array(new UnaryOpNode(array(
-        'expression'    => new IntegerNode(array(
-          'value'         => '1',
-        )),
+        'expression'    => new IntegerNode('1'),
         'op'            => '-'
       ))), $this->parse("
         -1;
@@ -74,9 +115,7 @@
     #[@test]
     public function negativeDecimal() {
       $this->assertEquals(array(new UnaryOpNode(array(
-        'expression'    => new DecimalNode(array(
-          'value'         => '1.0',
-        )),
+        'expression'    => new DecimalNode('1.0'),
         'op'            => '-'
       ))), $this->parse("
         -1.0;
@@ -89,11 +128,7 @@
      */
     #[@test]
     public function hexLiteral() {
-      $this->assertEquals(array(new HexNode(array(
-        'value'         => '0x0',
-      ))), $this->parse("
-        0x0;
-      "));
+      $this->assertEquals(array(new HexNode('0x0')), $this->parse('0x0;'));
     }
 
     /**
@@ -102,11 +137,7 @@
      */
     #[@test]
     public function decimalLiteral() {
-      $this->assertEquals(array(new DecimalNode(array(
-        'value'         => '1.0',
-      ))), $this->parse("
-        1.0;
-      "));
+      $this->assertEquals(array(new DecimalNode('1.0')), $this->parse('1.0;'));
     }
 
     /**
@@ -165,12 +196,8 @@
     public function arrayLiteral() {
       $this->assertEquals(array(new ArrayNode(array(
         'values'        => array(
-          new IntegerNode(array(
-            'value'         => '1',
-          )),
-          new IntegerNode(array(
-            'value'         => '2',
-          )),
+          new IntegerNode('1'),
+          new IntegerNode('2'),
         ),
         'type'          => NULL
       ))), $this->parse("
@@ -186,12 +213,8 @@
     public function mapLiteral() {
       $this->assertEquals(array(new MapNode(array(
         'elements'      => array(array(
-          new StringNode(array(
-            'value'         => 'one',
-          )),
-          new IntegerNode(array(
-            'value'         => '1',
-          )),
+          new StringNode('one'),
+          new IntegerNode('1')
         )),
         'type'          => NULL
       ))), $this->parse("
@@ -207,10 +230,10 @@
     public function classLiteral() {
       $this->assertEquals(array(new ClassMemberNode(array(
         'class'         => new TypeName('lang.types.String'),
-        'member'        => new ConstantNode(array('value' => 'class'))
-      ))), $this->parse("
+        'member'        => new ConstantNode('class')
+      ))), $this->parse('
         lang.types.String::class;
-      "));
+      '));
     }
 
     /**
@@ -222,12 +245,8 @@
       $this->assertEquals(array(new ChainNode(array(
         0 => new ArrayNode(array(
           'values'        => array(
-            new IntegerNode(array(
-              'value'         => '1',
-            )),
-            new IntegerNode(array(
-              'value'         => '2',
-            )),
+            new IntegerNode('1'),
+            new IntegerNode('2'),
           ),
           'type'          => NULL
         )),

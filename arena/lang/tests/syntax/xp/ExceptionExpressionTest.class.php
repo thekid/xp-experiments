@@ -70,7 +70,7 @@
             'expression' => new InstanceCreationNode(array(
               'type'       => new TypeName('ChainedException'),
               'parameters' => array(
-                new StringNode(array('value' => 'Hello')),
+                new StringNode('Hello'),
                 new VariableNode('e'),
               )
             ))

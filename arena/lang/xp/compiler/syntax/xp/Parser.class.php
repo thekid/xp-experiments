@@ -2276,12 +2276,12 @@
 
     case 162:  #line 674 "grammar/xp.jay"
     {
-      $yyVal= $yyLex->create(new ConstantNode(array('value' => $yyVals[0+$yyTop]))); 
+      $yyVal= $yyLex->create(new ConstantNode($yyVals[0+$yyTop])); 
     } break;
 
     case 163:  #line 677 "grammar/xp.jay"
     {
-      $yyVal= $yyLex->create(new ConstantNode(array('value' => $yyVals[0+$yyTop]))); 
+      $yyVal= $yyLex->create(new ConstantNode($yyVals[0+$yyTop])); 
     } break;
 
     case 164:  #line 683 "grammar/xp.jay"
@@ -2451,7 +2451,7 @@
       case 'true': $yyVal= $yyLex->create(new BooleanNode(TRUE)); break;
       case 'false': $yyVal= $yyLex->create(new BooleanNode(FALSE)); break;
       case 'null': $yyVal= $yyLex->create(new NullNode()); break;
-      default: $yyVal= $yyLex->create(new ConstantNode(array('value' => $yyVals[0+$yyTop]))); break;
+      default: $yyVal= $yyLex->create(new ConstantNode($yyVals[0+$yyTop])); break;
     }} break;
 
     case 195:  #line 805 "grammar/xp.jay"
@@ -2461,16 +2461,16 @@
     { $yyVals[-1+$yyTop]->position= $p; $yyVals[-1+$yyTop]->type= NULL; $yyVal= $yyVals[-1+$yyTop]; } break;
 
     case 197:  #line 806 "grammar/xp.jay"
-    { $yyVal= $yyLex->create(new IntegerNode()); $yyVal->value= $yyVals[0+$yyTop]; } break;
+    { $yyVal= $yyLex->create(new IntegerNode($yyVals[0+$yyTop])); } break;
 
     case 198:  #line 807 "grammar/xp.jay"
-    { $yyVal= $yyLex->create(new HexNode()); $yyVal->value= $yyVals[0+$yyTop]; } break;
+    { $yyVal= $yyLex->create(new HexNode($yyVals[0+$yyTop])); } break;
 
     case 199:  #line 808 "grammar/xp.jay"
-    { $yyVal= $yyLex->create(new DecimalNode()); $yyVal->value= $yyVals[0+$yyTop]; } break;
+    { $yyVal= $yyLex->create(new DecimalNode($yyVals[0+$yyTop])); } break;
 
     case 200:  #line 809 "grammar/xp.jay"
-    { $yyVal= $yyLex->create(new StringNode()); $yyVal->value= $yyVals[0+$yyTop]; } break;
+    { $yyVal= $yyLex->create(new StringNode($yyVals[0+$yyTop])); } break;
 
     case 201:  #line 813 "grammar/xp.jay"
     { 

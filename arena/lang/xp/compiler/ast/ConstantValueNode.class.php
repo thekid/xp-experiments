@@ -11,7 +11,17 @@
    *
    */
   abstract class ConstantValueNode extends xp·compiler·ast·Node implements Resolveable {
-    public $value = NULL;
+    public $value= NULL;
+
+    /**
+     * Creates a new constant value node with a given value
+     *
+     * @param   string value
+     */
+    public function __construct($value= NULL) {
+      $this->value= $value;
+    }
+
 
     /**
      * Returns a hashcode

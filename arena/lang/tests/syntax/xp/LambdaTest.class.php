@@ -23,7 +23,7 @@
           array(new VariableNode('a')),
           array(new ReturnNode(array('expression' => new BinaryOpNode(array(
             'lhs' => new VariableNode('a'),
-            'rhs' => new IntegerNode(array('value' => '1')),
+            'rhs' => new IntegerNode('1'),
             'op'  => '+'
           )))))
         )), 
@@ -42,7 +42,7 @@
           array(new VariableNode('a')),
           array(new ReturnNode(array('expression' => new BinaryOpNode(array(
             'lhs' => new VariableNode('a'),
-            'rhs' => new IntegerNode(array('value' => '1')),
+            'rhs' => new IntegerNode('1'),
             'op'  => '+'
           )))))
         )), 
@@ -62,7 +62,7 @@
           array(
             new AssignmentNode(array(
               'variable'    => new VariableNode('a'),
-              'expression'  => new IntegerNode(array('value' => '1')),
+              'expression'  => new IntegerNode('1'),
               'op'          => '+='
             )),
             new ReturnNode(array('expression' => new VariableNode('a')))
@@ -98,7 +98,7 @@
           array(new VariableNode('a')),
           array(new ReturnNode(array('expression' => new BinaryOpNode(array(
             'lhs' => new VariableNode('a'),
-            'rhs' => new IntegerNode(array('value' => '1')),
+            'rhs' => new IntegerNode('1'),
             'op'  => '+'
           )))))
         )), 
@@ -158,7 +158,7 @@
             'member'  => new InvocationNode(array(
               'name'        => 'write',
               'parameters'  => array(
-                new StringNode(array('value' => 'Hello'))
+                new StringNode('Hello')
               )
             ))
           )))))

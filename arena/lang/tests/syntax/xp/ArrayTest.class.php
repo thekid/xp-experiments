@@ -48,9 +48,9 @@
     public function untypedArray() {
       $this->assertEquals(array(new ArrayNode(array(
         'values'        => array(
-          new IntegerNode(array('value' => '1')),
-          new IntegerNode(array('value' => '2')),
-          new IntegerNode(array('value' => '3')),
+          new IntegerNode('1'),
+          new IntegerNode('2'),
+          new IntegerNode('3'),
         ),
         'type'          => NULL,
       ))), $this->parse('
@@ -66,9 +66,9 @@
     public function untypedArrayWithDanglingComma() {
       $this->assertEquals(array(new ArrayNode(array(
         'values'        => array(
-          new IntegerNode(array('value' => '1')),
-          new IntegerNode(array('value' => '2')),
-          new IntegerNode(array('value' => '3')),
+          new IntegerNode('1'),
+          new IntegerNode('2'),
+          new IntegerNode('3'),
         ),
         'type'          => NULL,
       ))), $this->parse('
@@ -84,9 +84,9 @@
     public function typedArray() {
       $this->assertEquals(array(new ArrayNode(array(
         'values'        => array(
-          new IntegerNode(array('value' => '1')),
-          new IntegerNode(array('value' => '2')),
-          new IntegerNode(array('value' => '3')),
+          new IntegerNode('1'),
+          new IntegerNode('2'),
+          new IntegerNode('3'),
         ),
         'type'          => new TypeName('int'),
       ))), $this->parse('

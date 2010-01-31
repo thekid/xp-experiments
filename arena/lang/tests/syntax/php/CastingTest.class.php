@@ -22,7 +22,7 @@
         'variable'      => $this->create(new VariableNode('a'), array(4, 9)),
         'expression'    => $this->create(new CastNode(array(
           'type'          => new TypeName('bool'),
-          'expression'    => $this->create(new IntegerNode(array('value' => '1')), array(4, 19))
+          'expression'    => $this->create(new IntegerNode('1'), array(4, 19))
         )), array(4, 20)),
         'op'            => '=',
       )), array(4, 20))), $this->parse('
@@ -40,7 +40,7 @@
         'variable'      => $this->create(new VariableNode('a'), array(4, 9)),
         'expression'    => $this->create(new CastNode(array(
           'type'          => new TypeName('string'),
-          'expression'    => $this->create(new IntegerNode(array('value' => '1')), array(4, 21))
+          'expression'    => $this->create(new IntegerNode('1'), array(4, 21))
         )), array(4, 22)),
         'op'            => '=',
       )), array(4, 22))), $this->parse('
@@ -58,7 +58,7 @@
         'variable'      => $this->create(new VariableNode('a'), array(4, 9)),
         'expression'    => $this->create(new CastNode(array(
           'type'          => new TypeName('var[]'),
-          'expression'    => $this->create(new IntegerNode(array('value' => '1')), array(4, 20))
+          'expression'    => $this->create(new IntegerNode('1'), array(4, 20))
         )), array(4, 21)),
         'op'            => '=',
       )), array(4, 21))), $this->parse('
@@ -76,7 +76,7 @@
         'variable'      => $this->create(new VariableNode('a'), array(4, 9)),
         'expression'    => $this->create(new CastNode(array(
           'type'          => new TypeName('int'),
-          'expression'    => $this->create(new IntegerNode(array('value' => '1')), array(4, 18))
+          'expression'    => $this->create(new IntegerNode('1'), array(4, 18))
         )), array(4, 19)),
         'op'            => '=',
       )), array(4, 19))), $this->parse('
@@ -94,7 +94,7 @@
         'variable'      => $this->create(new VariableNode('a'), array(4, 9)),
         'expression'    => $this->create(new CastNode(array(
           'type'          => new TypeName('double'),
-          'expression'    => $this->create(new IntegerNode(array('value' => '1')), array(4, 21))
+          'expression'    => $this->create(new IntegerNode('1'), array(4, 21))
         )), array(4, 22)),
         'op'            => '=',
       )), array(4, 22))), $this->parse('
@@ -148,7 +148,7 @@
           'type'          => new TypeName('bool'),
           'expression'    => $this->create(new CastNode(array(
             'type'          =>  new TypeName('string'),
-            'expression'    => $this->create(new IntegerNode(array('value' => '1')), array(4, 27))
+            'expression'    => $this->create(new IntegerNode('1'), array(4, 27))
           )), array(4, 28)) 
         )), array(4, 28)),
         'op'            => '=',

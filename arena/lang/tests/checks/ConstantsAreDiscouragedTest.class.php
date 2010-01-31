@@ -34,7 +34,7 @@
     public function constantsAreDiscouraged() {
       $this->assertEquals(
         array('T203', 'Global constants (DIRECTORY_SEPARATOR) are discouraged'), 
-        $this->fixture->verify(new ConstantNode(array('value' => 'DIRECTORY_SEPARATOR')))
+        $this->fixture->verify(new ConstantNode('DIRECTORY_SEPARATOR'))
       );
     }
   }

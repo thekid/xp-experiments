@@ -62,9 +62,7 @@
     public function annotationWithStringValue() {
       $this->assertEquals(array(new AnnotationNode(array(
         'type'          => 'Expect',
-        'parameters'    => array('default' => new StringNode(array(
-          'value'         => 'lang.IllegalArgumentException'
-        )))
+        'parameters'    => array('default' => new StringNode('lang.IllegalArgumentException'))
       ))), $this->parseMethodWithAnnotations('[@Expect("lang.IllegalArgumentException")]'));
     }
 
@@ -76,9 +74,7 @@
     public function annotationWithIntegerValue() {
       $this->assertEquals(array(new AnnotationNode(array(
         'type'          => 'Limit',
-        'parameters'    => array('default' => new IntegerNode(array(
-          'value'         => '5'
-        )))
+        'parameters'    => array('default' => new IntegerNode('5'))
       ))), $this->parseMethodWithAnnotations('[@Limit(5)]'));
     }
 
@@ -90,9 +86,7 @@
     public function annotationWithHexValue() {
       $this->assertEquals(array(new AnnotationNode(array(
         'type'          => 'Limit',
-        'parameters'    => array('default' => new HexNode(array(
-          'value'         => '0x5'
-        )))
+        'parameters'    => array('default' => new HexNode('0x5'))
       ))), $this->parseMethodWithAnnotations('[@Limit(0x5)]'));
     }
 
@@ -104,9 +98,7 @@
     public function annotationWithDecimalValue() {
       $this->assertEquals(array(new AnnotationNode(array(
         'type'          => 'Limit',
-        'parameters'    => array('default' => new DecimalNode(array(
-          'value'         => '5.0'
-        )))
+        'parameters'    => array('default' => new DecimalNode('5.0'))
       ))), $this->parseMethodWithAnnotations('[@Limit(5.0)]'));
     }
 
@@ -156,8 +148,8 @@
         'type'          => 'Restrict',
         'parameters'    => array('default' => new ArrayNode(array(
           'values'        => array(
-            new StringNode(array('value' => 'Admin')),
-            new StringNode(array('value' => 'Root')),
+            new StringNode('Admin'),
+            new StringNode('Root'),
           ),
           'type'          => NULL
         )))
@@ -174,8 +166,8 @@
         'type'          => 'Restrict',
         'parameters'    => array('default' => new MapNode(array(
           'elements'      => array(array(
-            new StringNode(array('value' => 'Role')),
-            new StringNode(array('value' => 'Root')),
+            new StringNode('Role'),
+            new StringNode('Root'),
           )),
           'type'          => NULL
         )))
@@ -193,14 +185,12 @@
         'parameters'    => array(
           'classes' => new ArrayNode(array(
             'values'        => array(
-              new StringNode(array('value' => 'lang.IllegalArgumentException')),
-              new StringNode(array('value' => 'lang.IllegalAccessException')),
+              new StringNode('lang.IllegalArgumentException'),
+              new StringNode('lang.IllegalAccessException'),
             ),
             'type'          => NULL
           )),
-          'code'    => new IntegerNode(array(
-            'value'         => '503',
-          )),
+          'code'    => new IntegerNode('503'),
         )))
       ), $this->parseMethodWithAnnotations('[@Expect(
         classes = ["lang.IllegalArgumentException", "lang.IllegalAccessException"],

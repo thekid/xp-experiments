@@ -1741,7 +1741,7 @@
       case 'true': $yyVal= $yyLex->create(new BooleanNode(TRUE)); break;
       case 'false': $yyVal= $yyLex->create(new BooleanNode(FALSE)); break;
       case 'null': $yyVal= $yyLex->create(new NullNode()); break;
-      default: $yyVal= $yyLex->create(new ConstantNode(array('value' => $yyVals[0+$yyTop]))); break;
+      default: $yyVal= $yyLex->create(new ConstantNode($yyVals[0+$yyTop])); break;
     }} break;
 
     case 135:  #line 582 "grammar/php.jay"
@@ -1754,16 +1754,16 @@
     { $yyVals[-1+$yyTop]->position= $p; $yyVals[-1+$yyTop]->type= NULL; $yyVal= $yyVals[-1+$yyTop]; } break;
 
     case 138:  #line 584 "grammar/php.jay"
-    { $yyVal= $yyLex->create(new IntegerNode()); $yyVal->value= $yyVals[0+$yyTop]; } break;
+    { $yyVal= $yyLex->create(new IntegerNode($yyVals[0+$yyTop])); } break;
 
     case 139:  #line 585 "grammar/php.jay"
-    { $yyVal= $yyLex->create(new HexNode()); $yyVal->value= $yyVals[0+$yyTop]; } break;
+    { $yyVal= $yyLex->create(new HexNode($yyVals[0+$yyTop])); } break;
 
     case 140:  #line 586 "grammar/php.jay"
-    { $yyVal= $yyLex->create(new DecimalNode()); $yyVal->value= $yyVals[0+$yyTop]; } break;
+    { $yyVal= $yyLex->create(new DecimalNode($yyVals[0+$yyTop])); } break;
 
     case 141:  #line 587 "grammar/php.jay"
-    { $yyVal= $yyLex->create(new StringNode()); $yyVal->value= $yyVals[0+$yyTop]; } break;
+    { $yyVal= $yyLex->create(new StringNode($yyVals[0+$yyTop])); } break;
 
     case 142:  #line 591 "grammar/php.jay"
     { 

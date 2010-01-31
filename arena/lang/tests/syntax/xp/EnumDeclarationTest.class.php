@@ -80,22 +80,22 @@
       $this->assertEquals(new EnumNode(0, NULL, new TypeName('Coin'), NULL, array(), array(
         new EnumMemberNode(array(
           'name'      => 'penny', 
-          'value'     => new IntegerNode(array('value' => '1')),
+          'value'     => new IntegerNode('1'),
           'body'      => NULL
         )),
         new EnumMemberNode(array(
           'name'      => 'nickel', 
-          'value'     => new IntegerNode(array('value' => '2')),
+          'value'     => new IntegerNode('2'),
           'body'      => NULL
         )),
         new EnumMemberNode(array(
           'name'      => 'dime', 
-          'value'     => new IntegerNode(array('value' => '10')),
+          'value'     => new IntegerNode('10'),
           'body'      => NULL
         )),
         new EnumMemberNode(array(
           'name'      => 'quarter', 
-          'value'     => new IntegerNode(array('value' => '25')),
+          'value'     => new IntegerNode('25'),
           'body'      => NULL
         )),
         new MethodNode(array(

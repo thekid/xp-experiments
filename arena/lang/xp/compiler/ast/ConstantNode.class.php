@@ -11,7 +11,7 @@
    *
    */
   class ConstantNode extends ConstantValueNode {
-
+  
     /**
      * Returns a hashcode
      *

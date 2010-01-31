@@ -672,10 +672,10 @@ staticmember:
       $$->parameters= $3;
     }
   | T_WORD {
-      $$= $yyLex->create(new ConstantNode(array('value' => $1))); 
+      $$= $yyLex->create(new ConstantNode($1)); 
     }
   | T_CLASS {
-      $$= $yyLex->create(new ConstantNode(array('value' => $1))); 
+      $$= $yyLex->create(new ConstantNode($1)); 
     }  
 ;
 
@@ -800,13 +800,13 @@ literal:
       case 'true': $$= $yyLex->create(new BooleanNode(TRUE)); break;
       case 'false': $$= $yyLex->create(new BooleanNode(FALSE)); break;
       case 'null': $$= $yyLex->create(new NullNode()); break;
-      default: $$= $yyLex->create(new ConstantNode(array('value' => $1))); break;
+      default: $$= $yyLex->create(new ConstantNode($1)); break;
     }}
   | '[' { $p= $yyLex->position; } map_or_list ']' { $3->position= $p; $3->type= NULL; $$= $3; }
-  | T_NUMBER { $$= $yyLex->create(new IntegerNode()); $$->value= $1; }
-  | T_HEX { $$= $yyLex->create(new HexNode()); $$->value= $1; }
-  | T_DECIMAL { $$= $yyLex->create(new DecimalNode()); $$->value= $1; }
-  | T_STRING { $$= $yyLex->create(new StringNode()); $$->value= $1; }
+  | T_NUMBER { $$= $yyLex->create(new IntegerNode($1)); }
+  | T_HEX { $$= $yyLex->create(new HexNode($1)); }
+  | T_DECIMAL { $$= $yyLex->create(new DecimalNode($1)); }
+  | T_STRING { $$= $yyLex->create(new StringNode($1)); }
 ;
 
 map_or_list:

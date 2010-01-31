@@ -13,6 +13,15 @@
   class NullNode extends ConstantValueNode {
 
     /**
+     * Creates a new constant value node with a given value
+     *
+     * @param   string value
+     */
+    public function __construct($value= NULL) {
+      parent::__construct(NULL);
+    }
+
+    /**
      * Returns a hashcode
      *
      * @return  string

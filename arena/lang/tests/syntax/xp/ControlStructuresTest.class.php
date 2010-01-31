@@ -70,7 +70,7 @@
       $this->assertEquals(array(new IfNode(array(
         'condition'      => new BinaryOpNode(array(
           'lhs'            => new VariableNode('i'),
-          'rhs'            => new IntegerNode(array('value' => '3')),
+          'rhs'            => new IntegerNode('3'),
           'op'             => '%'
         )),
         'statements'     => NULL, 
@@ -78,7 +78,7 @@
           'statements'     => array(new IfNode(array(
             'condition'      => new BinaryOpNode(array(
               'lhs'            => new VariableNode('i'),
-              'rhs'            => new IntegerNode(array('value' => '2')),
+              'rhs'            => new IntegerNode('2'),
               'op'             => '%'
             )),
             'statements'     => NULL, 
@@ -116,16 +116,16 @@
         'expression'     => new VariableNode('i'),
         'cases'          => array(
           new CaseNode(array(
-            'expression'     => new IntegerNode(array('value' => '0')),
+            'expression'     => new IntegerNode('0'),
             'statements'     => array(
-              new StringNode(array('value' => 'no entries')),
+              new StringNode('no entries'),
               new BreakNode()
             )
           )),
           new CaseNode(array(
-            'expression'     => new IntegerNode(array('value' => '1')),
+            'expression'     => new IntegerNode('1'),
             'statements'     => array(
-              new StringNode(array('value' => 'one entry')),
+              new StringNode('one entry'),
               new BreakNode()
             )
          )),
@@ -133,7 +133,7 @@
             'statements'     => array(
               new BinaryOpNode(array(
                 'lhs'        => new VariableNode('i'),
-                'rhs'        => new StringNode(array('value' => ' entries')),
+                'rhs'        => new StringNode(' entries'),
                 'op'         => '~'
               )),
               new BreakNode()
