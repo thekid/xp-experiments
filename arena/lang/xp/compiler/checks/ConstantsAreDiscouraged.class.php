@@ -9,6 +9,7 @@
   /**
    * Emits a warning when global constants are used
    *
+   * @test    xp://tests.checks.ConstantsAreDiscouragedTest
    */
   class ConstantsAreDiscouraged extends Object implements Check {
 

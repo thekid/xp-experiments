@@ -10,6 +10,7 @@
    * Check whether api documentation is available for a type, that
    * is: interfaces, classes and enums.
    *
+   * @test    xp://tests.checks.TypeHasDocumentationTest
    */
   class TypeHasDocumentation extends Object implements Check {
 
