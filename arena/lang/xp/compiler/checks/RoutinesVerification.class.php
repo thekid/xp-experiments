@@ -4,11 +4,12 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.checks.Check', 'xp.compiler.ast.TypeDeclarationNode');
+  uses('xp.compiler.checks.Check', 'xp.compiler.ast.RoutineNode');
 
   /**
    * Verifies routines
    *
+   * @test    xp://tests.checks.RoutinesVerificationTest
    */
   class RoutinesVerification extends Object implements Check {
 
