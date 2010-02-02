@@ -66,7 +66,7 @@
      */
     public function addCheck(Check $c, $error= FALSE) {
       $this->checks->add($c, $error);
-      return $o;
+      return $c;
     }
     
     /**
