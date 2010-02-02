@@ -1968,6 +1968,7 @@
      * @return  xp.compiler.types.Types
      */
     protected function resolveType(TypeName $t) {
+      $this->cat && $this->cat->info('Resolve', $t);
       try {
         return $this->scope[0]->resolveType($t);
       } catch (ResolveException $e) {
