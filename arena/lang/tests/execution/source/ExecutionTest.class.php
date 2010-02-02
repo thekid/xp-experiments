@@ -21,9 +21,9 @@
    */
   abstract class ExecutionTest extends TestCase {
     protected static $syntax;
-    protected static $emitter;
-    protected static $scope;
     
+    protected $scope;
+    protected $emitter;
     protected $counter= 0;
   
     /**
@@ -33,13 +33,16 @@
     #[@beforeClass]
     public static function setupCompilerApi() {
       self::$syntax= Syntax::forName('xp');
-      self::$emitter= new xp·compiler·emit·source·Emitter();
-      self::$scope= new TaskScope(new CompilationTask(
-        new FileSource(new File(__FILE__), self::$syntax),
-        new NullDiagnosticListener(),
-        new FileManager(),
-        self::$emitter
-      ));
+    }
+    
+    /**
+     * Adds a check
+     *
+     * @param   xp.compiler.checks.Checks c
+     * @param   bool error
+     */
+    protected function check(Check $c, $error= FALSE) {
+      $this->emitter->addCheck($c, $error);
     }
   
     /**
@@ -47,6 +50,13 @@
      *
      */
     public function setUp() {
+      $this->emitter= new xp·compiler·emit·source·Emitter();
+      $this->scope= new TaskScope(new CompilationTask(
+        new FileSource(new File(__FILE__), self::$syntax),
+        new NullDiagnosticListener(),
+        new FileManager(),
+        $this->emitter
+      ));
       $this->counter= 0;
     }
     
@@ -96,12 +106,12 @@
      */
     protected function define($type, $class, $parent, $src, array $imports= array()) {
       $class= 'Source'.$class;
-      $r= self::$emitter->emit(
+      $r= $this->emitter->emit(
         self::$syntax->parse(new MemoryInputStream(
           implode("\n", $imports).
           ' public '.$type.' '.$class.' '.($parent ? ' extends '.$parent : '').$src
         ), $this->name), 
-        self::$scope
+        $this->scope
       );
       xp::gc();
 
