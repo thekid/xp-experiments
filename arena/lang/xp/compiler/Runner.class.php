@@ -154,6 +154,13 @@
         $emitter->addOptimization($optimization);
       }
 
+      // Add checks
+      $emitter->addCheck(XPClass::forName('xp.compiler.checks.IsAssignable')->newInstance(), TRUE);
+      $emitter->addCheck(XPClass::forName('xp.compiler.checks.TypeHasDocumentation')->newInstance(), FALSE);
+      $emitter->addCheck(XPClass::forName('xp.compiler.checks.TypeMemberHasDocumentation')->newInstance(), FALSE);
+      $emitter->addCheck(XPClass::forName('xp.compiler.checks.RoutinesVerification')->newInstance(), TRUE);
+      $emitter->addCheck(XPClass::forName('xp.compiler.checks.ConstantsAreDiscouraged')->newInstance(), FALSE);
+      
       // Compile files
       $success= $compiler->compile($files, $listener, $manager, $emitter);
       exit($success ? 0 : 1);
