@@ -33,11 +33,6 @@
     public function __construct() {
       $this->optimizations= new Optimizations();
       $this->checks= new Checks();
-      $this->checks->add(XPClass::forName('xp.compiler.checks.IsAssignable')->newInstance(), TRUE);
-      $this->checks->add(XPClass::forName('xp.compiler.checks.TypeHasDocumentation')->newInstance(), FALSE);
-      $this->checks->add(XPClass::forName('xp.compiler.checks.TypeMemberHasDocumentation')->newInstance(), FALSE);
-      $this->checks->add(XPClass::forName('xp.compiler.checks.RoutinesVerification')->newInstance(), TRUE);
-      $this->checks->add(XPClass::forName('xp.compiler.checks.ConstantsAreDiscouraged')->newInstance(), FALSE);
     }
 
     /**
@@ -59,6 +54,30 @@
      */
     public function withOptimization(Optimization $o) {
       $this->optimizations->add($o);
+      return $this;
+    }
+
+    /**
+     * Adds a check
+     *
+     * @param   xp.compiler.checks.Checks c
+     * @param   bool error
+     * @return  xp.compiler.checks.Check
+     */
+    public function addCheck(Check $c, $error= FALSE) {
+      $this->checks->add($c, $error);
+      return $o;
+    }
+    
+    /**
+     * Adds an check
+     *
+     * @param   xp.compiler.checks.Checks c
+     * @param   bool error
+     * @return  xp.compiler.emit.Emitter this
+     */
+    public function withCheck(Check $c, $error= FALSE) {
+      $this->checks->add($c, $error);
       return $this;
     }
     
