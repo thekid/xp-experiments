@@ -1282,7 +1282,6 @@
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
       }
 
-      // oel_set_source_file($mop, $this->origins[0]);
       array_unshift($this->method, $method);
 
       // Arguments, body
@@ -1992,8 +1991,6 @@
       
       // Create and initialize op array
       $bytes= new xp·compiler·emit·source·Buffer('', 1);
-      // oel_set_source_file($op, $tree->origin);
-      // oel_set_source_line($op, 0);
       
       array_unshift($this->origins, $tree->origin);
       array_unshift($this->local, array());
