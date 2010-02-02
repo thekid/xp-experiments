@@ -6,13 +6,22 @@
 
   $package= 'tests.execution.source';
 
-  uses('tests.execution.source.ExecutionTest');
+  uses('tests.execution.source.ExecutionTest', 'xp.compiler.checks.IsAssignable');
 
   /**
    * Tests arrays
    *
    */
   class tests·execution·source·AssignmentTest extends ExecutionTest {
+
+    /**
+     * Sets up test case and adds IsAsssignale check
+     *
+     */
+    public function setUp() {
+      parent::setUp();
+      $this->check(new IsAssignable(), TRUE);
+    }
     
     /**
      * Test assigning to a variable
@@ -76,6 +85,15 @@
     public function assignToMemberArrayAdd() {
       $this->compile('$this.a= []; $this.a[]= 1;');
     }
+
+    /**
+     * Test assigning to a method call is not allowed
+     *
+     */
+    #[@test]
+    public function assignToMemberReturnedByMethod() {
+      $this->compile('self::class.getMethod("equals").accessible= true;');
+    }
     
     /**
      * Test assigning to a function call is not allowed
@@ -93,15 +111,6 @@
     #[@test, @expect('lang.FormatException')]
     public function assignToMethod() {
       $this->compile('$this.equals()= 1;');
-    }
-
-    /**
-     * Test assigning to a method call is not allowed
-     *
-     */
-    #[@test]
-    public function assignToMemberReturnedByMethod() {
-      $this->compile('self::class.getMethod("equals").accessible= true;');
     }
 
     /**
