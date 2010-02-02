@@ -90,6 +90,7 @@
       $manager->setSourcePaths(xp::$registry['classpath']);
       $emitter= 'source';
       $optimization= 'xp.compiler.optimize.Optimization';
+      $optimizations= array();
       
       // Handle arguments
       $files= array();
@@ -152,7 +153,7 @@
       foreach ($optimizations as $optimization) {
         $emitter->addOptimization($optimization);
       }
-      
+
       // Compile files
       $success= $compiler->compile($files, $listener, $manager, $emitter);
       exit($success ? 0 : 1);
