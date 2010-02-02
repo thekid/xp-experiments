@@ -18,7 +18,7 @@
    */
   class DumpAst extends Command {
     protected
-      $in       = NULL,
+      $file     = NULL,
       $syntax   = NULL;
 
     /**
@@ -28,11 +28,11 @@
      */
     #[@arg(position= 0)]
     public function setIn($in) {
-      $this->in= new File($in);
-      if (!$this->in->exists()) {
+      $this->file= new File($in);
+      if (!$this->file->exists()) {
         throw new FileNotFoundException($in);
       }
-      $this->syntax= Syntax::forName($this->in->getExtension());
+      $this->syntax= Syntax::forName($this->file->getExtension());
     }
 
     /**
@@ -41,7 +41,7 @@
      */
     public function run() {
       try {
-        $ast= $this->syntax->parse(new FileInputStream($this->in), $this->in->getURI());
+        $ast= $this->syntax->parse(new FileInputStream($this->file), $this->file->getURI());
       } catch (ParseException $e) {
         $this->err->writeLinef(
           '*** Parse error: %s', 
