@@ -9,7 +9,8 @@
     'xp.compiler.checks.RoutinesVerification',
     'xp.compiler.ast.MethodNode',
     'xp.compiler.ast.InterfaceNode',
-    'xp.compiler.ast.ClassNode'
+    'xp.compiler.ast.ClassNode',
+    'xp.compiler.types.TypeDeclarationScope'
   );
 
   /**
@@ -29,6 +30,19 @@
     }
     
     /**
+     * Wrapper around verify
+     *
+     * @param   xp.compiler.ast.RoutineNode routine
+     * @param   xp.compiler.ast.TypeDeclarationNode type
+     * @return  var
+     */
+    protected function verify(RoutineNode $routine, TypeDeclarationNode $type) {
+      $scope= new TypeDeclarationScope();
+      $scope->declarations[0]= $type;
+      return $this->fixture->verify($routine, $scope);
+    }
+    
+    /**
      * Test interface methods
      *
      */
@@ -39,12 +53,11 @@
         'modifiers'   => MODIFIER_PUBLIC,
         'returns'     => new TypeName('void'),
         'parameters'  => array(),
-        'body'        => array(),
-        'holder'      => new InterfaceNode(MODIFIER_PUBLIC, array(), new TypeName('Runnable'))
+        'body'        => array()
       ));
       $this->assertEquals(
         array('R403', 'Interface methods may not have a body Runnable::run'), 
-        $this->fixture->verify($m)
+        $this->verify($m, new InterfaceNode(MODIFIER_PUBLIC, array(), new TypeName('Runnable')))
       );
     }
 
@@ -59,12 +72,11 @@
         'modifiers'   => MODIFIER_PRIVATE,
         'returns'     => new TypeName('void'),
         'parameters'  => array(),
-        'body'        => NULL,
-        'holder'      => new InterfaceNode(MODIFIER_PUBLIC, array(), new TypeName('Runnable'))
+        'body'        => NULL
       ));
       $this->assertEquals(
         array('R401', 'Interface methods may only be public Runnable::run'), 
-        $this->fixture->verify($m)
+        $this->verify($m, new InterfaceNode(MODIFIER_PUBLIC, array(), new TypeName('Runnable')))
       );
     }
 
@@ -79,12 +91,11 @@
         'modifiers'   => MODIFIER_PROTECTED,
         'returns'     => new TypeName('void'),
         'parameters'  => array(),
-        'body'        => NULL,
-        'holder'      => new InterfaceNode(MODIFIER_PUBLIC, array(), new TypeName('Runnable'))
+        'body'        => NULL
       ));
       $this->assertEquals(
         array('R401', 'Interface methods may only be public Runnable::run'), 
-        $this->fixture->verify($m)
+        $this->verify($m, new InterfaceNode(MODIFIER_PUBLIC, array(), new TypeName('Runnable')))
       );
     }
 
@@ -99,12 +110,11 @@
         'modifiers'   => MODIFIER_ABSTRACT,
         'returns'     => new TypeName('void'),
         'parameters'  => array(),
-        'body'        => NULL,
-        'holder'      => new InterfaceNode(MODIFIER_PUBLIC, array(), new TypeName('Runnable'))
+        'body'        => NULL
       ));
       $this->assertEquals(
         array('R401', 'Interface methods may only be public Runnable::run'), 
-        $this->fixture->verify($m)
+        $this->verify($m, new InterfaceNode(MODIFIER_PUBLIC, array(), new TypeName('Runnable')))
       );
     }
 
@@ -119,12 +129,11 @@
         'modifiers'   => MODIFIER_FINAL,
         'returns'     => new TypeName('void'),
         'parameters'  => array(),
-        'body'        => NULL,
-        'holder'      => new InterfaceNode(MODIFIER_PUBLIC, array(), new TypeName('Runnable'))
+        'body'        => NULL
       ));
       $this->assertEquals(
         array('R401', 'Interface methods may only be public Runnable::run'), 
-        $this->fixture->verify($m)
+        $this->verify($m, new InterfaceNode(MODIFIER_PUBLIC, array(), new TypeName('Runnable')))
       );
     }
 
@@ -139,12 +148,11 @@
         'modifiers'   => MODIFIER_ABSTRACT,
         'returns'     => new TypeName('void'),
         'parameters'  => array(),
-        'body'        => array(),
-        'holder'      => new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Runner'))
+        'body'        => array()
       ));
       $this->assertEquals(
         array('R403', 'Abstract methods may not have a body Runner::run'), 
-        $this->fixture->verify($m)
+        $this->verify($m, new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Runner')))
       );
     }
 
@@ -159,12 +167,11 @@
         'modifiers'   => MODIFIER_PUBLIC,
         'returns'     => new TypeName('void'),
         'parameters'  => array(),
-        'body'        => NULL,
-        'holder'      => new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Runner'))
+        'body'        => NULL
       ));
       $this->assertEquals(
         array('R401', 'Non-abstract methods must have a body Runner::run'), 
-        $this->fixture->verify($m)
+        $this->verify($m, new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Runner')))
       );
     }
   }

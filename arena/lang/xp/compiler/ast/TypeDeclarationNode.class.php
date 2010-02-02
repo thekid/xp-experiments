@@ -34,9 +34,6 @@
      */
     public function setBody(array $body= NULL) {
       $this->body= $body;
-      if ($this->body) foreach ($this->body as $node) {
-        $node->holder= $this;
-      }
     }
   }
 ?>

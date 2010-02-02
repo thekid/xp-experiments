@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.Node', 'xp.compiler.types.Scope');
   
   /**
    * Verifies a given node
@@ -23,8 +23,9 @@
      * Execute this check
      *
      * @param   xp.compiler.ast.Node node
+     * @param   xp.compiler.types.Scope scope
      * @return  bool
      */
-    public function verify(xp·compiler·ast·Node $node);
+    public function verify(xp·compiler·ast·Node $node, Scope $scope);
   }
 ?>

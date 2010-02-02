@@ -1932,7 +1932,7 @@
           $node->hashCode()
         );
         try {
-          $this->checks->verify($node, $this) && call_user_func(array($this, $target), $op, $node);
+          $this->checks->verify($node, $this->scope[0], $this) && call_user_func(array($this, $target), $op, $node);
         } catch (Throwable $e) {
           $this->error('0500', $e->toString(), $node);
           return 0;

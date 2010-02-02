@@ -27,9 +27,10 @@
      * Executes this check
      *
      * @param   xp.compiler.ast.Node node
+     * @param   xp.compiler.types.Scope scope
      * @return  bool
      */
-    public function verify(xp·compiler·ast·Node $node) {
+    public function verify(xp·compiler·ast·Node $node, Scope $scope) {
       $decl= cast($node, 'xp.compiler.ast.TypeDeclarationNode');
       if (!isset($decl->comment) && !$decl->synthetic) {
         return array('D201', 'No api doc for type '.$decl->name->compoundName());

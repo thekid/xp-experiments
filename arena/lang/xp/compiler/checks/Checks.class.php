@@ -28,14 +28,15 @@
      * Verify a given node
      *
      * @param   xp.compiler.ast.Node in
+     * @param   xp.compiler.types.Scope scope
      * @param   var messages
      * @return  bool whether to continue or not
      */
-    public function verify(xp·compiler·ast·Node $in, $messages) {
+    public function verify(xp·compiler·ast·Node $in, Scope $scope, $messages) {
       $continue= TRUE;
       foreach ($this->impl as $impl) {
         if (!$impl[0]->isInstance($in)) continue;
-        if (!($message= $impl[1]->verify($in))) continue;
+        if (!($message= $impl[1]->verify($in, $scope))) continue;
         if ($impl[2]) {
           $messages->error($message[0], $message[1], $in);
           $continue= FALSE;

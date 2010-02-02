@@ -7,7 +7,8 @@
   uses(
     'unittest.TestCase',
     'xp.compiler.checks.ConstantsAreDiscouraged',
-    'xp.compiler.ast.ConstantNode'
+    'xp.compiler.ast.ConstantNode',
+    'xp.compiler.types.MethodScope'
   );
 
   /**
@@ -17,6 +18,7 @@
    */
   class ConstantsAreDiscouragedTest extends TestCase {
     protected $fixture= NULL;
+    protected $scope= NULL;
   
     /**
      * Sets up test case
@@ -24,6 +26,7 @@
      */
     public function setUp() {
       $this->fixture= new ConstantsAreDiscouraged();
+      $this->scope= new MethodScope();
     }
     
     /**
@@ -34,7 +37,7 @@
     public function constantsAreDiscouraged() {
       $this->assertEquals(
         array('T203', 'Global constants (DIRECTORY_SEPARATOR) are discouraged'), 
-        $this->fixture->verify(new ConstantNode('DIRECTORY_SEPARATOR'))
+        $this->fixture->verify(new ConstantNode('DIRECTORY_SEPARATOR'), $this->scope)
       );
     }
   }

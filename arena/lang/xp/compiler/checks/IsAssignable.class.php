@@ -44,9 +44,10 @@
      * Executes this check
      *
      * @param   xp.compiler.ast.Node node
+     * @param   xp.compiler.types.Scope scope
      * @return  bool
      */
-    public function verify(xp·compiler·ast·Node $node) {
+    public function verify(xp·compiler·ast·Node $node, Scope $scope) {
       $a= cast($node, 'xp.compiler.ast.AssignmentNode');
       if (!$this->isWriteable($a->variable)) {
         return array('A403', 'Cannot assign to '.$a->variable->getClassName().'s');

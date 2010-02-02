@@ -26,14 +26,15 @@
      * Executes this check
      *
      * @param   xp.compiler.ast.Node node
+     * @param   xp.compiler.types.Scope scope
      * @return  bool
      */
-    public function verify(xp·compiler·ast·Node $node) {
+    public function verify(xp·compiler·ast·Node $node, Scope $scope) {
       $routine= cast($node, 'xp.compiler.ast.RoutineNode');
 
-      $qname= $routine->holder->name->compoundName().'::'.$routine->getName();
+      $qname= $scope->declarations[0]->name->compoundName().'::'.$routine->getName();
       $empty= $routine->body === NULL;
-      if ($routine->holder instanceof InterfaceNode) {
+      if ($scope->declarations[0] instanceof InterfaceNode) {
         if (!$empty) {
           return array('R403', 'Interface methods may not have a body '.$qname);
         } else if (MODIFIER_PUBLIC != $routine->modifiers) {

@@ -26,9 +26,10 @@
      * Executes this check
      *
      * @param   xp.compiler.ast.Node node
+     * @param   xp.compiler.types.Scope scope
      * @return  bool
      */
-    public function verify(xp·compiler·ast·Node $node) {
+    public function verify(xp·compiler·ast·Node $node, Scope $scope) {
       return array('T203', 'Global constants ('.cast($node, 'xp.compiler.ast.ConstantNode')->value.') are discouraged');
     }
   }
