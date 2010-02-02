@@ -20,6 +20,7 @@
      *
      */
     public function setUp() {
+      parent::setUp();
       $this->stream= new MemoryOutputStream();
       $this->out= Console::$out->getStream();
       Console::$out->setStream($this->stream);

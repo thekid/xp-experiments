@@ -20,6 +20,7 @@
      *
      */
     public function setUp() {
+      parent::setUp();
       $this->fixture= $this->define('class', 'AnnotationsFor'.$this->name, NULL, '{
       
         [@test]
