@@ -159,7 +159,7 @@
     #[@test]
     public function booleanTrueLiteralInBraces() {
       $this->assertEquals(
-        array(new BooleanNode(TRUE)),
+        array(new BracedExpressionNode(new BooleanNode(TRUE))),
         $this->parse('(true);')
       );
     }

@@ -70,11 +70,11 @@
       $this->assertEquals(array(new TernaryNode(array(
         'condition'     => new VariableNode('i'),
         'expression'    => NULL,
-        'conditional'   => new TernaryNode(array(
+        'conditional'   => new BracedExpressionNode(new TernaryNode(array(
           'condition'     => new VariableNode('f'),
           'expression'    => new IntegerNode('1'),
           'conditional'   => new IntegerNode('2'),
-        ))
+        )))
       ))), $this->parse('
         $i ?: ($f ? 1 : 2);
       '));

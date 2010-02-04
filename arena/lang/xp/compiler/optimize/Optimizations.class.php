@@ -37,6 +37,9 @@
      * @param   xp.compiler.ast.Node optimized
      */
     public function optimize(xp·compiler·ast·Node $in) {
+      if ($in instanceof BracedExpressionNode) {
+        return $this->optimize($in->expression);
+      }
       $key= $in->getClass();
       if (!$this->impl->containsKey($key)) {
         return $in;

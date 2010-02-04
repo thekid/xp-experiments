@@ -223,7 +223,7 @@
       if (isset(self::$optimizable[$in->op])) {
         $lhs= $optimizations->optimize($in->lhs);
         $rhs= $optimizations->optimize($in->rhs);
-      
+
         if ($lhs instanceof Resolveable && $rhs instanceof Resolveable) {
           try {
             $r= call_user_func_array(array($this, 'eval'.self::$optimizable[$in->op]), array($lhs, $rhs));

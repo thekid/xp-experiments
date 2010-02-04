@@ -116,5 +116,47 @@
         $this->parse('Logger::getInstance().configure("etc");')
       );
     }
+
+    /**
+     * Test chaining after function calls
+     *
+     */
+    #[@test]
+    public function chainedAfterFunction() {
+      $this->assertEquals(
+        array(new ChainNode(array(
+          0 => new InvocationNode(array(
+            'name'       => 'create',
+            'parameters' => array(new VariableNode('a'))
+          )),
+          1 => new InvocationNode(array(
+            'name'       => 'equals',
+            'parameters' => array(new VariableNode('b'))
+          )),
+        ))), 
+        $this->parse('create($a).equals($b);')
+      );
+    }
+
+    /**
+     * Test chained after bracing
+     *
+     */
+    #[@test]
+    public function chainedAfterBraced() {
+      $this->assertEquals(
+        array(new ChainNode(array(
+          0 => new BracedExpressionNode(new CastNode(array(
+            'type'       => new TypeName('Generic'),
+            'expression' => new VariableNode('a')
+          ))),
+          1 => new InvocationNode(array(
+            'name'       => 'equals',
+            'parameters' => array(new VariableNode('b'))
+          )),
+        ))), 
+        $this->parse('($a as Generic).equals($b);')
+      );
+    }
   }
 ?>

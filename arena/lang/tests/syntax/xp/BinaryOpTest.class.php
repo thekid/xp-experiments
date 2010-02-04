@@ -85,11 +85,11 @@
     public function bracketsUsedForPrecedence() {
       $this->assertEquals(
         array(new BinaryOpNode(array(
-          'lhs' => new BinaryOpNode(array(
+          'lhs' => new BracedExpressionNode(new BinaryOpNode(array(
             'lhs'    => new IntegerNode('5'),
             'rhs'    => new IntegerNode('6'),
             'op'     => '+'
-          )),
+          ))),
           'rhs' => new IntegerNode('3'),
           'op'  => '*'
         ))), 
@@ -105,11 +105,11 @@
     public function bracketsUsedForPrecedenceWithVariable() {
       $this->assertEquals(
         array(new BinaryOpNode(array(
-          'lhs' => new BinaryOpNode(array(
+          'lhs' => new BracedExpressionNode(new BinaryOpNode(array(
             'lhs'    => new VariableNode('i'),
             'rhs'    => new IntegerNode('6'),
             'op'     => '+'
-          )),
+          ))),
           'rhs' => new IntegerNode('3'),
           'op'  => '*'
         ))), 

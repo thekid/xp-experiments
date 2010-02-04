@@ -493,6 +493,18 @@
     }
 
     /**
+     * Emit a braced expression
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.BracedExpressionNode const
+     */
+    protected function emitBracedExpression($op, BracedExpressionNode $braced) {
+      $op->append('(');
+      $this->emitOne($op, $braced->expression);
+      $op->append(')');
+    }
+
+    /**
      * Emit binary operation node
      *
      * @param   resource op
@@ -516,17 +528,15 @@
       );
       
       // Check for logical operations. TODO: LogicalOperationNode?
-      $op->append('(');
       if (isset($lop[$bin->op])) {
         $this->emitOne($op, $bin->lhs);
-        $op->append(') '.$lop[$bin->op].' (');
+        $op->append($lop[$bin->op]);
         $this->emitOne($op, $bin->rhs);
       } else {
         $this->emitOne($op, $bin->lhs);
-        $op->append(') '.$bop[$bin->op].' (');
+        $op->append($bop[$bin->op]);
         $this->emitOne($op, $bin->rhs);
       }
-      $op->append(')');
     }
 
     /**

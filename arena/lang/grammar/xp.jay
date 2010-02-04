@@ -59,7 +59,8 @@
     'xp.compiler.ast.ElseNode',
     'xp.compiler.ast.StaticInitializerNode',
     'xp.compiler.ast.LambdaNode',
-    'xp.compiler.ast.WithNode'
+    'xp.compiler.ast.WithNode',
+    'xp.compiler.ast.BracedExpressionNode'
   );
 %}
 
@@ -717,8 +718,12 @@ expression:
   | T_WORD '(' { $2= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' chain_opt { 
       $2->name= $1;
       $2->parameters= $4;
-      $6 && $2->chained= $6;
-      $$= $2;
+      if ($6) {
+        $$= $yyLex->create(new ChainNode());
+        $$->elements= array_merge(array($2), $6);
+      } else {
+        $$= $2;
+      }
     }
   | T_CLONE expression { 
       $$= $yyLex->create(new CloneNode($2)); break;
@@ -768,7 +773,14 @@ expression:
   | '{' lambda_input T_DOUBLE_ARROW lambda_body '}' {
       $$= $yyLex->create(new LambdaNode($2, $4));
     }
-  | '(' expression ')' { $$= $2; }
+  | '(' expression ')' chain_opt { 
+      if ($4) {
+        $$= new ChainNode();
+        $$->elements= array_merge(array(new BracedExpressionNode($2)), $4);
+      } else {
+        $$= new BracedExpressionNode($2); 
+      }
+    }
 ;
 
 lambda_body:

@@ -349,5 +349,22 @@
         'op'  => '+'
       ))));
     }
+
+    /**
+     * Test optimizing a more complex binary operation ((1 + 2) * 3)
+     *
+     */
+    #[@test]
+    public function optimizeBraced() {
+      $this->assertEquals(new IntegerNode(9), $this->fixture->optimize(new BinaryOpNode(array(
+        'lhs' => new BracedExpressionNode(new BinaryOpNode(array(
+          'lhs' => new IntegerNode('1'), 
+          'rhs' => new IntegerNode('2'), 
+          'op'  => '+'
+        ))),
+        'rhs' => new IntegerNode('3'), 
+        'op'  => '*'
+      ))));
+    }
   }
 ?>
