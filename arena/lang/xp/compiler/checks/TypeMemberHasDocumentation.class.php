@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.checks.Check', 'xp.compiler.ast.TypeDeclarationNode');
+  uses('xp.compiler.checks.Check', 'xp.compiler.ast.RoutineNode');
 
   /**
    * Check whether api documentation is available for a type members, 
