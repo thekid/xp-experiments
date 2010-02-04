@@ -1,0 +1,31 @@
+ChangeLog
+========================================================================
+$Id$
+
+Version ?.?.?, released ????-??-??
+----------------------------------
+SVN version: ?????
+
+Heads up!
+~~~~~~~~~
+Features
+~~~~~~~~
+Bugfixes
+~~~~~~~~
+
+Version ?.?.?, released ????-??-??
+----------------------------------
+SVN version: ?????
+
+Heads up!
+~~~~~~~~~
+- No version released yet
+
+Features
+~~~~~~~~
+- php highlighting added with php.lang
+  (robert)
+- created XP-NEdit-Style
+  (robert)
+- added first snippet to create method doc
+  (robert)

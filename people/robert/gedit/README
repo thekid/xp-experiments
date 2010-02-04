@@ -1,0 +1,72 @@
+#
+# $Id$
+#
+
+HEADS UP
+~~~~~~~~
+I'm trying to pimp gedit that it looks and feels like actual nedit.
+Please note that this is still in development and have a look into the ChangLog too.
+
+You also need to install the mods from Ruben Wagner to get the full xp-functionality.
+Just have a look into experiments/people/wagner/xp.ide
+
+If you have any suggestions or improvements to share, just send me an email to:
+robert_ledermueller@gmx.de
+
+Thanks.
+
+INSTALL
+~~~~~~~
+1. Install all mods from Ruben Wagner.
+
+2. Install the package 'gedit-plugins' which is a common package in ubuntu. Here
+   you will find some usefull and needed plugins!
+
+3. backup old php.lang
+sudo mv /usr/share/gtksourceview-2.0/language-specs/php.lang /usr/share/gtksourceview-2.0/language-specs/php.old
+
+4. copy this php.lang
+sudo cp syntax/php.lang /usr/share/gtksourceview-2.0/language-specs/php.lang
+
+5. copy new style
+sudo cp style/xp_nedit.xml /usr/share/gtksourceview-2.0/styles/xp_nedit.xml
+
+6. Change color of the variables. I prefer to use bold, red variables. But you can
+   just change the following line to a color of your liking.
+<style name="def:identifier"              foreground="dark-red" bold="true"/>
+
+7. Gedit doesn't come with a built in regex search and replace function like nedit.
+   Here you have to use one of the multiple third party plugins.
+   Maybe the plugin 'Regex Search & Replace' may help. You can find it with several
+   other plugins here: http://live.gnome.org/Gedit/Plugins
+
+8. Useful options/configuration (warning: personal touch)
+
+   Edit - Preferences - View
+   - Disable text wrapping
+   - Display line numbers
+   - Highlight current line
+   - Display right margin
+   - Highlight matching bracket
+   
+   Edit - Preferences - Editor
+   - Tab width 2
+   - Insert spaces instead of tabs
+   - Enable automatic indentation
+   - disable File Saving
+
+   Edit - Preferences - Font & Colors
+   - font: Monospace 8-9 (this font is very similar to nedit)
+   - Color Scheme: XP-NEdit-Style
+   
+   Edit - Preferences - Plugins (just the most important in my opinion) 
+   - Indent Lines
+   - Regex Search and Replace
+   - Snippets
+   - XP IDE
+
+9. If you want to use the snippet plugin you can import my first snippet.
+   snippets/Snippets archive.tar.gz
+   If you have problems with importing this snippets make sure the following dir exists:
+   /home/usrname/.gnome2/gedit/snippets
+
