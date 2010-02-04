@@ -70,7 +70,7 @@
     }
     
     /**
-     * Adds an check
+     * Adds a check
      *
      * @param   xp.compiler.checks.Checks c
      * @param   bool error
