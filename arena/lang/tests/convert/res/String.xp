@@ -20,4 +20,14 @@ public class String {
   public __construct(var $initial= '') {
     $this.buffer= $initial;
   }
+
+  /**
+   * Returns the character at a given position
+   *
+   * @param   int i
+   * @return  string
+   */
+  public string charAt(var $i) {
+    return $this.buffer{$i};
+  }
 }

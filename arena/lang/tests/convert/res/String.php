@@ -19,5 +19,15 @@
     public function __construct($initial= '') {
       $this->buffer= $initial;
     }
+
+    /**
+     * Returns the character at a given position
+     *
+     * @param   int i
+     * @return  string
+     */
+    public function charAt($i) {
+      return $this->buffer{$i};
+    }
   }
 ?>

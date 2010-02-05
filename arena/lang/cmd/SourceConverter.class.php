@@ -309,6 +309,22 @@
             break;
           }
           
+          // Comment: parse @param / @return ...
+          case self::ST_DECL.T_DOC_COMMENT: {
+            $meta= NULL;
+            preg_match_all(
+              '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)?/',
+              $token[1], 
+              $matches, 
+              PREG_SET_ORDER
+            );
+            foreach ($matches as $match) {
+              @$meta[$match[1]][]= $match[2];
+            }
+            $out.= str_replace("\n  ", "\n", $token[1]);
+            break;
+          }
+          
           // function name(X $var, Y $type)
           case self::ST_DECL.T_FUNCTION: {
             array_unshift($state, self::ST_FUNC);
@@ -323,7 +339,7 @@
           case self::ST_FUNC.T_STRING: {
             $brackets= 0;
             if ('__construct' !== $token[1]) {
-              $out.= 'void ';    // TODO: Add return type
+              $out.= isset($meta['return']) ? $meta['return'][0].' ' : 'void ';
             }
             $out.= $token[1];
             array_unshift($state, self::ST_FUNC_ARGS);
