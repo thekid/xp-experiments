@@ -100,20 +100,17 @@
         // need to be fully qualified or mapped, so check for this
         $search= ($namespace !== NULL ? str_replace(self::SEPARATOR, '.', $namespace).'.' : '').$qname;
         if (!ClassLoader::getDefault()->findClass($search) instanceof IClassLoader) {
-          $this->err->writeLine('*** No mapping for ', $qname, ' (current namespace: ', $namespace,', class= ', $context, ')');
+          throw new IllegalStateException('*** No mapping for '.$qname.' (current namespace: '.$namespace.', class= '.$context.')');
         }
         return $qname;
       }
 
       // Return local name if mapped name is in imports or current namespace
       if (isset($imports[(string)$mapped])) {
-        $this->verbose && $this->out->writeLine('I:', $context, ': ', $qname, ' => ', $imports[(string)$mapped]);
         return $imports[(string)$mapped]; 
       } else if (FALSE !== ($p= strrpos($mapped, self::SEPARATOR)) && $namespace == substr($mapped, 0, $p)) {
-        $this->verbose && $this->out->writeLine('N:', $context, ': ', $qname, ' => ', substr($mapped, $p+ 2));
         return substr($mapped, $p+ 2);
       } else {
-        $this->verbose && $this->out->writeLine('M:', $context, ': ', $qname, ' => ', $mapped);
         return $mapped;
       }
     }
@@ -175,10 +172,10 @@
             $fqcn= self::SEPARATOR.str_replace('.', self::SEPARATOR, trim($token[1], "'"));
             $local= substr($fqcn, strrpos($fqcn, self::SEPARATOR)+ strlen(self::SEPARATOR));
             if ($local == $class) {
-              $this->err->writeLine('*** Name clash between ', $fqcn, ' and declared ', $class, ' in ', $qname, ', using qualified name for ', $fqcn);
+              // $this->err->writeLine('*** Name clash between ', $fqcn, ' and declared ', $class, ' in ', $qname, ', using qualified name for ', $fqcn);
               $imports[$fqcn]= $fqcn;
             } else if ($other= array_search($local, $imports)) {
-              $this->err->writeLine('*** Name clash between ', $fqcn, ' and other ', $other, ' in ', $qname, ', using qualified name for ', $fqcn);
+              // $this->err->writeLine('*** Name clash between ', $fqcn, ' and other ', $other, ' in ', $qname, ', using qualified name for ', $fqcn);
               $imports[$fqcn]= $fqcn;
             } else {
               $uses[]= substr($fqcn, 1);
@@ -196,7 +193,6 @@
             foreach ($uses as $fqcn) {
               $out.= 'import '.$fqcn.";\n";
             }
-            $this->verbose && $this->err->writeLine('Imports in ', $qname, ': ', $imports);
             $uses= array();
             array_shift($state);
             break;

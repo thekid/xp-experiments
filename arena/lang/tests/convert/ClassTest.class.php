@@ -65,7 +65,7 @@
     }
   
     /**
-     * Test
+     * Test an empty class
      *
      */
     #[@test]
@@ -74,12 +74,21 @@
     }
 
     /**
-     * Test
+     * Test an interface
      *
      */
     #[@test]
     public function runnableInterface() {
       $this->assertConversion('lang.Runnable');
+    }
+
+    /**
+     * Test an enum
+     *
+     */
+    #[@test, @ignore('Member rewriting not yet implemented')]
+    public function coinEnum() {
+      $this->assertConversion('demo.Coin');
     }
   }
 ?>
