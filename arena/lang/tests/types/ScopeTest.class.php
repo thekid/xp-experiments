@@ -7,7 +7,7 @@
   uses(
     'unittest.TestCase',
     'xp.compiler.ast.VariableNode',
-    'xp.compiler.emit.oel.Emitter',
+    'xp.compiler.emit.source.Emitter',
     'xp.compiler.types.TypeReflection',
     'xp.compiler.types.TaskScope',
     'xp.compiler.diagnostic.NullDiagnosticListener',
@@ -32,7 +32,7 @@
         new FileSource(new File(__FILE__), Syntax::forName('xp')),
         new NullDiagnosticListener(),
         new FileManager(),
-        new xp·compiler·emit·oel·Emitter()
+        new xp·compiler·emit·source·Emitter()
       ));
     }
     
