@@ -40,7 +40,8 @@
       ST_EXTENDS      = 'extn',
       ST_USES         = 'uses',
       ST_ANONYMOUS    = 'anon',
-      ST_NAMESPACE    = 'nspc';
+      ST_NAMESPACE    = 'nspc',
+      ST_FUNC_BODY    = 'body';
     
     const
       SEPARATOR       = '.';
@@ -208,7 +209,7 @@
             break;
           }
           
-          // extends X -> Remove if "Object" === x
+          // extends X -> Remove if "Object" === X
           case self::ST_DECL.T_EXTENDS: {
             array_unshift($state, self::ST_EXTENDS);
             break;
@@ -303,22 +304,58 @@
             break;
           }
           
+          case self::ST_DECL.T_VARIABLE: {
+            $out.= 'var '.$token[1];
+            break;
+          }
+          
           // function name(X $var, Y $type)
           case self::ST_DECL.T_FUNCTION: {
-            $out.= 'void';    // TODO: Add return type
             array_unshift($state, self::ST_FUNC);
+            break;
+          }
+          
+          case self::ST_FUNC.T_WHITESPACE: {
+            // Swallow
             break;
           }
           
           case self::ST_FUNC.T_STRING: {
             $brackets= 0;
+            if ('__construct' !== $token[1]) {
+              $out.= 'void ';    // TODO: Add return type
+            }
             $out.= $token[1];
             array_unshift($state, self::ST_FUNC_ARGS);
+            $type= 'var';
             break;
           }
           
-          case self::ST_FUNC.'{': case self::ST_FUNC.';': {
+          case self::ST_FUNC.'{': {
+            $brackets= 0;
+            $out.= ' {';
+            array_shift($state);
+            array_unshift($state, self::ST_FUNC_BODY);
+            break;
+          }
+
+          case self::ST_FUNC_BODY.'{': {
             $out.= $token[1];
+            $brackets++;
+            break;
+          }
+
+          case self::ST_FUNC_BODY.'}': {
+            $out.= $token[1];
+            $brackets--;
+            if ($brackets <= 0) {
+              array_shift($state);
+            }
+            break;
+          }
+            
+          case self::ST_FUNC.';': {
+            $out.= ';';
             array_shift($state);
             break;
           }
@@ -332,7 +369,7 @@
           case self::ST_FUNC_ARGS.')': {
             $out.= $token[1];
             $brackets--;
-            if (0 == $brackets) {
+            if ($brackets <= 0) {
               array_shift($state);
             }
             break;
@@ -350,15 +387,20 @@
             $ws= $this->tokenOf($t[$i+ 1]);
             $var= $this->tokenOf($t[$i+ 2]);
             if (T_WHITESPACE === $ws[0] && T_VARIABLE === $var[0]) {
-              $out.= in_array($token[1], $nonClassTypes) ? $token[1] : $this->mapName($token[1], $namespace, $imports, $qname);
+              $type= in_array($token[1], $nonClassTypes) ? $token[1] : $this->mapName($token[1], $namespace, $imports, $qname);
             } else {
               $out.= $token[1];
             }
             break;
           }
           
+          case self::ST_FUNC_ARGS.T_VARIABLE: {
+            $out.= $type.' '.$token[1];
+            break;
+          }
+          
           // Anonymous class creation - newinstance('fully.qualified', array(...), '{ source }');
-          case self::ST_DECL.self::T_NEWINSTANCE:  {
+          case self::ST_FUNC_BODY.self::T_NEWINSTANCE:  {
             $out.= self::SEPARATOR.'newinstance('.$t[$i+ 2][1];
             $i+= 2;
             array_unshift($state, self::ST_ANONYMOUS);
@@ -374,13 +416,25 @@
           }
           
           // XP "keywords"
-          case self::ST_ANONYMOUS.self::T_CREATE:case self::ST_DECL.self::T_CREATE:
-          case self::ST_ANONYMOUS.self::T_REF: case self::ST_DECL.self::T_REF: 
-          case self::ST_ANONYMOUS.self::T_DEREF: case self::ST_DECL.self::T_DEREF:
-          case self::ST_DECL.self::T_RAISE: case self::ST_DECL.self::T_FINALLY:
-          case self::ST_DECL.self::T_DELETE: case self::ST_DECL.self::T_WITH: 
-          case self::ST_DECL.self::T_IS: case self::ST_DECL.self::T_CAST: {
+          case self::ST_ANONYMOUS.self::T_CREATE:case self::ST_FUNC_BODY.self::T_CREATE:
+          case self::ST_ANONYMOUS.self::T_REF: case self::ST_FUNC_BODY.self::T_REF: 
+          case self::ST_ANONYMOUS.self::T_DEREF: case self::ST_FUNC_BODY.self::T_DEREF:
+          case self::ST_FUNC_BODY.self::T_RAISE: case self::ST_FUNC_BODY.self::T_FINALLY:
+          case self::ST_FUNC_BODY.self::T_DELETE: case self::ST_FUNC_BODY.self::T_WITH: 
+          case self::ST_FUNC_BODY.self::T_IS: case self::ST_FUNC_BODY.self::T_CAST: {
             $out.= $token[1];
+            break;
+          }
+          
+          // Replace concat operator with ~
+          case self::ST_FUNC_BODY.'.': {
+            $out.= ' ~ ';
+            break;
+          }
+          
+          // Replace object operator with "."
+          case self::ST_FUNC_BODY.T_OBJECT_OPERATOR: {
+            $out.= '.';
             break;
           }
           

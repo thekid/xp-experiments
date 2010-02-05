@@ -41,7 +41,7 @@
       $bl= explode("\n", $b);
       $r= '';
       for ($i= 0, $s= max(sizeof($al), sizeof($bl)); $i < $s; $i++) {
-        if (rtrim($al[$i]) === rtrim($bl[$i])) continue;
+        if (rtrim(@$al[$i]) === rtrim(@$bl[$i])) continue;
         isset($al[$i]) && $r.= '- '.$al[$i]."\n";
         isset($bl[$i]) && $r.= '+ '.$bl[$i]."\n";
       }
@@ -89,6 +89,15 @@
     #[@test, @ignore('Member rewriting not yet implemented')]
     public function coinEnum() {
       $this->assertConversion('demo.Coin');
+    }
+
+    /**
+     * Test constructor rewriting
+     *
+     */
+    #[@test]
+    public function constructorRewriting() {
+      $this->assertConversion('lang.String');
     }
   }
 ?>
