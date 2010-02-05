@@ -20,7 +20,7 @@ fi
 
 cd ${LIB_XP_DIR}
 wget ${XP_SETUP_URL}/$1 -O - | php -- -d ~/bin
-if [-f ${DEFAULT_XP_INI} ]
+if [ -f ${DEFAULT_XP_INI} ]
 then
   mv ${DEFAULT_XP_INI} ${TARGET_XP_INI}
 fi
