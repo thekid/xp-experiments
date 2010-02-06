@@ -49,7 +49,8 @@
       ST_FUNC_BODY    = 'body',
       ST_WITH         = 'with',
       ST_FOREACH      = 'forx',
-      ST_CREATE       = 'crea';
+      ST_CREATE       = 'crea',
+      ST_ANNOTATIONS  = 'anno';
     
     const
       SEPARATOR       = '.';
@@ -153,6 +154,9 @@
       $out= '';
       for ($i= 0, $s= sizeof($t); $i < $s; $i++) {
         $token= $this->tokenOf($t[$i], ($i > 0 ? $t[$i- 1] : NULL));
+        if (!isset($state[0])) {
+          throw new IllegalStateException('State machine underrun');
+        }
         switch ($state[0].$token[0]) {
           case self::ST_INITIAL.T_OPEN_TAG: {
             continue 2;
@@ -280,7 +284,19 @@
           // Annotations
           case self::ST_DECL.T_COMMENT: {
             if ('#' === $token[1]{0}) {
-              $out.= substr($token[1], 1);
+              $j= $i;
+              $comment= '';
+              while ($j < $s && T_COMMENT === $token[0] && '#' === $token[1]{0}) {
+                $comment.= '  '.substr($token[1], 1);
+                $token= $this->tokenOf($t[++$j]);
+              }
+              $i= $j- 1;
+              $t[$i+ 1][1]= "\n".$t[$i+ 1][1];
+              $out.= $this->convert(
+                '', 
+                array_slice(token_get_all('<?php '.substr($comment, 2, -1).'?>'), 1, -1),
+                self::ST_ANNOTATIONS
+              );
             } else {
               $out.= $token[1];
             }
@@ -602,7 +618,9 @@
           }
           
           // Arrays
-          case self::ST_FUNC_ARGS.T_ARRAY: case self::ST_FUNC_BODY.T_ARRAY: {
+          case self::ST_ANNOTATIONS.T_ARRAY:
+          case self::ST_FUNC_ARGS.T_ARRAY: 
+          case self::ST_FUNC_BODY.T_ARRAY: {
             array_unshift($brackets, 0);
             $out.= '[';
             array_unshift($state, self::ST_ARRAY);

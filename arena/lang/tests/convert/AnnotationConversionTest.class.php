@@ -33,10 +33,10 @@
     #[@test]
     public function multiLineAnnotation() {
       $this->assertConversion(
-        "[@interceptors(classes= array(\n".
+        "[@interceptors(classes= [\n".
         "  'security.PermissionCheck',\n".
         "  'security.RolesCheck',\n".
-        "))]\n".
+        "])]\n".
         "public void test() { /* ... */ }",
         "#[@interceptors(classes= array(\n".
         "#  'security.PermissionCheck',\n".
