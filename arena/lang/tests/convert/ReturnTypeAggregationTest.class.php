@@ -44,5 +44,24 @@
         SourceConverter::ST_DECL
       );
     }
+
+    /**
+     * Test string return tpe
+     *
+     */
+    #[@test]
+    public function genericReturnType() {
+      $this->assertConversion(
+        "/**\n".
+        " * @return  lang.Generic\n".
+        " */\n".
+        "public lang.Generic test() { /* ... */ }",
+        "/**\n".
+        " * @return  lang.Generic\n".
+        " */\n".
+        "public function test() { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
   }
 ?>
