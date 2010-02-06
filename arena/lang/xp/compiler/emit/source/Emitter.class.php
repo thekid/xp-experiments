@@ -511,7 +511,7 @@
      * @param   xp.compiler.ast.BinaryOpNode bin
      */
     protected function emitBinaryOp($op, BinaryOpNode $bin) {
-      static $bop= array(
+      static $ops= array(
         '~'   => '.',
         '-'   => '-',
         '+'   => '+',
@@ -521,22 +521,13 @@
         '|'   => '|',
         '&'   => '&',
         '^'   => '^',
-      );
-      static $lop= array(
         '&&'  => '&&',
         '||'  => '||',
       );
       
-      // Check for logical operations. TODO: LogicalOperationNode?
-      if (isset($lop[$bin->op])) {
-        $this->emitOne($op, $bin->lhs);
-        $op->append($lop[$bin->op]);
-        $this->emitOne($op, $bin->rhs);
-      } else {
-        $this->emitOne($op, $bin->lhs);
-        $op->append($bop[$bin->op]);
-        $this->emitOne($op, $bin->rhs);
-      }
+      $this->emitOne($op, $bin->lhs);
+      $op->append($ops[$bin->op]);
+      $this->emitOne($op, $bin->rhs);
     }
 
     /**
