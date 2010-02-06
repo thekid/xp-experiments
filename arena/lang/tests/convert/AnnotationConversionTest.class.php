@@ -25,5 +25,26 @@
         SourceConverter::ST_DECL
       );
     }
+
+    /**
+     * Test multiline annotations
+     *
+     */
+    #[@test]
+    public function multiLineAnnotation() {
+      $this->assertConversion(
+        "[@interceptors(classes= array(\n".
+        "  'security.PermissionCheck',\n".
+        "  'security.RolesCheck',\n".
+        "))]\n".
+        "public void test() { /* ... */ }",
+        "#[@interceptors(classes= array(\n".
+        "#  'security.PermissionCheck',\n".
+        "#  'security.RolesCheck',\n".
+        "#))]\n".
+        "public function test() { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
   }
 ?>
