@@ -41,6 +41,7 @@
       ST_USES         = 'uses',
       ST_ANONYMOUS    = 'anon',
       ST_NAMESPACE    = 'nspc',
+      ST_ARRAY        = 'aray',
       ST_FUNC_BODY    = 'body';
     
     const
@@ -463,10 +464,37 @@
             $out.= ' ~ ';
             break;
           }
-          
+
           // Replace object operator with "."
           case self::ST_FUNC_BODY.T_OBJECT_OPERATOR: {
             $out.= '.';
+            break;
+          }
+          
+          // Arrays
+          case self::ST_FUNC_BODY.T_ARRAY: {
+            $brackets= 0;
+            $out.= '[';
+            array_unshift($state, self::ST_ARRAY);
+            break;
+          }
+          
+          case self::ST_ARRAY.'(': {
+            if ($brackets > 0) {
+              $out.= $token[1];
+            }
+            $brackets++;
+            break;
+          }
+
+          case self::ST_ARRAY.')': {
+            $brackets--;
+            if ($brackets <= 0) {
+              array_shift($state);
+              $out.= ']';
+              break;
+            }
+            $out.= $token[1];
             break;
           }
           
