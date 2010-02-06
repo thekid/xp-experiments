@@ -45,6 +45,7 @@
       ST_ANONYMOUS    = 'anon',
       ST_NAMESPACE    = 'nspc',
       ST_ARRAY        = 'aray',
+      ST_PARAMS       = 'parm',
       ST_FUNC_BODY    = 'body';
     
     const
@@ -439,7 +440,22 @@
           
           case self::ST_ANONYMOUS.T_ARRAY: {
             $brackets= 0;
-            array_unshift($state, self::ST_FUNC_ARGS);
+            array_unshift($state, self::ST_PARAMS);
+            break;
+          }
+
+          case self::ST_PARAMS.'(': {
+            $out.= $token[1];
+            $brackets++;
+            break;
+          }
+
+          case self::ST_PARAMS.')': {
+            $out.= $token[1];
+            $brackets--;
+            if ($brackets <= 0) {
+              array_shift($state);
+            }
             break;
           }
           

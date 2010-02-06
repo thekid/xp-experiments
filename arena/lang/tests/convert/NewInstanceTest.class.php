@@ -26,5 +26,17 @@
       );
     }
 
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function newRunnableWithArguments() {
+      $this->assertConversion(
+        '$r= new lang.Runnable($a, $b) { public void run() { /* ... */ }};',
+        '$r= newinstance("lang.Runnable", array($a, $b), "{ public function run() { /* ... */ }}");',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
   }
 ?>
