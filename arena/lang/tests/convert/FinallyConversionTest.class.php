@@ -19,8 +19,9 @@
      */
     #[@test]
     public function syntaxRewritten() {
+      $this->name('Throwable', 'lang.Throwable');
       $this->assertConversion(
-        'try { /* ... */ } catch (Throwable $e) { } finally { /* ... */ if ($e) throw($e); }',
+        'try { /* ... */ } catch (lang.Throwable $e) { } finally { /* ... */ if ($e) throw($e); }',
         'try { /* ... */ } catch (Throwable $e) { } finally(); { /* ... */ if ($e) throw($e); }',
         SourceConverter::ST_FUNC_BODY
       );

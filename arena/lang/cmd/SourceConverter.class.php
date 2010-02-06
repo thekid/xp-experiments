@@ -144,6 +144,7 @@
       $package= substr($qname, 0, $p);
       $namespace= str_replace('.', self::SEPARATOR, $package);
       $class= substr($qname, $p+ 1);
+      $imported= array();
       
       // Tokenize file
       $state= array($initial);
@@ -214,7 +215,7 @@
           
           // class declaration - always use local name here!
           case self::ST_NAMESPACE.T_CLASS: case self::ST_NAMESPACE.T_INTERFACE: {
-            $out.= 'public '.$token[1].' ';
+            $out.= '-%{IMPORTS}%-public '.$token[1].' ';
             $declaration= $this->tokenOf($t[$i+ 2]);
             $out.= (FALSE !== $p= strrpos($declaration[1], '·')) ? substr($declaration[1], $p+ 1) : $declaration[1];
             $i+= 2;
@@ -242,26 +243,6 @@
             break;
           }
           
-          // instanceof X, new X, catch(X $var)
-          case self::ST_DECL.T_INSTANCEOF: 
-          case self::ST_DECL.T_NEW: case self::ST_DECL.T_CATCH: {
-            $out.= $token[1];
-            array_unshift($state, self::ST_CLASS);
-            break;
-          }
-          
-          case self::ST_CLASS.T_STRING: {
-            $out.= $this->mapName($token[1], $namespace, $imports, $qname);
-            array_shift($state);
-            break;
-          }
-
-          case self::ST_CLASS.T_VARIABLE: {
-            $out.= $token[1];
-            array_shift($state);
-            break;
-          }
-
           // implements X, Y
           case self::ST_DECL.T_IMPLEMENTS: {
             $out.= $token[1];
@@ -280,43 +261,7 @@
             break;
           }
           
-          // X::y(), X::$y, X::const
-          case self::ST_DECL.T_STRING: {
-            $next= $this->tokenOf($t[$i+ 1]);
-            if (T_DOUBLE_COLON == $next[0]) {
-              $out.= $this->mapName($token[1], $namespace, $imports, $qname);
-
-              // Swallow token after double colon
-              // (fixes self::create() being rewritten to self::::create())
-              $member= $this->tokenOf($t[$i+ 2]);
-              $out.= '::'.$member[1];
-              $i+= 2;
-
-              // ClassLoader::defineClass('fully.qualified', 'parent.fqcn', array('interface.fqcns'), '{ source }');
-              // ClassLoader::defineInterface('fully.qualified', array('parent.fqcns'), '{ source }');
-              $complete= $token[1].self::SEPARATOR.$member[1];
-              $converted= NULL;
-              if ('ClassLoader::defineClass' == $token[1].'::'.$member[1] || 'ClassLoader::defineInterface' == $token[1].'::'.$member[1]) {
-                do {
-                  $next= $this->tokenOf($t[++$i]);
-                  if (';' == $next[0]) {
-                    $out.= $next[1];
-                    break;
-                  } else if (T_CONSTANT_ENCAPSED_STRING === $next[0] && '{' === $next[1]{1}) {
-                    $quote= $next[1]{0};
-                    $converted= $this->convert('', token_get_all('<?php '.trim($next[1], $quote).' ?>'), self::ST_DECL);
-                    $out.= $quote.substr($converted, 6, -3).$quote;
-                  } else {
-                    $out.= $next[1];
-                  }
-                } while (!$converted && $i < $s);
-              }
-            } else {
-              $out.= $token[1];
-            }
-            break;
-          }
-          
+          // Member variables
           case self::ST_DECL.T_VARIABLE: {
             $out.= 'var '.$token[1];
             break;
@@ -594,6 +539,52 @@
             $out.= '.';
             break;
           }
+
+          // instanceof X, new X, catch(X $var)
+          case in_array(self::ST_FUNC_BODY, $state) && (
+            $token[0] === T_INSTANCEOF ||
+            $token[0] === T_CATCH ||
+            $token[0] === T_NEW
+          ): {
+            $out.= $token[1];
+            array_unshift($state, self::ST_CLASS);
+            break;
+          }
+          
+          case self::ST_CLASS.T_STRING: {
+            $out.= $this->mapName($token[1], $namespace, $imports, $qname);
+            array_shift($state);
+            break;
+          }
+
+          case self::ST_CLASS.T_VARIABLE: {
+            $out.= $token[1];
+            array_shift($state);
+            break;
+          }
+
+
+          // Track function calls
+          case in_array(self::ST_FUNC_BODY, $state) && $token[0] === T_STRING: {
+            $next= $this->tokenOf($t[$i+ 1]);
+            if (T_DOUBLE_COLON == $next[0]) {       // X::y(), X::$y, X::const
+              $member= $this->tokenOf($t[$i+ 2]);
+              $out.= '::'.$member[1];
+              $i+= 2;
+            } else if ('.' !== $out{strlen($out)- 1}) {
+              $out.= $token[1];
+              try {
+                $func= new ReflectionFunction($token[1]);
+                $ext= $func->getExtension();
+              } catch (ReflectionException $e) {
+                throw new IllegalStateException($e->getMessage());
+              }
+              $imported[]= 'import native '.strtolower($ext->getName()).'.'.$token[1].';';
+            } else {
+              $out.= $token[1];
+            }
+            break;
+          }
           
           // Arrays
           case self::ST_FUNC_BODY.T_ARRAY: {
@@ -634,8 +625,14 @@
           }
         }
       }
+      
+      if ($imported) {
+        $replace= implode("\n", $imported)."\n\n";
+      } else {
+        $replace= '';
+      }
 
-      return $out;      
+      return str_replace('-%{IMPORTS}%-', $replace, $out);
     }
   }
 ?>

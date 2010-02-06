@@ -19,8 +19,9 @@
      */
     #[@test]
     public function withOne() {
+      $this->name('Node', 'xml.Node');
       $this->assertConversion(
-        'with ($a= new Node("root")) { $a.setContent($c); }',
+        'with ($a= new xml.Node("root")) { $a.setContent($c); }',
         'with ($a= new Node("root")); { $a->setContent($c); }',
         SourceConverter::ST_FUNC_BODY
       );
@@ -32,8 +33,9 @@
      */
     #[@test]
     public function withMore() {
+      $this->name('Node', 'xml.Node');
       $this->assertConversion(
-        'with ($a= new Node("root"), $b= $a.addChild("doc")) { $b.setContent($c); }',
+        'with ($a= new xml.Node("root"), $b= $a.addChild("doc")) { $b.setContent($c); }',
         'with ($a= new Node("root"), $b= $a->addChild("doc")); { $b->setContent($c); }',
         SourceConverter::ST_FUNC_BODY
       );
