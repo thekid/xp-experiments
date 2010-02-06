@@ -615,7 +615,12 @@
             $out.= '[';
             break;
           }
-          
+ 
+          case self::ST_ARRAY.T_DOUBLE_ARROW: {
+            $out.= ':';
+            break;
+          }
+         
           case self::ST_ARRAY.'(': {
             if ($brackets[0] > 0) {
               $out.= $token[1];

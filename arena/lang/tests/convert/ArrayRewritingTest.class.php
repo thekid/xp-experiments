@@ -44,6 +44,32 @@
      *
      */
     #[@test]
+    public function danglingComman() {
+      $this->assertConversion(
+        '$a= ["Hello", "World", ];',
+        '$a= array("Hello", "World", );',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function stringStringMap() {
+      $this->assertConversion(
+        '$a= ["Hello" : "World", ];',
+        '$a= array("Hello" => "World", );',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function arrayOfArrays() {
       $this->assertConversion(
         '$a= [[1, 3], [2, 4]];',
