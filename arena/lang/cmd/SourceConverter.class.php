@@ -134,6 +134,7 @@
      * @return  string converted sourcecode
      */
     public function convert($qname, array $t, $initial= self::ST_INITIAL) {
+      $brackets= 0;
 
       // Calculate class and package name from qualified name
       $p= strrpos($qname, '.');
@@ -373,7 +374,7 @@
           case self::ST_FUNC_BODY.'}': {
             $out.= $token[1];
             $brackets--;
-            if ($brackets <= 0) {
+            if ($brackets < 0) {
               array_shift($state);
             }
             break;
@@ -471,11 +472,18 @@
             break;
           }
           
+          // finally(); -> finally
+          case self::ST_FUNC_BODY.self::T_FINALLY: {
+            $out.= 'finally';
+            $i+= 3;
+            break;
+          }
+          
           // XP "keywords"
           case self::ST_ANONYMOUS.self::T_CREATE:case self::ST_FUNC_BODY.self::T_CREATE:
           case self::ST_ANONYMOUS.self::T_REF: case self::ST_FUNC_BODY.self::T_REF: 
           case self::ST_ANONYMOUS.self::T_DEREF: case self::ST_FUNC_BODY.self::T_DEREF:
-          case self::ST_FUNC_BODY.self::T_RAISE: case self::ST_FUNC_BODY.self::T_FINALLY:
+          case self::ST_FUNC_BODY.self::T_RAISE:
           case self::ST_FUNC_BODY.self::T_DELETE: case self::ST_FUNC_BODY.self::T_WITH: 
           case self::ST_FUNC_BODY.self::T_IS: case self::ST_FUNC_BODY.self::T_CAST: {
             $out.= $token[1];
