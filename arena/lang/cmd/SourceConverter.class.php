@@ -520,6 +520,13 @@
             array_shift($state);
             break;
           }
+
+          // create(...); -> ...
+          case self::ST_FUNC_BODY.self::T_CREATE: {
+            $out.= trim($t[$i+ 2][1], '"\'');
+            $i+= 3; // Swallow "(", string and ")"
+            break;
+          }
           
           // foreach ($a as $v) -> foreach ($v in $a)
           case self::ST_FUNC_BODY.T_FOREACH: {
@@ -539,7 +546,6 @@
           }
           
           // XP "keywords"
-          case self::ST_ANONYMOUS.self::T_CREATE:case self::ST_FUNC_BODY.self::T_CREATE:
           case self::ST_ANONYMOUS.self::T_REF: case self::ST_FUNC_BODY.self::T_REF: 
           case self::ST_ANONYMOUS.self::T_DEREF: case self::ST_FUNC_BODY.self::T_DEREF:
           case self::ST_FUNC_BODY.self::T_RAISE: case self::ST_FUNC_BODY.self::T_DELETE:
