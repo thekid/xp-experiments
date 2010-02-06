@@ -528,7 +528,7 @@
             $i+= 2;
             break;
           }
-          
+
           // XP "keywords"
           case self::ST_ANONYMOUS.self::T_REF: case self::ST_FUNC_BODY.self::T_REF: 
           case self::ST_ANONYMOUS.self::T_DEREF: case self::ST_FUNC_BODY.self::T_DEREF:
@@ -649,6 +649,16 @@
             throw new IllegalStateException('Nested function @ '.$state[0]."\n".$out);
           }
 
+          // Inline comments: Fix indenting
+          case self::ST_FUNC_BODY.T_COMMENT: {
+            if ("\n" === $token[1]{strlen($token[1])- 1}) {
+              $out.= str_replace("\n  ", "\n", substr($token[1], 0, -1));
+              $t[$i+ 1][1]= "\n".$t[$i+ 1][1];
+            } else {
+              $out.= str_replace("\n  ", "\n", $token[1]);
+            }
+            break;
+          }
           
           default: {
             $out.= str_replace("\n  ", "\n", $token[1]);
