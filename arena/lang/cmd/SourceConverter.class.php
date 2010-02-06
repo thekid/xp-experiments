@@ -46,7 +46,8 @@
       ST_NAMESPACE    = 'nspc',
       ST_ARRAY        = 'aray',
       ST_PARAMS       = 'parm',
-      ST_FUNC_BODY    = 'body';
+      ST_FUNC_BODY    = 'body',
+      ST_WITH         = 'with';
     
     const
       SEPARATOR       = '.';
@@ -479,12 +480,25 @@
             break;
           }
           
+          // with($a= ...); -> with ($a= ...)
+          case self::ST_FUNC_BODY.self::T_WITH: {
+            $out.= 'with';
+            $brackets= 0;
+            array_unshift($state, self::ST_WITH);
+            array_unshift($state, self::ST_PARAMS);
+            break;
+          }
+          
+          case self::ST_WITH.';': {
+            array_shift($state);
+            break;
+          }
+          
           // XP "keywords"
           case self::ST_ANONYMOUS.self::T_CREATE:case self::ST_FUNC_BODY.self::T_CREATE:
           case self::ST_ANONYMOUS.self::T_REF: case self::ST_FUNC_BODY.self::T_REF: 
           case self::ST_ANONYMOUS.self::T_DEREF: case self::ST_FUNC_BODY.self::T_DEREF:
-          case self::ST_FUNC_BODY.self::T_RAISE:
-          case self::ST_FUNC_BODY.self::T_DELETE: case self::ST_FUNC_BODY.self::T_WITH: 
+          case self::ST_FUNC_BODY.self::T_RAISE: case self::ST_FUNC_BODY.self::T_DELETE:
           case self::ST_FUNC_BODY.self::T_IS: case self::ST_FUNC_BODY.self::T_CAST: {
             $out.= $token[1];
             break;
