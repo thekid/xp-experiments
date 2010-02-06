@@ -208,7 +208,7 @@
           
           case self::ST_USES.';': {
             foreach ($uses as $fqcn) {
-              $out.= 'import '.$fqcn.";\n";
+              $imported['import '.$fqcn.';']= TRUE;
             }
             $uses= array();
             array_shift($state);
