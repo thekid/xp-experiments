@@ -838,7 +838,7 @@ map_or_list:
 
 mapliteral:
     mapentry { $$= array($1); }
-  | mapliteral ',' mapentry_opt { $$= array_merge($1, array($3)); }
+  | mapliteral ',' mapentry_opt { $$= $3 ? array_merge($1, array($3)) : $1; }
 ;
 
 mapentry_opt:

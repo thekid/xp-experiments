@@ -2506,7 +2506,7 @@
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
     case 206:  #line 841 "grammar/xp.jay"
-    { $yyVal= array_merge($yyVals[-2+$yyTop], array($yyVals[0+$yyTop])); } break;
+    { $yyVal= $yyVals[0+$yyTop] ? array_merge($yyVals[-2+$yyTop], array($yyVals[0+$yyTop])) : $yyVals[-2+$yyTop]; } break;
 
     case 207:  #line 845 "grammar/xp.jay"
     { $yyVal= NULL; } break;
