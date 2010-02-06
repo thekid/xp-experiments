@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'cmd.SourceConverter',
+    'cmd.convert.SourceConverter',
     'lang.types.String'
   );
 
