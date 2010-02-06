@@ -36,9 +36,47 @@
         "/**\n".
         " * @param   string a\n".
         " */\n".
-        "public string test(string \$a) { /* ... */ }",
+        "public void test(string \$a) { /* ... */ }",
         "/**\n".
         " * @param   string a\n".
+        " */\n".
+        "public function test(\$a) { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
+
+    /**
+     * Test lang.Generic parameter type
+     *
+     */
+    #[@test]
+    public function genericParameterType() {
+      $this->assertConversion(
+        "/**\n".
+        " * @param   lang.Generic a\n".
+        " */\n".
+        "public void test(lang.Generic \$a) { /* ... */ }",
+        "/**\n".
+        " * @param   lang.Generic a\n".
+        " */\n".
+        "public function test(Generic \$a) { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
+
+    /**
+     * Test lang.Generic parameter type
+     *
+     */
+    #[@test]
+    public function genericParameterTypeWithoutRestriction() {
+      $this->assertConversion(
+        "/**\n".
+        " * @param   lang.Generic a\n".
+        " */\n".
+        "public void test(lang.Generic? \$a) { /* ... */ }",
+        "/**\n".
+        " * @param   lang.Generic a\n".
         " */\n".
         "public function test(\$a) { /* ... */ }",
         SourceConverter::ST_DECL

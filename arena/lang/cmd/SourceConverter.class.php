@@ -365,7 +365,8 @@
             }
             $out.= $token[1];
             array_unshift($state, self::ST_FUNC_ARGS);
-            $type= 'var';
+            $parameter= 0;
+            $restriction= NULL;
             break;
           }
           
@@ -425,7 +426,8 @@
             $ws= $this->tokenOf($t[$i+ 1]);
             $var= $this->tokenOf($t[$i+ 2]);
             if (T_WHITESPACE === $ws[0] && T_VARIABLE === $var[0]) {
-              $type= in_array($token[1], $nonClassTypes) ? $token[1] : $this->mapName($token[1], $namespace, $imports, $qname);
+              $restriction= $token[0];
+              $i++;
             } else {
               $out.= $token[1];
             }
@@ -433,7 +435,14 @@
           }
           
           case self::ST_FUNC_ARGS.T_VARIABLE: {
+            $primitives= array('string', 'int', 'double', 'bool', 'var');
+            
+            $type= isset($meta['param'][$parameter]) ? $meta['param'][$parameter] : 'var';
+            if (!in_array($type, $primitives) && !$restriction) {
+              $type.= '?';
+            }
             $out.= $type.' '.$token[1];
+            $parameter++;
             break;
           }
           

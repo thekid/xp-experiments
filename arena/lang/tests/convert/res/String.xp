@@ -17,7 +17,7 @@ public class String {
    *
    * @param   string initial
    */
-  public __construct(var $initial= '') {
+  public __construct(string $initial= '') {
     $this.buffer= $initial;
   }
 
@@ -27,7 +27,7 @@ public class String {
    * @param   int i
    * @return  string
    */
-  public string charAt(var $i) {
+  public string charAt(int $i) {
     return $this.buffer{$i};
   }
 }
