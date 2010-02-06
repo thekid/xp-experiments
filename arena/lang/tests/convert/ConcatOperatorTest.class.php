@@ -38,5 +38,31 @@
         SourceConverter::ST_FUNC_BODY
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function notInsideComments() {
+      $this->assertConversion(
+        '$a= "Hello"; /* ... */',
+        '$a= "Hello"; /* ... */',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function notInsideSingleLineComments() {
+      $this->assertConversion(
+        '$a= "Hello"; // ...',
+        '$a= "Hello"; // ...',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
   }
 ?>
