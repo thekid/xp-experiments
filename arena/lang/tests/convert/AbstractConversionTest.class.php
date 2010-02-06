@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'cmd.SourceConverter'
+    'cmd.SourceConverter',
+    'lang.types.String'
   );
 
   /**
@@ -23,6 +24,16 @@
      */
     public function setUp() {
       $this->fixture= new SourceConverter();
+    }
+    
+    /**
+     * Map a given name
+     *
+     * @param   string local
+     * @param   string qualified
+     */
+    public function name($local, $qualified) {
+      $this->fixture->nameMap[new String($local)]= new String($qualified);
     }
     
     /**

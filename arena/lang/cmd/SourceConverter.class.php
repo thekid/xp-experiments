@@ -12,7 +12,7 @@
    * @purpose  purpose
    */
   class SourceConverter extends Object {
-    protected
+    public
       $nameMap       = NULL;
 
     // XP tokens
@@ -232,10 +232,10 @@
           }
           
           case self::ST_EXTENDS.T_STRING: {
-            if ('Object' !== ($parent= $this->mapName($token[1], $namespace, $imports, $qname))) {
-              $out.= 'extends '.$parent;
-            } else {
+            if ('lang.Object' === (string)$this->nameMap[$token[1]] || 'lang.Object' === $namespace.'.'.$token[1]) {
               $out= rtrim($out);
+            } else {
+              $out.= 'extends '.$this->mapName($token[1], $namespace, $imports, 'extends');
             }
             array_shift($state);
             break;

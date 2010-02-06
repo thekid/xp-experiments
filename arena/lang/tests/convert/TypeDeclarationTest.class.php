@@ -53,5 +53,33 @@
         SourceConverter::ST_NAMESPACE
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function extendsObjectRemoved() {
+      $this->name('Object', 'lang.Object');
+      $this->assertConversion(
+        'public class String { }',
+        'class String extends Object { }',
+        SourceConverter::ST_NAMESPACE
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function extendsThrowableNotRemoved() {
+      $this->name('Throwable', 'lang.Throwable');
+      $this->assertConversion(
+        'public class Error extends lang.Throwable { }',
+        'class Error extends Throwable { }',
+        SourceConverter::ST_NAMESPACE
+      );
+    }
   }
 ?>
