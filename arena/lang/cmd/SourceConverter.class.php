@@ -372,6 +372,13 @@
           
           case self::ST_FUNC.'{': {
             $brackets= 0;
+            if (isset($meta['throws'])) {
+              $throws= '';
+              foreach ($meta['throws'] as $exception) {
+                $throws.= ', '.$this->mapName($exception, $namespace, $imports, $qname);
+              }
+              $out.= ' throws '.substr($throws, 2);
+            }
             $out.= ' {';
             array_shift($state);
             array_unshift($state, self::ST_FUNC_BODY);
