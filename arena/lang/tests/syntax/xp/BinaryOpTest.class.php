@@ -116,5 +116,41 @@
         $this->parse('($i + 6) * 3;')
       );
     }
+
+    /**
+     * Test concatenation
+     *
+     */
+    #[@test]
+    public function concatenation() {
+      $this->assertEquals(
+        array(new BinaryOpNode(array(
+          'lhs' => new StringNode('Hello'),
+          'rhs' => new StringNode('World'),
+          'op'  => '~'
+        ))), 
+        $this->parse('"Hello" ~ "World";')
+      );
+    }
+
+    /**
+     * Test concatenation
+     *
+     */
+    #[@test]
+    public function bracketsInConcatenation() {
+      $this->assertEquals(
+        array(new BinaryOpNode(array(
+          'lhs' => new StringNode('Hello #'),
+          'rhs' => new BracedExpressionNode(new BinaryOpNode(array(
+            'lhs' => new VariableNode('i'),
+            'rhs' => new IntegerNode('1'),
+            'op'  => '+'
+          ))),
+          'op'  => '~'
+        ))), 
+        $this->parse('"Hello #" ~ ($i + 1);')
+      );
+    }
   }
 ?>
