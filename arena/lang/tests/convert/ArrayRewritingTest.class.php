@@ -44,6 +44,19 @@
      *
      */
     #[@test]
+    public function arrayOfArrays() {
+      $this->assertConversion(
+        '$a= [[1, 3], [2, 4]];',
+        '$a= array(array(1, 3), array(2, 4));',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function emptyArray() {
       $this->assertConversion(
         '$a= [];',

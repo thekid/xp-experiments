@@ -473,24 +473,31 @@
           
           // Arrays
           case self::ST_FUNC_BODY.T_ARRAY: {
-            $brackets= 0;
+            $brackets= array(0);
             $out.= '[';
             array_unshift($state, self::ST_ARRAY);
             break;
           }
+
+          case self::ST_ARRAY.T_ARRAY: {
+            array_unshift($brackets, 0);
+            $out.= '[';
+            break;
+          }
           
           case self::ST_ARRAY.'(': {
-            if ($brackets > 0) {
+            if ($brackets[0] > 0) {
               $out.= $token[1];
             }
-            $brackets++;
+            $brackets[0]++;
             break;
           }
 
           case self::ST_ARRAY.')': {
-            $brackets--;
-            if ($brackets <= 0) {
-              array_shift($state);
+            $brackets[0]--;
+            if ($brackets[0] <= 0) {
+              array_shift($brackets);
+              if (empty($brackets)) array_shift($state);
               $out.= ']';
               break;
             }
