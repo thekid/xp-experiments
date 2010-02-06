@@ -47,7 +47,8 @@
       ST_ARRAY        = 'aray',
       ST_PARAMS       = 'parm',
       ST_FUNC_BODY    = 'body',
-      ST_WITH         = 'with';
+      ST_WITH         = 'with',
+      ST_FOREACH      = 'forx';
     
     const
       SEPARATOR       = '.';
@@ -501,6 +502,23 @@
           
           case self::ST_WITH.';': {
             array_shift($state);
+            break;
+          }
+          
+          // foreach ($a as $v) -> foreach ($v in $a)
+          case self::ST_FUNC_BODY.T_FOREACH: {
+            $buf= $out;
+            $out= '';
+            array_unshift($state, self::ST_FOREACH);
+            $i+= 2; // Swallow " " & "("
+            break;
+          }
+          
+          case self::ST_FOREACH.T_AS: {
+            $v= $t[$i+ 2];
+            $out= $buf.'foreach ('.$v[1].' in '.rtrim($out, ' ');
+            array_shift($state);
+            $i+= 2;
             break;
           }
           
