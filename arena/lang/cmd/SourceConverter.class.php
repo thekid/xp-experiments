@@ -113,7 +113,8 @@
         // need to be fully qualified or mapped, so check for this
         $search= ($namespace !== NULL ? str_replace(self::SEPARATOR, '.', $namespace).'.' : '').$qname;
         if (!ClassLoader::getDefault()->findClass($search) instanceof IClassLoader) {
-          throw new IllegalStateException('*** No mapping for '.$qname.' (current namespace: '.$namespace.', class= '.$context.')');
+          return $qname;
+          // throw new IllegalStateException('*** No mapping for '.$qname.' (current namespace: '.$namespace.', class= '.$context.')');
         }
         return $qname;
       }
@@ -576,11 +577,11 @@
           // Track function calls
           case in_array(self::ST_FUNC_BODY, $state) && $token[0] === T_STRING: {
             $next= $this->tokenOf($t[$i+ 1]);
-            if (T_DOUBLE_COLON == $next[0]) {       // X::y(), X::$y, X::const
+            if (T_DOUBLE_COLON === $next[0]) {       // X::y(), X::$y, X::const
               $member= $this->tokenOf($t[$i+ 2]);
-              $out.= '::'.$member[1];
+              $out.= $this->mapName($token[1], $namespace, $imports, $qname).'::'.$member[1];
               $i+= 2;
-            } else if ('.' !== $out{strlen($out)- 1}) {
+            } else if ('(' === $next[0] && '.' !== $out{strlen($out)- 1}) {
               $out.= $token[1];
               try {
                 $func= new ReflectionFunction($token[1]);

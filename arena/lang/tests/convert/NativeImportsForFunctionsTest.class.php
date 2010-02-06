@@ -54,5 +54,31 @@
         SourceConverter::ST_NAMESPACE
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function constants() {
+      $this->assertConversion(
+        "public class StdStream { public void in() { return STDIN; }}",
+        'class StdStream { public function in() { return STDIN; }}',
+        SourceConverter::ST_NAMESPACE
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function staticMethods() {
+      $this->assertConversion(
+        "public class StdStream { public void in() { return self::handles[STDIN]; }}",
+        'class StdStream { public function in() { return self::handles[STDIN]; }}',
+        SourceConverter::ST_NAMESPACE
+      );
+    }
   }
 ?>
