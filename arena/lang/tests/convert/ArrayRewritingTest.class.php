@@ -64,5 +64,18 @@
         SourceConverter::ST_FUNC_BODY
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function insideArgs() {
+      $this->assertConversion(
+        '$s= call_user_func([$a, "toString"]);',
+        '$s= call_user_func(array($a, "toString"));',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
   }
 ?>
