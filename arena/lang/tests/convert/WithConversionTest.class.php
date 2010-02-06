@@ -14,11 +14,11 @@
   class WithConversionTest extends AbstractConversionTest {
 
     /**
-     * Test NULL
+     * Test with() with one parameter
      *
      */
     #[@test]
-    public function syntaxRewritten() {
+    public function withOne() {
       $this->assertConversion(
         'with ($a= new Node("root")) { $a.setContent($c); }',
         'with ($a= new Node("root")); { $a->setContent($c); }',
@@ -26,5 +26,17 @@
       );
     }
 
+    /**
+     * Test with() with more than one parameter
+     *
+     */
+    #[@test]
+    public function withMore() {
+      $this->assertConversion(
+        'with ($a= new Node("root"), $b= $a.addChild("doc")) { $b.setContent($c); }',
+        'with ($a= new Node("root"), $b= $a->addChild("doc")); { $b->setContent($c); }',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
   }
 ?>
