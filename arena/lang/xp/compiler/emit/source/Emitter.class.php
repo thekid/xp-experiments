@@ -262,8 +262,11 @@
         // Missing intentionally: object and unset casts
       );
 
-      if (isset($primitives[$cast->type->name])) {
+      if ($cast->type->isPrimitive()) {
         $op->append($primitives[$cast->type->name]);
+        $this->emitOne($op, $cast->expression);
+      } else if ($cast->type->isArray() || $cast->type->isMap()) {
+        $op->append('(array)');
         $this->emitOne($op, $cast->expression);
       } else {
         $op->append('cast(');
