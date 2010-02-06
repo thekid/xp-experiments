@@ -320,7 +320,17 @@
             break;
           }
           
-          // Comment: parse @param / @return ...
+          // Annotations
+          case self::ST_DECL.T_COMMENT: {
+            if ('#' === $token[1]{0}) {
+              $out.= substr($token[1], 1);
+            } else {
+              $out.= $token[1];
+            }
+            break;
+          }
+          
+          // Apidoc comment: parse @param / @return ...
           case self::ST_DECL.T_DOC_COMMENT: {
             $meta= NULL;
             preg_match_all(
