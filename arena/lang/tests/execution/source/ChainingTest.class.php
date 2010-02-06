@@ -86,6 +86,17 @@
       );
     }
 
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function arrayAccessAfterNewUntypedArray() {
+      $this->assertEquals(
+        6,
+        $this->run('return [5, 6, 7][1];')
+      );
+    }
 
     /**
      * Test
@@ -96,6 +107,18 @@
       $this->assertEquals(
         1, 
         $this->run('return new string[]{"Hello"}.length;')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function memberAfterNewUntypedArray() {
+      $this->assertEquals(
+        1, 
+        $this->run('return ["Hello"].length;')
       );
     }
   }

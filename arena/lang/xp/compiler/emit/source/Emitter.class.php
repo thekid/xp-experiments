@@ -443,10 +443,16 @@
       
       // Rewrite for unsupported syntax:
       // - $a.getMethods()[2] to current(array_slice($a.getMethods(), 2, 1))
+      // - new int[]{5, 6, 7}[2] to current(array_slice(array(5, 6, 7), 2, 1))
       // - new Date().toString() to create(new Date()).toString()
       $insertion= array();
       for ($i= 0; $i < $s; $i++) {
-        if ($i < $s- 1 && !$chain->elements[$i] instanceof ArrayAccessNode && $chain->elements[$i+ 1] instanceof ArrayAccessNode) {
+        if ($i < $s- 1 && $chain->elements[$i+ 1] instanceof ArrayAccessNode && (
+          $chain->elements[$i] instanceof InvocationNode ||
+          $chain->elements[$i] instanceof InstanceCreationNode ||
+          $chain->elements[$i] instanceof ClassMemberNode ||
+          $chain->elements[$i] instanceof ArrayNode
+        )) {
           $op->append('current(array_slice(');
           $op->mark();
           $insertion[$i]= new xp·compiler·emit·source·Buffer(', ', $op->line);
