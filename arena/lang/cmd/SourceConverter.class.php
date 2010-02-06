@@ -529,15 +529,6 @@
             break;
           }
 
-          // XP "keywords"
-          case self::ST_ANONYMOUS.self::T_REF: case self::ST_FUNC_BODY.self::T_REF: 
-          case self::ST_ANONYMOUS.self::T_DEREF: case self::ST_FUNC_BODY.self::T_DEREF:
-          case self::ST_FUNC_BODY.self::T_RAISE: case self::ST_FUNC_BODY.self::T_DELETE:
-          case self::ST_FUNC_BODY.self::T_IS: case self::ST_FUNC_BODY.self::T_CAST: {
-            $out.= $token[1];
-            break;
-          }
-
           // TRUE, FALSE and NULL constants
           case in_array(self::ST_FUNC_BODY, $state) && (
             $token[0] === self::T_TRUE ||
