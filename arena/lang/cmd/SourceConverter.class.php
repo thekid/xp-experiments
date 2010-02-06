@@ -138,7 +138,7 @@
      * @return  string converted sourcecode
      */
     public function convert($qname, array $t, $initial= self::ST_INITIAL) {
-      $brackets= 0;
+      $brackets= array(0);
 
       // Calculate class and package name from qualified name
       $p= strrpos($qname, '.');
@@ -315,7 +315,7 @@
           }
           
           case self::ST_FUNC.T_STRING: {
-            $brackets= 0;
+            array_unshift($brackets, 0);
             if ('__static' === $token[1]) {
               $out= rtrim($out, ' ');
               $i+= 2; // Swallow "(", ")"
@@ -334,7 +334,7 @@
           }
           
           case self::ST_FUNC.'{': {
-            $brackets= 0;
+            array_unshift($brackets, 0);
             if (isset($meta['throws'])) {
               $throws= '';
               foreach ($meta['throws'] as $exception) {
@@ -350,14 +350,15 @@
 
           case self::ST_FUNC_BODY.'{': {
             $out.= $token[1];
-            $brackets++;
+            $brackets[0]++;
             break;
           }
 
           case self::ST_FUNC_BODY.'}': {
             $out.= $token[1];
-            $brackets--;
-            if ($brackets < 0) {
+            $brackets[0]--;
+            if ($brackets[0] < 0) {
+              array_shift($brackets);
               array_shift($state);
             }
             break;
@@ -371,14 +372,15 @@
           
           case self::ST_FUNC_ARGS.'(': {
             $out.= $token[1];
-            $brackets++;
+            $brackets[0]++;
             break;
           }
 
           case self::ST_FUNC_ARGS.')': {
             $out.= $token[1];
-            $brackets--;
-            if ($brackets <= 0) {
+            $brackets[0]--;
+            if ($brackets[0] <= 0) {
+              array_shift($brackets);
               array_shift($state);
             }
             break;
@@ -431,7 +433,7 @@
           }
           
           case self::ST_ANONYMOUS.T_ARRAY: {
-            $brackets= 0;
+            array_unshift($brackets, 0);
             array_unshift($state, self::ST_PARAMS);
             break;
           }
@@ -444,8 +446,9 @@
 
           case self::ST_PARAMS.')': {
             $out.= $token[1];
-            $brackets--;
-            if ($brackets <= 0) {
+            $brackets[0]--;
+            if ($brackets[0] <= 0) {
+              array_shift($brackets);
               array_shift($state);
             }
             break;
@@ -473,7 +476,7 @@
           // with($a= ...); -> with ($a= ...)
           case self::ST_FUNC_BODY.self::T_WITH: {
             $out.= 'with';
-            $brackets= 0;
+            array_unshift($brackets, 0);
             array_unshift($state, self::ST_WITH);
             array_unshift($state, self::ST_PARAMS);
             break;
@@ -504,7 +507,7 @@
           }
           
           case self::ST_CREATE.T_ARRAY: {
-            $brackets= 0;
+            array_unshift($brackets, 0);
             array_unshift($state, self::ST_PARAMS);
             break;
           }
@@ -604,7 +607,7 @@
           
           // Arrays
           case self::ST_FUNC_BODY.T_ARRAY: {
-            $brackets= array(0);
+            array_unshift($brackets, 0);
             $out.= '[';
             array_unshift($state, self::ST_ARRAY);
             break;
@@ -612,6 +615,7 @@
 
           case self::ST_ARRAY.T_ARRAY: {
             array_unshift($brackets, 0);
+            array_unshift($state, self::ST_ARRAY);
             $out.= '[';
             break;
           }
@@ -628,7 +632,7 @@
             $brackets[0]--;
             if ($brackets[0] <= 0) {
               array_shift($brackets);
-              if (empty($brackets)) array_shift($state);
+              array_shift($state);
               $out.= ']';
               break;
             }
