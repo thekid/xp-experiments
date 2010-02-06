@@ -27,7 +27,10 @@
       T_WITH          = 0xF008,
       T_REF           = 0xF009,
       T_DEREF         = 0xF00A,
-      T_CAST          = 0xF00B;
+      T_CAST          = 0xF00B,
+      T_TRUE          = 0xF00C,
+      T_FALSE         = 0xF00D,
+      T_NULL          = 0xF00E;
     
     // States
     const
@@ -74,14 +77,18 @@
         'with'          => self::T_WITH,
         'ref'           => self::T_REF,
         'deref'         => self::T_DEREF,
+        'true'          => self::T_TRUE,
+        'false'         => self::T_FALSE,
+        'null'          => self::T_NULL,
       );
 
       $normalized= is_array($t) ? $t : array($t, $t);
+      $lookup= strtolower($normalized[1]);
       if (
         (!is_array($last) || $last[0] !== T_OBJECT_OPERATOR) &&
-        T_STRING == $normalized[0] && isset($map[$normalized[1]])
+        T_STRING == $normalized[0] && isset($map[$lookup])
       ) {
-        $normalized[0]= $map[$normalized[1]];
+        $normalized[0]= $map[$lookup];
       }
       return $normalized;
     }
@@ -456,6 +463,14 @@
           case self::ST_FUNC_BODY.self::T_DELETE: case self::ST_FUNC_BODY.self::T_WITH: 
           case self::ST_FUNC_BODY.self::T_IS: case self::ST_FUNC_BODY.self::T_CAST: {
             $out.= $token[1];
+            break;
+          }
+
+          // TRUE, FALSE and NULL constants
+          case self::ST_FUNC_BODY.self::T_TRUE: 
+          case self::ST_FUNC_BODY.self::T_FALSE: 
+          case self::ST_FUNC_BODY.self::T_NULL: {
+            $out.= strtolower($token[1]);
             break;
           }
           
