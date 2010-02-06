@@ -77,5 +77,18 @@
         SourceConverter::ST_FUNC_BODY
       );
     }
+
+    /**
+     * Test arrays in parameters
+     *
+     */
+    #[@test]
+    public function inParameters() {
+      $this->assertConversion(
+        "public void test(var \$a= []) { /* ... */ }",
+        "public function test(\$a= array()) { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
   }
 ?>

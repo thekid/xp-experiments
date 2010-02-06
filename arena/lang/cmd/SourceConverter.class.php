@@ -55,7 +55,7 @@
       SEPARATOR       = '.';
 
     /**
-     * (Insert method's description here)
+     * Creates name map
      *
      */
     public function __construct() {
@@ -611,7 +611,7 @@
           }
           
           // Arrays
-          case self::ST_FUNC_BODY.T_ARRAY: {
+          case self::ST_FUNC_ARGS.T_ARRAY: case self::ST_FUNC_BODY.T_ARRAY: {
             array_unshift($brackets, 0);
             $out.= '[';
             array_unshift($state, self::ST_ARRAY);
