@@ -7,8 +7,9 @@
   uses('xp.compiler.types.Types', 'xp.compiler.types.TypeName');
 
   /**
-   * (Insert class' description here)
+   * Represents a reflected type
    *
+   * @test    xp://tests.types.TypeReflectionTest
    */
   class TypeReflection extends Types {
     protected $class= NULL;
