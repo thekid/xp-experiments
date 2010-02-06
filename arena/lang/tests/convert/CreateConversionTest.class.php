@@ -1,0 +1,29 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  uses('tests.convert.AbstractConversionTest');
+
+  /**
+   * Tests create() is rewritten
+   *
+   * @see      xp://tests.convert.AbstractConversionTest
+   */
+  class CreateConversionTest extends AbstractConversionTest {
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function newStringVector() {
+      $this->assertConversion(
+        '$r= new util.collections.Vector<lang.types.String>();',
+        '$r= create("new util.collections.Vector<lang.types.String>()");',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
+  }
+?>
