@@ -48,7 +48,8 @@
       ST_PARAMS       = 'parm',
       ST_FUNC_BODY    = 'body',
       ST_WITH         = 'with',
-      ST_FOREACH      = 'forx';
+      ST_FOREACH      = 'forx',
+      ST_CREATE       = 'crea';
     
     const
       SEPARATOR       = '.';
@@ -522,9 +523,27 @@
           }
 
           // create(...); -> ...
+          // create(..., array(a, b)), -> ...(a, b)
           case self::ST_FUNC_BODY.self::T_CREATE: {
             $out.= trim($t[$i+ 2][1], '"\'');
-            $i+= 3; // Swallow "(", string and ")"
+            $i+= 3; // Swallow "(" and string
+            array_unshift($state, self::ST_CREATE);
+            break;
+          }
+          
+          case self::ST_CREATE.')': {
+            array_shift($state);
+            break;
+          }
+
+          case self::ST_CREATE.T_WHITESPACE: {
+            // Swallow
+            break;
+          }
+          
+          case self::ST_CREATE.T_ARRAY: {
+            $brackets= 0;
+            array_unshift($state, self::ST_PARAMS);
             break;
           }
           

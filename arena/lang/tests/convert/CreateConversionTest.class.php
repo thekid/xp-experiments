@@ -25,5 +25,18 @@
         SourceConverter::ST_FUNC_BODY
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function newStringVectorWithArgs() {
+      $this->assertConversion(
+        '$r= new util.collections.Vector<string>("Hello", "World");',
+        '$r= create("new util.collections.Vector<string>", array("Hello", "World"));',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
   }
 ?>
