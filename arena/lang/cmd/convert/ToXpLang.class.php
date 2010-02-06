@@ -3,6 +3,9 @@
  *
  * $Id$
  */
+ 
+  $package= 'cmd.convert';
+ 
   uses(
     'util.cmd.Command',
     'cmd.convert.SourceConverter',
@@ -14,7 +17,7 @@
    * Convert a given class file to XP Language
    *
    */
-  class Convert extends Command {
+  class cmd·convert·ToXpLang extends Command {
     protected $file= '';
     protected $converter= NULL;
     
