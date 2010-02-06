@@ -9,7 +9,7 @@
   uses(
     'io.File',
     'xp.compiler.Compiler',
-    'xp.compiler.emit.oel.Emitter',
+    'xp.compiler.emit.source.Emitter',
     'xp.compiler.diagnostic.DefaultDiagnosticListener',
     'xp.compiler.io.FileSource',
     'xp.compiler.io.FileManager',
