@@ -315,13 +315,13 @@
           }
           
           case self::ST_FUNC.T_STRING: {
+            $brackets= 0;
             if ('__static' === $token[1]) {
-              $i+= 3; // Swallow "(", ")" and WS
-              array_unshift($state, self::ST_FUNC_BODY);
+              $out= rtrim($out, ' ');
+              $i+= 2; // Swallow "(", ")"
               break;
             } 
             
-            $brackets= 0;
             if ('__construct' !== $token[1]) {
               $out.= (isset($meta['return']) ? $meta['return'][0].' ' : 'void ').$token[1];
             } else {
