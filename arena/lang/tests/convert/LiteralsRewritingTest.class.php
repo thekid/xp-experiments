@@ -51,5 +51,18 @@
         SourceConverter::ST_FUNC_BODY
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function insideAnArray() {
+      $this->assertConversion(
+        '$a= [true, false, null];',
+        '$a= array(TRUE, FALSE, NULL);',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
   }
 ?>

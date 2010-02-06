@@ -491,9 +491,11 @@
           }
 
           // TRUE, FALSE and NULL constants
-          case self::ST_FUNC_BODY.self::T_TRUE: 
-          case self::ST_FUNC_BODY.self::T_FALSE: 
-          case self::ST_FUNC_BODY.self::T_NULL: {
+          case in_array(self::ST_FUNC_BODY, $state) && (
+            $token[0] === self::T_TRUE ||
+            $token[0] === self::T_FALSE ||
+            $token[0] === self::T_NULL
+          ): {
             $out.= strtolower($token[1]);
             break;
           }
