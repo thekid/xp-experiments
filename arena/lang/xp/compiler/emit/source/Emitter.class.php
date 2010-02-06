@@ -446,7 +446,7 @@
       // - new Date().toString() to create(new Date()).toString()
       $insertion= array();
       for ($i= 0; $i < $s; $i++) {
-        if ($i < $s- 1 && $chain->elements[$i] instanceof InvocationNode && $chain->elements[$i+ 1] instanceof ArrayAccessNode) {
+        if ($i < $s- 1 && !$chain->elements[$i] instanceof ArrayAccessNode && $chain->elements[$i+ 1] instanceof ArrayAccessNode) {
           $op->append('current(array_slice(');
           $op->mark();
           $insertion[$i]= new xp·compiler·emit·source·Buffer(', ', $op->line);
