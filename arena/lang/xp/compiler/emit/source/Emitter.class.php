@@ -20,6 +20,7 @@
     'xp.compiler.types.CompilationUnitScope',
     'xp.compiler.types.TypeDeclarationScope',
     'xp.compiler.types.MethodScope',
+    'xp.compiler.types.TypeInstance',
     'lang.reflect.Modifiers',
     'util.collections.HashTable'
   );
@@ -332,7 +333,7 @@
       } else if ($type->isMap()) {
         // OK, TODO: Further verification
       } else if ($type->isClass()) {
-        $ptr= $this->resolveType($type);
+        $ptr= new TypeInstance($this->resolveType($type));
         if ($ptr->hasIndexer()) {
           $result= $ptr->getIndexer()->type;
         } else {
@@ -363,7 +364,7 @@
     protected function emitMemberAccess($op, VariableNode $access, TypeName $type) {
       $result= TypeName::$VAR;
       if ($type->isClass()) {
-        $ptr= $this->resolveType($type);
+        $ptr= new TypeInstance($this->resolveType($type));
         if ($ptr->hasField($access->name)) {
           $result= $ptr->getField($access->name)->type;
         } else if ($ptr->hasProperty($access->name)) {
@@ -396,7 +397,7 @@
     protected function emitMemberCall($op, InvocationNode $access, TypeName $type) {
       $result= TypeName::$VAR;
       if ($type->isClass()) {
-        $ptr= $this->resolveType($type);
+        $ptr= new TypeInstance($this->resolveType($type));
         if ($ptr->hasMethod($access->name)) {
           $result= $ptr->getMethod($access->name)->returns;
         } else if ($this->scope[0]->hasExtension($ptr, $access->name)) {
