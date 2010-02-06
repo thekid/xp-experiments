@@ -499,13 +499,13 @@
           }
           
           // Replace concat operator with ~
-          case self::ST_FUNC_BODY.'.': {
+          case in_array(self::ST_FUNC_BODY, $state) && $token[0] === '.': {
             $out.= ' ~ ';
             break;
           }
 
           // Replace object operator with "."
-          case self::ST_FUNC_BODY.T_OBJECT_OPERATOR: {
+          case in_array(self::ST_FUNC_BODY, $state) && $token[0] === T_OBJECT_OPERATOR: {
             $out.= '.';
             break;
           }

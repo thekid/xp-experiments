@@ -90,5 +90,18 @@
         SourceConverter::ST_FUNC_BODY
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function insideAnArray() {
+      $this->assertConversion(
+        '$a= [$this.getMethod("toString")];',
+        '$a= array($this->getMethod("toString"));',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
   }
 ?>

@@ -64,5 +64,18 @@
         SourceConverter::ST_FUNC_BODY
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function insideAnArray() {
+      $this->assertConversion(
+        '$a= ["to" ~ $a];',
+        '$a= array("to".$a);',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
   }
 ?>
