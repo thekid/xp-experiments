@@ -4,24 +4,26 @@
  * $Id$
  */
 
+  $package= 'tests.convert';
+
   uses('tests.convert.AbstractConversionTest');
 
   /**
-   * Tests type modifiers
+   * Tests type declarations
    *
    * @see      xp://tests.convert.AbstractConversionTest
    */
-  class TypeModifiersTest extends AbstractConversionTest {
+  class tests·convert·TypeDeclarationTest extends AbstractConversionTest {
 
     /**
      * Test
      *
      */
     #[@test]
-    public function classType() {
+    public function publicModifierAddedToClass() {
       $this->assertConversion(
-        'public class String { }',
-        'class String { }',
+        'public class Object { }',
+        'class Object { }',
         SourceConverter::ST_NAMESPACE
       );
     }
@@ -31,7 +33,7 @@
      *
      */
     #[@test]
-    public function interfaceType() {
+    public function publicModifierAddedToInterface() {
       $this->assertConversion(
         'public interface Runnable { }',
         'interface Runnable { }',
