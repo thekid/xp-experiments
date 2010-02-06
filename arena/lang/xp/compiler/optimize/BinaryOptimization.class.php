@@ -213,6 +213,16 @@
     }
     
     /**
+     * Unwrap braced expressions
+     *
+     * @param   xp.compiler.ast.Node node
+     * @return  xp.compiler.ast.Node node
+     */
+    protected function unwrap($node) {
+      return $node instanceof BracedExpressionNode ? $node->expression : $node;
+    }
+    
+    /**
      * Optimize a given node
      *
      * @param   xp.compiler.ast.Node in
@@ -221,8 +231,8 @@
      */
     public function optimize(xp·compiler·ast·Node $in, Optimizations $optimizations) {
       if (isset(self::$optimizable[$in->op])) {
-        $lhs= $optimizations->optimize($in->lhs);
-        $rhs= $optimizations->optimize($in->rhs);
+        $lhs= $optimizations->optimize($this->unwrap($in->lhs));
+        $rhs= $optimizations->optimize($this->unwrap($in->rhs));
 
         if ($lhs instanceof Resolveable && $rhs instanceof Resolveable) {
           try {
