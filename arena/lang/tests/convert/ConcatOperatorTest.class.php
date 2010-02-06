@@ -31,6 +31,19 @@
      *
      */
     #[@test]
+    public function concatEqual() {
+      $this->assertConversion(
+        '$a ~= "Hello";',
+        '$a.= "Hello";',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function notInsideStrings() {
       $this->assertConversion(
         '$a= "Hello" ~ "." ~ "World";',

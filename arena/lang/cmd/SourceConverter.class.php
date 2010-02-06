@@ -554,6 +554,11 @@
             break;
           }
 
+          case in_array(self::ST_FUNC_BODY, $state) && $token[0] === T_CONCAT_EQUAL: {
+            $out.= ' ~=';
+            break;
+          }
+
           // Replace object operator with "."
           case in_array(self::ST_FUNC_BODY, $state) && $token[0] === T_OBJECT_OPERATOR: {
             $out.= '.';
