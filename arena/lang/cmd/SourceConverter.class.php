@@ -164,7 +164,7 @@
         
           // Insert namespace declaration after "This class is part of..." file comment
           case self::ST_INITIAL.T_COMMENT: {
-            $out.= $token[1]."\n\npackage ".str_replace('.', self::SEPARATOR, $namespace).';';
+            $out.= $token[1]."\n\npackage ".str_replace('.', self::SEPARATOR, $namespace).';.-%{IMPORTS}%-';
             array_unshift($state, self::ST_NAMESPACE);
             break;
           }
@@ -215,7 +215,7 @@
           
           // class declaration - always use local name here!
           case self::ST_NAMESPACE.T_CLASS: case self::ST_NAMESPACE.T_INTERFACE: {
-            $out.= '-%{IMPORTS}%-public '.$token[1].' ';
+            $out.= 'public '.$token[1].' ';
             $declaration= $this->tokenOf($t[$i+ 2]);
             $out.= (FALSE !== $p= strrpos($declaration[1], '·')) ? substr($declaration[1], $p+ 1) : $declaration[1];
             $i+= 2;
