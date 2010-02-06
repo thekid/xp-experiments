@@ -316,10 +316,13 @@
           
           case self::ST_FUNC.T_STRING: {
             $brackets= 0;
-            if ('__construct' !== $token[1]) {
-              $out.= isset($meta['return']) ? $meta['return'][0].' ' : 'void ';
+            if ('__static' === $token[1]) {
+              $i+= 3; // Swallow "(", ")" and WS
+            } else if ('__construct' !== $token[1]) {
+              $out.= (isset($meta['return']) ? $meta['return'][0].' ' : 'void ').$token[1];
+            } else {
+              $out.= $token[1];
             }
-            $out.= $token[1];
             array_unshift($state, self::ST_FUNC_ARGS);
             $parameter= 0;
             $restriction= NULL;
@@ -572,8 +575,7 @@
             array_shift($state);
             break;
           }
-
-
+  
           // Track function calls
           case in_array(self::ST_FUNC_BODY, $state) && $token[0] === T_STRING: {
             $next= $this->tokenOf($t[$i+ 1]);
@@ -587,7 +589,7 @@
                 $func= new ReflectionFunction($token[1]);
                 $ext= $func->getExtension();
               } catch (ReflectionException $e) {
-                throw new IllegalStateException($e->getMessage());
+                throw new IllegalStateException($e->getMessage().' @'.$state[0]."\n".$out);
               }
               $imported['import native '.strtolower($ext->getName()).'.'.$token[1].';']= TRUE;
             } else {
@@ -629,6 +631,11 @@
             $out.= $token[1];
             break;
           }
+
+          case in_array(self::ST_FUNC_BODY, $state) && $token[0] === T_FUNCTION: {
+            throw new IllegalStateException('Nested function @ '.$state[0]."\n".$out);
+          }
+
           
           default: {
             $out.= str_replace("\n  ", "\n", $token[1]);
