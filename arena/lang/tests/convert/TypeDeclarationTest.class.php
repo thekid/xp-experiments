@@ -40,5 +40,18 @@
         SourceConverter::ST_NAMESPACE
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function fullyQualified() {
+      $this->assertConversion(
+        'public class Name { }',
+        'class fully·qualified·Name { }',
+        SourceConverter::ST_NAMESPACE
+      );
+    }
   }
 ?>
