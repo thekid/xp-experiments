@@ -144,7 +144,7 @@
       $package= substr($qname, 0, $p);
       $namespace= str_replace('.', self::SEPARATOR, $package);
       $class= substr($qname, $p+ 1);
-      $imported= array();
+      $imported= NULL;
       
       // Tokenize file
       $state= array($initial);
@@ -164,7 +164,8 @@
         
           // Insert namespace declaration after "This class is part of..." file comment
           case self::ST_INITIAL.T_COMMENT: {
-            $out.= $token[1]."\n\npackage ".str_replace('.', self::SEPARATOR, $namespace).';.-%{IMPORTS}%-';
+            $out.= $token[1]."\n\npackage ".str_replace('.', self::SEPARATOR, $namespace).";\n\n-%{IMPORTS}%-";
+            $imported= array();
             array_unshift($state, self::ST_NAMESPACE);
             break;
           }
@@ -179,7 +180,7 @@
           case self::ST_NAMESPACE.self::T_USES: {
             $uses= array();
             array_unshift($state, self::ST_USES);
-            $out= rtrim($out)."\n";
+            $out= rtrim($out);
             break;
           }
           
@@ -212,9 +213,17 @@
             array_shift($state);
             break;
           }
+
+          case self::ST_NAMESPACE.T_DOC_COMMENT: {
+            $out= rtrim($out, "\n")."\n".str_replace("\n  ", "\n", $token[1]);
+            break;
+          }
           
           // class declaration - always use local name here!
           case self::ST_NAMESPACE.T_CLASS: case self::ST_NAMESPACE.T_INTERFACE: {
+            if (NULL === $imported) {
+              $out.= '-%{IMPORTS}%-';
+            }
             $out.= 'public '.$token[1].' ';
             $declaration= $this->tokenOf($t[$i+ 2]);
             $out.= (FALSE !== $p= strrpos($declaration[1], '·')) ? substr($declaration[1], $p+ 1) : $declaration[1];
@@ -579,7 +588,7 @@
               } catch (ReflectionException $e) {
                 throw new IllegalStateException($e->getMessage());
               }
-              $imported[]= 'import native '.strtolower($ext->getName()).'.'.$token[1].';';
+              $imported['import native '.strtolower($ext->getName()).'.'.$token[1].';']= TRUE;
             } else {
               $out.= $token[1];
             }
@@ -627,7 +636,7 @@
       }
       
       if ($imported) {
-        $replace= implode("\n", $imported)."\n\n";
+        $replace= implode("\n", array_keys($imported))."\n\n";
       } else {
         $replace= '';
       }
