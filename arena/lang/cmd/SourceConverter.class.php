@@ -4,12 +4,12 @@
  * $Id$ 
  */
 
+  uses('util.collections.HashTable');
+
   /**
    * (Insert class' description here)
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @test     xp://tests.convert.**
    */
   class SourceConverter extends Object {
     public
