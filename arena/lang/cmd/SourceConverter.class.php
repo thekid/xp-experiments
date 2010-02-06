@@ -416,17 +416,33 @@
           }
           
           // Anonymous class creation - newinstance('fully.qualified', array(...), '{ source }');
-          case self::ST_FUNC_BODY.self::T_NEWINSTANCE:  {
-            $out.= self::SEPARATOR.'newinstance('.$t[$i+ 2][1];
+          // -> new fully.qualified(...) { rewritten-source };
+          case self::ST_FUNC_BODY.self::T_NEWINSTANCE: {
+            $out.= 'new '.trim($t[$i+ 2][1], '"\'');
             $i+= 2;
             array_unshift($state, self::ST_ANONYMOUS);
             break;
           }
           
+          case self::ST_ANONYMOUS.',': case self::ST_ANONYMOUS.T_WHITESPACE: {
+            // Swallow
+            break;
+          }
+          
+          case self::ST_ANONYMOUS.T_ARRAY: {
+            $brackets= 0;
+            array_unshift($state, self::ST_FUNC_ARGS);
+            break;
+          }
+          
           case self::ST_ANONYMOUS.T_CONSTANT_ENCAPSED_STRING: {
             $quote= $token[1]{0};
-            $converted= $this->convert('', token_get_all('<?php '.trim($token[1], $quote).' ?>'), self::ST_DECL);
-            $out.= $quote.substr($converted, 6, -3).$quote;
+            $out.= ' '.$this->convert(
+              '', 
+              array_slice(token_get_all('<?php '.trim($token[1], $quote).'?>'), 1, -1),
+              self::ST_DECL
+            );
+            $i++;   // Swallow ")"
             array_shift($state);
             break;
           }
