@@ -256,5 +256,30 @@
         public bool equals(Generic? $cmp) { }
       }'));
     }
+
+    /**
+     * Test method declaration
+     *
+     */
+    #[@test]
+    public function mapMethodWithAnnotations() {
+      $this->assertEquals(array(new MethodNode(array(
+        'modifiers'  => 0,
+        'annotations'=> array(
+          new AnnotationNode(array(
+            'type'        => 'test',
+            'parameters'  => array()
+          ))
+        ),
+        'name'       => 'map',
+        'returns'    => new TypeName('[int:string]'),
+        'arguments'  => array(), 
+        'throws'     => NULL,
+        'body'       => array(),
+        'extension'  => NULL
+      ))), $this->parse('class Any { 
+        [@test] [int:string] map() { }
+      }'));
+    }
   }
 ?>

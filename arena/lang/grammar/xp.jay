@@ -116,6 +116,7 @@
 
 %token T_DOTS 330
 %token T_AS 331
+%token T_THIS 332
 
 %token T_VARIABLE 340
 %token T_RETURN 341
@@ -323,7 +324,7 @@ field:
 
 property:
     T_WORD { $$= $yyLex->create(new PropertyNode(array('name' => $1))); }
-  | T_WORD '[' arguments ']' { $$= $yyLex->create(new IndexerNode(array('parameters' => $3))); }
+  | T_THIS '[' arguments ']' { $$= $yyLex->create(new IndexerNode(array('parameters' => $3))); }
 ;
 
 getsets:
@@ -437,7 +438,7 @@ methodbody:
 
 extension_arguments_opt:
     /* empty */       { $$= array(NULL, NULL); }
-  | T_WORD arguments  { $$= array($2, $2[0]['type']); }
+  | T_THIS arguments  { $$= array($2, $2[0]['type']); }
   | arguments         { $$= array($1, NULL); }
 ;
 
@@ -651,17 +652,22 @@ expression_opt:
 ;
 
 instancecreation:
-    typeref '(' expressionlist_opt ')' classbody_opt {
+    typename '(' expressionlist_opt ')' classbody_opt {
       $$= new InstanceCreationNode();
       $$->type= $1;
       $$->parameters= $3;
       $5 && $$->body= $5;
     }
-  | qualifiedname '[' ']' '{' expressionlist_opt '}' {
+  | arraytype '{' expressionlist_opt '}' {
       $$= new ArrayNode();
-      $$->type= new TypeName($1);
-      $$->values= $5;
-  }
+      $$->type= new TypeName(rtrim($1->name, '[]'));
+      $$->values= $3;
+    }
+  | maptype '{' mapliteral_opt '}' {
+      $$= new MapNode();
+      $$->type= $1;
+      $$->elements= $3;
+    }
 ;
 
 staticmember:
@@ -822,19 +828,18 @@ literal:
 ;
 
 map_or_list:
-    /* empty */ { 
-      $$= $yyLex->create(new ArrayNode(array('values' => NULL)));
-    }
-  | ':' {
-      $$= $yyLex->create(new MapNode(array('elements' => NULL)));
-    }
-  | expressionlist {
+    expressionlist_opt {
       $$= $yyLex->create(new ArrayNode(array('values' => $1)));
     }
-  | mapliteral {
+  | mapliteral_opt {
       $$= $yyLex->create(new MapNode(array('elements' => $1)));
     }
 ;
+
+mapliteral_opt:
+    ':' { $$= NULL; }
+  | mapliteral
+; 
 
 mapliteral:
     mapentry { $$= array($1); }
@@ -938,6 +943,7 @@ member:
 typeref:
     typename
   | arraytype
+  | maptype
 ;
 
 typename:
@@ -947,6 +953,10 @@ typename:
 
 arraytype:
     qualifiedname '[' ']' { $$= new TypeName($1.'[]'); }
+;
+
+maptype:
+    '[' qualifiedname ':' qualifiedname ']' { $$= new TypeName('['.$2.':'.$4.']'); }
 ;
 
 typeparameters:

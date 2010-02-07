@@ -55,6 +55,7 @@
         'return'        => xp搾ompiler新yntax暖p感arser::T_RETURN,
         'new'           => xp搾ompiler新yntax暖p感arser::T_NEW,
         'as'            => xp搾ompiler新yntax暖p感arser::T_AS,
+        'this'          => xp搾ompiler新yntax暖p感arser::T_THIS,
         
         'for'           => xp搾ompiler新yntax暖p感arser::T_FOR,
         'foreach'       => xp搾ompiler新yntax暖p感arser::T_FOREACH,
