@@ -4,14 +4,13 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.TypeMemberNode');
 
   /**
-   * (Insert class' description here)
+   * Represents a field
    *
-   * @purpose  purpose
    */
-  class FieldNode extends xp·compiler·ast·Node {
+  class FieldNode extends TypeMemberNode {
     
   }
 ?>

@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.TypeMemberNode');
 
   /**
    * Abstract base class for all routines
@@ -13,14 +13,8 @@
    * @see   xp://xp.compiler.ast.ConstructorNode
    * @see   xp://xp.compiler.ast.OperatorNode
    */
-  abstract class RoutineNode extends xp·compiler·ast·Node {
+  abstract class RoutineNode extends TypeMemberNode {
     public $comment= NULL;
     
-    /**
-     * Returns this routine's name
-     *
-     * @return  string
-     */
-    public abstract function getName();
   }
 ?>
