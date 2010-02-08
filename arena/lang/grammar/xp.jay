@@ -519,9 +519,9 @@ statement:
       $1->condition= $6;
       $1->statements= $10;
     }
-  | T_FOREACH { $1= $yyLex->create(new ForeachNode()); } '(' T_VARIABLE T_IN expression ')' block {
+  | T_FOREACH { $1= $yyLex->create(new ForeachNode()); } '(' foreachvars T_IN expression ')' block {
       $1->expression= $6;
-      $1->assignment= array('value' => $4);
+      $1->assignment= $4;
       $1->statements= $8;
     }
   | T_WHILE { $1= $yyLex->create(new WhileNode()); } '(' expression ')' block {
@@ -561,6 +561,11 @@ withassignment:
     T_VARIABLE '=' expression {
       $$= $yyLex->create(new AssignmentNode(array('free' => TRUE, 'op' => '=', 'variable' => new VariableNode($1), 'expression' => $3))); 
     }
+;
+
+foreachvars:
+    T_VARIABLE  { $$= array('value' => $1); }
+  | T_VARIABLE ',' T_VARIABLE { $$= array('key' => $1, 'value' => $3); }
 ;
 
 cases_opt:

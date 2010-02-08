@@ -56,6 +56,21 @@
     }
 
     /**
+     * Test foreach loop
+     *
+     */
+    #[@test]
+    public function foreachLoopWithKey() {
+      $this->assertEquals(array(new ForeachNode(array(
+        'expression'    => new VariableNode('list'),
+        'assignment'    => array('key' => 'key', 'value' => 'value'),
+        'statements'    => NULL, 
+      ))), $this->parse('
+        foreach ($key, $value in $list) { }
+      '));
+    }
+
+    /**
      * Test while loop
      *
      */
