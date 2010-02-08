@@ -50,7 +50,8 @@
       ST_WITH         = 'with',
       ST_FOREACH      = 'forx',
       ST_CREATE       = 'crea',
-      ST_ANNOTATIONS  = 'anno';
+      ST_ANNOTATIONS  = 'anno',
+      ST_FIELD_INIT   = 'init';
     
     const
       SEPARATOR       = '.';
@@ -147,7 +148,8 @@
       $namespace= str_replace('.', self::SEPARATOR, $package);
       $class= substr($qname, $p+ 1);
       $imported= NULL;
-      
+      $modifiers= array();
+
       // Tokenize file
       $state= array($initial);
       $imports= array();
@@ -275,9 +277,56 @@
             break;
           }
           
-          // Member variables
+          // Member variables. public $a, $b => public var $a; public var $b;
+          case self::ST_DECL.T_PUBLIC:
+          case self::ST_DECL.T_PROTECTED:
+          case self::ST_DECL.T_PRIVATE:
+          case self::ST_DECL.T_STATIC:
+          case self::ST_DECL.T_ABSTRACT:
+          case self::ST_DECL.T_FINAL: {
+            $out.= $token[1];
+            $modifiers[]= $token[1];
+            break;
+          }
+          
           case self::ST_DECL.T_VARIABLE: {
             $out.= 'var '.$token[1];
+            break;
+          }
+
+          case self::ST_DECL.'=': {
+            $out.= '=';
+            array_unshift($state, self::ST_FIELD_INIT);
+            break;
+          }
+          
+          case self::ST_FIELD_INIT.T_ARRAY: {
+            array_unshift($brackets, 0);
+            array_unshift($state, self::ST_ARRAY);
+            $out.= '[';
+            break;
+          }
+          
+          case self::ST_FIELD_INIT.',': {
+            array_shift($state);
+            $out.= ";\n  ".implode(' ', $modifiers);
+            break;
+          }
+
+          case self::ST_FIELD_INIT.';': {
+            array_shift($state);
+            $out.= ';';
+            break;
+          }
+
+          case self::ST_DECL.',': {
+            $out.= ";\n  ".implode(' ', $modifiers);
+            break;
+          }
+
+          case self::ST_DECL.';': {
+            $out.= ';';
+            $modifiers= array();
             break;
           }
           
@@ -546,7 +595,7 @@
           }
 
           // TRUE, FALSE and NULL constants
-          case in_array(self::ST_FUNC_BODY, $state) && (
+          case (in_array(self::ST_FUNC_BODY, $state)  || in_array(self::ST_FIELD_INIT, $state)) && (
             $token[0] === self::T_TRUE ||
             $token[0] === self::T_FALSE ||
             $token[0] === self::T_NULL
