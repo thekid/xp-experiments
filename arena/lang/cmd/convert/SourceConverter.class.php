@@ -578,6 +578,7 @@
           }
           
           // foreach ($a as $v) -> foreach ($v in $a)
+          // foreach ($m as $k => $v) -> foreach ($k, $v in $m)
           case self::ST_FUNC_BODY.T_FOREACH: {
             $buf= $out;
             $out= '';
@@ -587,10 +588,14 @@
           }
           
           case self::ST_FOREACH.T_AS: {
-            $v= $t[$i+ 2];
-            $out= $buf.'foreach ('.$v[1].' in '.rtrim($out, ' ');
+            if (T_DOUBLE_ARROW === $t[$i+ 4][0]) {
+              $out= $buf.'foreach ('.$t[$i+ 2][1].', '.$t[$i+ 6][1].' in '.rtrim($out, ' ');
+              $i+= 6;
+            } else {
+              $out= $buf.'foreach ('.$t[$i+ 2][1].' in '.rtrim($out, ' ');
+              $i+= 2;
+            }
             array_shift($state);
-            $i+= 2;
             break;
           }
 

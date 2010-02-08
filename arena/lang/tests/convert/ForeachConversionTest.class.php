@@ -25,5 +25,18 @@
         SourceConverter::ST_FUNC_BODY
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function asKeyValue() {
+      $this->assertConversion(
+        'foreach ($k, $v in $m) { /* ... */ }',
+        'foreach ($m as $k => $v) { /* ... */ }',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
   }
 ?>
