@@ -17,7 +17,7 @@ public class Assert {
    * Assert a specific exception is thrown from the given block
    *
    */
-  protected static void exception(lang.XPClass $class, function<void> $block) {
+  protected static void exception(lang.XPClass $class, var $block) {
     try {
       call_user_func($block);   // FIXME: $bock() raises a parse error
       Console::writeLine('FAIL no exception raised');
@@ -35,15 +35,15 @@ public class Assert {
    *
    */
   public static void main(string[] $args) {
-    Assert::exception(lang.IllegalArgumentException::class, () => {
+    Assert::exception(lang.IllegalArgumentException::class, { => {
       throw new IllegalArgumentException('Message');
-    });
-    Assert::exception(lang.IllegalArgumentException::class, () => {
+    }});
+    Assert::exception(lang.IllegalArgumentException::class, { => {
       throw new IllegalStateException('Message');
-    });
-    Assert::exception(lang.IllegalArgumentException::class, () => {
+    }});
+    Assert::exception(lang.IllegalArgumentException::class, { => {
       // NOOP
-    });
+    }});
   }
 
 }
