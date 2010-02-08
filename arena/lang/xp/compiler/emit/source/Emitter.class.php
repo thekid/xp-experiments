@@ -1261,6 +1261,7 @@
           'returns'     => TypeName::$VAR
         ))
       ));
+      $decl->synthetic= TRUE;
       $this->scope[0]->declarations[]= $decl;
       
       // Finally emit array(new [UNIQUE]([CAPTURE]), "method")
