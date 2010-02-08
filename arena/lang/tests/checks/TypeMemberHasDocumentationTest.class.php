@@ -59,5 +59,23 @@
         $this->verify($m, new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Runner')))
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function methodsInSyntheticClassesNotChecked() {
+      $c= new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Lambda··4b70075bd9164'));
+      $c->synthetic= TRUE;
+      $m= new MethodNode(array(
+        'name'        => 'run',
+        'modifiers'   => MODIFIER_ABSTRACT,
+        'returns'     => new TypeName('void'),
+        'parameters'  => array(),
+        'body'        => array()
+      ));
+      $this->assertNull($this->verify($m, $c));
+    }
   }
 ?>
