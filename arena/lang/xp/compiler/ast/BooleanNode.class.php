@@ -13,15 +13,6 @@
   class BooleanNode extends ConstantValueNode {
 
     /**
-     * Constructor
-     *
-     * @param   var value
-     */
-    public function __construct($value= NULL) {
-      $this->value= $value;
-    }
-
-    /**
      * Returns a hashcode
      *
      * @return  string
