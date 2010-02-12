@@ -474,8 +474,9 @@
           
           case self::ST_FUNC_ARGS.T_VARIABLE: {
             $primitives= array('string', 'int', 'double', 'bool', 'var');
+            $rename= array('mixed' => 'var');
             
-            $type= isset($meta['param'][$parameter]) ? $meta['param'][$parameter] : 'var';
+            $type= isset($meta['param'][$parameter]) ? strtr($meta['param'][$parameter], $rename) : 'var';
             if (!in_array($type, $primitives) && !$restriction) {
               $type.= '?';
             }

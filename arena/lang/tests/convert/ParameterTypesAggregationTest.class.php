@@ -101,5 +101,43 @@
         SourceConverter::ST_DECL
       );
     }
+
+    /**
+     * Test "mixed" parameter type becomes "var"
+     *
+     */
+    #[@test]
+    public function mixedBecomesVar() {
+      $this->assertConversion(
+        "/**\n".
+        " * @param   mixed a\n".
+        " */\n".
+        "public void test(var \$a) { /* ... */ }",
+        "/**\n".
+        " * @param   mixed a\n".
+        " */\n".
+        "public function test(\$a) { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
+
+    /**
+     * Test "mixed" parameter type becomes "var"
+     *
+     */
+    #[@test]
+    public function mixedArrayBecomesVar() {
+      $this->assertConversion(
+        "/**\n".
+        " * @param   mixed[] a\n".
+        " */\n".
+        "public void test(var[]? \$a) { /* ... */ }",
+        "/**\n".
+        " * @param   mixed[] a\n".
+        " */\n".
+        "public function test(\$a) { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
   }
 ?>
