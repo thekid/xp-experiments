@@ -82,5 +82,24 @@
         SourceConverter::ST_DECL
       );
     }
+
+    /**
+     * Test lang.Generic parameter type
+     *
+     */
+    #[@test]
+    public function referenceOperatorRemoved() {
+      $this->assertConversion(
+        "/**\n".
+        " * @param   &lang.Generic a\n".
+        " */\n".
+        "public void test(lang.Generic \$a) { /* ... */ }",
+        "/**\n".
+        " * @param   &lang.Generic a\n".
+        " */\n".
+        "public function test(Generic \$a) { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
   }
 ?>

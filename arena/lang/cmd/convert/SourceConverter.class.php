@@ -7,7 +7,7 @@
   uses('util.collections.HashTable');
 
   /**
-   * (Insert class' description here)
+   * Converts sourcecode to XP Language
    *
    * @test     xp://tests.convert.**
    */
@@ -109,6 +109,7 @@
      * @return  string in colon-notation (package::Name)
      */
     protected function mapName($qname, $namespace= NULL, array $imports= array(), $context= '?') {
+      $qname= ltrim($qname, '&');
       if (NULL === ($mapped= $this->nameMap[$qname])) {
 
         // If the searched class resides in the same namespace, it does not
@@ -478,7 +479,7 @@
             if (!in_array($type, $primitives) && !$restriction) {
               $type.= '?';
             }
-            $out.= $type.' '.$token[1];
+            $out.= $this->mapName($type, $namespace, $imports, $qname).' '.$token[1];
             $parameter++;
             break;
           }
