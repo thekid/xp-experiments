@@ -666,7 +666,8 @@
               } catch (ReflectionException $e) {
                 throw new IllegalStateException($e->getMessage().' @'.$state[0]."\n".$out);
               }
-              $imported['import native '.strtolower($ext->getName()).'.'.$token[1].';']= TRUE;
+              $extension= $ext ? strtolower($ext->getName()) : 'core';
+              $imported['import native '.$extension.'.'.$token[1].';']= TRUE;
             } else {
               $out.= $token[1];
             }
