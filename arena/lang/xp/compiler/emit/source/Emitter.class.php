@@ -557,7 +557,7 @@
         $this->emitOne($op, $un->expression);
         return;
       } else if ('-' === $un->op) {
-        $op->append('!');
+        $op->append('-');
         $this->emitOne($op, $un->expression);
         return;
       } else if (!$this->isWriteable($un->expression)) {
