@@ -1397,8 +1397,10 @@
      * @param   string qualified
      */
     protected function registerClass($op, $name, $qualified) {
-      foreach ($this->metadata[0]['EXT'] as $method => $for) {   // HACK, this should be accessible in scope
-        $op->append('xp::$registry[\''.$for.'::'.$method.'\']= new ReflectionMethod(\''.$name.'\', \''.$method.'\');');
+      if (isset($this->metadata[0]['EXT'])) {     // HACK, this should be accessible in scope
+        foreach ($this->metadata[0]['EXT'] as $method => $for) {
+          $op->append('xp::$registry[\''.$for.'::'.$method.'\']= new ReflectionMethod(\''.$name.'\', \''.$method.'\');');
+        }
       }
       unset($this->metadata[0]['EXT']);
       $op->append('xp::$registry[\'class.'.$name.'\']= \''.$qualified.'\';');
