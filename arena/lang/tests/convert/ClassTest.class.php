@@ -99,5 +99,16 @@
     public function constructorRewriting() {
       $this->assertConversion('lang.String');
     }
+
+    /**
+     * Test fully qualifying of class names
+     *
+     */
+    #[@test]
+    public function notUsedClassesFullyQualified() {
+      $this->fixture->nameMap['Object']= new String('lang.Object');
+      $this->fixture->nameMap['Date']= new String('util.Date');
+      $this->assertConversion('demo.Application');
+    }
   }
 ?>
