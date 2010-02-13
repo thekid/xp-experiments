@@ -215,7 +215,9 @@
           
           case self::ST_USES.';': {
             foreach ($uses as $fqcn) {
-              $imported['import '.$fqcn.';']= TRUE;
+              if ($package !== substr($fqcn, 0, strrpos($fqcn, '.'))) {
+                $imported['import '.$fqcn.';']= TRUE;
+              }
             }
             $uses= array();
             array_shift($state);
@@ -229,7 +231,7 @@
           
           // class declaration - always use local name here!
           case self::ST_NAMESPACE.T_CLASS: case self::ST_NAMESPACE.T_INTERFACE: {
-            if (NULL === $imported) {
+            if (!strstr($out, '-%{IMPORTS}%-')) {
               $out.= '-%{IMPORTS}%-';
             }
             $out.= 'public '.$token[1].' ';
@@ -737,7 +739,7 @@
           }
         }
       }
-      
+
       if ($imported) {
         $replace= implode("\n", array_keys($imported))."\n\n";
       } else {

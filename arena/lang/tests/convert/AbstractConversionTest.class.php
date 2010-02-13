@@ -42,11 +42,12 @@
      * @param   string src
      * @param   string src
      * @param   string state
+     * @param   string qname defaults to unittest name
      * @throws  unittest.AssertionFailedError
      */
-    protected function assertConversion($expect, $src, $state) {
+    protected function assertConversion($expect, $src, $state, $qname= NULL) {
       $this->assertEquals($expect, $this->fixture->convert(
-        $this->name, 
+        $qname ? $qname : $this->name, 
         array_slice(token_get_all('<?php '.$src.'?>'), 1, -1), 
         $state
       ));
