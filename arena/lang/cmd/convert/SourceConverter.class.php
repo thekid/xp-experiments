@@ -215,7 +215,7 @@
           
           case self::ST_USES.';': {
             foreach ($uses as $fqcn) {
-              if ($package !== substr($fqcn, 0, strrpos($fqcn, '.'))) {
+              if (!in_array(substr($fqcn, 0, strrpos($fqcn, '.')), array($package, 'lang'))) {
                 $imported['import '.$fqcn.';']= TRUE;
               }
             }

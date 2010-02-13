@@ -40,5 +40,19 @@
         'util.DateUtil'
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function noLangImport() {
+      $this->assertConversion("\n\n".
+        "public class DateUtil { }",
+        "uses('lang.Runtime');\n\nclass DateUtil { }",
+        SourceConverter::ST_NAMESPACE,
+        'util.DateUtil'
+      );
+    }
   }
 ?>
