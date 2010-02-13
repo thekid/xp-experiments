@@ -126,7 +126,7 @@
       if (isset($imports[(string)$mapped])) {
         return $imports[(string)$mapped]; 
       } else if (FALSE !== ($p= strrpos($mapped, self::SEPARATOR)) && $namespace == substr($mapped, 0, $p)) {
-        return substr($mapped, $p+ 2);
+        return substr($mapped, $p+ 1);
       } else {
         return $mapped;
       }

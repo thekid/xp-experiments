@@ -108,6 +108,7 @@
     public function notUsedClassesFullyQualified() {
       $this->fixture->nameMap['Object']= new String('lang.Object');
       $this->fixture->nameMap['Date']= new String('util.Date');
+      $this->fixture->nameMap['Help']= new String('demo.Help');
       $this->assertConversion('demo.Application');
     }
   }

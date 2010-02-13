@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('demo.Help');
+
   /**
    * Application
    *
@@ -18,6 +20,7 @@
     public static function main($args) {
       $begin= new Date();
       $end= Date::now();
+      $help= new Help();
     }
   }
 ?>
