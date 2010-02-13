@@ -3,6 +3,8 @@
  * $Id$
  */
 
+package demo;
+
 import native standard.array_keys;
 import static util.cmd.Console.*;
 

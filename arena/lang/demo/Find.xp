@@ -3,6 +3,8 @@
  * $Id$ 
  */
 
+package demo;
+
 import io.collections.IOCollection;
 import io.collections.FileCollection;
 import io.collections.iterate.*;

@@ -3,6 +3,8 @@
  * $Id$
  */
 
+package demo;
+
 import util.Comparator;
 import static util.cmd.Console.writeLine;
 import native standard.*;

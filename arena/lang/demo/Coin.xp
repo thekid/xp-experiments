@@ -3,6 +3,8 @@
  * $Id$
  */
 
+package demo;
+
 /**
  * Coin enumeration. Shows off:
  * 

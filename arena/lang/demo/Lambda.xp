@@ -3,6 +3,8 @@
  * $Id$ 
  */
 
+package demo;
+
 import native standard.call_user_func;
 import native standard.strstr;
 

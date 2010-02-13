@@ -3,6 +3,8 @@
  * $Id$
  */
 
+package demo;
+
 /**
  * Operation demo. Shows off
  *

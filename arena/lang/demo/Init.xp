@@ -3,6 +3,8 @@
  * $Id$
  */
 
+package demo;
+
 import lang.types.ArrayList;
 import lang.Iterable;
 import util.cmd.Console;

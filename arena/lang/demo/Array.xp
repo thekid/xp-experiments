@@ -3,6 +3,8 @@
  * $Id$
  */
 
+package demo;
+
 import lang.Delegate;
 
 /**

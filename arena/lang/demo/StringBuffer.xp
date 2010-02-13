@@ -3,6 +3,8 @@
  * $Id$
  */
 
+package demo;
+
 import native iconv.*;
 import native standard.implode;
 import native standard.str_split;

@@ -3,6 +3,8 @@
  * $Id$ 
  */
 
+package demo;
+
 import util.cmd.Console;
 
 import native standard.call_user_func;

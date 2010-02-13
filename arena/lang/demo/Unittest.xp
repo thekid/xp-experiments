@@ -3,6 +3,8 @@
  * $Id$
  */
 
+package demo;
+
 import unittest.AssertionFailedError;
 import lang.types.Integer;
 import util.cmd.Console;
