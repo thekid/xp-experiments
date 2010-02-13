@@ -34,3 +34,6 @@ test:
 	@echo "---> Running tests"
 	unittest tests.** $(FLAGS)
 	@echo "===> Done, exit code $$?"
+
+namemap:
+	xp cmd.convert.NameMap | sort | uniq > cmd/convert/name.map
