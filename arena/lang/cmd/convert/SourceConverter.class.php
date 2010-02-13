@@ -402,11 +402,11 @@
           case self::ST_FUNC.'{': {
             array_unshift($brackets, 0);
             if (isset($meta['throws'])) {
-              $throws= '';
+              $throws= array();
               foreach ($meta['throws'] as $exception) {
-                $throws.= ', '.$this->mapName($exception, $namespace, $imports, $qname);
+                $throws[$this->mapName($exception, $namespace, $imports, $qname)]= TRUE;
               }
-              $out.= ' throws '.substr($throws, 2);
+              $out.= ' throws '.implode(', ', array_keys($throws));
             }
             $out.= ' {';
             array_shift($state);

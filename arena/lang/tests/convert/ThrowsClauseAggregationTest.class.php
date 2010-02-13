@@ -65,5 +65,28 @@
         SourceConverter::ST_DECL
       );
     }
+ 
+    /**
+     * Test multiple throws
+     *
+     */
+    #[@test]
+    public function thrownExceptionsAreUniqued() {
+      $this->assertConversion(
+        "/**\n".
+        " * @throws   lang.IllegalArgumentException in case of an error\n".
+        " * @throws   lang.IllegalStateException if not connected\n".
+        " * @throws   lang.IllegalStateException if disconnected\n".
+        " */\n".
+        "public void test() throws lang.IllegalArgumentException, lang.IllegalStateException { /* ... */ }",
+        "/**\n".
+        " * @throws   lang.IllegalArgumentException in case of an error\n".
+        " * @throws   lang.IllegalStateException if not connected\n".
+        " * @throws   lang.IllegalStateException if disconnected\n".
+        " */\n".
+        "public function test() { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
   }
 ?>
