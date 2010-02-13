@@ -10,7 +10,9 @@
     'util.cmd.Command',
     'cmd.convert.SourceConverter',
     'io.File',
-    'io.FileUtil'
+    'io.FileUtil',
+    'io.streams.TextReader',
+    'io.streams.InputStream'
   );
 
   /**
@@ -38,6 +40,16 @@
     public function setInput($file) {
       $this->file= new File($file);
     }
+
+    /**
+     * Sets additional name map to load
+     *
+     * @param   string file
+     */
+    #[@arg]
+    public function setNameMap($file= NULL) {
+      $file && $this->loadNameMap(create(new File($file))->getInputStream());
+    }
     
     /**
      * Determine class
@@ -61,12 +73,31 @@
       }
       throw new IllegalArgumentException('Cannot determine class name from '.$file->toString());
     }
+    
+    /**
+     * Loads name map
+     *
+     * @param   io.streams.InputStream
+     * @return  int
+     */
+    protected function loadNameMap(InputStream $i) {
+      $r= new TextReader($i);
+      $mappings= 0;
+      while (NULL !== ($line= $r->readLine())) {
+        sscanf($line, '%[^=]=%s', $name, $qualified);
+        $this->converter->nameMap[$name]= new String($qualified);
+        $mappings++;
+      }
+      $r->close();
+      return $mappings;
+    }
 
     /**
      * Main runner method
      *
      */
     public function run() {
+      $this->loadNameMap($this->getClass()->getPackage()->getResourceAsStream('name.map')->getInputStream());
       try {
         $this->out->writeLine($this->converter->convert(
           $this->classNameOf($this->file), 
