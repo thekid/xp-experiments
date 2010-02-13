@@ -676,6 +676,7 @@
           
           // Arrays
           case self::ST_ANNOTATIONS.T_ARRAY:
+          case self::ST_FOREACH.T_ARRAY:
           case self::ST_FUNC_ARGS.T_ARRAY: 
           case self::ST_FUNC_BODY.T_ARRAY: {
             array_unshift($brackets, 0);
