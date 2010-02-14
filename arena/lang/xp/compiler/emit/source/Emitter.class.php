@@ -447,8 +447,6 @@
       // - $a.getMethods()[2] to current(array_slice($a.getMethods(), 2, 1))
       // - T::asList()[2] to current(array_slice(T::asList()), 2, 1)
       // - new int[]{5, 6, 7}[2] to current(array_slice(array(5, 6, 7), 2, 1))
-      // - new Date().toString() to create(new Date()).toString()
-      // - (<expr>).toString to create(<expr>).toString()
       $insertion= array();
       for ($i= 0; $i < $s; $i++) {
         if ($i < $s- 1 && $chain->elements[$i+ 1] instanceof ArrayAccessNode && (
@@ -463,18 +461,23 @@
           $this->emitOne($insertion[$i], $chain->elements[$i+ 1]->offset);
           $insertion[$i]->append(', 1))');
           $chain->elements[$i+ 1]= new NoopNode();
-        } else if ($chain->elements[$i] instanceof InstanceCreationNode) {
-          $op->append('create(');
-          $insertion[$i]= new xp·compiler·emit·source·Buffer(')', $op->line);
-        } else if ($chain->elements[$i] instanceof BracedExpressionNode) {
-          $op->append('create(');
-          $chain->elements[$i]= $chain->elements[$i]->expression;
-          $insertion[$i]= new xp·compiler·emit·source·Buffer(')', $op->line);
         }
       }
-    
-      // Emit first node
-      $this->emitOne($op, $chain->elements[0]);
+      
+      // Emit first node, rewriting for unsupported syntax
+      // - new Date().toString() to create(new Date()).toString()
+      // - (<expr>).toString to create(<expr>).toString()
+      if ($chain->elements[0] instanceof InstanceCreationNode) {
+        $op->append('create(');
+        $this->emitOne($op, $chain->elements[0]);
+        $op->append(')');
+      } else if ($chain->elements[0] instanceof BracedExpressionNode) {
+        $op->append('create(');
+        $this->emitOne($op, $chain->elements[0]->expression);
+        $op->append(')');
+      } else {
+        $this->emitOne($op, $chain->elements[0]);
+      }
       isset($insertion[0]) && $op->append($insertion[0]);
       
       // Emit chain members
