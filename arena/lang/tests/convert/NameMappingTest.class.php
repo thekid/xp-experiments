@@ -44,6 +44,15 @@
     }
 
     /**
+     * Test "xp"
+     *
+     */
+    #[@test]
+    public function xpClass() {
+      $this->assertEquals('xp', $this->fixture->mapName('xp'));
+    }
+
+    /**
      * Test "lang.Object"
      *
      */

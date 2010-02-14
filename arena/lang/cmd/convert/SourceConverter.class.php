@@ -12,8 +12,8 @@
    * @test     xp://tests.convert.**
    */
   class SourceConverter extends Object {
-    public
-      $nameMap       = NULL;
+    public $nameMap= NULL;
+    public static $primitives= array('string', 'int', 'double', 'bool', 'var', 'void');
 
     // XP tokens
     const
@@ -53,9 +53,6 @@
       ST_ANNOTATIONS  = 'anno',
       ST_FIELD_INIT   = 'init';
     
-    const
-      SEPARATOR       = '.';
-
     /**
      * Creates name map
      *
@@ -103,33 +100,48 @@
      * Maps a name to its fully qualified name
      *
      * @param   string qname in dot-notation (package.Name)
-     * @param   string namespace default NULL in colon-notation
+     * @param   string package default NULL in colon-notation
      * @param   array<string, bool> imports
-     * @param   string context
-     * @return  string in colon-notation (package::Name)
+     * @return  string in dot-notation (package.Name)
      */
-    protected function mapName($qname, $namespace= NULL, array $imports= array(), $context= '?') {
+    public function mapName($qname, $package= NULL, array $imports= array()) {
       $qname= ltrim($qname, '&');
-      if (NULL === ($mapped= $this->nameMap[$qname])) {
-
-        // If the searched class resides in the same namespace, it does not
-        // need to be fully qualified or mapped, so check for this
-        $search= ($namespace !== NULL ? str_replace(self::SEPARATOR, '.', $namespace).'.' : '').$qname;
-        if (!ClassLoader::getDefault()->findClass($search) instanceof IClassLoader) {
-          return $qname;
-          // throw new IllegalStateException('*** No mapping for '.$qname.' (current namespace: '.$namespace.', class= '.$context.')');
-        }
+      $lookup= rtrim($qname, '?[]');
+      $spec= substr($qname, strlen($lookup));
+      
+      // Check for keywords, primitives or arrays thereof
+      if ('self' === $lookup || 'parent' === $qname || 'xp' === $qname || in_array($lookup, self::$primitives)) {
         return $qname;
       }
-
-      // Return local name if mapped name is in imports or current namespace
-      if (isset($imports[(string)$mapped])) {
-        return $imports[(string)$mapped]; 
-      } else if (FALSE !== ($p= strrpos($mapped, self::SEPARATOR)) && $namespace == substr($mapped, 0, $p)) {
-        return substr($mapped, $p+ 1);
+      
+      // Fully qualify name if not already qualified
+      if (FALSE !== ($p= strrpos($lookup, '.'))) {
+        // Already qualified
+      } else if (NULL !== ($mapped= $this->nameMap[$lookup])) {
+        $lookup= (string)$mapped;
+        $p= strrpos($lookup, '.');
       } else {
-        return $mapped;
+        $this->warn(new IllegalStateException('Cannot qualify name "'.$qname.'", using as-is'));
+        $p= -1;
       }
+      $local= substr($lookup, $p+ 1);
+      $container= substr($lookup, 0, $p);
+      
+      // Return local name if mapped name is in imports or current namespace
+      if (isset($imports[$lookup]) || $package === $container) {
+        return $local.$spec;
+      } else {
+        return $lookup.$spec;
+      }
+    }
+    
+    /**
+     * Prints a warning
+     *
+     * @param   lang.Throwable t
+     */
+    protected function warn(Throwable $t) {
+      $t->printStackTrace();
     }
 
     /**
@@ -146,7 +158,6 @@
       // Calculate class and package name from qualified name
       $p= strrpos($qname, '.');
       $package= substr($qname, 0, $p);
-      $namespace= str_replace('.', self::SEPARATOR, $package);
       $class= substr($qname, $p+ 1);
       $imported= NULL;
       $modifiers= array();
@@ -172,7 +183,7 @@
         
           // Insert namespace declaration after "This class is part of..." file comment
           case self::ST_INITIAL.T_COMMENT: {
-            $out.= $token[1]."\n\npackage ".str_replace('.', self::SEPARATOR, $namespace).";\n\n-%{IMPORTS}%-";
+            $out.= $token[1]."\n\npackage ".$package.";\n\n-%{IMPORTS}%-";
             $imported= array();
             array_unshift($state, self::ST_NAMESPACE);
             break;
@@ -193,18 +204,9 @@
           }
           
           case self::ST_USES.T_CONSTANT_ENCAPSED_STRING: {
-            $fqcn= self::SEPARATOR.str_replace('.', self::SEPARATOR, trim($token[1], "'"));
-            $local= substr($fqcn, strrpos($fqcn, self::SEPARATOR)+ strlen(self::SEPARATOR));
-            if ($local == $class) {
-              // $this->err->writeLine('*** Name clash between ', $fqcn, ' and declared ', $class, ' in ', $qname, ', using qualified name for ', $fqcn);
-              $imports[$fqcn]= $fqcn;
-            } else if ($other= array_search($local, $imports)) {
-              // $this->err->writeLine('*** Name clash between ', $fqcn, ' and other ', $other, ' in ', $qname, ', using qualified name for ', $fqcn);
-              $imports[$fqcn]= $fqcn;
-            } else {
-              $uses[]= substr($fqcn, 1);
-              $imports[$fqcn]= $local;
-            }
+            $fqcn= trim($token[1], "'");
+            $uses[]= $fqcn;
+            $imports[$fqcn]= TRUE;
             break;
           }
           
@@ -253,10 +255,10 @@
           }
           
           case self::ST_EXTENDS.T_STRING: {
-            if ('lang.Object' === (string)$this->nameMap[$token[1]] || 'lang.Object' === $namespace.'.'.$token[1]) {
+            if ('lang.Object' === (string)$this->nameMap[$token[1]] || 'lang.Object' === $package.'.'.$token[1]) {
               $out= rtrim($out);
             } else {
-              $out.= 'extends '.$this->mapName($token[1], $namespace, $imports, 'extends');
+              $out.= 'extends '.$this->mapName($token[1], $package, $imports, 'extends');
             }
             array_shift($state);
             break;
@@ -270,7 +272,7 @@
           }
           
           case self::ST_INTF.T_STRING: {
-            $out.= $this->mapName($token[1], $namespace, $imports, $qname);
+            $out.= $this->mapName($token[1], $package, $imports, $qname);
             break;
           }
           
@@ -406,7 +408,7 @@
             if (isset($meta['throws'])) {
               $throws= array();
               foreach ($meta['throws'] as $exception) {
-                $throws[$this->mapName($exception, $namespace, $imports, $qname)]= TRUE;
+                $throws[$this->mapName($exception, $package, $imports, $qname)]= TRUE;
               }
               $out.= ' throws '.implode(', ', array_keys($throws));
             }
@@ -475,14 +477,13 @@
           }
           
           case self::ST_FUNC_ARGS.T_VARIABLE: {
-            $primitives= array('string', 'int', 'double', 'bool', 'var');
-            $rename= array('mixed' => 'var');
+            $rename= array('mixed' => 'var', 'float' => 'double');
             
             $type= isset($meta['param'][$parameter]) ? strtr($meta['param'][$parameter], $rename) : 'var';
-            if (!in_array($type, $primitives) && !$restriction) {
+            if (!in_array($type, self::$primitives) && !$restriction) {
               $type.= '?';
             }
-            $out.= $this->mapName($type, $namespace, $imports, $qname).' '.$token[1];
+            $out.= $this->mapName($type, $package, $imports, $qname).' '.$token[1];
             $parameter++;
             break;
           }
@@ -642,7 +643,7 @@
           }
           
           case self::ST_CLASS.T_STRING: {
-            $out.= $this->mapName($token[1], $namespace, $imports, $qname);
+            $out.= $this->mapName($token[1], $package, $imports, $qname);
             array_shift($state);
             break;
           }
@@ -658,17 +659,18 @@
             $next= $this->tokenOf($t[$i+ 1]);
             if (T_DOUBLE_COLON === $next[0]) {       // X::y(), X::$y, X::const
               $member= $this->tokenOf($t[$i+ 2]);
-              $out.= $this->mapName($token[1], $namespace, $imports, $qname).'::'.$member[1];
+              $out.= $this->mapName($token[1], $package, $imports, $qname).'::'.$member[1];
               $i+= 2;
             } else if ('(' === $next[0] && '.' !== $out{strlen($out)- 1}) {
               $out.= $token[1];
               try {
                 $func= new ReflectionFunction($token[1]);
                 $ext= $func->getExtension();
+                $extension= $ext ? strtolower($ext->getName()) : 'core';
               } catch (ReflectionException $e) {
-                throw new IllegalStateException($e->getMessage().' @'.$state[0]."\n".$out);
+                $this->warn(new IllegalStateException($e->getMessage().' @'.$state[0]."\n".$out));
+                $extension= 'UNKNOWN';
               }
-              $extension= $ext ? strtolower($ext->getName()) : 'core';
               $imported['import native '.$extension.'.'.$token[1].';']= TRUE;
             } else {
               $out.= $token[1];
