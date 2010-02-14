@@ -223,10 +223,7 @@
     #[@test]
     public function toClassMember() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'variable'      => new ClassMemberNode(array(
-          'class'         => new TypeName('self'),
-          'member'        => new VariableNode('instance')
-        )),
+        'variable'      => new ClassMemberNode(new TypeName('self'), new VariableNode('instance')),
         'expression'    => new NullNode(),
         'op'            => '='
       ))), $this->parse('self::$instance= null;'));
@@ -240,10 +237,7 @@
     public function toChain() {
       $this->assertEquals(array(new AssignmentNode(array(
         'variable'      => new ChainNode(array(
-          0 => new ClassMemberNode(array(
-            'class'     => new TypeName('self'), 
-            'member'    => new VariableNode('instance'),
-          )),
+          0 => new ClassMemberNode(new TypeName('self'), new VariableNode('instance')),
           1 => new InvocationNode('addAppender'),
           2 => new VariableNode('flags')
         )),

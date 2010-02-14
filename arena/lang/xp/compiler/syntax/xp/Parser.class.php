@@ -2295,7 +2295,7 @@
     } break;
 
     case 172:  #line 718 "grammar/xp.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new ClassMemberNode()); $yyVals[0+$yyTop]->class= new TypeName($yyVals[-1+$yyTop]); } break;
+    { $yyVals[0+$yyTop]= $yyLex->create(new ClassMemberNode(new TypeName($yyVals[-1+$yyTop]))); } break;
 
     case 173:  #line 718 "grammar/xp.jay"
     {

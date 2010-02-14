@@ -228,12 +228,10 @@
      */
     #[@test]
     public function classLiteral() {
-      $this->assertEquals(array(new ClassMemberNode(array(
-        'class'         => new TypeName('lang.types.String'),
-        'member'        => new ConstantNode('class')
-      ))), $this->parse('
-        lang.types.String::class;
-      '));
+      $this->assertEquals(
+        array(new ClassMemberNode(new TypeName('lang.types.String'), new ConstantNode('class'))),
+        $this->parse('lang.types.String::class;')
+      );
     }
 
     /**

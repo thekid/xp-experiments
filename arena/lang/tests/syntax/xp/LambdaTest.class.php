@@ -153,10 +153,10 @@
       $this->assertEquals(
         array(new LambdaNode(
           array(),
-          array(new ReturnNode(new ClassMemberNode(array(
-            'class'   => new TypeName('Console'),
-            'member'  => new InvocationNode('write', array(new StringNode('Hello')))
-          ))))
+          array(new ReturnNode(new ClassMemberNode(
+            new TypeName('Console'),
+            new InvocationNode('write', array(new StringNode('Hello')))
+          )))
         )), 
         $this->parse('{ => Console::write("Hello") };')
       );

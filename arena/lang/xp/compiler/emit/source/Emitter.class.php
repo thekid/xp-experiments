@@ -1351,7 +1351,7 @@
       if ($this->inits[0][TRUE]) {
         foreach ($this->inits[0][TRUE] as $field) {
           $this->emitOne($op, new AssignmentNode(array(
-            'variable'   => new ClassMemberNode(array('class' => new TypeName('self'), 'member' => new VariableNode($field->name))),
+            'variable'   => new ClassMemberNode(new TypeName('self'), new VariableNode($field->name)),
             'expression' => $field->initialization,
             'free'       => TRUE,
             'op'         => '=',
@@ -1670,10 +1670,10 @@
         'parameters' => NULL,
         'throws'     => NULL,
         'body'       => array(
-          new ReturnNode(new ClassMemberNode(array(
-            'class'   => new TypeName('parent'),
-            'member'  => new InvocationNode('membersOf', array(new StringNode($thisType->literal())))
-          )))
+          new ReturnNode(new ClassMemberNode(
+            new TypeName('parent'),
+            new InvocationNode('membersOf', array(new StringNode($thisType->literal())))
+          ))
         ),
         'extension'  => NULL,
         'comment'    => '(Generated)',
@@ -1832,11 +1832,8 @@
             $parameters[]= array('name' => '··a'.$i, 'type' => $type);    // TODO: default
             $arguments[]= new VariableNode('··a'.$i);
           }
-          $body= array(new ClassMemberNode(array(
-            'class'  => new TypeName('parent'),
-            'member' => new InvocationNode('__construct', $arguments),
-            'free'   => TRUE
-          )));
+          $body= array(new ClassMemberNode(new TypeName('parent'), new InvocationNode('__construct', $arguments)));
+          $body[0]->free= TRUE;
         } else {
           $body= array();
           $arguments= array();

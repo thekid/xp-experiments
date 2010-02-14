@@ -509,7 +509,7 @@ expression:
       $4 && $3->chained= $4;
       $$= $3;
     }
-  | qualifiedname T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode()); $2->class= new TypeName($1); } staticmember chain_opt {
+  | qualifiedname T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode(new TypeName($1))); } staticmember chain_opt {
       $2->member= $4;
       $5 && $2->member->chained= $5;
       $$= $2;

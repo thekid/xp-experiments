@@ -1640,7 +1640,7 @@
     } break;
 
     case 117:  #line 512 "grammar/php.jay"
-    { $yyVals[0+$yyTop]= $yyLex->create(new ClassMemberNode()); $yyVals[0+$yyTop]->class= new TypeName($yyVals[-1+$yyTop]); } break;
+    { $yyVals[0+$yyTop]= $yyLex->create(new ClassMemberNode(new TypeName($yyVals[-1+$yyTop]))); } break;
 
     case 118:  #line 512 "grammar/php.jay"
     {

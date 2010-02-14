@@ -86,10 +86,7 @@
     public function chainedAfterStaticMethod() {
       $this->assertEquals(
         array(new ChainNode(array(
-          0 => new ClassMemberNode(array(
-            'class'  => new TypeName('Logger'),
-            'member' => new InvocationNode('getInstance', array())
-          )),
+          0 => new ClassMemberNode(new TypeName('Logger'), new InvocationNode('getInstance', array())),
           1 => new InvocationNode('configure', array(new StringNode('etc')))
         ))), 
         $this->parse('Logger::getInstance().configure("etc");')

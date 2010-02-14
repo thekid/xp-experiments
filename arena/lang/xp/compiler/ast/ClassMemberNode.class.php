@@ -4,14 +4,32 @@
  * $Id$
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.Node', 'xp.compiler.types.TypeName');
 
   /**
-   * (Insert class' description here)
+   * Represents a class member:
    *
-   * @purpose  purpose
+   * <code>
+   *   T::foo();    // ClassMember[T, Invocation[foo, ()]]
+   *   T::$foo;     // ClassMember[T, VariableNode[foo]]
+   *   T::FOO;      // ClassMember[T, ConstantNode[FOO]]
+   *   T::class;    // ClassMember[T, ConstantNode[class]]
+   * </code>
    */
   class ClassMemberNode extends xp·compiler·ast·Node {
+    public $class;
+    public $member;
+
+    /**
+     * Constructor
+     *
+     * @param   xp.compiler.types.TypeName class
+     * @param   xp.compiler.ast.Node member
+     */
+    public function __construct(TypeName $class, xp·compiler·ast·Node $member= NULL) {
+      $this->class= $class;
+      $this->member= $member;
+    }
     
     /**
      * Returns a hashcode
