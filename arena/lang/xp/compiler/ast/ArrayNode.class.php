@@ -7,11 +7,11 @@
   uses('xp.compiler.ast.Node');
 
   /**
-   * (Insert class' description here)
+   * Represents an array literal
    *
-   * @purpose  purpose
    */
   class ArrayNode extends xp·compiler·ast·Node {
-    
+    public $type;
+    public $values;
   }
 ?>

@@ -2284,7 +2284,7 @@
     case 161:  #line 666 "grammar/xp.jay"
     {
       $yyVal= new ArrayNode();
-      $yyVal->type= new TypeName(rtrim($yyVals[-3+$yyTop]->name, '[]'));
+      $yyVal->type= $yyVals[-3+$yyTop];
       $yyVal->values= $yyVals[-1+$yyTop];
     } break;
 

@@ -34,7 +34,7 @@
     public function emptyTypedArray() {
       $this->assertEquals(array(new ArrayNode(array(
         'values'        => NULL,
-        'type'          => new TypeName('int'),
+        'type'          => new TypeName('int[]'),
       ))), $this->parse('
         new int[] {};
       '));
@@ -88,7 +88,7 @@
           new IntegerNode('2'),
           new IntegerNode('3'),
         ),
-        'type'          => new TypeName('int'),
+        'type'          => new TypeName('int[]'),
       ))), $this->parse('
         new int[] {1, 2, 3};
       '));

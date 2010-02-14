@@ -315,9 +315,9 @@
      */
     public function typeOf(xp·compiler·ast·Node $node) {
       if ($node instanceof ArrayNode) {
-        return new TypeName('var[]');       // FIXME: Component type
+        return $node->type ? $node->type : new TypeName('var[]');
       } else if ($node instanceof MapNode) {
-        return new TypeName('[var:var]');   // FIXME: Component type
+        return $node->type ? $node->type : new TypeName('[var:var]');
       } else if ($node instanceof StringNode) {
         return new TypeName('string');
       } else if ($node instanceof NaturalNode) {

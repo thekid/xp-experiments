@@ -44,6 +44,18 @@
     public function arrayType() {
       $this->assertEquals(new TypeName('var[]'), $this->fixture->typeOf(new ArrayNode()));
     }
+
+    /**
+     * Test typeOf() method
+     *
+     */
+    #[@test]
+    public function typedArrayType() {
+      $this->assertEquals(new TypeName('string[]'), $this->fixture->typeOf(new ArrayNode(array(
+        'values'        => NULL,
+        'type'          => new TypeName('string[]'),
+      ))));
+    }
     
     /**
      * Test typeOf() method
@@ -52,6 +64,18 @@
     #[@test]
     public function mapType() {
       $this->assertEquals(new TypeName('[var:var]'), $this->fixture->typeOf(new MapNode()));
+    }
+
+    /**
+     * Test typeOf() method
+     *
+     */
+    #[@test]
+    public function typedMapType() {
+      $this->assertEquals(new TypeName('[int:string]'), $this->fixture->typeOf(new MapNode(array(
+        'elements'      => NULL,
+        'type'          => new TypeName('[int:string]'),
+      ))));
     }
     
     /**

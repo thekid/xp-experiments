@@ -7,11 +7,11 @@
   uses('xp.compiler.ast.Node');
 
   /**
-   * (Insert class' description here)
+   * Represents a map literal
    *
-   * @purpose  purpose
    */
   class MapNode extends xp·compiler·ast·Node {
-    
+    public $type;
+    public $elements;
   }
 ?>

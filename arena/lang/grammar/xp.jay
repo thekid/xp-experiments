@@ -665,7 +665,7 @@ instancecreation:
     }
   | arraytype '{' expressionlist_opt '}' {
       $$= new ArrayNode();
-      $$->type= new TypeName(rtrim($1->name, '[]'));
+      $$->type= $1;
       $$->values= $3;
     }
   | maptype '{' mapliteral_opt '}' {
