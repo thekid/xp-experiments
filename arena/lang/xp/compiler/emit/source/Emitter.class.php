@@ -1080,6 +1080,11 @@
         '*='   => '*=',
         '/='   => '/=',
         '%='   => '%=',
+        '|='   => '|=',
+        '^='   => '^=',
+        '&='   => '&=',
+        '<<='  => '<<=',
+        '>>='  => '>>=',
       );
       
       $this->emitOne($op, $assign->variable);
@@ -2032,6 +2037,8 @@
         'is'          => TRUE,
         'isset'       => TRUE,
         'unset'       => TRUE,
+        'empty'       => TRUE,
+        'eval'        => TRUE,
       );
 
       // Import and declarations
