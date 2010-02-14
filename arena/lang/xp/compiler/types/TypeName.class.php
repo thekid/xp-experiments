@@ -96,10 +96,19 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Return whether this type is a generic
      *
-     * @param   
-     * @return  
+     * @return  bool
+     */
+    public function isGeneric() {
+      return !empty($this->components);
+    }
+
+    /**
+     * Checks whether another object is equal to this type name
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
      */
     public function equals($cmp) {
       if (!$cmp instanceof self || $this->name !== $cmp->name) return FALSE;
@@ -135,7 +144,7 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Creates a string representation of this object
      *
      * @return  string
      */
