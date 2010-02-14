@@ -583,9 +583,14 @@
             break;
           }
 
-          // create(...); -> ...
-          // create(..., array(a, b)), -> ...(a, b)
+          // create(...) -> [untouched]
+          // create("..."); -> ...
+          // create("...", array(a, b)), -> ...(a, b)
           case self::ST_FUNC_BODY.self::T_CREATE: {
+            if (T_CONSTANT_ENCAPSED_STRING !== $t[$i+ 2][0]) {
+              $out.= $token[1];
+              break;
+            }
             $out.= trim($t[$i+ 2][1], '"\'');
             $i+= 3; // Swallow "(" and string
             array_unshift($state, self::ST_CREATE);

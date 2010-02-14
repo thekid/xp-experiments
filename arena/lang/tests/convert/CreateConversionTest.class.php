@@ -38,5 +38,19 @@
         SourceConverter::ST_FUNC_BODY
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function createAsDereferencerUntouched() {
+      $this->fixture->nameMap['Object']= new String('lang.Object');
+      $this->assertConversion(
+        '$r= create(new lang.Object());',
+        '$r= create(new Object());',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
   }
 ?>
