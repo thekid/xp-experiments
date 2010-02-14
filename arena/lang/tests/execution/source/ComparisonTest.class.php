@@ -30,6 +30,21 @@
     }
 
     /**
+     * Test constant === a
+     *
+     */
+    #[@test]
+    public function constantLeftIdentical() {
+      foreach (array('0', 'null', '"string"', '[]', '-1') as $constant) {
+        $this->assertEquals(
+          TRUE, 
+          $this->run('$a= '.$constant.'; return '.$constant.' === $a;'), 
+          $constant
+        );
+      }
+    }
+
+    /**
      * Test $a == constant
      *
      */
@@ -39,6 +54,21 @@
         $this->assertEquals(
           TRUE, 
           $this->run('$a= '.$constant.'; return $a == '.$constant.';'), 
+          $constant
+        );
+      }
+    }
+
+    /**
+     * Test $a == constant
+     *
+     */
+    #[@test]
+    public function constantRightIdentical() {
+      foreach (array('0', 'null', '"string"', '[]', '-1') as $constant) {
+        $this->assertEquals(
+          TRUE, 
+          $this->run('$a= '.$constant.'; return $a === '.$constant.';'), 
           $constant
         );
       }
