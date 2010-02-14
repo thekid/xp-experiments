@@ -142,5 +142,14 @@
     public function staticMemberArrayAccess() {
       $this->assertFalse($this->run('return isset(xp::$registry["errors"][__FILE__]);'));
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function afterBracedExpression() {
+      $this->assertEquals(3, $this->run('return (1 ? new lang.types.ArrayList(1, 2, 3) : null).length;'));
+    }
   }
 ?>

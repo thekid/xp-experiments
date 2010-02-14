@@ -272,6 +272,8 @@
         $op->append('cast(');
         $this->emitOne($op, $cast->expression);
         $op->append(', \'')->append($this->resolveType($cast->type)->name())->append('\')');
+      } else {
+        $this->emitOne($op, $cast->expression);
       }
       
       $this->scope[0]->setType($cast, $cast->type);
@@ -446,6 +448,7 @@
       // - T::asList()[2] to current(array_slice(T::asList()), 2, 1)
       // - new int[]{5, 6, 7}[2] to current(array_slice(array(5, 6, 7), 2, 1))
       // - new Date().toString() to create(new Date()).toString()
+      // - (<expr>).toString to create(<expr>).toString()
       $insertion= array();
       for ($i= 0; $i < $s; $i++) {
         if ($i < $s- 1 && $chain->elements[$i+ 1] instanceof ArrayAccessNode && (
@@ -462,6 +465,10 @@
           $chain->elements[$i+ 1]= new NoopNode();
         } else if ($chain->elements[$i] instanceof InstanceCreationNode) {
           $op->append('create(');
+          $insertion[$i]= new xp·compiler·emit·source·Buffer(')', $op->line);
+        } else if ($chain->elements[$i] instanceof BracedExpressionNode) {
+          $op->append('create(');
+          $chain->elements[$i]= $chain->elements[$i]->expression;
           $insertion[$i]= new xp·compiler·emit·source·Buffer(')', $op->line);
         }
       }
