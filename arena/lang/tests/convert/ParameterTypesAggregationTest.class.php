@@ -139,5 +139,43 @@
         SourceConverter::ST_DECL
       );
     }
+
+    /**
+     * Test "float" parameter type becomes "double"
+     *
+     */
+    #[@test]
+    public function floatBecomesDouble() {
+      $this->assertConversion(
+        "/**\n".
+        " * @param   float a\n".
+        " */\n".
+        "public void test(double \$a) { /* ... */ }",
+        "/**\n".
+        " * @param   float a\n".
+        " */\n".
+        "public function test(\$a) { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
+
+    /**
+     * Test "resource" parameter type becomes "Int"
+     *
+     */
+    #[@test]
+    public function resourceBecomesInt() {
+      $this->assertConversion(
+        "/**\n".
+        " * @param   resource a\n".
+        " */\n".
+        "public void test(int \$a) { /* ... */ }",
+        "/**\n".
+        " * @param   resource a\n".
+        " */\n".
+        "public function test(\$a) { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
   }
 ?>
