@@ -2045,6 +2045,7 @@
         'unset'       => TRUE,
         'empty'       => TRUE,
         'eval'        => TRUE,
+        'include'     => TRUE,
       );
 
       // Import and declarations
