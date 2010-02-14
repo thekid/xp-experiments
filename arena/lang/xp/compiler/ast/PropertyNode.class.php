@@ -7,9 +7,16 @@
   uses('xp.compiler.ast.Node');
 
   /**
-   * (Insert class' description here)
+   * Represents a property
    *
-   * @purpose  purpose
+   * <code>
+   *   class T {
+   *     public int length {
+   *       get { return $this._length; }
+   *       set { $this._length= $value; }
+   *     }
+   *   }
+   * </code>
    */
   class PropertyNode extends xp·compiler·ast·Node {
     
