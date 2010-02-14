@@ -23,6 +23,8 @@
    *   $length= $t.length;    // Executes get-block
    *   $t.length= 1;          // Executes set-block
    * </code>
+   *
+   * @see   xp://xp.compiler.ast.IndexerNode
    */
   class PropertyNode extends xp·compiler·ast·Node {
     
