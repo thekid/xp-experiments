@@ -559,7 +559,7 @@
             $quote= $token[1]{0};
             $out.= ' '.$this->convert(
               '', 
-              array_slice(token_get_all('<?php '.trim($token[1], $quote).'?>'), 1, -1),
+              array_slice(token_get_all('<?php '.str_replace('\\'.$quote, $quote, trim($token[1], $quote)).'?>'), 1, -1),
               self::ST_DECL
             );
             $i++;   // Swallow ")"

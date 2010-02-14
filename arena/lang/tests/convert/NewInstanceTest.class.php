@@ -51,5 +51,18 @@
         SourceConverter::ST_FUNC_BODY
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function newRunnableWithQuotesInsideAnonymousInstanceSource() {
+      $this->assertConversion(
+        '$r= new self($a, $b) { public void run() { echo "Hello"; }};',
+        '$r= newinstance(__CLASS__, array($a, $b), "{ public function run() { echo \"Hello\"; }}");',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
   }
 ?>
