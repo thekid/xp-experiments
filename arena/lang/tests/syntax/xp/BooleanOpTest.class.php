@@ -37,5 +37,25 @@
         'op'            => '&&'
       ))), $this->parse('$a && $b;'));
     }
+
+    /**
+     * Test the following code:
+     *
+     * <code>
+     *   $a && $b+= 1;
+     * </code>
+     */
+    #[@test]
+    public function conditionalAssignment() {
+      $this->assertEquals(array(new BooleanOpNode(array(
+        'lhs'           => new VariableNode('a'),
+        'rhs'           => new AssignmentNode(array(
+          'variable'      => new VariableNode('b'),
+          'expression'    => new IntegerNode('1'),
+          'op'            => '+='
+        )),
+        'op'            => '&&'
+      ))), $this->parse('$a && $b+= 1;'));
+    }
   }
 ?>

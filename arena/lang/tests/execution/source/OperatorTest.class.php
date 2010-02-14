@@ -311,5 +311,18 @@
       $this->assertEquals(2, $this->run('$a= 8; return $a >> 2;'));
     }
 
+    /**
+     * Test the following code:
+     *
+     * <code>
+     *   $a= 2; 
+     *   $b= 0; 
+     *   $a && $b+= 1;
+     * </code>
+     */
+    #[@test]
+    public function conditionalAssignmentResult() {
+      $this->assertEquals(1, $this->run('$a= 2; $b= 0; $a && $b+= 1; return $b;'));
+    }
   }
 ?>

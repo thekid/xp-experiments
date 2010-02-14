@@ -130,5 +130,29 @@
     public function assignToStaticMethod() {
       $this->compile('self::getInstance()= 1;');
     }
+
+    /**
+     * Test the following code:
+     *
+     * <code>
+     *   $a && $b+= 1;
+     * </code>
+     */
+    #[@test]
+    public function conditionalAssignment() {
+      $this->compile('$a && $b+= 1;');
+    }
+
+    /**
+     * Test the following code:
+     *
+     * <code>
+     *   $a && ($b+= 1);
+     * </code>
+     */
+    #[@test]
+    public function conditionalAssignmentWithBraces() {
+      $this->compile('$a && ($b+= 1);');
+    }
   }
 ?>
