@@ -1787,7 +1787,6 @@
       
       // Members
       $op->append('{');
-      $declaration->name->components && $op->append('public $__generic;');
       $this->emitAll($op, (array)$declaration->body);
       $this->emitProperties($op, $this->properties[0]);
       
@@ -1828,6 +1827,11 @@
         // Generate a static initializer if initializations are available.
         // They will have already been emitted if a static initializer exists!
         $this->emitOne($op, new StaticInitializerNode(NULL));
+      }
+      
+      // Generics
+      if ($declaration->name->isGeneric()) {
+        $op->append('public $__generic;');    // 5.7-SERIES
       }
       
       // Finish
