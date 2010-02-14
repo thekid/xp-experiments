@@ -11,11 +11,17 @@
    *
    * <code>
    *   class T {
+   *     private int $_length= 0;
+   *
    *     public int length {
    *       get { return $this._length; }
    *       set { $this._length= $value; }
    *     }
    *   }
+   * 
+   *   $t= new T();
+   *   $length= $t.length;    // Executes get-block
+   *   $t.length= 1;          // Executes set-block
    * </code>
    */
   class PropertyNode extends xp·compiler·ast·Node {
