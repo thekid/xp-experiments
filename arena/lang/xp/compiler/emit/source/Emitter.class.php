@@ -1431,6 +1431,14 @@
         $this->leave();
         $op->append('}');
       }
+
+      $this->metadata[0][1]['offsetGet']= array(
+        DETAIL_ARGUMENTS    => $this->parametersAsMetadata((array)$indexer->parameters),
+        DETAIL_RETURNS      => $this->resolveType($indexer->type)->name(),
+        DETAIL_THROWS       => array(),
+        DETAIL_COMMENT      => '(Generated)',
+        DETAIL_ANNOTATIONS  => array()
+      );
     }
 
     /**
