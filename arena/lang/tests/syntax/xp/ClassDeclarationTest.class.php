@@ -352,5 +352,59 @@
     public function noArrayTypeAsInterfaceName() {
       $this->parse('interface int[] { }');
     }
+
+    /**
+     * Test field declaration
+     *
+     */
+    #[@test]
+    public function methodAndField() {
+      $this->assertEquals(array(new FieldNode(array(
+        'modifiers'       => MODIFIER_PRIVATE | MODIFIER_STATIC,
+        'annotations'     => NULL,
+        'name'            => 'instance',
+        'type'            => new TypeName('self'),
+        'initialization'  => new NullNode()
+      )), new MethodNode(array(
+        'modifiers'   => MODIFIER_PUBLIC | MODIFIER_STATIC,
+        'annotations' => NULL,
+        'name'        => 'getInstance',
+        'returns'     => new TypeName('self'),
+        'arguments'   => NULL, 
+        'throws'      => NULL,
+        'body'        => array(),
+        'extension'   => NULL
+      ))), $this->parse('class Logger { 
+        private static self $instance= null;
+        public static self getInstance() { /* ... */ }
+      }')->body);
+    }
+
+    /**
+     * Test field declaration
+     *
+     */
+    #[@test]
+    public function fieldAndMethod() {
+      $this->assertEquals(array(new MethodNode(array(
+        'modifiers'   => MODIFIER_PUBLIC | MODIFIER_STATIC,
+        'annotations' => NULL,
+        'name'        => 'getInstance',
+        'returns'     => new TypeName('self'),
+        'arguments'   => NULL, 
+        'throws'      => NULL,
+        'body'        => array(),
+        'extension'   => NULL
+      )), new FieldNode(array(
+        'modifiers'       => MODIFIER_PRIVATE | MODIFIER_STATIC,
+        'annotations'     => NULL,
+        'name'            => 'instance',
+        'type'            => new TypeName('self'),
+        'initialization'  => new NullNode()
+      ))), $this->parse('class Logger { 
+        public static self getInstance() { /* ... */ }
+        private static self $instance= null;
+      }')->body);
+    }
   }
 ?>
