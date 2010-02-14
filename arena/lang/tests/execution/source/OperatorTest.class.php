@@ -276,12 +276,31 @@
     }
 
     /**
-     * Test |
+     * Test ~
      *
      */
     #[@test]
     public function concat() {
       $this->assertEquals('HelloWorld', $this->run('$a= "Hello"; return $a ~ "World";'));
     }
+ 
+    /**
+     * Test <<
+     *
+     */
+    #[@test]
+    public function shiftLeft() {
+      $this->assertEquals(16, $this->run('$a= 8; return $a << 1;'));
+    }
+
+    /**
+     * Test >>
+     *
+     */
+    #[@test]
+    public function shiftRight() {
+      $this->assertEquals(2, $this->run('$a= 8; return $a >> 2;'));
+    }
+
   }
 ?>
