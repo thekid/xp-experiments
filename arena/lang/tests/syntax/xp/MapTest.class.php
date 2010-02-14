@@ -56,6 +56,20 @@
     }
 
     /**
+     * Test "[var:var[]]"
+     *
+     */
+    #[@test]
+    public function varToVarArray() {
+      $this->assertEquals(array(new MapNode(array(
+        'elements'      => NULL,
+        'type'          => new TypeName('[var:var[]]'),
+      ))), $this->parse('
+        new [var:var[]] {:};
+      '));
+    }
+
+    /**
      * Test "[string:[string:int]]"
      *
      */
@@ -99,6 +113,15 @@
     #[@test, @expect('lang.FormatException')]
     public function keyMayNotBeAMap() {
       $this->parse('new [[string:string]:string] {:};');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function keyMayNotBeGeneric() {
+      $this->parse('new [util.Vector<lang.types.String>:string] {:};');
     }
 
     /**
