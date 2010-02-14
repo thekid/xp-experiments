@@ -563,6 +563,10 @@
         $op->append('-');
         $this->emitOne($op, $un->expression);
         return;
+      } else if ('~' === $un->op) {
+        $op->append('~');
+        $this->emitOne($op, $un->expression);
+        return;
       } else if (!$this->isWriteable($un->expression)) {
         $this->error('U400', 'Cannot perform unary '.$un->op.' on '.$un->expression->getClassName(), $un);
         return;

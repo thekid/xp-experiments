@@ -283,6 +283,15 @@
     public function concat() {
       $this->assertEquals('HelloWorld', $this->run('$a= "Hello"; return $a ~ "World";'));
     }
+
+    /**
+     * Test ~
+     *
+     */
+    #[@test]
+    public function bitWiseComplement() {
+      $this->assertEquals(0x00000111, $this->run('$a= 0xFFFFFEEE; return ~$a;'));
+    }
  
     /**
      * Test <<
