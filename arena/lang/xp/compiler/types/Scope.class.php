@@ -17,6 +17,7 @@
     'xp.compiler.ast.NullNode',
     'xp.compiler.ast.BooleanNode',
     'xp.compiler.ast.ComparisonNode',
+    'xp.compiler.ast.BracedExpressionNode',
     'xp.compiler.types.Method',
     'xp.compiler.types.Types',
     'xp.compiler.types.TypeReference', 
@@ -331,6 +332,8 @@
         return new TypeName('bool');
       } else if ($node instanceof InstanceCreationNode) {
         return $node->type;
+      } else if ($node instanceof BracedExpressionNode) {
+        return $this->typeOf($node->expression);
       } else if ($this->types->containsKey($node)) {
         return $this->types[$node];
       }

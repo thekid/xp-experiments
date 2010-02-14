@@ -118,6 +118,16 @@
     }
 
     /**
+     * Test typeOf() method
+     *
+     */
+    #[@test]
+    public function typeOfBracedExpressionNode() {
+      $this->assertEquals(new TypeName('bool'), $this->fixture->typeOf(new BracedExpressionNode(new BooleanNode(TRUE))));
+      $this->assertEquals(new TypeName('string'), $this->fixture->typeOf(new BracedExpressionNode(new StringNode('Hello'))));
+    }
+
+    /**
      * Test setType() and typeOf() methods
      *
      */
