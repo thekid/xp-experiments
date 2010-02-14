@@ -42,6 +42,66 @@
     }
 
     /**
+     * Test "[string:int[]]"
+     *
+     */
+    #[@test]
+    public function stringToIntArray() {
+      $this->assertEquals(array(new MapNode(array(
+        'elements'      => NULL,
+        'type'          => new TypeName('[string:int[]]'),
+      ))), $this->parse('
+        new [string:int[]] {:};
+      '));
+    }
+
+    /**
+     * Test "[string:[string:int]]"
+     *
+     */
+    #[@test]
+    public function stringToStringIntArrayMap() {
+      $this->assertEquals(array(new MapNode(array(
+        'elements'      => NULL,
+        'type'          => new TypeName('[string:[string:int]]'),
+      ))), $this->parse('
+        new [string:[string:int]] {:};
+      '));
+    }
+
+    /**
+     * Test "[string:util.Vector<lang.types.String>]"
+     *
+     */
+    #[@test]
+    public function stringToGeneric() {
+      $this->assertEquals(array(new MapNode(array(
+        'elements'      => NULL,
+        'type'          => new TypeName('[string:util.Vector<lang.types.String>]'),
+      ))), $this->parse('
+        new [string:util.Vector<lang.types.String>] {:};
+      '));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function keyMayNotBeAnArray() {
+      $this->parse('new [int[]:string] {:};');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function keyMayNotBeAMap() {
+      $this->parse('new [[string:string]:string] {:};');
+    }
+
+    /**
      * Test a non-empty untyped map
      *
      */

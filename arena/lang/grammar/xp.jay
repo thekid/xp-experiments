@@ -960,7 +960,7 @@ arraytype:
 ;
 
 maptype:
-    '[' qualifiedname ':' qualifiedname ']' { $$= new TypeName('['.$2.':'.$4.']'); }
+    '[' T_WORD ':' typeref ']' { $$= new TypeName('['.$2.':'.$4->compoundName().']'); }
 ;
 
 typeparameters:
