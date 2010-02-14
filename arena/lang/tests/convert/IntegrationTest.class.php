@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  $package= 'tests.convert';
+
   uses(
     'unittest.TestCase',
     'cmd.convert.SourceConverter'
@@ -12,10 +14,9 @@
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://cmd.convert.SourceConverter
    */
-  class ClassTest extends TestCase {
+  class tests·convert·IntegrationTest extends TestCase {
     protected $fixture;
     protected $classloader;
 
