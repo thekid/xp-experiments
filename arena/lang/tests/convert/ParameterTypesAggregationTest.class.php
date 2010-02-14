@@ -131,7 +131,7 @@
         "/**\n".
         " * @param   mixed[] a\n".
         " */\n".
-        "public void test(var[]? \$a) { /* ... */ }",
+        "public void test(var[] \$a) { /* ... */ }",
         "/**\n".
         " * @param   mixed[] a\n".
         " */\n".
@@ -172,6 +172,25 @@
         "public void test(int \$a) { /* ... */ }",
         "/**\n".
         " * @param   resource a\n".
+        " */\n".
+        "public function test(\$a) { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
+
+    /**
+     * Test "array<key, val>" parameter type becomes "[key:val]"
+     *
+     */
+    #[@test]
+    public function genericArrayBecomesMap() {
+      $this->assertConversion(
+        "/**\n".
+        " * @param   array<int, string> a\n".
+        " */\n".
+        "public void test([int:string]? \$a) { /* ... */ }",
+        "/**\n".
+        " * @param   array<int, string> a\n".
         " */\n".
         "public function test(\$a) { /* ... */ }",
         SourceConverter::ST_DECL

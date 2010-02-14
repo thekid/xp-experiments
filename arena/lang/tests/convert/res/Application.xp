@@ -17,7 +17,7 @@ public class Application {
    *
    * @param   string[] args
    */
-  public static void main(string[]? $args) {
+  public static void main(string[] $args) {
     $begin= new util.Date();
     $end= util.Date::now();
     $help= new Help();

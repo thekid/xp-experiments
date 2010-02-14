@@ -479,11 +479,35 @@
           case self::ST_FUNC_ARGS.T_VARIABLE: {
             $rename= array('mixed' => 'var', 'float' => 'double', 'resource' => 'int');
             
-            $type= isset($meta['param'][$parameter]) ? strtr($meta['param'][$parameter], $rename) : 'var';
-            if (!in_array($type, self::$primitives) && !$restriction) {
-              $type.= '?';
+            if (isset($meta['param'][$parameter])) {
+              $type= strtr($meta['param'][$parameter], $rename);
+              
+              // Scan for array<k, v> syntax
+              $tkey= $tvalue= NULL;
+              if (2 === sscanf($type, 'array<%[^,],%[^>]>', $tkey, $tvalue)) {
+                $type= (
+                  '['.
+                  $this->mapName(strtr(trim($tkey), $rename), $package, $imports, $qname).
+                  ':'.
+                  $this->mapName(strtr(trim($tvalue), $rename), $package, $imports, $qname).
+                  ']'
+                );
+              } else {
+                $type= $this->mapName($type, $package, $imports, $qname);
+              }
+              
+              // If no type restriction was specified, add "?", except for 
+              // primitives or arrays thereof
+              if (
+                !$restriction && 
+                !(in_array($type, self::$primitives) || in_array(rtrim($type, '[]'), self::$primitives))
+              ) {
+                $type.= '?';
+              }
+            } else {
+              $type= 'var';
             }
-            $out.= $this->mapName($type, $package, $imports, $qname).' '.$token[1];
+            $out.= $type.' '.$token[1];
             $parameter++;
             break;
           }
