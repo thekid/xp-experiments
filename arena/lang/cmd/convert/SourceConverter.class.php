@@ -492,6 +492,8 @@
                   $this->mapName(strtr(trim($tvalue), $rename), $package, $imports, $qname).
                   ']'
                 );
+              } else if ('array' === $type) {
+                $type= 'var[]';
               } else {
                 $type= $this->mapName($type, $package, $imports, $qname);
               }
@@ -692,7 +694,7 @@
                 $ext= $func->getExtension();
                 $extension= $ext ? strtolower($ext->getName()) : 'core';
               } catch (ReflectionException $e) {
-                $this->warn(new IllegalStateException($e->getMessage().' @'.$state[0]."\n".$out));
+                $this->warn(new IllegalStateException($e->getMessage().' @'.$state[0]));
                 $extension= 'UNKNOWN';
               }
               $imported['import native '.$extension.'.'.$token[1].';']= TRUE;

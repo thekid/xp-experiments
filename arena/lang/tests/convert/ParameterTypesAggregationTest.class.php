@@ -196,5 +196,24 @@
         SourceConverter::ST_DECL
       );
     }
+
+    /**
+     * Test "array" parameter type becomes "var[]"
+     *
+     */
+    #[@test]
+    public function arrayBecomesVarArray() {
+      $this->assertConversion(
+        "/**\n".
+        " * @param   array a\n".
+        " */\n".
+        "public void test(var[] \$a) { /* ... */ }",
+        "/**\n".
+        " * @param   array a\n".
+        " */\n".
+        "public function test(\$a) { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
   }
 ?>
