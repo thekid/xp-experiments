@@ -53,7 +53,7 @@
       $class= $this->define('class', 'ListOf<T>', NULL, '{
         public T[] $elements;
         
-        public __construct(T... $initial) {
+        public __construct(T?... $initial) {
           $this.elements= $initial;
         }
         
@@ -62,7 +62,7 @@
         }
         
         public static void test(string[] $args) {
-          $l= new self<string>();
+          $l= new self<string>("Ciao", "Salut");
           foreach ($arg in $args) {
             $l.add($arg);
           }
@@ -70,10 +70,9 @@
         }
       }');
       
-      $in= array('Hello', 'Hallo', 'Hola');
       $this->assertEquals(
-        $in,
-        $class->getMethod('test')->invoke(NULL, array($in))->elements
+        array('Ciao', 'Salut', 'Hello', 'Hallo', 'Hola'),
+        $class->getMethod('test')->invoke(NULL, array(array('Hello', 'Hallo', 'Hola')))->elements
       );
     }
 
