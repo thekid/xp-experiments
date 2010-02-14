@@ -443,6 +443,7 @@
       
       // Rewrite for unsupported syntax:
       // - $a.getMethods()[2] to current(array_slice($a.getMethods(), 2, 1))
+      // - T::asList()[2] to current(array_slice(T::asList()), 2, 1)
       // - new int[]{5, 6, 7}[2] to current(array_slice(array(5, 6, 7), 2, 1))
       // - new Date().toString() to create(new Date()).toString()
       $insertion= array();
@@ -450,7 +451,7 @@
         if ($i < $s- 1 && $chain->elements[$i+ 1] instanceof ArrayAccessNode && (
           $chain->elements[$i] instanceof InvocationNode ||
           $chain->elements[$i] instanceof InstanceCreationNode ||
-          $chain->elements[$i] instanceof ClassMemberNode ||
+          ($chain->elements[$i] instanceof ClassMemberNode && $chain->elements[$i]->member instanceof InvocationNode) ||
           $chain->elements[$i] instanceof ArrayNode
         )) {
           $op->append('current(array_slice(');

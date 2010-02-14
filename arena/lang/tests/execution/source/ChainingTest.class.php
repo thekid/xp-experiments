@@ -121,5 +121,26 @@
         $this->run('return ["Hello"].length;')
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function arrayOfArrays() {
+      $this->assertEquals(
+        4, 
+        $this->run('$a= [[1, 2], [3, 4]]; return $a[1][1];')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function staticMemberArrayAccess() {
+      $this->assertFalse($this->run('return isset(xp::$registry["errors"][__FILE__]);'));
+    }
   }
 ?>
