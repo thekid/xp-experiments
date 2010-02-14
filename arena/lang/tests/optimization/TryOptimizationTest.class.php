@@ -43,7 +43,7 @@
     #[@test]
     public function removeUselessTryCatch() {
       $try= new TryNode(array(
-        'statements' => array(new ReturnNode(array('expression' => new NullNode()))),
+        'statements' => array(new ReturnNode(new NullNode())),
         'handling'   => array(
           new CatchNode(array(
             'type'       => new TypeName('lang.Throwable'),
@@ -71,7 +71,7 @@
           new CatchNode(array(
             'type'       => new TypeName('lang.Throwable'),
             'variable'   => 'e',
-            'statements' => array(new ReturnNode(array('expression' => new NullNode())))
+            'statements' => array(new ReturnNode( new NullNode()))
           ))
         )
       ));
@@ -95,7 +95,7 @@
           new FinallyNode(array(
             'type'       => new TypeName('lang.Throwable'),
             'variable'   => 'e',
-            'statements' => array(new ReturnNode(array('expression' => new NullNode())))
+            'statements' => array(new ReturnNode(new NullNode()))
           ))
         )
       ));

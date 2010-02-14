@@ -21,11 +21,11 @@
       $this->assertEquals(
         array(new LambdaNode(
           array(new VariableNode('a')),
-          array(new ReturnNode(array('expression' => new BinaryOpNode(array(
+          array(new ReturnNode(new BinaryOpNode(array(
             'lhs' => new VariableNode('a'),
             'rhs' => new IntegerNode('1'),
             'op'  => '+'
-          )))))
+          ))))
         )), 
         $this->parse('{ $a => $a + 1 };')
       );
@@ -40,11 +40,11 @@
       $this->assertEquals(
         array(new LambdaNode(
           array(new VariableNode('a')),
-          array(new ReturnNode(array('expression' => new BinaryOpNode(array(
+          array(new ReturnNode(new BinaryOpNode(array(
             'lhs' => new VariableNode('a'),
             'rhs' => new IntegerNode('1'),
             'op'  => '+'
-          )))))
+          ))))
         )), 
         $this->parse('{ $a => { return $a + 1; } };')
       );
@@ -65,7 +65,7 @@
               'expression'  => new IntegerNode('1'),
               'op'          => '+='
             )),
-            new ReturnNode(array('expression' => new VariableNode('a')))
+            new ReturnNode(new VariableNode('a'))
           )
         )), 
         $this->parse('{ $a => { $a+= 1; return $a; } };')
@@ -96,11 +96,11 @@
       $this->assertEquals(
         array(new LambdaNode(
           array(new VariableNode('a')),
-          array(new ReturnNode(array('expression' => new BinaryOpNode(array(
+          array(new ReturnNode(new BinaryOpNode(array(
             'lhs' => new VariableNode('a'),
             'rhs' => new IntegerNode('1'),
             'op'  => '+'
-          )))))
+          ))))
         )), 
         $this->parse('{ int $a => { return $a + 1; } };')
       );
@@ -115,11 +115,11 @@
       $this->assertEquals(
         array(new LambdaNode(
           array(new VariableNode('a'), new VariableNode('b')),
-          array(new ReturnNode(array('expression' => new BinaryOpNode(array(
+          array(new ReturnNode(new BinaryOpNode(array(
             'lhs' => new VariableNode('a'),
             'rhs' => new VariableNode('b'),
             'op'  => '+'
-          )))))
+          ))))
         )), 
         $this->parse('{ $a, $b => { return $a + $b; } };')
       );
@@ -134,11 +134,11 @@
       $this->assertEquals(
         array(new LambdaNode(
           array(new VariableNode('a'), new VariableNode('b')),
-          array(new ReturnNode(array('expression' => new BinaryOpNode(array(
+          array(new ReturnNode(new BinaryOpNode(array(
             'lhs' => new VariableNode('a'),
             'rhs' => new VariableNode('b'),
             'op'  => '+'
-          )))))
+          ))))
         )), 
         $this->parse('{ int $a, int $b => { return $a + $b; } };')
       );
@@ -153,10 +153,10 @@
       $this->assertEquals(
         array(new LambdaNode(
           array(),
-          array(new ReturnNode(array('expression' => new ClassMemberNode(array(
+          array(new ReturnNode(new ClassMemberNode(array(
             'class'   => new TypeName('Console'),
             'member'  => new InvocationNode('write', array(new StringNode('Hello')))
-          )))))
+          ))))
         )), 
         $this->parse('{ => Console::write("Hello") };')
       );

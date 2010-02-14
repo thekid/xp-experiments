@@ -2406,7 +2406,7 @@
 
     case 189:  #line 795 "grammar/xp.jay"
     {
-      $yyVal= array(new ReturnNode(array('expression' => $yyVals[0+$yyTop])));
+      $yyVal= array(new ReturnNode($yyVals[0+$yyTop]));
     } break;
 
     case 190:  #line 798 "grammar/xp.jay"

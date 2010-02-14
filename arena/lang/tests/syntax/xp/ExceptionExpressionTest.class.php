@@ -101,15 +101,13 @@
     public function multipleCatches() {
       $this->assertEquals(array(new TryNode(array(
         'statements' => array(
-          new ReturnNode(array(
-            'expression' => new InstanceCreationNode(array(
-              'type'       => new TypeName('util.collections.HashTable', array(
-                new TypeName('lang.types.String'), 
-                new TypeName('Object')
-              )),
-              'parameters' => NULL
-            ))
-          ))
+          new ReturnNode(new InstanceCreationNode(array(
+            'type'       => new TypeName('util.collections.HashTable', array(
+              new TypeName('lang.types.String'), 
+              new TypeName('Object')
+            )),
+            'parameters' => NULL
+          )))
         ), 
         'handling'   => array(
           new CatchNode(array(
@@ -149,15 +147,13 @@
     public function multiCatch() {
       $this->assertEquals(array(new TryNode(array(
         'statements' => array(
-          new ReturnNode(array(
-            'expression' => new InstanceCreationNode(array(
-              'type'       => new TypeName('util.collections.HashTable', array(
-                new TypeName('lang.types.String'), 
-                new TypeName('Object')
-              )),
-              'parameters' => NULL
-            ))
-          ))
+          new ReturnNode(new InstanceCreationNode(array(
+            'type'       => new TypeName('util.collections.HashTable', array(
+              new TypeName('lang.types.String'), 
+              new TypeName('Object')
+            )),
+            'parameters' => NULL
+          )))
         ), 
         'handling'   => array(
           new CatchNode(array(

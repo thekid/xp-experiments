@@ -35,9 +35,7 @@
     public function ifStatementWithOutCurlies() {
       $this->assertEquals(array(new IfNode(array(
         'condition'      => new VariableNode('i'),
-        'statements'     => array(new ReturnNode(array(
-          'expression'     => new BooleanNode(TRUE),
-        ))),
+        'statements'     => array(new ReturnNode(new BooleanNode(TRUE))),
         'otherwise'      => NULL, 
       ))), $this->parse('
         if ($i) return true;

@@ -793,7 +793,7 @@ expression:
 
 lambda_body:
     expression {
-      $$= array(new ReturnNode(array('expression' => $1)));
+      $$= array(new ReturnNode($1));
     }
   | '{' statements_opt '}' {
       $$= (array)$2;

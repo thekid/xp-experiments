@@ -1670,10 +1670,10 @@
         'parameters' => NULL,
         'throws'     => NULL,
         'body'       => array(
-          new ReturnNode(array('expression' => new ClassMemberNode(array(
+          new ReturnNode(new ClassMemberNode(array(
             'class'   => new TypeName('parent'),
             'member'  => new InvocationNode('membersOf', array(new StringNode($thisType->literal())))
-          ))))
+          )))
         ),
         'extension'  => NULL,
         'comment'    => '(Generated)',

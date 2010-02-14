@@ -77,12 +77,10 @@
           'name'       => 'name',
           'handlers'   => array(
             'get' => array(
-              new ReturnNode(array(
-                'expression' => new ChainNode(array(
-                  0 => new VariableNode('this'),
-                  1 => new VariableNode('_name')
-                ))
-              ))
+              new ReturnNode(new ChainNode(array(
+                0 => new VariableNode('this'),
+                1 => new VariableNode('_name')
+              )))
             ),
           )
         ))
@@ -113,12 +111,10 @@
           'name'       => 'name',
           'handlers'   => array(
             'get' => array(
-              new ReturnNode(array(
-                'expression' => new ChainNode(array(
-                  0 => new VariableNode('this'),
-                  1 => new VariableNode('_name')
-                ))
-              ))
+              new ReturnNode(new ChainNode(array(
+                0 => new VariableNode('this'),
+                1 => new VariableNode('_name')
+              )))
             ),
             'set' => array(
               new AssignmentNode(array(
