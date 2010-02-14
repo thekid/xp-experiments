@@ -105,6 +105,8 @@
      * @return  string in dot-notation (package.Name)
      */
     public function mapName($qname, $package= NULL, array $imports= array()) {
+      static $rename= array('mixed' => 'var', 'float' => 'double', 'resource' => 'int', 'array' => 'var[]');
+
       $qname= ltrim($qname, '&');
       $lookup= rtrim($qname, '?[]');
       $spec= substr($qname, strlen($lookup));
@@ -112,6 +114,16 @@
       // Check for keywords, primitives or arrays thereof
       if ('self' === $lookup || 'parent' === $qname || 'xp' === $qname || in_array($lookup, self::$primitives)) {
         return $qname;
+      } else if (isset($rename[$lookup])) {
+        return $rename[$lookup].$spec;
+      } else if (2 === sscanf($lookup, 'array<%[^,],%[^>]>', $tkey, $tvalue)) {
+        return (
+          '['.
+          $this->mapName(strtr(trim($tkey), $rename), $package, $imports).
+          ':'.
+          $this->mapName(strtr(trim($tvalue), $rename), $package, $imports).
+          ']'
+        );
       }
       
       // Fully qualify name if not already qualified
@@ -393,7 +405,7 @@
             } 
             
             if ('__construct' !== $token[1]) {
-              $out.= (isset($meta['return']) ? $meta['return'][0].' ' : 'void ').$token[1];
+              $out.= (isset($meta['return']) ? $this->mapName($meta['return'][0], $package, $imports).' ' : 'void ').$token[1];
             } else {
               $out.= $token[1];
             }
@@ -477,26 +489,8 @@
           }
           
           case self::ST_FUNC_ARGS.T_VARIABLE: {
-            $rename= array('mixed' => 'var', 'float' => 'double', 'resource' => 'int');
-            
             if (isset($meta['param'][$parameter])) {
-              $type= strtr($meta['param'][$parameter], $rename);
-              
-              // Scan for array<k, v> syntax
-              $tkey= $tvalue= NULL;
-              if (2 === sscanf($type, 'array<%[^,],%[^>]>', $tkey, $tvalue)) {
-                $type= (
-                  '['.
-                  $this->mapName(strtr(trim($tkey), $rename), $package, $imports, $qname).
-                  ':'.
-                  $this->mapName(strtr(trim($tvalue), $rename), $package, $imports, $qname).
-                  ']'
-                );
-              } else if ('array' === $type) {
-                $type= 'var[]';
-              } else {
-                $type= $this->mapName($type, $package, $imports, $qname);
-              }
+              $type= $this->mapName($meta['param'][$parameter], $package, $imports);
               
               // If no type restriction was specified, add "?", except for 
               // primitives or arrays thereof

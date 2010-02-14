@@ -63,5 +63,24 @@
         SourceConverter::ST_DECL
       );
     }
+
+    /**
+     * Test mixed return tpe
+     *
+     */
+    #[@test]
+    public function mixedBecomesVar() {
+      $this->assertConversion(
+        "/**\n".
+        " * @return  mixed\n".
+        " */\n".
+        "public var test() { /* ... */ }",
+        "/**\n".
+        " * @return  mixed\n".
+        " */\n".
+        "public function test() { /* ... */ }",
+        SourceConverter::ST_DECL
+      );
+    }
   }
 ?>
