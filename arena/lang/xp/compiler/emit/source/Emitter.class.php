@@ -1786,8 +1786,9 @@
       }
       
       // Members
-      $op->append("{\n");
-      isset($declaration->body) && $this->emitAll($op, $declaration->body);
+      $op->append('{');
+      $declaration->name->components && $op->append('public $__generic;');
+      $this->emitAll($op, (array)$declaration->body);
       $this->emitProperties($op, $this->properties[0]);
       
       if ($this->inits[0][FALSE]) {

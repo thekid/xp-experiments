@@ -116,7 +116,7 @@
       xp::gc();
 
       $r->executeWith(array());
-      return new XPClass($class);
+      return new XPClass($r->type()->name());
     }
   }
 ?>

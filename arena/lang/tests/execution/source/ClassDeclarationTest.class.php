@@ -45,6 +45,39 @@
     }
 
     /**
+     * Test declaring a class
+     *
+     */
+    #[@test]
+    public function genericClass() {
+      $class= $this->define('class', 'ListOf<T>', NULL, '{
+        public T[] $elements;
+        
+        public __construct(T... $initial) {
+          $this.elements= $initial;
+        }
+        
+        public self add(T? $element) {
+          $this.elements[]= $element;
+        }
+        
+        public static void test(string[] $args) {
+          $l= new self<string>();
+          foreach ($arg in $args) {
+            $l.add($arg);
+          }
+          return $l;
+        }
+      }');
+      
+      $in= array('Hello', 'Hallo', 'Hola');
+      $this->assertEquals(
+        $in,
+        $class->getMethod('test')->invoke(NULL, array($in))->elements
+      );
+    }
+
+    /**
      * Test declaring an interface
      *
      */

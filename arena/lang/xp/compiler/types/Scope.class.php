@@ -216,32 +216,44 @@
       } else if (!$name->isClass()) {
         return new TypeReference($name, Types::PRIMITIVE_KIND);
       }
-      if ('self' === $name->name || ($this->declarations && $name->name === $this->declarations[0]->name->name)) {
-        switch ($decl= $this->declarations[0]) {
-          case $decl instanceof ClassNode: 
-            $parent= $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Object'));
-            break;
-          case $decl instanceof EnumNode:
-            $parent= $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Enum'));
-            break;
-          case $decl instanceof InterfaceNode:
-            $parent= NULL;
-            break;
+
+      if ($this->declarations) {
+
+        // See if this type is part of our generic type, return a place holder
+        $decl= $this->declarations[0];
+        foreach ($decl->name->components as $component) {
+          if ($component->equals($name)) return new TypeReference($name, Types::UNKNOWN_KIND);
         }
 
-        // FIXME: Imports= array() -> Maybe refactor TypeDeclaration to use 
-        // not ParseTree but an optimized version?
-        return new TypeDeclaration(new ParseTree($this->package, array(), $decl), $parent);
-      } else if ('parent' === $name->name && $this->declarations) {
-        switch ($decl= $this->declarations[0]) {
-          case $decl instanceof ClassNode: 
-            return $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Object'));
-          case $decl instanceof EnumNode:
-            return $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Enum'));
-          default:
-            return new TypeReference($name, Types::UNKNOWN_KIND);
+        if ('self' === $name->name || $name->name === $decl->name->name) {
+          switch (TRUE) {
+            case $decl instanceof ClassNode: 
+              $parent= $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Object'));
+              break;
+            case $decl instanceof EnumNode:
+              $parent= $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Enum'));
+              break;
+            case $decl instanceof InterfaceNode:
+              $parent= NULL;
+              break;
+          }
+
+          // FIXME: Imports= array() -> Maybe refactor TypeDeclaration to use 
+          // not ParseTree but an optimized version?
+          return new TypeDeclaration(new ParseTree($this->package, array(), $decl), $parent);
+        } else if ('parent' === $name->name) {
+          switch (TRUE) {
+            case $decl instanceof ClassNode: 
+              return $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Object'));
+            case $decl instanceof EnumNode:
+              return $this->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Enum'));
+            default:
+              return new TypeReference($name, Types::UNKNOWN_KIND);
+          }
         }
-      } else if ('xp' === $name->name) {
+      } 
+      
+      if ('xp' === $name->name) {
         return new TypeReference($name, Types::UNKNOWN_KIND);
       } else if (strpos($name->name, '.')) {
         $qualified= $name->name;
