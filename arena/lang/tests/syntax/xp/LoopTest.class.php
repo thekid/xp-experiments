@@ -76,8 +76,8 @@
      */
     #[@test]
     public function whileLoop() {
-      $this->assertEquals(array(new WhileNode(array(
-        'expression'    => new ComparisonNode(array(
+      $this->assertEquals(array(new WhileNode(
+        new ComparisonNode(array(
           'lhs'           => new UnaryOpNode(array(
             'expression'    => new VariableNode('i'),
             'op'            => '++',
@@ -86,9 +86,13 @@
           'rhs'           => new IntegerNode('10000'),
           'op'            => '<'
         )),
-        'statements'    => NULL, 
-      ))), $this->parse('
-        while ($i++ < 10000) { }
+        array(new UnaryOpNode(array(
+          'expression'    => new VariableNode('i'),
+          'op'            => '++',
+          'postfix'       => TRUE
+        )))
+      )), $this->parse('
+        while ($i++ < 10000) { $i++; }
       '));
     }
 
@@ -98,8 +102,8 @@
      */
     #[@test]
     public function doLoop() {
-      $this->assertEquals(array(new DoNode(array(
-        'expression'    => new ComparisonNode(array(
+      $this->assertEquals(array(new DoNode(
+        new ComparisonNode(array(
           'lhs'           => new UnaryOpNode(array(
             'expression'    => new VariableNode('i'),
             'op'            => '++',
@@ -108,9 +112,13 @@
           'rhs'           => new IntegerNode('10000'),
           'op'            => '<'
         )),
-        'statements'    => NULL, 
-      ))), $this->parse('
-        do { } while ($i++ < 10000);
+        array(new UnaryOpNode(array(
+          'expression'    => new VariableNode('i'),
+          'op'            => '++',
+          'postfix'       => TRUE
+        )))
+      )), $this->parse('
+        do { $i++; } while ($i++ < 10000);
       '));
     }
 

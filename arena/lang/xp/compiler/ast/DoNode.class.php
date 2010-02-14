@@ -7,11 +7,27 @@
   uses('xp.compiler.ast.Node');
 
   /**
-   * (Insert class' description here)
+   * Represents a do-while-statement
    *
-   * @purpose  purpose
+   * <code>
+   *   do {
+   *     ...
+   *   } while (...);
+   * </code>
    */
   class DoNode extends xp·compiler·ast·Node {
-    
+    public $statements= NULL;
+    public $expression= NULL;
+
+    /**
+     * Constructor
+     *
+     * @param   xp.compiler.ast.Node expression
+     * @param   xp.compiler.ast.Node[] statements
+     */
+    public function __construct(xp·compiler·ast·Node $expression= NULL, $statements= array()) {
+      $this->expression= $expression;
+      $this->statements= $statements;
+    }
   }
 ?>
