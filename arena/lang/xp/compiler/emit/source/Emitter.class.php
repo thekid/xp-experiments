@@ -130,7 +130,7 @@
      * @param   bool brackets
      * @return  int
      */
-    protected function emitParameters($op, array $params, $brackets= TRUE) {
+    protected function emitInvocationArguments($op, array $params, $brackets= TRUE) {
       $brackets && $op->append('(');
       $s= sizeof($params)- 1;
       foreach ($params as $i => $param) {
@@ -160,11 +160,11 @@
       // Static method call vs. function call
       if (TRUE === $ptr) {
         $op->append($inv->name);
-        $this->emitParameters($op, (array)$inv->parameters);
+        $this->emitInvocationArguments($op, (array)$inv->arguments);
         $this->scope[0]->setType($inv, TypeName::$VAR);
       } else {
         $op->append($ptr->holder->literal().'::'.$ptr->name());
-        $this->emitParameters($op, (array)$inv->parameters);
+        $this->emitInvocationArguments($op, (array)$inv->arguments);
         $this->scope[0]->setType($inv, $ptr->returns);
       }
     }
@@ -407,7 +407,7 @@
           $ext= $this->scope[0]->getExtension($ptr, $access->name);
           $op->insertAtMark($ext->holder->literal().'::'.$access->name.'(');
           $op->append(', ');
-          $this->emitParameters($op, (array)$access->parameters);
+          $this->emitInvocationArguments($op, (array)$access->arguments);
           $op->append(')');
           return $ext->returns;
         } else {
@@ -420,7 +420,7 @@
       }
 
       $op->append('->'.$access->name);
-      $this->emitParameters($op, (array)$access->parameters);
+      $this->emitInvocationArguments($op, (array)$access->arguments);
       return $result;
     }
 
@@ -862,7 +862,7 @@
         }
 
         $op->append($ptr->literal().'::'.$ref->member->name);
-        $this->emitParameters($op, (array)$ref->member->parameters);
+        $this->emitInvocationArguments($op, (array)$ref->member->arguments);
       } else if ($ref->member instanceof VariableNode) {
       
         // Static member
@@ -1062,12 +1062,12 @@
         $op->append('>\'');
         if ($new->parameters) {
           $op->append(',');
-          $this->emitParameters($op, (array)$new->parameters, FALSE);
+          $this->emitInvocationArguments($op, (array)$new->parameters, FALSE);
         }
         $op->append(')');
       } else {
         $op->append('new '.$ptr->literal());
-        $this->emitParameters($op, (array)$new->parameters);
+        $this->emitInvocationArguments($op, (array)$new->parameters);
       }
     }
     
@@ -1115,7 +1115,7 @@
      * @param   array<string, *>[] arguments
      * @param   string delim
      */
-    protected function emitArguments($op, array $arguments, $delim) {
+    protected function emitParameters($op, array $arguments, $delim) {
       $op->append('(');
       $s= sizeof($arguments)- 1;
       $defer= array();
@@ -1136,6 +1136,8 @@
           }
           $t= $arg['type'];
         }
+        
+        $this->metadata[0][1][$this->method[0]->name][DETAIL_ARGUMENTS][$i]= $t->compoundName();
         
         if (isset($arg['vararg'])) {
           if ($i > 0) {
@@ -1215,20 +1217,6 @@
       }
       return $meta;
     }    
-
-    /**
-     * Create parameters meta data
-     *
-     * @param   array<string, *>[] arguments
-     * @return  array<string, var> metadata
-     */
-    protected function parametersAsMetadata(array $parameters) {
-      $meta= array();
-      foreach ($parameters as $i => $param) {
-        $meta[$i]= $param['type']->compoundName();
-      }
-      return $meta;
-    }
     
     /**
      * Emit a lambda
@@ -1263,12 +1251,12 @@
       // Generate an anonymous lambda class
       $decl= new ClassNode(0, NULL, $unique, NULL, NULL, array(
         new ConstructorNode(array(
-          'arguments'  => $cparameters,
+          'parameters' => $cparameters,
           'body'       => $cstmt
         )),
         new MethodNode(array(
           'name'        => 'invoke', 
-          'arguments'   => $parameters,
+          'parameters'  => $parameters,
           'body'        => $promoted['node']->statements,
           'returns'     => TypeName::$VAR
         ))
@@ -1303,27 +1291,26 @@
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
       }
 
-      array_unshift($this->method, $method);
-
-      // Arguments, body
-      if (NULL !== $method->body) {
-        $this->emitArguments($op, (array)$method->arguments, '{');
-        $this->emitAll($op, $method->body);
-        $op->append('}');
-      } else {
-        $this->emitArguments($op, (array)$method->arguments, ';');
-      }
-      
-      // Finalize
       $this->metadata[0][1][$method->name]= array(
-        DETAIL_ARGUMENTS    => $this->parametersAsMetadata((array)$method->arguments),
+        DETAIL_ARGUMENTS    => array(),
         DETAIL_RETURNS      => $this->resolveType($method->returns)->name(),
         DETAIL_THROWS       => array(),
         DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$method->comment),
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$method->annotations)
       );
 
-      // FIXME: Put this in ...asMetadata()
+      array_unshift($this->method, $method);
+
+      // Arguments, body
+      if (NULL !== $method->body) {
+        $this->emitParameters($op, (array)$method->parameters, '{');
+        $this->emitAll($op, $method->body);
+        $op->append('}');
+      } else {
+        $this->emitParameters($op, (array)$method->parameters, ';');
+      }
+      
+      // Finalize - FIXME: Put this in ...asMetadata()
       if ($this->scope[0]->declarations[0]->name->isGeneric()) {
       
         // Return type
@@ -1336,7 +1323,7 @@
         // Parameters
         $genericParams= '';
         $usesGenerics= FALSE;
-        foreach ((array)$method->arguments as $arg) {
+        foreach ((array)$method->parameters as $arg) {
           foreach ($this->scope[0]->declarations[0]->name->components as $component) {
             if (!$usesGenerics && $component->equals($arg['type'])) $usesGenerics= TRUE;
             $genericParams.= ', '.$arg['type']->compoundName();
@@ -1389,10 +1376,19 @@
       // Begin
       $this->enter(new MethodScope());
       $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
+
+      $this->metadata[0][1]['__construct']= array(
+        DETAIL_ARGUMENTS    => array(),
+        DETAIL_RETURNS      => NULL,
+        DETAIL_THROWS       => array(),
+        DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$constructor->comment),
+        DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$constructor->annotations)
+      );
+
       array_unshift($this->method, $constructor);
 
       // Arguments, initializations, body
-      $this->emitArguments($op, (array)$constructor->arguments, '{');
+      $this->emitParameters($op, (array)$constructor->parameters, '{');
       if ($this->inits[0][FALSE]) {
         foreach ($this->inits[0][FALSE] as $field) {
           $this->emitOne($op, new AssignmentNode(array(
@@ -1407,22 +1403,13 @@
       $this->emitAll($op, (array)$constructor->body);
       $op->append('}');
       
-      // Finalize
-      $this->metadata[0][1]['__construct']= array(
-        DETAIL_ARGUMENTS    => $this->parametersAsMetadata((array)$constructor->arguments),
-        DETAIL_RETURNS      => NULL,
-        DETAIL_THROWS       => array(),
-        DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$constructor->comment),
-        DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$constructor->annotations)
-      );
-
-      // FIXME: Put this in ...asMetadata()
+      // Finalize - FIXME: Put this in ...asMetadata()
       if ($this->scope[0]->declarations[0]->name->isGeneric()) {
       
         // Parameters
         $genericParams= '';
         $usesGenerics= FALSE;
-        foreach ((array)$constructor->arguments as $arg) {
+        foreach ((array)$constructor->parameters as $arg) {
           foreach ($this->scope[0]->declarations[0]->name->components as $component) {
             if (!$usesGenerics && $component->equals($arg['type'])) $usesGenerics= TRUE;
             $genericParams.= ', '.$arg['type']->compoundName();
@@ -1468,29 +1455,24 @@
      */
     protected function emitIndexer($op, IndexerNode $indexer) {
       $defines= array(
-        'get'   => array('offsetGet', $indexer->parameters),
-        'set'   => array('offsetSet', array_merge($indexer->parameters, array(array('name' => 'value', 'type' => $indexer->type)))),
-        'isset' => array('offsetExists', $indexer->parameters),
-        'unset' => array('offsetUnset', $indexer->parameters),
+        'get'   => array('offsetGet', $indexer->parameters, $indexer->type),
+        'set'   => array('offsetSet', array_merge($indexer->parameters, array(array('name' => 'value', 'type' => $indexer->type))), new TypeName('void')),
+        'isset' => array('offsetExists', $indexer->parameters, new TypeName('bool')),
+        'unset' => array('offsetUnset', $indexer->parameters, new TypeName('void')),
       );
 
-      foreach ($indexer->handlers as $name => $statements) {   
-        $op->append('function '.$defines[$name][0]);
-        $this->emitArguments($op, $defines[$name][1], '{');
-        $this->enter(new MethodScope());
-        $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
-        $this->emitAll($op, $statements);
-        $this->leave();
-        $op->append('}');
+      foreach ($indexer->handlers as $name => $statements) {
+        $this->emitOne($op, new MethodNode(array(
+          'modifiers'  => MODIFIER_PUBLIC,
+          'annotations'=> NULL,
+          'name'       => $defines[$name][0],
+          'returns'    => $defines[$name][2],
+          'parameters' => $defines[$name][1],
+          'throws'     => NULL,
+          'body'       => $statements,
+          'extension'  => NULL
+        )));
       }
-
-      $this->metadata[0][1]['offsetGet']= array(
-        DETAIL_ARGUMENTS    => $this->parametersAsMetadata((array)$indexer->parameters),
-        DETAIL_RETURNS      => $this->resolveType($indexer->type)->name(),
-        DETAIL_THROWS       => array(),
-        DETAIL_COMMENT      => '(Generated)',
-        DETAIL_ANNOTATIONS  => array()
-      );
     }
 
     /**
@@ -1685,14 +1667,12 @@
         'annotations'=> NULL,
         'name'       => 'values',
         'returns'    => new TypeName('self[]'),
-        'arguments'  => NULL,
+        'parameters' => NULL,
         'throws'     => NULL,
         'body'       => array(
           new ReturnNode(array('expression' => new ClassMemberNode(array(
             'class'   => new TypeName('parent'),
-            'member'  => new InvocationNode(array('name' => 'membersOf', 'parameters' => array(
-              new StringNode($thisType->literal())
-            )))
+            'member'  => new InvocationNode('membersOf', array(new StringNode($thisType->literal())))
           ))))
         ),
         'extension'  => NULL,
@@ -1849,15 +1829,12 @@
           $arguments= array();
           $parameters= array();
           foreach ($parentType->getConstructor()->parameters as $i => $type) {
-            $arguments[]= array('name' => '··a'.$i, 'type' => $type);    // TODO: default
-            $parameters[]= new VariableNode('··a'.$i);
+            $parameters[]= array('name' => '··a'.$i, 'type' => $type);    // TODO: default
+            $arguments[]= new VariableNode('··a'.$i);
           }
           $body= array(new ClassMemberNode(array(
             'class'  => new TypeName('parent'),
-            'member' => new InvocationNode(array(
-              'name'       => '__construct',
-              'parameters' => $parameters
-            )),
+            'member' => new InvocationNode('__construct', $arguments),
             'free'   => TRUE
           )));
         } else {
@@ -1866,7 +1843,7 @@
         }
         $this->emitOne($op, new ConstructorNode(array(
           'modifiers'    => MODIFIER_PUBLIC,
-          'arguments'    => $arguments,
+          'parameters'   => $parameters,
           'annotations'  => NULL,
           'body'         => $body,
           'comment'      => '(Generated)',

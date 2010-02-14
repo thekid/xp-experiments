@@ -370,7 +370,7 @@
         'annotations' => NULL,
         'name'        => 'getInstance',
         'returns'     => new TypeName('self'),
-        'arguments'   => NULL, 
+        'parameters'  => NULL, 
         'throws'      => NULL,
         'body'        => array(),
         'extension'   => NULL
@@ -391,7 +391,7 @@
         'annotations' => NULL,
         'name'        => 'getInstance',
         'returns'     => new TypeName('self'),
-        'arguments'   => NULL, 
+        'parameters'  => NULL, 
         'throws'      => NULL,
         'body'        => array(),
         'extension'   => NULL

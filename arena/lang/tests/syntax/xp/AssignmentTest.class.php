@@ -244,7 +244,7 @@
             'class'     => new TypeName('self'), 
             'member'    => new VariableNode('instance'),
           )),
-          1 => new InvocationNode(array('name' => 'addAppender', 'parameters' => NULL)),
+          1 => new InvocationNode('addAppender'),
           2 => new VariableNode('flags')
         )),
         'expression'    => new IntegerNode('0'),

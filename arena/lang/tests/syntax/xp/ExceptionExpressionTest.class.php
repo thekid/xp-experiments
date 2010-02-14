@@ -21,7 +21,7 @@
       $this->assertEquals(array(new TryNode(array(
         'statements' => array(new ChainNode(array(
           0 => new VariableNode('method'),
-          1 => new InvocationNode(array('name' => 'call', 'parameters' => NULL)),
+          1 => new InvocationNode('call'),
         ))), 
         'handling'   => array(
           new CatchNode(array(
@@ -29,7 +29,7 @@
             'variable'   => 'e',
             'statements' => array(new ChainNode(array(
               0 => new VariableNode('this'),
-              1 => new InvocationNode(array('name' => 'finalize', 'parameters' => NULL)),
+              1 => new InvocationNode('finalize'),
             ))), 
           ))
         )
@@ -80,7 +80,7 @@
           new FinallyNode(array(
             'statements' => array(new ChainNode(array(
               0 => new VariableNode('this'),
-              1 => new InvocationNode(array('name' => 'finalize', 'parameters' => NULL)),
+              1 => new InvocationNode('finalize'),
             ))), 
           ))
         )

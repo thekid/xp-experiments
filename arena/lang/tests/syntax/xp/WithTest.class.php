@@ -84,10 +84,7 @@
             'op'         => '=',
             'expression' => new ChainNode(array(
               new VariableNode('o'),
-              new InvocationNode(array(
-                'name'       => 'toString',
-                'parameters' => array()
-              ))
+              new InvocationNode('toString', array())
             ))
           )))
         )), 

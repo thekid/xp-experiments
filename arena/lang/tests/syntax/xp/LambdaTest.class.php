@@ -155,12 +155,7 @@
           array(),
           array(new ReturnNode(array('expression' => new ClassMemberNode(array(
             'class'   => new TypeName('Console'),
-            'member'  => new InvocationNode(array(
-              'name'        => 'write',
-              'parameters'  => array(
-                new StringNode('Hello')
-              )
-            ))
+            'member'  => new InvocationNode('write', array(new StringNode('Hello')))
           )))))
         )), 
         $this->parse('{ => Console::write("Hello") };')

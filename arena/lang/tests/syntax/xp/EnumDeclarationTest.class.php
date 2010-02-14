@@ -103,7 +103,7 @@
           'annotations'  => NULL,
           'returns'      => new TypeName('string'),
           'name'         => 'color',
-          'arguments'    => NULL,
+          'parameters'   => NULL,
           'throws'       => NULL,
           'body'         => array(),
           'extension'    => NULL

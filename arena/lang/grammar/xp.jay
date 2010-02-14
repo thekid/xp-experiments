@@ -350,7 +350,7 @@ method:
       $4->annotations= $1[1];
       $4->returns= $2;
       $4->name= $3;
-      $4->arguments= $6[0];
+      $4->parameters= $6[0];
       $4->throws= $8;
       $4->body= $9;
       $4->extension= $6[1];
@@ -377,7 +377,7 @@ method:
       $$->position= $p;
       $$->modifiers= $1[0];
       $$->annotations= $1[1];
-      $$->arguments= $5;
+      $$->parameters= $5;
       $$->throws= $7;
       $$->body= $8;
     }
@@ -386,7 +386,7 @@ method:
       $5->annotations= $1[1];
       $5->returns= $2;
       $5->symbol= $4;
-      $5->arguments= $7;
+      $5->parameters= $7;
       $5->throws= $9;
       $5->body= $10;
       $$= $5;
@@ -679,8 +679,7 @@ staticmember:
       $$= $yyLex->create(new VariableNode($1)); 
     }
   | T_WORD '(' expressionlist_opt ')' { 
-      $$= $yyLex->create(new InvocationNode(array('name' => $1))); 
-      $$->parameters= $3;
+      $$= $yyLex->create(new InvocationNode($1, $3)); 
     }
   | T_WORD {
       $$= $yyLex->create(new ConstantNode($1)); 
@@ -725,9 +724,8 @@ expression:
         $$= $2;
       }
     } 
-  | T_WORD '(' { $2= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' chain_opt { 
-      $2->name= $1;
-      $2->parameters= $4;
+  | T_WORD '(' { $2= $yyLex->create(new InvocationNode($1)); } expressionlist_opt ')' chain_opt { 
+      $2->arguments= $4;
       if ($6) {
         $$= $yyLex->create(new ChainNode());
         $$->elements= array_merge(array($2), $6);
@@ -931,9 +929,8 @@ chain:
   | '.' member {
       $$= $yyLex->create(new VariableNode($2)); 
     }
-  | '.' member '(' { $1= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' { 
-      $1->name= $2;
-      $1->parameters= $5;
+  | '.' member '(' { $1= $yyLex->create(new InvocationNode($2)); } expressionlist_opt ')' { 
+      $1->arguments= $5;
     }
 ;
 

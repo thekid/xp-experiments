@@ -43,7 +43,7 @@
               'annotations' => NULL,
               'name'        => 'run',
               'returns'     => new TypeName('void'),
-              'arguments'   => NULL,
+              'parameters'  => NULL,
               'throws'      => NULL,
               'body'        => array(),
               'comment'     => NULL,

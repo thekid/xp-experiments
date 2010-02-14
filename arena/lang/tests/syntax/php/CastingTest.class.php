@@ -126,14 +126,10 @@
      */
     #[@test]
     public function invocationWithConstantArg() {
-      $this->assertEquals(array($this->create(new InvocationNode(array(
-        'name'          => 'init',
-        'parameters'    => array(
-          $this->create(new BooleanNode(TRUE), array(4, 18))
-        ),
-      )), array(4, 13))), $this->parse('
-        init(TRUE);
-      '));
+      $this->assertEquals(
+        array(new InvocationNode('init', array(new BooleanNode(TRUE)))),
+        $this->parse('init(TRUE);')
+      );
     }
 
     /**

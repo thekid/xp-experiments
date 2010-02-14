@@ -37,7 +37,7 @@
         'annotations'=> NULL,
         'name'       => 'toString',
         'returns'    => new TypeName('string'),
-        'arguments'  => NULL,
+        'parameters' => NULL,
         'throws'     => NULL,
         'body'       => array(),
         'extension'  => NULL
@@ -57,7 +57,7 @@
         'annotations'=> NULL,
         'name'       => 'equals',
         'returns'    => new TypeName('bool'),
-        'arguments'  => array(array(
+        'parameters' => array(array(
           'name'  => 'cmp',
           'type'  => new TypeName('Object'),
           'check' => TRUE
@@ -81,7 +81,7 @@
         'annotations'=> NULL,
         'name'       => 'setTrace',
         'returns'    => new TypeName('void'),
-        'arguments'  => array(array(
+        'parameters' => array(array(
           'name'  => 'cat',
           'type'  => new TypeName('util.log.LogCategory'),
           'check' => TRUE
@@ -105,7 +105,7 @@
         'annotations'=> NULL,
         'name'       => 'compareTo',
         'returns'    => new TypeName('int'),
-        'arguments'  => array(array(
+        'parameters' => array(array(
           'name'  => 'other',
           'type'  => new TypeName('Object'),
           'check' => TRUE
@@ -129,7 +129,7 @@
         'annotations'=> NULL,
         'name'       => 'loadClass',
         'returns'    => new TypeName('Class', array(new TypeName('T'))),
-        'arguments'  => array(array(
+        'parameters' => array(array(
           'name'  => 'name',
           'type'  => new TypeName('string'),
           'check' => TRUE
@@ -153,7 +153,7 @@
         'annotations' => NULL,
         'name'        => 'printf',
         'returns'     => new TypeName('string'),
-        'arguments'   => array(array(
+        'parameters'  => array(array(
           'name'      => 'format',
           'type'      => new TypeName('string'),
           'check'     => TRUE
@@ -184,7 +184,7 @@
         'annotations'=> NULL,
         'name'       => 'addAll',
         'returns'    => new TypeName('void'),
-        'arguments'  => array(array(
+        'parameters' => array(array(
           'name'   => 'elements',
           'type'   => new TypeName('T[]'),  // XXX FIXME this is probably not a good representation
           'check'  => TRUE      
@@ -208,7 +208,7 @@
         'annotations'=> NULL,
         'symbol'     => '+',
         'returns'    => new TypeName('self'),
-        'arguments'  => array(array(
+        'parameters' => array(array(
           'name'  => 'a',
           'type'  => new TypeName('self'),
           'check' => TRUE
@@ -244,7 +244,7 @@
         'annotations'=> NULL,
         'name'       => 'equals',
         'returns'    => new TypeName('bool'),
-        'arguments'  => array(array(
+        'parameters' => array(array(
           'name'  => 'cmp',
           'type'  => new TypeName('Generic'),
           'check' => FALSE
@@ -273,7 +273,7 @@
         ),
         'name'       => 'map',
         'returns'    => new TypeName('[int:string]'),
-        'arguments'  => array(), 
+        'parameters' => array(), 
         'throws'     => NULL,
         'body'       => array(),
         'extension'  => NULL

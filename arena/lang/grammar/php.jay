@@ -495,8 +495,7 @@ staticmember:
       $$= $yyLex->create(new VariableNode($1)); 
     }
   | T_WORD '(' expressionlist_opt ')' { 
-      $$= $yyLex->create(new InvocationNode(array('name' => $1))); 
-      $$->parameters= $3;
+      $$= $yyLex->create(new InvocationNode($1, $3)); 
     }
 ;
 
@@ -515,9 +514,8 @@ expression:
       $5 && $2->member->chained= $5;
       $$= $2;
     } 
-  | T_WORD '(' { $2= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' chain_opt { 
-      $2->name= $1;
-      $2->parameters= $4;
+  | T_WORD '(' { $2= $yyLex->create(new InvocationNode($1)); } expressionlist_opt ')' chain_opt { 
+      $2->arguments= $4;
       $6 && $2->chained= $6;
       $$= $2;
     }
@@ -673,9 +671,8 @@ chain:
   | T_OBJECT_OPERATOR T_WORD {
       $$= $yyLex->create(new VariableNode($2)); 
     }
-  | T_OBJECT_OPERATOR T_WORD '(' { $1= $yyLex->create(new InvocationNode()); } expressionlist_opt ')' { 
-      $1->name= $2;
-      $1->parameters= $5;
+  | T_OBJECT_OPERATOR T_WORD '(' { $1= $yyLex->create(new InvocationNode($2)); } expressionlist_opt ')' { 
+      $1->arguments= $5;
     }
 ;
 // }}}
