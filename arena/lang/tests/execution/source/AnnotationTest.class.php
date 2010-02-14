@@ -41,7 +41,7 @@
         public void reset() { }
       }');
     }
-    
+
     /**
      * Test simple annotation
      *

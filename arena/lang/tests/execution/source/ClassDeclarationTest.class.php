@@ -163,5 +163,38 @@
         $this->assertEquals(new ArrayList(1, 2, 3), $elements);
       }
     }
+
+    /**
+     * Test class annotations
+     *
+     */
+    #[@test]
+    public function classAnnotation() {
+      $fixture= $this->define('class', 'AnnotationsFor'.$this->name, NULL, '{ }', array('[@fixture]'));
+      $this->assertTrue($fixture->hasAnnotation('fixture'));
+      $this->assertEquals(NULL, $fixture->getAnnotation('fixture'));
+    }
+
+    /**
+     * Test interface annotations
+     *
+     */
+    #[@test]
+    public function interfaceAnnotation() {
+      $fixture= $this->define('interface', 'AnnotationsFor'.$this->name, NULL, '{ }', array('[@fixture]'));
+      $this->assertTrue($fixture->hasAnnotation('fixture'));
+      $this->assertEquals(NULL, $fixture->getAnnotation('fixture'));
+    }
+
+    /**
+     * Test interface annotations
+     *
+     */
+    #[@test]
+    public function enumAnnotation() {
+      $fixture= $this->define('enum', 'AnnotationsFor'.$this->name, NULL, '{ }', array('[@fixture]'));
+      $this->assertTrue($fixture->hasAnnotation('fixture'));
+      $this->assertEquals(NULL, $fixture->getAnnotation('fixture'));
+    }
   }
 ?>

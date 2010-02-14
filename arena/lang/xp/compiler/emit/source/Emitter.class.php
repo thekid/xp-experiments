@@ -1695,6 +1695,11 @@
 
       // Finish
       $op->append('}');
+
+      $this->metadata[0]['class']= array(
+        DETAIL_COMMENT     => preg_replace('/\n\s+\* ?/', "\n", "\n ".$declaration->comment),
+        DETAIL_ANNOTATIONS => $this->annotationsAsMetadata((array)$declaration->annotations)
+      );
       
       $this->leave();
       $this->registerClass($op, $declaration->name->name, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
@@ -1735,6 +1740,11 @@
       $op->append(' {');
       $this->emitAll($op, (array)$declaration->body);
       $op->append('}');
+
+      $this->metadata[0]['class']= array(
+        DETAIL_COMMENT     => preg_replace('/\n\s+\* ?/', "\n", "\n ".$declaration->comment),
+        DETAIL_ANNOTATIONS => $this->annotationsAsMetadata((array)$declaration->annotations)
+      );
       
       $this->leave();
       $this->registerClass($op, $declaration->name->name, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
@@ -1838,7 +1848,8 @@
       $op->append('}');
       
       $this->metadata[0]['class']= array(
-        DETAIL_COMMENT => preg_replace('/\n\s+\* ?/', "\n", "\n ".$declaration->comment)
+        DETAIL_COMMENT     => preg_replace('/\n\s+\* ?/', "\n", "\n ".$declaration->comment),
+        DETAIL_ANNOTATIONS => $this->annotationsAsMetadata((array)$declaration->annotations)
       );
 
       $this->leave();      
