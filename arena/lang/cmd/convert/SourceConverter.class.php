@@ -40,6 +40,7 @@
       ST_FUNC_ARGS    = 'farg',
       ST_INTF         = 'intf',
       ST_CLASS        = 'clss',
+      ST_CAST         = 'cast',
       ST_EXTENDS      = 'extn',
       ST_USES         = 'uses',
       ST_ANONYMOUS    = 'anon',
@@ -647,6 +648,39 @@
 
           case in_array(self::ST_FUNC_BODY, $state) && $token[0] === T_CONCAT_EQUAL: {
             $out.= ' ~=';
+            break;
+          }
+
+          case in_array(self::ST_FUNC_BODY, $state) && (
+            $token[0] === T_STRING_CAST ||
+            $token[0] === T_INT_CAST ||
+            $token[0] === T_DOUBLE_CAST ||
+            $token[0] === T_BOOL_CAST ||
+            $token[0] === T_ARRAY_CAST
+          ): {
+            array_unshift($brackets, 0);
+            array_unshift($state, self::ST_CAST);
+            $cast= $token[1];
+            break;
+          }
+
+          case self::ST_CAST.'(': {
+            $out.= $token[1];
+            $brackets[0]++;
+            break;
+          }
+
+          case self::ST_CAST.')': {
+            $brackets[0]--;
+            $out.= $token[1];
+            break;
+          }
+
+          case self::ST_CAST.';': {
+            if ($brackets[0] <= 0) {
+              array_shift($state);
+              $out.= ' as '.$this->mapName(trim($cast, '()'), $package, $imports).';';
+            }
             break;
           }
 
