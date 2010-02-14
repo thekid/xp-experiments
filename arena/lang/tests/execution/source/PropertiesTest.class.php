@@ -45,7 +45,11 @@
               return $offset >= 0 && $offset < $this.length ? $this.buffer[$offset] : null;
             }
             set {
-              $this.buffer= substr($this.buffer, 0, $offset) ~ $value ~ substr($this.buffer, $offset+ 1);
+              if (null === $offset) {
+                $this.buffer ~= $value;
+              } else {
+                $this.buffer= substr($this.buffer, 0, $offset) ~ $value ~ substr($this.buffer, $offset+ 1);
+              }
             }
             unset {
               throw new lang.IllegalAccessException("Cannot remove string offsets");
@@ -100,6 +104,16 @@
     }
 
     /**
+     * Test writing the length property
+     *
+     */
+    #[@test, @expect('lang.IllegalAccessException')]
+    public function addLength() {
+      $str= $this->fixture->newInstance('Hello');
+      $str->length++;
+    }
+
+    /**
      * Test writing the chars property
      *
      */
@@ -119,6 +133,17 @@
       $str= $this->fixture->newInstance('Hello');
       $this->assertEquals('H', $str[0], 0);
       $this->assertEquals('o', $str[4], 4);
+    }
+
+    /**
+     * Test adding via []
+     *
+     */
+    #[@test]
+    public function offsetAdd() {
+      $str= $this->fixture->newInstance('Hello');
+      $str[]= '!';
+      $this->assertEquals('Hello!', $str->toString());
     }
 
     /**
