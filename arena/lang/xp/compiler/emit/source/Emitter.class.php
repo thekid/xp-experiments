@@ -1323,6 +1323,30 @@
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$method->annotations)
       );
 
+      // FIXME: Put this in ...asMetadata()
+      if ($this->scope[0]->declarations[0]->name->isGeneric()) {
+      
+        // Return type
+        foreach ($this->scope[0]->declarations[0]->name->components as $component) {
+          if ($component->equals($method->returns)) {
+            $this->metadata[0][1][$method->name][DETAIL_ANNOTATIONS]['generic']['return']= $component->compoundName();
+          }
+        }
+        
+        // Parameters
+        $genericParams= '';
+        $usesGenerics= FALSE;
+        foreach ((array)$method->arguments as $arg) {
+          foreach ($this->scope[0]->declarations[0]->name->components as $component) {
+            if (!$usesGenerics && $component->equals($arg['type'])) $usesGenerics= TRUE;
+            $genericParams.= ', '.$arg['type']->compoundName();
+          }
+        }
+        if ($usesGenerics) {
+          $this->metadata[0][1][$method->name][DETAIL_ANNOTATIONS]['generic']['params']= substr($genericParams, 2);
+        }
+      }
+
       array_shift($this->method);
       $this->leave();
     }
@@ -1391,6 +1415,23 @@
         DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$constructor->comment),
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$constructor->annotations)
       );
+
+      // FIXME: Put this in ...asMetadata()
+      if ($this->scope[0]->declarations[0]->name->isGeneric()) {
+      
+        // Parameters
+        $genericParams= '';
+        $usesGenerics= FALSE;
+        foreach ((array)$constructor->arguments as $arg) {
+          foreach ($this->scope[0]->declarations[0]->name->components as $component) {
+            if (!$usesGenerics && $component->equals($arg['type'])) $usesGenerics= TRUE;
+            $genericParams.= ', '.$arg['type']->compoundName();
+          }
+        }
+        if ($usesGenerics) {
+          $this->metadata[0][1]['__construct'][DETAIL_ANNOTATIONS]['generic']['params']= substr($genericParams, 2);
+        }
+      }
 
       array_shift($this->method);
       $this->leave();
@@ -1840,8 +1881,18 @@
       }
       
       // Generics
+      $meta= array();
       if ($declaration->name->isGeneric()) {
-        $op->append('public $__generic;');    // 5.7-SERIES
+
+        // 5.7-SERIES
+        $op->append('public $__generic;');
+        
+        // 5.8-SERIES
+        $meta= array('generic' => array('self' => ''));
+        $s= sizeof($declaration->name->components)- 1;
+        foreach ($declaration->name->components as $i => $component) {
+          $meta['generic']['self'].= ($i < $s ? ', ' : '').$component->compoundName();
+        }
       }
       
       // Finish
@@ -1849,7 +1900,7 @@
       
       $this->metadata[0]['class']= array(
         DETAIL_COMMENT     => preg_replace('/\n\s+\* ?/', "\n", "\n ".$declaration->comment),
-        DETAIL_ANNOTATIONS => $this->annotationsAsMetadata((array)$declaration->annotations)
+        DETAIL_ANNOTATIONS => array_merge($meta, $this->annotationsAsMetadata((array)$declaration->annotations))
       );
 
       $this->leave();      

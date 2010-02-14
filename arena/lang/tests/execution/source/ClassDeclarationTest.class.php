@@ -57,8 +57,9 @@
           $this.elements= $initial;
         }
         
-        public self add(T? $element) {
+        public T add(T? $element) {
           $this.elements[]= $element;
+          return $element;
         }
         
         public static void test(string[] $args) {
@@ -70,6 +71,9 @@
         }
       }');
       
+      $this->assertEquals(array('self' => 'T'), $class->getAnnotation('generic'));
+      $this->assertEquals(array('params' => 'T'), $class->getConstructor()->getAnnotation('generic'));
+      $this->assertEquals(array('params' => 'T', 'return' => 'T'), $class->getMethod('add')->getAnnotation('generic'));
       $this->assertEquals(
         array('Ciao', 'Salut', 'Hello', 'Hallo', 'Hola'),
         $class->getMethod('test')->invoke(NULL, array(array('Hello', 'Hallo', 'Hola')))->elements
