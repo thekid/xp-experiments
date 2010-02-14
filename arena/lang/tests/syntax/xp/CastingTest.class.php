@@ -112,7 +112,7 @@
     }
 
     /**
-     * Test prefix notation
+     * Test "as" notation
      *
      */
     #[@test]
@@ -123,11 +123,33 @@
           'variable'    => new VariableNode('a'),
           'expression'  => new CastNode(array(
             'type'        => new TypeName('com.example.bank.Account'),
+            'check'       => TRUE,
             'expression'  => new VariableNode('b')
           )),
           'op'          => '='
         ))),
         $this->parse('$a= $b as com.example.bank.Account;')
+      );
+    }
+
+    /**
+     * Test "as" notation
+     *
+     */
+    #[@test]
+    public function postfixQualifiedNonEnforcedCast() {
+      $this->assertEquals(
+        array(new AssignmentNode(array(
+          'free'        => TRUE,
+          'variable'    => new VariableNode('a'),
+          'expression'  => new CastNode(array(
+            'type'        => new TypeName('com.example.bank.Account'),
+            'check'       => FALSE,
+            'expression'  => new VariableNode('b')
+          )),
+          'op'          => '='
+        ))),
+        $this->parse('$a= $b as com.example.bank.Account?;')
       );
     }
   }

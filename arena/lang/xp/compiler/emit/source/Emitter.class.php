@@ -268,7 +268,7 @@
       } else if ($cast->type->isArray() || $cast->type->isMap()) {
         $op->append('(array)');
         $this->emitOne($op, $cast->expression);
-      } else {
+      } else if ($cast->check) {
         $op->append('cast(');
         $this->emitOne($op, $cast->expression);
         $op->append(', \'')->append($this->resolveType($cast->type)->name())->append('\')');

@@ -738,8 +738,8 @@ expression:
   | T_CLONE expression { 
       $$= $yyLex->create(new CloneNode($2)); break;
     }
-  | expression T_AS typeref { 
-      $$= $yyLex->create(new CastNode(array('type' => $3, 'expression' => $1))); 
+  | expression T_AS argtyperef { 
+      $$= $yyLex->create(new CastNode(array_merge($3, array('expression' => $1)))); 
     }
   | assignment { 
       $$= $yyLex->create(new AssignmentNode($1)); 
