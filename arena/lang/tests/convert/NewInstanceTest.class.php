@@ -38,5 +38,18 @@
         SourceConverter::ST_FUNC_BODY
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function newRunnableWithClassConstant() {
+      $this->assertConversion(
+        '$r= new self($a, $b) { public void run() { /* ... */ }};',
+        '$r= newinstance(__CLASS__, array($a, $b), "{ public function run() { /* ... */ }}");',
+        SourceConverter::ST_FUNC_BODY
+      );
+    }
   }
 ?>

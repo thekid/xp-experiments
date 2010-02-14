@@ -512,7 +512,17 @@
           // Anonymous class creation - newinstance('fully.qualified', array(...), '{ source }');
           // -> new fully.qualified(...) { rewritten-source };
           case self::ST_FUNC_BODY.self::T_NEWINSTANCE: {
-            $out.= 'new '.trim($t[$i+ 2][1], '"\'');
+            switch ($t[$i+ 2][0]) {
+              case T_CONSTANT_ENCAPSED_STRING: $type= $this->mapName(trim($t[$i+ 2][1], '\'"'), $package, $imports); break;
+              case T_CLASS_C: $type= 'self'; break;
+              default: $this->warn(new IllegalStateException(sprintf(
+                'Cannot determine class type token from %s ("%s") @ %s',
+                token_name($t[$i+ 2][0]),
+                $t[$i+ 2][1],
+                $state[0]
+              )));
+            }
+            $out.= 'new '.$type;
             $i+= 2;
             array_unshift($state, self::ST_ANONYMOUS);
             break;
