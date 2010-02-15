@@ -1698,8 +1698,7 @@
           ))
         ),
         'extension'  => NULL,
-        'comment'    => '(Generated)',
-        'holder'     => $declaration
+        'comment'    => '(Generated)'
       ));
 
       // Members
@@ -1866,8 +1865,7 @@
           'annotations'  => NULL,
           'body'         => $body,
           'comment'      => '(Generated)',
-          'position'     => $declaration->position,
-          'holder'       => $declaration
+          'position'     => $declaration->position
         )));
       } else if ($this->inits[0][TRUE]) {
 
