@@ -1480,7 +1480,8 @@
           'parameters' => $defines[$name][1],
           'throws'     => NULL,
           'body'       => $statements,
-          'extension'  => NULL
+          'extension'  => NULL,
+          'comment'      => '(Generated)'
         )));
       }
     }
