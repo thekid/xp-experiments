@@ -43,6 +43,7 @@
     'xp.compiler.ast.ArrayNode',
     'xp.compiler.ast.MapNode',
     'xp.compiler.ast.ClassMemberNode',
+    'xp.compiler.ast.ClassConstantNode',
     'xp.compiler.ast.InstanceOfNode',
     'xp.compiler.ast.ComparisonNode',
     'xp.compiler.ast.BinaryOpNode',
@@ -116,6 +117,7 @@
 %token T_DOTS 330
 %token T_AS 331
 %token T_THIS 332
+%token T_CONST 334
 
 %token T_VARIABLE 340
 %token T_RETURN 341
@@ -318,6 +320,9 @@ field:
       $3->type= $2;
       $3->handlers= $5;
       $$= $3;
+    }
+  | T_CONST T_WORD T_WORD '=' literal ';' {
+      $$= $yyLex->create(new ClassConstantNode($3, new TypeName($2), $5));
     }
 ;
 

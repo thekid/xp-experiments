@@ -122,6 +122,27 @@
     }
 
     /**
+     * Test class constants
+     *
+     */
+    #[@test]
+    public function classConstants() {
+      $class= $this->define('class', 'ExecutionTestConstants', NULL, '{
+        const int THRESHHOLD= 5;
+        const string NAME= "Timm";
+        const double TIMEOUT= 0.5;
+        const bool PHP= FALSE;
+        const var NOTHING = NULL;
+      }');
+      
+      $this->assertEquals(5, $class->_reflect->getConstant('THRESHHOLD'));
+      $this->assertEquals('Timm', $class->_reflect->getConstant('NAME'));
+      $this->assertEquals(0.5, $class->_reflect->getConstant('TIMEOUT'));
+      $this->assertEquals(FALSE, $class->_reflect->getConstant('PHP'));
+      $this->assertEquals(NULL, $class->_reflect->getConstant('NOTHING'));
+    }
+
+    /**
      * Test static member initialization to complex expressions.
      *
      */

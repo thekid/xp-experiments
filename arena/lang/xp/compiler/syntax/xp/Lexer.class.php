@@ -33,6 +33,7 @@
         'abstract'      => xp搾ompiler新yntax暖p感arser::T_ABSTRACT,
         'inline'        => xp搾ompiler新yntax暖p感arser::T_INLINE,
         'native'        => xp搾ompiler新yntax暖p感arser::T_NATIVE,
+        'const'         => xp搾ompiler新yntax暖p感arser::T_CONST,
         
         'package'       => xp搾ompiler新yntax暖p感arser::T_PACKAGE,
         'import'        => xp搾ompiler新yntax暖p感arser::T_IMPORT,

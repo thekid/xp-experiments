@@ -1558,6 +1558,18 @@
         DETAIL_ANNOTATIONS  => array('type' => $this->resolveType(new TypeName('self'))->name())
       );
     }  
+
+    /**
+     * Emit a class constant
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ClassConstantNode const
+     */
+    protected function emitClassConstant($op, ClassConstantNode $const) {    
+      $op->append('const ')->append($const->name)->append('=');
+      $this->emitOne($op, $const->value);
+      $op->append(';');
+    }
     
     /**
      * Emit a class field
