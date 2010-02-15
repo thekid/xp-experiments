@@ -15,6 +15,10 @@
     'xp.compiler.emit.Strings', 
     'text.parser.generic.AbstractLexer'
   );
+  
+  define('MODIFIER_PACKAGE',  2048);
+  define('MODIFIER_INLINE',   4096);
+  define('MODIFIER_NATIVE',   8192);
 
   /**
    * Lexer for XP language

@@ -81,6 +81,28 @@
     }
 
     /**
+     * Test declaring a class
+     *
+     */
+    #[@test]
+    public function classInsidePackage() {
+      $class= $this->define('class', 'ClassInPackage', NULL, '{ }', array('package demo;'));
+      $this->assertEquals('demo.SourceClassInPackage', $class->getName());
+      $this->assertEquals('SourceClassInPackage', xp::reflect($class->getName()));
+    }
+
+    /**
+     * Test declaring a class
+     *
+     */
+    #[@test]
+    public function packageClassInsidePackage() {
+      $class= $this->define('package class', 'PackageClassInPackage', NULL, '{ }', array('package demo;'));
+      $this->assertEquals('demo.SourcePackageClassInPackage', $class->getName());
+      $this->assertEquals('demo·SourcePackageClassInPackage', xp::reflect($class->getName()));
+    }
+
+    /**
      * Test declaring an interface
      *
      */

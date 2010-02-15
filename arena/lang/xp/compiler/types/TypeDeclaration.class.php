@@ -60,7 +60,10 @@
      * @return  string
      */
     public function literal() {
-      return $this->tree->declaration->name->name;
+      return isset($this->tree->declaration->literal)
+        ? $this->tree->declaration->literal 
+        : $this->tree->declaration->name->name
+      ;
     }
 
     /**

@@ -167,6 +167,10 @@
 
 %%
 
+// Either of:
+// package, imports, type
+// imports, type
+// type
 start:
     package_opt imports_opt declaration {
       $$= new ParseTree();
@@ -181,8 +185,8 @@ start:
 package_opt:
     /* empty */
   | T_PACKAGE { $1= $yyLex->create(new PackageNode()); } qualifiedname ';' {
-    $1->name= $3;
-  }
+      $1->name= $3;
+    }
 ;
 
 imports_opt:
@@ -996,6 +1000,7 @@ modifier:
 	T_PUBLIC    { $$= MODIFIER_PUBLIC; }
   | T_PROTECTED { $$= MODIFIER_PROTECTED; }
   | T_PRIVATE   { $$= MODIFIER_PRIVATE; }
+  | T_PACKAGE   { $$= MODIFIER_PACKAGE; }
   | T_STATIC    { $$= MODIFIER_STATIC; }
   | T_ABSTRACT  { $$= MODIFIER_ABSTRACT; }
   | T_FINAL     { $$= MODIFIER_FINAL; }

@@ -1615,6 +1615,38 @@
         DETAIL_ANNOTATIONS  => array('type' => $this->resolveType($field->type)->name())
       );
     }
+    
+    /**
+     * Emit type name and modifiers
+     *
+     * @param   resource op
+     * @param   string type
+     * @param   xp.compiler.ast.TypeDeclarationNode declaration
+     * @param   xp.compiler.types.TypeName[] dependencies
+     */
+    protected function emitTypeName($op, $type, TypeDeclarationNode $declaration, $dependencies) {
+
+      // Check whether class needs to be fully qualified
+      if ($declaration->modifiers & MODIFIER_PACKAGE) {
+        $op->append('$package= \'')->append($this->scope[0]->package->name)->append("';");
+        $declaration->literal= strtr($this->scope[0]->package->name, '.', '·').'·'.$declaration->name->name;
+      } else {
+        $declaration->literal= $declaration->name->name;
+      }
+      
+      // Ensure parent class and interfaces are loaded.
+      $this->emitUses($op, $dependencies);
+
+      // Emit abstract and final modifiers
+      if (Modifiers::isAbstract($declaration->modifiers)) {
+        $op->append('abstract ');
+      } else if (Modifiers::isFinal($declaration->modifiers)) {
+        $op->append('final ');
+      } 
+      
+      // Emit declaration
+      $op->append(' ')->append($type)->append(' ')->append($declaration->literal);
+    }
 
     /**
      * Emit an enum declaration
@@ -1643,7 +1675,6 @@
      *   }
      * </code>
      *
-     * @see     
      * @param   resource op
      * @param   xp.compiler.ast.EnumNode declaration
      */
@@ -1656,20 +1687,14 @@
       $this->enter(new TypeDeclarationScope());
 
       // Ensure parent class and interfaces are loaded
-      $this->emitUses($op, array_merge(
+      $this->emitTypeName($op, 'class', $declaration, array_merge(
         array($parent), 
         (array)$declaration->implements
       ));
-
-      if (Modifiers::isAbstract($declaration->modifiers)) {
-        $op->append('abstract ');
-        $abstract= TRUE;
-      } else if (Modifiers::isFinal($declaration->modifiers)) {
-        $op->append('final ');
-      }
-      $op->append(' class '.$declaration->name->name.' extends '.$parentType->literal());
+      $op->append(' extends '.$parentType->literal());
       array_unshift($this->metadata, array(array(), array()));
       array_unshift($this->properties, array('get' => array(), 'set' => array()));
+      $abstract= Modifiers::isAbstract($declaration->modifiers);
 
       // Interfaces
       if ($declaration->implements) {
@@ -1745,7 +1770,7 @@
       );
       
       $this->leave();
-      $this->registerClass($op, $declaration->name->name, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
+      $this->registerClass($op, $declaration->literal, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
       array_shift($this->properties);
       array_shift($this->metadata);
     }
@@ -1766,11 +1791,7 @@
         }
       }
       $this->enter(new TypeDeclarationScope());    
-
-      // Ensure parent interfaces are loaded
-      $this->emitUses($op, (array)$declaration->parents);
-
-      $op->append('interface '.$declaration->name->name);
+      $this->emitTypeName($op, 'interface', $declaration, (array)$declaration->parents);
       array_unshift($this->metadata, array(array(), array()));
       if ($declaration->parents) {
         $op->append(' extends ');
@@ -1790,7 +1811,7 @@
       );
       
       $this->leave();
-      $this->registerClass($op, $declaration->name->name, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
+      $this->registerClass($op, $declaration->literal, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
       array_shift($this->metadata);
     }
 
@@ -1804,19 +1825,11 @@
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Object');
       $parentType= $this->resolveType($parent, FALSE);
       $this->enter(new TypeDeclarationScope());    
-
-      // Ensure parent class and interfaces are loaded.
-      $this->emitUses($op, array_merge(
+      $this->emitTypeName($op, 'class', $declaration, array_merge(
         $declaration->parent ? array($parent) : array(),
         (array)$declaration->implements
       ));
-    
-      if (Modifiers::isAbstract($declaration->modifiers)) {
-        $op->append('abstract ');
-      } else if (Modifiers::isFinal($declaration->modifiers)) {
-        $op->append('final ');
-      }
-      $op->append(' class '.$declaration->name->name.' extends '.$parentType->literal());
+      $op->append(' extends '.$parentType->literal());
       array_unshift($this->metadata, array(array(), array()));
       array_unshift($this->properties, array());
       array_unshift($this->inits, array(FALSE => array(), TRUE => array()));
@@ -1899,7 +1912,7 @@
       );
 
       $this->leave();      
-      $this->registerClass($op, $declaration->name->name, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
+      $this->registerClass($op, $declaration->literal, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
       array_shift($this->properties);
       array_shift($this->metadata);
       array_shift($this->inits);      
