@@ -25,18 +25,19 @@
       self::$AVERAGE= newinstance(__CLASS__, array(0, 'AVERAGE'), '{
         static function __static() {}
         public function calculate(array $values) {
-          return array_sum($values) / sizeof ($values);
+          return array_sum($values) / sizeof($values);
         }
       }');
       self::$MEDIAN= newinstance(__CLASS__, array(1, 'MEDIAN'), '{
         static function __static() {}
         public function calculate(array $values) {
           sort($values);
-          if (sizeof($values) % 2 != 0) return $values[((sizeof($values)+ 1) / 2)- 1];
-          return 0.5 * (
-            $values[intval(sizeof($values) / 2)- 1] +
-            $values[intval(sizeof($values) / 2)]
-          );            
+          $s= sizeof($values);
+          if ($s % 2 != 0) {
+            return $values[(($s+ 1) / 2)- 1];
+          } else {
+            return 0.5 * ($values[intval($s / 2)- 1] + $values[intval($s / 2)]);
+          }
         }
       }');
       self::$MAXIMUM= newinstance(__CLASS__, array(2, 'MAXIMUM'), '{
