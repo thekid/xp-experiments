@@ -7,13 +7,14 @@
   uses('lang.Enum');
 
   /**
-   * (Insert class' description here)
+   * Aggregations
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @test     xp://net.xp_framework.unittest.math.AggregationTest
+   * @see      http://en.wikipedia.org/wiki/Median
+   * @see      php://min
+   * @see      php://max
    */
-  class Aggregation extends Enum {
+  abstract class Aggregation extends Enum {
     public static
       $AVERAGE,
       $MEDIAN,
@@ -26,10 +27,8 @@
         public function calculate(array $values) {
           return array_sum($values) / sizeof ($values);
         }
-      }'
-      );
-      
-      self::$MEDIAN= newinstance(__CLASS__, array(0, 'MEDIAN'), '{
+      }');
+      self::$MEDIAN= newinstance(__CLASS__, array(1, 'MEDIAN'), '{
         static function __static() {}
         public function calculate(array $values) {
           sort($values);
@@ -39,29 +38,28 @@
             $values[intval(sizeof($values) / 2)]
           );            
         }
-      }'
-      );
-      
-      self::$MAXIMUM= newinstance(__CLASS__, array(0, 'MAXIMUM'), '{
+      }');
+      self::$MAXIMUM= newinstance(__CLASS__, array(2, 'MAXIMUM'), '{
         static function __static() {}
         public function calculate(array $values) {
-          $max= $values[0];
-          foreach ($values as $v) { $max= max($max, $v); }
-          return $max;
+          return max($values);
         }
-      }'
-      );
-
-      self::$MINIMUM= newinstance(__CLASS__, array(0, 'MINIMUM'), '{
+      }');
+      self::$MINIMUM= newinstance(__CLASS__, array(3, 'MINIMUM'), '{
         static function __static() {}
         public function calculate(array $values) {
-          $min= $values[0];
-          foreach ($values as $v) { $min= min($min, $v); }
-          return $min;
+          return min($values);
         }
-      }'
-      );
+      }');
     }
+
+    /**
+     * Calculates aggregation of a list of values
+     *
+     * @param   var[] values
+     * @return  var
+     */
+    public abstract function calculate(array $values);
     
     /**
      * Returns all enum members
