@@ -15,7 +15,7 @@
    *
    * @see      xp://net.xp_framework.unittest.core.overloading.TypeDispatchFixture
    */
-  class TypeDispatchTest extends TestCase {
+  class RuntimeDispatchingTest extends TestCase {
   
     /**
      * Sets up test case
@@ -67,7 +67,7 @@
      */
     #[@test]
     public function testVariant() {
-      $this->assertEquals('O:net.xp_framework.unittest.core.overloading.TypeDispatchTest;', $this->fixture->serialize($this));
+      $this->assertEquals('O:net.xp_framework.unittest.core.overloading.RuntimeDispatchingTest;', $this->fixture->serialize($this));
     }
 
     /**
