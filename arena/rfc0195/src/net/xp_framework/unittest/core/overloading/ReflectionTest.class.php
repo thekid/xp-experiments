@@ -39,6 +39,19 @@
         $this->fixture->getMethod('serialize')->getName()
       );
     }
+    
+    /**
+     * Assertion helper
+     *
+     * @param   lang.Type[]
+     * @param   lang.reflect.Routine
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertSignatureEquals($types, Routine $method) {
+      foreach ($types as $i => $type) {
+        $this->assertEquals($type, $method->getParameter($i)->getType(), 'parameter #'.$i);
+      }
+    }
  
     /**
      * Test
@@ -46,9 +59,9 @@
      */
     #[@test]
     public function withStringSignature() {
-      $this->assertEquals(
-        'serialize··þstring¸þstring', 
-        $this->fixture->getMethod('serialize', array(Primitive::$STRING))->getName()
+      $this->assertSignatureEquals(
+        array(Primitive::$STRING, Primitive::$STRING), 
+        $this->fixture->getMethod('serialize', array(Primitive::$STRING))
       );
     }
 
@@ -58,9 +71,9 @@
      */
     #[@test]
     public function withStringStringSignature() {
-      $this->assertEquals(
-        'serialize··þstring¸þstring', 
-        $this->fixture->getMethod('serialize', array(Primitive::$STRING, Primitive::$STRING))->getName()
+      $this->assertSignatureEquals(
+        array(Primitive::$STRING, Primitive::$STRING), 
+        $this->fixture->getMethod('serialize', array(Primitive::$STRING, Primitive::$STRING))
       );
     }
 
@@ -70,9 +83,9 @@
      */
     #[@test]
     public function withIntSignature() {
-      $this->assertEquals(
-        'serialize··þint', 
-        $this->fixture->getMethod('serialize', array(Primitive::$INTEGER))->getName()
+      $this->assertSignatureEquals(
+        array(Primitive::$INTEGER), 
+        $this->fixture->getMethod('serialize', array(Primitive::$INTEGER))
       );
     }
 
@@ -82,9 +95,9 @@
      */
     #[@test]
     public function withObjectSignature() {
-      $this->assertEquals(
-        'serialize··Generic', 
-        $this->fixture->getMethod('serialize', array(XPClass::forName('lang.Generic')))->getName()
+      $this->assertSignatureEquals(
+        array(XPClass::forName('lang.Generic')), 
+        $this->fixture->getMethod('serialize', array(XPClass::forName('lang.Generic')))
       );
     }
 
@@ -94,9 +107,9 @@
      */
     #[@test]
     public function withDateSignature() {
-      $this->assertEquals(
-        'serialize··Date', 
-        $this->fixture->getMethod('serialize', array(XPClass::forName('util.Date')))->getName()
+      $this->assertSignatureEquals(
+        array(XPClass::forName('util.Date')), 
+        $this->fixture->getMethod('serialize', array(XPClass::forName('util.Date')))
       );
     }
 
@@ -108,6 +121,5 @@
     public function nonExistantOverload() {
       $this->fixture->getMethod('serialize', array(Primitive::$DOUBLE));
     }
-
   }
 ?>
