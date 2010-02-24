@@ -1,4 +1,9 @@
 RFC #0195: Type-dispatch methods
 ========================================================================
 
-Note: This requires XP 5.8.0 to work!
+Testing
+-------
+To run all overloading-related tests, use the following:
+<pre>
+  $ unittest net.xp_framework.unittest.core.overloading.**
+</pre>
