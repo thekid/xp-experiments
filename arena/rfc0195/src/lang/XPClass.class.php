@@ -173,13 +173,23 @@
      * Gets a method by a specified name.
      *
      * @param   string name
+     * @param   lang.Type[] types default NULL
      * @return  lang.reflect.Method
      * @see     xp://lang.reflect.Method
      * @throws  lang.ElementNotFoundException
      */
-    public function getMethod($name) {
+    public function getMethod($name, $types= NULL) {
       if ($this->hasMethod($name)) {
-        return new Method($this->_class, $this->_reflect->getMethod($name));
+        $m= $this->_reflect->getMethod($name);
+        if (NULL === $types) return new Method($this->_class, $m);
+        
+        $s= $m->getStaticVariables();
+        foreach (@$s['overloads'][sizeof($types)] as $name => $signature) { 
+          foreach ($signature as $i => $literal) {
+            if (!Type::forName(substr($literal, 1))->equals($types[$i])) continue 2;
+          }
+          return new Method($this->_class, $this->_reflect->getMethod($name));
+        }
       }
       raise('lang.ElementNotFoundException', 'No such method "'.$name.'" in class '.$this->name);
     }
