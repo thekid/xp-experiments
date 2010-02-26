@@ -1334,20 +1334,16 @@
       if ($this->scope[0]->declarations[0]->name->isGeneric()) {
       
         // Return type
-        foreach ($this->scope[0]->declarations[0]->name->components as $component) {
-          if ($component->equals($method->returns)) {
-            $this->metadata[0][1][$method->name][DETAIL_ANNOTATIONS]['generic']['return']= $component->compoundName();
-          }
+        if ($this->scope[0]->declarations[0]->name->isPlaceholder($method->returns)) {
+          $this->metadata[0][1][$method->name][DETAIL_ANNOTATIONS]['generic']['return']= $method->returns->compoundName();
         }
         
         // Parameters
         $genericParams= '';
         $usesGenerics= FALSE;
         foreach ((array)$method->parameters as $arg) {
-          foreach ($this->scope[0]->declarations[0]->name->components as $component) {
-            if (!$usesGenerics && $component->equals($arg['type'])) $usesGenerics= TRUE;
-            $genericParams.= ', '.$arg['type']->compoundName();
-          }
+          if (!$usesGenerics && $this->scope[0]->declarations[0]->name->isPlaceHolder($arg['type'])) $usesGenerics= TRUE;
+          $genericParams.= ', '.$arg['type']->compoundName();
         }
         if ($usesGenerics) {
           $this->metadata[0][1][$method->name][DETAIL_ANNOTATIONS]['generic']['params']= substr($genericParams, 2);
@@ -1429,11 +1425,9 @@
         // Parameters
         $genericParams= '';
         $usesGenerics= FALSE;
-        foreach ((array)$constructor->parameters as $arg) {
-          foreach ($this->scope[0]->declarations[0]->name->components as $component) {
-            if (!$usesGenerics && $component->equals($arg['type'])) $usesGenerics= TRUE;
-            $genericParams.= ', '.$arg['type']->compoundName();
-          }
+        foreach ((array)$method->parameters as $arg) {
+          if (!$usesGenerics && $this->scope[0]->declarations[0]->name->isPlaceHolder($arg['type'])) $usesGenerics= TRUE;
+          $genericParams.= ', '.$arg['type']->compoundName();
         }
         if ($usesGenerics) {
           $this->metadata[0][1]['__construct'][DETAIL_ANNOTATIONS]['generic']['params']= substr($genericParams, 2);
@@ -1901,11 +1895,6 @@
       // Generics
       $meta= array();
       if ($declaration->name->isGeneric()) {
-
-        // 5.7-SERIES
-        $op->append('public $__generic;');
-        
-        // 5.8-SERIES
         $meta= array('generic' => array('self' => ''));
         $s= sizeof($declaration->name->components)- 1;
         foreach ($declaration->name->components as $i => $component) {

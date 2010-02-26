@@ -51,19 +51,21 @@
     #[@test]
     public function genericClass() {
       $class= $this->define('class', 'ListOf<T>', NULL, '{
-        public T[] $elements;
-        
-        public __construct(T?... $initial) {
-          $this.elements= $initial;
-        }
+        protected T[] $elements;
         
         public T add(T? $element) {
           $this.elements[]= $element;
           return $element;
         }
         
+        public T[] elements() {
+          return $this.elements;
+        }
+        
         public static void test(string[] $args) {
-          $l= new self<string>("Ciao", "Salut");
+          $l= new self<string>();
+          $l.add("Ciao");
+          $l.add("Salut");
           foreach ($arg in $args) {
             $l.add($arg);
           }
@@ -72,11 +74,11 @@
       }');
       
       $this->assertEquals(array('self' => 'T'), $class->getAnnotation('generic'));
-      $this->assertEquals(array('params' => 'T'), $class->getConstructor()->getAnnotation('generic'));
       $this->assertEquals(array('params' => 'T', 'return' => 'T'), $class->getMethod('add')->getAnnotation('generic'));
+      $this->assertEquals(array('return' => 'T[]'), $class->getMethod('elements')->getAnnotation('generic'));
       $this->assertEquals(
         array('Ciao', 'Salut', 'Hello', 'Hallo', 'Hola'),
-        $class->getMethod('test')->invoke(NULL, array(array('Hello', 'Hallo', 'Hola')))->elements
+        $class->getMethod('test')->invoke(NULL, array(array('Hello', 'Hallo', 'Hola')))->elements()
       );
     }
 

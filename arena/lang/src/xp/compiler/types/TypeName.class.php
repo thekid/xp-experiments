@@ -5,7 +5,19 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Represents a type name
+   *
+   * Type literals and their representation
+   * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   * <pre>
+   *   int          : TypeName('int')
+   *   var          : TypeName('var')
+   *   string       : TypeName('string')
+   *   bool[]       : TypeName('bool[]')
+   *   [string:var] : TypeName('[string:var]')
+   *   List<T>      : TypeName('List', [TypeName('T')])
+   *   Map<K, V>    : TypeName('Map', [TypeName('K'), TypeName('V')])
+   * </pre>
    *
    * @purpose  Value object
    */
@@ -22,7 +34,7 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Creates a new typename instance
      *
      * @param   string name
      * @param   xp.compiler.types.TypeName[] components
@@ -102,6 +114,26 @@
      */
     public function isGeneric() {
       return !empty($this->components);
+    }
+
+    /**
+     * Return whether this type is a placeholder. Given a type name "T" or
+     * "T[]", this method will return true if "T" is contained in this 
+     * types' components, e.g. as in "List<T>".
+     *
+     * @param   xp.compiler.types.TypeName ref
+     * @return  bool
+     */
+    public function isPlaceholder(self $ref) {
+      if ($ref->isArray()) {
+        $cmp= $ref->arrayComponentType();
+      } else {
+        $cmp= $ref;
+      }
+      foreach ($this->components as $component) {
+        if ($component->name === $cmp->name) return TRUE;
+      }
+      return FALSE;
     }
 
     /**
