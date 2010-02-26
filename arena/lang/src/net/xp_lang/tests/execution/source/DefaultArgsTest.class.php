@@ -67,8 +67,8 @@
         }
       }');
       with ($i= $class->getMethod('newInstance')); {
-        $this->assertClass($i->invoke(NULL, array()), 'lang.Object');
-        $this->assertClass($i->invoke(NULL, array(XPClass::forName('util.Date'))), 'util.Date');
+        $this->assertInstanceOf('lang.Object', $i->invoke(NULL, array()));
+        $this->assertInstanceOf('util.Date', $i->invoke(NULL, array(XPClass::forName('util.Date'))));
       }
     }
   }

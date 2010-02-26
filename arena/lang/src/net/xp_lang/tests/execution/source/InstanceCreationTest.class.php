@@ -32,7 +32,7 @@
      */
     #[@test]
     public function newObject() {
-      $this->assertClass($this->run('return new Object();'), 'lang.Object');
+      $this->assertInstanceOf('lang.Object', $this->run('return new Object();'));
     }
 
     /**
@@ -67,7 +67,7 @@
      */
     #[@test]
     public function newObjectFullyQualified() {
-      $this->assertClass($this->run('return new lang.Object();'), 'lang.Object');
+      $this->assertInstanceOf('lang.Object', $this->run('return new lang.Object();'));
     }
     
     /**

@@ -203,8 +203,7 @@
     #[@test]
     public function stringClassConstructor() {
       $decl= $this->stringClass();
-      $constructor= $decl->getConstructor();
-      $this->assertClass($constructor, 'xp.compiler.types.Constructor');
+      $this->assertInstanceOf('xp.compiler.types.Constructor', $decl->getConstructor());
     }
 
     /**

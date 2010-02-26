@@ -84,8 +84,7 @@
     #[@test]
     public function testCaseClassConstructor() {
       $decl= new TypeReflection(XPClass::forName('unittest.TestCase'));
-      $constructor= $decl->getConstructor();
-      $this->assertClass($constructor, 'xp.compiler.types.Constructor');
+      $this->assertInstanceOf('xp.compiler.types.Constructor', $decl->getConstructor());
     }
 
     /**

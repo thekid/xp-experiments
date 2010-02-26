@@ -140,7 +140,7 @@
           self::$instance= new self();
         }
       }');
-      $this->assertClass($class->getField('instance')->get(NULL), $class->getName());
+      $this->assertInstanceOf($class, $class->getField('instance')->get(NULL));
     }
 
     /**
@@ -173,7 +173,7 @@
       $class= $this->define('class', $this->name, NULL, '{
         public static XPClass $arrayClass = lang.types.ArrayList::class;
       }');
-      $this->assertClass($class->getField('arrayClass')->get(NULL), 'lang.XPClass');
+      $this->assertInstanceOf('lang.XPClass', $class->getField('arrayClass')->get(NULL));
     }
 
     /**
@@ -187,7 +187,7 @@
       }');
       
       with ($instance= $class->newInstance(), $elements= $class->getField('elements')->get($instance)); {
-        $this->assertClass($elements, 'lang.types.ArrayList');
+        $this->assertInstanceOf('lang.types.ArrayList', $elements);
         $this->assertEquals(new ArrayList(1, 2, 3), $elements);
       }
     }
@@ -205,7 +205,7 @@
       with ($instance= $class->newInstance($this->name)); {
         $this->assertEquals($this->name, $instance->getName());
         $elements= $class->getField('elements')->get($instance);
-        $this->assertClass($elements, 'lang.types.ArrayList');
+        $this->assertInstanceOf('lang.types.ArrayList', $elements);
         $this->assertEquals(new ArrayList(1, 2, 3), $elements);
       }
     }
