@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('tests.syntax.xp.LexerTest');
+  uses('net.xp_lang.tests.syntax.xp.LexerTest');
 
   /**
    * Tests the lexer tokenizing string input

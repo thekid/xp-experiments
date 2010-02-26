@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution.source';
+  $package= 'net.xp_lang.tests.execution.source';
 
-  uses('tests.execution.source.ExecutionTest');
+  uses('net.xp_lang.tests.execution.source.ExecutionTest');
 
   /**
    * Tests MultiCatchs
    *
    */
-  class tests·execution·source·MultiCatchTest extends ExecutionTest {
+  class net·xp_lang·tests·execution·source·MultiCatchTest extends ExecutionTest {
     
     /**
      * Test catch

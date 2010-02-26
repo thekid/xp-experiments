@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution.source';
+  $package= 'net.xp_lang.tests.execution.source';
 
-  uses('tests.execution.source.ExecutionTest');
+  uses('net.xp_lang.tests.execution.source.ExecutionTest');
 
   /**
    * Tests annotations
    *
    */
-  class tests·execution·source·AnnotationTest extends ExecutionTest {
+  class net·xp_lang·tests·execution·source·AnnotationTest extends ExecutionTest {
     protected $fixture= NULL;
     
     /**

@@ -4,16 +4,16 @@
  * $Id$
  */
 
-  $package= 'tests.convert';
+  $package= 'net.xp_lang.tests.convert';
 
-  uses('tests.convert.AbstractConversionTest');
+  uses('net.xp_lang.tests.convert.AbstractConversionTest');
 
   /**
    * Tests type declarations
    *
    * @see      xp://tests.convert.AbstractConversionTest
    */
-  class tests·convert·TypeDeclarationTest extends AbstractConversionTest {
+  class net·xp_lang·tests·convert·TypeDeclarationTest extends AbstractConversionTest {
 
     /**
      * Test

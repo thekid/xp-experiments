@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution.source';
+  $package= 'net.xp_lang.tests.execution.source';
 
-  uses('tests.execution.source.ExecutionTest');
+  uses('net.xp_lang.tests.execution.source.ExecutionTest');
 
   /**
    * Tests concatenation
    *
    */
-  class tests·execution·source·ConcatTest extends ExecutionTest {
+  class net·xp_lang·tests·execution·source·ConcatTest extends ExecutionTest {
     
     /**
      * Test concatenating two strings

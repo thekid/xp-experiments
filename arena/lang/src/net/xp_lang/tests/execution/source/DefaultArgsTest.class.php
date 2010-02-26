@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution.source';
+  $package= 'net.xp_lang.tests.execution.source';
 
-  uses('tests.execution.source.ExecutionTest');
+  uses('net.xp_lang.tests.execution.source.ExecutionTest');
 
   /**
    * Tests default arguments
    *
    */
-  class tests·execution·source·DefaultArgsTest extends ExecutionTest {
+  class net·xp_lang·tests·execution·source·DefaultArgsTest extends ExecutionTest {
     
     /**
      * Sets up test case and define class to be used in tests

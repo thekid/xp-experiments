@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  $package= 'tests.syntax.php';
+  $package= 'net.xp_lang.tests.syntax.php';
 
   uses(
     'unittest.TestCase',
@@ -17,7 +17,7 @@
    * Base class for all other parser test cases.
    *
    */
-  abstract class tests新yntax搆hp感arserTestCase extends TestCase {
+  abstract class net暖p_lang暗ests新yntax搆hp感arserTestCase extends TestCase {
   
     /**
      * Parse method source and return statements inside this method.

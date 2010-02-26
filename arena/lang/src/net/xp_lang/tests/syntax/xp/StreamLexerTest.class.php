@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('tests.syntax.xp.LexerTest', 'io.streams.MemoryInputStream');
+  uses('net.xp_lang.tests.syntax.xp.LexerTest', 'io.streams.MemoryInputStream');
 
   /**
    * Tests the lexer tokenizing a stream

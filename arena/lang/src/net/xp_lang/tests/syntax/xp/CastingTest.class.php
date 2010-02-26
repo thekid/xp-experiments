@@ -4,15 +4,15 @@
  * $Id$
  */
  
-  $package= 'tests.syntax.xp';
+  $package= 'net.xp_lang.tests.syntax.xp';
 
-  uses('tests.syntax.xp.ParserTestCase');
+  uses('net.xp_lang.tests.syntax.xp.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class tests·syntax·xp·CastingTest extends ParserTestCase {
+  class net·xp_lang·tests·syntax·xp·CastingTest extends ParserTestCase {
 
     /**
      * Test prefix notation

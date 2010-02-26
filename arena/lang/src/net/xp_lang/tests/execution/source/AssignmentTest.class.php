@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution.source';
+  $package= 'net.xp_lang.tests.execution.source';
 
-  uses('tests.execution.source.ExecutionTest', 'xp.compiler.checks.IsAssignable');
+  uses('net.xp_lang.tests.execution.source.ExecutionTest', 'xp.compiler.checks.IsAssignable');
 
   /**
    * Tests arrays
    *
    */
-  class tests·execution·source·AssignmentTest extends ExecutionTest {
+  class net·xp_lang·tests·execution·source·AssignmentTest extends ExecutionTest {
 
     /**
      * Sets up test case and adds IsAsssignale check

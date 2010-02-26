@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution.source';
+  $package= 'net.xp_lang.tests.execution.source';
 
-  uses('tests.execution.source.ExecutionTest', 'xp.compiler.checks.RoutinesVerification');
+  uses('net.xp_lang.tests.execution.source.ExecutionTest', 'xp.compiler.checks.RoutinesVerification');
 
   /**
    * Tests interface declarations
    *
    */
-  class tests·execution·source·InterfaceDeclarationTest extends ExecutionTest {
+  class net·xp_lang·tests·execution·source·InterfaceDeclarationTest extends ExecutionTest {
 
     /**
      * Sets up test case and adds RoutinesVerification check

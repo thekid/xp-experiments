@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution.source';
+  $package= 'net.xp_lang.tests.execution.source';
 
-  uses('tests.execution.source.ExecutionTest');
+  uses('net.xp_lang.tests.execution.source.ExecutionTest');
 
   /**
    * Tests class instance creation
    *
    */
-  class tests·execution·source·InstanceCreationTest extends ExecutionTest {
+  class net·xp_lang·tests·execution·source·InstanceCreationTest extends ExecutionTest {
 
     /**
      * Assert a given instance is an anonymous instance

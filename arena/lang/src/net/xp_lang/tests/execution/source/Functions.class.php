@@ -4,14 +4,14 @@
  * $Id$ 
  */
 
-  $package= 'tests.execution.source';
+  $package= 'net.xp_lang.tests.execution.source';
 
   /**
    * Helper for lambda tests
    *
    * @see      xp://tests.execution.source.LambdaTest
    */
-  class tests·execution·source·Functions extends Object {
+  class net·xp_lang·tests·execution·source·Functions extends Object {
     
     /**
      * Apply a function to each element in an array

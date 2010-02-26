@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('tests.convert.AbstractConversionTest');
+  uses('net.xp_lang.tests.convert.AbstractConversionTest');
 
   /**
    * Tests the concat operator is rewritten

@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution.source';
+  $package= 'net.xp_lang.tests.execution.source';
 
-  uses('tests.execution.source.ExecutionTest', 'io.streams.MemoryOutputStream');
+  uses('net.xp_lang.tests.execution.source.ExecutionTest', 'io.streams.MemoryOutputStream');
 
   /**
    * Tests static imports
    *
    */
-  class tests·execution·source·StaticImportTest extends ExecutionTest {
+  class net·xp_lang·tests·execution·source·StaticImportTest extends ExecutionTest {
     protected $stream, $out= NULL;
   
     /**

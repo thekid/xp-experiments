@@ -4,16 +4,16 @@
  * $Id$
  */
 
-  $package= 'tests.execution.source';
+  $package= 'net.xp_lang.tests.execution.source';
 
-  uses('tests.execution.source.ExecutionTest');
+  uses('net.xp_lang.tests.execution.source.ExecutionTest');
 
   /**
    * Tests varargs
    *
    * @see   http://java.sun.com/j2se/1.5.0/docs/guide/language/varargs.html
    */
-  class tests·execution·source·VarArgsTest extends ExecutionTest {
+  class net·xp_lang·tests·execution·source·VarArgsTest extends ExecutionTest {
 
     /**
      * Test 

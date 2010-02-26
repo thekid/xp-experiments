@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  $package= 'tests.execution.source';
+  $package= 'net.xp_lang.tests.execution.source';
 
-  uses('tests.execution.source.ExecutionTest', 'lang.Enum');
+  uses('net.xp_lang.tests.execution.source.ExecutionTest', 'lang.Enum');
 
   /**
    * Tests class declarations
    *
    */
-  class tests·execution·source·ExtensionMethodsTest extends ExecutionTest {
+  class net·xp_lang·tests·execution·source·ExtensionMethodsTest extends ExecutionTest {
 
     /**
      * Test extending

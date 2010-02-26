@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  $package= 'tests.convert';
+  $package= 'net.xp_lang.tests.convert';
 
   uses(
     'unittest.TestCase',
@@ -16,7 +16,7 @@
    *
    * @see      xp://cmd.convert.SourceConverter
    */
-  class tests·convert·IntegrationTest extends TestCase {
+  class net·xp_lang·tests·convert·IntegrationTest extends TestCase {
     protected $fixture;
     protected $classloader;
 

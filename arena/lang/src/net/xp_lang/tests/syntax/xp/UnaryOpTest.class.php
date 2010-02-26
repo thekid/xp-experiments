@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('tests.syntax.xp.ParserTestCase');
+  uses('net.xp_lang.tests.syntax.xp.ParserTestCase');
 
   /**
    * TestCase

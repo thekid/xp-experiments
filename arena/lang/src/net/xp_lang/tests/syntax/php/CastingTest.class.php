@@ -4,13 +4,13 @@
  * $Id$
  */
 
-  uses('tests.syntax.php.ParserTestCase');
+  uses('net.xp_lang.tests.syntax.php.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class CastingTest extends tests新yntax搆hp感arserTestCase {
+  class CastingTest extends net暖p_lang暗ests新yntax搆hp感arserTestCase {
   
     /**
      * Test a bool-cast
