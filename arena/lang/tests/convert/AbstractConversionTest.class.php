@@ -33,7 +33,7 @@
      * @param   string qualified
      */
     public function name($local, $qualified) {
-      $this->fixture->nameMap[new String($local)]= new String($qualified);
+      $this->fixture->nameMap[$local]= $qualified;
     }
     
     /**

@@ -39,6 +39,16 @@ Generally speaking, we've tried to follow the "less is more" principle and
 tried making the syntax more concise as to what it's doing.
 
 
+Prerequisites
+-------------
+This experiment requires XP Framework version 5.8.0-dev plus the classes
+from this directory. Replace the "use" line in your <tt>xp.ini</tt> with
+the following:
+
+<pre>
+  use=~/devel/xp/branches/xp5_8;~/devel/xp.forge/trunk/experiments/arena/lang
+</pre>
+
 Getting started
 ---------------
 Like in the XP framework, the entry point is always a class. In their most

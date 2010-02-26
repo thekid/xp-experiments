@@ -22,7 +22,7 @@
      */
     public function setUp() {
       $this->fixture= new SourceConverter();
-      $this->fixture->nameMap['Object']= new String('lang.Object');
+      $this->fixture->nameMap['Object']= 'lang.Object';
     }
     
     /**

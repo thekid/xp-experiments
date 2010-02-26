@@ -51,7 +51,7 @@
      */
     public function __construct() {
       $this->types= create('new util.collections.HashTable<xp.compiler.ast.Node, xp.compiler.types.TypeName>()');
-      $this->resolved= create('new util.collections.HashTable<lang.types.String, xp.compiler.types.Types>()');
+      $this->resolved= create('new util.collections.HashTable<string, xp.compiler.types.Types>()');
     }
     
     /**

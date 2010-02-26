@@ -59,7 +59,7 @@
      *
      */
     public function __construct() {
-      $this->nameMap= create('new util.collections.HashTable<String, String>()');
+      $this->nameMap= create('new util.collections.HashTable<string, string>()');
     }
 
     /**

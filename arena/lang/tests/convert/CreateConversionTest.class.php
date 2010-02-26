@@ -45,7 +45,7 @@
      */
     #[@test]
     public function createAsDereferencerUntouched() {
-      $this->fixture->nameMap['Object']= new String('lang.Object');
+      $this->name('Object', 'lang.Object');
       $this->assertConversion(
         '$r= create(new lang.Object());',
         '$r= create(new Object());',

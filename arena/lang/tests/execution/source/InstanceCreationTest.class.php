@@ -40,10 +40,25 @@
      *
      */
     #[@test]
-    public function newGeneric() {
+    public function newGenericHashTable() {
       $hash= $this->run('return new util.collections.HashTable<lang.types.String, lang.Generic>();');
-      $this->assertClass($hash, 'util.collections.HashTable');
-      $this->assertEquals(array('String', 'Generic'), $hash->__generic);
+      $this->assertEquals(
+        array(XPClass::forName('lang.types.String'), XPClass::forName('lang.Generic')), 
+        $hash->getClass()->genericArguments()
+      );
+    }
+
+    /**
+     * Test creating a new generic hashtable
+     *
+     */
+    #[@test]
+    public function newGenericVector() {
+      $hash= $this->run('return new util.collections.Vector<int>();');
+      $this->assertEquals(
+        array(Primitive::$INT), 
+        $hash->getClass()->genericArguments()
+      );
     }
 
     /**

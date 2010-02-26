@@ -85,7 +85,7 @@
       $mappings= 0;
       while (NULL !== ($line= $r->readLine())) {
         sscanf($line, '%[^=]=%s', $name, $qualified);
-        $this->converter->nameMap[$name]= new String($qualified);
+        $this->converter->nameMap[$name]= $qualified;
         $mappings++;
       }
       $r->close();
