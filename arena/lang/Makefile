@@ -32,7 +32,7 @@ grammar.%:
 
 test:
 	@echo "---> Running tests"
-	unittest tests.** $(FLAGS)
+	unittest net.xp_lang.tests.** $(FLAGS)
 	@echo "===> Done, exit code $$?"
 
 namemap:
