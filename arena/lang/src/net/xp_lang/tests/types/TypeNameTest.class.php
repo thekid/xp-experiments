@@ -204,5 +204,36 @@
     public function arrayComponentTypeOfNonArray() {
       $this->assertEquals(NULL, create(new TypeName('string'))->arrayComponentType());
     }
+
+    /**
+     * Test isPlaceholder()
+     *
+     */
+    #[@test]
+    public function tIsPlaceHolderInListOfT() {
+      $decl= new TypeName('List', array(new TypeName('T')));
+      $this->assertTrue($decl->isPlaceholder(new TypeName('T')));
+    }
+ 
+    /**
+     * Test isPlaceholder()
+     *
+     */
+    #[@test]
+    public function kIsNotPlaceHolderInListOfT() {
+      $decl= new TypeName('List', array(new TypeName('T')));
+      $this->assertFalse($decl->isPlaceholder(new TypeName('K')));
+    }
+
+    /**
+     * Test isPlaceholder()
+     *
+     */
+    #[@test]
+    public function kAndVArePlaceHoldersInMapOfKV() {
+      $decl= new TypeName('Map', array(new TypeName('K'), new TypeName('V')));
+      $this->assertTrue($decl->isPlaceholder(new TypeName('K')), 'K');
+      $this->assertTrue($decl->isPlaceholder(new TypeName('V')), 'V');
+    }
   }
 ?>
