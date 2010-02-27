@@ -19,6 +19,7 @@
    *   Map<K, V>    : TypeName('Map', [TypeName('K'), TypeName('V')])
    * </pre>
    *
+   * @test     xp://net.xp_lang.tests.types.TypeNameTest
    * @purpose  Value object
    */
   class TypeName extends Object {
@@ -63,12 +64,12 @@
     }
 
     /**
-     * Return array component type
+     * Return array component type or NULL if this is not an array
      *
-     * @return  bool
+     * @return  xp.compiler.types.TypeName
      */
     public function arrayComponentType() {
-      return new self(substr($this->name, 0, -2));
+      return $this->isArray() ? new self(substr($this->name, 0, -2)) : NULL;
     }
 
     /**

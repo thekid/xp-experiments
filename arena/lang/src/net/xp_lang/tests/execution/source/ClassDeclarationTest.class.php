@@ -53,6 +53,10 @@
       $class= $this->define('class', 'ListOf<T>', NULL, '{
         protected T[] $elements;
         
+        public __construct(T?... $initial) {
+          $this.elements= $initial;
+        }
+        
         public T add(T? $element) {
           $this.elements[]= $element;
           return $element;
@@ -63,9 +67,7 @@
         }
         
         public static void test(string[] $args) {
-          $l= new self<string>();
-          $l.add("Ciao");
-          $l.add("Salut");
+          $l= new self<string>("Ciao", "Salut");
           foreach ($arg in $args) {
             $l.add($arg);
           }
