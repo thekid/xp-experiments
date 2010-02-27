@@ -1166,7 +1166,6 @@
             $defer[]= '$'.$arg['name'].'= func_get_args();';
           }
           $this->scope[0]->setType(new VariableNode($arg['name']), new TypeName($t->name.'[]'));
-          $op->append('$··= NULL');
           break;
         }
         
@@ -1192,7 +1191,7 @@
             $defer[]= $init;
           }
         }
-        $i < $s && $op->append(',');
+        $i < $s && !isset($arguments[$i+ 1]['vararg']) && $op->append(',');
         
         $this->scope[0]->setType(new VariableNode($arg['name']), $t);
       }
@@ -1344,6 +1343,7 @@
         foreach ((array)$method->parameters as $arg) {
           if (!$usesGenerics && $this->scope[0]->declarations[0]->name->isPlaceHolder($arg['type'])) $usesGenerics= TRUE;
           $genericParams.= ', '.$arg['type']->compoundName();
+          $arg['vararg'] && $genericParams.= '...';
         }
         if ($usesGenerics) {
           $this->metadata[0][1][$method->name][DETAIL_ANNOTATIONS]['generic']['params']= substr($genericParams, 2);
@@ -1425,9 +1425,10 @@
         // Parameters
         $genericParams= '';
         $usesGenerics= FALSE;
-        foreach ((array)$method->parameters as $arg) {
+        foreach ((array)$constructor->parameters as $arg) {
           if (!$usesGenerics && $this->scope[0]->declarations[0]->name->isPlaceHolder($arg['type'])) $usesGenerics= TRUE;
           $genericParams.= ', '.$arg['type']->compoundName();
+          $arg['vararg'] && $genericParams.= '...';
         }
         if ($usesGenerics) {
           $this->metadata[0][1]['__construct'][DETAIL_ANNOTATIONS]['generic']['params']= substr($genericParams, 2);
