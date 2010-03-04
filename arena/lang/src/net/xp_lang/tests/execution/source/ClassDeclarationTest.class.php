@@ -32,11 +32,11 @@
       with ($method= $class->getMethod('echoArgs')); {
         $this->assertEquals('echoArgs', $method->getName());
         $this->assertEquals(MODIFIER_STATIC | MODIFIER_PUBLIC, $method->getModifiers());
-        $this->assertEquals(Primitive::$ARRAY, $method->getReturnType());
+        $this->assertEquals(ArrayType::forName('string[]'), $method->getReturnType());
         
         with ($params= $method->getParameters()); {
           $this->assertEquals(1, sizeof($params));
-          $this->assertEquals(Primitive::$ARRAY, $params[0]->getType());
+          $this->assertEquals(ArrayType::forName('string[]'), $params[0]->getType());
         }
         
         $in= array('Hello', 'World');
