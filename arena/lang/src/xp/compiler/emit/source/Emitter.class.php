@@ -1858,14 +1858,6 @@
      * @param   xp.compiler.ast.InterfaceNode declaration
      */
     protected function emitInterface($op, InterfaceNode $declaration) {
-      
-      // Verify: The only type of node we want to find are methods
-      foreach ($declaration->body as $node) {
-        if (!$node instanceof MethodNode) {
-          $this->error('I403', 'Interfaces may not have field declarations', $declaration);
-          return;
-        }
-      }
       $this->enter(new TypeDeclarationScope());    
       $this->emitTypeName($op, 'interface', $declaration, (array)$declaration->parents);
       array_unshift($this->metadata, array(array(), array()));

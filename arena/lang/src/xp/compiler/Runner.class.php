@@ -158,6 +158,7 @@
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.IsAssignable')->newInstance(), TRUE);
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.MemberRedeclarationCheck')->newInstance(), TRUE);
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.RoutinesVerification')->newInstance(), TRUE);
+      $emitter->addCheck(XPClass::forName('xp.compiler.checks.FieldsVerification')->newInstance(), TRUE);
       
       // Add warnings
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.TypeHasDocumentation')->newInstance(), FALSE);
