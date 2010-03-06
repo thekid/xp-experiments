@@ -40,6 +40,7 @@
         'extends'       => xp搾ompiler新yntax搆hp感arser::T_EXTENDS,
         'implements'    => xp搾ompiler新yntax搆hp感arser::T_IMPLEMENTS,
         'instanceof'    => xp搾ompiler新yntax搆hp感arser::T_INSTANCEOF,
+        'clone'         => xp搾ompiler新yntax搆hp感arser::T_CLONE,     
 
         'throw'         => xp搾ompiler新yntax搆hp感arser::T_THROW,
         'try'           => xp搾ompiler新yntax搆hp感arser::T_TRY,
