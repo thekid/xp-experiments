@@ -150,9 +150,9 @@ start:
 // {{{ Packages, imports
 package_opt:
     /* empty */
-  | T_NAMESPACE qualifiedname ';' { 
-    $1= $yyLex->create(new PackageNode(array('name' => $2)));
-  }
+  | T_NAMESPACE { $1= $yyLex->create(new PackageNode()); } qualifiedname ';' {
+      $1->name= $3;
+    }
 ;
 
 uses_opt:
