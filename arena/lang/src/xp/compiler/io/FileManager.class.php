@@ -63,6 +63,15 @@
     }
 
     /**
+     * Get source paths
+     *
+     * @param   string[] path
+     */
+    public function getSourcePaths() {
+      return $this->sourcePaths;
+    }
+
+    /**
      * Get parse tree for a given qualified class name by looking it
      * up in the source path.
      *
