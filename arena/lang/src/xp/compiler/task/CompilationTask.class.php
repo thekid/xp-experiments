@@ -90,12 +90,20 @@
      * @param   var arg either a xp.compiler.io.Source or a fully qualified class name
      * @return  xp.compiler.task.CompilationTask
      * @throws  lang.IllegalArgumentException for argument type mismatches
+     * @throws  lang.ElementNotFoundException if class given and class cannot be found
      */
     public function newSubTask($arg) {
       if ($arg instanceof xp·compiler·io·Source) {
         $source= $arg;
       } else if (is_string($arg)) {
-        $source= $this->manager->findClass($arg);
+        if (!($source= $this->manager->findClass($arg))) {
+          throw new ElementNotFoundException(sprintf(
+            "Cannot find class %s, tried {*.%s} in [\n  %s\n]",
+            $arg,
+            implode(', *.', array_keys(Syntax::available())),
+            implode("\n  ", $this->manager->getSourcePaths())
+          ));
+        }
       } else {
         throw new IllegalArgumentException('Expected either a string or a Source object');
       }
