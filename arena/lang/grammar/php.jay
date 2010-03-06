@@ -61,8 +61,11 @@
 %}
 
 %left '(' ')'
-%left ',' '=' '%' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_BOOLEAN_OR T_BOOLEAN_AND T_INSTANCEOF T_CONCAT_EQUAL
+%left ',' '=' '%' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_SHR T_SHL T_BOOLEAN_OR T_BOOLEAN_AND T_INSTANCEOF T_CONCAT_EQUAL T_AND_EQUAL T_OR_EQUAL T_XOR_EQUAL
 %left '?' ':'
+%left '|'
+%left '^'
+%left '&'
 %left '+' '-'
 %left '*' '/'
 %right '[' '!' '~' T_INC T_DEC T_AS
@@ -135,6 +138,11 @@
 %token T_BOOLEAN_OR 414
 %token T_BOOLEAN_AND 415
 %token T_CONCAT_EQUAL 416
+%token T_OR_EQUAL 417
+%token T_AND_EQUAL 418
+%token T_XOR_EQUAL 419
+%token T_SHR 420
+%token T_SHL 421
 
 %%
 
@@ -613,7 +621,12 @@ assignment:
   | expression T_MUL_EQUAL expression  /* *= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
   | expression T_DIV_EQUAL expression  /* /= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
   | expression T_MOD_EQUAL expression  /* %= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
-  | expression T_CONCAT_EQUAL expression  /* ~= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_CONCAT_EQUAL expression  /* .= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_AND_EQUAL expression     /* &= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_OR_EQUAL expression      /* |= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_XOR_EQUAL expression     /* ^= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_SHR '=' expression       /* >>= */ { $$= array('variable' => $1, 'expression' => $4, 'op' => $2.$3); }
+  | expression T_SHL '=' expression       /* <<= */ { $$= array('variable' => $1, 'expression' => $4, 'op' => $2.$3); }
 ;
 
 comparison:
@@ -634,6 +647,11 @@ binary_operation:
   | expression '/' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
   | expression '%' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
   | expression '.' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => '~'); }
+  | expression '|' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression '&' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression '^' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression T_SHR expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression T_SHL expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
 ;
 
 unary_prefix_operation:
