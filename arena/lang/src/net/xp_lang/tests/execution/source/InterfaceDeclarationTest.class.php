@@ -6,7 +6,12 @@
 
   $package= 'net.xp_lang.tests.execution.source';
 
-  uses('net.xp_lang.tests.execution.source.ExecutionTest', 'xp.compiler.checks.RoutinesVerification');
+  uses(
+    'net.xp_lang.tests.execution.source.ExecutionTest', 
+    'xp.compiler.checks.RoutinesVerification',
+    'xp.compiler.checks.PropertiesVerification',
+    'xp.compiler.checks.FieldsVerification'
+  );
 
   /**
    * Tests interface declarations
@@ -21,6 +26,8 @@
     public function setUp() {
       parent::setUp();
       $this->check(new RoutinesVerification(), TRUE);
+      $this->check(new FieldsVerification(), TRUE);
+      $this->check(new PropertiesVerification(), TRUE);
     }
     
     /**
