@@ -219,13 +219,13 @@ classbody_opt:
 ;
 
 classbody:
-    classbody classmember { $$[]= $2; }
+    classbody classmember { $$= array_merge((array)$1, $2); }
   | /* empty */ { $$= NULL; }
 ;
 
 classmember:
     fieldlist { $$= $1; }
-  | method { $$= $1; }
+  | method { $$= array($1); }
 ;
 
 fieldlist:
@@ -258,9 +258,10 @@ method:
       $4->annotations= $1[1];
       $4->returns= new TypeName('var');
       $4->name= $3;
-      $4->arguments= $6;
+      $4->parameters= $6;
       $4->throws= NULL;
       $4->body= $8;
+      $4->extension= NULL;
       $$= $4;
     }
 ;
@@ -303,7 +304,7 @@ annotationmember:
 
 methodbody:
     ';' { $$= NULL; }
-  | '{' statements_opt '}' { $$= $2; }
+  | '{' statements_opt '}' { $$= (array)$2; }
 ;
 
 arguments_opt:
