@@ -155,6 +155,9 @@ start:
       $$->package= $1;
       $$->imports= (array)$2;
       $$->declaration= $3;
+      foreach (get_loaded_extensions() as $ext) {
+        $$->imports[]= new NativeImportNode(array('name' => $ext.'.*'));
+      }
     }
 ;
 
