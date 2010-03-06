@@ -143,15 +143,6 @@ start:
       $$->origin= $yyLex->fileName;
       $$->package= $1;
       $$->imports= (array)$2;
-      foreach (get_declared_classes() as $c) {
-        if (!isset(xp::$registry['class.'.$c])) $$->imports[]= new ImportNode(array('name' => $c));
-      }
-      foreach (get_declared_interfaces() as $c) {
-        if (!isset(xp::$registry['class.'.$c])) $$->imports[]= new ImportNode(array('name' => $c));
-      }
-      foreach (get_loaded_extensions() as $e) {
-        $$->imports[]= new NativeImportNode(array('name' => $e.'.*'));
-      }
       $$->declaration= $3;
     }
 ;
@@ -228,19 +219,18 @@ classbody_opt:
 ;
 
 classbody:
-    classbody classmember { $k= key($2); $$[$k][]= $2[$k]; }
+    classbody classmember { $$[]= $2; }
   | /* empty */ { $$= NULL; }
 ;
 
 classmember:
-    fieldlist
-  | method { $$= array('methods' => $1); }
-  | T_STATIC '{' statements_opt '}' { $$= array('static' => $3); }
+    fieldlist { $$= $1; }
+  | method { $$= $1; }
 ;
 
 fieldlist:
-    field ';' { $$= array('fields' => $1); }
-  | field ',' fieldlist { $$= array_merge(array('fields' => $1), $3); }
+    field ';' { $$= array($1); }
+  | field ',' fieldlist { $$= array_merge(array($1), $3); }
 ;
 // }}}
 

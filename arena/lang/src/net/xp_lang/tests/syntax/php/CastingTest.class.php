@@ -18,16 +18,14 @@
      */
     #[@test]
     public function boolCast() {
-      $this->assertEquals(array($this->create(new AssignmentNode(array(
-        'variable'      => $this->create(new VariableNode('a'), array(4, 9)),
-        'expression'    => $this->create(new CastNode(array(
+      $this->assertEquals(array(new AssignmentNode(array(
+        'variable'      => new VariableNode('a'),
+        'expression'    => new CastNode(array(
           'type'          => new TypeName('bool'),
-          'expression'    => $this->create(new IntegerNode('1'), array(4, 19))
-        )), array(4, 20)),
+          'expression'    => new IntegerNode('1')
+        )),
         'op'            => '=',
-      )), array(4, 20))), $this->parse('
-        $a= (bool)1;
-      '));
+      ))), $this->parse('$a= (bool)1;'));
     }
 
     /**
@@ -36,89 +34,64 @@
      */
     #[@test]
     public function stringCast() {
-      $this->assertEquals(array($this->create(new AssignmentNode(array(
-        'variable'      => $this->create(new VariableNode('a'), array(4, 9)),
-        'expression'    => $this->create(new CastNode(array(
+      $this->assertEquals(array(new AssignmentNode(array(
+        'variable'      => new VariableNode('a'),
+        'expression'    => new CastNode(array(
           'type'          => new TypeName('string'),
-          'expression'    => $this->create(new IntegerNode('1'), array(4, 21))
-        )), array(4, 22)),
+          'expression'    => new IntegerNode('1')
+        )),
         'op'            => '=',
-      )), array(4, 22))), $this->parse('
-        $a= (string)1;
-      '));
+      ))), $this->parse('$a= (string)1;'));
     }
 
     /**
-     * Test an array-cast
+     * Test a array-cast
      *
      */
     #[@test]
     public function arrayCast() {
-      $this->assertEquals(array($this->create(new AssignmentNode(array(
-        'variable'      => $this->create(new VariableNode('a'), array(4, 9)),
-        'expression'    => $this->create(new CastNode(array(
+      $this->assertEquals(array(new AssignmentNode(array(
+        'variable'      => new VariableNode('a'),
+        'expression'    => new CastNode(array(
           'type'          => new TypeName('var[]'),
-          'expression'    => $this->create(new IntegerNode('1'), array(4, 20))
-        )), array(4, 21)),
+          'expression'    => new IntegerNode('1')
+        )),
         'op'            => '=',
-      )), array(4, 21))), $this->parse('
-        $a= (array)1;
-      '));
+      ))), $this->parse('$a= (array)1;'));
     }
 
     /**
-     * Test an int-cast
+     * Test a int-cast
      *
      */
     #[@test]
     public function intCast() {
-      $this->assertEquals(array($this->create(new AssignmentNode(array(
-        'variable'      => $this->create(new VariableNode('a'), array(4, 9)),
-        'expression'    => $this->create(new CastNode(array(
+      $this->assertEquals(array(new AssignmentNode(array(
+        'variable'      => new VariableNode('a'),
+        'expression'    => new CastNode(array(
           'type'          => new TypeName('int'),
-          'expression'    => $this->create(new IntegerNode('1'), array(4, 18))
-        )), array(4, 19)),
+          'expression'    => new IntegerNode('1')
+        )),
         'op'            => '=',
-      )), array(4, 19))), $this->parse('
-        $a= (int)1;
-      '));
+      ))), $this->parse('$a= (int)1;'));
     }
 
     /**
-     * Test an double-cast
+     * Test a double-cast
      *
      */
     #[@test]
     public function doubleCast() {
-      $this->assertEquals(array($this->create(new AssignmentNode(array(
-        'variable'      => $this->create(new VariableNode('a'), array(4, 9)),
-        'expression'    => $this->create(new CastNode(array(
+      $this->assertEquals(array(new AssignmentNode(array(
+        'variable'      => new VariableNode('a'),
+        'expression'    => new CastNode(array(
           'type'          => new TypeName('double'),
-          'expression'    => $this->create(new IntegerNode('1'), array(4, 21))
-        )), array(4, 22)),
+          'expression'    => new IntegerNode('1')
+        )),
         'op'            => '=',
-      )), array(4, 22))), $this->parse('
-        $a= (double)1;
-      '));
+      ))), $this->parse('$a= (double)1;'));
     }
 
-    /**
-     * Test a casting a variabke
-     *
-     */
-    #[@test]
-    public function varCast() {
-      $this->assertEquals(array($this->create(new AssignmentNode(array(
-        'variable'      => $this->create(new VariableNode('a'), array(4, 9)),
-        'expression'    => $this->create(new CastNode(array(
-          'type'          => new TypeName('bool'),
-          'expression'    => $this->create(new VariableNode('v'), array(4, 19)),
-        )), array(4, 21)),
-        'op'            => '=',
-      )), array(4, 21))), $this->parse('
-        $a= (bool)$v;
-      '));
-    }
 
     /**
      * Test an invocation with a constants as argument is not confused with a cast
@@ -133,24 +106,22 @@
     }
 
     /**
-     * Test a cast casted
+     * Test a case-cast
      *
      */
     #[@test]
     public function castCast() {
-      $this->assertEquals(array($this->create(new AssignmentNode(array(
-        'variable'      => $this->create(new VariableNode('a'), array(4, 9)),
-        'expression'    => $this->create(new CastNode(array(
+      $this->assertEquals(array(new AssignmentNode(array(
+        'variable'      => new VariableNode('a'),
+        'expression'    => new CastNode(array(
           'type'          => new TypeName('bool'),
-          'expression'    => $this->create(new CastNode(array(
-            'type'          =>  new TypeName('string'),
-            'expression'    => $this->create(new IntegerNode('1'), array(4, 27))
-          )), array(4, 28)) 
-        )), array(4, 28)),
+          'expression'    => new CastNode(array(
+            'type'          => new TypeName('string'),
+            'expression'    => new IntegerNode('1')
+          )),
+        )),
         'op'            => '=',
-      )), array(4, 28))), $this->parse('
-        $a= (bool)(string)1;
-      '));
+      ))), $this->parse('$a= (bool)(string)1;'));
     }
   }
 ?>
