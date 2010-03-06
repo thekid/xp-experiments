@@ -86,8 +86,13 @@
     const 
       DELIMITERS = " |&?!.:;,@%~=<>(){}[]#+-*/\"\\'\r\n\t";
           
-    private
-      $comment = NULL;
+    public
+      $fileName  = NULL;
+
+    protected
+      $comment   = NULL,
+      $tokenizer = NULL,
+      $forward   = array();
 
     /**
      * Constructor
@@ -220,13 +225,21 @@
             $this->nextToken("\n");
             continue;
           } else if ('*' === $ahead) {    // Multi-line comment
-            $this->comment= '';
+            $comment= '';
             do { 
               $t= $this->nextToken('/'); 
-              $this->comment.= $t;
+              $comment.= $t;
             } while ('*' !== $t{strlen($t)- 1});
+            
+            // Copy api doc comments
+            if ($comment && '*' === $comment{0}) {
+              $this->comment= $comment;
+            }
             $this->nextToken('/');
             continue;
+          } else if ('=' === $ahead) {
+            $this->token= xp·compiler·syntax·php·Parser::T_DIV_EQUAL;
+            $this->value= '/=';
           } else {
             $this->token= ord($token);
             $this->value= $token;
