@@ -34,7 +34,7 @@
       $index= array();
       $qname= $type->name->compoundName();
       foreach ($type->body as $member) {
-        $key= $member->getClassName().'<'.$member->name.'>';
+        $key= $member->getClassName().'<'.$member->getName().'>';
         if (isset($index[$key])) {
           return array('C409', 'Cannot redeclare '.$qname.'::'.$key);
         }
