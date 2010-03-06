@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  $package= 'tests.syntax.php';
+  $package= 'net.xp_lang.tests.syntax.php';
 
   uses('net.xp_lang.tests.syntax.php.ParserTestCase');
 
@@ -12,7 +12,7 @@
    * TestCase
    *
    */
-  class tests·syntax·php·ClassDeclarationTest extends net·xp_lang·tests·syntax·php·ParserTestCase {
+  class net·xp_lang·tests·syntax·php·ClassDeclarationTest extends net·xp_lang·tests·syntax·php·ParserTestCase {
 
     /**
      * Parse class source and return statements inside field declaration
@@ -41,6 +41,42 @@
         ), 
         $this->parse('<?php class Empty { } ?>')
       );
+    }
+
+    /**
+     * Test class constant declaration
+     *
+     */
+    #[@test]
+    public function classConstant() {
+      $this->assertEquals(array(new ClassConstantNode(
+        'DEBUG',
+        TypeName::$VAR,
+        new IntegerNode('1')
+      )), $this->parse('<?php class Logger { 
+        const DEBUG = 1;
+      } ?>')->body);
+    }
+
+    /**
+     * Test class constant declaration
+     *
+     */
+    #[@test]
+    public function classConstants() {
+      $this->assertEquals(array(
+        new ClassConstantNode(
+          'DEBUG',
+          TypeName::$VAR,
+          new IntegerNode('1')
+        ), new ClassConstantNode(
+          'WARN',
+          TypeName::$VAR,
+          new IntegerNode('2')
+        )
+      ), $this->parse('<?php class Logger { 
+        const DEBUG = 1, WARN  = 2;
+      } ?>')->body);
     }
 
     /**
