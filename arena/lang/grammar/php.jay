@@ -42,6 +42,7 @@
     'xp.compiler.ast.MapNode',
     'xp.compiler.ast.ClassMemberNode',
     'xp.compiler.ast.InstanceOfNode',
+    'xp.compiler.ast.DynamicInstanceOfNode',
     'xp.compiler.ast.ComparisonNode',
     'xp.compiler.ast.BinaryOpNode',
     'xp.compiler.ast.BooleanOpNode',
@@ -552,6 +553,11 @@ expression:
       $$= $yyLex->create(new InstanceOfNode()); 
       $$->expression= $1; 
       $$->type= $3; 
+    }
+  | expression T_INSTANCEOF T_VARIABLE {
+      $$= $yyLex->create(new DynamicInstanceOfNode()); 
+      $$->expression= $1; 
+      $$->variable= $3; 
     }
   | '(' T_WORD ')' expression {
       $$= $yyLex->create(new CastNode(array('type' => new TypeName($2), 'expression' => $4))); 
