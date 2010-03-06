@@ -25,7 +25,7 @@ grammar.%:
 	@for i in `ls grammar/$*.jay` ; do \
 	  TYPE=`basename $$i .jay` ; \
 	  echo "---> $$TYPE:" ; \
-	  echo -n "     >> " ; sh "$(GEN)" $$i php5 "" "xp.compiler.syntax.$$TYPE" > xp/compiler/syntax/$$TYPE/Parser.class.php ; \
+	  echo -n "     >> " ; sh "$(GEN)" $$i php5 "" "xp.compiler.syntax.$$TYPE" > src/xp/compiler/syntax/$$TYPE/Parser.class.php ; \
 	  echo "     >> Exit code $$?" ; \
     done
 	@echo "===> Done"
