@@ -41,6 +41,7 @@
     'xp.compiler.ast.ArrayNode',
     'xp.compiler.ast.MapNode',
     'xp.compiler.ast.ClassMemberNode',
+    'xp.compiler.ast.ClassConstantNode',
     'xp.compiler.ast.InstanceOfNode',
     'xp.compiler.ast.DynamicInstanceOfNode',
     'xp.compiler.ast.ComparisonNode',
@@ -100,6 +101,7 @@
 %token T_OBJECT_OPERATOR 332
 %token T_ARRAY 333
 %token T_FUNCTION 334
+%token T_CONST 335
 
 %token T_VARIABLE 340
 %token T_RETURN 341
@@ -234,12 +236,18 @@ classbody:
 
 classmember:
     fieldlist { $$= $1; }
+  | T_CONST cconstlist { $$= $2; }
   | method { $$= array($1); }
 ;
 
 fieldlist:
     field ';' { $$= array($1); }
   | field ',' fieldlist { $$= array_merge(array($1), $3); }
+;
+
+cconstlist:
+    cconst ';' { $$= array($1); }
+  | cconst ',' cconstlist { $$= array_merge(array($1), $3); }
 ;
 // }}}
 
@@ -251,6 +259,12 @@ field:
       $$->type= new TypeName('var');
       $$->name= $2;
       $$->initialization= $3;
+    }
+;
+
+cconst:
+    T_WORD '=' literal {
+      $$= $yyLex->create(new ClassConstantNode($1, TypeName::$VAR, $3));
     }
 ;
 

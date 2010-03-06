@@ -31,6 +31,7 @@
         'static'        => xp搾ompiler新yntax搆hp感arser::T_STATIC,
         'final'         => xp搾ompiler新yntax搆hp感arser::T_FINAL,
         'abstract'      => xp搾ompiler新yntax搆hp感arser::T_ABSTRACT,
+        'const'         => xp搾ompiler新yntax搆hp感arser::T_CONST,
         
         'use'           => xp搾ompiler新yntax搆hp感arser::T_USE,
         'namespace'     => xp搾ompiler新yntax搆hp感arser::T_NAMESPACE,
@@ -68,8 +69,8 @@
     protected static
       $lookahead= array(
         '-' => array('-=' => xp搾ompiler新yntax搆hp感arser::T_SUB_EQUAL, '--' => xp搾ompiler新yntax搆hp感arser::T_DEC, '->' => xp搾ompiler新yntax搆hp感arser::T_OBJECT_OPERATOR),
-        '>' => array('>=' => xp搾ompiler新yntax搆hp感arser::T_GE),
-        '<' => array('<=' => xp搾ompiler新yntax搆hp感arser::T_SE),
+        '>' => array('>=' => xp搾ompiler新yntax搆hp感arser::T_GE, '>>' => xp搾ompiler新yntax搆hp感arser::T_SHR),
+        '<' => array('<=' => xp搾ompiler新yntax搆hp感arser::T_SE, '<<' => xp搾ompiler新yntax搆hp感arser::T_SHL),
         '.' => array('.=' => xp搾ompiler新yntax搆hp感arser::T_CONCAT_EQUAL),
         '+' => array('+=' => xp搾ompiler新yntax搆hp感arser::T_ADD_EQUAL, '++' => xp搾ompiler新yntax搆hp感arser::T_INC),
         '*' => array('*=' => xp搾ompiler新yntax搆hp感arser::T_MUL_EQUAL),
