@@ -32,7 +32,7 @@
     public function verify(xp·compiler·ast·Node $node, Scope $scope) {
       $member= cast($node, 'xp.compiler.ast.RoutineNode');
       if (!isset($member->comment) && !$scope->declarations[0]->synthetic) {
-        return array('D201', 'No api doc for member '.$scope->declarations[0]->name->compoundName().'::'.$member->name);
+        return array('D201', 'No api doc for member '.$scope->declarations[0]->name->compoundName().'::'.$member->getName());
       }
     }
   }
