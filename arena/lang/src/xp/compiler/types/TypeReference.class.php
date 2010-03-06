@@ -147,6 +147,26 @@
     }
 
     /**
+     * Returns whether an operator by a given symbol exists
+     *
+     * @param   string symbol
+     * @return  bool
+     */
+    public function hasOperator($symbol) {
+      return FALSE;
+    }
+    
+    /**
+     * Returns an operator by a given name
+     *
+     * @param   string symbol
+     * @return  xp.compiler.types.Operator
+     */
+    public function getOperator($symbol) {
+      return NULL;
+    }
+
+    /**
      * Returns a field by a given name
      *
      * @param   string name

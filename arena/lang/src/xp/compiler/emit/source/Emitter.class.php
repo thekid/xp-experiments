@@ -557,6 +557,31 @@
         '>>'  => '>>',
         '<<'  => '<<',
       );
+      static $ovl= array(
+        '~'   => 'concat',
+        '-'   => 'minus',
+        '+'   => 'plus',
+        '*'   => 'times',
+        '/'   => 'div',
+        '%'   => 'mod',
+      );
+      
+      $t= $this->scope[0]->typeOf($bin->lhs);
+      if ($t->isClass()) {
+        $ptr= $this->resolveType($t);
+        if ($ptr->hasOperator($bin->op)) {
+          $o= $ptr->getOperator($bin->op);
+          $op->append($ptr->literal());
+          $op->append('::operator··')->append($ovl[$bin->op])->append('(');
+          $this->emitOne($op, $bin->lhs);
+          $op->append(',');
+          $this->emitOne($op, $bin->rhs);
+          $op->append(')');
+
+          $this->scope[0]->setType($bin, $o->returns);
+          return;
+        }
+      }
       
       $this->emitOne($op, $bin->lhs);
       $op->append($ops[$bin->op]);
@@ -1112,6 +1137,35 @@
         '<<='  => '<<=',
         '>>='  => '>>=',
       );
+
+      static $ovl= array(
+        '~='   => 'concat',
+        '-='   => 'minus',
+        '+='   => 'plus',
+        '*='   => 'times',
+        '/='   => 'div',
+        '%='   => 'mod',
+      );
+
+      $t= $this->scope[0]->typeOf($assign->variable);
+      if ($t->isClass()) {
+        $ptr= $this->resolveType($t);
+        if ($ptr->hasOperator($assign->op{0})) {
+          $o= $ptr->getOperator($assign->op{0});
+          
+          $this->emitOne($op, $assign->variable);
+          $op->append('=');
+          $op->append($ptr->literal());
+          $op->append('::operator··')->append($ovl[$assign->op])->append('(');
+          $this->emitOne($op, $assign->variable);
+          $op->append(',');
+          $this->emitOne($op, $assign->expression);
+          $op->append(')');
+
+          $this->scope[0]->setType($assign, $o->returns);
+          return;
+        }
+      }
       
       $this->emitOne($op, $assign->variable);
       $op->append($ops[$assign->op]);
@@ -1125,7 +1179,24 @@
      * @param   xp.compiler.ast.OperatorNode method
      */
     protected function emitOperator($op, OperatorNode $operator) {
-      $this->error('F501', 'Operator overloading not supported', $operator);
+      static $ovl= array(
+        '~'   => 'concat',
+        '-'   => 'minus',
+        '+'   => 'plus',
+        '*'   => 'times',
+        '/'   => 'div',
+        '%'   => 'mod',
+      );
+      
+      $this->enter(new MethodScope());
+
+      $op->append('public static function operator··');
+      $op->append($ovl[$operator->symbol]);
+      $this->emitParameters($op, (array)$operator->parameters, '{');
+      $this->emitAll($op, (array)$operator->body);
+      $op->append('}');
+      
+      $this->leave();
     }
 
     /**

@@ -92,6 +92,22 @@
     public abstract function getMethod($name);
 
     /**
+     * Returns whether an operator by a given symbol exists
+     *
+     * @param   string symbol
+     * @return  bool
+     */
+    public abstract function hasOperator($symbol);
+    
+    /**
+     * Returns an operator by a given name
+     *
+     * @param   string symbol
+     * @return  xp.compiler.types.Operator
+     */
+    public abstract function getOperator($symbol);
+
+    /**
      * Returns a field by a given name
      *
      * @param   string name

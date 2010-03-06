@@ -161,6 +161,42 @@
     }
 
     /**
+     * Returns whether an operator by a given symbol exists
+     *
+     * @param   string symbol
+     * @return  bool
+     */
+    public function hasOperator($symbol) {
+      foreach ($this->tree->declaration->body as $member) {
+        if ($member instanceof OperatorNode && $member->symbol === $symbol) return TRUE;
+      }
+      return $this->parent ? $this->parent->hasOperator($name) : FALSE;
+    }
+    
+    /**
+     * Returns an operator by a given name
+     *
+     * @param   string symbol
+     * @return  xp.compiler.types.Operator
+     */
+    public function getOperator($symbol) {
+      foreach ($this->tree->declaration->body as $member) {
+        if ($member instanceof OperatorNode && $member->symbol === $symbol) {
+          $m= new xp·compiler·types·Method();
+          $m->name= $member->symbol;
+          $m->returns= $member->returns;
+          $m->modifiers= $member->modifiers;
+          foreach ($member->parameters as $p) {
+            $m->parameters[]= $p->type;
+          }
+          $m->holder= $this;
+          return $m;
+        }
+      }
+      return $this->parent ? $this->parent->getOperator($name) : NULL;
+    }
+
+    /**
      * Returns a field by a given name
      *
      * @param   string name

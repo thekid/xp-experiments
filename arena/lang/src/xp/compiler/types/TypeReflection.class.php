@@ -158,6 +158,48 @@
       return $m;
     }
 
+    public static $ovl= array(
+      '~'   => 'concat',
+      '-'   => 'minus',
+      '+'   => 'plus',
+      '*'   => 'times',
+      '/'   => 'div',
+      '%'   => 'mod',
+    );
+
+    /**
+     * Returns whether an operator by a given symbol exists
+     *
+     * @param   string symbol
+     * @return  bool
+     */
+    public function hasOperator($symbol) {
+      return $this->class->hasMethod('operator··'.self::$ovl[$symbol]);
+    }
+    
+    /**
+     * Returns an operator by a given name
+     *
+     * @param   string symbol
+     * @return  xp.compiler.types.Operator
+     */
+    public function getOperator($symbol) {
+      if (!$this->hasOperator($symbol)) return NULL;
+
+      with ($method= $this->class->getMethod('operator··'.self::$ovl[$symbol])); {
+        $m= new xp·compiler·types·Method();
+        $m->name= $method->getName();
+        $m->returns= $this->typeNameOf($method->getReturnTypeName());
+        $m->modifiers= $method->getModifiers();
+        $m->parameters= array();
+        foreach ($method->getParameters() as $p) {
+          $m->parameters[]= $this->typeNameOf($p->getTypeName());
+        }
+      }
+      $m->holder= $this;
+      return $m;
+    }
+
     /**
      * Returns a field by a given name
      *
