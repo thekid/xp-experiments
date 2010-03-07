@@ -2117,6 +2117,18 @@
       }
       $op->append(';');
     }
+
+    /**
+     * Emit a silence node
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.SilenceOperatorNode silenced
+     */
+    protected function emitSilenceOperator($op, SilenceOperatorNode $silenced) {
+      $op->append('@');
+      $this->emitOne($op, $silenced->expression);
+      $this->scope[0]->setType($silenced, $this->scope[0]->typeOf($silenced->expression));
+    }
     
     /**
      * Emit a single node

@@ -67,9 +67,10 @@
     'xp.compiler.ast.CloneNode',
     'xp.compiler.ast.IfNode',
     'xp.compiler.ast.ElseNode',
-    'xp.compiler.ast.NoopNode'
+    'xp.compiler.ast.NoopNode',
+    'xp.compiler.ast.SilenceOperatorNode'
   );
-#line 73 "-"
+#line 74 "-"
 
   uses('text.parser.generic.AbstractParser');
 
@@ -199,10 +200,10 @@
         214,    11,     0,     0,     0,     0,     0,     0,     0,     0, 
         207,     0,     0,     0,    37,    40,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,   117,     0,     0, 
-        145,   142,   144,   143,     0,   115,     0,     0,   114,     0, 
+          0,   145,   142,   144,   143,     0,   115,     0,   114,     0, 
           0,     0,     0,   125,   126,   127,   128,   129,    17,     0, 
           0,     0,    21,    23,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,   123,   121,     0,   140,     0, 
+          0,     0,     0,     0,     0,   123,   137,   121,     0,   140, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,   190,   191,     0,     0, 
@@ -243,7 +244,7 @@
          35,    71,    72,    73,   318,   292,   293,   294,   319,   320, 
         321,   322,   331,   383,   325,   215,   328,   373,   326,   327, 
         332,   386,   338,   366,   329,   330,   324,   387,   388,   394, 
-        395,   393,   367,   368,   376,   216,   150,   231,   158,   100, 
+        395,   393,   367,   368,   376,   216,   150,   231,   158,   101, 
          95,   162,   152,    74,    75,    76,    77,    78,   220,   154, 
         221,   222,   159,   160,   223,   227,   275,   151,    22,    23, 
     );
@@ -253,12 +254,12 @@
           0,     0,    52,     0,   -98,     0,     0,   123,     0,     0, 
           0,     0,   -98,    97,   155,   -98,   -98,   161,    52,   123, 
           0,  -105,   -87,  3893,     0,     0,   -98,   -90,   -98,   119, 
-       4363,  4471,  4471,  4471,  4471,  4471,  4471,     0,  4471,   111, 
-          0,     0,     0,     0,   194,     0,  4471,  -173,     0,  1582, 
+       4363,  4471,  4471,  4471,  4471,  4471,  4471,     0,  4471,  4471, 
+        111,     0,     0,     0,     0,   194,     0,  -173,     0,  1582, 
         205,   206,   204,     0,     0,     0,     0,     0,     0,   -98, 
         142,   222,     0,     0,    25,    73,   468,    -5,    59,    59, 
-        921,   921,   921,   921,  -224,     0,     0,  4471,     0,   -89, 
-       1582,   -29,  4471,  4471,  4471,  4471,  4471,  4471,  4471,  4304, 
+        921,   921,   921,   921,  -224,     0,     0,     0,  4471,     0, 
+        -89,   -29,  4471,  4471,  4471,  4471,  4471,  4471,  4471,  4304, 
        4315,  4471,  4471,  -255,  4471,  4471,  4471,  4471,  4471,  4471, 
        4471,  4471,  4471,  4471,  4471,  4471,     0,     0,  4471,  4471, 
        4471,  4471,  4471,  4326,  4341,     0,     0,    12,     0,     0, 
@@ -297,12 +298,12 @@
           0,     0,  -136,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,    97,     0,     0,    14,  -134,     0, 
           0,  -109,   279,   363,     0,     0,     0,   284,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,  1390, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,    95, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+       1390,     0,     0,     0,     0,     0,     0,     0,     0,    95, 
           0,     0,   364,     0,     0,     0,     0,     0,     0,     0, 
           0,   285,     0,     0,  1457,     0,     0,   170,  2038,  2314, 
-       1786,  1844,  1883,  1912,     0,     0,     0,     0,     0,   267, 
-        -32,  -252,     0,     0,     0,     0,     0,     0,     0,     0, 
+       1786,  1844,  1883,  1912,     0,     0,     0,     0,     0,     0, 
+        267,  -252,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,   348,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
@@ -312,8 +313,8 @@
        3176,     0,  3199,  3224,  3267,     0,     0,  3296,  3476,  3681, 
        3704,     0,  2549,  2522,  2478,  2424,  2451,  1980,  2009,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-       -190,     0,     0,     0,     0,     0,     0,     0,     0,   181, 
-        705,   377,   377,    63,     0,     0,     0,   391,     0,     0, 
+       -190,     0,     0,     0,     0,     0,     0,     0,     0,   -32, 
+        181,   377,   377,    63,     0,     0,     0,   391,     0,     0, 
           0,   393,   342,    36,     0,     0,     0,     0,   133,     0, 
         267,  3731,  3761,     0,  3861,  3884,     0,     0,     0,     0, 
           0,   138,   106,     0,     0,     0,     0,   267,     0,     0, 
@@ -347,37 +348,37 @@
         292,     0,   397,     0,     0,     0,     0,     0,   535,     0, 
     );
     protected static $yyTable = array(10,
-         11,   155,   226,    20,     9,   229,   219,   119,   137,   138, 
-         57,   137,    55,    16,   122,   182,    29,    30,   125,   123, 
-         32,   124,   133,   126,   138,   137,   137,   299,    38,    42, 
-         43,    41,    41,   157,    97,     9,   129,     9,   130,    18, 
+         11,   155,   226,    20,     9,   229,   219,   119,   135,   138, 
+         57,   135,    55,    16,   122,   182,    29,    30,   125,   123, 
+         32,   124,   133,   126,   138,   135,   135,   299,    38,    42, 
+         43,    41,    41,   157,    98,     9,   129,     9,   130,    18, 
          79,   333,    41,     1,    41,    10,    10,   243,    10,    10, 
          10,    10,    10,    10,    10,    10,    34,    41,     5,    34, 
-        137,   139,   244,   350,    97,   143,    10,    10,    10,    10, 
+        135,   139,   244,   350,    98,   143,    10,    10,    10,    10, 
          10,    10,   200,   200,    34,    41,   200,   200,   200,   200, 
         200,   200,   200,   241,   176,   230,    25,   119,   148,   242, 
-         41,   300,   137,   200,   200,   200,   200,   200,   200,   269, 
+         41,   300,   135,   200,   200,   200,   200,   200,   200,   269, 
         125,    10,    10,   105,   133,   126,    41,   177,   146,    41, 
-        146,    46,    99,   144,    46,   147,    25,   290,   129,   252, 
+        146,    46,   100,   144,    46,   147,    25,   290,   129,   252, 
         130,   105,   202,   384,   385,    25,   200,   406,   200,   200, 
         408,    10,    10,    10,   410,   108,    41,   125,   123,   224, 
-        124,   133,   126,   211,   279,    61,    62,    63,    64,   211, 
-         97,   257,   108,   108,   295,   129,    26,   130,   200,   200, 
+        124,   133,   126,   211,   279,    62,    63,    64,    65,   211, 
+         98,   257,   108,   108,   295,   129,    26,   130,   200,   200, 
         200,     9,   303,   213,   213,   211,   211,   260,   270,   111, 
-        111,    98,    27,   111,   111,   111,   111,   111,   111,   111, 
+        111,    99,    27,   111,   111,   111,   111,   111,   111,   111, 
         152,    33,   261,   152,    28,    33,    33,   108,    33,    39, 
         111,   111,   111,   111,   111,   111,    33,   213,    40,   211, 
          44,    16,    25,   213,    47,   211,   138,   138,   211,   211, 
-        138,   138,   138,   138,   138,   138,   138,    65,   337,   225, 
-         80,   135,    49,   111,   135,   111,   111,   138,   138,   138, 
-        138,   138,   138,    99,   245,   246,   102,     5,   135,   135, 
+        138,   138,   138,   138,   138,   138,   138,    66,   337,   225, 
+         80,   136,    49,   111,   136,   111,   111,   138,   138,   138, 
+        138,   138,   138,   100,   245,   246,   102,     5,   136,   136, 
         265,    84,   156,   104,   122,   136,   137,   138,   125,   123, 
         247,   124,   133,   126,   280,   111,   111,   111,    57,    57, 
          55,    55,   138,   138,   140,   141,   129,   103,   130,   119, 
-        161,   199,   212,   135,   213,   234,    98,   238,   278,   248, 
+        161,   199,   212,   136,   213,   234,    99,   238,   278,   248, 
         250,   148,   253,    41,    12,    13,    14,    15,    16,    17, 
-        148,   251,    41,   138,   138,   256,   262,   285,   137,   267, 
-        121,   259,   263,   192,   192,   135,   268,   192,   192,   192, 
+        148,   251,    41,   138,   138,   256,   262,   285,   135,   267, 
+        121,   259,   263,   192,   192,   136,   268,   192,   192,   192, 
         192,   192,   192,   192,   283,   274,   286,   242,    10,    10, 
          10,   287,   289,   296,   192,   192,   192,   192,   192,   192, 
         120,    12,    13,    14,    15,    16,    17,   297,   298,    10, 
@@ -385,7 +386,7 @@
         125,   123,   346,   124,   133,   126,   347,   349,   348,   192, 
         192,   354,   352,   359,   361,   365,   200,   200,   129,   358, 
         130,   119,   372,   375,   378,    10,   132,   131,   127,   128, 
-        137,   369,   398,   381,    41,   380,   389,   134,   135,   382, 
+        135,   369,   398,   381,    41,   380,   389,   134,   135,   382, 
         192,   192,   391,   396,   399,   402,   403,   407,   411,   409, 
         390,    20,   121,   107,    44,   107,    18,   209,    10,    10, 
          10,    10,    10,    10,    10,    10,    10,   103,    10,    10, 
@@ -398,7 +399,7 @@
          85,   138,     5,     5,     5,     5,     5,     5,   194,   194, 
         194,   194,   194,   194,    87,   132,   131,   127,   128,    24, 
         138,   201,     5,     5,   104,   122,   134,   135,   145,   125, 
-        123,   135,   124,   133,   126,   266,   282,    46,   114,   281, 
+        123,   136,   124,   133,   126,   266,   282,    46,   114,   281, 
          45,   200,   302,   194,   194,   377,   149,   129,   103,   130, 
         119,   336,   111,   111,   111,   111,   111,   111,   111,   111, 
         111,   397,   273,   111,   111,   111,   111,   111,   111,   111, 
@@ -406,7 +407,7 @@
           0,   121,   342,     0,     0,     0,     0,     0,     0,   138, 
         138,   138,   138,   138,   138,   138,   138,   138,   192,    10, 
         138,   138,   138,   138,   138,   138,   138,   138,   138,   138, 
-        138,   120,     0,   135,     0,   370,     0,   192,   374,     0, 
+        138,   120,     0,   136,     0,   370,     0,   192,   374,     0, 
           0,     0,     0,     0,     0,     0,   132,   131,   127,   128, 
         105,   106,   107,   108,   109,    18,   392,   134,   135,   249, 
         112,   113,   115,   117,   116,   118,   110,   111,   400,     0, 
@@ -421,15 +422,15 @@
         127,   128,   129,   103,   130,   119,     0,     0,   120,   134, 
         135,     0,     0,     0,     6,     0,     0,     0,   104,   122, 
           0,     0,     0,   125,   123,   237,   124,   133,   126,     0, 
-          0,     0,   194,     0,     0,   136,   121,     0,   136,     0, 
+          0,     0,   194,     0,     0,     0,   121,     0,     0,     0, 
           0,   129,   103,   130,   119,     0,     0,     0,     0,     0, 
-          0,   194,   136,   136,     0,   104,   122,     0,     0,     0, 
+          0,   194,     0,     0,     0,   104,   122,     0,     0,     0, 
         125,   123,     0,   124,   133,   126,   120,   276,     0,   114, 
           0,     0,     0,     0,     0,   121,     0,     0,   129,   103, 
-        130,   119,     0,     0,     0,     0,     0,   136,     0,     0, 
+        130,   119,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,   104,   122,     0,     0,     0,   125,   123,     0, 
         124,   133,   126,     0,     0,   120,   277,     0,     0,     0, 
-          0,     0,   121,     0,   334,   129,   103,   130,   119,   136, 
+          0,     0,   121,     0,   334,   129,   103,   130,   119,     0, 
         194,   194,   194,   194,   194,   194,   194,   194,   194,     0, 
           0,   194,   194,   194,   194,   194,   194,   194,   194,   194, 
         194,   194,   120,     0,     0,     0,     0,     0,     0,   121, 
@@ -450,7 +451,7 @@
         107,   108,   109,   114,     0,   134,   135,     0,   112,   113, 
         115,   117,   116,   118,   110,   111,     0,     0,     0,     0, 
           0,   120,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,   136,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
         114,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,   132,   131,   127,   128,   105,   106,   107,   108, 
         109,     0,     0,   134,   135,     0,   112,   113,   115,   117, 
@@ -458,7 +459,7 @@
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,   132,   131,   127,   128,   105,   106,   107,   108,   109, 
           0,     0,   134,   135,     0,   112,   113,   115,   117,   116, 
-        118,   110,   111,     0,     0,     0,     0,   136,     0,     0, 
+        118,   110,   111,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,   132,   131, 
         127,   128,   105,   106,   107,   108,   109,     0,     0,   134, 
         135,   249,   112,   113,   115,   117,   116,   118,   110,   111, 
@@ -722,7 +723,7 @@
          54,   161,     0,     0,   161,     0,     0,    51,     0,     0, 
          52,     0,    53,     0,     0,     0,     0,     0,   161,   161, 
         162,   161,     0,     0,   162,     0,   315,   162,     0,     0, 
-          0,    67,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,    60,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,   162,   162,     0,   162,     0,     0,   163,     0,     0, 
           0,   163,     0,   161,   163,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,   160,   163,   163, 
@@ -741,15 +742,15 @@
           0,     0,     0,     0,     0,     0,     0,     0,   171,   171, 
         172,   171,     0,     0,   172,    54,     0,   172,     0,     0, 
           0,     0,    51,     0,     0,    52,     0,    53,     0,     0, 
-          0,   172,   172,     0,   172,     0,     0,    88,    61,    62, 
-         63,    64,     0,   171,     0,     0,    67,     0,     0,     0, 
+          0,   172,   172,     0,   172,     0,     0,    88,    62,    63, 
+         64,    65,     0,   171,     0,     0,    60,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,   172,     0,     0,     0, 
           0,     0,     0,     0,     0,   171,     0,     0,     0,     0, 
           0,     0,   161,     0,     0,     0,     0,     0,     0,     0, 
          59,     0,     0,     0,     0,     0,     0,     0,   172,     0, 
           0,   161,    99,     0,     0,   162,     0,     0,    55,    99, 
-         65,     0,    99,     0,    99,     0,     0,    66,   304,   305, 
+         66,     0,    99,     0,    99,     0,     0,    67,   304,   305, 
         306,     0,     0,    58,   162,     0,     0,     0,    99,     0, 
           0,     0,   163,    99,     0,     0,     0,   307,   308,   309, 
         310,     0,   311,   312,     0,     0,     0,   313,     0,   314, 
@@ -762,15 +763,15 @@
         162,   162,   162,   162,   162,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,   163,   163,   163,   163,   163,     0, 
           0,     0,     0,   163,   163,   163,   163,   163,   163,   163, 
-        163,   163,    60,    61,    62,    63,    64,     0,     0,     0, 
+        163,   163,    61,    62,    63,    64,    65,     0,     0,     0, 
           0,     0,     0,     0,   164,   164,   164,   164,   164,     0, 
           0,     0,   171,   164,   164,   164,   164,   164,   164,   164, 
         164,   164,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,   171,    95,     0,     0,   172,     0,     0,     0,    95, 
           0,     0,    95,     0,    95,    59,     0,     0,     0,     0, 
           0,     0,     0,     0,   172,     0,     0,     0,    95,     0, 
-          0,     0,     0,    95,     0,    65,     0,     0,     0,     0, 
-          0,     0,    66,     0,     0,     0,     0,     0,    58,    99, 
+          0,     0,     0,    95,     0,    66,     0,     0,     0,     0, 
+          0,     0,    67,     0,     0,     0,     0,     0,    58,    99, 
          99,    99,    99,    99,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,   171,   171,   171,   171,   171,     0, 
@@ -783,13 +784,13 @@
           0,     0,     0,     0,     0,     0,    54,     0,     0,    99, 
          99,    99,    99,    51,    99,    99,    52,    54,    53,    99, 
          99,    99,    99,    99,    51,     0,     0,    52,    54,    53, 
-          0,     0,     0,     0,   170,    51,     0,    67,    52,     0, 
-         53,     0,     0,    54,     0,   172,     0,     0,    67,     0, 
-         51,    99,    99,    52,    54,    53,   195,     0,     0,    67, 
+          0,     0,     0,     0,   170,    51,     0,    60,    52,     0, 
+         53,     0,     0,    54,     0,   172,     0,     0,    60,     0, 
+         51,    99,    99,    52,    54,    53,   195,     0,     0,    60, 
           0,    51,     0,     0,    52,    54,    53,     0,     0,     0, 
-          0,   197,    51,     0,    67,    52,     0,    53,     0,   217, 
-          0,     0,     0,     0,     0,    67,     0,     0,     0,    95, 
-         95,    95,    95,    95,     0,     0,    67,     0,     0,    55, 
+          0,   197,    51,     0,    60,    52,     0,    53,     0,   217, 
+          0,     0,     0,     0,     0,    60,     0,     0,     0,    95, 
+         95,    95,    95,    95,     0,     0,    60,     0,     0,    55, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
          55,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,    55,     0,     0,     0,     0,     0,     0,     0,     0, 
@@ -800,35 +801,35 @@
          95,    95,    95,    54,     0,    95,     0,     0,     0,     0, 
          51,     0,     0,    52,     0,    53,     0,     0,     0,    95, 
          95,    95,    95,     0,    95,    95,     0,     0,     0,    95, 
-          0,    95,    95,    95,    67,     0,     0,     0,     0,     0, 
+          0,    95,    95,    95,    60,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,    95,    95,    88,    61,    62,    63,    64,     0,     0, 
-          0,     0,     0,     0,    88,    61,    62,    63,    64,     0, 
-          0,     0,     0,     0,     0,    88,    61,    62,    63,    64, 
+          0,    95,    95,    88,    62,    63,    64,    65,     0,     0, 
+          0,     0,     0,     0,    88,    62,    63,    64,    65,     0, 
+          0,     0,     0,     0,     0,    88,    62,    63,    64,    65, 
           0,     0,     0,     0,     0,     0,    55,     0,     0,     0, 
-         88,    61,    62,    63,    64,     0,     0,     0,     0,     0, 
-          0,    88,    61,    62,    63,    64,    59,     0,     0,     0, 
-          0,     0,    85,    61,    62,    63,    64,    59,     0,     0, 
-          0,     0,     0,     0,     0,     0,    65,     0,    59,     0, 
-          0,     0,     0,    66,     0,     0,     0,    65,     0,    58, 
-          0,     0,     0,    59,    66,     0,     0,     0,    65,     0, 
-         58,     0,     0,     0,    59,    66,     0,     0,     0,     0, 
-          0,    58,     0,    65,     0,    59,     0,     0,     0,     0, 
-         66,     0,     0,     0,    65,     0,    58,     0,     0,     0, 
-          0,    66,     0,     0,     0,    86,     0,    58,     0,     0, 
-          0,     0,    66,     0,     0,    56,    57,     0,    58,     0, 
+         88,    62,    63,    64,    65,     0,     0,     0,     0,     0, 
+          0,    88,    62,    63,    64,    65,    59,     0,     0,     0, 
+          0,     0,    85,    62,    63,    64,    65,    59,     0,     0, 
+          0,     0,     0,     0,     0,     0,    66,     0,    59,     0, 
+          0,     0,     0,    67,     0,     0,     0,    66,     0,    58, 
+          0,     0,     0,    59,    67,     0,     0,     0,    66,     0, 
+         58,     0,     0,     0,    59,    67,     0,     0,     0,     0, 
+          0,    58,     0,    66,     0,    59,     0,     0,     0,     0, 
+         67,     0,     0,     0,    66,     0,    58,     0,     0,     0, 
+          0,    67,     0,     0,     0,    86,     0,    58,     0,     0, 
+          0,     0,    67,     0,     0,    56,    57,     0,    58,     0, 
           0,     0,     0,     0,     0,     0,    56,    57,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,    56,    57,     0, 
-         88,    61,    62,    63,    64,     0,     0,     0,     0,     0, 
+         88,    62,    63,    64,    65,     0,     0,     0,     0,     0, 
           0,     0,    56,    57,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,    56,    57,     0,     0,     0,     0,    70, 
           0,     0,     0,     0,    56,    57,    87,    89,    90,    91, 
-         92,    93,    94,     0,    96,     0,     0,     0,     0,     0, 
-          0,     0,   101,    59,     0,     0,     0,     0,     0,     0, 
+         92,    93,    94,     0,    96,    97,     0,     0,     0,     0, 
+          0,     0,     0,    59,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,    65,     0,     0,     0,     0,     0,     0, 
-         66,     0,     0,   153,     0,     0,    58,     0,   163,   164, 
+          0,     0,     0,    66,     0,     0,     0,     0,     0,     0, 
+         67,     0,     0,     0,   153,     0,    58,     0,   163,   164, 
         165,   166,   167,   168,   169,   171,   173,   174,   175,     0, 
         178,   179,   180,   181,    70,   183,   184,   185,   186,   187, 
         188,   189,     0,     0,   190,   191,   192,   193,   194,   196, 
@@ -934,15 +935,15 @@
         402,   403,    60,    61,    62,    63,    -1,    -1,   124,   411, 
         412,    -1,    -1,    -1,    35,    -1,    -1,    -1,    37,    38, 
          -1,    -1,    -1,    42,    43,   125,    45,    46,    47,    -1, 
-         -1,    -1,   312,    -1,    -1,    41,    94,    -1,    44,    -1, 
+         -1,    -1,   312,    -1,    -1,    -1,    94,    -1,    -1,    -1, 
          -1,    60,    61,    62,    63,    -1,    -1,    -1,    -1,    -1, 
-         -1,   331,    58,    59,    -1,    37,    38,    -1,    -1,    -1, 
+         -1,   331,    -1,    -1,    -1,    37,    38,    -1,    -1,    -1, 
          42,    43,    -1,    45,    46,    47,   124,   125,    -1,   312, 
          -1,    -1,    -1,    -1,    -1,    94,    -1,    -1,    60,    61, 
-         62,    63,    -1,    -1,    -1,    -1,    -1,    93,    -1,    -1, 
+         62,    63,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    37,    38,    -1,    -1,    -1,    42,    43,    -1, 
          45,    46,    47,    -1,    -1,   124,   125,    -1,    -1,    -1, 
-         -1,    -1,    94,    -1,    59,    60,    61,    62,    63,   125, 
+         -1,    -1,    94,    -1,    59,    60,    61,    62,    63,    -1, 
         400,   401,   402,   403,   404,   405,   406,   407,   408,    -1, 
          -1,   411,   412,   413,   414,   415,   416,   417,   418,   419, 
         420,   421,   124,    -1,    -1,    -1,    -1,    -1,    -1,    94, 
@@ -963,7 +964,7 @@
         406,   407,   408,   312,    -1,   411,   412,    -1,   414,   415, 
         416,   417,   418,   419,   420,   421,    -1,    -1,    -1,    -1, 
          -1,   124,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,   331,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
         312,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,   400,   401,   402,   403,   404,   405,   406,   407, 
         408,    -1,    -1,   411,   412,    -1,   414,   415,   416,   417, 
@@ -971,7 +972,7 @@
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,   400,   401,   402,   403,   404,   405,   406,   407,   408, 
          -1,    -1,   411,   412,    -1,   414,   415,   416,   417,   418, 
-        419,   420,   421,    -1,    -1,    -1,    -1,   413,    -1,    -1, 
+        419,   420,   421,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   400,   401, 
         402,   403,   404,   405,   406,   407,   408,    -1,    -1,   411, 
         412,   413,   414,   415,   416,   417,   418,   419,   420,   421, 
@@ -1337,11 +1338,11 @@
          -1,    -1,   402,   403,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,   402,   403,    -1,    -1,    -1,    -1,    44, 
          -1,    -1,    -1,    -1,   402,   403,    51,    52,    53,    54, 
-         55,    56,    57,    -1,    59,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    67,   313,    -1,    -1,    -1,    -1,    -1,    -1, 
+         55,    56,    57,    -1,    59,    60,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,   313,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,   333,    -1,    -1,    -1,    -1,    -1,    -1, 
-        340,    -1,    -1,    98,    -1,    -1,   346,    -1,   103,   104, 
+        340,    -1,    -1,    -1,    99,    -1,   346,    -1,   103,   104, 
         105,   106,   107,   108,   109,   110,   111,   112,   113,    -1, 
         115,   116,   117,   118,   119,   120,   121,   122,   123,   124, 
         125,   126,    -1,    -1,   129,   130,   131,   132,   133,   134, 
@@ -1566,7 +1567,7 @@
             // Actions
             switch ($yyN) {
 
-    case 1:  #line 155 "grammar/php.jay"
+    case 1:  #line 157 "grammar/php.jay"
     {
       $yyVal= new ParseTree();
       $yyVal->origin= $yyLex->fileName;
@@ -1578,32 +1579,32 @@
       }
     } break;
 
-    case 3:  #line 170 "grammar/php.jay"
+    case 3:  #line 172 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new PackageNode()); } break;
 
-    case 4:  #line 170 "grammar/php.jay"
+    case 4:  #line 172 "grammar/php.jay"
     {
       $yyVals[-3+$yyTop]->name= $yyVals[-1+$yyTop];
     } break;
 
-    case 7:  #line 181 "grammar/php.jay"
+    case 7:  #line 183 "grammar/php.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 8:  #line 182 "grammar/php.jay"
+    case 8:  #line 184 "grammar/php.jay"
     { $yyVal= array_merge($yyVals[-1+$yyTop], array($yyVals[0+$yyTop])); } break;
 
-    case 9:  #line 186 "grammar/php.jay"
+    case 9:  #line 188 "grammar/php.jay"
     {
       $yyVal= $yyLex->create(new ImportNode(array('name' => $yyVals[-1+$yyTop]))); 
     } break;
 
-    case 11:  #line 193 "grammar/php.jay"
+    case 11:  #line 195 "grammar/php.jay"
     { $yyVal= $yyVals[-2+$yyTop].'.'.$yyVals[0+$yyTop]; } break;
 
-    case 12:  #line 199 "grammar/php.jay"
+    case 12:  #line 201 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ClassNode(), TRUE); } break;
 
-    case 13:  #line 199 "grammar/php.jay"
+    case 13:  #line 201 "grammar/php.jay"
     {
       $yyVals[-7+$yyTop]->modifiers= $yyVals[-8+$yyTop][0];
       $yyVals[-7+$yyTop]->annotations= $yyVals[-8+$yyTop][1];
@@ -1614,10 +1615,10 @@
       $yyVal= $yyVals[-7+$yyTop];
     } break;
 
-    case 14:  #line 208 "grammar/php.jay"
+    case 14:  #line 210 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new InterfaceNode(), TRUE); } break;
 
-    case 15:  #line 208 "grammar/php.jay"
+    case 15:  #line 210 "grammar/php.jay"
     {
       $yyVals[-6+$yyTop]->modifiers= $yyVals[-7+$yyTop][0];
       $yyVals[-6+$yyTop]->annotations= $yyVals[-7+$yyTop][1];
@@ -1627,52 +1628,52 @@
       $yyVal= $yyVals[-6+$yyTop];
     } break;
 
-    case 16:  #line 219 "grammar/php.jay"
+    case 16:  #line 221 "grammar/php.jay"
     { $yyVal= NULL; } break;
 
-    case 17:  #line 220 "grammar/php.jay"
+    case 17:  #line 222 "grammar/php.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 18:  #line 224 "grammar/php.jay"
+    case 18:  #line 226 "grammar/php.jay"
     { $yyVal= array(); } break;
 
-    case 19:  #line 225 "grammar/php.jay"
+    case 19:  #line 227 "grammar/php.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 20:  #line 229 "grammar/php.jay"
+    case 20:  #line 231 "grammar/php.jay"
     { $yyVal= NULL; } break;
 
-    case 21:  #line 230 "grammar/php.jay"
+    case 21:  #line 232 "grammar/php.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 22:  #line 234 "grammar/php.jay"
+    case 22:  #line 236 "grammar/php.jay"
     { $yyVal= array_merge((array)$yyVals[-1+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 23:  #line 235 "grammar/php.jay"
+    case 23:  #line 237 "grammar/php.jay"
     { $yyVal= NULL; } break;
 
-    case 24:  #line 239 "grammar/php.jay"
+    case 24:  #line 241 "grammar/php.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 25:  #line 240 "grammar/php.jay"
+    case 25:  #line 242 "grammar/php.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 26:  #line 241 "grammar/php.jay"
+    case 26:  #line 243 "grammar/php.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 27:  #line 245 "grammar/php.jay"
+    case 27:  #line 247 "grammar/php.jay"
     { $yyVal= array($yyVals[-1+$yyTop]); } break;
 
-    case 28:  #line 246 "grammar/php.jay"
+    case 28:  #line 248 "grammar/php.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 29:  #line 250 "grammar/php.jay"
+    case 29:  #line 252 "grammar/php.jay"
     { $yyVal= array($yyVals[-1+$yyTop]); } break;
 
-    case 30:  #line 251 "grammar/php.jay"
+    case 30:  #line 253 "grammar/php.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 31:  #line 257 "grammar/php.jay"
+    case 31:  #line 259 "grammar/php.jay"
     { $yyVal= $yyLex->create(new FieldNode());
       $yyVal->modifiers= $yyVals[-2+$yyTop][0];
       $yyVal->annotations= $yyVals[-2+$yyTop][1];
@@ -1681,21 +1682,21 @@
       $yyVal->initialization= $yyVals[0+$yyTop];
     } break;
 
-    case 32:  #line 267 "grammar/php.jay"
+    case 32:  #line 269 "grammar/php.jay"
     {
       $yyVal= $yyLex->create(new ClassConstantNode($yyVals[-2+$yyTop], TypeName::$VAR, $yyVals[0+$yyTop]));
     } break;
 
-    case 33:  #line 273 "grammar/php.jay"
+    case 33:  #line 275 "grammar/php.jay"
     { $yyVal= NULL; } break;
 
-    case 34:  #line 274 "grammar/php.jay"
+    case 34:  #line 276 "grammar/php.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 35:  #line 280 "grammar/php.jay"
+    case 35:  #line 282 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create('__construct' == $yyVals[-1+$yyTop] ? new ConstructorNode() :  new MethodNode(), TRUE); } break;
 
-    case 36:  #line 280 "grammar/php.jay"
+    case 36:  #line 282 "grammar/php.jay"
     {
       $yyVals[-4+$yyTop]->modifiers= $yyVals[-7+$yyTop][0];
       $yyVals[-4+$yyTop]->annotations= $yyVals[-7+$yyTop][1];
@@ -1708,102 +1709,102 @@
       $yyVal= $yyVals[-4+$yyTop];
     } break;
 
-    case 37:  #line 294 "grammar/php.jay"
+    case 37:  #line 296 "grammar/php.jay"
     { $yyVal= array($yyVals[0+$yyTop], $yyVals[-2+$yyTop]); } break;
 
-    case 38:  #line 295 "grammar/php.jay"
+    case 38:  #line 297 "grammar/php.jay"
     { $yyVal= array($yyVals[0+$yyTop], NULL); } break;
 
-    case 39:  #line 299 "grammar/php.jay"
+    case 39:  #line 301 "grammar/php.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 40:  #line 300 "grammar/php.jay"
+    case 40:  #line 302 "grammar/php.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 41:  #line 304 "grammar/php.jay"
+    case 41:  #line 306 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new AnnotationNode()); 
       $yyVal->type= $yyVals[0+$yyTop]; 
     } break;
 
-    case 42:  #line 308 "grammar/php.jay"
+    case 42:  #line 310 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new AnnotationNode()); 
       $yyVal->type= $yyVals[-3+$yyTop]; 
       $yyVals[-1+$yyTop] && $yyVal->parameters= array('default' => $yyVals[-1+$yyTop]);
     } break;
 
-    case 43:  #line 313 "grammar/php.jay"
+    case 43:  #line 315 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new AnnotationNode()); 
       $yyVal->type= $yyVals[-3+$yyTop]; 
       $yyVal->parameters= $yyVals[-1+$yyTop];
     } break;
 
-    case 44:  #line 321 "grammar/php.jay"
+    case 44:  #line 323 "grammar/php.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 45:  #line 322 "grammar/php.jay"
+    case 45:  #line 324 "grammar/php.jay"
     { $yyVal= array_merge($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 46:  #line 326 "grammar/php.jay"
+    case 46:  #line 328 "grammar/php.jay"
     { $yyVal= array($yyVals[-2+$yyTop] => $yyVals[0+$yyTop]); } break;
 
-    case 47:  #line 330 "grammar/php.jay"
+    case 47:  #line 332 "grammar/php.jay"
     { $yyVal= NULL; } break;
 
-    case 48:  #line 331 "grammar/php.jay"
+    case 48:  #line 333 "grammar/php.jay"
     { $yyVal= (array)$yyVals[-1+$yyTop]; } break;
 
-    case 49:  #line 335 "grammar/php.jay"
+    case 49:  #line 337 "grammar/php.jay"
     { $yyVal= NULL; } break;
 
-    case 50:  #line 336 "grammar/php.jay"
+    case 50:  #line 338 "grammar/php.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 51:  #line 340 "grammar/php.jay"
+    case 51:  #line 342 "grammar/php.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 52:  #line 341 "grammar/php.jay"
+    case 52:  #line 343 "grammar/php.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 53:  #line 345 "grammar/php.jay"
+    case 53:  #line 347 "grammar/php.jay"
     { $yyVal= array('name' => $yyVals[-1+$yyTop], 'type' => $yyVals[-2+$yyTop]); $yyVals[0+$yyTop] && $yyVal['default']= $yyVals[0+$yyTop]; } break;
 
-    case 54:  #line 346 "grammar/php.jay"
+    case 54:  #line 348 "grammar/php.jay"
     { $yyVal= array('name' => $yyVals[-1+$yyTop], 'type' => new TypeName('var')); $yyVals[0+$yyTop] && $yyVal['default']= $yyVals[0+$yyTop]; } break;
 
-    case 55:  #line 354 "grammar/php.jay"
+    case 55:  #line 356 "grammar/php.jay"
     { $yyVal= NULL; } break;
 
-    case 57:  #line 359 "grammar/php.jay"
+    case 57:  #line 361 "grammar/php.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 58:  #line 360 "grammar/php.jay"
+    case 58:  #line 362 "grammar/php.jay"
     { $yyVal= array_merge($yyVals[-1+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 59:  #line 364 "grammar/php.jay"
+    case 59:  #line 366 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ReturnNode()); } break;
 
-    case 60:  #line 364 "grammar/php.jay"
+    case 60:  #line 366 "grammar/php.jay"
     { 
       $yyVal->expression= $yyVals[-1+$yyTop];
     } break;
 
-    case 61:  #line 367 "grammar/php.jay"
+    case 61:  #line 369 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new IfNode()); } break;
 
-    case 62:  #line 367 "grammar/php.jay"
+    case 62:  #line 369 "grammar/php.jay"
     {
       $yyVals[-6+$yyTop]->condition= $yyVals[-3+$yyTop];
       $yyVals[-6+$yyTop]->statements= $yyVals[-1+$yyTop];
       $yyVals[-6+$yyTop]->otherwise= $yyVals[0+$yyTop];
     } break;
 
-    case 63:  #line 372 "grammar/php.jay"
+    case 63:  #line 374 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ForNode()); } break;
 
-    case 64:  #line 372 "grammar/php.jay"
+    case 64:  #line 374 "grammar/php.jay"
     {
       if ($yyVals[-6+$yyTop]) {
         $yyVals[-9+$yyTop]->initialization= array();
@@ -1823,181 +1824,181 @@
       $yyVals[-9+$yyTop]->statements= $yyVals[0+$yyTop];
     } break;
 
-    case 65:  #line 390 "grammar/php.jay"
+    case 65:  #line 392 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ForeachNode()); } break;
 
-    case 66:  #line 390 "grammar/php.jay"
+    case 66:  #line 392 "grammar/php.jay"
     {
       $yyVals[-7+$yyTop]->expression= $yyVals[-4+$yyTop];
       $yyVals[-7+$yyTop]->assignment= $yyVals[-2+$yyTop];
       $yyVals[-7+$yyTop]->statements= $yyVals[0+$yyTop];
     } break;
 
-    case 67:  #line 395 "grammar/php.jay"
+    case 67:  #line 397 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new WhileNode()); } break;
 
-    case 68:  #line 395 "grammar/php.jay"
+    case 68:  #line 397 "grammar/php.jay"
     {
       $yyVals[-5+$yyTop]->expression= $yyVals[-2+$yyTop];
       $yyVals[-5+$yyTop]->statements= $yyVals[0+$yyTop];
     } break;
 
-    case 69:  #line 399 "grammar/php.jay"
+    case 69:  #line 401 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new DoNode()); } break;
 
-    case 70:  #line 399 "grammar/php.jay"
+    case 70:  #line 401 "grammar/php.jay"
     {
       $yyVals[-6+$yyTop]->expression= $yyVals[-1+$yyTop];
       $yyVals[-6+$yyTop]->statements= $yyVals[-4+$yyTop];
     } break;
 
-    case 71:  #line 403 "grammar/php.jay"
+    case 71:  #line 405 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new SwitchNode()); } break;
 
-    case 72:  #line 403 "grammar/php.jay"
+    case 72:  #line 405 "grammar/php.jay"
     {
       $yyVals[-7+$yyTop]->expression= $yyVals[-4+$yyTop];
       $yyVals[-7+$yyTop]->cases= $yyVals[-1+$yyTop];
     } break;
 
-    case 73:  #line 407 "grammar/php.jay"
+    case 73:  #line 409 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new TryNode()); } break;
 
-    case 74:  #line 407 "grammar/php.jay"
+    case 74:  #line 409 "grammar/php.jay"
     { 
       $yyVals[-4+$yyTop]->statements= $yyVals[-2+$yyTop];
       $yyVals[-4+$yyTop]->handling= $yyVals[0+$yyTop];
       $yyVal= $yyVals[-4+$yyTop]; 
     } break;
 
-    case 75:  #line 412 "grammar/php.jay"
+    case 75:  #line 414 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new BreakNode()); } break;
 
-    case 77:  #line 413 "grammar/php.jay"
+    case 77:  #line 415 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ContinueNode()); } break;
 
-    case 79:  #line 414 "grammar/php.jay"
+    case 79:  #line 416 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ThrowNode()); } break;
 
-    case 80:  #line 414 "grammar/php.jay"
+    case 80:  #line 416 "grammar/php.jay"
     {
       $yyVals[-3+$yyTop]->expression= $yyVals[-1+$yyTop];
     } break;
 
-    case 81:  #line 417 "grammar/php.jay"
+    case 81:  #line 419 "grammar/php.jay"
     { $yyVals[-1+$yyTop]->free= TRUE; } break;
 
-    case 82:  #line 418 "grammar/php.jay"
+    case 82:  #line 420 "grammar/php.jay"
     { $yyVal= $yyLex->create(new NoopNode()); } break;
 
-    case 83:  #line 422 "grammar/php.jay"
+    case 83:  #line 424 "grammar/php.jay"
     { $yyVal= array('key' => NULL, 'value' => $yyVals[0+$yyTop]); } break;
 
-    case 84:  #line 423 "grammar/php.jay"
+    case 84:  #line 425 "grammar/php.jay"
     { $yyVal= array('key' => $yyVals[-2+$yyTop], 'value' => $yyVals[0+$yyTop]); } break;
 
-    case 85:  #line 427 "grammar/php.jay"
+    case 85:  #line 429 "grammar/php.jay"
     { $yyVal= NULL; } break;
 
-    case 87:  #line 432 "grammar/php.jay"
+    case 87:  #line 434 "grammar/php.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 88:  #line 433 "grammar/php.jay"
+    case 88:  #line 435 "grammar/php.jay"
     { $yyVal= array_merge(array($yyVals[-1+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 89:  #line 437 "grammar/php.jay"
+    case 89:  #line 439 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new CaseNode()); } break;
 
-    case 90:  #line 437 "grammar/php.jay"
+    case 90:  #line 439 "grammar/php.jay"
     { 
       $yyVals[-4+$yyTop]->expression= $yyVals[-2+$yyTop];
       $yyVals[-4+$yyTop]->statements= $yyVals[0+$yyTop];
     } break;
 
-    case 91:  #line 441 "grammar/php.jay"
+    case 91:  #line 443 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new DefaultNode()); } break;
 
-    case 92:  #line 441 "grammar/php.jay"
+    case 92:  #line 443 "grammar/php.jay"
     { 
       $yyVals[-3+$yyTop]->statements= $yyVals[0+$yyTop];
     } break;
 
-    case 93:  #line 447 "grammar/php.jay"
+    case 93:  #line 449 "grammar/php.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 94:  #line 448 "grammar/php.jay"
+    case 94:  #line 450 "grammar/php.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 95:  #line 452 "grammar/php.jay"
+    case 95:  #line 454 "grammar/php.jay"
     { $yyVal= NULL; } break;
 
-    case 96:  #line 453 "grammar/php.jay"
+    case 96:  #line 455 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ElseNode()); } break;
 
-    case 97:  #line 453 "grammar/php.jay"
+    case 97:  #line 455 "grammar/php.jay"
     { $yyVals[-2+$yyTop]->statements= $yyVals[0+$yyTop]; } break;
 
-    case 99:  #line 462 "grammar/php.jay"
+    case 99:  #line 464 "grammar/php.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 100:  #line 463 "grammar/php.jay"
+    case 100:  #line 465 "grammar/php.jay"
     { $yyVal= array_merge(array($yyVals[-1+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 101:  #line 467 "grammar/php.jay"
+    case 101:  #line 469 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new CatchNode()); } break;
 
-    case 102:  #line 467 "grammar/php.jay"
+    case 102:  #line 469 "grammar/php.jay"
     {
     $yyVals[-8+$yyTop]->type= $yyVals[-5+$yyTop];
     $yyVals[-8+$yyTop]->variable= $yyVals[-4+$yyTop];
     $yyVals[-8+$yyTop]->statements= $yyVals[-1+$yyTop];
   } break;
 
-    case 103:  #line 477 "grammar/php.jay"
+    case 103:  #line 479 "grammar/php.jay"
     { $yyVal= NULL; } break;
 
-    case 105:  #line 482 "grammar/php.jay"
+    case 105:  #line 484 "grammar/php.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 106:  #line 483 "grammar/php.jay"
+    case 106:  #line 485 "grammar/php.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 107:  #line 487 "grammar/php.jay"
+    case 107:  #line 489 "grammar/php.jay"
     { $yyVal= NULL; } break;
 
-    case 109:  #line 492 "grammar/php.jay"
+    case 109:  #line 494 "grammar/php.jay"
     {
       $yyVal= new InstanceCreationNode();
       $yyVal->type= $yyVals[-3+$yyTop];
       $yyVal->parameters= $yyVals[-1+$yyTop];
     } break;
 
-    case 110:  #line 497 "grammar/php.jay"
+    case 110:  #line 499 "grammar/php.jay"
     {
       $yyVal= new DynamicInstanceCreationNode();
       $yyVal->variable= $yyVals[-3+$yyTop];
       $yyVal->parameters= $yyVals[-1+$yyTop];
     } break;
 
-    case 111:  #line 505 "grammar/php.jay"
+    case 111:  #line 507 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new ConstantNode()); $yyVal->value= $yyVals[0+$yyTop];
     } break;
 
-    case 112:  #line 508 "grammar/php.jay"
+    case 112:  #line 510 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new VariableNode($yyVals[0+$yyTop])); 
     } break;
 
-    case 113:  #line 511 "grammar/php.jay"
+    case 113:  #line 513 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new InvocationNode($yyVals[-3+$yyTop], $yyVals[-1+$yyTop])); 
     } break;
 
-    case 115:  #line 518 "grammar/php.jay"
+    case 115:  #line 520 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new VariableNode($yyVals[0+$yyTop])); } break;
 
-    case 116:  #line 518 "grammar/php.jay"
+    case 116:  #line 520 "grammar/php.jay"
     {
       if ($yyVals[0+$yyTop]) {
         $yyVal= $yyLex->create(new ChainNode());
@@ -2007,19 +2008,19 @@
       }
     } break;
 
-    case 117:  #line 526 "grammar/php.jay"
+    case 117:  #line 528 "grammar/php.jay"
     { $p= $yyLex->position; } break;
 
-    case 118:  #line 526 "grammar/php.jay"
+    case 118:  #line 528 "grammar/php.jay"
     { 
       $yyVals[0+$yyTop]->position= $p;
       $yyVal= $yyVals[0+$yyTop];
     } break;
 
-    case 119:  #line 530 "grammar/php.jay"
+    case 119:  #line 532 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ClassMemberNode(new TypeName($yyVals[-1+$yyTop]))); } break;
 
-    case 120:  #line 530 "grammar/php.jay"
+    case 120:  #line 532 "grammar/php.jay"
     {
       $yyVals[-3+$yyTop]->member= $yyVals[-1+$yyTop];
       if ($yyVals[0+$yyTop]) {
@@ -2030,10 +2031,10 @@
       }
     } break;
 
-    case 121:  #line 539 "grammar/php.jay"
+    case 121:  #line 541 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new InvocationNode($yyVals[-1+$yyTop])); } break;
 
-    case 122:  #line 539 "grammar/php.jay"
+    case 122:  #line 541 "grammar/php.jay"
     { 
       $yyVals[-4+$yyTop]->arguments= $yyVals[-2+$yyTop];
       if ($yyVals[0+$yyTop]) {
@@ -2045,41 +2046,41 @@
       $yyVal= $yyVals[-4+$yyTop];
     } break;
 
-    case 123:  #line 549 "grammar/php.jay"
+    case 123:  #line 551 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new CloneNode($yyVals[0+$yyTop])); break;
     } break;
 
-    case 124:  #line 552 "grammar/php.jay"
+    case 124:  #line 554 "grammar/php.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 125:  #line 553 "grammar/php.jay"
+    case 125:  #line 555 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new AssignmentNode($yyVals[0+$yyTop])); 
     } break;
 
-    case 126:  #line 556 "grammar/php.jay"
+    case 126:  #line 558 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new ComparisonNode($yyVals[0+$yyTop])); 
     } break;
 
-    case 127:  #line 559 "grammar/php.jay"
+    case 127:  #line 561 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new BinaryOpNode($yyVals[0+$yyTop])); 
     } break;
 
-    case 128:  #line 562 "grammar/php.jay"
+    case 128:  #line 564 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new UnaryOpNode($yyVals[0+$yyTop])); 
     } break;
 
-    case 129:  #line 565 "grammar/php.jay"
+    case 129:  #line 567 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new UnaryOpNode($yyVals[0+$yyTop])); 
       $yyVal->postfix= TRUE; 
     } break;
 
-    case 130:  #line 569 "grammar/php.jay"
+    case 130:  #line 571 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new TernaryNode());
       $yyVal->condition= $yyVals[-4+$yyTop];
@@ -2087,7 +2088,7 @@
       $yyVal->conditional= $yyVals[0+$yyTop];
     } break;
 
-    case 131:  #line 575 "grammar/php.jay"
+    case 131:  #line 577 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new BinaryOpNode()); 
       $yyVal->lhs= $yyVals[-2+$yyTop]; 
@@ -2095,7 +2096,7 @@
       $yyVal->op= '||'; 
     } break;
 
-    case 132:  #line 581 "grammar/php.jay"
+    case 132:  #line 583 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new BinaryOpNode()); 
       $yyVal->lhs= $yyVals[-2+$yyTop]; 
@@ -2103,36 +2104,36 @@
       $yyVal->op= '&&'; 
     } break;
 
-    case 133:  #line 587 "grammar/php.jay"
+    case 133:  #line 589 "grammar/php.jay"
     {
       $yyVal= $yyLex->create(new InstanceOfNode()); 
       $yyVal->expression= $yyVals[-2+$yyTop]; 
       $yyVal->type= $yyVals[0+$yyTop]; 
     } break;
 
-    case 134:  #line 592 "grammar/php.jay"
+    case 134:  #line 594 "grammar/php.jay"
     {
       $yyVal= $yyLex->create(new DynamicInstanceOfNode()); 
       $yyVal->expression= $yyVals[-2+$yyTop]; 
       $yyVal->variable= $yyVals[0+$yyTop]; 
     } break;
 
-    case 135:  #line 597 "grammar/php.jay"
+    case 135:  #line 599 "grammar/php.jay"
     {
       $yyVal= $yyLex->create(new CastNode(array('type' => new TypeName($yyVals[-2+$yyTop]), 'expression' => $yyVals[0+$yyTop]))); 
     } break;
 
-    case 136:  #line 600 "grammar/php.jay"
+    case 136:  #line 602 "grammar/php.jay"
     {
       $yyVal= $yyLex->create(new CastNode(array('type' => new TypeName('var[]'), 'expression' => $yyVals[0+$yyTop]))); 
     } break;
 
-    case 137:  #line 603 "grammar/php.jay"
+    case 137:  #line 605 "grammar/php.jay"
     {
-      $yyVal= $yyVals[0+$yyTop];
+      $yyVal= $yyLex->create(new SilenceOperatorNode($yyVals[0+$yyTop]));
     } break;
 
-    case 138:  #line 609 "grammar/php.jay"
+    case 138:  #line 611 "grammar/php.jay"
     { switch (strtolower($yyVals[0+$yyTop])) {
       case 'true': $yyVal= $yyLex->create(new BooleanNode(TRUE)); break;
       case 'false': $yyVal= $yyLex->create(new BooleanNode(FALSE)); break;
@@ -2140,263 +2141,263 @@
       default: $yyVal= $yyLex->create(new ConstantNode($yyVals[0+$yyTop])); break;
     }} break;
 
-    case 139:  #line 615 "grammar/php.jay"
+    case 139:  #line 617 "grammar/php.jay"
     { /* XXX class literal */ } break;
 
-    case 140:  #line 616 "grammar/php.jay"
+    case 140:  #line 618 "grammar/php.jay"
     { $p= $yyLex->position; } break;
 
-    case 141:  #line 616 "grammar/php.jay"
+    case 141:  #line 618 "grammar/php.jay"
     { $yyVals[-1+$yyTop]->position= $p; $yyVals[-1+$yyTop]->type= NULL; $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 142:  #line 617 "grammar/php.jay"
+    case 142:  #line 619 "grammar/php.jay"
     { $yyVal= $yyLex->create(new IntegerNode($yyVals[0+$yyTop])); } break;
 
-    case 143:  #line 618 "grammar/php.jay"
+    case 143:  #line 620 "grammar/php.jay"
     { $yyVal= $yyLex->create(new HexNode($yyVals[0+$yyTop])); } break;
 
-    case 144:  #line 619 "grammar/php.jay"
+    case 144:  #line 621 "grammar/php.jay"
     { $yyVal= $yyLex->create(new DecimalNode($yyVals[0+$yyTop])); } break;
 
-    case 145:  #line 620 "grammar/php.jay"
+    case 145:  #line 622 "grammar/php.jay"
     { $yyVal= $yyLex->create(new StringNode($yyVals[0+$yyTop])); } break;
 
-    case 146:  #line 624 "grammar/php.jay"
+    case 146:  #line 626 "grammar/php.jay"
     { 
       $yyVal= $yyLex->create(new ArrayNode(array('values' => NULL)));
     } break;
 
-    case 147:  #line 627 "grammar/php.jay"
+    case 147:  #line 629 "grammar/php.jay"
     {
       $yyVal= $yyLex->create(new MapNode(array('elements' => NULL)));
     } break;
 
-    case 148:  #line 630 "grammar/php.jay"
+    case 148:  #line 632 "grammar/php.jay"
     {
       $yyVal= $yyLex->create(new ArrayNode(array('values' => $yyVals[0+$yyTop])));
     } break;
 
-    case 149:  #line 633 "grammar/php.jay"
+    case 149:  #line 635 "grammar/php.jay"
     {
       $yyVal= $yyLex->create(new MapNode(array('elements' => $yyVals[0+$yyTop])));
     } break;
 
-    case 150:  #line 639 "grammar/php.jay"
+    case 150:  #line 641 "grammar/php.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 151:  #line 640 "grammar/php.jay"
+    case 151:  #line 642 "grammar/php.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 152:  #line 644 "grammar/php.jay"
+    case 152:  #line 646 "grammar/php.jay"
     { $yyVal= array($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); } break;
 
-    case 153:  #line 648 "grammar/php.jay"
+    case 153:  #line 650 "grammar/php.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 154:  #line 649 "grammar/php.jay"
+    case 154:  #line 651 "grammar/php.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 155:  #line 650 "grammar/php.jay"
+    case 155:  #line 652 "grammar/php.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 156:  #line 651 "grammar/php.jay"
+    case 156:  #line 653 "grammar/php.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 157:  #line 652 "grammar/php.jay"
+    case 157:  #line 654 "grammar/php.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 158:  #line 653 "grammar/php.jay"
+    case 158:  #line 655 "grammar/php.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 159:  #line 654 "grammar/php.jay"
+    case 159:  #line 656 "grammar/php.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => '~='); } break;
 
-    case 160:  #line 655 "grammar/php.jay"
+    case 160:  #line 657 "grammar/php.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 161:  #line 656 "grammar/php.jay"
+    case 161:  #line 658 "grammar/php.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 162:  #line 657 "grammar/php.jay"
+    case 162:  #line 659 "grammar/php.jay"
     { $yyVal= array('variable' => $yyVals[-2+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 163:  #line 658 "grammar/php.jay"
+    case 163:  #line 660 "grammar/php.jay"
     { $yyVal= array('variable' => $yyVals[-3+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-2+$yyTop].$yyVals[-1+$yyTop]); } break;
 
-    case 164:  #line 659 "grammar/php.jay"
+    case 164:  #line 661 "grammar/php.jay"
     { $yyVal= array('variable' => $yyVals[-3+$yyTop], 'expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-2+$yyTop].$yyVals[-1+$yyTop]); } break;
 
-    case 165:  #line 663 "grammar/php.jay"
+    case 165:  #line 665 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 166:  #line 664 "grammar/php.jay"
+    case 166:  #line 666 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 167:  #line 665 "grammar/php.jay"
+    case 167:  #line 667 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 168:  #line 666 "grammar/php.jay"
+    case 168:  #line 668 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 169:  #line 667 "grammar/php.jay"
+    case 169:  #line 669 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 170:  #line 668 "grammar/php.jay"
+    case 170:  #line 670 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 171:  #line 669 "grammar/php.jay"
+    case 171:  #line 671 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-3+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-2+$yyTop].$yyVals[-1+$yyTop]); } break;
 
-    case 172:  #line 670 "grammar/php.jay"
+    case 172:  #line 672 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-3+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-2+$yyTop].$yyVals[-1+$yyTop]); } break;
 
-    case 173:  #line 674 "grammar/php.jay"
+    case 173:  #line 676 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 174:  #line 675 "grammar/php.jay"
+    case 174:  #line 677 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 175:  #line 676 "grammar/php.jay"
+    case 175:  #line 678 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 176:  #line 677 "grammar/php.jay"
+    case 176:  #line 679 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 177:  #line 678 "grammar/php.jay"
+    case 177:  #line 680 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 178:  #line 679 "grammar/php.jay"
+    case 178:  #line 681 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => '~'); } break;
 
-    case 179:  #line 680 "grammar/php.jay"
+    case 179:  #line 682 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 180:  #line 681 "grammar/php.jay"
+    case 180:  #line 683 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 181:  #line 682 "grammar/php.jay"
+    case 181:  #line 684 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 182:  #line 683 "grammar/php.jay"
+    case 182:  #line 685 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 183:  #line 684 "grammar/php.jay"
+    case 183:  #line 686 "grammar/php.jay"
     { $yyVal= array('lhs' => $yyVals[-2+$yyTop], 'rhs' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 184:  #line 688 "grammar/php.jay"
+    case 184:  #line 690 "grammar/php.jay"
     { $yyVal= array('expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 185:  #line 689 "grammar/php.jay"
+    case 185:  #line 691 "grammar/php.jay"
     { $yyVal= array('expression' => $yyVals[0+$yyTop], 'op' => '~'); } break;
 
-    case 186:  #line 690 "grammar/php.jay"
+    case 186:  #line 692 "grammar/php.jay"
     { $yyVal= array('expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 187:  #line 691 "grammar/php.jay"
+    case 187:  #line 693 "grammar/php.jay"
     { $yyVal= array('expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 188:  #line 692 "grammar/php.jay"
+    case 188:  #line 694 "grammar/php.jay"
     { $yyVal= array('expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 189:  #line 693 "grammar/php.jay"
+    case 189:  #line 695 "grammar/php.jay"
     { $yyVal= array('expression' => $yyVals[0+$yyTop], 'op' => $yyVals[-1+$yyTop]); } break;
 
-    case 190:  #line 697 "grammar/php.jay"
+    case 190:  #line 699 "grammar/php.jay"
     { $yyVal= array('expression' => $yyVals[-1+$yyTop], 'op' => $yyVals[0+$yyTop]); } break;
 
-    case 191:  #line 698 "grammar/php.jay"
+    case 191:  #line 700 "grammar/php.jay"
     { $yyVal= array('expression' => $yyVals[-1+$yyTop], 'op' => $yyVals[0+$yyTop]); } break;
 
-    case 192:  #line 703 "grammar/php.jay"
+    case 192:  #line 705 "grammar/php.jay"
     { $yyVal= NULL; } break;
 
-    case 194:  #line 708 "grammar/php.jay"
+    case 194:  #line 710 "grammar/php.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 195:  #line 709 "grammar/php.jay"
+    case 195:  #line 711 "grammar/php.jay"
     {  $yyVal= array_merge(array($yyVals[-1+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 196:  #line 713 "grammar/php.jay"
+    case 196:  #line 715 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ArrayAccessNode()); } break;
 
-    case 197:  #line 713 "grammar/php.jay"
+    case 197:  #line 715 "grammar/php.jay"
     { 
       $yyVals[-3+$yyTop]->offset= $yyVals[-1+$yyTop];
     } break;
 
-    case 198:  #line 716 "grammar/php.jay"
+    case 198:  #line 718 "grammar/php.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ArrayAccessNode()); } break;
 
-    case 199:  #line 716 "grammar/php.jay"
+    case 199:  #line 718 "grammar/php.jay"
     { 
       $yyVals[-3+$yyTop]->offset= $yyVals[-1+$yyTop];
     } break;
 
-    case 200:  #line 719 "grammar/php.jay"
+    case 200:  #line 721 "grammar/php.jay"
     {
       $yyVal= $yyLex->create(new VariableNode($yyVals[0+$yyTop])); 
     } break;
 
-    case 201:  #line 722 "grammar/php.jay"
+    case 201:  #line 724 "grammar/php.jay"
     {
       $yyVal= $yyLex->create(new DynamicVariableReferenceNode(new VariableNode($yyVals[0+$yyTop]))); 
     } break;
 
-    case 202:  #line 725 "grammar/php.jay"
+    case 202:  #line 727 "grammar/php.jay"
     {
       $yyVal= $yyLex->create(new DynamicVariableReferenceNode($yyVals[-1+$yyTop])); 
     } break;
 
-    case 203:  #line 728 "grammar/php.jay"
+    case 203:  #line 730 "grammar/php.jay"
     { $yyVals[-2+$yyTop]= $yyLex->create(new InvocationNode($yyVals[-1+$yyTop])); } break;
 
-    case 204:  #line 728 "grammar/php.jay"
+    case 204:  #line 730 "grammar/php.jay"
     { 
       $yyVals[-5+$yyTop]->arguments= $yyVals[-1+$yyTop];
     } break;
 
-    case 207:  #line 741 "grammar/php.jay"
+    case 207:  #line 743 "grammar/php.jay"
     { $yyVal= new TypeName($yyVals[0+$yyTop]); } break;
 
-    case 208:  #line 745 "grammar/php.jay"
+    case 208:  #line 747 "grammar/php.jay"
     { $yyVal= new TypeName('var[]'); } break;
 
-    case 209:  #line 749 "grammar/php.jay"
+    case 209:  #line 751 "grammar/php.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 210:  #line 750 "grammar/php.jay"
+    case 210:  #line 752 "grammar/php.jay"
     { $yyVal= array_merge(array($yyVals[-2+$yyTop]), $yyVals[0+$yyTop]); } break;
 
-    case 211:  #line 756 "grammar/php.jay"
+    case 211:  #line 758 "grammar/php.jay"
     { $yyVal= 0; } break;
 
-    case 212:  #line 757 "grammar/php.jay"
+    case 212:  #line 759 "grammar/php.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 213:  #line 761 "grammar/php.jay"
+    case 213:  #line 763 "grammar/php.jay"
     { $yyVal= $yyVals[0+$yyTop]; } break;
 
-    case 214:  #line 762 "grammar/php.jay"
+    case 214:  #line 764 "grammar/php.jay"
     { $yyVal= $yyVals[-1+$yyTop] | $yyVals[0+$yyTop]; } break;
 
-    case 215:  #line 766 "grammar/php.jay"
+    case 215:  #line 768 "grammar/php.jay"
     { $yyVal= MODIFIER_PUBLIC; } break;
 
-    case 216:  #line 767 "grammar/php.jay"
+    case 216:  #line 769 "grammar/php.jay"
     { $yyVal= MODIFIER_PROTECTED; } break;
 
-    case 217:  #line 768 "grammar/php.jay"
+    case 217:  #line 770 "grammar/php.jay"
     { $yyVal= MODIFIER_PRIVATE; } break;
 
-    case 218:  #line 769 "grammar/php.jay"
+    case 218:  #line 771 "grammar/php.jay"
     { $yyVal= MODIFIER_STATIC; } break;
 
-    case 219:  #line 770 "grammar/php.jay"
+    case 219:  #line 772 "grammar/php.jay"
     { $yyVal= MODIFIER_ABSTRACT; } break;
 
-    case 220:  #line 771 "grammar/php.jay"
+    case 220:  #line 773 "grammar/php.jay"
     { $yyVal= MODIFIER_FINAL; } break;
-#line 2400 "-"
+#line 2401 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

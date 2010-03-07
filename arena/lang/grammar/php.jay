@@ -60,7 +60,8 @@
     'xp.compiler.ast.CloneNode',
     'xp.compiler.ast.IfNode',
     'xp.compiler.ast.ElseNode',
-    'xp.compiler.ast.NoopNode'
+    'xp.compiler.ast.NoopNode',
+    'xp.compiler.ast.SilenceOperatorNode'
   );
 %}
 
@@ -75,6 +76,7 @@
 %right '[' '!' '~' T_INC T_DEC T_AS
 %nonassoc '<' '>' T_SE T_GE '.' T_EQUALS T_NOT_EQUALS 
 %nonassoc T_NEW T_CLONE
+%right '@'
 
 %token T_WORD 260
 %token T_STRING 261
@@ -601,7 +603,7 @@ expression:
       $$= $yyLex->create(new CastNode(array('type' => new TypeName('var[]'), 'expression' => $4))); 
     }
   | '@' expression {
-      $$= $2;
+      $$= $yyLex->create(new SilenceOperatorNode($2));
     }
 ;
 
