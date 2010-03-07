@@ -111,6 +111,19 @@
     }
     
     /**
+     * Starts with a type
+     *
+     * @param   xp.compiler.ast.ParseTree tree
+     * @return  xp.compiler.types.Types
+     */
+    protected function partialType(ParseTree $tree) {
+      return new TypeReference(
+        $tree->package ? new TypeName($tree->package->name.'.'.$tree->declaration->name->name) : $tree->declaration->name,
+        Types::PARTIAL_KIND
+      );
+    }
+    
+    /**
      * Run this task and emit compiled code using a given emitter
      *
      * @return  xp.compiler.types.Types
@@ -124,7 +137,7 @@
         $this->listener->compilationStarted($this->source);
         try {
           $tree= $this->manager->parseFile($this->source);
-          $this->done[$this->source]= new TypeReference($tree->declaration->name, Types::PARTIAL_KIND);
+          $this->done[$this->source]= $this->partialType($tree);
           $result= $this->emitter->emit($tree, $scope);
           $target= $this->manager->getTarget($result->type(), $this->source);
           $this->manager->write($result, $target);
