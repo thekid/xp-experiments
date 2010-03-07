@@ -11,6 +11,7 @@
     'xp.compiler.Compiler',
     'xp.compiler.emit.source.Emitter',
     'xp.compiler.diagnostic.DefaultDiagnosticListener',
+    'xp.compiler.diagnostic.VerboseDiagnosticListener',
     'xp.compiler.io.FileSource',
     'xp.compiler.io.FileManager',
     'util.log.Logger',
@@ -27,6 +28,9 @@
    *
    * Options is one of:
    * <ul>
+   *   <li>-v:
+   *     Display verbose diagnostics
+   *   </li>
    *   <li>-cp [path]: 
    *     Add path to classpath
    *   </li>
@@ -102,6 +106,8 @@
           ClassLoader::registerPath($args[++$i]);
         } else if ('-sp' === $args[$i]) {
           $manager->addSourcePath($args[++$i]);
+        } else if ('-v' === $args[$i]) {
+          $listener= new VerboseDiagnosticListener(Console::$out);
         } else if ('-t' === $args[$i]) {
           $levels= LogLevel::NONE;
           foreach (explode(',', $args[++$i]) as $level) {
