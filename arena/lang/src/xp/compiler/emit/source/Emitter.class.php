@@ -505,6 +505,8 @@
         
         if ($c instanceof VariableNode) {
           $t= $this->emitMemberAccess($op, $c, $t);
+        } else if ($c instanceof DynamicVariableReferenceNode) {
+          $t= $this->emitMemberAccess($op, $c, $t->expression);
         } else if ($c instanceof ArrayAccessNode) {
           $t= $this->emitArrayAccess($op, $c, $t);
         } else if ($c instanceof InvocationNode) {
@@ -1053,6 +1055,19 @@
      */
     protected function emitFinally($op, FinallyNode $finally) {
       $this->emitAll($op, (array)$finally->statements);
+    }
+
+    /**
+     * Emit a dynamic instance creation node
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.DynamicInstanceCreationNode new
+     */
+    protected function emitDynamicInstanceCreation($op, DynamicInstanceCreationNode $new) {
+      $op->append('new ')->append('$')->append($new->variable);
+      $this->emitInvocationArguments($op, (array)$new->parameters);
+      
+      $this->scope[0]->setType($new, new TypeName('lang.Object'));
     }
 
     /**
@@ -1979,6 +1994,17 @@
       array_shift($this->properties);
       array_shift($this->metadata);
       array_shift($this->inits);      
+    }
+
+    /**
+     * Emit dynamic instanceof
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.DynamicInstanceOfNode instanceof
+     */
+    protected function emitDynamicInstanceOf($op, DynamicInstanceOfNode $instanceof) {
+      $this->emitOne($op, $instanceof->expression);
+      $op->append(' instanceof ')->append('$')->append($instanceof->variable);
     }
 
     /**

@@ -60,7 +60,8 @@
      * @param   text.parser.generic.ParseException reason
      */
     public function parsingFailed(xp·compiler·io·Source $src, ParseException $reason) {
-      $this->writer->writeLine($src, ': ', $reason);
+      $this->writer->writeLine($src, ': ', $reason->compoundMessage());
+      $reason->printStackTrace();
     }
 
     /**
@@ -70,7 +71,8 @@
      * @param   lang.FormatException reason
      */
     public function emittingFailed(xp·compiler·io·Source $src, FormatException $reason) {
-      $this->writer->writeLine($src, ': ', $reason);
+      $this->writer->writeLine($src, ': ', $reason->compoundMessage());
+      $reason->printStackTrace();
     }
 
     /**
@@ -80,7 +82,8 @@
      * @param   lang.Throwable reason
      */
     public function compilationFailed(xp·compiler·io·Source $src, Throwable $reason) {
-      $this->writer->writeLine($src, ': ', $reason);
+      $this->writer->writeLine($src, ': ', $reason->compoundMessage());
+      $reason->printStackTrace();
     }
 
     /**
