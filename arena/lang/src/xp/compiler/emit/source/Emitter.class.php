@@ -1679,7 +1679,12 @@
       if (!$field->initialization) {
         $init= NULL;
       } else if ($field->initialization instanceof Resolveable) {
-        $init= $field->initialization->resolve();
+        try {
+          $init= $field->initialization->resolve();
+        } catch (IllegalStateException $e) {
+          $this->warn('R100', $e->getMessage(), $field->initialization);
+          $init= NULL;
+        }
       } else {    // Need to initialize these later
         $init= NULL;
         $this->inits[0][$static][]= $field;
