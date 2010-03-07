@@ -250,6 +250,30 @@
     }
 
     /**
+     * Test a backslash inside a double quoted string ("\\\\")
+     *
+     */
+    #[@test]
+    public function dqBackslash() {
+      $t= $this->tokensOf('$s= "\\\\";');
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_VARIABLE, 's', array(1, 1)), $t[0]);
+      $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_STRING, '\\', array(1, 5)), $t[2]);
+    }
+
+    /**
+     * Test a backslash inside a single quoted string ('\\')
+     *
+     */
+    #[@test]
+    public function sqBackslash() {
+      $t= $this->tokensOf('$s= \'\\\\\';');
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_VARIABLE, 's', array(1, 1)), $t[0]);
+      $this->assertEquals(array(61, '=', array(1, 3)), $t[1]);
+      $this->assertEquals(array(xp搾ompiler新yntax暖p感arser::T_STRING, '\\', array(1, 5)), $t[2]);
+    }
+
+    /**
      * Test decimal number
      *
      */

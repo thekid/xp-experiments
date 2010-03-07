@@ -199,7 +199,8 @@
               break;
             }
             $this->value.= $t;
-            if ('\\' === $this->value{strlen($this->value)- 1}) {
+            $l= strlen($this->value);
+            if ($l > 0 && '\\' === $this->value{$l- 1} && !($l > 1 && '\\' === $this->value{$l- 2})) {
               $this->value= substr($this->value, 0, -1).$this->nextToken($token{0});
               continue;
             } 
@@ -214,6 +215,8 @@
             } catch (FormatException $e) {
               $this->raise('lang.FormatException', $e->getMessage());
             }
+          } else {
+            $this->value= str_replace('\\\\', '\\', $this->value);
           }
         } else if ('$' === $token{0}) {
           $this->token= xp·compiler·syntax·php·Parser::T_VARIABLE;
