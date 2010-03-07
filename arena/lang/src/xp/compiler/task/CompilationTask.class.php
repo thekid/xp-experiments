@@ -124,7 +124,7 @@
         $this->listener->compilationStarted($this->source);
         try {
           $tree= $this->manager->parseFile($this->source);
-          $this->done[$this->source]= new TypeReference($tree->declaration->name);
+          $this->done[$this->source]= new TypeReference($tree->declaration->name, Types::PARTIAL_KIND);
           $result= $this->emitter->emit($tree, $scope);
           $target= $this->manager->getTarget($result->type(), $this->source);
           $this->manager->write($result, $target);

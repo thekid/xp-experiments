@@ -24,7 +24,8 @@
       ENUM_KIND         = 3;
     
     const
-      UNKNOWN_KIND      = -1;
+      UNKNOWN_KIND      = -1,
+      PARTIAL_KIND      = -2;
 
     /**
      * Returns name
