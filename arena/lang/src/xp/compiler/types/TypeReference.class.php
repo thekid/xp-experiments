@@ -216,7 +216,15 @@
      * @return  string
      */    
     public function toString() {
-      return $this->getClassName().'@(*->'.$this->type->toString().')';
+      static $kinds= array(
+        self::PRIMITIVE_KIND    => 'PRIMITIVE',
+        self::CLASS_KIND        => 'CLASS',
+        self::INTERFACE_KIND    => 'INTERFACE',
+        self::ENUM_KIND         => 'ENUM',
+        self::UNKNOWN_KIND      => 'UNKNOWN',
+        self::PARTIAL_KIND      => 'PARTIAL'
+      );
+      return $this->getClassName().'<'.$kinds[$this->kind].'>@(*->'.$this->type->toString().')';
     }
     
     /**
