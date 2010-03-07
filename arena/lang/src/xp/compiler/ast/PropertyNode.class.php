@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.TypeMemberNode');
 
   /**
    * Represents a property
@@ -26,7 +26,7 @@
    *
    * @see   xp://xp.compiler.ast.IndexerNode
    */
-  class PropertyNode extends xp·compiler·ast·Node {
-    
+  class PropertyNode extends TypeMemberNode {
+
   }
 ?>

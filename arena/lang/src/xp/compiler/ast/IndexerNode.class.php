@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.TypeMemberNode');
 
   /**
    * Represents an indexer property
@@ -31,7 +31,15 @@
    *
    * @see   xp://xp.compiler.ast.PropertyNode
    */
-  class IndexerNode extends xp·compiler·ast·Node {
+  class IndexerNode extends TypeMemberNode {
 
+    /**
+     * Returns this routine's name
+     *
+     * @return  string
+     */
+    public function getName() {
+      return 'this';
+    }
   }
 ?>
