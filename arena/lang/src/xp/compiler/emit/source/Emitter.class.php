@@ -1490,20 +1490,24 @@
       array_unshift($this->method, $constructor);
 
       // Arguments, initializations, body
-      $this->emitParameters($op, (array)$constructor->parameters, '{');
-      if ($this->inits[0][FALSE]) {
-        foreach ($this->inits[0][FALSE] as $field) {
-          $this->emitOne($op, new AssignmentNode(array(
-            'variable'   => new ChainNode(array(new VariableNode('this'), new VariableNode($field->name))),
-            'expression' => $field->initialization,
-            'free'       => TRUE,
-            'op'         => '=',
-          )));
+      if (NULL !== $constructor->body) {
+        $this->emitParameters($op, (array)$constructor->parameters, '{');
+        if ($this->inits[0][FALSE]) {
+          foreach ($this->inits[0][FALSE] as $field) {
+            $this->emitOne($op, new AssignmentNode(array(
+              'variable'   => new ChainNode(array(new VariableNode('this'), new VariableNode($field->name))),
+              'expression' => $field->initialization,
+              'free'       => TRUE,
+              'op'         => '=',
+            )));
+          }
+          unset($this->inits[0][FALSE]);
         }
-        unset($this->inits[0][FALSE]);
+        $this->emitAll($op, $constructor->body);
+        $op->append('}');
+      } else {
+        $this->emitParameters($op, (array)$constructor->parameters, ';');
       }
-      $this->emitAll($op, (array)$constructor->body);
-      $op->append('}');
       
       // Finalize - FIXME: Put this in ...asMetadata()
       if ($this->scope[0]->declarations[0]->name->isGeneric()) {
