@@ -26,5 +26,21 @@
         $this->parse('@$a[0];')
       );
     }
-   }
+
+    /**
+     * Test @(string)$a
+     *
+     */
+    #[@test]
+    public function stringCast() {
+      $this->assertEquals(
+        array(new SilenceOperatorNode(new CastNode(array(
+          'type'        => new TypeName('string'),
+          'expression'  => new VariableNode('a')
+        )))),
+        $this->parse('@(string)$a;')
+      );
+    }
+
+  }
 ?>
