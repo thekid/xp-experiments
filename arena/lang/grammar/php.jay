@@ -651,7 +651,7 @@ assignment:
   | expression T_MUL_EQUAL expression  /* *= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
   | expression T_DIV_EQUAL expression  /* /= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
   | expression T_MOD_EQUAL expression  /* %= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
-  | expression T_CONCAT_EQUAL expression  /* .= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
+  | expression T_CONCAT_EQUAL expression  /* .= */ { $$= array('variable' => $1, 'expression' => $3, 'op' => '~='); }
   | expression T_AND_EQUAL expression     /* &= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
   | expression T_OR_EQUAL expression      /* |= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
   | expression T_XOR_EQUAL expression     /* ^= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
