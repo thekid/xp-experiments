@@ -23,5 +23,17 @@
         'type'          => new TypeName('Object'),
       ))), $this->parse('$a instanceof Object;'));
     }
+
+    /**
+     * Test instanceof a type
+     *
+     */
+    #[@test]
+    public function memberInstanceOfObject() {
+      $this->assertEquals(array(new InstanceOfNode(array(
+        'expression'    => new ChainNode(array(new VariableNode('this'), new VariableNode('a'))),
+        'type'          => new TypeName('Object'),
+      ))), $this->parse('$this->a instanceof Object;'));
+    }
   }
 ?>
