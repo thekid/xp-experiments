@@ -2189,10 +2189,12 @@
      * @return  xp.compiler.types.Types
      */
     protected function resolveType(TypeName $t) {
-      $this->cat && $this->cat->info('Resolve', $t);
       try {
-        return $this->scope[0]->resolveType($t);
+        $ptr= $this->scope[0]->resolveType($t);
+        $this->cat && $this->cat->info('Resolve', $t, '=', $ptr);
+        return $ptr;
       } catch (ResolveException $e) {
+        $this->cat && $this->cat->warn('Resolve', $t, '~', $e->compoundMessage());
         $this->error('R'.$e->getKind(), $e->compoundMessage());
         return new TypeReference($t, Types::UNKNOWN_KIND);
       }
@@ -2239,6 +2241,11 @@
         'require'     => TRUE,
         'include_once'=> TRUE,
         'require_once'=> TRUE,
+      );
+
+      $this->cat && $this->cat->infof(
+        '== Enter %s ==', 
+        basename($tree->origin)
       );
 
       // Import and declarations
