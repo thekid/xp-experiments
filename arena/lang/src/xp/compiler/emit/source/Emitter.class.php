@@ -186,7 +186,12 @@
      * @param   xp.compiler.ast.StringNode str
      */
     protected function emitString($op, StringNode $str) {
-      $op->append("'".str_replace("'", "\'", $str->resolve())."'");
+      $op->append("'");
+      $op->append(strtr($str->resolve(), array(
+        "'"   => "\'",
+        '\\'  => '\\\\'
+      )));
+      $op->append("'");
     }
 
     /**
