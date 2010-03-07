@@ -280,7 +280,7 @@
           try {
             $this->resolved[$qualified]= new TypeReflection(XPClass::forName($qualified));
           } catch (Throwable $e) {
-            throw new ResolveException('Class loader error for '.$name->toString(), 507, $e);
+            throw new ResolveException('Class loader error for '.$name->toString().': '.$e->getMessage(), 507, $e);
           }
         } else {
           try {
