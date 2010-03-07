@@ -23,17 +23,5 @@
         'type'          => new TypeName('Object'),
       ))), $this->parse('$a instanceof Object;'));
     }
-
-    /**
-     * Test instanceof a variable
-     *
-     */
-    #[@test]
-    public function instanceOfVariable() {
-      $this->assertEquals(array(new DynamicInstanceOfNode(array(
-        'expression'    => new VariableNode('a'),
-        'variable'      => 'type'
-      ))), $this->parse('$a instanceof $type;'));
-    }
   }
 ?>

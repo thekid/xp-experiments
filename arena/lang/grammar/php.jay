@@ -8,6 +8,9 @@
     'xp.compiler.ast.NativeImportNode',
     'xp.compiler.ast.AnnotationNode',
     'xp.compiler.ast.ChainNode',
+    'xp.compiler.ast.DynamicInstanceOfNode',
+    'xp.compiler.ast.DynamicInstanceCreationNode',
+    'xp.compiler.ast.DynamicVariableReferenceNode',
     'xp.compiler.ast.ClassNode',
     'xp.compiler.ast.EnumNode',
     'xp.compiler.ast.EnumMemberNode',
@@ -44,7 +47,6 @@
     'xp.compiler.ast.ClassMemberNode',
     'xp.compiler.ast.ClassConstantNode',
     'xp.compiler.ast.InstanceOfNode',
-    'xp.compiler.ast.DynamicInstanceOfNode',
     'xp.compiler.ast.ComparisonNode',
     'xp.compiler.ast.BinaryOpNode',
     'xp.compiler.ast.BooleanOpNode',
@@ -226,11 +228,6 @@ implements_opt:
 interfaceparents_opt:
     /* empty */    { $$= NULL; }
   | T_EXTENDS name_list { $$= $2; }
-;
-
-classbody_opt:
-    /* empty */       { $$= NULL; }
-  | '{' classbody '}' { $$= $2; }
 ;
 
 classbody:
@@ -492,17 +489,16 @@ expression_opt:
 ;
 
 instancecreation:
-    typeref '(' expressionlist_opt ')' classbody_opt {
+    typeref '(' expressionlist_opt ')' {
       $$= new InstanceCreationNode();
       $$->type= $1;
       $$->parameters= $3;
-      $5 && $$->body= $5;
     }
-  | qualifiedname '[' ']' '{' expressionlist_opt '}' {
-      $$= new ArrayNode();
-      $$->type= new TypeName($1);
-      $$->values= $5;
-  }
+  | T_VARIABLE '(' expressionlist_opt ')' {
+      $$= new DynamicInstanceCreationNode();
+      $$->variable= $1;
+      $$->parameters= $3;
+    }
 ;
 
 staticmember:
@@ -719,6 +715,12 @@ chain:
     }
   | T_OBJECT_OPERATOR T_WORD {
       $$= $yyLex->create(new VariableNode($2)); 
+    }
+  | T_OBJECT_OPERATOR T_VARIABLE {
+      $$= $yyLex->create(new DynamicVariableReferenceNode(new VariableNode($2))); 
+    }
+  | T_OBJECT_OPERATOR '{' expression '}' {
+      $$= $yyLex->create(new DynamicVariableReferenceNode($3)); 
     }
   | T_OBJECT_OPERATOR T_WORD '(' { $1= $yyLex->create(new InvocationNode($2)); } expressionlist_opt ')' { 
       $1->arguments= $5;
