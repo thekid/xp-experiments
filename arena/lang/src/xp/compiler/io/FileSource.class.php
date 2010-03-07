@@ -59,7 +59,11 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'<'.$this->file->getURI().'>';
+      return $this->getClassName().'<'.str_replace(
+        realpath(getcwd()), 
+        '.', 
+        $this->file->getURI()
+      ).'>';
     }
 
     /**
