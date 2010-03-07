@@ -2184,6 +2184,9 @@
         'empty'       => TRUE,
         'eval'        => TRUE,
         'include'     => TRUE,
+        'require'     => TRUE,
+        'include_once'=> TRUE,
+        'require_once'=> TRUE,
       );
 
       // Import and declarations
