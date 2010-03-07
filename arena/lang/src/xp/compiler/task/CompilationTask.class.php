@@ -123,7 +123,9 @@
         // Start run
         $this->listener->compilationStarted($this->source);
         try {
-          $result= $this->emitter->emit($this->manager->parseFile($this->source), $scope);
+          $tree= $this->manager->parseFile($this->source);
+          $this->done[$this->source]= new TypeReference($tree->declaration->name);
+          $result= $this->emitter->emit($tree, $scope);
           $target= $this->manager->getTarget($result->type(), $this->source);
           $this->manager->write($result, $target);
           $this->listener->compilationSucceeded($this->source, $target, $this->emitter->messages());
