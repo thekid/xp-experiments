@@ -1,5 +1,5 @@
 <?php
-/* This class is part of the XP framework
+/* This class net·xp_lang·tests·syntax·php·is part of the XP framework
  *
  * $Id$ 
  */
@@ -15,7 +15,7 @@
   class net·xp_lang·tests·syntax·php·ClassDeclarationTest extends net·xp_lang·tests·syntax·php·ParserTestCase {
 
     /**
-     * Parse class source and return statements inside field declaration
+     * Parse class net·xp_lang·tests·syntax·php·source and return statements inside field declaration
      *
      * @param   string src
      * @return  xp.compiler.Node[]
@@ -25,7 +25,7 @@
     }
   
     /**
-     * Test class declaration
+     * Test class net·xp_lang·tests·syntax·php·declaration
      *
      */
     #[@test]
@@ -74,7 +74,7 @@
           TypeName::$VAR,
           new IntegerNode('2')
         )
-      ), $this->parse('<?php class Logger { 
+      ), $this->parse('<?php class net·xp_lang·tests·syntax·php·Logger { 
         const DEBUG = 1, WARN  = 2;
       } ?>')->body);
     }
@@ -100,7 +100,7 @@
         'throws'      => NULL,
         'body'        => array(),
         'extension'   => NULL
-      ))), $this->parse('<?php class Logger { 
+      ))), $this->parse('<?php class net·xp_lang·tests·syntax·php·Logger { 
         private static $instance= null;
         public static function getInstance() { /* ... */ }
       } ?>')->body);

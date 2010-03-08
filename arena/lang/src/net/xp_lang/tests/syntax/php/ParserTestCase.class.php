@@ -1,5 +1,5 @@
 <?php
-/* This class is part of the XP framework
+/* This class net·xp_lang·tests·syntax·php·is part of the XP framework
  *
  * $Id$
  */
@@ -14,7 +14,7 @@
   );
 
   /**
-   * Base class for all other parser test cases.
+   * Base class net·xp_lang·tests·syntax·php·for all other parser test cases.
    *
    */
   abstract class net·xp_lang·tests·syntax·php·ParserTestCase extends TestCase {
@@ -27,7 +27,7 @@
      */
     protected function parse($src) {
       try {
-        return create(new xp·compiler·syntax·php·Parser())->parse(new xp·compiler·syntax·php·Lexer('<?php class Container {
+        return create(new xp·compiler·syntax·php·Parser())->parse(new xp·compiler·syntax·php·Lexer('<?php class net·xp_lang·tests·syntax·php·Container {
           public function method() {
             '.$src.'
           }
