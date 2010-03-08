@@ -8,6 +8,7 @@
     'xp.compiler.ast.NativeImportNode',
     'xp.compiler.ast.AnnotationNode',
     'xp.compiler.ast.ChainNode',
+    'xp.compiler.ast.BracedExpressionNode',
     'xp.compiler.ast.DynamicInstanceOfNode',
     'xp.compiler.ast.DynamicInstanceCreationNode',
     'xp.compiler.ast.DynamicVariableReferenceNode',
@@ -344,8 +345,8 @@ arguments:
 ;
 
 argument:
-	typeref T_VARIABLE initialization_opt { $$= array('name' => $2, 'type' => $1); $3 && $$['default']= $3; }
-  | T_VARIABLE initialization_opt { $$= array('name' => $1, 'type' => new TypeName('var')); $2 && $$['default']= $2; }
+	typeref T_VARIABLE initialization_opt { $$= array('name' => $2, 'type' => $1, 'check' => TRUE); $3 && $$['default']= $3; }
+  | T_VARIABLE initialization_opt { $$= array('name' => $1, 'type' => new TypeName('var'), 'check' => FALSE); $2 && $$['default']= $2; }
 ;
 // }}}
 
@@ -546,12 +547,13 @@ expression:
       } else {
         $$= $2;
       }
-      $$= $2;
     }
   | T_CLONE expression { 
       $$= $yyLex->create(new CloneNode($2)); break;
     }
-  | '(' expression ')' { $$= $2; }
+  | '(' expression ')' { 
+      $$= new BracedExpressionNode($2); 
+    }
   | assignment { 
       $$= $yyLex->create(new AssignmentNode($1)); 
     }
