@@ -4,14 +4,16 @@
  * $Id$ 
  */
 
-  uses('xp.compiler.types.Types');
+  uses('xp.compiler.types.Types', 'xp.compiler.types.TypeName');
 
   /**
-   * (Insert class' description here)
+   * A reference to a type
    *
+   * @test    xp://net.xp_lang.tests.types.TypeReferenceTest
    */
   class TypeReference extends Types {
     protected $type= NULL;
+    protected $kind= 0;
     
     /**
      * Constructor
@@ -48,7 +50,8 @@
      * @return  string
      */
     public function literal() {
-      return $this->type->name;
+      $p= strrpos($this->type->name, '.');
+      return FALSE === $p ? $this->type->name : substr($this->type->name, $p+ 1);
     }
 
     /**
