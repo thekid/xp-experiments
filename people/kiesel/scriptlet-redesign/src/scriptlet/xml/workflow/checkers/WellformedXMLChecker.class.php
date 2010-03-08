@@ -41,7 +41,7 @@
         }
       }
       
-      return NULL;
+      return $value;
     }
   }
 ?>
