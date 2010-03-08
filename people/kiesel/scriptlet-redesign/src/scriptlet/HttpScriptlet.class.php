@@ -121,7 +121,7 @@
      * @param   scriptlet.HttpScriptletRequest request
      */
     public function handleSessionInitialization($request) {
-      $request->session->initialize($request->getSessionId());
+      $request->getSession()->initialize($request->getSessionId());
     }
 
     /**
@@ -136,7 +136,7 @@
      * @return  bool continue
      */
     public function handleInvalidSession($request, $response) {
-      return $request->session->initialize(NULL);
+      return $request->getSession()->initialize(NULL);
     }
 
     /**
@@ -183,7 +183,7 @@
      * @return  string class method (one of doGet, doPost, doHead)
      */
     public function handleMethod($request) {
-      switch (strtoupper($request->method)) {
+      switch (strtoupper($request->getMethod())) {
         case HttpConstants::POST:
         case HttpConstants::PUT: {
           if (!empty($_FILES)) {
@@ -206,13 +206,13 @@
           
         default: {
           throw new HttpScriptletException(
-            'Unknown HTTP method: "'.strtoupper($request->method).'"',
+            'Unknown HTTP method: "'.strtoupper($request->getMethod()).'"',
             HttpConstants::STATUS_METHOD_NOT_IMPLEMENTED
           );
         }
       }
 
-      $method= 'do'.ucfirst(strtolower($request->method));
+      $method= 'do'.ucfirst(strtolower($request->getMethod()));
       if (!method_exists($this, $method)) return NULL;
       return $method;
     }
@@ -294,7 +294,7 @@
      */
     public function doCreateSession($request, $response) {
       $redirect= $request->getURL();
-      $redirect->setSessionId($request->session->getId());
+      $redirect->setSessionId($request->getSession()->getId());
       $response->sendRedirect($redirect->getURL());
       return FALSE;
     }
@@ -324,7 +324,7 @@
      * @param   scriptlet.HttpRequest request
      */
     protected function _setupRequest($request) {
-      $request->method= $request->getEnvValue('REQUEST_METHOD');
+      $request->setMethod($request->getEnvValue('REQUEST_METHOD'));
       $request->setHeaders(getallheaders());
       $request->setParams(array_merge($_GET, $_POST));
     }    
@@ -338,7 +338,7 @@
      * @param   scriptlet.HttpScriptletResponse response 
      * @throws  scriptlet.HttpScriptletException indicating fatal errors
      */
-    public function service(HttpScriptletRequest $request, HttpScriptletResponse $response) {
+    public function service(Request $request, Response $response) {
       $request->setURL($this->_url(
         ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
         $request->getHeader('X-Forwarded-Host', $request->getEnvValue('HTTP_HOST')).
@@ -351,7 +351,7 @@
       // and the request method set when this method is called.
       if (!($method= $this->handleMethod($request))) {
         throw new HttpScriptletException(
-          'HTTP method "'.$request->method.'" not supported',
+          'HTTP method "'.$request->getMethod().'" not supported',
           HttpConstants::STATUS_METHOD_NOT_IMPLEMENTED
         );
       }
@@ -398,7 +398,7 @@
         // Check if invalid sessions can be handled gracefully (default: no).
         // If not, throw a HttpSessionInvalidException with the HTTP status
         // code 400 ("Bad request").
-        if (!$request->session->isValid()) {
+        if (!$request->getSession()->isValid()) {
           if (!$this->handleInvalidSession($request, $response)) {
             throw new HttpSessionInvalidException(
               'Session is invalid',
@@ -410,7 +410,7 @@
         }
         
         // Call doCreateSession() in case the session is new
-        if ($request->session->isNew()) $method= 'doCreateSession';
+        if ($request->getSession()->isNew()) $method= 'doCreateSession';
       }
 
       // If this scriptlet has an authenticator, run its authenticate()

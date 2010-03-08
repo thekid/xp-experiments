@@ -25,7 +25,8 @@
      *
      * @param   string package
      */
-    public function __construct($package) {
+    public function __construct(Request $request, $package) {
+      parent::__construct($request);
       $this->package= $package;
     }
 

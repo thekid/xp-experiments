@@ -4,7 +4,10 @@
  * $Id$
  */
  
-  uses('peer.http.HttpConstants');
+  uses(
+    'scriptlet.Response',
+    'peer.http.HttpConstants'
+  );
  
   /**
    * Defines the response sent from the webserver to the client,
@@ -16,7 +19,7 @@
    * @see      xp://scriptlet.HttpScriptlet
    * @purpose  Provide a way to access the HTTP response
    */  
-  class HttpScriptletResponse extends Object {
+  class HttpScriptletResponse extends Object implements Response {
     protected
       $uri=             NULL;
     

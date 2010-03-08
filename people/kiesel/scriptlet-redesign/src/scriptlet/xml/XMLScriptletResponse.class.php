@@ -136,6 +136,7 @@
       if (!is_array($values)) $values= array($values);
 
       foreach ($values as $k => $val) {
+        if ($k == 'psessionid') throw new XPException("Broken here");
         try {
           if (is_array($val)) {
             $c= Node::fromArray($val, 'param');

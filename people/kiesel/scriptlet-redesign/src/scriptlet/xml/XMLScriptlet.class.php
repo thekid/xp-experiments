@@ -164,7 +164,7 @@
      * @param   scriptlet.HttpScriptletResponse response 
      */
     public function doCreateSession($request, $response) {
-      return $this->doRedirect($request, $response, $request->session->getId());
+      return $this->doRedirect($request, $response, $request->getSession()->getId());
     }
 
     /**
@@ -203,7 +203,7 @@
       $response->hasStylesheet() || $this->_setStylesheet($request, $response);
 
       // Add all request parameters to the formvalue node
-      foreach ($request->params as $key => $value) {
+      foreach ($request->getParams() as $key => $value) {
         $response->addFormValue($key, $value);
       }
     }

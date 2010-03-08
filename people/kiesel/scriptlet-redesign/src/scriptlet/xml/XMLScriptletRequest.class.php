@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('scriptlet.HttpScriptletRequest', 'scriptlet.xml.XMLScriptletURL');
+  uses(
+    'scriptlet.Request',
+    'scriptlet.xml.XMLScriptletURL'
+  );
   
   /**
    * Wraps XML request
@@ -27,13 +30,20 @@
    * @see      xp://scriptlet.HttpScriptletRequest
    * @purpose  Scriptlet request wrapper
    */
-  class XMLScriptletRequest extends HttpScriptletRequest {
+  class XMLScriptletRequest extends Object implements Request {
     public
       $product      = '',
       $stateName    = '',
       $language     = '',
       $page         = '',
       $sessionId    = '';
+
+    protected
+      $request      = NULL;
+
+    public function __construct(Request $request) {
+      $this->request= $request;
+    }
 
     /**
      * Sets request's URL
@@ -45,26 +55,26 @@
         __METHOD__.' expects instanceof scriptlet.xml.XMLScriptletURL, '.xp::typeof($url).' given.'
       );
 
-      with ($this->url= $url); {
-        $this->url->setDefaultProduct($this->getDefaultProduct());
-        $this->url->setDefaultLanguage($this->getDefaultLanguage());
-        $this->url->setDefaultStateName($this->getDefaultStateName());
-        $this->url->setDefaultPage($this->getDefaultPage());
-        
-        // Check cookies for session id
-        $this->setSessionId($this->hasCookie('psessionid')
-          ? $this->getCookie('psessionid')->getValue()
-          : $this->url->getSessionId()
-        );
-        
-        // Overwrite page with __page parameter if given
-        if ($this->hasParam('__page')) $this->url->setPage($this->getParam('__page'));
-        
-        $this->setProduct($this->url->getProduct());
-        $this->setLanguage($this->url->getLanguage());
-        $this->setStateName($this->url->getStateName());
-        $this->setPage($this->url->getPage());
-      }
+      $url->setDefaultProduct($this->getDefaultProduct());
+      $url->setDefaultLanguage($this->getDefaultLanguage());
+      $url->setDefaultStateName($this->getDefaultStateName());
+      $url->setDefaultPage($this->getDefaultPage());
+
+      // Check cookies for session id
+      $this->setSessionId($this->hasCookie('psessionid')
+        ? $this->getCookie('psessionid')->getValue()
+        : $url->getSessionId()
+      );
+
+      // Overwrite page with __page parameter if given
+      if ($this->hasParam('__page')) $url->setPage($this->getParam('__page'));
+
+      $this->setProduct($url->getProduct());
+      $this->setLanguage($url->getLanguage());
+      $this->setStateName($url->getStateName());
+      $this->setPage($url->getPage());
+
+      $this->request->setURL($url);
     }
     
     /**
@@ -193,7 +203,7 @@
      *
      * @param   string session
      */
-    public function setSessionId($session) {
+    public function depr_setSessionId($session) {
       $this->sessionId= $session;
     }
 
@@ -205,8 +215,40 @@
      *
      * @return  string session id
      */
-    public function getSessionId() {
+    public function depr_getSessionId() {
       return $this->sessionId;
     }
+
+    public function initialize() { return $this->request->initialize(); }
+    public function getSession() { return $this->request->getSession(); }
+    public function hasSession() { return $this->request->hasSession(); }
+    public function setSession($s) { return $this->request->setSession($s); }
+    public function getEnvValue($name, $default= NULL) {  return $this->request->getEnvValue($name, $default); }
+    public function putEnvValue($key, $value) { return $this->request->putEnvValue($key, $value); }
+    public function getCookies() { return $this->request->getCookies(); }
+    public function hasCookie($name) { return $this->request->hasCookie($name); }
+    public function getCookie($name, $default= NULL) { return $this->request->getCookie($name, $default); }
+    public function getHeader($name, $default= NULL) { return $this->request->getHeader($name, $default); }
+    public function getParam($name, $default= NULL) { return $this->request->getParam($name, $default); }
+    public function hasParam($name) { return $this->request->hasParam($name); }
+    public function setParam($name, $value) { return $this->request->setParam($name, $value); }
+    // public function setURL(HttpScriptletURL $url) {}
+    // public function setURI($uri) {}
+    public function getURI() { return $this->request->getURI(); }
+    public function getURL() { return $this->request->getURL(); }
+    public function setSessionId($sessionId) { return $this->request->setSessionId($sessionId); }
+    public function getSessionId() { return $this->request->getSessionId(); }
+    public function setParams($params) { return $this->request->setParams($params); }
+    public function getHeaders() { return $this->request->getHeaders(); }
+    public function setHeaders($headers) { return $this->request->setHeaders($headers); }
+    public function addHeader($name, $value) { return $this->request->addHeader($name, $value); }
+    public function getParams() { return $this->request->getParams(); }
+    public function setData($data) { return $this->request->setData($data); }
+    public function getData() { return $this->request->getData(); }
+    public function getQueryString() { return $this->request->getQueryString(); }
+    public function getContentType() { return $this->request->getContentType(); }
+    public function isMultiPart() { return $this->request->isMultiPart(); }
+    public function setMethod($method) { return $this->request->setMethod($method); }
+    public function getMethod() { return $this->request->getMethod(); }
   }
 ?>
