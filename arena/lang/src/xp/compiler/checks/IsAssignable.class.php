@@ -36,6 +36,8 @@
         return $this->isWriteable($node->member);
       } else if ($node instanceof ChainNode) {
         return $this->isWriteable($node->elements[sizeof($node->elements)- 1]);
+      } else if ($node instanceof DynamicVariableReferenceNode) {
+        return TRUE;
       }
       return FALSE;
     }
