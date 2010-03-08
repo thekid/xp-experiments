@@ -407,6 +407,21 @@
     }
 
     /**
+     * Emit a member access. Helper to emitChain()
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.DynamicVariableReferenceNode access
+     * @param   xp.compiler.types.TypeName type
+     * @return  xp.compiler.types.TypeName resulting type
+     */
+    protected function emitDynamicMemberAccess($op, DynamicVariableReferenceNode $access, TypeName $type) {
+      $op->append('->{');
+      $this->emitOne($op, $access->expression);
+      $op->append('}');
+      return TypeName::$VAR;
+    }
+
+    /**
      * Emit a member call. Helper to emitChain()
      *
      * @param   resource op
@@ -511,7 +526,7 @@
         if ($c instanceof VariableNode) {
           $t= $this->emitMemberAccess($op, $c, $t);
         } else if ($c instanceof DynamicVariableReferenceNode) {
-          $t= $this->emitMemberAccess($op, $c, $t->expression);
+          $t= $this->emitDynamicMemberAccess($op, $c, $t);
         } else if ($c instanceof ArrayAccessNode) {
           $t= $this->emitArrayAccess($op, $c, $t);
         } else if ($c instanceof InvocationNode) {
