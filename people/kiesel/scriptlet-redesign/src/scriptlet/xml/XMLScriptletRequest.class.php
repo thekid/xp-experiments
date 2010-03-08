@@ -203,7 +203,7 @@
      *
      * @param   string session
      */
-    public function depr_setSessionId($session) {
+    public function setSessionId($session) {
       $this->sessionId= $session;
     }
 
@@ -215,7 +215,7 @@
      *
      * @return  string session id
      */
-    public function depr_getSessionId() {
+    public function getSessionId() {
       return $this->sessionId;
     }
 
@@ -236,8 +236,8 @@
     // public function setURI($uri) {}
     public function getURI() { return $this->request->getURI(); }
     public function getURL() { return $this->request->getURL(); }
-    public function setSessionId($sessionId) { return $this->request->setSessionId($sessionId); }
-    public function getSessionId() { return $this->request->getSessionId(); }
+    // public function setSessionId($sessionId) { return $this->request->setSessionId($sessionId); }
+    // public function getSessionId() { return $this->request->getSessionId(); }
     public function setParams($params) { return $this->request->setParams($params); }
     public function getHeaders() { return $this->request->getHeaders(); }
     public function setHeaders($headers) { return $this->request->setHeaders($headers); }
