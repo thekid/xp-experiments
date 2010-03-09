@@ -271,7 +271,7 @@ field:
 ;
 
 cconst:
-    T_WORD '=' literal {
+    T_WORD '=' scalar {
       $$= $yyLex->create(new ClassConstantNode($1, TypeName::$VAR, $3));
     }
 ;
@@ -614,14 +614,17 @@ expression:
 ;
 
 literal:
+    scalar
+  | T_ARRAY '(' { $p= $yyLex->position; } map_or_list ')' { $4->position= $p; $4->type= NULL; $$= $4; }
+;
+
+scalar:
     T_WORD { switch (strtolower($1)) {
       case 'true': $$= $yyLex->create(new BooleanNode(TRUE)); break;
       case 'false': $$= $yyLex->create(new BooleanNode(FALSE)); break;
       case 'null': $$= $yyLex->create(new NullNode()); break;
       default: $$= $yyLex->create(new ConstantNode($1)); break;
     }}
-  | qualifiedname T_DOUBLE_COLON T_CLASS { /* XXX class literal */ }
-  | T_ARRAY '(' { $p= $yyLex->position; } map_or_list ')' { $4->position= $p; $4->type= NULL; $$= $4; }
   | T_NUMBER { $$= $yyLex->create(new IntegerNode($1)); }
   | T_HEX { $$= $yyLex->create(new HexNode($1)); }
   | T_DECIMAL { $$= $yyLex->create(new DecimalNode($1)); }
