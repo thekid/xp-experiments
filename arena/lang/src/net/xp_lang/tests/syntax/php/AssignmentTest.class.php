@@ -253,7 +253,7 @@
      * Test chained assignment to variable
      *
      */
-    #[@test, @ignore('%prec needed')]
+    #[@test]
     public function toAssignment() {
       $this->assertEquals(array(new AssignmentNode(array(
         'variable'      => new VariableNode('i'),
