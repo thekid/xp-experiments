@@ -63,7 +63,7 @@
      * Test equality comparison <tt>-10 == $i</tt>
      *
      */
-    #[@test, @ignore('%right needed')]
+    #[@test]
     public function equalityToNegativeLhs() {
       $this->assertEquals(array(new ComparisonNode(array(
         'lhs'           => new UnaryOpNode(array(

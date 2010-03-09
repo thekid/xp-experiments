@@ -67,15 +67,19 @@
 %}
 
 %left '(' ')'
-%left ',' '=' '%' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_SHR T_SHL T_BOOLEAN_OR T_BOOLEAN_AND T_INSTANCEOF T_CONCAT_EQUAL T_AND_EQUAL T_OR_EQUAL T_XOR_EQUAL
+%left ',' '=' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_MOD_EQUAL T_SHR T_SHL T_BOOLEAN_OR T_BOOLEAN_AND T_CONCAT_EQUAL T_AND_EQUAL T_OR_EQUAL T_XOR_EQUAL
 %left '?' ':'
 %left '|'
 %left '^'
 %left '&'
+%nonassoc '.' T_EQUALS T_NOT_EQUALS
+%nonassoc '<' T_SE '>' T_GE
 %left '+' '-'
-%left '*' '/'
-%right '[' '!' '~' T_INC T_DEC T_AS
-%nonassoc '<' '>' T_SE T_GE '.' T_EQUALS T_NOT_EQUALS 
+%left '*' '/' '%'
+%right '!'
+%nonassoc T_INSTANCEOF
+%right '~' T_INC T_DEC
+%right '[' T_AS
 %nonassoc T_NEW T_CLONE
 %right '@'
 
@@ -696,8 +700,8 @@ binary_operation:
 unary_prefix_operation:
     '!' expression    { $$= array('expression' => $2, 'op' => $1); }
   | '~' expression    { $$= array('expression' => $2, 'op' => '~'); }
-  | '+' expression    { $$= array('expression' => $2, 'op' => $1); }
-  | '-' expression    { $$= array('expression' => $2, 'op' => $1); }
+  | '+' expression %prec T_INC { $$= array('expression' => $2, 'op' => $1); }
+  | '-' expression %prec T_INC { $$= array('expression' => $2, 'op' => $1); }
   | T_INC expression  { $$= array('expression' => $2, 'op' => $1); }
   | T_DEC expression  { $$= array('expression' => $2, 'op' => $1); }
 ;
