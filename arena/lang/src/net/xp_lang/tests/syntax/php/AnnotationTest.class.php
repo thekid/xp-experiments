@@ -51,7 +51,7 @@
      * Test simple annotation (Test)
      *
      */
-    #[@test, @ignore('Check not yet implemented'), @expect('text.parser.generic.ParseException')]
+    #[@test, @expect('text.parser.generic.ParseException')]
     public function simpleAnnotationWithBrackets() {
       $this->parseMethodWithAnnotations('#[@Test()]');
     }
