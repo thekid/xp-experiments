@@ -61,6 +61,7 @@
     'xp.compiler.ast.CloneNode',
     'xp.compiler.ast.IfNode',
     'xp.compiler.ast.ElseNode',
+    'xp.compiler.ast.LambdaNode',
     'xp.compiler.ast.NoopNode',
     'xp.compiler.ast.SilenceOperatorNode'
   );
@@ -612,6 +613,9 @@ expression:
   | '@' expression {
       $$= $yyLex->create(new SilenceOperatorNode($2));
     }
+  | T_FUNCTION '(' lambda_input ')' '{' statements_opt '}' {
+      $$= $yyLex->create(new LambdaNode($3, (array)$6));
+    }
   | '(' expression ')' chain_opt { 
       if ($4) {
         $$= new ChainNode();
@@ -620,6 +624,20 @@ expression:
         $$= new BracedExpressionNode($2); 
       }
     }
+;
+
+lambda_input:
+    /* empty */ { $$= array(); }
+  | lambda_input_parameters 
+;
+
+lambda_input_parameters:
+    lambda_input_parameter  { $$= array($1); }
+  | lambda_input_parameters ',' lambda_input_parameter { $$= array_merge($1, array($3)); }
+;
+
+lambda_input_parameter:
+    T_VARIABLE { $$= new VariableNode($1); }
 ;
 
 literal:
