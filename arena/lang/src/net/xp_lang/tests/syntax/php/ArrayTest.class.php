@@ -50,7 +50,7 @@
      * Test a non-empty untyped array
      *
      */
-    #[@test, @ignore('Not yet implemented')]
+    #[@test]
     public function untypedArrayWithDanglingComma() {
       $this->assertEquals(array(new ArrayNode(array(
         'values'        => array(

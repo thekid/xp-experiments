@@ -46,7 +46,7 @@
      * Test a non-empty untyped map
      *
      */
-    #[@test, @ignore('Not yet supported')]
+    #[@test]
     public function untypedMapWithDanglingComma() {
       $this->assertEquals(
         array(new MapNode(array(
