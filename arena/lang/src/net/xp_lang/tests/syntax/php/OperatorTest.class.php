@@ -1,5 +1,5 @@
 <?php
-/* This class net·xp_lang·tests·syntax·php·is part of the XP framework
+/* This class is part of the XP framework
  *
  * $Id$ 
  */
