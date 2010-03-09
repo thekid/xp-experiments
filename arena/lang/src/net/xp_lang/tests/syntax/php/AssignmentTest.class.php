@@ -135,7 +135,7 @@
      * Test assigning to a variable via "|="
      *
      */
-    #[@test, @ignore('Not yet implemented')]
+    #[@test]
     public function orAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
         'variable'      => new VariableNode('s'),
@@ -148,7 +148,7 @@
      * Test assigning to a variable via "&="
      *
      */
-    #[@test, @ignore('Not yet implemented')]
+    #[@test]
     public function andAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
         'variable'      => new VariableNode('s'),
@@ -161,7 +161,7 @@
      * Test assigning to a variable via "|="
      *
      */
-    #[@test, @ignore('Not yet implemented')]
+    #[@test]
     public function xorAssign() {
       $this->assertEquals(array(new AssignmentNode(array(
         'variable'      => new VariableNode('s'),

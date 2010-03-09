@@ -49,7 +49,7 @@
      * Test "^" operator
      *
      */
-    #[@test, @ignore('Not implemented')]
+    #[@test]
     public function bitwiseXOr() {
       $this->assertEquals(array(new BinaryOpNode(array(
         'lhs'           => new IntegerNode('1'),
