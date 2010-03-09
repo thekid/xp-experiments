@@ -288,18 +288,24 @@ initialization_opt:
 
 // {{{ Methods and operators
 method:
-    decorations T_FUNCTION T_WORD '(' { $4= $yyLex->create('__construct' == $3 ? new ConstructorNode() :  new MethodNode(), TRUE); } arguments_opt ')' methodbody {
+    decorations T_FUNCTION T_WORD '(' { $4= $yyLex->create('__construct' == $3 ? new ConstructorNode() :  new MethodNode(), TRUE); } arguments_opt ')' returntype_opt methodbody {
       $4->modifiers= $1[0];
       $4->annotations= $1[1];
-      $4->returns= new TypeName('var');
+      $4->returns= $8;
       $4->name= $3;
       $4->parameters= $6;
       $4->throws= NULL;
-      $4->body= $8;
+      $4->body= $9;
       $4->extension= NULL;
       $$= $4;
     }
 ;
+
+returntype_opt:
+    /* empty */    { $$= TypeName::$VAR; }
+  | ':' typeref    { $$= $2; }
+;
+
 
 decorations:
     '#' '[' annotations ']' modifiers_opt { $$= array($5, $3); }

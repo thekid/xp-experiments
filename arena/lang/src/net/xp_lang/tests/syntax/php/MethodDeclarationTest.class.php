@@ -53,6 +53,26 @@
      *
      */
     #[@test]
+    public function toStringMethodWithReturnType() {
+      $this->assertEquals(array(new MethodNode(array(
+        'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
+        'name'       => 'toString',
+        'returns'    => new TypeName('string'),
+        'parameters' => NULL,
+        'throws'     => NULL,
+        'body'       => array(),
+        'extension'  => NULL
+      ))), $this->parse('class Null { 
+        public function toString() : string { }
+      }'));
+    }
+
+    /**
+     * Test method declaration
+     *
+     */
+    #[@test]
     public function equalsMethod() {
       $this->assertEquals(array(new MethodNode(array(
         'modifiers'  => MODIFIER_PUBLIC,
