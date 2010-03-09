@@ -47,7 +47,7 @@
      *   $a && $b+= 1;
      * </code>
      */
-    #[@test, @ignore('%prec needed')]
+    #[@test]
     public function conditionalAssignment() {
       $this->assertEquals(array(new BooleanOpNode(array(
         'lhs'           => new VariableNode('a'),
