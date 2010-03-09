@@ -133,10 +133,10 @@
           'check' => TRUE
         )),
         'throws'     => NULL,
-        'body'       => array(),
+        'body'       => NULL,
         'extension'  => NULL
       ))), $this->parse('interface Comparable { 
-        public function compareTo(Object $other) { }
+        public function compareTo(Object $other);
       }'));
     }
 
