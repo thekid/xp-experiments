@@ -129,7 +129,7 @@
      * Test while
      *
      */
-    #[@test, @ignore('Check not yet implemented'), @expect('lang.FormatException')]
+    #[@test]
     public function whileLoopWithoutBody() {
       $this->parse('$a= 0; while ($a--);');
     }
@@ -138,7 +138,7 @@
      * Test foreach
      *
      */
-    #[@test, @ignore('Check not yet implemented'), @expect('lang.FormatException')]
+    #[@test]
     public function foreachLoopWithoutBody() {
       $this->parse('foreach (array(1) as $v);');
     }
@@ -147,7 +147,7 @@
      * Test while
      *
      */
-    #[@test, @ignore('Check not yet implemented'), @expect('lang.FormatException')]
+    #[@test]
     public function forLoopWithoutBody() {
       $this->parse('for ($i= 0; $i < 1; $i++);');
     }
