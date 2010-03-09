@@ -114,7 +114,7 @@
      * Test chained after bracing
      *
      */
-    #[@test, @ignore('TBD: Implement?')]
+    #[@test]
     public function chainedAfterBraced() {
       $this->assertEquals(
         array(new ChainNode(array(

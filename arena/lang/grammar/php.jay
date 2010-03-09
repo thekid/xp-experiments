@@ -555,9 +555,6 @@ expression:
   | T_CLONE expression { 
       $$= $yyLex->create(new CloneNode($2)); break;
     }
-  | '(' expression ')' { 
-      $$= new BracedExpressionNode($2); 
-    }
   | assignment { 
       $$= $yyLex->create(new AssignmentNode($1)); 
     }
@@ -610,6 +607,14 @@ expression:
     }
   | '@' expression {
       $$= $yyLex->create(new SilenceOperatorNode($2));
+    }
+  | '(' expression ')' chain_opt { 
+      if ($4) {
+        $$= new ChainNode();
+        $$->elements= array_merge(array(new BracedExpressionNode($2)), $4);
+      } else {
+        $$= new BracedExpressionNode($2); 
+      }
     }
 ;
 
