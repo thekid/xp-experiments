@@ -102,7 +102,7 @@
      * Test do...while loop
      *
      */
-    #[@test, @ignore('Dangling ";" recognized as NOOP')]
+    #[@test]
     public function doLoop() {
       $this->assertEquals(array(new DoNode(
         new ComparisonNode(array(

@@ -399,7 +399,7 @@ statement:
       $1->expression= $4;
       $1->statements= $6;
     }
-  | T_DO { $1= $yyLex->create(new DoNode()); } block T_WHILE '(' expression ')' {
+  | T_DO { $1= $yyLex->create(new DoNode()); } block T_WHILE '(' expression ')' ';' {
       $1->expression= $6;
       $1->statements= $3;
     }
