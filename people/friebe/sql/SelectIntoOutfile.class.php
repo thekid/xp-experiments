@@ -3,10 +3,12 @@
  *
  * $Id$
  */
+
   uses(
     'util.cmd.Command',
     'rdbms.DriverManager',
     'io.File',
+    'io.streams.Streams',
     'text.CSVGenerator'
   );
 
@@ -40,13 +42,18 @@
     }
 
     /**
-     * Set SQL statement
+     * Set SQL statement (pass "-" to read from STDIN)
      *
      * @param   string statement
      */
     #[@arg]
     public function setStatement($statement) {
-      $this->query= cast($this->connection->query($statement), 'rdbms.ResultSet');
+      if (NULL === $statement) {
+        $stmt= Streams::readAll($this->in->getStream());
+      } else {
+        $stmt= $statement;
+      }
+      $this->query= cast($this->connection->query($stmt), 'rdbms.ResultSet');
       $this->generator->setHeader(array_keys($this->query->fields));
     }
 
