@@ -20,6 +20,7 @@
    * Represents a compilation task
    *
    * @see   xp://xp.compiler.Compiler#compile
+   * @test  xp://net.xp_lang.tests.integration.CircularDependencyTest
    */
   class CompilationTask extends Object {
     protected
