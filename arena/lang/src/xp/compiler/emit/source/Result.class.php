@@ -34,7 +34,7 @@
      * @param   io.streams.OutputStream out
      */
     public function writeTo(OutputStream $out) {
-      $out->write('<?php');
+      $out->write('<?php ');
       $out->write($this->source);
       $out->write("\n?>\n");
     }
