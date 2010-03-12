@@ -1947,7 +1947,7 @@
       array_unshift($this->inits, array(FALSE => array(), TRUE => array()));
       
       // Check if we need to implement ArrayAccess
-      foreach ($declaration->body as $node) {
+      foreach ((array)$declaration->body as $node) {
         if ($node instanceof IndexerNode) {
           $declaration->implements[]= 'ArrayAccess';
         }
