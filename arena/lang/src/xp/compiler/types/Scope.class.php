@@ -262,7 +262,7 @@
       } else {
         $lookup= $this->package
           ? array_merge($this->packages, array($this->package->name))
-          : $this->packages
+          : array_merge($this->packages, array(NULL))
         ;
         try {
           $qualified= $this->task->locateClass($lookup, $name->name);
