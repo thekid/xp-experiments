@@ -1,8 +1,19 @@
 Unicode
 ========================================================================
 
-Created merged XP (local changes in src/, rest in checkout / release):
+Overlay
+-------
+Un*x:
+<pre>
+  $ export USE_XP='overlay:~/devel/xp/trunk/'
+</pre>
+
+Cygwin:
 <pre>
   $ export USE_XP='overlay;~/devel/xp/trunk/'
 </pre>
 
+Windows:
+<pre>
+  $ set USE_XP=overlay;F:/cygwin/home/Timm Friebe/devel/xp/trunk/
+</pre>
