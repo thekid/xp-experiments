@@ -3,6 +3,6 @@ Unicode
 
 Created merged XP (local changes in src/, rest in checkout / release):
 <pre>
-  $ export USE_XP='src;~/devel/xp/trunk/'
+  $ export USE_XP='overlay;~/devel/xp/trunk/'
 </pre>
 
