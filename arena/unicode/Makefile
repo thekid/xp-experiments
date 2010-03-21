@@ -7,4 +7,4 @@ diff:
 	  echo "*** Incorrect xp base path $(XP_BASE)" ; \
 	  exit 1 ; \
 	fi
-	@diff -ur -x .svn "$(XP_BASE)" src | grep -v "^Only in"
+	@diff -ur -x .svn "$(XP_BASE)" overlay | grep -v "^Only in"
