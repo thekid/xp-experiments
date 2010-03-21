@@ -38,7 +38,7 @@
      */
     #[@arg(position= 1)]
     public function setQuery($sql) {
-      $this->query= new String($sql, 'iso-8859-1');
+      $this->query= $sql;
     }
 
     /**
