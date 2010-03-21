@@ -96,5 +96,5 @@
   ob_start('__output');
 
   array_shift($_SERVER['argv']);
-  exit(XPClass::forName($_SERVER['argv'][0])->getMethod('main')->invoke(NULL, array(array_slice($_SERVER['argv'], 1)))); 
+  exit(XPClass::forName($argv[1])->getMethod('main')->invoke(NULL, array(array_slice($argv, 2)))); 
 ?>
