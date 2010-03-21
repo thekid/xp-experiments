@@ -64,10 +64,18 @@
       } else {
         $i= 0;
         while ($record= $q->next()) {
-          $this->out->writeLine('- ', $record);
           $i++;
+          $this->out->writeLine('== Record #', $i, ' ==========');
+          foreach ($record as $field => $value) {
+            $this->out->writef('[%-21s] ', $field);
+            if ($value instanceof String) {
+              $this->out->writeLine($value, ' (', $value->getBytes('utf-8'), ')');
+            } else {
+              $this->out->writeLine(xp::stringOf($value));
+            }
+          }
         }
-        $this->out->writeLine($i, ' row(s) returned');
+        $this->out->writeLine('== ', $i, ' row(s) returned ==');
       }
     }
   }
