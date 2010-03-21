@@ -28,6 +28,7 @@
      *
      */
     public function run() {
+      $this->out->writeLine('Raw    : ', $this->text);
       $this->out->writeLine('String : ', new String($this->text));
       $this->err->writeLine('Bytes  : ', new Bytes($this->text));
     }
