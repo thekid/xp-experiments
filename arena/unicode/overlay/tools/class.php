@@ -63,22 +63,20 @@
     exit(0x3d);
   }
 
+  // Unicode
   if (($ctype= getenv('LC_CTYPE')) || ($ctype= setlocale(LC_CTYPE, 0))) {
     sscanf($ctype, '%[^.].%s', $language, $charset);
     is_numeric($charset) && $charset= 'CP'.$charset;
-    // UDEBUG fputs(STDERR, "CHARSET = $charset\n");
-    foreach ($_SERVER['argv'] as $i => $value) {
-      $_SERVER['argv'][$i]= iconv($charset, 'UTF-8', $value);
-      // UDEBUG fputs(STDERR, "ARGS[$i]= ".addcslashes($_SERVER['argv'][$i], "\0..\17\177..\377")."\n");
-    }
-
-    iconv_set_encoding('output_encoding', $charset);
-    iconv_set_encoding('input_encoding', $charset);
-    stream_filter_append(STDIN, 'convert.iconv.'.$charset.'/utf-8//IGNORE', STREAM_FILTER_READ);
-    stream_filter_append(STDOUT, 'convert.iconv.utf-8/'.$charset.'//IGNORE', STREAM_FILTER_WRITE);
-    stream_filter_append(STDERR, 'convert.iconv.utf-8/'.$charset.'//IGNORE', STREAM_FILTER_WRITE);
+  }
+  if (($con= getenv('LC_CONSOLE'))) {
+    sscanf($con, '%[^,],%s', $ie, $oe);
+    stream_filter_append(STDIN, 'convert.iconv.'.$ie.'/'.$charset.'//IGNORE', STREAM_FILTER_READ);
+    stream_filter_append(STDOUT, 'convert.iconv.'.$charset.'/'.$oe.'//IGNORE', STREAM_FILTER_WRITE);
+    stream_filter_append(STDERR, 'convert.iconv.'.$charset.'/'.$oe.'//IGNORE', STREAM_FILTER_WRITE);
   }
   iconv_set_encoding('internal_encoding', 'UTF-8');
+  iconv_set_encoding('output_encoding', $charset);
+  iconv_set_encoding('input_encoding', $charset);
   
   $home= getenv('HOME');
   list($use, $include)= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
