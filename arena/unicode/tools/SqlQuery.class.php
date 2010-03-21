@@ -28,8 +28,7 @@
     #[@arg(position= 0)]
     public function setConnection($dsn) {
       $this->conn= DriverManager::getConnection($dsn);
-      $this->conn->connect();
-      $this->out->writeLine('Connected to ', $this->conn);
+      $this->out->writeLine('Using ', $this->conn);
     }
     
     /**
@@ -39,7 +38,7 @@
      */
     #[@arg(position= 1)]
     public function setQuery($sql) {
-      $this->query= $sql;
+      $this->query= new String($sql, 'iso-8859-1');
     }
 
     /**
@@ -49,7 +48,7 @@
     #[@arg]
     public function setVerbose() {
       $this->conn->addObserver(new LogObserver(
-        create(new LogCategory())->withAppender(new ConsoleAppender())
+        create(new LogCategory('sql'))->withAppender(new ConsoleAppender())
       ));
     }
 
@@ -58,9 +57,10 @@
      *
      */
     public function run() {
+      $this->conn->connect();
       $q= $this->conn->query($this->query);
       if (!$q instanceof ResultSet) {
-        $this->out->writeLine('Result: ', $this->query);
+        $this->out->writeLine('Result: ', $q);
       } else {
         $i= 0;
         while ($record= $q->next()) {
