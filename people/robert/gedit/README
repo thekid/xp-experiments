@@ -27,7 +27,7 @@ mkdir -p /home/username/.local/share/gtksourceview-2.0/language-specs
 mkdir -p /home/username/.local/share/gtksourceview-2.0/styles
 
 4. copy this php.lang
-cp syntax/php.lang /home/username/.loacal/share/gtksourceview-2.0/language-specs/php.lang
+cp syntax/php.lang /home/username/.local/share/gtksourceview-2.0/language-specs/php.lang
 
 5. copy new style
 cp style/xp_nedit.xml /home/username/.local/share/gtksourceview-2.0/styles/xp_nedit.xml
