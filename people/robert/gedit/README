@@ -22,14 +22,15 @@ INSTALL
 2. Install the package 'gedit-plugins' which is a common package in ubuntu. Here
    you will find some usefull and needed plugins!
 
-3. backup old php.lang
-sudo mv /usr/share/gtksourceview-2.0/language-specs/php.lang /usr/share/gtksourceview-2.0/language-specs/php.old
+3. Create gtksourcview-2.0 folder in your home directory
+mkdir -p /home/username/.local/share/gtksourceview-2.0/language-specs
+mkdir -p /home/username/.local/share/gtksourceview-2.0/styles
 
 4. copy this php.lang
-sudo cp syntax/php.lang /usr/share/gtksourceview-2.0/language-specs/php.lang
+cp syntax/php.lang /home/username/.loacal/share/gtksourceview-2.0/language-specs/php.lang
 
 5. copy new style
-sudo cp style/xp_nedit.xml /usr/share/gtksourceview-2.0/styles/xp_nedit.xml
+cp style/xp_nedit.xml /home/username/.local/share/gtksourceview-2.0/styles/xp_nedit.xml
 
 6. Change color of the variables. I prefer to use bold, red variables. But you can
    just change the following line to a color of your liking.

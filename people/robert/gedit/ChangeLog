@@ -21,8 +21,17 @@ Heads up!
 ~~~~~~~~~
 - No version released yet
 
+Bugfixes
+~~~~~~~~
+- changed README to install all modification into the users home and not to system paths
+# Thanks Alex for this hint
+  (robert)
+
 Features
 ~~~~~~~~
+- added documentation keywords 'TBD' and 'TBI'
+# Requested from Alex
+  (robert)
 - php highlighting added with php.lang
   (robert)
 - created XP-NEdit-Style

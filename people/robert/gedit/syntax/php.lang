@@ -108,6 +108,8 @@
           <keyword>FIXME</keyword>
           <keyword>TODO</keyword>
           <keyword>HACK</keyword>
+          <keyword>TBI</keyword>
+          <keyword>TBD</keyword>
         </context>
         <context ref="def:in-line-comment"/>
         <context id="doc-comment-tag" style-ref="doc-comment-tag">
