@@ -55,12 +55,10 @@
      * @return  var
      */    
     public function executeWith(array $env= array()) {
-      if (FALSE === eval($this->source)) {
-        xp::error(xp::stringOf(new FormatException((string)$this->source)));
+      with ($cl= DynamicClassLoader::instanceFor(__FUNCTION__), $name= $this->type->name()); {
+        $cl->setClassBytes($name, $this->source);
+        $cl->loadClass0($name);
       }
-      $class= $this->type->literal();
-      method_exists($class, '__static') && call_user_func(array($class, '__static'));
-      xp::$registry['classloader.'.$this->type->name()]= 'compiled://'.$this->hashCode();
     }
   }
 ?>
