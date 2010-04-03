@@ -23,7 +23,7 @@ public class Each<T> {
    * Constructor
    *
    */
-  protected __construct(T[] $values) {
+  public __construct(T[] $values) {
     $this.values= $values;
   }
   
