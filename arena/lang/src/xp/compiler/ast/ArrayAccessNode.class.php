@@ -9,6 +9,11 @@
   /**
    * Represents an array access operator
    *
+   * Examples:
+   * <code>
+   *   $first= $list[0];
+   *   $element= $map[$key];
+   * </code>   
    */
   class ArrayAccessNode extends xp·compiler·ast·Node {
     public $offset= NULL;

@@ -9,7 +9,17 @@
   /**
    * Represents an annotation
    *
-   * @purpose  purpose
+   * Example:
+   * <code>
+   *   [@Deprecated('Use Type instead')]
+   * </code>
+   *
+   * <ul>
+   *   <li>Deprecated is the type</li>
+   *   <li>Parameters is the a map ("default" : "Use Type instead")</li>
+   * </ul>
+   *
+   * @test    xp://net.xp_lang.tests.syntax.xp.AnnotationTest
    */
   class AnnotationNode extends xp·compiler·ast·Node {
     public $type       = NULL;

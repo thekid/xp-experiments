@@ -8,7 +8,14 @@
 
   /**
    * Represents an array literal
+   * 
+   * Examples:
+   * <code>
+   *   $a= [1, 2, 3];
+   *   $a= new string[] { "Hello", "Hallo", "Grüezi" };
+   * </code>
    *
+   * @test    xp://net.xp_lang.tests.syntax.xp.ArrayTest
    */
   class ArrayNode extends xp·compiler·ast·Node implements Resolveable {
     public $type;
