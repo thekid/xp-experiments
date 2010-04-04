@@ -29,7 +29,7 @@
      */
     #[@test]
     public function toMember() {
-      $this->assertEquals(1, $this->run('$this.a= 1; return $this.a;'));
+      $this->assertEquals(1, $this->run('$this.member= 1; return $this.member;'));
     }
     
     /**
