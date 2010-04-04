@@ -15,7 +15,8 @@
     public
       $package,
       $imports,
-      $declaration;
+      $declaration,
+      $origin;
 
     /**
      * Constructor

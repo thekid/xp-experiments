@@ -12,6 +12,10 @@
    * @purpose  purpose
    */
   class ForNode extends xp·compiler·ast·Node {
+    public $initialization = NULL;    
+    public $condition      = NULL;    
+    public $loop           = NULL;    
+    public $statements     = NULL;    
     
   }
 ?>

@@ -15,6 +15,8 @@
    */
   abstract class TypeMemberNode extends xp·compiler·ast·Node {
     public $name= '';
+    public $modifiers= 0;
+    public $annotations= array();
 
     /**
      * Returns this routine's name

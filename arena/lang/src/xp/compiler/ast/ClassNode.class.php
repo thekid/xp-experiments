@@ -13,6 +13,7 @@
   class ClassNode extends TypeDeclarationNode {
     public $parent= NULL;
     public $implements= NULL;
+    public $literal= NULL;
     
     /**
      * Constructor

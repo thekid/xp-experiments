@@ -12,6 +12,7 @@
    * @purpose  purpose
    */
   class ThrowNode extends xp·compiler·ast·Node {
+    public $expression = NULL;
     
   }
 ?>

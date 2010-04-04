@@ -12,6 +12,8 @@
    * @purpose  purpose
    */
   class BooleanOpNode extends xp·compiler·ast·Node {
-    
+    public $lhs = NULL;    
+    public $rhs = NULL;    
+    public $op  = NULL;    
   }
 ?>

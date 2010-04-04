@@ -11,6 +11,7 @@
    *
    */
   class FieldNode extends TypeMemberNode {
-    
+    public $type           = NULL;
+    public $initialization = NULL;
   }
 ?>

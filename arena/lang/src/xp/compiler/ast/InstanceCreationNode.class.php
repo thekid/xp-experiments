@@ -12,6 +12,9 @@
    * @purpose  purpose
    */
   class InstanceCreationNode extends xp·compiler·ast·Node {
+    public $type = NULL;
+    public $parameters = NULL;
+    public $body = NULL;
     
     /**
      * Returns a hashcode

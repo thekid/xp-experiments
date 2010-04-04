@@ -12,6 +12,8 @@
    * @purpose  purpose
    */
   class AssignmentNode extends xp·compiler·ast·Node {
-    
+    public $variable = NULL;
+    public $op = NULL;
+    public $expression = NULL;
   }
 ?>

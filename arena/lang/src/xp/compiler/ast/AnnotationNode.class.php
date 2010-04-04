@@ -12,7 +12,7 @@
    * @purpose  purpose
    */
   class AnnotationNode extends xp·compiler·ast·Node {
-    public 
-      $parameters= array();
+    public $type       = NULL;
+    public $parameters = array();
   }
 ?>

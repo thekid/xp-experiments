@@ -11,6 +11,8 @@
    *
    */
   class EnumMemberNode extends TypeMemberNode {
+    public $value = NULL;
+    public $body  = NULL;
     
   }
 ?>

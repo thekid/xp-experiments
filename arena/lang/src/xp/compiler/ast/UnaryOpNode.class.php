@@ -13,5 +13,7 @@
    */
   class UnaryOpNode extends xp·compiler·ast·Node {
     public $postfix = FALSE;
+    public $expression = NULL;
+    public $op = NULL;
   }
 ?>

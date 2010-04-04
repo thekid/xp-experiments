@@ -12,6 +12,9 @@
    * @purpose  purpose
    */
   class CatchNode extends xp·compiler·ast·Node {
+    public $type       = NULL;
+    public $variable   = NULL;
+    public $statements = NULL;
     
   }
 ?>

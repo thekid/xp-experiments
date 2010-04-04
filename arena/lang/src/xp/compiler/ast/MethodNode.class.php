@@ -11,10 +11,8 @@
    *
    */
   class MethodNode extends RoutineNode {
-    public
-      $modifiers  = 0,
-      $returns    = NULL,
-      $parameters = array();
+    public $returns   = NULL;
+    public $extension = FALSE;
 
     /**
      * Returns a hashcode

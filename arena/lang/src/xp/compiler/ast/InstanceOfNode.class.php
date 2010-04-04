@@ -12,6 +12,7 @@
    * @purpose  purpose
    */
   class InstanceOfNode extends xp·compiler·ast·Node {
-    
+    public $type = NULL;
+    public $expression = NULL;
   }
 ?>

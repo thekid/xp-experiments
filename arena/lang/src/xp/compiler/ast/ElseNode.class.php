@@ -12,6 +12,6 @@
    * @purpose  purpose
    */
   class ElseNode extends xp·compiler·ast·Node {
-    
+    public $statements = NULL;
   }
 ?>

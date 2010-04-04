@@ -27,6 +27,7 @@
    * @see   xp://xp.compiler.ast.IndexerNode
    */
   class PropertyNode extends TypeMemberNode {
-
+    public $type     = NULL;
+    public $handlers = array();
   }
 ?>

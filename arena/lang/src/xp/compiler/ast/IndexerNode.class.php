@@ -32,6 +32,9 @@
    * @see   xp://xp.compiler.ast.PropertyNode
    */
   class IndexerNode extends TypeMemberNode {
+    public $type= NULL;
+    public $parameters= NULL;
+    public $handlers= array();
 
     /**
      * Returns this routine's name

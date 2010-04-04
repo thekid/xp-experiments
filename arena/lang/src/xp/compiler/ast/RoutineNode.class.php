@@ -14,7 +14,9 @@
    * @see   xp://xp.compiler.ast.OperatorNode
    */
   abstract class RoutineNode extends TypeMemberNode {
-    public $comment= NULL;
-    
+    public $comment    = NULL;
+    public $body       = NULL;
+    public $parameters = array();
+    public $throws     = array();
   }
 ?>

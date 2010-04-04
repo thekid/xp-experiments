@@ -12,6 +12,9 @@
    * @purpose  purpose
    */
   class OperatorNode extends RoutineNode {
+    public $symbol      = NULL;
+    public $returns     = NULL;
+    public $extension   = FALSE;
 
     /**
      * Returns this routine's name

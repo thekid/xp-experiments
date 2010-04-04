@@ -12,6 +12,8 @@
    * @purpose  purpose
    */
   class TryNode extends xp·compiler·ast·Node {
+    public $statements = NULL;
+    public $handling   = array();
     
   }
 ?>

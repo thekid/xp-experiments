@@ -12,6 +12,8 @@
    * @purpose  purpose
    */
   class ComparisonNode extends xp·compiler·ast·Node {
-    
+    public $lhs = NULL;    
+    public $rhs = NULL;    
+    public $op  = NULL;    
   }
 ?>

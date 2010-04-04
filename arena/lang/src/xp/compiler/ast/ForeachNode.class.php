@@ -12,6 +12,8 @@
    * @purpose  purpose
    */
   class ForeachNode extends xp·compiler·ast·Node {
-    
+    public $expression = NULL;    
+    public $assignment = NULL;    
+    public $statements = NULL;    
   }
 ?>

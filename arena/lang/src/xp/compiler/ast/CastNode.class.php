@@ -12,9 +12,8 @@
    * @purpose  purpose
    */
   class CastNode extends xp·compiler·ast·Node {
-    public
-      $type,
-      $expression;
-    
+    public $type       = NULL;
+    public $expression = NULL;
+    public $check      = TRUE;
   }
 ?>
