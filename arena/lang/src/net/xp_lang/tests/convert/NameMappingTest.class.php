@@ -15,6 +15,7 @@
    * @see      xp://cmd.convert.SourceConverter
    */
   class NameMappingTest extends TestCase {
+    protected $fixture= NULL;
   
     /**
      * Sets up test case
