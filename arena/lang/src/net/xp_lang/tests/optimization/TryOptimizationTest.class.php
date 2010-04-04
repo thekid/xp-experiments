@@ -93,8 +93,6 @@
         'statements' => array(),
         'handling'   => array(
           new FinallyNode(array(
-            'type'       => new TypeName('lang.Throwable'),
-            'variable'   => 'e',
             'statements' => array(new ReturnNode(new NullNode()))
           ))
         )
