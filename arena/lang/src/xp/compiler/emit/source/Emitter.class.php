@@ -1362,7 +1362,7 @@
       $promoted= $promoter->promote($lambda);
       
       // Generate constructor
-      $cparameters= $cstmt= array();
+      $cparameters= $cstmt= $fields= array();
       foreach ($promoted['replaced'] as $name => $member) {
         $cparameters[]= array('name' => substr($name, 1), 'type' => TypeName::$VAR);
         $cstmt[]= new AssignmentNode(array(
@@ -1371,10 +1371,14 @@
           'op'          => '=',
           'free'        => TRUE
         ));
+        $fields[]= new FieldNode(array(
+          'name'        => substr($name, 1), 
+          'type'        => TypeName::$VAR)
+        );
       }
       
       // Generate an anonymous lambda class
-      $decl= new ClassNode(0, NULL, $unique, NULL, NULL, array(
+      $decl= new ClassNode(0, NULL, $unique, NULL, NULL, array_merge($fields, array(
         new ConstructorNode(array(
           'parameters' => $cparameters,
           'body'       => $cstmt
@@ -1385,7 +1389,7 @@
           'body'        => $promoted['node']->statements,
           'returns'     => TypeName::$VAR
         ))
-      ));
+      )));
       $decl->synthetic= TRUE;
       $this->scope[0]->declarations[]= $decl;
       
