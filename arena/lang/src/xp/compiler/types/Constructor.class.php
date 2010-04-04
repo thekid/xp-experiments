@@ -16,14 +16,5 @@
       $modifiers  = 0,
       $parameters = array(),
       $holder     = NULL;
-
-    /**
-     * Constructor
-     *
-     * @param   string name
-     */
-    public function __construct($name= '') {
-      $this->name= $name;
-    }
   }
 ?>
