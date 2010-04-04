@@ -72,7 +72,7 @@
         'class', 
         ucfirst($this->name).'·'.($this->counter++), 
         NULL,
-        '{ public void run() { '.$src.' }}',
+        '{ public var $member; public void run() { '.$src.' }}',
         $imports
       )->newInstance()->run();
     }
@@ -89,7 +89,7 @@
         'class', 
         ucfirst($this->name).'·'.($this->counter++), 
         NULL,
-        '{ public void run() { '.$src.' }}',
+        '{ public var $member; public void run() { '.$src.' }}',
         $imports
       );
     }
