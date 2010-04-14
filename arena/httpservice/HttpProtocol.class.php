@@ -12,7 +12,8 @@
    * @purpose  Protocol
    */
   class HttpProtocol extends Object implements ServerProtocol {
-    protected $handlers= array();
+    protected $handlers = array();
+    public    $server   = NULL;
 
     /**
      * Initialize Protocol
@@ -90,9 +91,9 @@
       // Read input data (XXX: Delay until requested?)
       $body= '';
       try {
-        if (isset($headers['content-length'])) {
+        if (isset($headers['Content-length'])) {
           $body= substr($header, $p+ 4);
-          while (strlen($body) < $headers['content-length']) {
+          while (strlen($body) < $headers['Content-length']) {
             $body.= $socket->readBinary(1024);
           }
         }
@@ -106,7 +107,7 @@
         '[%.3f %s %s @ %s] %s:%s (%d bytes)',
         memory_get_usage() / 1024,
         date('Y-m-d H:i:s'), 
-        @$headers['user-agent'],
+        @$headers['User-Agent'],
         $socket->host, 
         $method, 
         $query, 

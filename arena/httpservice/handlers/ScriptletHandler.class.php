@@ -18,10 +18,11 @@
     /**
      * Constructor
      *
-     * @param   scriptlet.HttpScriptlet scriptlet
+     * @param   string name
+     * @param   string arg
      */
-    public function __construct($name) {
-      $this->scriptlet= XPClass::forName($name)->newInstance();
+    public function __construct($name, $arg) {
+      $this->scriptlet= XPClass::forName($name)->newInstance($arg);
       $this->scriptlet->init();
     }
     

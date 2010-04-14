@@ -19,9 +19,10 @@
    */
   class HttpService extends Command {
     protected 
-      $model= NULL,
-      $ip   = '',
-      $port = 0;
+      $config = NULL,
+      $model  = NULL,
+      $ip     = '',
+      $port   = 0;
 
     protected static 
       $models= array(
