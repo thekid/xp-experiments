@@ -525,6 +525,7 @@
      */
     public function getFault() {
       if ($body= $this->_bodyElement()) {
+        $this->_retrieveNamespaces($body->children[0]);
         if (0 != strcasecmp(
           $body->children[0]->getName(), 
           $this->namespaces[XMLNS_SOAPENV].':Fault'
