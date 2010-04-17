@@ -179,5 +179,32 @@
         }
       '));
     }
+
+    /**
+     * Test ARM statement
+     *
+     */
+    #[@test]
+    public function resourceManagement() {
+      $this->assertEquals(array(new ArmNode(
+        array(new AssignmentNode(array(
+          'variable'   => new VariableNode('r'),
+          'expression' => new InstanceCreationNode(array(
+            'type'       => new TypeName('TextReader'),
+            'parameters' => array(new VariableNode('stream')),
+            'body'       => NULL
+          )),
+          'op'         => '='
+        ))),
+        array(new ReturnNode(new ChainNode(array(
+          new VariableNode('r'),
+          new InvocationNode('readLine')
+        ))))
+      )), $this->parse('
+        try ($r= new TextReader($stream)) {
+          return $r.readLine();
+        }
+      '));
+    }
   }
 ?>

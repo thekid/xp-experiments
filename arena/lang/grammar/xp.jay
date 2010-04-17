@@ -61,6 +61,7 @@
     'xp.compiler.ast.StaticInitializerNode',
     'xp.compiler.ast.LambdaNode',
     'xp.compiler.ast.WithNode',
+    'xp.compiler.ast.ArmNode',
     'xp.compiler.ast.BracedExpressionNode'
   );
 %}
@@ -544,15 +545,18 @@ statement:
       $1->expression= $4;
       $1->cases= $7;
     }
+  | T_BREAK { $1= $yyLex->create(new BreakNode()); } ';'
+  | T_CONTINUE { $1= $yyLex->create(new ContinueNode()); } ';'
+  | T_THROW { $1= $yyLex->create(new ThrowNode()); } expression ';' {
+      $1->expression= $3;
+    }
   | T_TRY '{' { $2= $yyLex->create(new TryNode()); } statements_opt '}' handleexception { 
       $2->statements= $4;
       $2->handling= $6;
       $$= $2; 
     }
-  | T_BREAK { $1= $yyLex->create(new BreakNode()); } ';'
-  | T_CONTINUE { $1= $yyLex->create(new ContinueNode()); } ';'
-  | T_THROW { $1= $yyLex->create(new ThrowNode()); } expression ';' {
-      $1->expression= $3;
+  | T_TRY '(' withassignments ')' '{' statements_opt '}' {
+      $$= $yyLex->create(new ArmNode($3, $6 ? $6 : array()));
     }
   | T_WITH '(' withassignments ')' '{' statements_opt '}' {
       $$= $yyLex->create(new WithNode($3, $6 ? $6 : array()));

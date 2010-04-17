@@ -1054,6 +1054,26 @@
       $op->append('}');
       array_shift($this->finalizers);
     }
+
+    /**
+     * Emit an automatic resource management block
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ArmNode arm
+     */
+    protected function emitArm($op, ArmNode $arm) {
+      static $mangled= '··e';
+      static $ignored= '··i';
+
+      $this->emitAll($op, $arm->assignments);
+      $op->append('$'.$mangled.'= NULL; try {');
+      $this->emitAll($op, (array)$arm->statements);
+      $op->append('} catch(Exception $'.$mangled.') {}');
+      foreach ($arm->assignments as $assignment) {
+        $op->append('try { $'.$assignment->variable->name.'->close(); } catch (Exception $'.$ignored.') {}');
+      }
+      $op->append('if ($'.$mangled.') throw $'.$mangled.';'); 
+    }
     
     /**
      * Emit a throw node

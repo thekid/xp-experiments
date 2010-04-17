@@ -288,6 +288,26 @@ This is kind of different from the usual PHP approach with <tt>__</tt>
   }
 </code>
 
+Automatic resource management statement
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Auto-close shorthand:
+<code>
+  try ($file= new File('...')) {
+    $file->write('...');
+  }
+  
+  // Equivalent of
+  $file= new File('...');
+  try {
+    $file->write('...');
+    try { $file->close(); } catch (Exception $ignored) { }
+  } catch (Exception $e) {
+    try { $file->close(); } catch (Exception $ignored) { }
+    throw $e;
+  }
+</code>
+
+
 
 Ideas
 -----
@@ -387,22 +407,6 @@ impact.
 
 Still to be discussed would be how to create extension properties, like 
 <tt>$list.length</tt>.
-
-Using statement
-~~~~~~~~~~~~~~~
-Auto-close shorthand:
-<code>
-  using ($file= new File('...')) {
-    $file->write('...');
-  }
-  
-  $file= new File('...');
-  try {
-    $file->write('...');
-  } finally {
-    $file->close();
-  }
-</code>
 
 Scoped import
 ~~~~~~~~~~~~~
