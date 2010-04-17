@@ -950,6 +950,7 @@ chain:
 member:
     T_WORD
   | T_IN
+  | T_CLASS
 ;
 // }}}
 

@@ -11,6 +11,36 @@
    *
    */
   class ChainingTest extends ParserTestCase {
+
+    /**
+     * Test field access
+     *
+     */
+    #[@test]
+    public function fieldAccess() {
+      $this->assertEquals(
+        array(new ChainNode(array(
+          0 => new VariableNode('m'),
+          1 => new VariableNode('member')
+        ))), 
+        $this->parse('$m.member;')
+      );
+    }
+
+    /**
+     * Test field access
+     *
+     */
+    #[@test]
+    public function fieldNamedClassAccess() {
+      $this->assertEquals(
+        array(new ChainNode(array(
+          0 => new VariableNode('m'),
+          1 => new VariableNode('class')
+        ))), 
+        $this->parse('$m.class;')
+      );
+    }
   
     /**
      * Test simple method call on an object
