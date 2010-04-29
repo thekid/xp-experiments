@@ -1,0 +1,28 @@
+
+Strict overlay for XP Framework
+================================
+
+About
+------
+
+This is an overlay for the XP Framework that implement more
+strict error checking rules than standard XP Framework. This
+implementation adds checks for:
+
+* Read / write on undeclared class property
+* Execution of undeclared class method
+* Certain PHP notices that often arise from typos or
+  refactorings that can cause quite a big headache when
+  trying to trace a bug
+
+Installation
+-------------
+
+Before anything works, you'll need the patch from RFC #0201. Then
+just append the path
+
+  ~/devel/xp.forge/trunk/experiments/arena/strict/
+
+to the use= setting in you xp.ini (usually located where your
+runners are).
+
