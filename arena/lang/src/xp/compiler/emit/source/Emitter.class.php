@@ -1274,9 +1274,7 @@
           } else if ($arg['type']->isArray()) {
             $op->append('array ');
           } else if ($arg['type']->isClass()) {
-            // FIXME Resolving type causes endless recursion
-            // $op->append($this->resolveType($arg['type'])->literal())->append(' ');
-            $op->append(xp::reflect($arg['type']->name))->append(' ');
+            $op->append($this->resolveType($arg['type'])->literal())->append(' ');
           } else {
             // No restriction on primitives possible in PHP
           }
