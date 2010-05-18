@@ -431,17 +431,22 @@
      */
     protected function emitMemberCall($op, InvocationNode $access, TypeName $type) {
       $result= TypeName::$VAR;
+      $ptr= new TypeInstance($this->resolveType($type));
+      
+      // Check for extension methods
+      if ($this->scope[0]->hasExtension($ptr, $access->name)) {
+        $ext= $this->scope[0]->getExtension($ptr, $access->name);
+        $op->insertAtMark($ext->holder->literal().'::'.$access->name.'(');
+        $op->append(', ');
+        $this->emitInvocationArguments($op, (array)$access->arguments);
+        $op->append(')');
+        return $ext->returns;
+      }
+
+      // Check for type methods
       if ($type->isClass()) {
-        $ptr= new TypeInstance($this->resolveType($type));
         if ($ptr->hasMethod($access->name)) {
           $result= $ptr->getMethod($access->name)->returns;
-        } else if ($this->scope[0]->hasExtension($ptr, $access->name)) {
-          $ext= $this->scope[0]->getExtension($ptr, $access->name);
-          $op->insertAtMark($ext->holder->literal().'::'.$access->name.'(');
-          $op->append(', ');
-          $this->emitInvocationArguments($op, (array)$access->arguments);
-          $op->append(')');
-          return $ext->returns;
         } else {
           $this->warn('T201', 'No such method '.$access->name.'() in '.$type->compoundName(), $access);
         }

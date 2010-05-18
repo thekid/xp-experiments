@@ -19,7 +19,7 @@
      *
      */
     #[@test]
-    public function sorted() {
+    public function classExtension() {
       $class= $this->define('class', 'ClassExtension', NULL, '{
         public static lang.reflect.Method[] methodsNamed(this lang.XPClass $class, text.regex.Pattern $pattern) {
           $r= new lang.reflect.Method[] { };
@@ -37,6 +37,26 @@
         $class->getMethod('runMethod'), 
         $class->newInstance()->runMethod()
       );
+    }
+
+    /**
+     * Test extending
+     *
+     */
+    #[@test]
+    public function stringExtension() {
+      $class= $this->define('class', 'StringExtension', NULL, '{
+        public static bool equal(this string $in, string $cmp) {
+          return $in === $cmp;
+        }
+        
+        public bool run(string $cmp) {
+          return "hello".equal($cmp);
+        }
+      }');
+      $instance= $class->newInstance();
+      $this->assertFalse($instance->run('world'));
+      $this->assertTrue($instance->run('hello'));
     }
   }
 ?>
