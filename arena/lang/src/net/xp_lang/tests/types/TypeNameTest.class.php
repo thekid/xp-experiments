@@ -22,7 +22,7 @@
      */
     #[@test]
     public function varIsVariable() {
-      $this->assertTrue(create(new TypeName('var'))->isVariable());
+      $this->assertTrue(TypeName::$VAR->isVariable());
     }
 
     /**
@@ -31,7 +31,7 @@
      */
     #[@test]
     public function voidIsNotVariable() {
-      $this->assertFalse(create(new TypeName('void'))->isVariable());
+      $this->assertFalse(TypeName::$VOID->isVariable());
     }
 
     /**
@@ -49,7 +49,7 @@
      */
     #[@test]
     public function varIsNotVoid() {
-      $this->assertFalse(create(new TypeName('var'))->isVoid());
+      $this->assertFalse(TypeName::$VAR->isVoid());
     }
 
     /**
@@ -58,7 +58,7 @@
      */
     #[@test]
     public function voidIsVoid() {
-      $this->assertTrue(create(new TypeName('void'))->isVoid());
+      $this->assertTrue(TypeName::$VOID->isVoid());
     }
 
     /**

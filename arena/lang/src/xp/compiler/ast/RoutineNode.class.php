@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('xp.compiler.ast.TypeMemberNode');
+  uses('xp.compiler.ast.TypeMemberNode', 'xp.compiler.types.TypeName');
 
   /**
    * Abstract base class for all routines

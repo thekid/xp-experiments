@@ -29,9 +29,11 @@
     
     public static $primitives = array('int', 'double', 'bool', 'string');
     public static $VAR;
+    public static $VOID;
     
     static function __static() {
       self::$VAR= new self('var');
+      self::$VOID= new self('void');
     }
     
     /**

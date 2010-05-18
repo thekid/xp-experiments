@@ -51,7 +51,7 @@
       $m= new MethodNode(array(
         'name'        => 'run',
         'modifiers'   => MODIFIER_PUBLIC,
-        'returns'     => new TypeName('void'),
+        'returns'     => TypeName::$VOID,
         'parameters'  => array(),
         'body'        => array()
       ));
@@ -70,7 +70,7 @@
       $m= new MethodNode(array(
         'name'        => 'run',
         'modifiers'   => MODIFIER_PRIVATE,
-        'returns'     => new TypeName('void'),
+        'returns'     => TypeName::$VOID,
         'parameters'  => array(),
         'body'        => NULL
       ));
@@ -89,7 +89,7 @@
       $m= new MethodNode(array(
         'name'        => 'run',
         'modifiers'   => MODIFIER_PROTECTED,
-        'returns'     => new TypeName('void'),
+        'returns'     => TypeName::$VOID,
         'parameters'  => array(),
         'body'        => NULL
       ));
@@ -108,7 +108,7 @@
       $m= new MethodNode(array(
         'name'        => 'run',
         'modifiers'   => MODIFIER_ABSTRACT,
-        'returns'     => new TypeName('void'),
+        'returns'     => TypeName::$VOID,
         'parameters'  => array(),
         'body'        => NULL
       ));
@@ -127,7 +127,7 @@
       $m= new MethodNode(array(
         'name'        => 'run',
         'modifiers'   => MODIFIER_FINAL,
-        'returns'     => new TypeName('void'),
+        'returns'     => TypeName::$VOID,
         'parameters'  => array(),
         'body'        => NULL
       ));
@@ -146,7 +146,7 @@
       $m= new MethodNode(array(
         'name'        => 'run',
         'modifiers'   => MODIFIER_ABSTRACT,
-        'returns'     => new TypeName('void'),
+        'returns'     => TypeName::$VOID,
         'parameters'  => array(),
         'body'        => array()
       ));
@@ -165,7 +165,7 @@
       $m= new MethodNode(array(
         'name'        => 'run',
         'modifiers'   => MODIFIER_PUBLIC,
-        'returns'     => new TypeName('void'),
+        'returns'     => TypeName::$VOID,
         'parameters'  => array(),
         'body'        => NULL
       ));

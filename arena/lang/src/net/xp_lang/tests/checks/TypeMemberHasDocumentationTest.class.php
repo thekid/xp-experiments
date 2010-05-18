@@ -50,7 +50,7 @@
       $m= new MethodNode(array(
         'name'        => 'run',
         'modifiers'   => MODIFIER_ABSTRACT,
-        'returns'     => new TypeName('void'),
+        'returns'     => TypeName::$VOID,
         'parameters'  => array(),
         'body'        => array()
       ));
@@ -71,7 +71,7 @@
       $m= new MethodNode(array(
         'name'        => 'run',
         'modifiers'   => MODIFIER_ABSTRACT,
-        'returns'     => new TypeName('void'),
+        'returns'     => TypeName::$VOID,
         'parameters'  => array(),
         'body'        => array()
       ));

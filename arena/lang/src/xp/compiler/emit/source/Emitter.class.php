@@ -1603,9 +1603,9 @@
     protected function emitIndexer($op, IndexerNode $indexer) {
       $defines= array(
         'get'   => array('offsetGet', $indexer->parameters, $indexer->type),
-        'set'   => array('offsetSet', array_merge($indexer->parameters, array(array('name' => 'value', 'type' => $indexer->type))), new TypeName('void')),
+        'set'   => array('offsetSet', array_merge($indexer->parameters, array(array('name' => 'value', 'type' => $indexer->type))), TypeName::$VOID),
         'isset' => array('offsetExists', $indexer->parameters, new TypeName('bool')),
-        'unset' => array('offsetUnset', $indexer->parameters, new TypeName('void')),
+        'unset' => array('offsetUnset', $indexer->parameters, TypeName::$VOID),
       );
 
       foreach ($indexer->handlers as $name => $statements) {

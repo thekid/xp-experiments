@@ -80,7 +80,7 @@
         'modifiers'  => MODIFIER_PUBLIC | MODIFIER_ABSTRACT,
         'annotations'=> NULL,
         'name'       => 'setTrace',
-        'returns'    => new TypeName('void'),
+        'returns'    => TypeName::$VOID,
         'parameters' => array(array(
           'name'  => 'cat',
           'type'  => new TypeName('util.log.LogCategory'),
@@ -183,7 +183,7 @@
         'modifiers'  => MODIFIER_PUBLIC,
         'annotations'=> NULL,
         'name'       => 'addAll',
-        'returns'    => new TypeName('void'),
+        'returns'    => TypeName::$VOID,
         'parameters' => array(array(
           'name'   => 'elements',
           'type'   => new TypeName('T[]'),  // XXX FIXME this is probably not a good representation

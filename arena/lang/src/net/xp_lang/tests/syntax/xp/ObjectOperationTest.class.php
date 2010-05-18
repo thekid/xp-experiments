@@ -42,7 +42,7 @@
               'modifiers'   => MODIFIER_PUBLIC,
               'annotations' => NULL,
               'name'        => 'run',
-              'returns'     => new TypeName('void'),
+              'returns'     => TypeName::$VOID,
               'parameters'  => NULL,
               'throws'      => NULL,
               'body'        => array(),
