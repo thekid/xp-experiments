@@ -389,18 +389,10 @@ statement:
     }
   | T_FOR { $1= $yyLex->create(new ForNode()); } '(' expressionlist_opt ';' expressionlist_opt ';' expressionlist_opt ')' block {
       if ($4) {
-        $1->initialization= array();
-        foreach ($4 as $stmt) {
-          $stmt->free= TRUE;
-          $1->initialization[]= $stmt;
-        }
+        $1->initialization= $4;
       }
       if ($8) {
-        $1->loop= array();
-        foreach ($8 as $stmt) {
-          $stmt->free= TRUE;
-          $1->loop[]= $stmt;
-        }
+        $1->loop= $8;
       }
       $1->condition= $6;
       $1->statements= $10;
@@ -432,7 +424,7 @@ statement:
   | T_THROW { $1= $yyLex->create(new ThrowNode()); } expression ';' {
       $1->expression= $3;
     }
-  | expression ';' { $1->free= TRUE; }
+  | expression ';'
   | ';' { $$= $yyLex->create(new NoopNode()); }
 ;
 

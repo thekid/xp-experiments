@@ -7,14 +7,11 @@
   $package= 'xp.compiler.ast';
 
   /**
-   * (Insert class' description here)
+   * Base class for all nodes
    *
-   * @purpose  purpose
    */
   abstract class xp·compiler·ast·Node extends Object {
-    public
-      $position = array(0, 0),
-      $free     = FALSE;
+    public $position = array(0, 0);
 
     /**
      * Constructor
@@ -36,7 +33,7 @@
      */
     protected function memberWiseCompare($a1, $a2) {
       foreach (array_keys((array)$a1) as $k) {
-        if ('position' === $k || 'holder' === $k || 'free' === $k || '__id' === $k) continue;
+        if ('position' === $k || 'holder' === $k || '__id' === $k) continue;
 
         switch (TRUE) {
           case !array_key_exists($k, $a2): 

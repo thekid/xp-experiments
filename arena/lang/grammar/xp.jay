@@ -512,18 +512,10 @@ statement:
     }
   | T_FOR { $1= $yyLex->create(new ForNode()); } '(' expressionlist_opt ';' expressionlist_opt ';' expressionlist_opt ')' block {
       if ($4) {
-        $1->initialization= array();
-        foreach ($4 as $stmt) {
-          $stmt->free= TRUE;
-          $1->initialization[]= $stmt;
-        }
+        $1->initialization= $4;
       }
       if ($8) {
-        $1->loop= array();
-        foreach ($8 as $stmt) {
-          $stmt->free= TRUE;
-          $1->loop[]= $stmt;
-        }
+        $1->loop= $8;
       }
       $1->condition= $6;
       $1->statements= $10;
@@ -561,7 +553,7 @@ statement:
   | T_WITH '(' withassignments ')' '{' statements_opt '}' {
       $$= $yyLex->create(new WithNode($3, $6 ? $6 : array()));
     }
-  | expression ';' { $1->free= TRUE; }
+  | expression ';'
 ;
 
 withassignments:
@@ -571,7 +563,7 @@ withassignments:
 
 withassignment:
     T_VARIABLE '=' expression {
-      $$= $yyLex->create(new AssignmentNode(array('free' => TRUE, 'op' => '=', 'variable' => new VariableNode($1), 'expression' => $3))); 
+      $$= $yyLex->create(new AssignmentNode(array('op' => '=', 'variable' => new VariableNode($1), 'expression' => $3))); 
     }
 ;
 

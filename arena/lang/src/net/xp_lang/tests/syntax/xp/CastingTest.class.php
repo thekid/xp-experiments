@@ -79,7 +79,6 @@
     public function prefixGenericCast() {
       $this->assertEquals(
         array(new AssignmentNode(array(
-          'free'        => TRUE,
           'variable'    => new VariableNode('a'),
           'expression'  => new CastNode(array(
             'type'        => new TypeName('List', array(new TypeName('String'))),
@@ -99,7 +98,6 @@
     public function prefixQualifiedCast() {
       $this->assertEquals(
         array(new AssignmentNode(array(
-          'free'        => TRUE,
           'variable'    => new VariableNode('a'),
           'expression'  => new CastNode(array(
             'type'        => new TypeName('com.example.bank.Account'),
@@ -119,7 +117,6 @@
     public function postfixQualifiedCast() {
       $this->assertEquals(
         array(new AssignmentNode(array(
-          'free'        => TRUE,
           'variable'    => new VariableNode('a'),
           'expression'  => new CastNode(array(
             'type'        => new TypeName('com.example.bank.Account'),
@@ -140,7 +137,6 @@
     public function postfixQualifiedNonEnforcedCast() {
       $this->assertEquals(
         array(new AssignmentNode(array(
-          'free'        => TRUE,
           'variable'    => new VariableNode('a'),
           'expression'  => new CastNode(array(
             'type'        => new TypeName('com.example.bank.Account'),

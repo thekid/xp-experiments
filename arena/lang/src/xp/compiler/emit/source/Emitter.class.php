@@ -516,10 +516,9 @@
         $c= $chain->elements[$i];
 
         $this->cat && $this->cat->debugf(
-          '@%-3d Emit %s(free= %d): %s',
+          '@%-3d Emit %s: %s',
           $c->position[0], 
           $c->getClassName(), 
-          $c->free, 
           $c->hashCode()
         );
         
@@ -813,7 +812,6 @@
     protected function emitForComponent($op, array $nodes) {
       $s= sizeof($nodes)- 1;
       foreach ($nodes as $i => $node) {
-        $node->free= FALSE;
         $this->emitOne($op, $node);
         $i < $s && $op->append(', ');
       }
@@ -1386,8 +1384,7 @@
         $cstmt[]= new AssignmentNode(array(
           'variable'    => $member, 
           'expression'  => new VariableNode(substr($name, 1)), 
-          'op'          => '=',
-          'free'        => TRUE
+          'op'          => '='
         ));
         $fields[]= new FieldNode(array(
           'name'        => substr($name, 1), 
@@ -1497,9 +1494,9 @@
           $this->emitOne($op, new AssignmentNode(array(
             'variable'   => new ClassMemberNode(new TypeName('self'), new VariableNode($field->name)),
             'expression' => $field->initialization,
-            'free'       => TRUE,
             'op'         => '=',
           )));
+          $op->append(';');
         }
         unset($this->inits[0][TRUE]);
       }
@@ -1539,9 +1536,9 @@
             $this->emitOne($op, new AssignmentNode(array(
               'variable'   => new ChainNode(array(new VariableNode('this'), new VariableNode($field->name))),
               'expression' => $field->initialization,
-              'free'       => TRUE,
               'op'         => '=',
             )));
+            $op->append(';');
           }
           unset($this->inits[0][FALSE]);
         }
@@ -1870,7 +1867,9 @@
       ));
 
       // Members
-      $this->emitAll($op, (array)$declaration->body);
+      foreach ((array)$declaration->body as $node) {
+        $this->emitOne($op, $node);
+      }
       $this->emitProperties($op, $this->properties[0]);
       
       // Initialization
@@ -1936,7 +1935,9 @@
         }
       }
       $op->append(' {');
-      $this->emitAll($op, (array)$declaration->body);
+      foreach ((array)$declaration->body as $node) {
+        $this->emitOne($op, $node);
+      }
       $op->append('}');
 
       $this->metadata[0]['class']= array(
@@ -1987,7 +1988,9 @@
       
       // Members
       $op->append('{');
-      $this->emitAll($op, (array)$declaration->body);
+      foreach ((array)$declaration->body as $node) {
+        $this->emitOne($op, $node);
+      }
       $this->emitProperties($op, $this->properties[0]);
       
       if ($this->inits[0][FALSE]) {
@@ -2002,7 +2005,6 @@
             $arguments[]= new VariableNode('··a'.$i);
           }
           $body= array(new ClassMemberNode(new TypeName('parent'), new InvocationNode('__construct', $arguments)));
-          $body[0]->free= TRUE;
         } else {
           $body= array();
           $arguments= array();
@@ -2182,10 +2184,9 @@
       if (method_exists($this, $target)) {
         $op->position($node->position);
         $this->cat && $this->cat->debugf(
-          '@%-3d Emit %s(free= %d): %s',
+          '@%-3d Emit %s: %s',
           $node->position[0], 
           $node->getClassName(), 
-          $node->free, 
           $node->hashCode()
         );
         try {
@@ -2194,7 +2195,6 @@
           $this->error('0500', $e->toString(), $node);
           return 0;
         }
-        $node->free && $op->append(';');
         return 1;
       } else {
         $this->error('0422', 'Cannot emit '.$node->getClassName(), $node);
@@ -2213,6 +2213,7 @@
       $emitted= 0;
       foreach ((array)$nodes as $node) {
         $emitted+= $this->emitOne($op, $node);
+        $op->append(';');
       }
       return $emitted;
     }

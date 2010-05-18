@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('xp.compiler.ast.TypeMemberNode', 'xp.compiler.types.TypeName');
+  uses(
+    'xp.compiler.ast.TypeMemberNode', 
+    'xp.compiler.types.TypeName'
+  );
 
   /**
    * Abstract base class for all routines
@@ -18,5 +21,14 @@
     public $body       = NULL;
     public $parameters = array();
     public $throws     = array();
+    
+    /**
+     * Adds a statement
+     *
+     * @param   xp.compiler.types.Node
+     */
+    public function addStatement(xp·compiler·ast·Node $statement) {
+      $this->body[]= $statement;
+    }
   }
 ?>
