@@ -1369,6 +1369,7 @@
      *
      * @param   resource op
      * @param   xp.compiler.ast.LambdaNode lambda
+     * @see     http://cr.openjdk.java.net/~mcimadamore/lambda_trans.pdf
      */
     protected function emitLambda($op, LambdaNode $lambda) {
       $unique= new TypeName('Lambda··'.uniqid());
