@@ -14,13 +14,5 @@
     public $returns   = NULL;
     public $extension = FALSE;
 
-    /**
-     * Returns a hashcode
-     *
-     * @return  string
-     */
-    public function hashCode() {
-      return 'xp.inv:'.$this->name.'()';
-    }
   }
 ?>

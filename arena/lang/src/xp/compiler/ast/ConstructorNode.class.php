@@ -16,7 +16,7 @@
       $parameters = array();
     
     /**
-     * Returns this routine's name
+     * Returns this members's name
      *
      * @return  string
      */

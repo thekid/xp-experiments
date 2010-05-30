@@ -26,5 +26,14 @@
     public function getName() {
       return $this->name;
     }
+
+    /**
+     * Returns this members's hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      raise('lang.MethodNotImplementedException', 'Not implemented', __METHOD__);
+    }
   }
 ?>

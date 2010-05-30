@@ -12,6 +12,7 @@
     'xp.compiler.ast.ClassNode',
     'xp.compiler.ast.MethodNode',
     'xp.compiler.ast.FieldNode',
+    'xp.compiler.ast.StaticInitializerNode',
     'xp.compiler.ast.EnumMemberNode',
     'xp.compiler.types.CompilationUnitScope'
   );
@@ -41,7 +42,7 @@
     #[@test]
     public function interfaceWithDuplicateMethod() {
       $this->assertEquals(
-        array('C409', 'Cannot redeclare Runnable::xp.compiler.ast.MethodNode<run>'), 
+        array('C409', 'Cannot redeclare Runnable::run()'), 
         $this->fixture->verify(
           new InterfaceNode(MODIFIER_PUBLIC, array(), new TypeName('Runnable'), array(), array(
             new MethodNode(array('name' => 'run')),
@@ -76,7 +77,7 @@
     #[@test]
     public function classWithDuplicateMethod() {
       $this->assertEquals(
-        array('C409', 'Cannot redeclare Runner::xp.compiler.ast.MethodNode<run>'), 
+        array('C409', 'Cannot redeclare Runner::run()'), 
         $this->fixture->verify(
           new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Runner'), NULL, array(), array(
             new MethodNode(array('name' => 'run')),
@@ -111,7 +112,7 @@
     #[@test]
     public function classWithDuplicateField() {
       $this->assertEquals(
-        array('C409', 'Cannot redeclare Runner::xp.compiler.ast.FieldNode<in>'), 
+        array('C409', 'Cannot redeclare Runner::$in'), 
         $this->fixture->verify(
           new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Runner'), NULL, array(), array(
             new FieldNode(array('name' => 'in')),
@@ -163,7 +164,7 @@
     #[@test]
     public function enumWithDuplicateMember() {
       $this->assertEquals(
-        array('C409', 'Cannot redeclare Coin::xp.compiler.ast.EnumMemberNode<penny>'), 
+        array('C409', 'Cannot redeclare Coin::$penny'), 
         $this->fixture->verify(
           new EnumNode(MODIFIER_PUBLIC, array(), new TypeName('Coin'), NULL, array(), array(
             new EnumMemberNode(array('name' => 'penny')),
@@ -185,6 +186,77 @@
           new EnumNode(MODIFIER_PUBLIC, array(), new TypeName('Coin'), NULL, array(), array(
             new EnumMemberNode(array('name' => 'penny')),
             new EnumMemberNode(array('name' => 'dime')),
+          )), 
+          $this->scope
+        )
+      );
+    }
+
+    /**
+     * Test enum
+     *
+     */
+    #[@test]
+    public function enumWithConflictingFieldAndMember() {
+      $this->assertEquals(
+        array('C409', 'Cannot redeclare Coin::$penny'), 
+        $this->fixture->verify(
+          new EnumNode(MODIFIER_PUBLIC, array(), new TypeName('Coin'), NULL, array(), array(
+            new EnumMemberNode(array('name' => 'penny')),
+            new FieldNode(array('name' => 'penny')),
+          )), 
+          $this->scope
+        )
+      );
+    }
+
+    /**
+     * Test class with static initializer
+     *
+     */
+    #[@test]
+    public function classWithStaticInitializer() {
+      $this->assertNull(
+        $this->fixture->verify(
+          new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Init'), NULL, array(), array(
+            new MethodNode(array('name' => 'run')),
+            new StaticInitializerNode(array()),
+          )), 
+          $this->scope
+        )
+      );
+    }
+
+    /**
+     * Test class with static initializer and __static() method
+     *
+     */
+    #[@test]
+    public function classWithStaticInitializerAndConflictingMethod() {
+      $this->assertEquals(
+        array('C409', 'Cannot redeclare Init::__static()'), 
+        $this->fixture->verify(
+          new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Init'), NULL, array(), array(
+            new MethodNode(array('name' => '__static')),
+            new StaticInitializerNode(array()),
+          )), 
+          $this->scope
+        )
+      );
+    }
+
+    /**
+     * Test class with static initializers
+     *
+     */
+    #[@test]
+    public function classWithTwoStaticInitializers() {
+      $this->assertEquals(
+        array('C409', 'Cannot redeclare Init::__static()'), 
+        $this->fixture->verify(
+          new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Init'), NULL, array(), array(
+            new StaticInitializerNode(array()),
+            new StaticInitializerNode(array()),
           )), 
           $this->scope
         )

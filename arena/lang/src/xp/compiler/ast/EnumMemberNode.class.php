@@ -14,5 +14,13 @@
     public $value = NULL;
     public $body  = NULL;
     
+    /**
+     * Returns this members's hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return '$'.$this->getName();
+    }
   }
 ?>

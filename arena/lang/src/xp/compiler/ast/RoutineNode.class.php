@@ -30,5 +30,14 @@
     public function addStatement(xp·compiler·ast·Node $statement) {
       $this->body[]= $statement;
     }
+
+    /**
+     * Returns this members's hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return $this->getName().'()';
+    }
   }
 ?>

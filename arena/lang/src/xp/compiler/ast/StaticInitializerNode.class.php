@@ -4,13 +4,13 @@
  * $Id$
  */
 
-  uses('xp.compiler.ast.Node');
+  uses('xp.compiler.ast.TypeMemberNode');
 
   /**
    * Static initializer
    *
    */
-  class StaticInitializerNode extends xp·compiler·ast·Node {
+  class StaticInitializerNode extends TypeMemberNode {
     public $statements;
     
     /**
@@ -20,6 +20,24 @@
      */
     public function __construct($statements) {
       $this->statements= $statements;
+    }
+
+    /**
+     * Returns this member's name
+     *
+     * @return  string
+     */
+    public function getName() {
+      return '__static';
+    }
+
+    /**
+     * Returns this members's hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return '__static()';
     }
   }
 ?>
