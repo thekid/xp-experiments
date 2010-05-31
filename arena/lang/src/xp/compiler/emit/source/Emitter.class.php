@@ -1270,20 +1270,22 @@
       foreach ($arguments as $i => $arg) {
         if (!$arg['type']) {
           $t= TypeName::$VAR;
+          $ptr= new TypeReference($t);
         } else {
+          $t= $arg['type'];
+          $ptr= $this->resolveType($t);
           if (!$arg['check']) {
             // No runtime type checks
-          } else if ($arg['type']->isArray()) {
+          } else if ($t->isArray() || $t->isMap()) {
             $op->append('array ');
-          } else if ($arg['type']->isClass()) {
-            $op->append($this->resolveType($arg['type'])->literal())->append(' ');
+          } else if ($t->isClass()) {
+            $op->append($ptr->literal())->append(' ');
           } else {
             // No restriction on primitives possible in PHP
           }
-          $t= $arg['type'];
         }
         
-        $this->metadata[0][1][$this->method[0]->name][DETAIL_ARGUMENTS][$i]= $t->compoundName();
+        $this->metadata[0][1][$this->method[0]->name][DETAIL_ARGUMENTS][$i]= $ptr->name();
         
         if (isset($arg['vararg'])) {
           if ($i > 0) {
