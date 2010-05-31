@@ -1087,7 +1087,6 @@
     protected function emitThrow($op, ThrowNode $throw) {
       $op->append('throw ');
       $this->emitOne($op, $throw->expression);
-      $op->append(';');
     }
 
     /**
@@ -2161,7 +2160,6 @@
         $op->append('return ');
         $this->emitOne($op, $return->expression);
       }
-      $op->append(';');
     }
 
     /**
