@@ -22,7 +22,8 @@
     'xp.compiler.types.Types',
     'xp.compiler.types.TypeReference', 
     'xp.compiler.types.TypeReflection', 
-    'xp.compiler.types.TypeDeclaration'
+    'xp.compiler.types.TypeDeclaration',
+    'xp.compiler.types.GenericType'
   );
 
   /**
@@ -215,6 +216,8 @@
         return new TypeReference(new TypeName($resolved->name().'[]'), $resolved->kind());
       } else if (!$name->isClass()) {
         return new TypeReference($name, Types::PRIMITIVE_KIND);
+      } else if ($name->isGeneric()) {
+        return new GenericType($this->resolveType(new TypeName($name->name)), $name->components);
       }
 
       if ($this->declarations) {
