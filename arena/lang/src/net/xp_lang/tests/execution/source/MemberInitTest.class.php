@@ -34,6 +34,24 @@
     }
 
     /**
+     * Test member initialized to an array of ints
+     *
+     */
+    #[@test]
+    public function toNonEmptyArray() {
+      $this->assertEquals(array(1, 2, 3), $this->newInstance('{ public int[] $list= [1, 2, 3]; }')->list);
+    }
+
+    /**
+     * Test member initialized to an array of ints
+     *
+     */
+    #[@test]
+    public function toNonEmptyMap() {
+      $this->assertEquals(array('one' => 'two'), $this->newInstance('{ public [string:string] $map= ["one" : "two"]; }')->map);
+    }
+
+    /**
      * Test member initialized to an empty string
      *
      */
@@ -52,12 +70,57 @@
     }
 
     /**
-     * Test member initialized to an empty string
+     * Test member initialized to 0
+     *
+     */
+    #[@test]
+    public function toZero() {
+      $this->assertEquals(0, $this->newInstance('{ public int $id= 0; }')->id);
+    }
+
+    /**
+     * Test member initialized to 1
+     *
+     */
+    #[@test]
+    public function toOne() {
+      $this->assertEquals(1, $this->newInstance('{ public int $id= 1; }')->id);
+    }
+
+    /**
+     * Test member initialized to -1
+     *
+     */
+    #[@test]
+    public function toNegativeOne() {
+      $this->assertEquals(-1, $this->newInstance('{ public int $id= -1; }')->id);
+    }
+
+    /**
+     * Test member initialized to NULL
      *
      */
     #[@test]
     public function toNull() {
       $this->assertNull($this->newInstance('{ public string $name= null; }')->name);
+    }
+
+    /**
+     * Test member initialized to TRUE
+     *
+     */
+    #[@test]
+    public function toTrue() {
+      $this->assertTrue($this->newInstance('{ public bool $flag= true; }')->flag);
+    }
+
+    /**
+     * Test member initialized to FALSE
+     *
+     */
+    #[@test]
+    public function toFalse() {
+      $this->assertFalse($this->newInstance('{ public bool $flag= false; }')->flag);
     }
   }
 ?>
