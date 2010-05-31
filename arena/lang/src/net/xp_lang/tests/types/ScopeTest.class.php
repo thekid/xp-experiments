@@ -318,6 +318,19 @@
     }
 
     /**
+     * Test resolving a generic type
+     *
+     */
+    #[@test]
+    public function resolveGenericType() {
+      $components= array(new TypeName('string'), new TypeName('lang.Object'));
+      $this->assertEquals(
+        new GenericType(new TypeReflection(XPClass::forName('util.collections.HashTable')), $components),
+        $this->fixture->resolveType(new TypeName('util.collections.HashTable', $components))
+      );
+    }
+
+    /**
      * Test used list
      *
      */
