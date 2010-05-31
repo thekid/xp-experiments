@@ -1721,18 +1721,19 @@
     protected function emitField($op, FieldNode $field) {    
       $static= Modifiers::isStatic($field->modifiers);
       
-      if (!$field->initialization) {
-        $init= NULL;
-      } else if ($field->initialization instanceof Resolveable) {
-        try {
-          $init= $field->initialization->resolve();
-        } catch (IllegalStateException $e) {
-          $this->warn('R100', $e->getMessage(), $field->initialization);
-          $init= NULL;
+      // See whether an initialization is necessary
+      $initializable= FALSE;
+      if ($field->initialization) {
+        if ($field->initialization instanceof Resolveable) {
+          try {
+            $init= $field->initialization->resolve();
+            $initializable= TRUE;
+          } catch (IllegalStateException $e) {
+            $this->warn('R100', $e->getMessage(), $field->initialization);
+          }
+        } else {    // Need to initialize these later
+          $this->inits[0][$static][]= $field;
         }
-      } else {    // Need to initialize these later
-        $init= NULL;
-        $this->inits[0][$static][]= $field;
       }
       
       if (Modifiers::isPublic($field->modifiers)) {
@@ -1746,7 +1747,7 @@
         $op->append('static ');
       }
       $op->append('$'.$field->name);
-      $init && $op->append('= ')->append(var_export($init, TRUE));
+      $initializable && $op->append('= ')->append(var_export($init, TRUE));
       $op->append(';');
 
       // Add field metadata (type, stored in @type annotation, see
