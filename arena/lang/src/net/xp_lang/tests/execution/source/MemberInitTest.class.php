@@ -30,7 +30,7 @@
      */
     #[@test]
     public function toEmptyArray() {
-      $this->assertEquals(array(), $class->newInstance('{ public Object[] $images= []; }')->images);
+      $this->assertEquals(array(), $this->newInstance('{ public Object[] $images= []; }')->images);
     }
 
     /**
@@ -39,7 +39,7 @@
      */
     #[@test]
     public function toNonEmptyString() {
-      $this->assertEquals('Name', $class->newInstance('{ public string $name= "Name"; }')->name);
+      $this->assertEquals('Name', $this->newInstance('{ public string $name= "Name"; }')->name);
     }
 
     /**
@@ -48,7 +48,7 @@
      */
     #[@test]
     public function toEmptyString() {
-      $this->assertEquals('', $class->newInstance('{ public string $name= ""; }')->name);
+      $this->assertEquals('', $this->newInstance('{ public string $name= ""; }')->name);
     }
 
     /**
@@ -57,7 +57,7 @@
      */
     #[@test]
     public function toNull() {
-      $this->assertNull($class->newInstance('{ public string $name= null; }')->name);
+      $this->assertNull($this->newInstance('{ public string $name= null; }')->name);
     }
   }
 ?>
