@@ -122,5 +122,14 @@
     public function toFalse() {
       $this->assertFalse($this->newInstance('{ public bool $flag= false; }')->flag);
     }
+
+    /**
+     * Test member initialized to new T()
+     *
+     */
+    #[@test]
+    public function toNewInstance() {
+      $this->assertInstanceOf('util.Date', $this->newInstance('{ public util.Date $now= new util.Date(); }')->now);
+    }
   }
 ?>
