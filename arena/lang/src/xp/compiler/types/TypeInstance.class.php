@@ -225,5 +225,14 @@
     public function getIndexer() {
       return $this->declaration->getIndexer();
     }
+
+    /**
+     * Returns a lookup map of generic placeholders
+     *
+     * @return  [string:int]
+     */
+    public function genericPlaceholders() {
+      return $this->declaration->genericPlaceholders();
+    }
   }
 ?>

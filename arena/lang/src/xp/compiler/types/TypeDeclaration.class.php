@@ -302,6 +302,15 @@
     }
 
     /**
+     * Returns a lookup map of generic placeholders
+     *
+     * @return  [string:int]
+     */
+    public function genericPlaceholders() {
+      return array();
+    }
+    
+    /**
      * Creates a string representation of this object
      *
      * @return  string

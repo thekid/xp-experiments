@@ -278,6 +278,19 @@
     }
 
     /**
+     * Returns a lookup map of generic placeholders
+     *
+     * @return  [string:int]
+     */
+    public function genericPlaceholders() {
+      $lookup= array();
+      foreach ($this->class->genericComponents() as $i => $name) {
+        $lookup[$name]= $i;
+      }
+      return $lookup;
+    }
+
+    /**
      * Creates a string representation of this object
      *
      * @return  string
@@ -295,5 +308,6 @@
     public function equals($cmp) {
       return $cmp instanceof self && $this->class->equals($cmp->class);
     }
+
   }
 ?>

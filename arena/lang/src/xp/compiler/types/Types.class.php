@@ -153,5 +153,12 @@
      * @return  xp.compiler.types.Indexer
      */
     public abstract function getIndexer();
+    
+    /**
+     * Returns a lookup map of generic placeholders
+     *
+     * @return  [string:int]
+     */
+    public abstract function genericPlaceholders();
   }
 ?>
