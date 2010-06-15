@@ -6,7 +6,10 @@
 
   $package= 'net.xp_lang.tests.execution.source';
 
-  uses('net.xp_lang.tests.execution.source.ExecutionTest');
+  uses(
+    'net.xp_lang.tests.execution.source.ExecutionTest',
+    'net.xp_lang.tests.execution.source.Filter'
+  );
 
   /**
    * Tests class instance creation
@@ -110,6 +113,33 @@
         }
       };');
       $this->assertAnonymousInstanceOf('util.cmd.Command', $command);
+    }
+
+    /**
+     * Test creating a new anonymous instance from an generic interface
+     *
+     * @see   xp://net.xp_lang.tests.execution.source.Filter
+     */
+    #[@test]
+    public function anonymousGenericInterfaceInstance() {
+      $f= $this->run('return new net.xp_lang.tests.execution.source.Filter<string>() {
+        public bool accept(string $e) {
+          return "Test" === $e;
+        }
+      };');
+      $this->assertAnonymousInstanceOf('net.xp_lang.tests.execution.source.Filter', $f);
+      $this->assertTrue(
+        $f->getClass()->isGeneric(), 
+        'generic'
+      );
+      $this->assertEquals(
+        XPClass::forName('net.xp_lang.tests.execution.source.Filter'), 
+        $f->getClass()->genericDefinition()
+      );
+      $this->assertEquals(
+        array(Primitive::$STRING), 
+        $f->getClass()->genericArguments()
+      );
     }
   }
 ?>

@@ -115,6 +115,7 @@
       );
       xp::gc();
 
+      // DEBUG $r->writeTo(Console::$out->getStream());
       $r->executeWith(array());
       return XPClass::forName($r->type()->name());
     }

@@ -1128,10 +1128,22 @@
       //
       // Do not register type name from new(), it will be added by 
       // emitClass() during declaration emittance.
+      $generic= NULL;
       if (isset($new->body)) {
         $parent= $this->resolveType($new->type, $this, FALSE);
         if (Types::INTERFACE_KIND === $parent->kind()) {
           $p= array('parent' => new TypeName('lang.Object'), 'implements' => array($new->type));
+          
+          // If the interface we implement is generic, we need to
+          // make the generated class a generic instance.
+          if ($new->type->components) {
+            $components= array();
+            foreach ($new->type->components as $component) {
+              $components[]= $this->resolveType($component, $this, FALSE)->name();
+            }
+            $generic= array($parent->name(), NULL, $components);
+          }
+          
         } else if (Types::ENUM_KIND === $parent->kind()) {
           $this->error('C405', 'Cannot create anonymous enums', $new);
           return;
@@ -1142,6 +1154,7 @@
         $unique= new TypeName($parent->literal().'··'.uniqid());
         $decl= new ClassNode(0, NULL, $unique, $p['parent'], $p['implements'], $new->body);
         $decl->synthetic= TRUE;
+        $generic && $decl->generic= $generic;
         $ptr= new TypeDeclaration(new ParseTree(NULL, array(), $decl), $parent);
         $this->scope[0]->declarations[]= $decl;
         $this->scope[0]->setType($new, $unique);
@@ -1154,7 +1167,7 @@
       // If generic instance is created, use the create(spec, args*)
       // core functionality. If this a compiled generic type we may
       // do quite a bit better - but how do we detect this?
-      if ($new->type->components) {
+      if ($new->type->components && !$generic) {
         $op->append('create(\'new '.$ptr->name().'<');
         $s= sizeof($new->type->components)- 1;
         foreach ($new->type->components as $i => $component) {
@@ -2050,7 +2063,13 @@
         DETAIL_ANNOTATIONS => array_merge($meta, $this->annotationsAsMetadata((array)$declaration->annotations))
       );
 
-      $this->leave();      
+      // Generic instances have {definition-type, null, [argument-type[0..n]]} 
+      // stored  as type names in their details
+      if (isset($declaration->generic)) {
+        $this->metadata[0]['class'][DETAIL_GENERIC]= $declaration->generic;
+      }
+
+      $this->leave();
       $this->registerClass($op, $declaration->literal, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
       array_shift($this->properties);
       array_shift($this->metadata);
