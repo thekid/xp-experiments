@@ -60,5 +60,18 @@
       );
       $this->assertEquals("Hello\n", $this->stream->getBytes());
     }
+
+    /**
+     * Test peer.http.HttpConstants.*;
+     *
+     */
+    #[@test]
+    public function importConst() {
+      $this->run(
+        'util.cmd.Console::writeLine(STATUS_OK);', 
+        array('import static peer.http.HttpConstants.*;')
+      );
+      $this->assertEquals("200\n", $this->stream->getBytes());
+    }
   }
 ?>

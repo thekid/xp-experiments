@@ -270,6 +270,39 @@
     }
 
     /**
+     * Returns a constant by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasConstant($name) {
+      foreach ($this->tree->declaration->body as $member) {
+        if ($member instanceof ClassConstantNode && $member->name === $name) return TRUE;
+      }
+      return $this->parent ? $this->parent->hasConstant($name) : FALSE;
+    }
+    
+    /**
+     * Returns a constant by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.types.Constant
+     */
+    public function getConstant($name) {
+      foreach ($this->tree->declaration->body as $member) {
+        if ($member instanceof ClassConstantNode && $member->name === $name) {
+          $c= new xp·compiler·types·Constant();
+          $c->name= $member->name;
+          $c->type= $member->type;
+          $c->value= $member->value;
+          $c->holder= $this;
+          return $c;
+        }
+      }
+      return $this->parent ? $this->parent->hasProperty($name) : FALSE;
+    }
+
+    /**
      * Returns whether this class has an indexer
      *
      * @return  bool

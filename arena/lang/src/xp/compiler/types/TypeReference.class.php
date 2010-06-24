@@ -214,6 +214,26 @@
     }
 
     /**
+     * Returns a constant by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasConstant($name) {
+      return FALSE;
+    }
+    
+    /**
+     * Returns a constant by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.types.Constant
+     */
+    public function getConstant($name) {
+      return NULL;
+    }
+
+    /**
      * Returns a lookup map of generic placeholders
      *
      * @return  [string:int]

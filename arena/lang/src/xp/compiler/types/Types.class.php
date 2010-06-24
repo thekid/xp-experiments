@@ -9,6 +9,7 @@
     'xp.compiler.types.Constructor', 
     'xp.compiler.types.Field',
     'xp.compiler.types.Property',
+    'xp.compiler.types.Constant',
     'xp.compiler.types.Indexer'
   );
 
@@ -139,6 +140,22 @@
      * @return  xp.compiler.types.Property
      */
     public abstract function getProperty($name);
+
+    /**
+     * Returns a constant by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public abstract function hasConstant($name);
+    
+    /**
+     * Returns a constant by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.types.Constant
+     */
+    public abstract function getConstant($name);
 
     /**
      * Returns whether this class has an indexer

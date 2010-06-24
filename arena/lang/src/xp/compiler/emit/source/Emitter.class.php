@@ -253,6 +253,11 @@
      * @param   xp.compiler.ast.ConstantNode const
      */
     protected function emitConstant($op, ConstantNode $const) {
+      if ($constant= $this->scope[0]->resolveConstant($const->value)) {
+        $op->append(var_export($constant->value, TRUE));
+        return;
+      }
+
       try {
         $op->append(var_export($const->resolve(), TRUE));
       } catch (IllegalStateException $e) {

@@ -249,6 +249,35 @@
     }
 
     /**
+     * Returns a constant by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasConstant($name) {
+      return $this->class->hasConstant($name);
+    }
+    
+    /**
+     * Returns a constant by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.types.Constant
+     */
+    public function getConstant($name) {
+      if (!$this->class->hasConstant($name)) return NULL;
+        
+      with ($constant= $this->class->getConstant($name)); {
+        $c= new xp·compiler·types·Constant();
+        $c->name= $name;
+        $c->type= TypeName::$VAR;
+        $c->value= $constant;
+        $c->holder= $this;
+        return $c;
+      }
+    }
+
+    /**
      * Returns whether this class has an indexer
      *
      * @return  bool

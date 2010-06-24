@@ -202,6 +202,23 @@
     }
 
     /**
+     * Resolve a static call. Return TRUE if the target is a function
+     * (e.g. key()), a xp.compiler.types.Constant instance if it's a static 
+     * method (HttpConstants::STATUS_OK).
+     *
+     * @param   string name
+     * @return  xp.compiler.types.Constant
+     */
+    public function resolveConstant($name) {
+      foreach ($this->statics[0] as $lookup => $type) {
+        if ($type instanceof Types && $type->hasConstant($name)) {
+          return $type->getConstant($name);
+        }
+      }
+      return NULL;
+    }
+
+    /**
      * Resolve a type name
      *
      * @param   xp.compiler.types.TypeName name

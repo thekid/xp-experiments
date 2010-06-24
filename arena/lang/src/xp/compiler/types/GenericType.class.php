@@ -220,6 +220,26 @@
     }
 
     /**
+     * Returns a constant by a given name
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasConstant($name) {
+      return $this->definition->hasConstant($name);
+    }
+    
+    /**
+     * Returns a constant by a given name
+     *
+     * @param   string name
+     * @return  xp.compiler.types.Constant
+     */
+    public function getConstant($name) {
+      return $this->definition->getConstant($name);
+    }
+
+    /**
      * Returns whether this class has an indexer
      *
      * @return  bool
