@@ -140,5 +140,14 @@
     public function getResourceAsStream($string) {
       raise('lang.lang.ElementNotFoundException', 'Cannot find resource '.$string);
     }
+    
+    /**
+     * Creates a string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<@classpath>';
+    }
   }
 ?>
