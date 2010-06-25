@@ -170,6 +170,7 @@
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.TypeHasDocumentation')->newInstance(), FALSE);
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.TypeMemberHasDocumentation')->newInstance(), FALSE);
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.ConstantsAreDiscouraged')->newInstance(), FALSE);
+      $emitter->addCheck(XPClass::forName('xp.compiler.checks.UninitializedVariables')->newInstance(), FALSE);
       
       // Compile files
       $success= $compiler->compile($files, $listener, $manager, $emitter);
