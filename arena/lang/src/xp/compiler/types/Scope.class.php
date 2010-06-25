@@ -338,6 +338,16 @@
     public function setType(xp·compiler·ast·Node $node, TypeName $type) {
       $this->types->put($node, $type);
     }
+
+    /**
+     * Get type
+     *
+     * @param   xp.compiler.ast.Node node
+     * @return  xp.compiler.types.TypeName type or NULL
+     */
+    public function getType(xp·compiler·ast·Node $node) {
+      return $this->types->get($node);
+    }
     
     /**
      * Return a type for a given node

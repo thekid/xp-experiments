@@ -1242,6 +1242,10 @@
         }
       }
       
+      // First set type to void, emit assignment, then overwrite type with
+      // right-hand-side's type. This is done in order to guard for checks
+      // on uninitialized variables, which is OK during assignment.
+      $this->scope[0]->setType($assign->variable, TypeName::$VOID);
       $this->emitOne($op, $assign->variable);
       $op->append($ops[$assign->op]);
       $this->emitOne($op, $assign->expression);
