@@ -69,6 +69,16 @@
     }
 
     /**
+     * Checks whether a given type instance is a subclass of this class.
+     *
+     * @param   xp.compiler.types.Types
+     * @return  bool
+     */
+    public function isSubclassOf(Types $t) {
+      return $this->class->isSubclassOf($t->name());
+    }
+
+    /**
      * Returns whether this type is enumerable (that is: usable in foreach)
      *
      * @see     php://language.oop5.iterations
@@ -357,16 +367,6 @@
      */    
     public function toString() {
       return $this->getClassName().'@('.$this->class->toString().')';
-    }
-    
-    /**
-     * Test this type reflection for equality with another object
-     *
-     * @param   lang.Generic cmp
-     * @return  bool
-     */
-    public function equals($cmp) {
-      return $cmp instanceof self && $this->class->equals($cmp->class);
     }
   }
 ?>

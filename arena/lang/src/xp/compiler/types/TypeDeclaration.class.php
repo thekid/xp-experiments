@@ -81,6 +81,16 @@
     }
 
     /**
+     * Checks whether a given type instance is a subclass of this class.
+     *
+     * @param   xp.compiler.types.Types
+     * @return  bool
+     */
+    public function isSubclassOf(Types $t) {
+      return $this->parent ? $this->parent->equals($t) || $this->parent->isSubclassOf($t): FALSE;
+    }
+
+    /**
      * Returns whether this type is enumerable (that is: usable in foreach)
      *
      * @return  bool

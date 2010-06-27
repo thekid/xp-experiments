@@ -58,6 +58,14 @@
     public abstract function kind();
 
     /**
+     * Checks whether a given type instance is a subclass of this class.
+     *
+     * @param   xp.compiler.types.Types
+     * @return  bool
+     */
+    public abstract function isSubclassOf(Types $t);
+
+    /**
      * Returns whether this type is enumerable (that is: usable in foreach)
      *
      * @return  bool
@@ -186,5 +194,15 @@
      * @return  [string:int]
      */
     public abstract function genericPlaceholders();
+
+    /**
+     * Test this type for equality with another object
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof Types && $this->name() === $cmp->name();
+    }
   }
 ?>

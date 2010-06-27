@@ -6,7 +6,14 @@
 
   uses(
     'unittest.TestCase',
-    'xp.compiler.types.TypeDeclaration'
+    'xp.compiler.types.TypeDeclaration',
+    'xp.compiler.ast.ClassConstantNode',
+    'xp.compiler.ast.FieldNode',
+    'xp.compiler.ast.MethodNode',
+    'xp.compiler.ast.ConstructorNode',
+    'xp.compiler.ast.IndexerNode',
+    'xp.compiler.ast.PropertyNode',
+    'xp.compiler.ast.StringNode'
   );
 
   /**
@@ -300,6 +307,36 @@
       $const= $this->stringClass()->getConstant('ENCODING');
       $this->assertEquals(new TypeName('string'), $const->type);
       $this->assertEquals('utf-8', $const->value);
+    }
+
+    /**
+     * Test isSubclassOf() method
+     *
+     */
+    #[@test]
+    public function stringClassSubclassOfObject() {
+      $decl= $this->stringClass();
+      $this->assertTrue($decl->isSubclassOf($this->objectClass()));
+    }
+
+    /**
+     * Test isSubclassOf() method
+     *
+     */
+    #[@test]
+    public function extendedStringClassSubclassOfObject() {
+      $decl= new TypeDeclaration(
+        new ParseTree(new TypeName('lang.types'), array(), new ClassNode(
+          MODIFIER_PUBLIC, 
+          NULL,
+          new TypeName('ExtendedString'),
+          new TypeName('lang.types.String'),
+          NULL,
+          array()
+        )),
+        $this->stringClass()
+      );
+      $this->assertTrue($decl->isSubclassOf($this->objectClass()));
     }
   }
 ?>

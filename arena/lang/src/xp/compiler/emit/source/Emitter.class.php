@@ -452,7 +452,17 @@
       // Check for type methods
       if ($type->isClass()) {
         if ($ptr->hasMethod($access->name)) {
-          $result= $ptr->getMethod($access->name)->returns;
+          $method= $ptr->getMethod($access->name);
+          if (!($method->modifiers & MODIFIER_PUBLIC)) {
+            $enclosing= $this->resolveType($this->scope[0]->declarations[0]->name);
+            if (
+              ($method->modifiers & MODIFIER_PRIVATE && !$enclosing->equals($ptr)) ||
+              ($method->modifiers & MODIFIER_PROTECTED && !($enclosing->equals($ptr) || $enclosing->isSubclassOf($ptr)))
+            ) {
+              $this->warn('T403', 'Invoking non-public '.$method->holder->name().'::'.$access->name.'() from '.$enclosing->name(), $access);
+            }
+          }
+          $result= $method->returns;
         } else {
           $this->warn('T201', 'No such method '.$access->name.'() in '.$type->compoundName(), $access);
         }

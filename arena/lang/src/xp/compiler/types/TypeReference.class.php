@@ -64,6 +64,16 @@
     }
 
     /**
+     * Checks whether a given type instance is a subclass of this class.
+     *
+     * @param   xp.compiler.types.Types
+     * @return  bool
+     */
+    public function isSubclassOf(Types $t) {
+      return FALSE;
+    }
+
+    /**
      * Returns whether this type is enumerable (that is: usable in foreach)
      *
      * @return  bool
@@ -283,16 +293,6 @@
         self::PARTIAL_KIND      => 'PARTIAL'
       );
       return $this->getClassName().'<'.$kinds[$this->kind].'>@(*->'.$this->type->toString().')';
-    }
-    
-    /**
-     * Returns whether anither object is equal to this
-     *
-     * @param   lang.Generic cmp
-     * @return  bool
-     */
-    public function equals($cmp) {
-      return $cmp instanceof self && $cmp->type->equals($this->type);
     }
   }
 ?>

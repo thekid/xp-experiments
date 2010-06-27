@@ -92,6 +92,16 @@
     }
 
     /**
+     * Checks whether a given type instance is a subclass of this class.
+     *
+     * @param   xp.compiler.types.Types
+     * @return  bool
+     */
+    public function isSubclassOf(Types $t) {
+      return $this->definition->isSubclassOf($t);
+    }
+
+    /**
      * Returns whether this type is enumerable (that is: usable in foreach)
      *
      * @return  bool
@@ -281,22 +291,6 @@
       return array();
     }
     
-    /**
-     * Returns whether an instance equals this
-     *
-     * @param   lang.Generic cmp
-     * @return  bool
-     */
-    public function equals($cmp) {
-      if (!($cmp instanceof self)) return FALSE;
-      if (!$this->definition->equals($cmp->definition)) return FALSE;
-      if (sizeof($this->components) != sizeof($cmp->components)) return FALSE;
-      foreach ($this->components as $i => $component) {
-        if (!$component->equals($cmp->components[$i])) return FALSE;
-      }
-      return TRUE;
-    }
-
     /**
      * Creates a string representation of this object
      *
