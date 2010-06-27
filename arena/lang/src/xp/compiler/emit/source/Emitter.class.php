@@ -1792,6 +1792,7 @@
           $this->inits[0][$static][]= $field;
         }
       }
+
       
       if (Modifiers::isPublic($field->modifiers)) {
         $op->append('public ');
@@ -2057,10 +2058,9 @@
       }
       $this->emitProperties($op, $this->properties[0]);
       
+      // Generate a constructor if initializations are available.
+      // They will have already been emitted if a constructor exists!
       if ($this->inits[0][FALSE]) {
-
-        // Generate a constructor if initializations are available.
-        // They will have already been emitted if a constructor exists!
         if ($parentType->hasConstructor()) {
           $arguments= array();
           $parameters= array();
@@ -2081,10 +2081,11 @@
           'comment'      => '(Generated)',
           'position'     => $declaration->position
         )));
-      } else if ($this->inits[0][TRUE]) {
+      }
 
-        // Generate a static initializer if initializations are available.
-        // They will have already been emitted if a static initializer exists!
+      // Generate a static initializer if initializations are available.
+      // They will have already been emitted if a static initializer exists!
+      if ($this->inits[0][TRUE]) {
         $this->emitOne($op, new StaticInitializerNode(NULL));
       }
       

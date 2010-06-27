@@ -131,5 +131,17 @@
     public function toNewInstance() {
       $this->assertInstanceOf('util.Date', $this->newInstance('{ public util.Date $now= new util.Date(); }')->now);
     }
+
+    /**
+     * Test complex example also found in demo package
+     *
+     */
+    #[@test]
+    public function complexExample() {
+      $this->assertEquals(array(1, 2, 3), $this->newInstance('{ 
+        public static XPClass $arrayClass= lang.types.ArrayList::class;  
+        public int[] $elements= self::$arrayClass.newInstance(1, 2, 3).values;
+      }')->elements);
+    }
   }
 ?>
