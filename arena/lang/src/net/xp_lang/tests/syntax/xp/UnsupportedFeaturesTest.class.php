@@ -185,5 +185,25 @@
     public function hashComment() {
       $this->parse('# $a= 1;');
     }
+
+    /**
+     * Test heredoc is not supported
+     *
+     * @see   php://heredoc
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function hereDoc() {
+      $this->parse("\$s= <<<EOS\nHello\nEOS;");
+    }
+
+    /**
+     * Test nowdoc is not supported
+     *
+     * @see   php://nowdoc
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function nowDoc() {
+      $this->parse("\$s= <<<'EOS'\nHello\nEOS;");
+    }
   }
 ?>
