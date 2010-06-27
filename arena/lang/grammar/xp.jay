@@ -697,21 +697,21 @@ staticmember:
 expression:
     T_VARIABLE { $1= $yyLex->create(new VariableNode($1)); } chain_opt {
       if ($3) {
-        $$= $3['node'];
-        $3['target']->target= $1;
+        $$= $3[0];
+        $3[1]->target= $1;
       }
     }
   | literal chain_opt {
       if ($2) {
-        $$= $2['node'];
-        $2['target']->target= $1;
+        $$= $2[0];
+        $2[1]->target= $1;
       }
     }
   | T_NEW { $p= $yyLex->position; } instancecreation chain_opt { 
       $3->position= $p;
       if ($4) {
-        $$= $4['node'];
-        $4['target']->target= $3;
+        $$= $4[0];
+        $4[1]->target= $3;
       } else {
         $$= $3;
       }
@@ -719,8 +719,8 @@ expression:
   | qualifiedname T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode(new TypeName($1))); } staticmember chain_opt {
       $2->member= $4;
       if ($5) {
-        $$= $5['node'];
-        $5['target']->target= $2;
+        $$= $5[0];
+        $5[1]->target= $2;
       } else {
         $$= $2;
       }
@@ -728,8 +728,8 @@ expression:
   | T_WORD '(' { $2= $yyLex->create(new InvocationNode($1)); } expressionlist_opt ')' chain_opt { 
       $2->arguments= $4;
       if ($6) {
-        $$= $6['node'];
-        $6['target']->target= $2;
+        $$= $6[0];
+        $6[1]->target= $2;
       } else {
         $$= $2;
       }
@@ -784,8 +784,8 @@ expression:
     }
   | '(' expression ')' chain_opt { 
       if ($4) {
-        $$= $4['node'];
-        $4['target']->target= new BracedExpressionNode($2);
+        $$= $4[0];
+        $4[1]->target= new BracedExpressionNode($2);
       } else {
         $$= new BracedExpressionNode($2); 
       }
@@ -919,8 +919,8 @@ chain_opt:
 ;
 
 chained:
-    chain { $$= array('node' => $1, 'target' => $1); }
-  | chain chained { $2['target']->target= $1; $$= array('node' => $2['node'], 'target' => $1); }
+    chain { $$= array($1, $1); }
+  | chain chained { $2[1]->target= $1; $$= array($2[0], $1); }
 ;
 
 chain:

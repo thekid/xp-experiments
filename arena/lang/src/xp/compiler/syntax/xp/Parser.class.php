@@ -2220,16 +2220,16 @@
     case 169:  #line 698 "grammar/xp.jay"
     {
       if ($yyVals[0+$yyTop]) {
-        $yyVal= $yyVals[0+$yyTop]['node'];
-        $yyVals[0+$yyTop]['target']->target= $yyVals[-2+$yyTop];
+        $yyVal= $yyVals[0+$yyTop][0];
+        $yyVals[0+$yyTop][1]->target= $yyVals[-2+$yyTop];
       }
     } break;
 
     case 170:  #line 704 "grammar/xp.jay"
     {
       if ($yyVals[0+$yyTop]) {
-        $yyVal= $yyVals[0+$yyTop]['node'];
-        $yyVals[0+$yyTop]['target']->target= $yyVals[-1+$yyTop];
+        $yyVal= $yyVals[0+$yyTop][0];
+        $yyVals[0+$yyTop][1]->target= $yyVals[-1+$yyTop];
       }
     } break;
 
@@ -2240,8 +2240,8 @@
     { 
       $yyVals[-1+$yyTop]->position= $p;
       if ($yyVals[0+$yyTop]) {
-        $yyVal= $yyVals[0+$yyTop]['node'];
-        $yyVals[0+$yyTop]['target']->target= $yyVals[-1+$yyTop];
+        $yyVal= $yyVals[0+$yyTop][0];
+        $yyVals[0+$yyTop][1]->target= $yyVals[-1+$yyTop];
       } else {
         $yyVal= $yyVals[-1+$yyTop];
       }
@@ -2254,8 +2254,8 @@
     {
       $yyVals[-3+$yyTop]->member= $yyVals[-1+$yyTop];
       if ($yyVals[0+$yyTop]) {
-        $yyVal= $yyVals[0+$yyTop]['node'];
-        $yyVals[0+$yyTop]['target']->target= $yyVals[-3+$yyTop];
+        $yyVal= $yyVals[0+$yyTop][0];
+        $yyVals[0+$yyTop][1]->target= $yyVals[-3+$yyTop];
       } else {
         $yyVal= $yyVals[-3+$yyTop];
       }
@@ -2268,8 +2268,8 @@
     { 
       $yyVals[-4+$yyTop]->arguments= $yyVals[-2+$yyTop];
       if ($yyVals[0+$yyTop]) {
-        $yyVal= $yyVals[0+$yyTop]['node'];
-        $yyVals[0+$yyTop]['target']->target= $yyVals[-4+$yyTop];
+        $yyVal= $yyVals[0+$yyTop][0];
+        $yyVals[0+$yyTop][1]->target= $yyVals[-4+$yyTop];
       } else {
         $yyVal= $yyVals[-4+$yyTop];
       }
@@ -2350,8 +2350,8 @@
     case 189:  #line 785 "grammar/xp.jay"
     { 
       if ($yyVals[0+$yyTop]) {
-        $yyVal= $yyVals[0+$yyTop]['node'];
-        $yyVals[0+$yyTop]['target']->target= new BracedExpressionNode($yyVals[-2+$yyTop]);
+        $yyVal= $yyVals[0+$yyTop][0];
+        $yyVals[0+$yyTop][1]->target= new BracedExpressionNode($yyVals[-2+$yyTop]);
       } else {
         $yyVal= new BracedExpressionNode($yyVals[-2+$yyTop]); 
       }
@@ -2554,10 +2554,10 @@
     { $yyVal= NULL; } break;
 
     case 255:  #line 922 "grammar/xp.jay"
-    { $yyVal= array('node' => $yyVals[0+$yyTop], 'target' => $yyVals[0+$yyTop]); } break;
+    { $yyVal= array($yyVals[0+$yyTop], $yyVals[0+$yyTop]); } break;
 
     case 256:  #line 923 "grammar/xp.jay"
-    { $yyVals[0+$yyTop]['target']->target= $yyVals[-1+$yyTop]; $yyVal= array('node' => $yyVals[0+$yyTop]['node'], 'target' => $yyVals[-1+$yyTop]); } break;
+    { $yyVals[0+$yyTop][1]->target= $yyVals[-1+$yyTop]; $yyVal= array($yyVals[0+$yyTop][0], $yyVals[-1+$yyTop]); } break;
 
     case 257:  #line 927 "grammar/xp.jay"
     { $yyVals[0+$yyTop]= $yyLex->create(new ArrayAccessNode(NULL)); } break;
