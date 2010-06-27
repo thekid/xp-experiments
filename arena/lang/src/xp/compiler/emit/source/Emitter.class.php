@@ -380,7 +380,8 @@
         $op->append(', ');
         $this->emitInvocationArguments($op, (array)$call->arguments);
         $op->append(')');
-        return $ext->returns;
+        $this->scope[0]->setType($call, $result);
+        return;
       }
 
       // Check for type methods
