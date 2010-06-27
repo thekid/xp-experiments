@@ -44,6 +44,16 @@
     }
 
     /**
+     * Test declare is not supported
+     *
+     * @see   php://declare
+     */
+    #[@test, @expects('lang.FormatException')]
+    public function declareStatement() {
+      $this->parse('declare(ticks=1) { }');
+    }
+
+    /**
      * Test functions are not supported
      *
      * @see   php://language.functions
