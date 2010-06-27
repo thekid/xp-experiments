@@ -762,8 +762,12 @@
       $op->append('foreach (');
       $this->emitOne($op, $loop->expression);
       
-      // Assign type. TODO: Depending on what the expression returns, this might
-      // be something different!
+      // Assign key and value types:
+      // * Arrays:      int => $component
+      // * Maps:        $components[key] => $components[value]
+      // * Var:         int => var
+      // * Enumerable:  $components[0] => var
+      // * Any other:   int => var (+ WARNING)
       $t= $this->scope[0]->typeOf($loop->expression);
       if ($t->isArray()) {
         $it= $t->arrayComponentType();
@@ -774,7 +778,7 @@
         $it= TypeName::$VAR;
         $kt= new TypeName('int');
       } else if ($this->resolveType($t)->isEnumerable()) {
-        $it= isset($t->components[0]) ? $t->components[0] : TypeName::$VAR;;
+        $it= isset($t->components[0]) ? $t->components[0] : TypeName::$VAR;
         $kt= new TypeName('int');
       } else {
         $this->warn('T300', 'Illegal type '.$t->toString().' for loop expression '.$loop->expression->getClassName().'['.$loop->expression->hashCode().']', $loop);
