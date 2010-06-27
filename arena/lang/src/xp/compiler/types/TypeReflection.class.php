@@ -71,6 +71,7 @@
     /**
      * Returns whether this type is enumerable (that is: usable in foreach)
      *
+     * @see     php://language.oop5.iterations
      * @return  bool
      */
     public function isEnumerable() {
