@@ -6,7 +6,8 @@
 
   uses(
     'xp.compiler.ast.Visitor',
-    'xp.compiler.ast.VariableNode'
+    'xp.compiler.ast.VariableNode',
+    'xp.compiler.ast.MemberAccessNode'
   );
 
   /**
@@ -33,7 +34,7 @@
     protected function visitVariable(VariableNode $node) {
       $n= $node->name;
       if (!isset($this->excludes[$n])) {
-        $this->replacements['$'.$n]= $node= new ChainNode(array(self::$THIS, $node));
+        $this->replacements['$'.$n]= $node= new ChainNode(array(self::$THIS, new MemberAccessNode($node->name)));
       }
       return $node;
     }
@@ -44,9 +45,9 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitChain(ChainNode $node) {
-      if (self::$THIS->equals($node->elements[0]) && $node->elements[1] instanceof VariableNode) {
+      if (self::$THIS->equals($node->elements[0]) && $node->elements[1] instanceof MemberAccessNode) {
       
-        // $this->i = Chain(Var(this), Var(i))
+        // $this->i = Chain(Var(this), MemberAccessNode(i))
         $shift= array(array_shift($node->elements), array_shift($node->elements));
         $node->elements= array_merge($shift, $this->visitAll((array)$node->elements));
         return $node;

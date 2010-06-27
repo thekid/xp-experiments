@@ -33,6 +33,8 @@
     'xp.compiler.ast.WhileNode',
     'xp.compiler.ast.AssignmentNode',
     'xp.compiler.ast.InvocationNode',
+    'xp.compiler.ast.MethodCallNode',
+    'xp.compiler.ast.MemberAccessNode',
     'xp.compiler.ast.ConstantNode',
     'xp.compiler.ast.IntegerNode',
     'xp.compiler.ast.HexNode',
@@ -931,9 +933,9 @@ chain:
       $1->offset= $3;
     }
   | '.' member {
-      $$= $yyLex->create(new VariableNode($2)); 
+      $$= $yyLex->create(new MemberAccessNode($2)); 
     }
-  | '.' member '(' { $1= $yyLex->create(new InvocationNode($2)); } expressionlist_opt ')' { 
+  | '.' member '(' { $1= $yyLex->create(new MethodCallNode($2)); } expressionlist_opt ')' { 
       $1->arguments= $5;
     }
 ;

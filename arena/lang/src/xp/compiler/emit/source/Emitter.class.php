@@ -383,11 +383,11 @@
      * Emit a member access. Helper to emitChain()
      *
      * @param   resource op
-     * @param   xp.compiler.ast.VariableNode access
+     * @param   xp.compiler.ast.MemberAccessNode access
      * @param   xp.compiler.types.TypeName type
      * @return  xp.compiler.types.TypeName resulting type
      */
-    protected function emitMemberAccess($op, VariableNode $access, TypeName $type) {
+    protected function emitMemberAccess($op, MemberAccessNode $access, TypeName $type) {
       $result= TypeName::$VAR;
       if ($type->isClass()) {
         $ptr= new TypeInstance($this->resolveType($type));
@@ -431,11 +431,11 @@
      * Emit a member call. Helper to emitChain()
      *
      * @param   resource op
-     * @param   xp.compiler.ast.InvocationNode access
+     * @param   xp.compiler.ast.MethodCallNode access
      * @param   xp.compiler.types.TypeName type
      * @return  xp.compiler.types.TypeName resulting type
      */
-    protected function emitMemberCall($op, InvocationNode $access, TypeName $type) {
+    protected function emitMemberCall($op, MethodCallNode $access, TypeName $type) {
       $result= TypeName::$VAR;
       $ptr= new TypeInstance($this->resolveType($type));
       
@@ -501,7 +501,7 @@
       $insertion= array();
       for ($i= 0; $i < $s; $i++) {
         if ($i < $s- 1 && $chain->elements[$i+ 1] instanceof ArrayAccessNode && (
-          $chain->elements[$i] instanceof InvocationNode ||
+          $chain->elements[$i] instanceof MethodCallNode ||
           $chain->elements[$i] instanceof InstanceCreationNode ||
           ($chain->elements[$i] instanceof ClassMemberNode && $chain->elements[$i]->member instanceof InvocationNode) ||
           $chain->elements[$i] instanceof ArrayNode
@@ -543,13 +543,13 @@
           $c->hashCode()
         );
         
-        if ($c instanceof VariableNode) {
+        if ($c instanceof MemberAccessNode) {
           $t= $this->emitMemberAccess($op, $c, $t);
         } else if ($c instanceof DynamicVariableReferenceNode) {
           $t= $this->emitDynamicMemberAccess($op, $c, $t);
         } else if ($c instanceof ArrayAccessNode) {
           $t= $this->emitArrayAccess($op, $c, $t);
-        } else if ($c instanceof InvocationNode) {
+        } else if ($c instanceof MethodCallNode) {
           $t= $this->emitMemberCall($op, $c, $t);
         } else if ($c instanceof NoopNode && $t->isArray()) {
 
@@ -1583,7 +1583,7 @@
         if ($this->inits[0][FALSE]) {
           foreach ($this->inits[0][FALSE] as $field) {
             $this->emitOne($op, new AssignmentNode(array(
-              'variable'   => new ChainNode(array(new VariableNode('this'), new VariableNode($field->name))),
+              'variable'   => new ChainNode(array(new VariableNode('this'), new MemberAccessNode($field->name))),
               'expression' => $field->initialization,
               'op'         => '=',
             )));

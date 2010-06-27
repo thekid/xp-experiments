@@ -37,7 +37,7 @@
      * @return  xp.compiler.ast.ChainNode
      */
     protected function memberNode($name) {
-      return new ChainNode(array(new VariableNode('this'), new VariableNode($name)));
+      return new ChainNode(array(new VariableNode('this'), new MemberAccessNode($name)));
     }
 
     /**

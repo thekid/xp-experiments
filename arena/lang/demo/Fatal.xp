@@ -23,5 +23,7 @@ public class Fatal {
   public static void main(string[] $args) {
     $a= null;
     $a.invoke();
+    
+    new lang.types.String().asIntern('Hello');
   }
 }

@@ -30,7 +30,7 @@
      * @return  bool
      */
     protected function isWriteable($node) {
-      if ($node instanceof VariableNode || $node instanceof ArrayAccessNode) {
+      if ($node instanceof VariableNode || $node instanceof ArrayAccessNode || $node instanceof MemberAccessNode) {
         return TRUE;
       } else if ($node instanceof ClassMemberNode) {
         return $this->isWriteable($node->member);
