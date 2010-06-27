@@ -1656,7 +1656,7 @@
      * @param   xp.compiler.ast.PropertyNode property
      */
     protected function emitProperty($op, PropertyNode $property) {
-      foreach ($property->handlers as $name => $statements) {   
+      foreach ($property->handlers as $name => $statements) {
         $this->properties[0][$name][$property->name]= $statements;
       }
     }    
@@ -1681,13 +1681,19 @@
     protected function emitProperties($op, array $properties) {
       static $mangled= '··name';
       
+      $auto= array();
       if (!empty($properties['get'])) {
         $op->append('function __get($'.$mangled.') {');
         $this->enter(new MethodScope());
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
         foreach ($properties['get'] as $name => $statements) {
           $op->append('if (\''.$name.'\' === $'.$mangled.') {');
-          $this->emitAll($op, (array)$statements);
+          if (NULL === $statements) {
+            $op->append('return $this->__·'.$name.';');
+            $auto[$name]= TRUE;
+          } else {
+            $this->emitAll($op, $statements);
+          }
           $op->append('} else ');
         }
         $op->append('return parent::__get($'.$mangled.'); }');
@@ -1699,12 +1705,20 @@
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
         foreach ($properties['set'] as $name => $statements) {
           $op->append('if (\''.$name.'\' === $'.$mangled.') {');
-          $this->emitAll($op, (array)$statements);
+          if (NULL === $statements) {
+            $op->append('$this->__·'.$name.'= $value;');
+            $auto[$name]= TRUE;
+          } else {
+            $this->emitAll($op, $statements);
+          }
           $op->append('} else ');
         }
         $op->append('parent::__set($'.$mangled.', $value); }');
         $this->leave();
       }
+      
+      // Declare auto-properties as private with NULL as initial value
+      foreach ($auto as $name => $none) $op->append('private $__·'.$name.'= NULL;');
     }
 
     /**

@@ -342,8 +342,7 @@ getsets:
 ;
 
 getset:
-	T_WORD T_VARIABLE { $$= array($1 => $2); }
-  | T_WORD T_WORD '(' ')' { $$= array($1 => $2); }
+    T_WORD ';' { $$= array($1=> NULL); }
   | T_WORD '{' statements_opt '}' { $$= array($1 => $3); }
 ;
 
