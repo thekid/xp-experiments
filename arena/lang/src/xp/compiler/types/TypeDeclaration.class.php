@@ -303,7 +303,7 @@
           $c= new xp·compiler·types·Constant();
           $c->name= $member->name;
           $c->type= $member->type;
-          $c->value= $member->value;
+          $c->value= cast($member->value, 'xp.compiler.ast.Resolveable')->resolve();
           $c->holder= $this;
           return $c;
         }

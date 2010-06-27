@@ -125,6 +125,7 @@
           new TypeName('lang.Object'),
           NULL,
           array(
+            new ClassConstantNode('ENCODING', new TypeName('string'), new StringNode('utf-8')),
             new ConstructorNode(array(
             )),
             new MethodNode(array(
@@ -278,6 +279,26 @@
     public function objectClassDoesNotHaveConstant() {
       $decl= $this->objectClass();
       $this->assertFalse($decl->hasConstant('STATUS_OK'));
+    }
+
+    /**
+     * Test hasConstant() method
+     *
+     */
+    #[@test]
+    public function stringClassHasConstant() {
+      $decl= $this->stringClass();
+      $this->assertTrue($decl->hasConstant('ENCODING'));
+    }
+
+    /**
+     * Test getConstant() method
+     *
+     */
+    #[@test]
+    public function stringClassConstant() {
+      $const= $this->stringClass()->getConstant('ENCODING');
+      $this->assertEquals('utf-8', $const->value);
     }
   }
 ?>
