@@ -1,0 +1,65 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package demo;
+
+import static util.cmd.Console.writeLine;
+import static self.*;
+
+/**
+ * Comma Quibbling
+ *
+ * @see      http://blogs.msdn.com/ericlippert/archive/2009/04/15/comma-quibbling.aspx
+ */
+public class Quibbling {
+
+  /**
+   * Escape a string such that commas, curly braces and the word "and"
+   * are quoted inside double quotes
+   *
+   */
+  static string escape(string $in) {
+    if (',' == $in || '{' == $in || '}' == $in || 'and' == $in) {
+      return '"' ~ $in ~ '"';
+    }
+    return $in;
+  }
+
+  /**
+   * Append to a buffer, escaping if necessary
+   *
+   */
+  static string append(string $in, string $sep, string $out) {
+    if ($in == null) {
+      return $out;
+    } else if ($out == null) {
+      return $in;
+    } else {
+      return $in ~ $sep ~ escape($out);
+    }
+  }
+  
+  /**
+   * Solves quibbling puzzle
+   *
+   */
+  static string quibble(string[] $in) {
+    $s= null;
+    $last= null;
+    foreach ($arg in $in) {
+      $s= append($s, ', ', $last);
+      $last= $arg;
+    }
+    return '{' ~ append($s, ' and ', $last) ~ '}';
+  }
+
+  /**
+   * Entry point method
+   *
+   */
+  public static void main(string[] $args) {
+    writeLine(quibble($args));
+  }
+}
