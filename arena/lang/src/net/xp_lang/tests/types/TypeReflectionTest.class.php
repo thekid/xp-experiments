@@ -149,5 +149,26 @@
       $this->assertEquals(new TypeName('lang.types.Character'), $indexer->type);
       $this->assertEquals(array(new TypeName('int')), $indexer->parameters);
     }
+
+    /**
+     * Test isEnumerable() method
+     *
+     */
+    #[@test]
+    public function objectClassIsNotEnumerable() {
+      $decl= new TypeReflection(XPClass::forName('lang.Object'));
+      $this->assertFalse($decl->isEnumerable());
+    }
+
+    /**
+     * Test getEnumerator() method
+     *
+     */
+    #[@test]
+    public function arrayListClassEnumerator() {
+      $enum= create(new TypeReflection(XPClass::forName('lang.types.ArrayList')))->getEnumerator();
+      $this->assertEquals(new TypeName('int'), $enum->key);
+      $this->assertEquals(new TypeName('var'), $enum->value);
+    }
   }
 ?>

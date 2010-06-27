@@ -55,5 +55,57 @@
       $decl= new TypeReference(new TypeName('unittest.TestCase'));
       $this->assertEquals('TestCase', $decl->literal());
     }
+
+    /**
+     * Test isEnumerable() method
+     *
+     */
+    #[@test]
+    public function intIsNotEnumerable() {
+      $decl= new TypeReference(new TypeName('int'));
+      $this->assertFalse($decl->isEnumerable());
+    }
+
+    /**
+     * Test isEnumerable() method
+     *
+     */
+    #[@test]
+    public function arrayIsEnumerable() {
+      $decl= new TypeReference(new TypeName('int[]'));
+      $this->assertTrue($decl->isEnumerable());
+    }
+
+    /**
+     * Test isEnumerable() method
+     *
+     */
+    #[@test]
+    public function mapIsEnumerable() {
+      $decl= new TypeReference(new TypeName('[int:string]'));
+      $this->assertTrue($decl->isEnumerable());
+    }
+
+    /**
+     * Test getEnumerator() method
+     *
+     */
+    #[@test]
+    public function arrayEnumerator() {
+      $enum= create(new TypeReference(new TypeName('int[]')))->getEnumerator();
+      $this->assertEquals(new TypeName('int'), $enum->key);
+      $this->assertEquals(new TypeName('int'), $enum->value);
+    }
+
+    /**
+     * Test getEnumerator() method
+     *
+     */
+    #[@test]
+    public function mapEnumerator() {
+      $enum= create(new TypeReference(new TypeName('[int:string]')))->getEnumerator();
+      $this->assertEquals(new TypeName('int'), $enum->key);
+      $this->assertEquals(new TypeName('string'), $enum->value);
+    }
   }
 ?>
