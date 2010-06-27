@@ -12,6 +12,8 @@
     'xp.compiler.ast.ClassNode',
     'xp.compiler.ast.MethodNode',
     'xp.compiler.ast.FieldNode',
+    'xp.compiler.ast.PropertyNode',
+    'xp.compiler.ast.ClassConstantNode',
     'xp.compiler.ast.StaticInitializerNode',
     'xp.compiler.ast.EnumMemberNode',
     'xp.compiler.types.CompilationUnitScope'
@@ -128,6 +130,24 @@
      *
      */
     #[@test]
+    public function classWithFieldAndPropertyWithSameName() {
+      $this->assertEquals(
+        array('C409', 'Cannot redeclare Runner::$in'), 
+        $this->fixture->verify(
+          new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Runner'), NULL, array(), array(
+            new FieldNode(array('name' => 'in')),
+            new PropertyNode(array('name' => 'in')),
+          )), 
+          $this->scope
+        )
+      );
+    }
+
+    /**
+     * Test class
+     *
+     */
+    #[@test]
     public function classWithTwoFields() {
       $this->assertNull(
         $this->fixture->verify(
@@ -151,6 +171,24 @@
           new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Runner'), NULL, array(), array(
             new FieldNode(array('name' => 'run')),
             new MethodNode(array('name' => 'run')),
+          )), 
+          $this->scope
+        )
+      );
+    }
+
+    /**
+     * Test class
+     *
+     */
+    #[@test]
+    public function classWithDuplicateConstant() {
+      $this->assertEquals(
+        array('C409', 'Cannot redeclare Std::IN'), 
+        $this->fixture->verify(
+          new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Std'), NULL, array(), array(
+            new ClassConstantNode('IN', new TypeName('string'), new StringNode('php://stdin')),
+            new ClassConstantNode('IN', new TypeName('string'), new StringNode('php://stdout')),
           )), 
           $this->scope
         )

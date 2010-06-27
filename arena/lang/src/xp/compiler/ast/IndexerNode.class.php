@@ -44,5 +44,14 @@
     public function getName() {
       return 'this';
     }
+
+    /**
+     * Returns this members's hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return 'this';
+    }
   }
 ?>

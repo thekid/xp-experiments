@@ -29,5 +29,14 @@
   class PropertyNode extends TypeMemberNode {
     public $type     = NULL;
     public $handlers = array();
+
+    /**
+     * Returns this members's hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return '$'.$this->getName();
+    }
   }
 ?>
