@@ -73,5 +73,23 @@
       );
       $this->assertEquals("200\n", $this->stream->getBytes());
     }
+
+    /**
+     * Test self.*;
+     *
+     */
+    #[@test]
+    public function importSelf() {
+      $class= $this->define('class', 'ImportSelfTest', NULL, '{
+        public static string join(string $a, string $b) {
+          return $a ~ " " ~ $b;
+        }
+        
+        public string run() {
+          return join("Hello", "World");
+        }
+      }', array('import static self.*;'));
+      $this->assertEquals('Hello World', $class->newInstance()->run());
+    }
   }
 ?>
