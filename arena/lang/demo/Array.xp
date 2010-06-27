@@ -24,7 +24,7 @@ package class Array<T> {
    * Constructor. Accepts varargs
    * 
    */
-  public __construct(T?... $elements) {
+  public __construct(T... $elements) {
     $this.elements= $elements;
   }
   

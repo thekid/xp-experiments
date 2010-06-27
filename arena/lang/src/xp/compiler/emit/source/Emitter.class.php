@@ -1306,11 +1306,11 @@
         } else {
           $t= $arg['type'];
           $ptr= $this->resolveType($t);
-          if (!$arg['check']) {
+          if (!$arg['check'] || isset($arg['vararg'])) {
             // No runtime type checks
           } else if ($t->isArray() || $t->isMap()) {
             $op->append('array ');
-          } else if ($t->isClass()) {
+          } else if ($t->isClass() && !$this->scope[0]->declarations[0]->name->isPlaceHolder($t)) {
             $op->append($ptr->literal())->append(' ');
           } else {
             // No restriction on primitives possible in PHP
