@@ -206,6 +206,27 @@
     }
 
     /**
+     * Test mapComponentTypes()
+     *
+     */
+    #[@test]
+    public function mapComponentTypes() {
+      $this->assertEquals(
+        array(new TypeName('string'), new TypeName('int')), 
+        create(new TypeName('[string:int]'))->mapComponentTypes()
+      );
+    }
+
+    /**
+     * Test mapComponentTypes()
+     *
+     */
+    #[@test]
+    public function mapComponentTypesOfNonMap() {
+      $this->assertEquals(NULL, create(new TypeName('string'))->mapComponentTypes());
+    }
+
+    /**
      * Test isPlaceholder()
      *
      */
