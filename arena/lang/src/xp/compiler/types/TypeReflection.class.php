@@ -301,7 +301,7 @@
       with ($constant= $this->class->getConstant($name)); {
         $c= new xp·compiler·types·Constant();
         $c->name= $name;
-        $c->type= TypeName::$VAR;
+        $c->type= new TypeName(Type::forName(gettype($constant))->getName());
         $c->value= $constant;
         $c->holder= $this;
         return $c;

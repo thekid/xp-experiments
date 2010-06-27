@@ -298,6 +298,7 @@
     #[@test]
     public function stringClassConstant() {
       $const= $this->stringClass()->getConstant('ENCODING');
+      $this->assertEquals(new TypeName('string'), $const->type);
       $this->assertEquals('utf-8', $const->value);
     }
   }

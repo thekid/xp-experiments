@@ -177,6 +177,7 @@
     #[@test]
     public function httpConstantsConstant() {
       $const= create(new TypeReflection(XPClass::forName('peer.http.HttpConstants')))->getConstant('STATUS_OK');
+      $this->assertEquals(new TypeName('int'), $const->type);
       $this->assertEquals(200, $const->value);
     }
 
