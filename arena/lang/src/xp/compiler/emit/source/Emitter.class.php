@@ -98,8 +98,8 @@
         return TRUE;
       } else if ($node instanceof ClassMemberNode) {
         return $this->isWriteable($node->member);
-      } else if ($node instanceof ChainNode) {
-        return $this->isWriteable($node->elements[sizeof($node->elements)- 1]);
+      } else if ($node instanceof MemberAccessNode) {
+        return TRUE;    // TODO: Check for private, protected
       }
       return FALSE;
     }
@@ -334,7 +334,7 @@
     }
     
     /**
-     * Emit a variable. Implements type overloading
+     * Emit a variable
      *
      * @param   resource op
      * @param   xp.compiler.ast.VariableNode var
@@ -344,14 +344,142 @@
     }
 
     /**
-     * Emit an array access. Helper to emitChain()
+     * Emit a member access. Helper to emitChain()
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.DynamicVariableReferenceNode access
+     */
+    public function emitDynamicMemberAccess($op, DynamicVariableReferenceNode $access) {
+      $this->emitOne($op, $call->target);
+
+      $op->append('->{');
+      $this->emitOne($op, $access->expression);
+      $op->append('}');
+      
+      $this->scope[0]->setType($call, TypeName::$VAR);
+    }
+
+    /**
+     * Emit method call
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.MethodCallNode call
+     */
+    public function emitMethodCall($op, MethodCallNode $call) {
+      $op->mark();
+      $this->emitOne($op, $call->target);
+
+      $type= $this->scope[0]->typeOf($call->target);
+      $result= TypeName::$VAR;
+      $ptr= new TypeInstance($this->resolveType($type));
+      
+      // Check for extension methods
+      if ($this->scope[0]->hasExtension($ptr, $call->name)) {
+        $ext= $this->scope[0]->getExtension($ptr, $call->name);
+        $op->insertAtMark($ext->holder->literal().'::'.$call->name.'(');
+        $op->append(', ');
+        $this->emitInvocationArguments($op, (array)$call->arguments);
+        $op->append(')');
+        return $ext->returns;
+      }
+
+      // Check for type methods
+      if ($type->isClass()) {
+        if ($ptr->hasMethod($call->name)) {
+          $method= $ptr->getMethod($call->name);
+          if (!($method->modifiers & MODIFIER_PUBLIC)) {
+            $enclosing= $this->resolveType($this->scope[0]->declarations[0]->name);
+            if (
+              ($method->modifiers & MODIFIER_PRIVATE && !$enclosing->equals($ptr)) ||
+              ($method->modifiers & MODIFIER_PROTECTED && !($enclosing->equals($ptr) || $enclosing->isSubclassOf($ptr)))
+            ) {
+              $this->warn('T403', 'Invoking non-public '.$method->holder->name().'::'.$call->name.'() from '.$enclosing->name(), $call);
+            }
+          }
+          $result= $method->returns;
+        } else {
+          $this->warn('T201', 'No such method '.$call->name.'() in '.$type->compoundName(), $call);
+        }
+      } else if ($type->isVariable()) {
+        $this->warn('T203', 'Member call (var).'.$call->name.'() verification deferred until runtime', $call);
+      } else {
+        $this->warn('T305', 'Using member calls on unsupported type '.$type->toString(), $call);
+      }
+
+      // Rewrite for unsupported syntax
+      // - new Date().toString() to create(new Date()).toString()
+      // - (<expr>).toString to create(<expr>).toString()
+      if (
+        $call->target instanceof InstanceCreationNode ||
+        $call->target instanceof BracedExpressionNode
+      ) {
+        $op->insertAtMark('create(');
+        $op->append(')');
+      }
+
+      $op->append('->'.$call->name);
+      $this->emitInvocationArguments($op, (array)$call->arguments);
+      $this->scope[0]->setType($call, $result);
+    }
+
+    /**
+     * Emit member access
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.MemberAccessNode access
+     */
+    public function emitMemberAccess($op, MemberAccessNode $access) {
+      $op->mark();
+      $this->emitOne($op, $access->target);
+      
+      $type= $this->scope[0]->typeOf($access->target);
+      $result= TypeName::$VAR;
+      if ($type->isClass()) {
+        $ptr= new TypeInstance($this->resolveType($type));
+        if ($ptr->hasField($access->name)) {
+          $result= $ptr->getField($access->name)->type;
+        } else if ($ptr->hasProperty($access->name)) {
+          $result= $ptr->getProperty($access->name)->type;
+        } else {
+          $this->warn('T201', 'No such field or property '.$access->name.' in '.$type->toString(), $access);
+        }
+      } else if ($type->isVariable()) {
+        $this->warn('T203', 'Member access (var).'.$access->name.' verification deferred until runtime', $access);
+      } else if ($type->isArray() && 'length' === $access->name) {
+        $op->insertAtMark('sizeof(');
+        $op->append(')');
+        $this->scope[0]->setType($access, new TypeName('int'));
+        return;
+      } else {
+        $this->warn('T305', 'Using member access on unsupported type '.$type->toString(), $access);
+      }
+
+      // Rewrite for unsupported syntax
+      // - new Person().name to create(new Person()).name
+      // - (<expr>).name to create(<expr>).name
+      if (
+        $access->target instanceof InstanceCreationNode ||
+        $access->target instanceof BracedExpressionNode
+      ) {
+        $op->insertAtMark('create(');
+        $op->append(')');
+      }
+
+      $op->append('->'.$access->name);
+      $this->scope[0]->setType($access, $result);
+    }
+
+    /**
+     * Emit array access
      *
      * @param   resource op
      * @param   xp.compiler.ast.ArrayAccessNode access
-     * @param   xp.compiler.types.TypeName type
-     * @return  xp.compiler.types.TypeName resulting type
      */
-    protected function emitArrayAccess($op, ArrayAccessNode $access, TypeName $type) {
+    public function emitArrayAccess($op, ArrayAccessNode $access) {
+      $op->mark();
+      $this->emitOne($op, $access->target);
+      
+      $type= $this->scope[0]->typeOf($access->target);
       $result= TypeName::$VAR;
       if ($type->isArray()) {
         $result= $type->arrayComponentType();
@@ -371,198 +499,26 @@
         $this->warn('T305', 'Using array-access on unsupported type '.$type->toString(), $access);
       }
       
-      $op->append('[');
-      if ($access->offset) {
-        $this->emitOne($op, $access->offset);
-      }
-      $op->append(']');
-      return $result;
-    }
-
-    /**
-     * Emit a member access. Helper to emitChain()
-     *
-     * @param   resource op
-     * @param   xp.compiler.ast.MemberAccessNode access
-     * @param   xp.compiler.types.TypeName type
-     * @return  xp.compiler.types.TypeName resulting type
-     */
-    protected function emitMemberAccess($op, MemberAccessNode $access, TypeName $type) {
-      $result= TypeName::$VAR;
-      if ($type->isClass()) {
-        $ptr= new TypeInstance($this->resolveType($type));
-        if ($ptr->hasField($access->name)) {
-          $result= $ptr->getField($access->name)->type;
-        } else if ($ptr->hasProperty($access->name)) {
-          $result= $ptr->getProperty($access->name)->type;
-        } else {
-          $this->warn('T201', 'No such field or property '.$access->name.' in '.$type->toString(), $access);
-        }
-      } else if ($type->isVariable()) {
-        $this->warn('T203', 'Member access (var).'.$access->name.' verification deferred until runtime', $access);
-      } else if ($type->isArray() && 'length' === $access->name) {
-        $op->insertAtMark('sizeof(');
-        $op->append(')');
-        return new TypeName('int');
-      } else {
-        $this->warn('T305', 'Using member access on unsupported type '.$type->toString(), $access);
-      }
-
-      $op->append('->'.$access->name);
-      return $result;
-    }
-
-    /**
-     * Emit a member access. Helper to emitChain()
-     *
-     * @param   resource op
-     * @param   xp.compiler.ast.DynamicVariableReferenceNode access
-     * @param   xp.compiler.types.TypeName type
-     * @return  xp.compiler.types.TypeName resulting type
-     */
-    protected function emitDynamicMemberAccess($op, DynamicVariableReferenceNode $access, TypeName $type) {
-      $op->append('->{');
-      $this->emitOne($op, $access->expression);
-      $op->append('}');
-      return TypeName::$VAR;
-    }
-
-    /**
-     * Emit a member call. Helper to emitChain()
-     *
-     * @param   resource op
-     * @param   xp.compiler.ast.MethodCallNode access
-     * @param   xp.compiler.types.TypeName type
-     * @return  xp.compiler.types.TypeName resulting type
-     */
-    protected function emitMemberCall($op, MethodCallNode $access, TypeName $type) {
-      $result= TypeName::$VAR;
-      $ptr= new TypeInstance($this->resolveType($type));
-      
-      // Check for extension methods
-      if ($this->scope[0]->hasExtension($ptr, $access->name)) {
-        $ext= $this->scope[0]->getExtension($ptr, $access->name);
-        $op->insertAtMark($ext->holder->literal().'::'.$access->name.'(');
-        $op->append(', ');
-        $this->emitInvocationArguments($op, (array)$access->arguments);
-        $op->append(')');
-        return $ext->returns;
-      }
-
-      // Check for type methods
-      if ($type->isClass()) {
-        if ($ptr->hasMethod($access->name)) {
-          $method= $ptr->getMethod($access->name);
-          if (!($method->modifiers & MODIFIER_PUBLIC)) {
-            $enclosing= $this->resolveType($this->scope[0]->declarations[0]->name);
-            if (
-              ($method->modifiers & MODIFIER_PRIVATE && !$enclosing->equals($ptr)) ||
-              ($method->modifiers & MODIFIER_PROTECTED && !($enclosing->equals($ptr) || $enclosing->isSubclassOf($ptr)))
-            ) {
-              $this->warn('T403', 'Invoking non-public '.$method->holder->name().'::'.$access->name.'() from '.$enclosing->name(), $access);
-            }
-          }
-          $result= $method->returns;
-        } else {
-          $this->warn('T201', 'No such method '.$access->name.'() in '.$type->compoundName(), $access);
-        }
-      } else if ($type->isVariable()) {
-        $this->warn('T203', 'Member call (var).'.$access->name.'() verification deferred until runtime', $access);
-      } else {
-        $this->warn('T305', 'Using member calls on unsupported type '.$type->toString(), $access);
-      }
-
-      $op->append('->'.$access->name);
-      $this->emitInvocationArguments($op, (array)$access->arguments);
-      return $result;
-    }
-
-    /**
-     * Emit a chain
-     *
-     * <pre>
-     *   $this.name;       // Chain(VariableNode[this], VariableNode[name])
-     *   $a.getClass();    // Chain(VariableNode[a], InvocationNode[getClass])
-     *   $args[0];         // Chain(VariableNode[args], ArrayAccessNode[IntegerNode(0)])
-     *   $args[];          // Chain(VariableNode[args], ArrayAccessNode[])
-     * </pre>
-     * 
-     * @param   resource op
-     * @param   xp.compiler.ast.ChainNode chain
-     */
-    public function emitChain($op, ChainNode $chain) {
-      $s= sizeof($chain->elements);
-      $op->mark();
-      
-      // Rewrite for unsupported syntax:
+      // Rewrite for unsupported syntax
       // - $a.getMethods()[2] to current(array_slice($a.getMethods(), 2, 1))
       // - T::asList()[2] to current(array_slice(T::asList()), 2, 1)
       // - new int[]{5, 6, 7}[2] to current(array_slice(array(5, 6, 7), 2, 1))
-      $insertion= array();
-      for ($i= 0; $i < $s; $i++) {
-        if ($i < $s- 1 && $chain->elements[$i+ 1] instanceof ArrayAccessNode && (
-          $chain->elements[$i] instanceof MethodCallNode ||
-          $chain->elements[$i] instanceof InstanceCreationNode ||
-          ($chain->elements[$i] instanceof ClassMemberNode && $chain->elements[$i]->member instanceof InvocationNode) ||
-          $chain->elements[$i] instanceof ArrayNode
-        )) {
-          $op->append('current(array_slice(');
-          $op->mark();
-          $insertion[$i]= new xp·compiler·emit·source·Buffer(', ', $op->line);
-          $this->emitOne($insertion[$i], $chain->elements[$i+ 1]->offset);
-          $insertion[$i]->append(', 1))');
-          $chain->elements[$i+ 1]= new NoopNode();
-        }
-      }
-      
-      // Emit first node, rewriting for unsupported syntax
-      // - new Date().toString() to create(new Date()).toString()
-      // - (<expr>).toString to create(<expr>).toString()
-      if ($chain->elements[0] instanceof InstanceCreationNode) {
-        $op->append('create(');
-        $this->emitOne($op, $chain->elements[0]);
-        $op->append(')');
-      } else if ($chain->elements[0] instanceof BracedExpressionNode) {
-        $op->append('create(');
-        $this->emitOne($op, $chain->elements[0]->expression);
-        $op->append(')');
+      if (
+        !$access->target instanceof ArrayAccessNode && 
+        !$access->target instanceof MemberAccessNode &&
+        !$access->target instanceof VariableNode &&
+        !$access->target instanceof ClassMemberNode
+      ) {
+        $op->insertAtMark('current(array_slice(');
+        $op->append(',');
+        $this->emitOne($op, $access->offset);
+        $op->append(', 1))');
       } else {
-        $this->emitOne($op, $chain->elements[0]);
+        $op->append('[');
+        $access->offset && $this->emitOne($op, $access->offset);
+        $op->append(']');
       }
-      isset($insertion[0]) && $op->append($insertion[0]);
-      
-      // Emit chain members
-      $t= $this->scope[0]->typeOf($chain->elements[0]);
-      for ($i= 1; $i < $s; $i++) {
-        $c= $chain->elements[$i];
-
-        $this->cat && $this->cat->debugf(
-          '@%-3d Emit %s: %s',
-          $c->position[0], 
-          $c->getClassName(), 
-          $c->hashCode()
-        );
-        
-        if ($c instanceof MemberAccessNode) {
-          $t= $this->emitMemberAccess($op, $c, $t);
-        } else if ($c instanceof DynamicVariableReferenceNode) {
-          $t= $this->emitDynamicMemberAccess($op, $c, $t);
-        } else if ($c instanceof ArrayAccessNode) {
-          $t= $this->emitArrayAccess($op, $c, $t);
-        } else if ($c instanceof MethodCallNode) {
-          $t= $this->emitMemberCall($op, $c, $t);
-        } else if ($c instanceof NoopNode && $t->isArray()) {
-
-          // See above, Invocation->ArrayAccess is rewritten to a function 
-          // call to dereference and replaced by a Noop.
-          $t= $t->arrayComponentType();
-        }
-        
-        isset($insertion[$i]) && $op->append($insertion[$i]);
-      }
-      
-      // Record type
-      $this->scope[0]->setType($chain, $t);
+      $this->scope[0]->setType($access, $result);
     }
 
     /**
@@ -1583,7 +1539,7 @@
         if ($this->inits[0][FALSE]) {
           foreach ($this->inits[0][FALSE] as $field) {
             $this->emitOne($op, new AssignmentNode(array(
-              'variable'   => new ChainNode(array(new VariableNode('this'), new MemberAccessNode($field->name))),
+              'variable'   => new MemberAccessNode(new VariableNode('this'), $field->name),
               'expression' => $field->initialization,
               'op'         => '=',
             )));

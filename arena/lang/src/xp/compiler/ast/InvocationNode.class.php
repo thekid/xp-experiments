@@ -9,7 +9,7 @@
   /**
    * Represents an invocation
    *
-   * @see   xp://xp.compiler.ast.ChainNode
+   * @see   xp://xp.compiler.ast.MethodCallNode
    */
   class InvocationNode extends xp·compiler·ast·Node {
     public $name= '';

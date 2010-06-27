@@ -77,10 +77,7 @@
           'name'       => 'name',
           'handlers'   => array(
             'get' => array(
-              new ReturnNode(new ChainNode(array(
-                0 => new VariableNode('this'),
-                1 => new VariableNode('_name')
-              )))
+              new ReturnNode(new MemberAccessNode(new VariableNode('this'), '_name'))
             ),
           )
         ))
@@ -111,17 +108,11 @@
           'name'       => 'name',
           'handlers'   => array(
             'get' => array(
-              new ReturnNode(new ChainNode(array(
-                0 => new VariableNode('this'),
-                1 => new VariableNode('_name')
-              )))
+              new ReturnNode(new MemberAccessNode(new VariableNode('this'), '_name'))
             ),
             'set' => array(
               new AssignmentNode(array(
-                'variable'   => new ChainNode(array(
-                  0 => new VariableNode('this'),
-                  1 => new VariableNode('_name')
-                )),
+                'variable'   => new MemberAccessNode(new VariableNode('this'), '_name'),
                 'expression' => new VariableNode('value'),
                 'op'         => '='
               ))

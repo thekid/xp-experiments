@@ -177,10 +177,7 @@
     #[@test]
     public function toArrayOffset() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'variable'      => new ChainNode(array(
-          0 => new VariableNode('i'),
-          1 => new ArrayAccessNode(new IntegerNode('0'))
-        )),
+        'variable'      => new ArrayAccessNode(new VariableNode('i'), new IntegerNode('0')),
         'expression'    => new IntegerNode('0'),
         'op'            => '='
       ))), $this->parse('$i[0]= 0;'));
@@ -193,10 +190,7 @@
     #[@test]
     public function appendToArray() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'variable'      => new ChainNode(array(
-          0 => new VariableNode('i'),
-          1 => new ArrayAccessNode(NULL),
-        )),
+        'variable'      => new ArrayAccessNode(new VariableNode('i'), NULL),
         'expression'    => new IntegerNode('0'),
         'op'            => '='
       ))), $this->parse('$i[]= 0;'));
@@ -209,10 +203,7 @@
     #[@test]
     public function toInstanceMember() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'variable'      => new ChainNode(array(
-          0 => new VariableNode('class'), 
-          1 => new VariableNode('member'),
-        )),
+        'variable'      => new MemberAccessNode(new VariableNode('class'), 'member'),
         'expression'    => new IntegerNode('0'),
         'op'            => '='
       ))), $this->parse('$class->member= 0;'));
@@ -238,11 +229,14 @@
     #[@test]
     public function toChain() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'variable'      => new ChainNode(array(
-          0 => new ClassMemberNode(new TypeName('self'), new VariableNode('instance')),
-          1 => new InvocationNode('addAppender'),
-          2 => new VariableNode('flags')
-        )),
+        'variable'      => new MemberAccessNode(
+          new MethodCallNode(
+            new ClassMemberNode(new TypeName('self'), new VariableNode('instance')),
+            'addAppender',
+            NULL
+          ),
+          'flags'
+        ),
         'expression'    => new IntegerNode('0'),
         'op'            => '='
       ))), $this->parse('self::$instance->addAppender()->flags= 0;'));

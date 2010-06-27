@@ -23,14 +23,17 @@
    *
    */
   class DynamicVariableReferenceNode extends xp·compiler·ast·Node {
+    public $target= NULL;
     public $expression = NULL;
     
     /**
      * Creates a new dynamic variable reference
      *
+     * @param   xp.compiler.ast.Node target
      * @param  xp.compiler.ast.Node expression
      */
-    public function __construct(xp·compiler·ast·Node $expression) {
+    public function __construct($target= NULL, xp·compiler·ast·Node $expression) {
+      $this->target= $target;
       $this->expression= $expression;
     }
   }

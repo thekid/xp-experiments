@@ -9,7 +9,7 @@
     'xp.compiler.ast.StatementsNode',
     'xp.compiler.ast.AssignmentNode',
     'xp.compiler.ast.VariableNode',
-    'xp.compiler.ast.ChainNode',
+    'xp.compiler.ast.MemberAccessNode',
     'xp.compiler.ast.IntegerNode',
     'xp.compiler.ast.LocalsToMemberPromoter'
   );
@@ -34,10 +34,10 @@
      * Creates a member node
      *
      * @param   string name
-     * @return  xp.compiler.ast.ChainNode
+     * @return  xp.compiler.ast.MemberAccessNode
      */
     protected function memberNode($name) {
-      return new ChainNode(array(new VariableNode('this'), new MemberAccessNode($name)));
+      return new MemberAccessNode(new VariableNode('this'), $name);
     }
 
     /**

@@ -10,7 +10,6 @@
     'xp.compiler.ast.StaticImportNode',
     'xp.compiler.ast.NativeImportNode',
     'xp.compiler.ast.AnnotationNode',
-    'xp.compiler.ast.ChainNode',
     'xp.compiler.ast.ClassNode',
     'xp.compiler.ast.EnumNode',
     'xp.compiler.ast.EnumMemberNode',
@@ -36,6 +35,8 @@
     'xp.compiler.ast.WhileNode',
     'xp.compiler.ast.AssignmentNode',
     'xp.compiler.ast.InvocationNode',
+    'xp.compiler.ast.MethodCallNode',
+    'xp.compiler.ast.MemberAccessNode',
     'xp.compiler.ast.ConstantNode',
     'xp.compiler.ast.IntegerNode',
     'xp.compiler.ast.HexNode',
@@ -184,12 +185,22 @@
     }
 
     /**
-     * Visit a chain
+     * Visit member access
      *
      * @param   xp.compiler.ast.Node node
      */
-    protected function visitChain(ChainNode $node) {
-      $node->elements= $this->visitAll((array)$node->elements);
+    protected function visitMemberAccess(MemberAccessNode $node) {
+      $node->elements= $this->visitOne($node->target);
+      return $node;
+    }
+
+    /**
+     * Visit method call
+     *
+     * @param   xp.compiler.ast.Node node
+     */
+    protected function visitMethodCall(MethodCallNode $node) {
+      $node->elements= $this->visitOne($node->target);
       return $node;
     }
 

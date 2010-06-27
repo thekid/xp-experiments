@@ -21,10 +21,7 @@
     #[@test]
     public function arrayGet() {
       $this->assertEquals(
-        array(new SilenceOperatorNode(new ChainNode(array(
-          new VariableNode('a'),
-          new ArrayAccessNode(new IntegerNode('0'))
-        )))),
+        array(new SilenceOperatorNode(new ArrayAccessNode(new VariableNode('a'), new IntegerNode('0')))),
         $this->parse('@$a[0];')
       );
     }

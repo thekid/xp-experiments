@@ -21,18 +21,12 @@
     #[@test]
     public function singleCatch() {
       $this->assertEquals(array(new TryNode(array(
-        'statements' => array(new ChainNode(array(
-          0 => new VariableNode('method'),
-          1 => new InvocationNode('call'),
-        ))), 
+        'statements' => array(new MethodCallNode(new VariableNode('method'), 'call')),
         'handling'   => array(
           new CatchNode(array(
             'type'       => new TypeName('IllegalArgumentException'),
             'variable'   => 'e',
-            'statements' => array(new ChainNode(array(
-              0 => new VariableNode('this'),
-              1 => new InvocationNode('finalize'),
-            ))), 
+            'statements' => array(new MethodCallNode(new VariableNode('this'), 'finalize'))
           ))
         )
       ))), $this->parse('

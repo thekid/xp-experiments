@@ -16,14 +16,17 @@
    * </code>   
    */
   class ArrayAccessNode extends xp·compiler·ast·Node {
+    public $target= NULL;
     public $offset= NULL;
     
     /**
      * Constructor
      *
+     * @param   xp.compiler.ast.Node target
      * @param   xp.compiler.ast.Node offset
      */
-    public function __construct(xp·compiler·ast·Node $offset= NULL) {
+    public function __construct($target= NULL, xp·compiler·ast·Node $offset= NULL) {
+      $this->target= $target;
       $this->offset= $offset;
     }
     

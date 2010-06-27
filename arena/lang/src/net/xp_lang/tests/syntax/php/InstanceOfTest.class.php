@@ -33,7 +33,7 @@
     #[@test]
     public function memberInstanceOfObject() {
       $this->assertEquals(array(new InstanceOfNode(array(
-        'expression'    => new ChainNode(array(new VariableNode('this'), new VariableNode('a'))),
+        'expression'    => new MemberAccessNode(new VariableNode('this'), 'a'),
         'type'          => new TypeName('Object'),
       ))), $this->parse('$this->a instanceof Object;'));
     }

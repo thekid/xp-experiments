@@ -34,26 +34,9 @@
     protected function visitVariable(VariableNode $node) {
       $n= $node->name;
       if (!isset($this->excludes[$n])) {
-        $this->replacements['$'.$n]= $node= new ChainNode(array(self::$THIS, new MemberAccessNode($node->name)));
+        $this->replacements['$'.$n]= $node= new MemberAccessNode(self::$THIS, $node->name);
       }
       return $node;
-    }
-
-    /**
-     * Visit a chain
-     *
-     * @param   xp.compiler.ast.Node node
-     */
-    protected function visitChain(ChainNode $node) {
-      if (self::$THIS->equals($node->elements[0]) && $node->elements[1] instanceof MemberAccessNode) {
-      
-        // $this->i = Chain(Var(this), MemberAccessNode(i))
-        $shift= array(array_shift($node->elements), array_shift($node->elements));
-        $node->elements= array_merge($shift, $this->visitAll((array)$node->elements));
-        return $node;
-      } else {
-        return parent::visitChain($node);
-      }
     }
 
     /**
@@ -69,7 +52,7 @@
      * Run
      *
      * @param   xp.compiler.ast.Node nodes
-     * @return  array<string, xp.compiler.ast.ChainNode> replaced
+     * @return  array<string, xp.compiler.ast.MemberAccessNode> replaced
      */
     public function promote($node) {
       $this->replacements= array();

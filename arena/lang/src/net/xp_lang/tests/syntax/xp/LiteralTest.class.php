@@ -240,16 +240,16 @@
      */
     #[@test]
     public function chainingAfterArrayLiteral() {
-      $this->assertEquals(array(new ChainNode(array(
-        0 => new ArrayNode(array(
+      $this->assertEquals(array(new MemberAccessNode(
+        new ArrayNode(array(
           'values'        => array(
             new IntegerNode('1'),
             new IntegerNode('2'),
           ),
           'type'          => NULL
         )),
-        1 => new VariableNode('array')
-      ))), $this->parse("
+        'array'
+      )), $this->parse("
         [1, 2].array;
       "));
     }

@@ -82,10 +82,7 @@
           array(new AssignmentNode(array(
             'variable'   => new VariableNode('s'),
             'op'         => '=',
-            'expression' => new ChainNode(array(
-              new VariableNode('o'),
-              new InvocationNode('toString', array())
-            ))
+            'expression' => new MethodCallNode(new VariableNode('o'), 'toString', NULL)
           )))
         )), 
         $this->parse('with ($o= new Object()) { $s= $o.toString(); }')

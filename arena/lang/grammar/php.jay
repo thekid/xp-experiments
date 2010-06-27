@@ -7,7 +7,6 @@
     'xp.compiler.ast.StaticImportNode',
     'xp.compiler.ast.NativeImportNode',
     'xp.compiler.ast.AnnotationNode',
-    'xp.compiler.ast.ChainNode',
     'xp.compiler.ast.BracedExpressionNode',
     'xp.compiler.ast.DynamicInstanceOfNode',
     'xp.compiler.ast.DynamicInstanceCreationNode',
@@ -17,7 +16,6 @@
     'xp.compiler.ast.EnumMemberNode',
     'xp.compiler.ast.InterfaceNode',
     'xp.compiler.ast.FieldNode',
-    'xp.compiler.ast.PropertyNode',
     'xp.compiler.ast.ConstructorNode',
     'xp.compiler.ast.MethodNode',
     'xp.compiler.ast.OperatorNode',
@@ -527,10 +525,8 @@ expression:
     literal
   | T_VARIABLE { $1= $yyLex->create(new VariableNode($1)); } chain_opt {
       if ($3) {
-        $$= $yyLex->create(new ChainNode());
-        $$->elements= array_merge(array($1), $3);
-      } else {
-        $$= $1;
+        $$= $3['node'];
+        $3['target']->target= $1;
       }
     }
   | T_NEW { $p= $yyLex->position; } instancecreation { 
@@ -540,8 +536,8 @@ expression:
   | qualifiedname T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode(new TypeName($1))); } staticmember chain_opt {
       $2->member= $4;
       if ($5) {
-        $$= $yyLex->create(new ChainNode());
-        $$->elements= array_merge(array($2), $5);
+        $$= $5['node'];
+        $5['target']->target= $2;
       } else {
         $$= $2;
       }
@@ -549,8 +545,8 @@ expression:
   | T_WORD '(' { $2= $yyLex->create(new InvocationNode($1)); } expressionlist_opt ')' chain_opt { 
       $2->arguments= $4;
       if ($6) {
-        $$= $yyLex->create(new ChainNode());
-        $$->elements= array_merge(array($2), $6);
+        $$= $6['node'];
+        $6['target']->target= $2;
       } else {
         $$= $2;
       }
@@ -616,8 +612,8 @@ expression:
     }
   | '(' expression ')' chain_opt { 
       if ($4) {
-        $$= new ChainNode();
-        $$->elements= array_merge(array(new BracedExpressionNode($2)), $4);
+        $$= $4['node'];
+        $4['target']->target= new BracedExpressionNode($2);
       } else {
         $$= new BracedExpressionNode($2); 
       }
@@ -746,8 +742,8 @@ chain_opt:
 ;
 
 chained:
-    chain { $$= array($1); }
-  | chain chained {  $$= array_merge(array($1), $2); }
+    chain { $$= array('node' => $1, 'target' => $1); }
+  | chain chained { $2['target']->target= $1; $$= array('node' => $2['node'], 'target' => $1); }
 ;
 
 chain:
@@ -758,15 +754,15 @@ chain:
       $1->offset= $3;
     }
   | T_OBJECT_OPERATOR T_WORD {
-      $$= $yyLex->create(new VariableNode($2)); 
+      $$= $yyLex->create(new MemberAccessNode(NULL, $2)); 
     }
   | T_OBJECT_OPERATOR T_VARIABLE {
-      $$= $yyLex->create(new DynamicVariableReferenceNode(new VariableNode($2))); 
+      $$= $yyLex->create(new DynamicVariableReferenceNode(NULL, new VariableNode($2))); 
     }
   | T_OBJECT_OPERATOR '{' expression '}' {
-      $$= $yyLex->create(new DynamicVariableReferenceNode($3)); 
+      $$= $yyLex->create(new DynamicVariableReferenceNode(NULL, $3)); 
     }
-  | T_OBJECT_OPERATOR T_WORD '(' { $1= $yyLex->create(new InvocationNode($2)); } expressionlist_opt ')' { 
+  | T_OBJECT_OPERATOR T_WORD '(' { $1= $yyLex->create(new MethodCallNode(NULL, $2)); } expressionlist_opt ')' { 
       $1->arguments= $5;
     }
 ;

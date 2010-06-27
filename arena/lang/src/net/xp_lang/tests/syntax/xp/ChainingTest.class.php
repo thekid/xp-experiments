@@ -19,10 +19,7 @@
     #[@test]
     public function fieldAccess() {
       $this->assertEquals(
-        array(new ChainNode(array(
-          0 => new VariableNode('m'),
-          1 => new VariableNode('member')
-        ))), 
+        array(new MemberAccessNode(new VariableNode('m'), 'member')),
         $this->parse('$m.member;')
       );
     }
@@ -34,10 +31,7 @@
     #[@test]
     public function fieldNamedClassAccess() {
       $this->assertEquals(
-        array(new ChainNode(array(
-          0 => new VariableNode('m'),
-          1 => new VariableNode('class')
-        ))), 
+        array(new MemberAccessNode(new VariableNode('m'), 'class')),
         $this->parse('$m.class;')
       );
     }
@@ -49,10 +43,7 @@
     #[@test]
     public function methodCall() {
       $this->assertEquals(
-        array(new ChainNode(array(
-          0 => new VariableNode('m'),
-          1 => new InvocationNode('invoke', array(new VariableNode('args')))
-        ))), 
+        array(new MethodCallNode(new VariableNode('m'), 'invoke', array(new VariableNode('args')))),
         $this->parse('$m.invoke($args);')
       );
     }
@@ -64,11 +55,10 @@
     #[@test]
     public function chainedMethodCalls() {
       $this->assertEquals(
-        array(new ChainNode(array(
-          0 => new VariableNode('l'),
-          1 => new InvocationNode('withAppender', array()),
-          2 => new InvocationNode('debug', array())
-        ))),
+        array(new MethodCallNode(
+          new MethodCallNode(new VariableNode('l'), 'withAppender'),
+          'debug'
+        )),
         $this->parse('$l.withAppender().debug();')
       );
     }
@@ -80,13 +70,13 @@
     #[@test]
     public function chainedAfterNew() {
       $this->assertEquals(
-        array(new ChainNode(array(
-          0 => new InstanceCreationNode(array(
+        array(new MethodCallNode(
+          new InstanceCreationNode(array(
             'type'           => new TypeName('Date'),
             'parameters'     => NULL,
           )),
-          1 => new InvocationNode('toString', array())
-        ))), 
+          'toString'
+        )), 
         $this->parse('new Date().toString();')
       );
     }
@@ -98,12 +88,13 @@
     #[@test]
     public function arrayOffsetOnMethod() {
       $this->assertEquals(
-        array(new ChainNode(array(
-          0 => new VariableNode('l'),
-          1 => new InvocationNode('elements', array()),
-          2 => new ArrayAccessNode(new IntegerNode('0')),
-          3 => new VariableNode('name'),
-        ))),
+        array(new MemberAccessNode(
+          new ArrayAccessNode(
+            new MethodCallNode(new VariableNode('l'), 'elements', NULL),
+            new IntegerNode('0')
+          ),
+          'name'
+        )),
         $this->parse('$l.elements()[0].name;')
       );
     }
@@ -115,10 +106,11 @@
     #[@test]
     public function chainedAfterStaticMethod() {
       $this->assertEquals(
-        array(new ChainNode(array(
-          0 => new ClassMemberNode(new TypeName('Logger'), new InvocationNode('getInstance', array())),
-          1 => new InvocationNode('configure', array(new StringNode('etc')))
-        ))), 
+        array(new MethodCallNode(
+          new ClassMemberNode(new TypeName('Logger'), new InvocationNode('getInstance', array())),
+          'configure', 
+          array(new StringNode('etc'))
+        )), 
         $this->parse('Logger::getInstance().configure("etc");')
       );
     }
@@ -130,10 +122,11 @@
     #[@test]
     public function chainedAfterFunction() {
       $this->assertEquals(
-        array(new ChainNode(array(
-          0 => new InvocationNode('create', array(new VariableNode('a'))),
-          1 => new InvocationNode('equals', array(new VariableNode('b')))
-        ))), 
+        array(new MethodCallNode(
+          new InvocationNode('create', array(new VariableNode('a'))),
+          'equals', 
+          array(new VariableNode('b'))
+        )), 
         $this->parse('create($a).equals($b);')
       );
     }
@@ -145,13 +138,14 @@
     #[@test]
     public function chainedAfterBraced() {
       $this->assertEquals(
-        array(new ChainNode(array(
-          0 => new BracedExpressionNode(new CastNode(array(
+        array(new MethodCallNode(
+          new BracedExpressionNode(new CastNode(array(
             'type'       => new TypeName('Generic'),
             'expression' => new VariableNode('a')
           ))),
-          1 => new InvocationNode('equals', array(new VariableNode('b')))
-        ))), 
+          'equals', 
+          array(new VariableNode('b'))
+        )), 
         $this->parse('($a as Generic).equals($b);')
       );
     }

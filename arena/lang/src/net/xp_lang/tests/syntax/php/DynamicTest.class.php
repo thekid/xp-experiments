@@ -48,10 +48,7 @@
     #[@test]
     public function variableMemberAccess() {
       $this->assertEquals(
-        array(new ChainNode(array(
-          new VariableNode('this'),
-          new DynamicVariableReferenceNode(new VariableNode('name'))
-        ))),
+        array(new DynamicVariableReferenceNode(new VariableNode('this'), new VariableNode('name'))),
         $this->parse('$this->$name;')
       );
     }
@@ -63,10 +60,7 @@
     #[@test]
     public function expressionMemberAccess() {
       $this->assertEquals(
-        array(new ChainNode(array(
-          new VariableNode('this'),
-          new DynamicVariableReferenceNode(new VariableNode('name'))
-        ))),
+        array(new DynamicVariableReferenceNode(new VariableNode('this'), new VariableNode('name'))),
         $this->parse('$this->{$name};')
       );
     }
