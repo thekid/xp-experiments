@@ -48,7 +48,7 @@
      *
      * @see   php://declare
      */
-    #[@test, @expects('lang.FormatException')]
+    #[@test, @expect('lang.FormatException')]
     public function declareStatement() {
       $this->parse('declare(ticks=1) { }');
     }
@@ -61,6 +61,16 @@
     #[@test, @expect('lang.FormatException')]
     public function functions() {
       $this->parse('function a() { }');
+    }
+
+    /**
+     * Test new statement without braces
+     *
+     * @see   php://new
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function newWithoutBraces() {
+      $this->parse('new A;');
     }
 
     /**
