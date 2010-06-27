@@ -98,7 +98,7 @@
       );
 
     const 
-      DELIMITERS = " ^|&?!.:;,@%~=<>(){}[]#+-*/\"'\r\n\t";
+      DELIMITERS = " ^|&?!.:;,@%~=<>(){}[]#+-*/\"'\r\n\t\$`";
 
     public
       $fileName  = NULL;
@@ -228,7 +228,7 @@
           }
         } else if ('$' === $token{0}) {
           $this->token= xp·compiler·syntax·xp·Parser::T_VARIABLE;
-          $this->value= substr($token, 1);
+          $this->value= $this->nextToken();
         } else if (isset(self::$keywords[$token])) {
           $this->token= self::$keywords[$token];
           $this->value= $token;
