@@ -13,8 +13,7 @@
    *
    */
   class net·xp_lang·tests·execution·source·PropertiesTest extends ExecutionTest {
-    protected $fixture= NULL;
-
+    protected static $fixture= NULL;
 
     /**
      * Sets up test case
@@ -22,8 +21,10 @@
      */
     public function setUp() {
       parent::setUp();
+      if (NULL !== self::$fixture) return;
+
       try {
-        $this->fixture= $this->define('class', 'StringBufferFor'.$this->name, NULL, '{
+        self::$fixture= $this->define('class', 'StringBufferFor'.$this->name, NULL, '{
           protected string $buffer;
 
           public __construct(string $initial) {
@@ -79,7 +80,7 @@
      */
     #[@test]
     public function readLength() {
-      $str= $this->fixture->newInstance('Hello');
+      $str= self::$fixture->newInstance('Hello');
       $this->assertEquals(5, $str->length);
     }
 
@@ -89,7 +90,7 @@
      */
     #[@test]
     public function readChars() {
-      $str= $this->fixture->newInstance('Hello');
+      $str= self::$fixture->newInstance('Hello');
       $this->assertEquals(array('H', 'e', 'l', 'l', 'o'), $str->chars);
     }
 
@@ -99,7 +100,7 @@
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function writeLength() {
-      $str= $this->fixture->newInstance('Hello');
+      $str= self::$fixture->newInstance('Hello');
       $str->length= 5;
     }
 
@@ -109,7 +110,7 @@
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function addLength() {
-      $str= $this->fixture->newInstance('Hello');
+      $str= self::$fixture->newInstance('Hello');
       $str->length++;
     }
 
@@ -119,7 +120,7 @@
      */
     #[@test]
     public function writeChars() {
-      $str= $this->fixture->newInstance('Hello');
+      $str= self::$fixture->newInstance('Hello');
       $str->chars= array('A', 'B', 'C');
       $this->assertEquals('ABC', $str->toString());
     }
@@ -130,7 +131,7 @@
      */
     #[@test]
     public function offsetGet() {
-      $str= $this->fixture->newInstance('Hello');
+      $str= self::$fixture->newInstance('Hello');
       $this->assertEquals('H', $str[0], 0);
       $this->assertEquals('o', $str[4], 4);
     }
@@ -141,7 +142,7 @@
      */
     #[@test]
     public function offsetAdd() {
-      $str= $this->fixture->newInstance('Hello');
+      $str= self::$fixture->newInstance('Hello');
       $str[]= '!';
       $this->assertEquals('Hello!', $str->toString());
     }
@@ -152,7 +153,7 @@
      */
     #[@test]
     public function offsetSet() {
-      $str= $this->fixture->newInstance('Hello');
+      $str= self::$fixture->newInstance('Hello');
       $str[1]= 'a';
       $this->assertEquals('Hallo', $str->toString());
     }
@@ -163,7 +164,7 @@
      */
     #[@test]
     public function offsetExists() {
-      $str= $this->fixture->newInstance('Hello');
+      $str= self::$fixture->newInstance('Hello');
       $this->assertTrue(isset($str[0]));
       $this->assertTrue(isset($str[4]));
       $this->assertFalse(isset($str[-1]));
@@ -176,7 +177,7 @@
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function offsetUnset() {
-      $str= $this->fixture->newInstance('Hello');
+      $str= self::$fixture->newInstance('Hello');
       unset($str[0]);
     }
 
@@ -186,7 +187,7 @@
      */
     #[@test]
     public function getNonExistantOffset() {
-      $str= $this->fixture->newInstance('Hello');
+      $str= self::$fixture->newInstance('Hello');
       $this->assertEquals(NULL, $str[-1], -1);
       $this->assertEquals(NULL, $str[5], 5);
     }
