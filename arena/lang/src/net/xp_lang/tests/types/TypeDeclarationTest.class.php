@@ -259,5 +259,25 @@
       $this->assertEquals(new TypeName('string'), $indexer->type);
       $this->assertEquals(array(new TypeName('int')), $indexer->parameters);
     }
+
+    /**
+     * Test isEnumerable() method
+     *
+     */
+    #[@test]
+    public function objectClassIsNotEnumerable() {
+      $decl= $this->objectClass();
+      $this->assertFalse($decl->isEnumerable());
+    }
+
+    /**
+     * Test hasConstant() method
+     *
+     */
+    #[@test]
+    public function objectClassDoesNotHaveConstant() {
+      $decl= $this->objectClass();
+      $this->assertFalse($decl->hasConstant('STATUS_OK'));
+    }
   }
 ?>

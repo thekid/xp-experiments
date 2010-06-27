@@ -151,6 +151,36 @@
     }
 
     /**
+     * Test hasConstant() method
+     *
+     */
+    #[@test]
+    public function objectClassDoesNotHaveConstant() {
+      $decl= new TypeReflection(XPClass::forName('lang.Object'));
+      $this->assertFalse($decl->hasConstant('STATUS_OK'));
+    }
+
+    /**
+     * Test hasConstant() method
+     *
+     */
+    #[@test]
+    public function httpConstantsClassDoesNotHaveConstant() {
+      $decl= new TypeReflection(XPClass::forName('peer.http.HttpConstants'));
+      $this->assertTrue($decl->hasConstant('STATUS_OK'));
+    }
+
+    /**
+     * Test hasConstant() method
+     *
+     */
+    #[@test]
+    public function httpConstantsConstant() {
+      $const= create(new TypeReflection(XPClass::forName('peer.http.HttpConstants')))->getConstant('STATUS_OK');
+      $this->assertEquals(200, $const->value);
+    }
+
+    /**
      * Test isEnumerable() method
      *
      */

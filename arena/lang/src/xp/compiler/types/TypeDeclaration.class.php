@@ -86,9 +86,7 @@
      * @return  bool
      */
     public function isEnumerable() {
-      foreach ($this->tree->declaration->implements as $interface) {
-        // TBI
-      }
+      // TBI
       return FALSE;
     }
 
@@ -310,7 +308,7 @@
           return $c;
         }
       }
-      return $this->parent ? $this->parent->hasProperty($name) : FALSE;
+      return $this->parent ? $this->parent->getConstant($name) : FALSE;
     }
 
     /**
