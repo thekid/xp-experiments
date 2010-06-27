@@ -120,8 +120,9 @@
         return $i;
       } else if ($this->type->isMap()) {
         $i= new xp·compiler·types·Indexer();
-        $i->type= TypeName::$VAR;
-        $i->parameters= array(TypeName::$VAR);
+        $components= $this->type->mapComponentTypes();
+        $i->type= $components[1];
+        $i->parameters= array($components[0]);
         $i->holder= $this;
         return $i;
       }

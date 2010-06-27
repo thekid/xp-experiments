@@ -107,5 +107,57 @@
       $this->assertEquals(new TypeName('int'), $enum->key);
       $this->assertEquals(new TypeName('string'), $enum->value);
     }
+
+    /**
+     * Test hasIndexer() method
+     *
+     */
+    #[@test]
+    public function intDoesNotHaveAnIndexer() {
+      $decl= new TypeReference(new TypeName('int'));
+      $this->assertFalse($decl->hasIndexer());
+    }
+
+    /**
+     * Test hasIndexer() method
+     *
+     */
+    #[@test]
+    public function arrayHasIndexer() {
+      $decl= new TypeReference(new TypeName('int[]'));
+      $this->assertTrue($decl->hasIndexer());
+    }
+
+    /**
+     * Test hasIndexer() method
+     *
+     */
+    #[@test]
+    public function mapHasIndexer() {
+      $decl= new TypeReference(new TypeName('[int:string]'));
+      $this->assertTrue($decl->hasIndexer());
+    }
+
+    /**
+     * Test getIndexer() method
+     *
+     */
+    #[@test]
+    public function arrayIndexer() {
+      $indexer= create(new TypeReference(new TypeName('int[]')))->getIndexer();
+      $this->assertEquals(new TypeName('int'), $indexer->type);
+      $this->assertEquals(array(new TypeName('int')), $indexer->parameters);
+    }
+
+    /**
+     * Test getIndexer() method
+     *
+     */
+    #[@test]
+    public function mapIndexer() {
+      $indexer= create(new TypeReference(new TypeName('[int:string]')))->getIndexer();
+      $this->assertEquals(new TypeName('string'), $indexer->type);
+      $this->assertEquals(array(new TypeName('int')), $indexer->parameters);
+    }
   }
 ?>
