@@ -5,7 +5,7 @@
 
 package demo;
 
-import lang.Delegate;
+import demo.lang.Delegate;
 
 /**
  * Array class demo. Shows off:
@@ -17,14 +17,14 @@ import lang.Delegate;
  *   <li>New foreach</li>
  * </ul>
  */
-public class Array<T> {
+package class Array<T> {
   protected T[] $elements;
   
   /**
    * Constructor. Accepts varargs
    * 
    */
-  public __construct(T... $elements) {
+  public __construct(T?... $elements) {
     $this.elements= $elements;
   }
   
