@@ -7,12 +7,9 @@
   uses('net.xp_lang.tests.syntax.xp.ParserTestCase');
 
   /**
-   * TestCase ensuring the following is not supported in XP language:
-   * 
-   * <ul>
-   *   <li>Variable variables ($$i) and dynamic variables (${$i})</li>
-   *   <li>Goto</li>
-   * </ul>
+   * TestCase showing what is not supported in XP language in comparison
+   * to PHP.
+   *
    */
   class UnsupportedFeaturesTest extends ParserTestCase {
   
