@@ -111,6 +111,17 @@
     }
 
     /**
+     * Return map component type or NULL if this is not a map
+     *
+     * @return  xp.compiler.types.TypeName[]
+     */
+    public function mapComponentTypes() {
+      if (!$this->isMap()) return NULL;
+      list($key, $value)= explode(':', substr($this->name, 1, -1));
+      return array(new self($key), new self($value));
+    }
+
+    /**
      * Return whether this type is a generic
      *
      * @return  bool

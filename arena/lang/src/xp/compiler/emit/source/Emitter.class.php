@@ -766,19 +766,26 @@
       $t= $this->scope[0]->typeOf($loop->expression);
       if ($t->isArray()) {
         $it= $t->arrayComponentType();
+        $kt= new TypeName('int');
+      } else if ($t->isMap()) {
+        list($kt, $it)= $t->mapComponentTypes();
       } else if ($t->isVariable()) {
         $it= TypeName::$VAR;
+        $kt= new TypeName('int');
       } else if ($this->resolveType($t)->isEnumerable()) {
         $it= isset($t->components[0]) ? $t->components[0] : TypeName::$VAR;;
+        $kt= new TypeName('int');
       } else {
         $this->warn('T300', 'Illegal type '.$t->toString().' for loop expression '.$loop->expression->getClassName().'['.$loop->expression->hashCode().']', $loop);
         $it= TypeName::$VAR;
+        $kt= new TypeName('int');
       }
       $this->scope[0]->setType(new VariableNode($loop->assignment['value']), $it);
 
       $op->append(' as ');
       if (isset($loop->assignment['key'])) {
         $op->append('$'.$loop->assignment['key'].' => ');
+        $this->scope[0]->setType(new VariableNode($loop->assignment['key']), $kt);
       }
       $op->append('$'.$loop->assignment['value'].') {');
       $this->emitAll($op, (array)$loop->statements);
@@ -1251,6 +1258,7 @@
       $this->emitOne($op, $assign->expression);
       $this->scope[0]->setType($assign->variable, $this->scope[0]->typeOf($assign->expression));
     }
+
     /**
      * Emit an operator
      *
