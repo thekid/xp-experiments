@@ -80,6 +80,36 @@
         $this->class->_reflect->implementsInterface('IteratorAggregate')
       );
     }
+
+    /**
+     * Returns the enumerator for this class or NULL if none exists.
+     *
+     * @see     php://language.oop5.iterations
+     * @return  xp.compiler.types.Enumerator
+     */
+    public function getEnumerator() {
+      if ($this->class->_reflect->implementsInterface('Iterator')) {
+        $e= new xp·compiler·types·Enumerator();
+        $e->key= new TypeName($it->getMethod('key')->getReturnTypeName());
+        $e->value= new TypeName($it->getMethod('current')->getReturnTypeName());
+        $e->holder= $this;  
+        return $e;
+      } else if ($this->class->_reflect->implementsInterface('IteratorAggregate')) {
+        $it= $this->class->getMethod('getIterator')->getReturnTypeName();
+        if (2 === sscanf($it, '%*[^<]<%[^>]>', $types)) {
+          $components= explode(',', $types);
+        } else {
+          $components= array('var', 'var');
+        }
+        $e= new xp·compiler·types·Enumerator();
+        $e->key= new TypeName(trim($components[0]));
+        $e->value= new TypeName(trim($components[1]));
+        $e->holder= $this; 
+        return $e;
+      }
+
+      return NULL;
+    }
     
     /**
      * Create a type name object from a type name string. Corrects old 
@@ -121,9 +151,9 @@
         foreach ($constructor->getParameters() as $p) {
           $c->parameters[]= $this->typeNameOf($p->getTypeName());
         }
+        $c->holder= $this;  
+        return $c;
       }
-      $c->holder= $this;  
-      return $c;
     }
 
     /**
@@ -154,9 +184,9 @@
         foreach ($method->getParameters() as $p) {
           $m->parameters[]= $this->typeNameOf($p->getTypeName());
         }
+        $m->holder= $this;
+        return $m;
       }
-      $m->holder= $this;
-      return $m;
     }
 
     public static $ovl= array(
@@ -196,9 +226,9 @@
         foreach ($method->getParameters() as $p) {
           $m->parameters[]= $this->typeNameOf($p->getTypeName());
         }
+        $m->holder= $this;
+        return $m;
       }
-      $m->holder= $this;
-      return $m;
     }
 
     /**
@@ -224,9 +254,9 @@
         $f= new xp·compiler·types·Field();
         $f->name= $field->getName();
         $f->type= $this->typeNameOf($field->getType());
+        $f->holder= $this;
+        return $f;
       }
-      $f->holder= $this;
-      return $f;
     }
 
     /**
@@ -303,8 +333,8 @@
           $i->parameters[]= $this->typeNameOf($p->getTypeName());
         }
         $i->holder= $this;
+        return $i;
       }
-      return $i;
     }
 
     /**
@@ -338,6 +368,5 @@
     public function equals($cmp) {
       return $cmp instanceof self && $this->class->equals($cmp->class);
     }
-
   }
 ?>

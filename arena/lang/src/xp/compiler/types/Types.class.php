@@ -10,6 +10,7 @@
     'xp.compiler.types.Field',
     'xp.compiler.types.Property',
     'xp.compiler.types.Constant',
+    'xp.compiler.types.Enumerator',
     'xp.compiler.types.Indexer'
   );
 
@@ -62,6 +63,14 @@
      * @return  bool
      */
     public abstract function isEnumerable();
+
+    /**
+     * Returns the enumerator for this class or NULL if none exists.
+     *
+     * @see     php://language.oop5.iterations
+     * @return  xp.compiler.types.Enumerator
+     */
+    public abstract function getEnumerator();
 
     /**
      * Returns whether a constructor exists

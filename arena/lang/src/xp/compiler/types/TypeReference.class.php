@@ -73,6 +73,31 @@
     }
 
     /**
+     * Returns the enumerator for this class or NULL if none exists.
+     *
+     * @see     php://language.oop5.iterations
+     * @return  xp.compiler.types.Enumerator
+     */
+    public function getEnumerator() {
+      if ($this->type->isArray()) {
+        $e= new xp·compiler·types·Enumerator();
+        $e->key= new TypeName('int');
+        $e->value= $this->type->arrayComponentType();
+        $e->holder= $this;  
+        return $e;
+      } else if ($this->type->isMap()) {
+        $e= new xp·compiler·types·Enumerator();
+        $components= $this->type->mapComponentTypes();
+        $e->key= $components[0];
+        $e->value= $components[1];
+        $e->holder= $this;  
+        return $e;
+      }
+
+      return NULL;
+    }
+
+    /**
      * Returns whether this class has an indexer
      *
      * @return  bool

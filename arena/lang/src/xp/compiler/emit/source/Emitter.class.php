@@ -762,30 +762,26 @@
       $op->append('foreach (');
       $this->emitOne($op, $loop->expression);
       
-      // Assign key and value types:
-      // * Arrays:      int => $component
-      // * Maps:        $components[key] => $components[value]
-      // * Var:         int => var
-      // * Enumerable:  $components[0] => var
-      // * Any other:   int => var (+ WARNING)
+      // Assign key and value types by checking for loop expression's type
+      // * var type may be enumerable
+      // * any other type may define an overlad
       $t= $this->scope[0]->typeOf($loop->expression);
-      if ($t->isArray()) {
-        $it= $t->arrayComponentType();
-        $kt= new TypeName('int');
-      } else if ($t->isMap()) {
-        list($kt, $it)= $t->mapComponentTypes();
-      } else if ($t->isVariable()) {
-        $it= TypeName::$VAR;
-        $kt= new TypeName('int');
-      } else if ($this->resolveType($t)->isEnumerable()) {
-        $it= isset($t->components[0]) ? $t->components[0] : TypeName::$VAR;
+      if ($t->isVariable()) {
+        $this->warn('T203', 'Enumeration of (var)'.$loop->expression->hashCode().' verification deferred until runtime', $loop);
+        $vt= TypeName::$VAR;
         $kt= new TypeName('int');
       } else {
-        $this->warn('T300', 'Illegal type '.$t->toString().' for loop expression '.$loop->expression->getClassName().'['.$loop->expression->hashCode().']', $loop);
-        $it= TypeName::$VAR;
-        $kt= new TypeName('int');
+        $ptr= $this->resolveType($t);
+        if (!$ptr->isEnumerable()) {
+          $this->warn('T300', 'Type '.$ptr->name().' is not enumerable in loop expression '.$loop->expression->getClassName().'['.$loop->expression->hashCode().']', $loop);
+          $vt= TypeName::$VAR;
+          $kt= new TypeName('int');
+        } else {
+          $enum= $ptr->getEnumerator();
+          $vt= $enum->value;
+          $kt= $enum->key;
+        }
       }
-      $this->scope[0]->setType(new VariableNode($loop->assignment['value']), $it);
 
       $op->append(' as ');
       if (isset($loop->assignment['key'])) {
@@ -793,6 +789,7 @@
         $this->scope[0]->setType(new VariableNode($loop->assignment['key']), $kt);
       }
       $op->append('$'.$loop->assignment['value'].') {');
+      $this->scope[0]->setType(new VariableNode($loop->assignment['value']), $vt);
       $this->emitAll($op, (array)$loop->statements);
       $op->append('}');
     }

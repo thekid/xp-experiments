@@ -93,6 +93,17 @@
     }
 
     /**
+     * Returns the enumerator for this class or NULL if none exists.
+     *
+     * @see     php://language.oop5.iterations
+     * @return  xp.compiler.types.Enumerator
+     */
+    public function getEnumerator() {
+      // TBI
+      return NULL;
+    }
+
+    /**
      * Returns whether a constructor exists
      *
      * @return  bool
