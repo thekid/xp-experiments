@@ -13,7 +13,19 @@ implementation adds checks for:
 * Execution of undeclared class method
 * Certain PHP notices that often arise from typos or
   refactorings that can cause quite a big headache when
-  trying to trace a bug
+  trying to trace a bug:
+  . "Undefined offset ..."
+  . "Undefined index ..."
+  . "Undefined variable ..."
+  . "Use of undefined constant ..."
+  . "Missing argument ..."
+  . "Illegal string offset ..."
+  . "Illegal offset type ..."
+
+
+Prerequisites
+-------------
+This overlay requires XP 5.7.9 or greater.
 
 Installation
 -------------
@@ -25,4 +37,7 @@ just append the path
 
 to the use= setting in you xp.ini (usually located where your
 runners are).
+For use in a web environment you have to add
+this to you include_path setting in Apache configuration as
+the first (!) path element.
 
