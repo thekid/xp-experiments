@@ -18,6 +18,13 @@
      * @return  lang.XPClass<? extends xp.compiler.ast.Node>
      */
     public function node();
+
+    /**
+     * Return whether this check is to be run deferred
+     *
+     * @return  bool
+     */
+    public function defer();
     
     /**
      * Execute this check

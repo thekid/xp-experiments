@@ -21,6 +21,15 @@
     public function node() {
       return XPClass::forName('xp.compiler.ast.FieldNode');
     }
+
+    /**
+     * Return whether this check is to be run deferred
+     *
+     * @return  bool
+     */
+    public function defer() {
+      return FALSE;
+    }
     
     /**
      * Executes this check
@@ -30,7 +39,7 @@
      * @return  bool
      */
     public function verify(xp·compiler·ast·Node $node, Scope $scope) {
-      $routine= cast($node, 'xp.compiler.ast.FieldNode');
+      $field= cast($node, 'xp.compiler.ast.FieldNode');
 
       if ($scope->declarations[0] instanceof InterfaceNode) {
         return array('I403', 'Interfaces may not have field declarations');

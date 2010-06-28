@@ -21,6 +21,15 @@
     public function node() {
       return XPClass::forName('xp.compiler.ast.ConstantNode');
     }
+
+    /**
+     * Return whether this check is to be run deferred
+     *
+     * @return  bool
+     */
+    public function defer() {
+      return FALSE;
+    }
     
     /**
      * Executes this check

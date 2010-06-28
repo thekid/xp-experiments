@@ -21,6 +21,15 @@
     public function node() {
       return XPClass::forName('xp.compiler.ast.AssignmentNode');
     }
+
+    /**
+     * Return whether this check is to be run deferred
+     *
+     * @return  bool
+     */
+    public function defer() {
+      return FALSE;
+    }
     
     /**
      * Check whether a node is writeable - that is: can be the left-hand
@@ -34,8 +43,6 @@
         return TRUE;
       } else if ($node instanceof ClassMemberNode) {
         return $this->isWriteable($node->member);
-      } else if ($node instanceof ChainNode) {
-        return $this->isWriteable($node->elements[sizeof($node->elements)- 1]);
       } else if ($node instanceof DynamicVariableReferenceNode) {
         return TRUE;
       }

@@ -368,45 +368,22 @@
     public function emitMethodCall($op, MethodCallNode $call) {
       $op->mark();
       $this->emitOne($op, $call->target);
-
-      $type= $this->scope[0]->typeOf($call->target);
-      $result= TypeName::$VAR;
-      $ptr= new TypeInstance($this->resolveType($type));
       
       // Check for extension methods
+      $ptr= new TypeInstance($this->resolveType($this->scope[0]->typeOf($call->target)));
       if ($this->scope[0]->hasExtension($ptr, $call->name)) {
         $ext= $this->scope[0]->getExtension($ptr, $call->name);
         $op->insertAtMark($ext->holder->literal().'::'.$call->name.'(');
         $op->append(', ');
         $this->emitInvocationArguments($op, (array)$call->arguments);
         $op->append(')');
-        $this->scope[0]->setType($call, $result);
+        $this->scope[0]->setType($call, $ext->returns);
         return;
       }
 
-      // Check for type methods
-      if ($type->isClass()) {
-        if ($ptr->hasMethod($call->name)) {
-          $method= $ptr->getMethod($call->name);
-          if (!($method->modifiers & MODIFIER_PUBLIC)) {
-            $enclosing= $this->resolveType($this->scope[0]->declarations[0]->name);
-            if (
-              ($method->modifiers & MODIFIER_PRIVATE && !$enclosing->equals($ptr)) ||
-              ($method->modifiers & MODIFIER_PROTECTED && !($enclosing->equals($ptr) || $enclosing->isSubclassOf($ptr)))
-            ) {
-              $this->warn('T403', 'Invoking non-public '.$method->holder->name().'::'.$call->name.'() from '.$enclosing->name(), $call);
-            }
-          }
-          $result= $method->returns;
-        } else {
-          $this->warn('T201', 'No such method '.$call->name.'() in '.$type->compoundName(), $call);
-        }
-      } else if ($type->isVariable()) {
-        $this->warn('T203', 'Member call (var).'.$call->name.'() verification deferred until runtime', $call);
-      } else {
-        $this->warn('T305', 'Using member calls on unsupported type '.$type->toString(), $call);
-      }
-
+      // Manually verify as we can then rely on call target type being available
+      if (!$this->checks->verify($call, $this->scope[0], $this, TRUE)) return;
+      
       // Rewrite for unsupported syntax
       // - new Date().toString() to create(new Date()).toString()
       // - (<expr>).toString to create(<expr>).toString()
@@ -420,7 +397,7 @@
 
       $op->append('->'.$call->name);
       $this->emitInvocationArguments($op, (array)$call->arguments);
-      $this->scope[0]->setType($call, $result);
+      $this->scope[0]->setType($call, $ptr->hasMethod($call->name) ? $ptr->getMethod($call->name)->returns : TypeName::$VAR);
     }
 
     /**

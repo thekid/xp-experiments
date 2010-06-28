@@ -12,7 +12,7 @@
    * @see   xp://xp.compiler.checks.Check
    */
   class Checks extends Object {
-    protected $impl= array();
+    protected $impl= array(FALSE => array(), TRUE => array());
     
     /**
      * Add a check
@@ -21,7 +21,7 @@
      * @param   bool error
      */
     public function add(Check $impl, $error) {
-      $this->impl[]= array($impl->node(), $impl, $error);
+      $this->impl[$impl->defer()][]= array($impl->node(), $impl, $error);
     }
 
     /**
@@ -30,11 +30,12 @@
      * @param   xp.compiler.ast.Node in
      * @param   xp.compiler.types.Scope scope
      * @param   var messages
+     * @param   bool defer default FALSE
      * @return  bool whether to continue or not
      */
-    public function verify(xp·compiler·ast·Node $in, Scope $scope, $messages) {
+    public function verify(xp·compiler·ast·Node $in, Scope $scope, $messages, $defer= FALSE) {
       $continue= TRUE;
-      foreach ($this->impl as $impl) {
+      foreach ($this->impl[$defer] as $impl) {
         if (!$impl[0]->isInstance($in)) continue;
         if (!($message= $impl[1]->verify($in, $scope))) continue;
         if ($impl[2]) {
