@@ -142,7 +142,7 @@
      *
      */
     #[@test]
-    public function stringClassSubstringField() {
+    public function stringClassSubstringMethod() {
       $method= create(new TypeReflection(XPClass::forName('lang.types.String')))->getMethod('substring');
       $this->assertEquals(new TypeName('lang.types.String'), $method->returns);
       $this->assertEquals('substring', $method->name);

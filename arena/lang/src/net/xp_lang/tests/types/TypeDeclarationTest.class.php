@@ -136,7 +136,24 @@
             new ConstructorNode(array(
             )),
             new MethodNode(array(
-              'name' => 'substring'
+              'name'        => 'substring',
+              'returns'     => new TypeName('lang.types.String'),
+              'modifiers'   => MODIFIER_PUBLIC,
+              'parameters'  => array(
+                array(
+                  'name'  => 'start',
+                  'type'  => new TypeName('int'),
+                  'check' => TRUE
+                ), 
+                array(
+                  'name'  => 'end',
+                  'type'  => new TypeName('int'),
+                  'check' => TRUE
+                )
+              )
+            )),
+            new FieldNode(array(
+              'name' => 'length'
             )),
             new IndexerNode(array(
               'type'       => new TypeName('string'),
@@ -226,15 +243,66 @@
     }
 
     /**
-     * Test hasMethod() method
+     * Test hasMethod() method for inherited methods
      *
      */
     #[@test]
-    public function stringClassHasMethod() {
+    public function stringClassHasEqualsMethod() {
       $decl= $this->stringClass();
-      $this->assertTrue($decl->hasMethod('equals'), 'equals');
-      $this->assertTrue($decl->hasMethod('substring'), 'substring');
-      $this->assertFalse($decl->hasMethod('getName'), 'getName');
+      $this->assertTrue($decl->hasMethod('equals'));
+    }
+
+    /**
+     * Test hasMethod() method for instance methods
+     *
+     */
+    #[@test]
+    public function stringClassHasSubstringMethod() {
+      $decl= $this->stringClass();
+      $this->assertTrue($decl->hasMethod('substring'));
+    }
+
+    /**
+     * Test hasMethod() method for nonexistant methods
+     *
+     */
+    #[@test]
+    public function stringClassDoesNotHaveGetNameMethod() {
+      $decl= $this->stringClass();
+      $this->assertFalse($decl->hasMethod('getName'));
+    }
+
+    /**
+     * Test getMethod()
+     *
+     */
+    #[@test]
+    public function stringClassSubstringMethod() {
+      $method= $this->stringClass()->getMethod('substring');
+      $this->assertEquals(new TypeName('lang.types.String'), $method->returns);
+      $this->assertEquals('substring', $method->name);
+      $this->assertEquals(array(new TypeName('int'), new TypeName('int')), $method->parameters);
+      $this->assertEquals(MODIFIER_PUBLIC, $method->modifiers);
+    }
+
+    /**
+     * Test hasField() method for instance fields
+     *
+     */
+    #[@test]
+    public function stringClassHasLengthField() {
+      $decl= $this->stringClass();
+      $this->assertTrue($decl->hasField('length'));
+    }
+
+    /**
+     * Test hasField() method for nonexistant fields
+     *
+     */
+    #[@test]
+    public function stringClassDoesNotHaveCharsField() {
+      $decl= $this->stringClass();
+      $this->assertFalse($decl->hasField('chars'));
     }
 
     /**
