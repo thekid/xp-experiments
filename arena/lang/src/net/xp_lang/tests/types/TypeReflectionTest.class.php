@@ -108,15 +108,78 @@
     }
 
     /**
-     * Test hasMethod() method
+     * Test hasMethod() method for inherited methods
      *
      */
     #[@test]
-    public function stringClassHasMethod() {
+    public function stringClassHasEqualsMethod() {
       $decl= new TypeReflection(XPClass::forName('lang.types.String'));
-      $this->assertTrue($decl->hasMethod('equals'), 'equals');
-      $this->assertTrue($decl->hasMethod('substring'), 'substring');
-      $this->assertFalse($decl->hasMethod('getName'), 'getName');
+      $this->assertTrue($decl->hasMethod('equals'));
+    }
+
+    /**
+     * Test hasMethod() method for instance methods
+     *
+     */
+    #[@test]
+    public function stringClassHasSubstringMethod() {
+      $decl= new TypeReflection(XPClass::forName('lang.types.String'));
+      $this->assertTrue($decl->hasMethod('substring'));
+    }
+
+    /**
+     * Test hasMethod() method for nonexistant methods
+     *
+     */
+    #[@test]
+    public function stringClassDoesNotHaveGetNameMethod() {
+      $decl= new TypeReflection(XPClass::forName('lang.types.String'));
+      $this->assertFalse($decl->hasMethod('getName'));
+    }
+
+    /**
+     * Test getMethod()
+     *
+     */
+    #[@test]
+    public function stringClassSubstringField() {
+      $method= create(new TypeReflection(XPClass::forName('lang.types.String')))->getMethod('substring');
+      $this->assertEquals(new TypeName('lang.types.String'), $method->returns);
+      $this->assertEquals('substring', $method->name);
+      $this->assertEquals(array(new TypeName('int'), new TypeName('int')), $method->parameters);
+      $this->assertEquals(MODIFIER_PUBLIC, $method->modifiers);
+    }
+
+    /**
+     * Test hasField() method for instance fields
+     *
+     */
+    #[@test]
+    public function stringClassHasLengthField() {
+      $decl= new TypeReflection(XPClass::forName('lang.types.String'));
+      $this->assertTrue($decl->hasField('length'));
+    }
+
+    /**
+     * Test hasField() method for nonexistant fields
+     *
+     */
+    #[@test]
+    public function stringClassDoesNotHaveCharsField() {
+      $decl= new TypeReflection(XPClass::forName('lang.types.String'));
+      $this->assertFalse($decl->hasField('chars'));
+    }
+
+    /**
+     * Test getField()
+     *
+     */
+    #[@test]
+    public function stringClassLengthField() {
+      $field= create(new TypeReflection(XPClass::forName('lang.types.String')))->getField('length');
+      $this->assertEquals(TypeName::$VAR, $field->type);
+      $this->assertEquals('length', $field->name);
+      $this->assertEquals(MODIFIER_PROTECTED, $field->modifiers);
     }
 
     /**
