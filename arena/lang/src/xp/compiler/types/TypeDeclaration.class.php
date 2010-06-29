@@ -242,12 +242,14 @@
         if ($member instanceof FieldNode && $member->name === $name) {
           $f= new xp·compiler·types·Field();
           $f->name= $member->name;
+          $f->modifiers= $member->modifiers;
           $f->type= $member->type;
           $f->holder= $this;
           return $f;
         } else if ($member instanceof EnumMemberNode) {
           $f= new xp·compiler·types·Field();
           $f->name= $member->name;
+          $f->modifiers= $member->modifiers;
           $f->type= $this->tree->declaration->name;
           $f->holder= $this;
           return $f;
@@ -280,6 +282,7 @@
         if ($member instanceof PropertyNode && $member->name === $name) {
           $p= new xp·compiler·types·Property();
           $p->name= $member->name;
+          $p->modifiers= $member->modifiers;
           $p->type= $member->type;
           $p->holder= $this;
           return $p;

@@ -397,6 +397,8 @@
 
       $op->append('->'.$call->name);
       $this->emitInvocationArguments($op, (array)$call->arguments);
+
+      // Record type
       $this->scope[0]->setType($call, $ptr->hasMethod($call->name) ? $ptr->getMethod($call->name)->returns : TypeName::$VAR);
     }
 
@@ -411,26 +413,17 @@
       $this->emitOne($op, $access->target);
       
       $type= $this->scope[0]->typeOf($access->target);
-      $result= TypeName::$VAR;
-      if ($type->isClass()) {
-        $ptr= new TypeInstance($this->resolveType($type));
-        if ($ptr->hasField($access->name)) {
-          $result= $ptr->getField($access->name)->type;
-        } else if ($ptr->hasProperty($access->name)) {
-          $result= $ptr->getProperty($access->name)->type;
-        } else {
-          $this->warn('T201', 'No such field or property '.$access->name.' in '.$type->toString(), $access);
-        }
-      } else if ($type->isVariable()) {
-        $this->warn('T203', 'Member access (var).'.$access->name.' verification deferred until runtime', $access);
-      } else if ($type->isArray() && 'length' === $access->name) {
+      
+      // Overload [...].length
+      if ($type->isArray() && 'length' === $access->name) {
         $op->insertAtMark('sizeof(');
         $op->append(')');
         $this->scope[0]->setType($access, new TypeName('int'));
         return;
-      } else {
-        $this->warn('T305', 'Using member access on unsupported type '.$type->toString(), $access);
       }
+
+      // Manually verify as we can then rely on call target type being available
+      if (!$this->checks->verify($access, $this->scope[0], $this, TRUE)) return;
 
       // Rewrite for unsupported syntax
       // - new Person().name to create(new Person()).name
@@ -444,6 +437,16 @@
       }
 
       $op->append('->'.$access->name);
+      
+      // Record type
+      $ptr= new TypeInstance($this->resolveType($type));
+      if ($ptr->hasField($access->name)) {
+        $result= $ptr->getField($access->name)->type;
+      } else if ($ptr->hasProperty($access->name)) {
+        $result= $ptr->getProperty($access->name)->type;
+      } else {
+        $result= TypeName::$VAR;
+      }
       $this->scope[0]->setType($access, $result);
     }
 

@@ -263,6 +263,7 @@
       with ($field= $this->class->getField($name)); {
         $f= new xp·compiler·types·Field();
         $f->name= $field->getName();
+        $f->modifiers= $field->getModifiers();
         $f->type= $this->typeNameOf($field->getType());
         $f->holder= $this;
         return $f;
