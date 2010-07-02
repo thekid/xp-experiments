@@ -63,8 +63,8 @@
 
       $packet.= pack('CCC', 0x00, 0x0d, 0x11);        // Magic bytes (4)
       $packet.= pack('a30CC',
-        'us-english',                                 // language,
-        strlen('us-english'),                         // length of language
+        'us_english',                                 // language,
+        strlen('us_english'),                         // length of language
         0x00                                          // "connection->suppress_language"
       );
       $packet.= pack('xx');                           // Magic bytes (5)
@@ -72,7 +72,7 @@
       $packet.= pack('xxxxxxxxxx');                   // Magic bytes (6)
 
       // Char set
-      $packet.= pack('a30CC', 'iso1', strlen('iso1'), 1);              // Set client charset
+      $packet.= pack('a30CC', 'iso_1', strlen('iso_1'), 1);
 
       // Network packet size (in text!)
       $packet.= pack('a6C', '512', strlen('512'));
@@ -81,6 +81,9 @@
       $packet.= pack('xxxx');
       $packet.= pack('C', 0xE2);                      // 0xE2 = 226 = TDS_CAPABILITY_TOKEN
       $packet.= pack('n', 22);                        // 22 = TDS_MAX_CAPABILITY
+
+      // TODO: Capability tokens should not be hardcoded, but meaningful;
+      // anyways, this works.
       $packet.= pack('CCCCCCCCCCCCCCCCxxxx',
         0x01, 0x07, 0x00, 0x60, 0x81, 0xcf, 0xFF, 0xFE, 0x3e,
         0x02, 0x07, 0x00, 0x00, 0x00, 0x78, 0xc0, 0x00, 0x00
