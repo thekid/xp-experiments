@@ -38,10 +38,11 @@
         (string)getmypid(), min(30, strlen(getmypid()))
       );
 
-      $packet.= pack('CCCCCCCCCx',
-        0x02, 0x00, 0x06, 0x04, 0x08, 0x01,   // magic bytes (1)
+      $packet.= pack('CCCCCCCCCN',
+        0x03, 0x01, 0x06, 0x0a, 0x09, 0x01,   // magic bytes (1)
         0,                                    // connection->bulk_copy ?
-        0x00, 0x00                            // magic bytes (2)
+        0x00, 0x00,                           // magic bytes (2)
+        0x00                                  // 4 null bytes for TDS5.0
       );
 
       $packet.= pack('CCCa30Ca30C',
@@ -56,27 +57,34 @@
 
       // Protocol & program version (TDS 5.0)
       $packet.= pack('CCCC', 0x05, 0x00, 0x00, 0x00); // Protocol
-      $packet.= pack('a10', 'Ct-Library');            // Client library name
+      $packet.= pack('a10C', 'Ct-Library', strlen('Ct-Library')); // Client library name
       $packet.= pack('CCCC', 0x05, 0x00, 0x00, 0x00); // Program
 
 
-      $packet.= pack('CCC', 0x00, 13, 17);            // Magic bytes (4)
-      $packet.= pack('a30C', 'us-english', 0x00);     // language, "connection->suppress_language"
+      $packet.= pack('CCC', 0x00, 0x0d, 0x11);        // Magic bytes (4)
+      $packet.= pack('a30CC',
+        'us-english',                                 // language,
+        strlen('us-english'),                         // length of language
+        0x00                                          // "connection->suppress_language"
+      );
       $packet.= pack('xx');                           // Magic bytes (5)
       $packet.= pack('C', 0);                         // connection->encryption_level (1 / 0)
-      $packet.= pack('xxxxx');                        // Magic bytes (6)
+      $packet.= pack('xxxxxxxxxx');                   // Magic bytes (6)
 
       // Char set
-      $packet.= pack('a30C', 'iso1', 1);              // Set client charset
+      $packet.= pack('a30CC', 'iso1', strlen('iso1'), 1);              // Set client charset
 
       // Network packet size (in text!)
-      $packet.= pack('a6', '512');
+      $packet.= pack('a6C', '512', strlen('512'));
 
       // TDS 5.0 specific end
       $packet.= pack('xxxx');
       $packet.= pack('C', 0xE2);                      // 0xE2 = 226 = TDS_CAPABILITY_TOKEN
-      $packet.= pack('N', 22);                        // 22 = TDS_MAX_CAPABILITY
-      $packet.= pack('a22', '');                      // tds->capabilities
+      $packet.= pack('n', 22);                        // 22 = TDS_MAX_CAPABILITY
+      $packet.= pack('CCCCCCCCCCCCCCCCxxxx',
+        0x01, 0x07, 0x00, 0x60, 0x81, 0xcf, 0xFF, 0xFE, 0x3e,
+        0x02, 0x07, 0x00, 0x00, 0x00, 0x78, 0xc0, 0x00, 0x00
+      );
 
       $this->sendPacket(self::TDS_PT_LOGIN, $packet);
 
