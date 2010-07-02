@@ -75,11 +75,21 @@
       $packet.= pack('N', 22);                        // 22 = TDS_MAX_CAPABILITY
       $packet.= pack('a22', '');                      // tds->capabilities
 
-      $this->cat && $this->cat->debug('>>>', addcslashes($packet, "\0..\37!@\177..\377"));
-      $this->sock->write($packet);
+      $this->sendPacket(self::TDS_PT_LOGIN, $packet);
 
       $recv= $this->sock->read();
       $this->cat && $this->cat->debug('<<<', addcslashes($recv, "\0..\37!@\177..\377"));
+    }
+
+    protected function sendPacket($type, $data) {
+      $wire= pack('CCNxxxx',
+        $type,
+        self::TDS_LAST_PACKET,              // TODO: Implement splitting packets
+        strlen($data)
+      ).$data;
+
+      $this->cat && $this->cat->debug('>>>', addcslashes($wire, "\0..\37!@\177..\377"));
+      $this->sock->write($wire);
     }
 
     /**
