@@ -20,6 +20,9 @@
       TDS_MORE_PACKETS  = 0x00,
       TDS_LAST_PACKET   = 0x01;
 
+    const
+      TDS_PACKETSIZE    = 512;
+
     public function connect(Socket $s, $user= '', $pass= '') {
       $this->sock= $s;
       if (!$this->sock->isConnected()) $this->sock->connect();
@@ -82,14 +85,22 @@
     }
 
     protected function sendPacket($type, $data) {
-      $wire= pack('CCNxxxx',
-        $type,
-        self::TDS_LAST_PACKET,              // TODO: Implement splitting packets
-        strlen($data)
-      ).$data;
+      $this->cat && $this->cat->debug('Have', strlen($data), 'bytes to send.');
 
-      $this->cat && $this->cat->debug('>>>', addcslashes($wire, "\0..\37!@\177..\377"));
-      $this->sock->write($wire);
+      while ($data) {
+        $slice= substr($data, 0, min(strlen($data), self::TDS_PACKETSIZE- 8));
+        $data= substr($data, strlen($slice));
+
+        $this->cat && $this->cat->debug('Sending', strlen($slice), 'bytes for slice,', strlen($data), 'bytes remaining.');
+        $wire= pack('CCnxxxx',
+          $type,
+          (strlen($data) > 0 ? self::TDS_MORE_PACKETS : self::TDS_LAST_PACKET),
+          strlen($slice)+ 8
+        ).$slice;
+
+        $this->cat && $this->cat->debug('>>>', addcslashes($wire, "\0..\37!@\177..\377"));
+        $this->sock->write($wire);
+      }
     }
 
     /**
