@@ -1,7 +1,16 @@
 <?php
+
+  uses(
+   'rdbms.sybasex.SybasexPacket',
+   'peer.SocketInputStream',
+   'peer.SocketOutputStream'
+  );
+
   class SybasexProtocol extends Object {
     protected
       $sock = NULL,
+      $in   = NULL,
+      $out  = NULL,
       $cat  = NULL;
 
     const
@@ -21,11 +30,15 @@
       TDS_LAST_PACKET   = 0x01;
 
     const
+      TDS_HEADERSIZE    = 8,
       TDS_PACKETSIZE    = 512;
 
     public function connect(Socket $s, $user= '', $pass= '') {
       $this->sock= $s;
       if (!$this->sock->isConnected()) $this->sock->connect();
+
+      $this->in= new SocketInputStream($this->sock);
+      $this->out= new SocketOutputStream($this->sock);
 
       // Details from:
       // http://freetds.org/tds.html
@@ -84,34 +97,72 @@
 
       // TODO: Capability tokens should not be hardcoded, but meaningful;
       // anyways, this works.
-      $packet.= pack('CCCCCCCCCCCCCCCCxxxx',
+      $packet.= pack('CCCCCCCCCCCCCCCCCCxxxx',
         0x01, 0x07, 0x00, 0x60, 0x81, 0xcf, 0xFF, 0xFE, 0x3e,
         0x02, 0x07, 0x00, 0x00, 0x00, 0x78, 0xc0, 0x00, 0x00
       );
 
       $this->sendPacket(self::TDS_PT_LOGIN, $packet);
 
-      $recv= $this->sock->read();
-      $this->cat && $this->cat->debug('<<<', addcslashes($recv, "\0..\37!@\177..\377"));
+      $recv= $this->readPacket();
+      $recv->setTrace($this->cat);
+      $this->cat && $this->cat->debug('Received', $recv);
+
+      while ($token= $recv->nextToken()) {}
+    }
+
+    protected function readPacket() {
+      $last= FALSE;
+      $data= '';
+      $type= NULL;
+
+      while (!$last) {
+        // Read header
+        $recv= $this->in->read(self::TDS_HEADERSIZE);
+        $header= unpack('Ctype/Clast/nlength/xxxx', $recv);
+        $last= $header['last'] === self::TDS_LAST_PACKET;
+
+        $this->cat && $this->cat->debug('<<<', strlen($recv), '~', addcslashes($recv, "\0..\37!@\177..\377"));
+        $this->cat && $this->cat->debug('<<<', 'Received header:', $header);
+
+        $this->cat && $this->cat->debug('<<< Trying to read', $header['length']- self::TDS_HEADERSIZE, 'bytes.');
+        $recv= $this->in->read($header['length']- self::TDS_HEADERSIZE);
+        $this->cat && $this->cat->debug('<<<', addcslashes($recv, "\0..\37!@\177..\377"));
+
+        $data.= $recv;
+      }
+
+      return $this->_packet($type, $data);
     }
 
     protected function sendPacket($type, $data) {
       $this->cat && $this->cat->debug('Have', strlen($data), 'bytes to send.');
 
       while ($data) {
-        $slice= substr($data, 0, min(strlen($data), self::TDS_PACKETSIZE- 8));
+        $slice= substr($data, 0, min(strlen($data), self::TDS_PACKETSIZE- self::TDS_HEADERSIZE));
         $data= substr($data, strlen($slice));
 
         $this->cat && $this->cat->debug('Sending', strlen($slice), 'bytes for slice,', strlen($data), 'bytes remaining.');
         $wire= pack('CCnxxxx',
           $type,
           (strlen($data) > 0 ? self::TDS_MORE_PACKETS : self::TDS_LAST_PACKET),
-          strlen($slice)+ 8
+          strlen($slice)+ self::TDS_HEADERSIZE
         ).$slice;
 
         $this->cat && $this->cat->debug('>>>', addcslashes($wire, "\0..\37!@\177..\377"));
-        $this->sock->write($wire);
+        $this->out->write($wire);
       }
+    }
+
+    /**
+     * Create packet object
+     *
+     * @param   int type
+     * @param   string data
+     * @return  rdbms.sybasex.SybasexPacket
+     */
+    protected function _packet($type, $data) {
+      return new SybasexPacket($type, $data);
     }
 
     /**
