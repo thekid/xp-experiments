@@ -52,15 +52,13 @@
       $left->setBlocking(FALSE);
 
       while ($left->isConnected() && $right->isConnected()) {
-        $this->out->write('.');
-
         if (strlen($data= $left->readBinary()) > 0) {
-          $this->out->writeLine('>>> '.addcslashes($data, "\0..\37!@\177..\377"));
+          $this->dumpHexTo($this->out, '>>>', $data);
           $right->write($data);
         }
 
         if (strlen($data= $right->readBinary()) > 0) {
-          $this->out->writeLine('<<< '.addcslashes($data, "\0..\37!@\177..\377"));
+          $this->dumpHexTo($this->out, '<<<', $data);
           $left->write($data);
         }
 
@@ -77,6 +75,26 @@
 
       $left->close();
       $right->close();
+    }
+
+    protected function dumpHexTo($out, $prefix, $data) {
+      $i= 0;
+      while ($i < strlen($data)) {
+        $out->writef('%s %08d ', $prefix, $i);
+
+        $real= '';
+        for ($j= 0; $j + $i < strlen($data) && $j < 16; $j++) {
+          $out->writef('%02x ', ord($data{$i + $j}));
+
+          $real.= (ord($data{$i + $j}) > 37) ? $data{$i + $j} : '.';
+        }
+
+        // Jump to the end of line
+        $out->write(str_repeat('   ', 16- $j));
+
+        $out->writeLine('|', $real, '|');
+        $i+= $j;
+      }
     }
   }
 
