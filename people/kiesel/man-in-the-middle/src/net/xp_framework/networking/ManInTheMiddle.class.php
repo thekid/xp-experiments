@@ -80,7 +80,7 @@
     protected function dumpHexTo($out, $prefix, $data) {
       $i= 0;
       while ($i < strlen($data)) {
-        $out->writef('%s %08d ', $prefix, $i);
+        $out->writef('%s %08d  ', $prefix, $i);
 
         $real= '';
         for ($j= 0; $j + $i < strlen($data) && $j < 16; $j++) {
@@ -92,7 +92,7 @@
         // Jump to the end of line
         $out->write(str_repeat('   ', 16- $j));
 
-        $out->writeLine('|', $real, '|');
+        $out->writeLine(' |', $real, '|');
         $i+= $j;
       }
     }
