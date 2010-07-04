@@ -195,7 +195,7 @@
      * @return  string
      */
     protected function lstr($data, &$consumed) {
-      if ("\373" === $data{0}) {
+      if ("\373" === $data{$consumed}) {
         $consumed++;
         return NULL;
       }
