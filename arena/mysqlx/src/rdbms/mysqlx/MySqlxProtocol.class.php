@@ -300,6 +300,20 @@
     }
     
     /**
+     * Read a number of bytes
+     *
+     * @param   int bytes
+     * @return  string
+     */
+    protected function readFully($bytes) {
+      $b= '';
+      while (strlen($b) < $bytes) {
+        $b.= $this->sock->readBinary($bytes- strlen($b));
+      }
+      return $b;
+    }
+    
+    /**
      * Protocol read
      *
      * @return  string
@@ -317,10 +331,10 @@
           throw new ProtocolException('Packet no. out of order, have '.$pkt.', expecting '.$this->pkt);
         }
         $this->pkt= $this->pkt+ 1 & 0xFF;
-        $buf.= $this->sock->readBinary($len);
+        $buf.= $this->readFully($len);
       }
 
-      // DEBUG Console::$err->writeLine('R ', new Bytes($buf));
+      // DEBUG Console::$err->writeLine('R-> ', new Bytes($buf));
       
       // 0xFF indicates an error
       if (0xFF !== ord($buf[0])) return $buf;
