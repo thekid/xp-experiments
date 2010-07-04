@@ -180,11 +180,13 @@
     }
     
     protected function lstr($data, &$consumed) {
-      $o= $consumed;
-      $l= $this->length($data, $consumed);
-      $str= substr($data, $consumed, $l);
+      if (NULL === ($l= $this->length($data, $consumed))) {
+        $r= NULL;
+      } else {
+        $r= substr($data, $consumed, $l);
+      }
       $consumed+= $l;
-      return $str;
+      return $r;
     }
     
     /**
