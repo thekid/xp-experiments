@@ -17,7 +17,7 @@
    */
   class Query extends Command {
     protected $protocol= NULL;
-    protected $query= NULL;
+    protected $queries= array();
     
     /**
      * Set dsn (e.g. mysqlx://user:pass@host[:port])
@@ -32,32 +32,35 @@
     }
 
     /**
-     * Set SQL query to execute
+     * Set SQL queries to execute
      *
-     * @param   string query
+     * @param   string[] query
      */
-    #[@arg(position= 1)]
-    public function setQuery($query) {
-      $this->query= $query;
+    #[@args(select= '[1..]')]
+    public function setQuery($queries) {
+      $this->queries= $queries;
     }
-
+    
     /**
      * Main runner method
      *
      */
     public function run() {
-      try {
-        $q= $this->protocol->query($this->query);
-        if (is_array($q)) {
-          $i= 0;
-          while ($r= $this->protocol->fetch($q)) {
-            $this->out->writeLine(++$i, ': ', $r);
+      foreach ($this->queries as $query) {
+        $this->out->writeLine('Q: ', $query);
+        try {
+          $q= $this->protocol->query($query);
+          if (is_array($q)) {
+            $i= 0;
+            while ($r= $this->protocol->fetch($q)) {
+              $this->out->writeLine(++$i, ': ', $r);
+            }
+          } else {
+            $this->out->writeLine($q);
           }
-        } else {
-          $this->out->writeLine($q);
+        } catch (Throwable $e) {
+          $this->err->writeLine($e);
         }
-      } catch (Throwable $e) {
-        $this->err->writeLine($e);
       }
     }
 
