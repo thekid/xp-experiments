@@ -175,11 +175,11 @@
      */
     protected function length($data, &$consumed, $ll= FALSE) {
       $o= $consumed;
-      switch (ord($data[$consumed])) {
-        case 251: $consumed+= 1; return NULL;
-        case 252: $consumed+= 3; return ord($data[$o+ 1]) + ord($data[$o+ 2]) * 256;
-        case 253: $consumed+= 4; return ord($data[$o+ 1]) + ord($data[$o+ 2]) * 256 + ord($data[$o+ 3]) * 65536;
-        case 254: $consumed+= 9; return $ll
+      switch ($data{$consumed}) {
+        case "\373": $consumed+= 1; return NULL;
+        case "\374": $consumed+= 3; return ord($data[$o+ 1]) + ord($data[$o+ 2]) * 256;
+        case "\375": $consumed+= 4; return ord($data[$o+ 1]) + ord($data[$o+ 2]) * 256 + ord($data[$o+ 3]) * 65536;
+        case "\376": $consumed+= 9; return $ll
           ? $data[$o+ 1] + $data[$o+ 2] * 256 + $data[$o+ 3] * 65536 + $data[$o+ 4] * pow(256, 3) + $data[$o+ 5] * pow(256, 4) + $data[$o+ 6] * pow(256, 5) + $data[$o+ 6] * pow(256, 6) + $data[$o+ 8] * pow(256, 7)
           : $data[$o+ 1] + $data[$o+ 2] * 256 + $data[$o+ 3] * 65536 + $data[$o+ 4] * pow(256, 3)
         ;
@@ -272,7 +272,7 @@
         if (3 === $fields[$i]['type']) {
           $record[$fields[$i]['name']]= intval($value);
         } else if (12 === $fields[$i]['type']) {
-          $record[$fields[$i]['name']]= new Date($value);
+          $record[$fields[$i]['name']]= '0000-00-00 00:00:00' === $value ? NULL : new Date($value);
         } else {
           $record[$fields[$i]['name']]= $value;
         }
