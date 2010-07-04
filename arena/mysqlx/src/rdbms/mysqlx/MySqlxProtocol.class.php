@@ -337,7 +337,7 @@
       // DEBUG Console::$err->writeLine('R-> ', new Bytes($buf));
       
       // 0xFF indicates an error
-      if (0xFF !== ord($buf[0])) return $buf;
+      if ("\377" !== $buf{0}) return $buf;
 
       $sqlstate= '00000';
       $errno= -1;
