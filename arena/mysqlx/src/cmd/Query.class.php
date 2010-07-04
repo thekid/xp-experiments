@@ -48,9 +48,13 @@
     public function run() {
       try {
         $q= $this->protocol->query($this->query);
-        $i= 0;
-        while ($r= $this->protocol->fetch($q)) {
-          $this->out->writeLine(++$i, ': ', $r);
+        if (is_array($q)) {
+          $i= 0;
+          while ($r= $this->protocol->fetch($q)) {
+            $this->out->writeLine(++$i, ': ', $r);
+          }
+        } else {
+          $this->out->writeLine($q);
         }
       } catch (Throwable $e) {
         $this->err->writeLine($e);

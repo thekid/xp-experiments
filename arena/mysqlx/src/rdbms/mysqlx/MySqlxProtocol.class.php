@@ -167,7 +167,7 @@
     
     protected function length($data, &$consumed, $ll= FALSE) {
       $o= $consumed;
-      switch ($data[$consumed]) {
+      switch (ord($data[$consumed])) {
         case 251: $consumed+= 1; return NULL;
         case 252: $consumed+= 3; return ord($data[$o+ 1]) + ord($data[$o+ 2]) * 256;
         case 253: $consumed+= 4; return ord($data[$o+ 1]) + ord($data[$o+ 2]) * 256 + ord($data[$o+ 3]) * 65536;
@@ -188,38 +188,31 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Issues a query and returns the results
      *
      * @param   string sql
-     * @return  
+     * @return  var
      */
     public function query($sql) {
       $this->pkt= 0;    // Reset packet number, every command starts a new transaction
       
       $this->write(chr(self::COM_QUERY).$sql);
       $data= $this->read();
-      
       $consumed= 0;
       $nfields= $this->length($data, $consumed);
       
-      if (NULL === $nfields) {
-        // LOAD DATA LOCAL INFILE
-      } else if (0 === $nfields) {
+      if (NULL === $nfields) {          // LOAD DATA LOCAL INFILE
+      
+        // TODO: Implement
+      
+      } else if (0 === $nfields) {      // Results from an insert / update / delete query
         $affected= $this->length($data, $consumed, TRUE);
         $identity= $this->length($data, $consumed, TRUE);
-/*        
-358       if @server_capabilities & CLIENT_TRANSACTIONS != 0 then 
-359         a = data.slice!(0,2) 
-360         @server_status = a[0]+a[1]*256 
-361       end 
-362       if data.size > 0 and get_length(data) then 
-363         @info = data 
-364       end 
-*/        
-      } else {
+        
+        // TODO: What do we return here?
+        return $affected;
+      } else {                          // Result sets, process fields and EOF record
         $extra= $this->length($data, $consumed, TRUE);
-
-        // Process fields and EOF record
         $fields= array();
         for ($i= 0; $i < $nfields; $i++) {
           $f= $this->read();
@@ -232,13 +225,11 @@
           $field['name']= $this->lstr($f, $consumed);
           $field['org_name']= $this->lstr($f, $consumed);
           $field= array_merge($field, unpack('vcharsetnr/Vlength/ctype/vflags/cdecimals', substr($f, $consumed+ 1, 10)));
-
           $fields[]= $field;
         }
-        $this->read();
+        $this->read();                  // EOF[ields] record
         
         // DEBUG Console::$err->writeLine('F ', $fields);
-        
         return $fields;
       }
             
@@ -253,16 +244,16 @@
      */
     public function fetch($fields) {
       $r= $this->read();
-      $consumed= 0;
       if (254 === ord($r[0]) && strlen($r) < 9) return NULL;
 
       $record= array();
+      $consumed= 0;
       for ($i= 0; $i < sizeof($fields); $i++) {
         $value= $this->lstr($r, $consumed);
         if (3 === $fields[$i]['type']) {
           $record[$fields[$i]['name']]= intval($value);
         } else if (12 === $fields[$i]['type']) {
-           $record[$fields[$i]['name']]= new Date($value);
+          $record[$fields[$i]['name']]= new Date($value);
         } else {
           $record[$fields[$i]['name']]= $value;
         }
