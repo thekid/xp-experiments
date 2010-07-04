@@ -239,31 +239,35 @@
         
         // DEBUG Console::$err->writeLine('F ', $fields);
         
-        // Now read data
-        $result= array();
-        do {
-          $r= $this->read();
-          $consumed= 0;
-          if (254 === ord($r[0]) && strlen($r) < 9) break;
-
-          $record= array();
-          for ($i= 0; $i < sizeof($fields); $i++) {
-            $value= $this->lstr($r, $consumed);
-            if (3 === $fields[$i]['type']) {
-              $record[$fields[$i]['name']]= intval($value);
-            } else if (12 === $fields[$i]['type']) {
-               $record[$fields[$i]['name']]= new Date($value);
-            } else {
-              $record[$fields[$i]['name']]= $value;
-            }
-          }
-
-          $result[]= $record;
-        } while (1);
-        return $result;
+        return $fields;
       }
             
       return NULL;
+    }
+    
+    /**
+     * Fetches one record
+     *
+     * @param   [string:var][] fields
+     * @return  [string:var] record
+     */
+    public function fetch($fields) {
+      $r= $this->read();
+      $consumed= 0;
+      if (254 === ord($r[0]) && strlen($r) < 9) return NULL;
+
+      $record= array();
+      for ($i= 0; $i < sizeof($fields); $i++) {
+        $value= $this->lstr($r, $consumed);
+        if (3 === $fields[$i]['type']) {
+          $record[$fields[$i]['name']]= intval($value);
+        } else if (12 === $fields[$i]['type']) {
+           $record[$fields[$i]['name']]= new Date($value);
+        } else {
+          $record[$fields[$i]['name']]= $value;
+        }
+      }
+      return $record;
     }
     
     /**

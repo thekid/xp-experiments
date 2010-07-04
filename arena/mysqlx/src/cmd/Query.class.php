@@ -47,7 +47,11 @@
      */
     public function run() {
       try {
-        $this->out->writeLine($this->protocol->query($this->query));
+        $q= $this->protocol->query($this->query);
+        $i= 0;
+        while ($r= $this->protocol->fetch($q)) {
+          $this->out->writeLine(++$i, ': ', $r);
+        }
       } catch (Throwable $e) {
         $this->err->writeLine($e);
       }
