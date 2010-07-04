@@ -27,9 +27,8 @@
     #[@arg(position= 0)]
     public function setConnection($dsn) {
       $dsn= new DSN($dsn);
-      $this->protocol= new MySqlxProtocol();
-      $s= new Socket($dsn->getHost(), $dsn->getPort(3306));
-      $this->protocol->connect($s, $dsn->getUser(), $dsn->getPassword());
+      $this->protocol= new MySqlxProtocol(new Socket($dsn->getHost(), $dsn->getPort(3306)));
+      $this->protocol->connect($dsn->getUser(), $dsn->getPassword());
     }
 
     /**
@@ -52,6 +51,14 @@
       } catch (Throwable $e) {
         $this->err->writeLine($e);
       }
+    }
+
+    /**
+     * Destructor. Closes communications.
+     *
+     */
+    public function __destruct() {
+      $this->protocol && $this->protocol->close();
     }
   }
 ?>

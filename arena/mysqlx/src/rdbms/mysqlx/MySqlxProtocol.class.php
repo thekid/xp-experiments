@@ -7,8 +7,9 @@
   uses('peer.Socket', 'peer.ProtocolException', 'rdbms.mysqlx.MySqlPassword', 'util.Date');
 
   /**
-   * (Insert class' description here)
+   * MySQL protocol implementation
    *
+   * @see   http://forge.mysql.com/wiki/MySQL_Internals_ClientServer_Protocol
    */
   class MySqlxProtocol extends Object {
     protected $pkt= 0;
@@ -34,6 +35,7 @@
     const CLIENT_MULTI_STATEMENTS  = 0x10000;
     const CLIENT_MULTI_RESULTS     = 0x20000;
 
+    // Commands
     const COM_SLEEP           = 0;
     const COM_QUIT            = 1;
     const COM_INIT_DB         = 2;
@@ -57,10 +59,23 @@
     const COM_CONNECT_OUT     = 20;
     const COM_REGISTER_SLAVE  = 21;
     
-    // const CLIENT_CAPABILITIES = CLIENT_LONG_PASSWORD|CLIENT_LONG_FLAG|CLIENT_TRANSACTIONS 
-
-    public function connect(Socket $s, $user= '', $password= '') {
+    /**
+     * Creates a new protocol instance
+     *
+     * @param   peer.Socket s
+     */
+    public function __construct(Socket $s) {
       $this->sock= $s;
+    }
+
+    /**
+     * Connect
+     *
+     * @param   string user
+     * @param   string user
+     * @throws  io.IOException
+     */
+    public function connect($user= '', $password= '') {
       $this->sock->isConnected() || $this->sock->connect();
       $buf= $this->read();
       
@@ -125,6 +140,21 @@
       $this->read();
     }
 
+    /**
+     * Close
+     *
+     */
+    public function close() {
+      if (!$this->sock->isConnected()) return;
+
+      try {
+        $this->write(chr(self::COM_QUIT));
+      } catch (IOException $ignored) {
+        // Can't do much here
+      }
+      $this->sock->close();
+    }
+    
     /**
      * Returns an ineger serialized as INT3
      *
