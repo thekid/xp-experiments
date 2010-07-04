@@ -307,8 +307,8 @@
      */
     protected function readFully($bytes) {
       $b= '';
-      while (strlen($b) < $bytes) {
-        $b.= $this->sock->readBinary($bytes- strlen($b));
+      while (($s= strlen($b)) < $bytes) {
+        $b.= $this->sock->readBinary($bytes- $s);
       }
       return $b;
     }
