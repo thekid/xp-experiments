@@ -263,7 +263,7 @@
      */
     public function fetch($fields) {
       $r= $this->read();
-      if (254 === ord($r[0]) && strlen($r) < 9) return NULL;
+      if ("\376" === $r{0} && strlen($r) < 9) return NULL;
 
       $record= array();
       $consumed= 0;
