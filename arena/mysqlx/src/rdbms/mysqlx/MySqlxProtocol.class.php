@@ -156,7 +156,7 @@
     }
     
     /**
-     * Returns an ineger serialized as INT3
+     * Returns an integer serialized as INT3
      *
      * @param   int n
      * @return  string
@@ -165,6 +165,14 @@
       return pack('cv', $n % 256, $n >> 8);
     }
     
+    /**
+     * Returns length encoded in first character(s) of data
+     *
+     * @param   string data
+     * @param   &int consumed
+     * @param   bool ll default FALSE
+     * @return  int
+     */
     protected function length($data, &$consumed, $ll= FALSE) {
       $o= $consumed;
       switch (ord($data[$consumed])) {
@@ -179,12 +187,21 @@
       }
     }
     
+    /**
+     * Returns length encoded string
+     *
+     * @param   string data
+     * @param   &int consumed
+     * @return  string
+     */
     protected function lstr($data, &$consumed) {
-      if (NULL === ($l= $this->length($data, $consumed))) {
-        $r= NULL;
-      } else {
-        $r= substr($data, $consumed, $l);
+      if ("\373" === $data{0}) {
+        $consumed++;
+        return NULL;
       }
+
+      $l= $this->length($data, $consumed);
+      $r= substr($data, $consumed, $l);
       $consumed+= $l;
       return $r;
     }
