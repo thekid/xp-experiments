@@ -15,12 +15,14 @@
       $cat    = NULL;
 
     const
-      TDS_ENVCHANGE   =   0xe3,   // Environmental change
-      TDS_EED         =   0xe5,   // Extended error message
-      TDS_LOGINACK    =   0xad,   // Login acknowledgement
-      TDS_CAPABILITY  =   0xe2,   // Capabilities token
-      TDS_RESULT      =   0xee,   // Result token
-      TDS_CONTROL     =   0xae;   // Control token
+      TDS_ENVCHANGE       = 0xe3,   // Environmental change
+      TDS_EED             = 0xe5,   // Extended error message
+      TDS_LOGINACK        = 0xad,   // Login acknowledgement
+      TDS_CAPABILITY      = 0xe2,   // Capabilities token
+      TDS_RESULT          = 0xee,   // Result token
+      TDS_CONTROL         = 0xae,   // Control token
+      TDS_ROW_RESULT      = 0xd1,   // Data row result
+      TDS_COMPUTE_RESULT  = 0xd3;   // Data compute result
 
     /**
      * Constructor
@@ -52,12 +54,14 @@
 
     public function nextToken() {
       static $tokenmap= array(
-        self::TDS_ENVCHANGE   => 'EnvChange',
-        self::TDS_EED         => 'Eed',
-        self::TDS_LOGINACK    => 'LoginAck',
-        self::TDS_CAPABILITY  => 'Capability',
-        self::TDS_RESULT      => 'Result',
-        self::TDS_CONTROL     => 'Ignore'
+        self::TDS_ENVCHANGE       => 'EnvChange',
+        self::TDS_EED             => 'Eed',
+        self::TDS_LOGINACK        => 'LoginAck',
+        self::TDS_CAPABILITY      => 'Capability',
+        self::TDS_RESULT          => 'Result',
+        self::TDS_CONTROL         => 'Ignore',
+        self::TDS_ROW_RESULT      => 'RowResult',
+        self::TDS_COMPUTE_RESULT  => 'RowResult'
       );
       if (!$this->hasData()) return NULL;
 
