@@ -25,7 +25,7 @@
     }
     
     protected function readLong() {
-      $long= unpack('Vlong', $this->data->read(1));
+      $long= unpack('Vlong', $this->data->read(4));
       return $long['long'];
     }
 

@@ -20,6 +20,13 @@
         $columnType= $this->readByte();
         $type= TdsType::byOrdinal($columnType);
 
+        $this->cat && $this->cat->debug('Column', $name,
+          'flags=', $flags,
+          'usertype=', $userType,
+          'columnType=', $columnType,
+          'type=', $type
+        );
+
         $columnSize= 0;
         switch ($type->size()) {
           case 4: {
@@ -48,6 +55,8 @@
             break;
           }
         }
+
+        $this->cat && $this->cat->debug('Column\'s size is', $columnSize, 'bytes');
 
 
         
