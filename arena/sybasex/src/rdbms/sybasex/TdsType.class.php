@@ -67,8 +67,18 @@
       // self::$SYBUNIQUE= new self(0xXX, 'SYBUNIQUE', 0, FALSE, 16); // MSSQL?
       self::$SYBLONGBINARY= new self(0xe1, 'SYBLONGBINARY', 5, TRUE);
       self::$SYBLONGCHAR= new self(0xaf, 'SYBLONGCHAR', 5, TRUE);
-      self::$SYBNUMERIC= new self(0x6c, 'SYBNUMERIC', 0, TRUE);
-      self::$SYBDECIMAL= new self(0x6d, 'SYBDECIMAL', 0, TRUE);
+      self::$SYBNUMERIC= newinstance(__CLASS__, array(0x6c, 'SYBNUMERIC', 1, TRUE), '{
+        static function __static() {}
+        public function fromWire(InputStream $stream) {
+          raise("lang.MethodNotImplementedException", "Not Implemented", __FUNCTION__);
+        }
+      }');
+      self::$SYBDECIMAL= newinstance(__CLASS__, array(0x6d, 'SYBDECIMAL', 1, TRUE), '{
+        static function __static() {}
+        public function fromWire(InputStream $stream) {
+          raise("lang.MethodNotImplementedException", "Not Implemented", __FUNCTION__);
+        }
+      }');
     }
     
     public function __construct($ordinal, $name, $size, $nullable, $fixedSize= NULL) {
@@ -92,7 +102,7 @@
 
     public function fixedSize() {
       if (NULL === $this->fixedSize) {
-        throw new SybasexRuntimeException('Cannot determine a fixed size for dynamix size type '.$this->name());
+        throw new SybasexRuntimeException('Cannot determine a fixed size for dynamic size type '.$this->name());
       }
 
       return $this->fixedSize;

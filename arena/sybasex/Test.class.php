@@ -49,7 +49,7 @@
       $conn->setTrace(Logger::getInstance()->getCategory()->withAppender(new ColoredConsoleAppender()));
       $conn->connect();
       
-      $conn->query('select 1 as foobar');
+      $conn->query('select 1 as type_int4, convert(numeric(10,6), 1) as type_numeric');
     }
   }
 

@@ -24,7 +24,8 @@
           'flags=', $flags,
           'usertype=', $userType,
           'columnType=', $columnType,
-          'type=', $type
+          'type=', $type,
+          'size=', $type->size()
         );
 
         $columnSize= 0;
@@ -56,6 +57,13 @@
           }
         }
 
+        if ($type === TdsType::$SYBNUMERIC || $type === TdsType::$SYBDECIMAL) {
+          $colPrecision= $this->data->readByte();
+          $colLength= $this->data->readByte();
+
+          $this->cat && $this->cat->debug('Column\'s precision=', $colPrecision, ', length=', $colLength);
+        }
+
         $this->cat && $this->cat->debug('Column\'s size is', $columnSize, 'bytes');
         
         // Eat locale information
@@ -72,7 +80,7 @@
       }
       
       // TODO: Analyze this
-      $this->cat && $this->cat->debug('Have TDS_RESULT token.');
+      $this->cat && $this->cat->debug('Have TDS_RESULT token, received column metadata:', $this->context->columns());
     }
   }
 

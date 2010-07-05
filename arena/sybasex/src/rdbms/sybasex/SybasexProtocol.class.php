@@ -114,7 +114,7 @@
 
       $recv= $this->readPacket();
       $recv->setTrace($this->cat);
-      $this->cat && $this->cat->debug('Received', $recv);
+      // DEBUG $this->cat && $this->cat->debug('Received', $recv);
 
       while ($token= $recv->nextToken()) {}
     }
@@ -124,7 +124,7 @@
       
       $recv= $this->readPacket();
       $recv->setTrace($this->cat);
-      $this->cat && $this->cat->debug('Received', $recv);
+      // DEBUG $this->cat && $this->cat->debug('Received', $recv);
 
       while ($token= $recv->nextToken()) {}
     }
@@ -140,12 +140,12 @@
         $header= unpack('Ctype/Clast/nlength/xxxx', $recv);
         $last= $header['last'] === self::TDS_LAST_PACKET;
 
-        $this->cat && $this->cat->debug('<<<', strlen($recv), '~', addcslashes($recv, "\0..\37!@\177..\377"));
-        $this->cat && $this->cat->debug('<<<', 'Received header:', $header);
+        // DEBUG $this->cat && $this->cat->debug('<<<', strlen($recv), '~', addcslashes($recv, "\0..\37!@\177..\377"));
+        // DEBUG $this->cat && $this->cat->debug('<<<', 'Received header:', $header);
 
         $this->cat && $this->cat->debug('<<< Trying to read', $header['length']- self::TDS_HEADERSIZE, 'bytes.');
         $recv= $this->in->read($header['length']- self::TDS_HEADERSIZE);
-        $this->cat && $this->cat->debug('<<<', addcslashes($recv, "\0..\37!@\177..\377"));
+        // DEBUG $this->cat && $this->cat->debug('<<<', addcslashes($recv, "\0..\37!@\177..\377"));
 
         $data.= $recv;
       }
@@ -167,7 +167,7 @@
           strlen($slice)+ self::TDS_HEADERSIZE
         ).$slice;
 
-        $this->cat && $this->cat->debug('>>>', addcslashes($wire, "\0..\37!@\177..\377"));
+        // DEBUG $this->cat && $this->cat->debug('>>>', addcslashes($wire, "\0..\37!@\177..\377"));
         $this->out->write($wire);
       }
     }
