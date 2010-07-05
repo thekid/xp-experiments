@@ -60,10 +60,19 @@
         
         // Eat locale information
         $this->data->read($this->readByte()); // first byte is length
+
+        // Store this in current context
+        $this->context->addColumn(
+          $name,
+          $flags,
+          $userType,
+          $type,
+          $columnSize
+        );
       }
       
       // TODO: Analyze this
-      $this->cat && $this->cat->debugf('Have TDS_RESULT token; Offset='.$this->data->tell());
+      $this->cat && $this->cat->debug('Have TDS_RESULT token.');
     }
   }
 

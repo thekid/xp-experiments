@@ -4,8 +4,9 @@
   $package= 'rdbms.sybasex.token';
   abstract class rdbms·sybasex·token·TdsToken extends Object implements Traceable {
     protected
-      $data   = NULL,
-      $length = NULL;
+      $data     = NULL,
+      $length   = NULL,
+      $context  = NULL;
 
     protected
       $cat    = NULL;
@@ -14,6 +15,10 @@
       $this->data= $data;
     }
     
+    public function setContext(SybasexContext $context) {
+      $this->context= $context;
+    }
+
     protected function readSmallInt() {
       $short= unpack('vint', $this->data->read(2));
       return $short['int'];

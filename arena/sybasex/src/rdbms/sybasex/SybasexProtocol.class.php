@@ -150,7 +150,7 @@
         $data.= $recv;
       }
 
-      return $this->_packet($type, $data);
+      return new SybasexPacket($type, $data, $this->context);
     }
 
     protected function sendPacket($type, $data) {
@@ -170,17 +170,6 @@
         $this->cat && $this->cat->debug('>>>', addcslashes($wire, "\0..\37!@\177..\377"));
         $this->out->write($wire);
       }
-    }
-
-    /**
-     * Create packet object
-     *
-     * @param   int type
-     * @param   string data
-     * @return  rdbms.sybasex.SybasexPacket
-     */
-    protected function _packet($type, $data) {
-      return new SybasexPacket($type, $data);
     }
 
     /**

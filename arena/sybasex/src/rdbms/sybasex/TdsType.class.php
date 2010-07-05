@@ -81,6 +81,10 @@
       return $this->isNullable();
     }
 
+    public function isFixedSize() {
+      return (NULL !== $this->fixedSize);
+    }
+
     public function fixedSize() {
       if (NULL === $this->fixedSize) {
         throw new SybasexRuntimeException('Cannot determine a fixed size for dynamix size type '.$this->name());

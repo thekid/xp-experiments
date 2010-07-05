@@ -3,13 +3,15 @@
   uses(
     'util.log.Traceable',
     'io.streams.MemoryInputStream',
+    'rdbms.sybasex.io.TdsBinaryInputStream',
     'rdbms.sybasex.SybasexRuntimeException'
   );
 
   class SybasexPacket extends Object implements Traceable {
     protected
-      $type   = NULL,
-      $data   = NULL;
+      $type     = NULL,
+      $data     = NULL,
+      $context  = NULL;
 
     protected
       $cat    = NULL;
@@ -30,9 +32,10 @@
      * @param   int type
      * @param   string data
      */
-    public function __construct($type, $data) {
+    public function __construct($type, $data, $context) {
       $this->type= $type;
-      $this->data= new MemoryInputStream($data);
+      $this->context= $context;
+      $this->data= new TdsBinaryInputStream(new MemoryInputStream($data));  // FIXME: Use SocketStream directly
     }
 
     /**
@@ -68,7 +71,7 @@
       $token= $this->read(1);
 
       if (!isset($tokenmap[ord($token)])) {
-        throw new SybasexRuntimeException('Unknown token: '.sprintf('0x%02x', ord($token)).' at offset '.($this->data->tell()- 1));
+        throw new SybasexRuntimeException('Unknown token: '.sprintf('0x%02x', ord($token)));
       }
 
       $handler= $this->getClass()->getPackage()->getPackage('token')
@@ -77,6 +80,7 @@
       ;
       $handler->setTrace($this->cat);
       $handler->setStream($this->data);
+      $handler->setContext($this->context);
       $handler->handle();
 
       return TRUE;
