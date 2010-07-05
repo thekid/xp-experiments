@@ -1,5 +1,8 @@
 <?php
-  uses('rdbms.sybasex.token.TdsToken');
+  uses(
+    'rdbms.sybasex.token.TdsToken',
+    'rdbms.sybasex.TdsType'
+  );
 
   $package= 'rdbms.sybasex.token';
   class rdbms·sybasex·token·TdsResultToken extends rdbms·sybasex·token·TdsToken {
@@ -11,6 +14,42 @@
       $this->cat && $this->cat->debug('Have', $numberOfColumns, 'columns');
       
       for ($i= 0; $i < $numberOfColumns; $i++) {
+        $name= $this->data->read($this->readByte()); // first byte is length
+        $flags= $this->readByte();
+        $userType= $this->readLong();
+        $columnType= $this->readByte();
+        $type= TdsType::byOrdinal($columnType);
+
+        $columnSize= 0;
+        switch ($type->size()) {
+          case 4: {
+            // TODO: Read table name for SYBTEXT and SYBIMAGE
+            $columnSize= $this->readLong();
+            break;
+          }
+
+          case 5: {
+            $columnSize= $this->readLong();
+            break;
+          }
+
+          case 2: {
+            $columnSize= $this->readSmallInt();
+            break;
+          }
+
+          case 1: {
+            $columnSize= $this->readByte();
+            break;
+          }
+
+          case 0: {
+            $columnSize= $type->fixedSize();
+            break;
+          }
+        }
+
+
         
       }
       
