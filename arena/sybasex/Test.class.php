@@ -48,6 +48,8 @@
       $conn= new SybasexConnection(new DSN('sybase://'.$this->user.':'.$this->pass.'@'.$this->host.'/'));
       $conn->setTrace(Logger::getInstance()->getCategory()->withAppender(new ColoredConsoleAppender()));
       $conn->connect();
+      
+      $conn->query('select 1 as foobar');
     }
   }
 

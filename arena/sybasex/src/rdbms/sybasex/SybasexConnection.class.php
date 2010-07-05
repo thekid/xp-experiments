@@ -124,7 +124,7 @@
      * @throws  rdbms.SQLException
      */
     protected function query0($sql, $buffered= TRUE) {
-      // TBI
+      $this->protocol->sendQuery($sql);
     }
     
     /**

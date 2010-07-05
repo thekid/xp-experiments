@@ -18,7 +18,8 @@
       TDS_ENVCHANGE   =   0xe3,   // Environmental change
       TDS_EED         =   0xe5,   // Extended error message
       TDS_LOGINACK    =   0xad,   // Login acknowledgement
-      TDS_CAPABILITY  =   0xe2;   // Capabilities token
+      TDS_CAPABILITY  =   0xe2,   // Capabilities token
+      TDS_RESULT      =   0xee;   // Result token
 
     /**
      * Constructor
@@ -53,7 +54,8 @@
         self::TDS_ENVCHANGE   => 'EnvChange',
         self::TDS_EED         => 'Eed',
         self::TDS_LOGINACK    => 'LoginAck',
-        self::TDS_CAPABILITY  => 'Capability'
+        self::TDS_CAPABILITY  => 'Capability',
+        self::TDS_RESULT      => 'Result'
       );
       if (!$this->hasData()) return NULL;
 

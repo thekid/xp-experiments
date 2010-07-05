@@ -110,6 +110,16 @@
 
       while ($token= $recv->nextToken()) {}
     }
+    
+    public function sendQuery($sql) {
+      $this->sendPacket(self::TDS_PT_QUERY, $sql);
+      
+      $recv= $this->readPacket();
+      $recv->setTrace($this->cat);
+      $this->cat && $this->cat->debug('Received', $recv);
+
+      while ($token= $recv->nextToken()) {}
+    }
 
     protected function readPacket() {
       $last= FALSE;

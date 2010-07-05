@@ -18,6 +18,16 @@
       $short= unpack('vint', $this->data->read(2));
       return $short['int'];
     }
+    
+    protected function readByte() {
+      $byte= unpack('Cbyte', $this->data->read(1));
+      return $byte['byte'];
+    }
+    
+    protected function readLong() {
+      $long= unpack('Vlong', $this->data->read(1));
+      return $long['long'];
+    }
 
     protected function readLength() {
       $this->length= $this->readSmallInt();
