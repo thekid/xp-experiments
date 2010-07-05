@@ -2,16 +2,18 @@
 
   uses(
    'rdbms.sybasex.SybasexPacket',
-   'peer.SocketInputStream',
-   'peer.SocketOutputStream'
+   'rdbms.sybasex.SybasexContext',
+   'rdbms.sybasex.io.TdsBinaryInputStream',
+   'rdbms.sybasex.io.TdsBinaryOutputStream'
   );
 
   class SybasexProtocol extends Object {
     protected
-      $sock = NULL,
-      $in   = NULL,
-      $out  = NULL,
-      $cat  = NULL;
+      $sock     = NULL,
+      $in       = NULL,
+      $out      = NULL,
+      $cat      = NULL,
+      $context  = NULL;
 
     const
       TDS_PT_QUERY      = 0x01,
@@ -33,16 +35,22 @@
       TDS_HEADERSIZE    = 8,
       TDS_PACKETSIZE    = 512;
 
+    /**
+     * Implementation of TDS 5.0 protocol
+     *
+     * @see   http://freetds.org/tds.html
+     * @see   http://freetds.cvs.sourceforge.net/viewvc/freetds/freetds/src/tds/login.c?revision=1.196&view=markup
+     */
     public function connect(Socket $s, $user= '', $pass= '') {
       $this->sock= $s;
       if (!$this->sock->isConnected()) $this->sock->connect();
 
-      $this->in= new SocketInputStream($this->sock);
-      $this->out= new SocketOutputStream($this->sock);
+      // Prepare streams for input & output
+      $this->in= new TdsBinaryInputStream($this->sock->getInputStream());
+      $this->out= new TdsBinaryOutputStream($this->sock->getOutputStream());
 
-      // Details from:
-      // http://freetds.org/tds.html
-      // http://freetds.cvs.sourceforge.net/viewvc/freetds/freetds/src/tds/login.c?revision=1.196&view=markup
+      // Create context
+      $this->context= new SybasexContext();
 
       $packet= pack('a30Ca30Ca30Ca30C',
         'lost.i.schlund.de', min(30, strlen('lost.i.schlund.de')),
