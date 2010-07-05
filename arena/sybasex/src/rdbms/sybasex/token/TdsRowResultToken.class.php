@@ -9,7 +9,7 @@
       foreach ($this->context->columns() as $column) {
         $this->cat && $this->cat->debug('Processing', $column);
 
-        $record[]= $column['type']->fromWire($this->data);
+        $record[]= $column['type']->fromWire($this->data, $column);
         continue;
 
         $size= NULL;

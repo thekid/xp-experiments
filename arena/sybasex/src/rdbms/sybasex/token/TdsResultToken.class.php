@@ -14,7 +14,7 @@
       $this->cat && $this->cat->debug('Have', $numberOfColumns, 'columns');
       
       for ($i= 0; $i < $numberOfColumns; $i++) {
-        $name= $this->data->read($this->readByte()); // first byte is length
+        $name= $this->data->read($this->readByte()); // first byte is name length
         $flags= $this->readByte();
         $userType= $this->readLong();
         $columnType= $this->readByte();
@@ -59,9 +59,9 @@
 
         if ($type === TdsType::$SYBNUMERIC || $type === TdsType::$SYBDECIMAL) {
           $colPrecision= $this->data->readByte();
-          $colLength= $this->data->readByte();
+          $columnSize= $this->data->readByte();
 
-          $this->cat && $this->cat->debug('Column\'s precision=', $colPrecision, ', length=', $colLength);
+          $this->cat && $this->cat->debug('Column\'s precision=', $colPrecision, ', length=', $columnSize);
         }
 
         $this->cat && $this->cat->debug('Column\'s size is', $columnSize, 'bytes');

@@ -69,8 +69,8 @@
       self::$SYBLONGCHAR= new self(0xaf, 'SYBLONGCHAR', 5, TRUE);
       self::$SYBNUMERIC= newinstance(__CLASS__, array(0x6c, 'SYBNUMERIC', 1, TRUE), '{
         static function __static() {}
-        public function fromWire(InputStream $stream) {
-          raise("lang.MethodNotImplementedException", "Not Implemented", __FUNCTION__);
+        public function fromWire(InputStream $stream, array $columnInfo= NULL) {  // TODO: Introduce value object
+          return $stream->read($columnInfo["size"]);
         }
       }');
       self::$SYBDECIMAL= newinstance(__CLASS__, array(0x6d, 'SYBDECIMAL', 1, TRUE), '{
