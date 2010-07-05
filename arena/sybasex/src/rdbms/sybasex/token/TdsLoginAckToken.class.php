@@ -2,10 +2,9 @@
   uses('rdbms.sybasex.token.TdsToken');
 
   $package= 'rdbms.sybasex.token';
-  class rdbms新ybasex愁dsLoginAckToken extends rdbms新ybasex暗oken愁dsToken {
+  class rdbms新ybasex暗oken愁dsLoginAckToken extends rdbms新ybasex暗oken愁dsToken {
     public function handle() {
-      $size= unpack('vsize', $this->read(2));
-      $data= $this->read($size['size']);
+      $data= $this->data->read($this->readLength());
 
       $this->cat && $this->cat->debugf('Have TDS_LOGINACK token. Data: '.$data);
 

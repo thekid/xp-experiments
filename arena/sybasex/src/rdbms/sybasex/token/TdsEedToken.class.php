@@ -4,8 +4,7 @@
   $package= 'rdbms.sybasex.token';
   class rdbms·sybasex·token·TdsEedToken extends rdbms·sybasex·token·TdsToken {
     public function handle() {
-      $size= unpack('vsize', $this->read(2));
-      $data= $this->read($size['size']);
+      $data= $this->data->read($this->readLength());
 
       // TODO: Analyze this
       $this->cat && $this->cat->debugf('Have TDS_EED token. Data: '.$data);

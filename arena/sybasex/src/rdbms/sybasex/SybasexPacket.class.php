@@ -51,7 +51,7 @@
     public function nextToken() {
       static $tokenmap= array(
         self::TDS_ENVCHANGE   => 'EnvChange',
-        self::TDS_EED         => 'ExtErrorMsg',
+        self::TDS_EED         => 'Eed',
         self::TDS_LOGINACK    => 'LoginAck',
         self::TDS_CAPABILITY  => 'Capability'
       );
@@ -60,7 +60,7 @@
       $token= $this->read(1);
 
       if (!isset($tokenmap[ord($token)])) {
-        throw new SybasexRuntimeException('Unknown token: '.sprintf('0x%02x', ord($token)));
+        throw new SybasexRuntimeException('Unknown token: '.sprintf('0x%02x', ord($token)).' at offset '.($this->data->tell()- 1));
       }
 
       $handler= $this->getClass()->getPackage()->getPackage('token')
