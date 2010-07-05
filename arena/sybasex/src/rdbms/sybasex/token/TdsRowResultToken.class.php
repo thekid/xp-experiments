@@ -9,10 +9,8 @@
       foreach ($this->context->columns() as $column) {
         $this->cat && $this->cat->debug('Processing', $column);
 
-        if ($column['type']->isFixedSize()) {
-          $record[]= $this->data->read($column['type']->fixedSize());
-          continue;
-        }
+        $record[]= $column['type']->fromWire($this->data);
+        continue;
 
         $size= NULL;
         switch ($column['type']->size()) {

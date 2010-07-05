@@ -47,7 +47,12 @@
       self::$SYBINT1= new self(0x30, 'SYBINT1', 0, FALSE, 1);
       self::$SYBBIT= new self(0x32, 'SYBBIT', 0, FALSE, 1);
       self::$SYBINT2= new self(0x34, 'SYBINT2', 0, FALSE, 2);
-      self::$SYBINT4= new self(0x38, 'SYBINT4', 0, FALSE, 4);
+      self::$SYBINT4= newinstance(__CLASS__, array(0x38, 'SYBINT4', 0, FALSE, 4), '{
+        static function __static() {}
+        public function fromWire(InputStream $stream) {
+          return $stream->readLong();
+        }
+      }');
       self::$SYBINT8= new self(0x7f, 'SYBINT8', 0, FALSE, 8);
       self::$SYBDATETIME4= new self(0x3a, 'SYBDATETIME4', 0, FALSE, 4);
       self::$SYBREAL= new self(0x3b, 'SYBREAL', 0, FALSE, 4);

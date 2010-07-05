@@ -61,5 +61,20 @@
     public function toString() {
       return $this->getClassName().'<'.$this->stream->toString().'>';
     }
+
+    public function readSmallInt() {
+      $short= unpack('vint', $this->stream->read(2));
+      return $short['int'];
+    }
+
+    public function readByte() {
+      $byte= unpack('Cbyte', $this->stream->read(1));
+      return $byte['byte'];
+    }
+
+    public function readLong() {
+      $long= unpack('Vlong', $this->stream->read(4));
+      return $long['long'];
+    }
   }
 ?>
