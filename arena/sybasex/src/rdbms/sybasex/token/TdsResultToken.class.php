@@ -57,13 +57,13 @@
         }
 
         $this->cat && $this->cat->debug('Column\'s size is', $columnSize, 'bytes');
-
-
         
+        // Eat locale information
+        $this->data->read($this->readByte()); // first byte is length
       }
       
       // TODO: Analyze this
-      // $this->cat && $this->cat->debugf('Have TDS_RESULT token. Data: '.$data);
+      $this->cat && $this->cat->debugf('Have TDS_RESULT token; Offset='.$this->data->tell());
     }
   }
 
