@@ -5,7 +5,7 @@
     'util.log.Logger',
     'util.log.ColoredConsoleAppender',
     'peer.Socket',
-    'rdbms.sybasex.SybasexProtocol'
+    'rdbms.sybasex.SybasexConnection'
   );
 
   class Test extends Command {
@@ -45,13 +45,9 @@
     }
 
     public function run() {
-      $protocol= new SybasexProtocol();
-      $protocol->setTrace(Logger::getInstance()->getCategory()->withAppender(new ColoredConsoleAppender()));
-
-      $socket= new Socket($this->host, 1999);
-      $socket->setTimeout(2);
-
-      $protocol->connect($socket, $this->user, $this->pass);
+      $conn= new SybasexConnection(new DSN('sybase://'.$this->user.':'.$this->pass.'@'.$this->host.'/'));
+      $conn->setTrace(Logger::getInstance()->getCategory()->withAppender(new ColoredConsoleAppender()));
+      $conn->connect();
     }
   }
 
