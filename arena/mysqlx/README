@@ -1,5 +1,6 @@
 MySQL userland driver
 ========================================================================
+$Id$
 
 This experiment tests the feasibility of writing a MySQL driver in pure
 PHP code.
@@ -9,6 +10,7 @@ Example
 <pre>
   $ xpcli cmd.Query 'mysqlx://user:pass@host' 'select @@version'
 </pre>
+
 
 See also
 --------
