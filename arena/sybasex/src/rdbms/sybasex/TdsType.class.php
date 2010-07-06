@@ -114,13 +114,19 @@
     }
 
     public function fromWire(InputStream $stream, TdsColumn $column) {
-      if ($this->isFixedSize()) {
+      if ($this->isFixedSize() && !$column->isNullable()) {
         raise('lang.MethodNotImplementedException', 'Not implemented', __FUNCTION__);
       }
 
-      // All non-fixed datatypes first come with one byte length, then that
-      // many bytes data.
-      raise('lang.MethodNotImplementedException', 'Not implemented', __FUNCTION__);
+      // All non-fixed-length datatypes and fixed-length datatypes in a nullable
+      // column first come with one byte representing the length of the data,
+      // then that many bytes data.
+      $len= $stream->readByte();
+
+      // A length of 0 indicates a NULLed value
+      if (0 === $len) return NULL;
+
+      return $stream->read($len);
     }
 
     public static function byOrdinal($ord) {

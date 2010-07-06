@@ -29,16 +29,36 @@
       return $this->size;
     }
     
+    public function isHidden() {
+      return (bool)($this->flags & 0x01);
+    }
+
+    public function isKey() {
+      return (bool)($this->flags & 0x02);
+    }
+
+    public function isWriteable() {
+      return (bool)($this->flags & 0x10);
+    }
+
+    public function isNullable() {
+      return (bool)($this->flags & 0x20);
+    }
+
+    public function isIdentity() {
+      return (bool)($this->flags & 0x40);
+    }
+
     public function toString() {
       return $this->getClassName().'@('.$this->hashCode().") {\n".
         sprintf("  [%-15s ] %s\n", "name", $this->name).
         sprintf("  [%-15s ] %d (%s)\n", "flags",
           $this->flags, rtrim(
-          (($this->flags & 0x01) > 0 ? 'HIDDEN|' : '').
-          (($this->flags & 0x02) > 1 ? 'KEY|' : '').
-          (($this->flags & 0x10) > 1 ? 'WRITEABLE|' : '').
-          (($this->flags & 0x20) > 1 ? 'NULLABLE|' : '').
-          (($this->flags & 0x40) > 1 ? 'IDENTITY|' : ''),
+          ($this->isHidden() ? 'HIDDEN|' : '').
+          ($this->isKey() ? 'KEY|' : '').
+          ($this->isWriteable() ? 'WRITEABLE|' : '').
+          ($this->isNullable() ? 'NULLABLE|' : '').
+          ($this->isIdentity() ? 'IDENTITY|' : ''),
           '|'
         )).
         sprintf("  [%-15s ] %d\n", "userType", $this->userType).
