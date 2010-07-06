@@ -39,7 +39,12 @@
 
     static function __static() {
       self::$SYBCHAR= new self(0x2f, 'SYBCHAR', 0, TRUE, 1);
-      self::$SYBVARCHAR= new self(0x27, 'SYBVARCHAR', 1, TRUE);
+      self::$SYBVARCHAR= newinstance(__CLASS__, array(0x27, 'SYBVARCHAR', 1, TRUE), '{
+        static function __static() {}
+        public function fromWire(InputStream $stream, TdsColumn $column) {
+          return $stream->read($stream->readByte());
+        }
+      }');
       self::$SYBTEXT= new self(0x23, 'SYBTEXT', 4, TRUE);
       self::$SYBNTEXT= new self(0x63, 'SYBNTEXT', 4, TRUE);
       self::$SYBIMAGE= new self(0x22, 'SYBIMAGE', 4, TRUE);
