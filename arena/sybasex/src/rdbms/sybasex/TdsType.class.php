@@ -49,7 +49,7 @@
       self::$SYBINT2= new self(0x34, 'SYBINT2', 0, FALSE, 2);
       self::$SYBINT4= newinstance(__CLASS__, array(0x38, 'SYBINT4', 0, FALSE, 4), '{
         static function __static() {}
-        public function fromWire(InputStream $stream) {
+        public function fromWire(InputStream $stream, TdsColumn $column) {
           return $stream->readLong();
         }
       }');
@@ -69,15 +69,13 @@
       self::$SYBLONGCHAR= new self(0xaf, 'SYBLONGCHAR', 5, TRUE);
       self::$SYBNUMERIC= newinstance(__CLASS__, array(0x6c, 'SYBNUMERIC', 1, TRUE), '{
         static function __static() {}
-        public function fromWire(InputStream $stream, TdsColumn $column= NULL) {  // TODO: Introduce value object
-          return $stream->read($column->size());
+        public function fromWire(InputStream $stream, TdsColumn $column) {  // TODO: Introduce value object
+          // First byte is wire-length
+          return $stream->read($stream->readByte(1));
         }
       }');
       self::$SYBDECIMAL= newinstance(__CLASS__, array(0x6d, 'SYBDECIMAL', 1, TRUE), '{
         static function __static() {}
-        public function fromWire(InputStream $stream) {
-          raise("lang.MethodNotImplementedException", "Not Implemented", __FUNCTION__);
-        }
       }');
     }
     
@@ -106,6 +104,10 @@
       }
 
       return $this->fixedSize;
+    }
+
+    public function fromWire(InputStream $stream, TdsColumn $column) {
+      raise('lang.MethodNotImplementedException', 'Not implemented', __FUNCTION__);
     }
 
     public static function byOrdinal($ord) {
