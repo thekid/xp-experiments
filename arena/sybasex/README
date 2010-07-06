@@ -8,8 +8,17 @@ PHP code.
 Example
 -------
 <pre>
-  $ xpcli Test -h host -u user -p pass
+  $ xpcli cmd.RunCollectionOfQueries 'sybase://user:pass@host/'
 </pre>
+
+This runs a suite of queries which demonstrate the progress of implementation
+of the driver.
+
+<pre>
+  $ xpcli cmd.Query <dsn> <sql>
+</pre>
+
+This runs a sql command given on command line.
 
 
 See also

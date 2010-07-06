@@ -5,6 +5,7 @@
  */
 
   uses(
+    'peer.Socket',
     'util.log.Traceable',
     'rdbms.DBConnection',
     'rdbms.Transaction',
