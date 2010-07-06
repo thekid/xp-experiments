@@ -1,6 +1,7 @@
 <?php
   uses(
     'rdbms.sybasex.token.TdsToken',
+    'rdbms.sybasex.TdsColumn',
     'rdbms.sybasex.TdsType'
   );
 
@@ -57,11 +58,12 @@
           }
         }
 
+        $columnPrecision= NULL;
         if ($type === TdsType::$SYBNUMERIC || $type === TdsType::$SYBDECIMAL) {
-          $colPrecision= $this->data->readByte();
+          $columnPrecision= $this->data->readByte();
           $columnSize= $this->data->readByte();
 
-          $this->cat && $this->cat->debug('Column\'s precision=', $colPrecision, ', length=', $columnSize);
+          $this->cat && $this->cat->debug('Column\'s precision=', $columnPrecision, ', length=', $columnSize);
         }
 
         $this->cat && $this->cat->debug('Column\'s size is', $columnSize, 'bytes');
@@ -70,13 +72,14 @@
         $this->data->read($this->readByte()); // first byte is length
 
         // Store this in current context
-        $this->context->addColumn(
+        $this->context->addColumn(new TdsColumn(
           $name,
           $flags,
           $userType,
           $type,
-          $columnSize
-        );
+          $columnSize,
+          $columnPrecision
+        ));
       }
       
       // TODO: Analyze this

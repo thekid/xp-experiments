@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('rdbms.sybasex.TdsColumn');
+
   /**
    * SybasexContext
    *
@@ -13,24 +15,18 @@
    */
   class SybasexContext extends Object {
     protected
-      $columnMeta   = NULL;
+      $columns   = NULL;
     
     public function newColumns() {
-      $this->columnMeta= array();
+      $this->columns= array();
     }
     
-    public function addColumn($name, $flags, $userType, TdsType $type, $size) {
-      $this->columnMeta[]= array(
-        'name'      => $name,
-        'flags'     => $flags,
-        'userType'  => $userType,
-        'type'      => $type,
-        'size'      => $size
-      );
+    public function addColumn(TdsColumn $column) {
+      $this->columns[]= $column;
     }
     
     public function columns() {
-      return $this->columnMeta;
+      return $this->columns;
     }
   }
 ?>
