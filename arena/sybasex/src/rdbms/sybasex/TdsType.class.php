@@ -14,6 +14,7 @@
       $SYBINT2        = NULL,
       $SYBINT4        = NULL,
       $SYBINT8        = NULL,
+      $SYBINTN        = NULL,
       $SYBDATETIME4   = NULL,
       $SYBREAL        = NULL,
       $SYBMONEY       = NULL,
@@ -59,6 +60,7 @@
         }
       }');
       self::$SYBINT8= new self(0x7f, 'SYBINT8', 0, FALSE, 8);
+      self::$SYBINTN= new self(0x26, 'SYBINTN', 1, FALSE);
       self::$SYBDATETIME4= new self(0x3a, 'SYBDATETIME4', 0, FALSE, 4);
       self::$SYBREAL= new self(0x3b, 'SYBREAL', 0, FALSE, 4);
       self::$SYBMONEY= new self(0x6e, 'SYBMONEY', 0, FALSE, 8);
@@ -112,6 +114,12 @@
     }
 
     public function fromWire(InputStream $stream, TdsColumn $column) {
+      if ($this->isFixedSize()) {
+        raise('lang.MethodNotImplementedException', 'Not implemented', __FUNCTION__);
+      }
+
+      // All non-fixed datatypes first come with one byte length, then that
+      // many bytes data.
       raise('lang.MethodNotImplementedException', 'Not implemented', __FUNCTION__);
     }
 

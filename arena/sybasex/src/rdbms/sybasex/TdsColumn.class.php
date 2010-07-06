@@ -32,7 +32,15 @@
     public function toString() {
       return $this->getClassName().'@('.$this->hashCode().") {\n".
         sprintf("  [%-15s ] %s\n", "name", $this->name).
-        sprintf("  [%-15s ] %d\n", "flags", $this->flags).
+        sprintf("  [%-15s ] %d (%s)\n", "flags",
+          $this->flags, rtrim(
+          (($this->flags & 0x01) > 0 ? 'HIDDEN|' : '').
+          (($this->flags & 0x02) > 1 ? 'KEY|' : '').
+          (($this->flags & 0x10) > 1 ? 'WRITEABLE|' : '').
+          (($this->flags & 0x20) > 1 ? 'NULLABLE|' : '').
+          (($this->flags & 0x40) > 1 ? 'IDENTITY|' : ''),
+          '|'
+        )).
         sprintf("  [%-15s ] %d\n", "userType", $this->userType).
         sprintf("  [%-15s ] %s\n", "type", $this->type->toString()).
         sprintf("  [%-15s ] %d\n", "size", $this->size).

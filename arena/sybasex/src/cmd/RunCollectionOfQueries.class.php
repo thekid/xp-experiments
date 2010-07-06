@@ -35,7 +35,12 @@
       $conn->setTrace(Logger::getInstance()->getCategory()->withAppender(new ColoredConsoleAppender()));
 
       $conn->connect();
-      $conn->query('select 1 as type_int4, convert(numeric(10,6), 1) as type_numeric, "foo" as varchar_type');
+      $conn->query('
+        select 1 as type_int4,
+        convert(numeric(10,6), 1) as type_numeric,
+        "foo" as varchar_type,
+        convert(smallint, NULL) as type_smallint
+      ');
     }
   }
 
