@@ -18,6 +18,7 @@
 
     const
       TDS_ENVCHANGE         = 0xe3,   // Environmental change
+      TDS_ERROR             = 0xaa,   // Error token
       TDS_EED               = 0xe5,   // Extended error message
       TDS_LOGINACK          = 0xad,   // Login acknowledgement
       TDS_CAPABILITY        = 0xe2,   // Capabilities token
@@ -61,6 +62,7 @@
     public function nextToken() {
       static $tokenmap= array(
         self::TDS_ENVCHANGE         => 'EnvChange',
+        self::TDS_ERROR             => 'Eed',
         self::TDS_EED               => 'Eed',
         self::TDS_LOGINACK          => 'LoginAck',
         self::TDS_CAPABILITY        => 'Capability',

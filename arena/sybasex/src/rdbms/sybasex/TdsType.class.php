@@ -39,6 +39,8 @@
       $nullable       = NULL;
 
     static function __static() {
+      // TODO: Add nullable types *N (eg. SYBINTN)
+
       self::$SYBCHAR= new self(0x2f, 'SYBCHAR', 0, TRUE, 1);
       self::$SYBVARCHAR= newinstance(__CLASS__, array(0x27, 'SYBVARCHAR', 1, TRUE), '{
         static function __static() {}
@@ -60,7 +62,7 @@
         }
       }');
       self::$SYBINT8= new self(0x7f, 'SYBINT8', 0, FALSE, 8);
-      self::$SYBINTN= new self(0x26, 'SYBINTN', 1, FALSE);
+      self::$SYBINTN= new self(0x26, 'SYBINTN', 1, TRUE);
       self::$SYBDATETIME4= new self(0x3a, 'SYBDATETIME4', 0, FALSE, 4);
       self::$SYBREAL= new self(0x3b, 'SYBREAL', 0, FALSE, 4);
       self::$SYBMONEY= new self(0x6e, 'SYBMONEY', 0, FALSE, 8);

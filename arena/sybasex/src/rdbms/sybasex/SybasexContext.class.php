@@ -15,7 +15,8 @@
    */
   class SybasexContext extends Object {
     protected
-      $columns   = NULL;
+      $columns    = NULL,
+      $messages   = array();
     
     public function newColumns() {
       $this->columns= array();
@@ -27,6 +28,10 @@
     
     public function columns() {
       return $this->columns;
+    }
+
+    public function addMessage(TdsMessage $message) {
+      $this->messages[]= $message;
     }
   }
 ?>
