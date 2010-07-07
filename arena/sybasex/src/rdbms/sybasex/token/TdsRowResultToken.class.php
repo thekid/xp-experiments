@@ -3,8 +3,8 @@
 
   $package= 'rdbms.sybasex.token';
   class rdbms·sybasex·token·TdsRowResultToken extends rdbms·sybasex·token·TdsToken {
-    public function handle() {
 
+    public function handle() {
       $record= array();
       foreach ($this->context->columns() as $column) {
         $this->cat && $this->cat->debug('Processing', $column);
@@ -13,8 +13,7 @@
         continue;
       }
       
-      $this->cat && $this->cat->debug('Read row:', $record);
+      $this->context->addRowResult($record);
     }
   }
-
 ?>

@@ -34,8 +34,29 @@
     
     #[@test, @expect('rdbms.SQLConnectException')]
     public function connectFail() {
-      $this->dsn->url->setPassword('wrong-password');
-      $this->connect();
+      $original= clone $this->dsn->url;
+
+      try {
+        $this->dsn->url->setPassword('wrong-password');
+        $this->connect();
+      } catch (Throwable $t) {
+        $this->dsn->url= $original;
+        throw $t;
+      }
+    }
+
+    #[@test]
+    public function selectInteger() {
+      $r= $this->conn()->query('select 1 as column_integer');
+      $this->assertInstanceof('rdbms.sybasex.SybasexResultSet', $r);
+      $this->assertEquals(array('column_integer' => 1), $r->next());
+    }
+
+    #[@test]
+    public function selectIntegerWithField() {
+      $r= $this->conn()->query('select 1 as column_integer');
+      $this->assertInstanceof('rdbms.sybasex.SybasexResultSet', $r);
+      $this->assertEquals(1, $r->next('column_integer'));
     }
   }
 ?>

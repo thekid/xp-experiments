@@ -135,7 +135,16 @@
      * @throws  rdbms.SQLException
      */
     protected function query0($sql, $buffered= TRUE) {
+      if (NULL === $this->protocol) {
+        if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
+        $c= $this->connect();
+
+        // Check for subsequent connection errors
+        if (FALSE === $c) throw new SQLStateException('Previously failed to connect');
+      }
+
       $this->protocol->sendQuery($sql);
+      return $this->protocol->resultSet();
     }
     
     /**

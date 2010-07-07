@@ -9,10 +9,10 @@
   class rdbms·sybasex·token·TdsResultToken extends rdbms·sybasex·token·TdsToken {
     public function handle() {
       $headerSize= $this->readLength();
-      // $data= $this->data->read($this->readLength());
-      
       $numberOfColumns= $this->readSmallInt();
+
       $this->cat && $this->cat->debug('Have', $numberOfColumns, 'columns');
+      $this->context->newColumns();
       
       for ($i= 0; $i < $numberOfColumns; $i++) {
         $name= $this->data->read($this->readByte()); // first byte is name length
@@ -82,8 +82,8 @@
         ));
       }
       
-      // TODO: Analyze this
-      $this->cat && $this->cat->debug('Have TDS_RESULT token, received column metadata:', $this->context->columns());
+      // Mark retrieving metadata has finished, now the result can be filled.
+      $this->context->sealColumns();
     }
   }
 

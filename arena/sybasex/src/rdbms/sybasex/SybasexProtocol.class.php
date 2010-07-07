@@ -134,6 +134,7 @@
       // DEBUG $this->cat && $this->cat->debug('Received', $recv);
 
       while ($token= $recv->nextToken()) {}
+
     }
 
     protected function readPacket() {
@@ -177,6 +178,10 @@
         // DEBUG $this->cat && $this->cat->debug('>>>', addcslashes($wire, "\0..\37!@\177..\377"));
         $this->out->write($wire);
       }
+    }
+
+    public function resultSet() {
+      return $this->context->resultSet();
     }
 
     /**

@@ -17,7 +17,7 @@
       $this->precision= $prec;
     }
     
-    public function getName() {
+    public function name() {
       return $this->name;
     }
     

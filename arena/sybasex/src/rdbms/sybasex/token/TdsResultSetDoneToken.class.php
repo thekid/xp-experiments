@@ -10,7 +10,7 @@
       $this->data->readSmallInt();
       
       $rowcount= $this->data->readLong();
-      
+      $this->context->sealResultSet($rowcount, $flags);
       $this->cat && $this->cat->debug('Got TDS_RESULTSET_DONE, got', $rowcount, 
         'rows, flags', $flags
       );
