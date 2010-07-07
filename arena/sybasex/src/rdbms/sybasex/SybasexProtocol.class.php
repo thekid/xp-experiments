@@ -41,9 +41,14 @@
      * @see   http://freetds.org/tds.html
      * @see   http://freetds.cvs.sourceforge.net/viewvc/freetds/freetds/src/tds/login.c?revision=1.196&view=markup
      */
-    public function connect(Socket $s, $user= '', $pass= '') {
-      $this->sock= $s;
-      if (!$this->sock->isConnected()) $this->sock->connect();
+    public function connect($host, $user= '', $pass= '', $charset= "iso_1") {
+      $port= 1999;
+      if (strpos($host, ':')) {
+        list($host, $port)= explode(':', $host);
+      }
+
+      $this->sock= new Socket($host, $port);
+      $this->sock->connect();
 
       // Prepare streams for input & output
       $this->in= new TdsBinaryInputStream($this->sock->getInputStream());
@@ -117,6 +122,8 @@
       // DEBUG $this->cat && $this->cat->debug('Received', $recv);
 
       while ($token= $recv->nextToken()) {}
+
+      return $this->context->getLoggedIn();
     }
     
     public function sendQuery($sql) {
@@ -179,6 +186,18 @@
      */
     public function setTrace($cat) {
       $this->cat= $cat;
+    }
+
+    /**
+     * Disconnect
+     *
+     */
+    public function disconnect() {
+      $this->in= NULL;
+      $this->out= NULL;
+      $this->context= NULL;
+      $this->sock->close();
+      $this->sock= NULL;
     }
   }
 ?>

@@ -15,6 +15,7 @@
    */
   class SybasexContext extends Object {
     protected
+      $loggedIn   = FALSE,
       $columns    = NULL,
       $messages   = array();
     
@@ -32,6 +33,14 @@
 
     public function addMessage(TdsMessage $message) {
       $this->messages[]= $message;
+    }
+
+    public function setLoggedIn($l= TRUE) {
+      $this->loggedIn= $l;
+    }
+
+    public function getLoggedIn() {
+      return $this->loggedIn;
     }
   }
 ?>

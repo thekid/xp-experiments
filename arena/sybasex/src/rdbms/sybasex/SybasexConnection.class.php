@@ -64,11 +64,15 @@
       $this->protocol= new SybasexProtocol();
       $this->protocol->setTrace($this->cat);
       
-      $this->protocol->connect(
-        new Socket($this->dsn->getHost(), 1999),
+      $result= $this->protocol->connect(
+        $this->dsn->getHost(),
         $this->dsn->getUser(),
         $this->dsn->getPassword()
       );
+
+      if (!$result) {
+        throw new SQLConnectException(trim("TODO: FIND LAST MESSAGE"), $this->dsn);
+      }
 
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
       return parent::connect();
@@ -80,6 +84,12 @@
      * @return  bool success
      */
     public function close() { 
+      if ($this->protocol instanceof SybasexProtocol) {
+        $this->protocol->disconnect();
+        $this->protocol= NULL;
+        return TRUE;
+      }
+
       return FALSE;
     }
     
