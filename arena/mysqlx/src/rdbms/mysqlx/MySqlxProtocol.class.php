@@ -13,6 +13,7 @@
    */
   class MySqlxProtocol extends Object {
     protected $pkt= 0;
+    public $connected= FALSE;
     const MAX_PACKET_LENGTH = 16777215;   // 256 * 256 * 256 - 1
 
     // Client flags
@@ -138,6 +139,7 @@
       }
       $this->write($data);
       $this->read();
+      $this->connected= TRUE;
     }
 
     /**
@@ -153,6 +155,7 @@
         // Can't do much here
       }
       $this->sock->close();
+      $this->connected= FALSE;
     }
     
     /**
@@ -254,6 +257,17 @@
             
       return NULL;
     }
+
+    /**
+     * Execute SQL in "fire and forget" mode.
+     *
+     * @param   string sql
+     */
+    public function exec($sql) {
+      if (is_array($r= $this->query($sql))) {
+        $this->cancel();
+      }
+    }
     
     /**
      * Fetches one record
@@ -278,6 +292,34 @@
         }
       }
       return $record;
+    }
+    
+    /**
+     * Cancel result set
+     *
+     * @return  int rows read
+     */
+    public function cancel() {
+      $i= 0;
+      do {
+        $r= $this->read();
+        $i++;
+      } while (!("\376" === $r{0} && strlen($r) < 9));
+      return $i;
+    }
+    
+    /**
+     * Consume entire result set
+     *
+     * @param   [string:var][] fields
+     * @return  [string:var][] records
+     */
+    public function consume($fields) {
+      $records= array();
+      while ($record= $this->fetch($fields)) {
+        $records[]= $record;
+      }
+      return $records;
     }
     
     /**
