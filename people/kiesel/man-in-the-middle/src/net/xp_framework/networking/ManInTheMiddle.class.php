@@ -23,11 +23,14 @@
     }
 
     #[@arg]
-    public function setLocalPort($p= 8080) {
+    public function setLocalPort($p= NULL) {
       $this->localport= $p;
     }
 
     public function run() {
+      // If no listening port was given, use same number as remote port
+      if (NULL === $this->localport) $this->localport= $this->port;
+
       $server= new Server('localhost', $this->localport);
       $server->setProtocol(new ManInTheMiddleProtocol($this->server, $this->port, $this->out));
 
