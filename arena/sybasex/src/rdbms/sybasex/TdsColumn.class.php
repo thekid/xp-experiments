@@ -29,6 +29,10 @@
       return $this->size;
     }
     
+    public function precision() {
+      return $this->precision;
+    }
+
     public function isHidden() {
       return (bool)($this->flags & 0x01);
     }

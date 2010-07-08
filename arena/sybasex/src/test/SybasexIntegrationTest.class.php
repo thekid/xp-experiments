@@ -63,7 +63,7 @@
     #[@test]
     public function selectNumeric() {
       $this->assertEquals(
-        1,
+        '2000.000000',
         $this->conn()->query('select convert(numeric(10, 6), 2000) as column_numeric')->next('column_numeric')
       );
     }

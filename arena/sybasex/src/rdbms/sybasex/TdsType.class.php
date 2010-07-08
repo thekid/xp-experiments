@@ -80,6 +80,11 @@
         static function __static() {}
         public function fromWire(InputStream $stream, TdsColumn $column) {  // TODO: Introduce value object
           // First byte is wire-length
+          return TdsNumeric::fromBytes(
+            $stream->read($stream->readByte()),
+            $column->precision(),
+            6 // $column->getScale()
+          );
           return TdsNumeric::bytesToValue($stream->read($stream->readByte()));
         }
       }');
