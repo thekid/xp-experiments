@@ -80,7 +80,7 @@
         static function __static() {}
         public function fromWire(InputStream $stream, TdsColumn $column) {  // TODO: Introduce value object
           // First byte is wire-length
-          return $stream->read($stream->readByte(1));
+          return TdsNumeric::bytesToValue($stream->read($stream->readByte()));
         }
       }');
       self::$SYBDECIMAL= newinstance(__CLASS__, array(0x6d, 'SYBDECIMAL', 1, TRUE), '{

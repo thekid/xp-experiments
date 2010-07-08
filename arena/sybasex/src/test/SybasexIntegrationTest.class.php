@@ -49,14 +49,23 @@
     public function selectInteger() {
       $r= $this->conn()->query('select 1 as column_integer');
       $this->assertInstanceof('rdbms.sybasex.SybasexResultSet', $r);
-      $this->assertEquals(array('column_integer' => 1), $r->next());
+      $this->assertEquals(1, $r->next('column_integer'));
     }
 
     #[@test]
-    public function selectIntegerWithField() {
-      $r= $this->conn()->query('select 1 as column_integer');
-      $this->assertInstanceof('rdbms.sybasex.SybasexResultSet', $r);
-      $this->assertEquals(1, $r->next('column_integer'));
+    public function selectVarchar() {
+      $this->assertEquals(
+        "foo",
+        $this->conn()->query('select "foo" as column_varchar')->next('column_varchar')
+      );
+    }
+
+    #[@test]
+    public function selectNumeric() {
+      $this->assertEquals(
+        1,
+        $this->conn()->query('select convert(numeric(10, 6), 2000) as column_numeric')->next('column_numeric')
+      );
     }
   }
 ?>
