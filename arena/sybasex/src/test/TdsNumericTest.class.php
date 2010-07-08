@@ -29,5 +29,18 @@
         TdsNumeric::fromBytes("", 10, 6)->getValue()
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function aValueToByte() {
+      $this->assertEquals(
+        "\x00\x00\x00\x0f\x42\x40",
+        create(new TdsNumeric(1, 10, 6))->getBytes()
+      );
+    }
+
   }
 ?>

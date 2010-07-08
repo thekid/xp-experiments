@@ -68,12 +68,17 @@
       );
     }
     
-    protected function valueToBytes($value) {
-      raise('lang.MethodNotImplementedException', 'Not implemented', __METHOD__);
+    protected function valueToBytes() {
+      $val= substr($this->value, 0, -$this->scale- 1).substr($this->value, -$this->scale);
+      return pack('H*', base_convert($val, 10, 16));
     }
     
     public function getValue() {
       return $this->value;
+    }
+
+    public function getBytes() {
+      return $this->valueToBytes();
     }
   }
 ?>
