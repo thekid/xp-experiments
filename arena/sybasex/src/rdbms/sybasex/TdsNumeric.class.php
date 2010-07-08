@@ -49,14 +49,23 @@
         return;
       }
       
+      // First byte indicates sign
       $sign= $bytes[0];
-      $bytes= substr($bytes, 0);
-      var_dump(bindec($bytes));
+      $bytes= substr($bytes, 1);
       
-      $this->value= 0;
-      for ($i= 0; $i < strlen($bytes); $i++) {
-        $this->value+= ord($bytes{$i}) * pow(2, strlen($bytes)- $i);
-      }
+      // Convert to hexadecimal representation ...
+      $conv= unpack('H*', $bytes);
+
+      // ... then, convert base from 16 (hex) to 10 (decimal)
+      $val= base_convert($conv[1], 16, 10);
+
+      // Adjust sign and decimal separator
+      $this->value= (
+        ($sign == -1 ? '-' : '').
+        substr($val, 0, -$this->scale).
+        '.'.
+        substr($val, -$this->scale)
+      );
     }
     
     protected function valueToBytes($value) {
