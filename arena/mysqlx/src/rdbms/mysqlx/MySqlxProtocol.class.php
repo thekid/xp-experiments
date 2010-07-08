@@ -281,14 +281,15 @@
 
       $record= array();
       $consumed= 0;
-      for ($i= 0; $i < sizeof($fields); $i++) {
+      foreach ($fields as $field) {
         $value= $this->lstr($r, $consumed);
-        if (3 === $fields[$i]['type']) {
-          $record[$fields[$i]['name']]= intval($value);
-        } else if (12 === $fields[$i]['type']) {
-          $record[$fields[$i]['name']]= '0000-00-00 00:00:00' === $value ? NULL : new Date($value);
+        $type= $field['type'];
+        if (3 === $type) {
+          $record[$field['name']]= intval($value);
+        } else if (12 === $type) {
+          $record[$field['name']]= '0000-00-00 00:00:00' === $value ? NULL : new Date($value);
         } else {
-          $record[$fields[$i]['name']]= $value;
+          $record[$field['name']]= $value;
         }
       }
       return $record;
