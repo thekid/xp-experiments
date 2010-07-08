@@ -6,7 +6,7 @@
 
   uses(
     'util.cmd.Command',
-    'rdbms.mysqlx.MySqlxProtocol',
+    'rdbms.mysqlx.MySqlxConnection',
     'peer.Socket',
     'rdbms.DSN'
   );
@@ -16,7 +16,7 @@
    *
    */
   class Query extends Command {
-    protected $protocol= NULL;
+    protected $connection= NULL;
     protected $queries= array();
     
     /**
@@ -26,9 +26,8 @@
      */
     #[@arg(position= 0)]
     public function setConnection($dsn) {
-      $dsn= new DSN($dsn);
-      $this->protocol= new MySqlxProtocol(new Socket($dsn->getHost(), $dsn->getPort(3306)));
-      $this->protocol->connect($dsn->getUser(), $dsn->getPassword());
+      $this->connection= new MySqlxConnection(new DSN($dsn));
+      $this->connection->connect();
     }
 
     /**
@@ -49,10 +48,10 @@
       foreach ($this->queries as $query) {
         $this->out->writeLine('Q: ', $query);
         try {
-          $q= $this->protocol->query($query);
-          if (is_array($q)) {
+          $q= $this->connection->query($query);
+          if ($q instanceof ResultSet) {
             $i= 0;
-            while ($r= $this->protocol->fetch($q)) {
+            while ($r= $q->next()) {
               $this->out->writeLine(++$i, ': ', $r);
             }
           } else {
@@ -69,7 +68,7 @@
      *
      */
     public function __destruct() {
-      $this->protocol && $this->protocol->close();
+      $this->connection && $this->connection->close();
     }
   }
 ?>
