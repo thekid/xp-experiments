@@ -7,8 +7,7 @@
   uses(
     'util.cmd.Command',
     'rdbms.mysqlx.MySqlxConnection',
-    'peer.Socket',
-    'rdbms.DSN'
+    'util.profiling.Timer'
   );
 
   /**
@@ -50,8 +49,10 @@
      *
      */
     public function run() {
+      $t= new Timer();
       foreach ($this->queries as $query) {
         $this->out->writeLine('Q: ', $query);
+        $t->start();
         try {
           $q= $this->connection->query($query);
           if ($q instanceof ResultSet) {
@@ -65,6 +66,8 @@
         } catch (Throwable $e) {
           $this->err->writeLine($e);
         }
+        $t->stop();
+        $this->out->writeLinef('%.3f seconds', $t->elapsedTime());
       }
     }
 
