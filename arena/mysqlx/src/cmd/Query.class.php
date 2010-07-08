@@ -19,6 +19,10 @@
     protected $connection= NULL;
     protected $queries= array();
     
+    static function __static() {
+      DriverManager::register('mysqlx', XPClass::forName('rdbms.mysqlx.MySqlxConnection'));
+    }
+    
     /**
      * Set dsn (e.g. mysqlx://user:pass@host[:port])
      *
@@ -26,8 +30,9 @@
      */
     #[@arg(position= 0)]
     public function setConnection($dsn) {
-      $this->connection= new MySqlxConnection(new DSN($dsn));
+      $this->connection= DriverManager::getConnection($dsn);
       $this->connection->connect();
+      $this->out->writeLine('C: ', $this->connection);
     }
 
     /**
