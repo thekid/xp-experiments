@@ -1,5 +1,8 @@
 <?php
-  uses('lang.Enum');
+  uses(
+    'lang.Enum',
+    'rdbms.sybasex.TdsNumeric'
+  );
 
   class TdsType extends Enum {
     public static

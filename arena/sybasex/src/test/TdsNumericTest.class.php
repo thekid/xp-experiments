@@ -29,6 +29,14 @@
     }
     
     #[@test]
+    public function bytesToNegativeValue() {
+      $this->assertEquals(
+        "-1.00",
+        TdsNumeric::fromBytes("\x01\x00\x00\x00\x00\x64", 10, 2)->getValue()
+      );
+    }
+
+    #[@test]
     public function bytesToNull() {
       $this->assertEquals(
         NULL,
@@ -41,7 +49,7 @@
      *
      */
     #[@test]
-    public function aValueToByte() {
+    public function aValueToBytes() {
       $this->assertBinaryEquals(
         "\x00\x00\x00\x0f\x42\x40",
         create(new TdsNumeric(1, 10, 6))->getBytes()
@@ -53,11 +61,20 @@
      *
      */
     #[@test]
-    public function anotherValueToByte() {
+    public function anotherValueToBytes() {
       $this->assertBinaryEquals(
         "\x00\x00\x77\x35\x94\x00",
         create(new TdsNumeric(2000, 10, 6))->getBytes()
       );
     }
+
+     #[@test]
+    public function negativeValueToBytes() {
+      $this->assertBinaryEquals(
+        "\x01\x00\x00\x00\x00\x64",
+        create(new TdsNumeric(-1, 10, 2))->getBytes()
+      );
+    }
+
   }
 ?>

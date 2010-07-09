@@ -67,5 +67,14 @@
         $this->conn()->query('select convert(numeric(10, 6), 2000) as column_numeric')->next('column_numeric')
       );
     }
+
+    #[@test]
+    public function selectNegativeNumeric() {
+      $this->assertEquals(
+        '-1.00',
+        $this->conn()->query('select convert(numeric(10, 2), -1) as column_numeric')->next('column_numeric')
+      );
+    }
+
   }
 ?>

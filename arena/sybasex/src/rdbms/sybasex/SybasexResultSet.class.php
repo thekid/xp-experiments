@@ -80,7 +80,7 @@
       foreach ($this->columns as $offset => $column) {
         $row= current($this->rows);
         
-        $result[$column->name()]= $row[$offset];
+        $result[$column->name()]= ($row[$offset] instanceof TdsNumeric ? $row[$offset]->getValue() : $row[$offset]);
       }
       
       return (NULL === $field ? $result : $result[$field]);

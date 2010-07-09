@@ -50,21 +50,20 @@
       }
       
       // First byte indicates sign
-      $sign= $bytes[0];
-      $bytes= substr($bytes, 1);
+      $sign= ord($bytes[0]);
       
       // TODO TDS7 Only Sybase seems to pack bytes in this order, others
       // might swap big/little endian
 
       // Convert to hexadecimal representation ...
-      $conv= unpack('H*', $bytes);
+      $conv= unpack('H*', substr($bytes, 1));
 
       // ... then, convert base from 16 (hex) to 10 (decimal)
       $val= base_convert($conv[1], 16, 10);
 
       // Adjust sign and decimal separator
       $this->value= (
-        ($sign == -1 ? '-' : '').
+        ($sign == 1 ? '-' : '').
         substr($val, 0, -$this->scale).
         '.'.
         substr($val, -$this->scale)
@@ -72,8 +71,26 @@
     }
     
     protected function valueToBytes() {
-      return pack('h*',
-        base_convert(number_format($this->value, $this->scale, '', ''), 10, 16)
+      // Convert decimal into hexadecimal representation
+      $convert= base_convert(number_format($this->value, $this->scale, '', ''), 10, 16);
+
+      // Make sure, if first character is "half of a byte" it will be prepended by a
+      // zero - otherwise, pack() will produce a wrong binary representation.
+      // Eg. 1 == "1000000" becomes "f4240" and must be padded to "0f4240"
+      if (strlen($convert) % 2 != 0) $convert= '0'.$convert;
+
+      // Now, create binary representation and fill bytes from left with 0-byte
+      // until we have reached the number of bytes for the precision (minus one,
+      // because we will still add the signum byte)
+      $convert= pack('H*', $convert);
+      if (strlen($convert) < self::$bytesPerPrecision[$this->precision]- 1) {
+        $convert= str_pad($convert, self::$bytesPerPrecision[$this->precision]- 1, "\x00", STR_PAD_LEFT);
+      }
+
+      // Finally, add signum byte and copy through previously created bytes
+      return pack('Ca*',
+        $this->value < 0 ? 0x01 : 0x00,
+        $convert
       );
     }
     
