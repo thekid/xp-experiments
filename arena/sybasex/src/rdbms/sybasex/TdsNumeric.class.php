@@ -53,6 +53,9 @@
       $sign= $bytes[0];
       $bytes= substr($bytes, 1);
       
+      // TODO TDS7 Only Sybase seems to pack bytes in this order, others
+      // might swap big/little endian
+
       // Convert to hexadecimal representation ...
       $conv= unpack('H*', $bytes);
 
@@ -69,8 +72,9 @@
     }
     
     protected function valueToBytes() {
-      $val= substr($this->value, 0, -$this->scale- 1).substr($this->value, -$this->scale);
-      return pack('H*', base_convert($val, 10, 16));
+      return pack('h*',
+        base_convert(number_format($this->value, $this->scale, '', ''), 10, 16)
+      );
     }
     
     public function getValue() {
