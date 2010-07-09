@@ -70,7 +70,26 @@
       self::$SYBREAL= new self(0x3b, 'SYBREAL', 0, FALSE, 4);
       self::$SYBMONEY= new self(0x6e, 'SYBMONEY', 0, FALSE, 8);
       self::$SYBFLT8= new self(0x3e, 'SYBFLT8', 0, FALSE, 8);
-      self::$SYBDATETIME= new self(0x3d, 'SYBDATETIME', 0, FALSE, 8);
+      self::$SYBDATETIME= newinstance(__CLASS__, array(0x3d, 'SYBDATETIME', 0, FALSE, 8), '{
+        static function __static() {}
+        public function fromWire(InputStream $stream, TdsColumn $column) {
+          $daysSince1900= $stream->readLong();
+          $time= $stream->readLong();
+          
+          $l= $daysSince1900 + 68569 + 2415021;
+          $n= 4 * $l / 146097;
+          $l= $l - (146097 * $n + 3) / 4;
+          $i= 4000 * ($l + 1) / 1461001;
+          $l= $l - 1461 * $i / 4 + 31;
+          $j= 80 * $l / 2447;
+          $k = $l - 2447 * $j / 80;
+          $l = $j / 11;
+          $j = $j + 2 - 12 * $l;
+          $i = 100 * ($n - 49) + $i + $l;
+          
+          return Date::create($i, $j, $k, 0, 0, 0);
+        }
+      }');
       self::$SYBMONEY4= new self(0x7a, 'SYBMONEY4', 0, FALSE, 4);
       self::$SYBSINT1= new self(0x40, 'SYBSINT1', 0, FALSE);
       self::$SYBUINT2= new self(0x41, 'SYBUINT2', 0, FALSE);

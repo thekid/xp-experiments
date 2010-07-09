@@ -75,6 +75,14 @@
         $this->conn()->query('select convert(numeric(10, 2), -1) as column_numeric')->next('column_numeric')
       );
     }
+    
+    #[@test]
+    public function selectDatetime() {
+      $this->assertEquals(
+        NULL,
+        $this->conn()->query('select convert(datetime, "1980-05-28 12:05PM") as column_datetimte')->next('column_datetime')
+      );
+    }
 
   }
 ?>
