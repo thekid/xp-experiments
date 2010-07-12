@@ -43,12 +43,13 @@
      */
     public function connect($reconnect= FALSE) {
       if ($this->handle->connected) return TRUE;                    // Already connected
-      if (!$reconnect && !$this->handle->connected) return FALSE;   // Previously failed connecting
+      if (!$reconnect && (NULL === $this->handle->connected)) return FALSE;   // Previously failed connecting
 
       try {
         $this->handle->connect($this->dsn->getUser(), $this->dsn->getPassword());
         $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
       } catch (IOException $e) {
+        $this->handle->connected= NULL;
         $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
         throw new SQLConnectException($e->getMessage(), $this->dsn);
       }
@@ -143,10 +144,21 @@
       
       try {
         $result= $this->handle->query($sql);
+      } catch (MySqlxProtocolException $e) {
+        $message= $e->getMessage().' (sqlstate '.$e->sqlstate.')';
+        switch ($e->error) {
+          case 2006: // MySQL server has gone away
+          case 2013: // Lost connection to MySQL server during query
+            throw new SQLConnectionClosedException('Statement failed: '.$message, $sql, $e->error);
+
+          case 1213: // Deadlock
+            throw new SQLDeadlockException($message, $sql, $e->error);
+          
+          default:   // Other error
+            throw new SQLStatementFailedException($message, $sql, $e->error);
+        }
       } catch (IOException $e) {
         throw new SQLStatementFailedException($e->getMessage());
-        
-        // TODO: Handle other errors
       }
 
       if (!$buffered || $this->flags & DB_UNBUFFERED) {

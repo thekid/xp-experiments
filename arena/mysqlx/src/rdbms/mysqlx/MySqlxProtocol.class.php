@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.Socket', 'peer.ProtocolException', 'rdbms.mysqlx.MySqlPassword', 'util.Date');
+  uses('peer.Socket', 'rdbms.mysqlx.MySqlxProtocolException', 'rdbms.mysqlx.MySqlPassword', 'util.Date');
 
   /**
    * MySQL protocol implementation
@@ -393,7 +393,7 @@
         }
         $error= substr($buf, $p);
       }
-      throw new ProtocolException('#'.$errno.': '.$error.' (sqlstate '.$sqlstate.')');
+      throw new MySqlxProtocolException($error, $errno, $sqlstate);
     }
   }
 ?>
