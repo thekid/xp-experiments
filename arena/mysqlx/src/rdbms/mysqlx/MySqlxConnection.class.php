@@ -42,8 +42,8 @@
      * @throws  rdbms.SQLConnectException
      */
     public function connect($reconnect= FALSE) {
-      if ($this->handle->connected) return TRUE;  // Already connected
-      // if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
+      if ($this->handle->connected) return TRUE;                    // Already connected
+      if (!$reconnect && !$this->handle->connected) return FALSE;   // Previously failed connecting
 
       try {
         $this->handle->connect($this->dsn->getUser(), $this->dsn->getPassword());
@@ -83,7 +83,8 @@
      *
      * @return  bool success
      */
-    public function close() { 
+    public function close() {
+      if (!$this->handle->connected) return FALSE;
       $this->handle->close();
       return TRUE;
     }
