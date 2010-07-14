@@ -20,6 +20,7 @@
     'xp.compiler.types.CompilationUnitScope',
     'xp.compiler.types.TypeDeclarationScope',
     'xp.compiler.types.MethodScope',
+    'xp.compiler.types.CompiledType',
     'xp.compiler.types.TypeInstance',
     'lang.reflect.Modifiers',
     'util.collections.HashTable'
@@ -67,7 +68,8 @@
       $inits        = array(NULL),
       $origins      = array(NULL),
       $scope        = array(NULL),
-      $local        = array(NULL);
+      $local        = array(NULL),
+      $types        = array(NULL);
     
     /**
      * Enter the given scope
@@ -1420,10 +1422,11 @@
       if (!Modifiers::isStatic($method->modifiers)) {
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
       }
-
+      
+      $return= $this->resolveType($method->returns);
       $this->metadata[0][1][$method->name]= array(
         DETAIL_ARGUMENTS    => array(),
-        DETAIL_RETURNS      => $this->resolveType($method->returns)->name(),
+        DETAIL_RETURNS      => $return->name(),
         DETAIL_THROWS       => array(),
         DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$method->comment),
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$method->annotations)
@@ -1431,13 +1434,13 @@
 
       array_unshift($this->method, $method);
 
-      // Arguments, body
+      // Parameters, body
       if (NULL !== $method->body) {
-        $this->emitParameters($op, (array)$method->parameters, '{');
+        $signature= $this->emitParameters($op, (array)$method->parameters, '{');
         $this->emitAll($op, $method->body);
         $op->append('}');
       } else {
-        $this->emitParameters($op, (array)$method->parameters, ';');
+        $signature= $this->emitParameters($op, (array)$method->parameters, ';');
       }
       
       // Finalize - FIXME: Put this in ...asMetadata()
@@ -1463,6 +1466,15 @@
 
       array_shift($this->method);
       $this->leave();
+      
+      // Register type information
+      $m= new xp·compiler·types·Method();
+      $m->name= $method->name;
+      $m->returns= new TypeName($return->name());
+      $m->parameters= $signature;
+      $m->modifiers= $method->modifiers;
+      $m->holder= $this->types[0];
+      $this->types[0]->methods[$method->name]= $m;
     }
 
     /**
@@ -1916,6 +1928,12 @@
       $this->registerClass($op, $declaration->literal, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
       array_shift($this->properties);
       array_shift($this->metadata);
+
+      // Register type info
+      $this->types[0]->name= ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name;
+      $this->types[0]->kind= Types::ENUM_KIND;
+      $this->types[0]->literal= $declaration->literal;
+      $this->types[0]->parent= $parentType;
     }
 
     /**
@@ -1950,6 +1968,12 @@
       $this->leave();
       $this->registerClass($op, $declaration->literal, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
       array_shift($this->metadata);
+
+      // Register type info
+      $this->types[0]->name= ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name;
+      $this->types[0]->kind= Types::INTERFACE_KIND;
+      $this->types[0]->literal= $declaration->literal;
+      $this->types[0]->parent= NULL;
     }
 
     /**
@@ -2054,7 +2078,13 @@
       $this->registerClass($op, $declaration->literal, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
       array_shift($this->properties);
       array_shift($this->metadata);
-      array_shift($this->inits);      
+      array_shift($this->inits);
+
+      // Register type info
+      $this->types[0]->name= ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name;
+      $this->types[0]->kind= Types::CLASS_KIND;
+      $this->types[0]->literal= $declaration->literal;
+      $this->types[0]->parent= $parentType;
     }
 
     /**
@@ -2294,6 +2324,7 @@
       );
 
       // Import and declarations
+      array_unshift($this->types, new CompiledType());
       $this->emitAll($bytes, (array)$tree->imports);
       while ($this->scope[0]->declarations) {
         $decl= current($this->scope[0]->declarations);
@@ -2305,6 +2336,7 @@
       // Load used classes
       $this->emitUses($bytes, $this->scope[0]->used);
 
+      // Deprecated
       switch ($decl= $tree->declaration) {
         case $decl instanceof ClassNode: 
           $t= new TypeDeclaration($tree, $this->scope[0]->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Object')));
@@ -2316,7 +2348,10 @@
           $t= new TypeDeclaration($tree, NULL);
           break;
       }
-      
+
+      // Breaks lambda / anonymous instance creation tests:
+      // $t= array_shift($this->types);
+
       // Leave scope
       array_shift($this->origins);
       array_shift($this->local);
