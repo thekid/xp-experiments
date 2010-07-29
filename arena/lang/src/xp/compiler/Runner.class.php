@@ -41,7 +41,7 @@
    *     Use emitter, one of "oel" or "source", defaults to "source"
    *   </li>
    *   <li>-o [outputdir]: 
-   *     Writed compiled files to outputdir
+   *     Writed compiled files to outputdir (will be created if not existant)
    *   </li>
    *   <li>-O [optimization[,optimization[...]]]: 
    *     Load and install the given optimizations (each optimization may
@@ -143,7 +143,9 @@
           }
         } else if ('-o' === $args[$i]) {
           $output= $args[++$i];
-          $manager->setOutput(new Folder($output));
+          $folder= new Folder($output);
+          $folder->exists() || $folder->create();
+          $manager->setOutput($folder);
           ClassLoader::registerPath($output);
         } else {
           $files[]= new FileSource(new File($args[$i]));
