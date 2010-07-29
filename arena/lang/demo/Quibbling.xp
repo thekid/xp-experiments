@@ -46,8 +46,7 @@ public class Quibbling {
    *
    */
   static string quibble(string[] $in) {
-    $s= null;
-    $last= null;
+    $s= $last= null;
     foreach ($arg in $in) {
       $s= append($s, ', ', $last);
       $last= $arg;
