@@ -21,7 +21,7 @@ public class Quibbling {
    *
    */
   static string escape(string $in) {
-    if (',' === $in || '{' === $in || '}' === $in || 'and' === $in) {
+    if ('' === $in || ',' === $in || '{' === $in || '}' === $in || 'and' === $in) {
       return '"' ~ $in ~ '"';
     }
     return $in;
@@ -33,7 +33,7 @@ public class Quibbling {
    */
   static string append(string $in, string $sep, string $out) {
     if ($in === null) {
-      return $out;
+      return escape($out);
     } else if ($out === null) {
       return $in;
     } else {
