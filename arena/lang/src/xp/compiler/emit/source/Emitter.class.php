@@ -1978,7 +1978,7 @@
       );
       
       $this->leave();
-      $this->registerClass($op, $declaration->literal, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
+      $this->registerClass($op, $declaration->literal, $thisType->name());
       array_shift($this->properties);
       array_shift($this->metadata);
 
@@ -2022,7 +2022,7 @@
       );
       
       $this->leave();
-      $this->registerClass($op, $declaration->literal, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
+      $this->registerClass($op, $declaration->literal, $thisType->name());
       array_shift($this->metadata);
 
       // Register type info
@@ -2135,7 +2135,7 @@
       }
 
       $this->leave();
-      $this->registerClass($op, $declaration->literal, ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name);
+      $this->registerClass($op, $declaration->literal, $thisType->name());
       array_shift($this->properties);
       array_shift($this->metadata);
       array_shift($this->inits);
