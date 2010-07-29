@@ -142,7 +142,9 @@
             }
           }
         } else if ('-o' === $args[$i]) {
-          $manager->setOutput(new Folder($args[++$i]));
+          $output= $args[++$i];
+          $manager->setOutput(new Folder($output));
+          ClassLoader::registerPath($output);
         } else {
           $files[]= new FileSource(new File($args[$i]));
         }
