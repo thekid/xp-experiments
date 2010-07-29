@@ -75,7 +75,11 @@
      * @return  bool
      */
     public function isSubclassOf(Types $t) {
-      return $this->class->isSubclassOf($t->name());
+      try {
+        return $this->class->isSubclassOf($t->name());
+      } catch (ClassNotFoundException $e) {
+        return FALSE;
+      }
     }
 
     /**

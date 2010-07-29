@@ -11,7 +11,8 @@
     'xp.compiler.types.Property',
     'xp.compiler.types.Constant',
     'xp.compiler.types.Enumerator',
-    'xp.compiler.types.Indexer'
+    'xp.compiler.types.Indexer',
+    'xp.compiler.types.Operator'
   );
 
   /**

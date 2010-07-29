@@ -176,7 +176,7 @@
      *
      */
     #[@test]
-    public function resourceManagement() {
+    public function resourceManagementWithAssignment() {
       $this->assertEquals(array(new ArmNode(
         array(new AssignmentNode(array(
           'variable'   => new VariableNode('r'),
@@ -187,10 +187,51 @@
           )),
           'op'         => '='
         ))),
+        array(new VariableNode('r')),
         array(new ReturnNode(new MethodCallNode(new VariableNode('r'), 'readLine')))
       )), $this->parse('
         try ($r= new TextReader($stream)) {
           return $r.readLine();
+        }
+      '));
+    }
+
+    /**
+     * Test ARM statement
+     *
+     */
+    #[@test]
+    public function resourceManagement() {
+      $this->assertEquals(array(
+        new ArmNode(
+          array(),
+          array(new VariableNode('r')),
+          array(new ReturnNode(new MethodCallNode(new VariableNode('r'), 'readLine')))       
+        )
+      ), $this->parse('
+        try ($r) {
+          return $r.readLine();
+        }
+      '));
+    }
+
+    /**
+     * Test ARM statement
+     *
+     */
+    #[@test]
+    public function resourceManagementWithTwoVariables() {
+      $this->assertEquals(array(
+        new ArmNode(
+          array(),
+          array(new VariableNode('in'), new VariableNode('out')),
+          array(new ReturnNode(new MethodCallNode(new VariableNode('out'), 'write', array(
+            new MethodCallNode(new VariableNode('in'), 'read')
+          ))))       
+        )
+      ), $this->parse('
+        try ($in, $out) {
+          return $out.write($in.read());
         }
       '));
     }

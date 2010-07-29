@@ -7,18 +7,38 @@
   $package= 'xp.compiler.types';
 
   /**
-   * Represents a constructor
+   * Represents an operator
    *
    * @see      xp://xp.compiler.types.Types
    */
-  class xp·compiler·types·Constructor extends Object {
+  class xp·compiler·types·Operator extends Object {
     public
+      $symbol     = '',
+      $returns    = NULL,
       $modifiers  = 0,
       $parameters = array(),
       $holder     = NULL;
 
     /**
-     * Creates a string representation of this method
+     * Constructor
+     *
+     * @param   string symbol
+     */
+    public function __construct($symbol= '') {
+      $this->symbol= $symbol;
+    }
+
+    /**
+     * Returns name
+     *
+     * @return  string
+     */
+    public function name() {
+      return $this->symbol;
+    }
+
+    /**
+     * Creates a string representation of this Operator
      *
      * @return  string
      */
@@ -28,9 +48,11 @@
         $signature.= ', '.$parameter->compoundName();
       }
       return sprintf(
-        '%s<%s __construct(%s)>',
+        '%s<%s %s %s(%s)>',
         $this->getClassName(),
         implode(' ', Modifiers::namesOf($this->modifiers)),
+        $this->returns->compoundName(),
+        $this->symbol,
         substr($signature, 2)
       );
     }

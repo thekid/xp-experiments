@@ -547,13 +547,28 @@ statement:
       $2->handling= $6;
       $$= $2; 
     }
-  | T_TRY '(' withassignments ')' '{' statements_opt '}' {
-      $$= $yyLex->create(new ArmNode($3, $6 ? $6 : array()));
+  | T_TRY '(' arminitializations ')' '{' statements_opt '}' {
+      $$= $yyLex->create(new ArmNode($3['i'], $3['v'], $6 ? $6 : array()));
     }
   | T_WITH '(' withassignments ')' '{' statements_opt '}' {
       $$= $yyLex->create(new WithNode($3, $6 ? $6 : array()));
     }
   | expression ';'
+;
+
+arminitializations:
+    arminitialization { $$= $1; }
+  | arminitializations ',' arminitialization { $$= array_merge_recursive($1, $3); }
+;
+
+arminitialization:
+    T_VARIABLE {
+      $$= array('i' => array(), 'v' => array(new VariableNode($1)));
+    }
+  | T_VARIABLE '=' expression {
+      $v= new VariableNode($1);
+      $$= array('i' => array($yyLex->create(new AssignmentNode(array('op' => '=', 'variable' => $v, 'expression' => $3)))), 'v' => array($v)); 
+    }
 ;
 
 withassignments:

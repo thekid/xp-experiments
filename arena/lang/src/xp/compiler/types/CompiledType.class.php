@@ -9,13 +9,30 @@
   /**
    * Represents a compiled type
    *
+   * @test    xp://net.xp_lang.tests.types.CompiledTypeTest
    */
   class CompiledType extends Types {
+    public $name= NULL;
+    public $parent= NULL;
+    public $literal= NULL;
+    public $kind= NULL;
+    public $indexer= NULL;
+    public $constructor= NULL;
     public $methods= array();
     public $fields= array();
     public $operators= array();
     public $constants= array();
     public $properties= array();
+    public $generics= NULL;
+
+    /**
+     * Constructor
+     *
+     * @param   string name
+     */
+    public function __construct($name= '') {
+      $this->name= $name;
+    }
     
     /**
      * Returns parent type
@@ -60,7 +77,7 @@
      * @return  bool
      */
     public function isSubclassOf(Types $t) {
-      return FALSE; // TBI
+      return $this->parent !== NULL && ($this->parent->equals($t) || $this->parent->isSubclassOf($t));
     }
 
     /**
@@ -102,6 +119,18 @@
     }
 
     /**
+     * Adds a method
+     *
+     * @param   xp.compiler.types.Method method
+     * @return  xp.compiler.types.Method the added method
+     */
+    public function addMethod(xp·compiler·types·Method $method) {
+      $method->holder= $this;
+      $this->methods[$method->name]= $method;
+      return $method;
+    }
+
+    /**
      * Returns a method by a given name
      *
      * @param   string name
@@ -110,7 +139,7 @@
     public function hasMethod($name) {
       return isset($this->methods[$name]);
     }
-    
+
     /**
      * Returns a method by a given name
      *
@@ -119,6 +148,18 @@
      */
     public function getMethod($name) {
       return isset($this->methods[$name]) ? $this->methods[$name] : NULL;
+    }
+
+    /**
+     * Adds an operator
+     *
+     * @param   xp.compiler.types.Operator operator
+     * @return  xp.compiler.types.Operator the added operator
+     */
+    public function addOperator(xp·compiler·types·Operator $operator) {
+      $operator->holder= $this;
+      $this->operators[$operator->symbol]= $operator;
+      return $operator;
     }
 
     /**
@@ -142,13 +183,25 @@
     }
 
     /**
+     * Adds a field
+     *
+     * @param   xp.compiler.types.Field field
+     * @return  xp.compiler.types.Field the added field
+     */
+    public function addField(xp·compiler·types·Field $field) {
+      $field->holder= $this;
+      $this->fields[$field->name]= $field;
+      return $field;
+    }
+
+    /**
      * Returns a field by a given name
      *
      * @param   string name
      * @return  bool
      */
     public function hasField($name) {
-      return isset($this->fields[$symbol]);
+      return isset($this->fields[$name]);
     }
     
     /**
@@ -158,7 +211,19 @@
      * @return  xp.compiler.types.Field
      */
     public function getField($name) {
-      return isset($this->fields[$symbol]) ? $this->fields[$symbol] : NULL;
+      return isset($this->fields[$name]) ? $this->fields[$name] : NULL;
+    }
+
+    /**
+     * Adds a property
+     *
+     * @param   xp.compiler.types.Property property
+     * @return  xp.compiler.types.Property the added property
+     */
+    public function addProperty(xp·compiler·types·Property $property) {
+      $property->holder= $this;
+      $this->properties[$property->name]= $property;
+      return $property;
     }
 
     /**
@@ -168,7 +233,7 @@
      * @return  bool
      */
     public function hasProperty($name) {
-      return isset($this->properties[$symbol]);
+      return isset($this->properties[$name]);
     }
     
     /**
@@ -178,7 +243,19 @@
      * @return  xp.compiler.types.Property
      */
     public function getProperty($name) {
-      return isset($this->properties[$symbol]) ? $this->properties[$symbol] : NULL;
+      return isset($this->properties[$name]) ? $this->properties[$name] : NULL;
+    }
+    
+    /**
+     * Adds a constant
+     *
+     * @param   xp.compiler.types.Constant constant
+     * @return  xp.compiler.types.Constant the added constant
+     */
+    public function addConstant(xp·compiler·types·Constant $constant) {
+      $constant->holder= $this;
+      $this->constants[$constant->name]= $constant;
+      return $constant;
     }
 
     /**
@@ -188,7 +265,7 @@
      * @return  bool
      */
     public function hasConstant($name) {
-      return isset($this->constants[$symbol]); 
+      return isset($this->constants[$name]); 
     }
     
     /**
@@ -198,7 +275,7 @@
      * @return  xp.compiler.types.Constant
      */
     public function getConstant($name) {
-      return isset($this->constants[$symbol]) ? $this->constants[$symbol] : NULL;
+      return isset($this->constants[$name]) ? $this->constants[$name] : NULL;
     }
 
     /**
@@ -234,7 +311,29 @@
      * @return  string
      */    
     public function toString() {
-      return $this->getClassName().'@('.$this->name.')';
+      $s= $this->getClassName().'<'.$this->name.">@{\n";
+      if ($this->constructor) {
+        $s.= '  '.$this->constructor->toString()."\n";
+      }
+      foreach ($this->constants as $constant) {
+        $s.= '  '.$constant->toString()."\n";
+      }
+      foreach ($this->fields as $field) {
+        $s.= '  '.$field->toString()."\n";
+      }
+      foreach ($this->properties as $property) {
+        $s.= '  '.$property->toString()."\n";
+      }
+      if ($this->indexer) {
+        $s.= '  '.$this->indexer->toString()."\n";
+      }
+      foreach ($this->methods as $method) {
+        $s.= '  '.$method->toString()."\n";
+      }
+      foreach ($this->operators as $operator) {
+        $s.= '  '.$operator->toString()."\n";
+      }
+      return $s.'}';
     }
   }
 ?>

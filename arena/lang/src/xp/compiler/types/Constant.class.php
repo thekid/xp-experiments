@@ -18,12 +18,36 @@
       $value      = NULL;
 
     /**
+     * Constructor
+     *
+     * @param   string name
+     */
+    public function __construct($name= '') {
+      $this->name= $name;
+    }
+
+    /**
      * Returns name
      *
      * @return  string
      */
     public function name() {
       return $this->name;
+    }
+
+    /**
+     * Creates a string representation of this field
+     *
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        '%s<const %s %s= %s>',
+        $this->getClassName(),
+        $this->type->compoundName(),
+        $this->name,
+        xp::stringOf($this->value)
+      );
     }
   }
 ?>

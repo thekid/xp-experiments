@@ -11,17 +11,20 @@
    *
    */
   class ArmNode extends xp·compiler·ast·Node {
-    public $assignments;
+    public $initializations;
+    public $variables;
     public $statements;
     
     /**
      * Constructor
      *
-     * @param   xp.compiler.ast.Node[] assignment
+     * @param   xp.compiler.ast.Node[] declarations
+     * @param   xp.compiler.ast.Node[] variables
      * @param   xp.compiler.ast.Node[] statements
      */
-    public function __construct(array $assignments, array $statements) {
-      $this->assignments= $assignments;
+    public function __construct(array $initializations, array $variables, array $statements) {
+      $this->initializations= $initializations;
+      $this->variables= $variables;
       $this->statements= $statements;
     }
   }

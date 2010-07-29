@@ -227,7 +227,6 @@
      * @throws  xp.compiler.types.ResolveException
      */
     public function resolveType(TypeName $name, $register= TRUE) {
-      $cl= ClassLoader::getDefault();
       if ($name->isArray()) {
         $resolved= $this->resolveType($name->arrayComponentType());
         return new TypeReference(new TypeName($resolved->name().'[]'), $resolved->kind());
@@ -296,7 +295,7 @@
       // we can simply use this class. TODO: Use specialized 
       // JitClassLoader?
       if (!$this->resolved->containsKey($qualified)) {
-        if ($cl->providesClass($qualified)) {
+        if (ClassLoader::getDefault()->providesClass($qualified)) {
           try {
             $this->resolved[$qualified]= new TypeReflection(XPClass::forName($qualified));
           } catch (Throwable $e) {

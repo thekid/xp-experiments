@@ -63,10 +63,8 @@
       $method       = array(NULL),
       $finalizers   = array(NULL),
       $metadata     = array(NULL),
-      $continuation = array(NULL),
       $properties   = array(NULL),
       $inits        = array(NULL),
-      $origins      = array(NULL),
       $scope        = array(NULL),
       $local        = array(NULL),
       $types        = array(NULL);
@@ -1022,7 +1020,7 @@
     }
 
     /**
-     * Emit an automatic resource management block
+     * Emit an automatic resource management (ARM) block
      *
      * @param   resource op
      * @param   xp.compiler.ast.ArmNode arm
@@ -1031,12 +1029,12 @@
       static $mangled= '··e';
       static $ignored= '··i';
 
-      $this->emitAll($op, $arm->assignments);
+      $this->emitAll($op, $arm->initializations);
       $op->append('$'.$mangled.'= NULL; try {');
       $this->emitAll($op, (array)$arm->statements);
-      $op->append('} catch(Exception $'.$mangled.') {}');
-      foreach ($arm->assignments as $assignment) {
-        $op->append('try { $'.$assignment->variable->name.'->close(); } catch (Exception $'.$ignored.') {}');
+      $op->append('} catch (Exception $'.$mangled.') {}');
+      foreach ($arm->variables as $v) {
+        $op->append('try { $')->append($v->name)->append('->close(); } catch (Exception $'.$ignored.') {}');
       }
       $op->append('if ($'.$mangled.') throw $'.$mangled.';'); 
     }
@@ -1230,11 +1228,19 @@
 
       $op->append('public static function operator··');
       $op->append($ovl[$operator->symbol]);
-      $this->emitParameters($op, (array)$operator->parameters, '{');
+      $signature= $this->emitParameters($op, (array)$operator->parameters, '{');
       $this->emitAll($op, (array)$operator->body);
       $op->append('}');
       
       $this->leave();
+      
+      // Register type information
+      $o= new xp·compiler·types·Operator();
+      $o->symbol= $operator->symbol;
+      $o->returns= new TypeName($this->resolveType($operator->returns)->name());
+      $o->parameters= $signature;
+      $o->modifiers= $operator->modifiers;
+      $this->types[0]->addOperator($o);
     }
 
     /**
@@ -1243,8 +1249,10 @@
      * @param   resource op
      * @param   array<string, *>[] arguments
      * @param   string delim
+     * @return  xp.compiler.TypeName[] the signature
      */
     protected function emitParameters($op, array $arguments, $delim) {
+      $signature= array();
       $op->append('(');
       $s= sizeof($arguments)- 1;
       $defer= array();
@@ -1265,6 +1273,7 @@
             // No restriction on primitives possible in PHP
           }
         }
+        $signature[]= new TypeName($ptr->name());
         
         $this->metadata[0][1][$this->method[0]->name][DETAIL_ARGUMENTS][$i]= $ptr->name();
         
@@ -1310,6 +1319,8 @@
       foreach ($defer as $src) {
         $op->append($src);
       }
+      
+      return $signature;
     }
 
     /**
@@ -1473,8 +1484,7 @@
       $m->returns= new TypeName($return->name());
       $m->parameters= $signature;
       $m->modifiers= $method->modifiers;
-      $m->holder= $this->types[0];
-      $this->types[0]->methods[$method->name]= $m;
+      $this->types[0]->addMethod($m);
     }
 
     /**
@@ -1528,7 +1538,7 @@
 
       // Arguments, initializations, body
       if (NULL !== $constructor->body) {
-        $this->emitParameters($op, (array)$constructor->parameters, '{');
+        $signature= $this->emitParameters($op, (array)$constructor->parameters, '{');
         if ($this->inits[0][FALSE]) {
           foreach ($this->inits[0][FALSE] as $field) {
             $this->emitOne($op, new AssignmentNode(array(
@@ -1543,7 +1553,7 @@
         $this->emitAll($op, $constructor->body);
         $op->append('}');
       } else {
-        $this->emitParameters($op, (array)$constructor->parameters, ';');
+        $signature= $this->emitParameters($op, (array)$constructor->parameters, ';');
       }
       
       // Finalize - FIXME: Put this in ...asMetadata()
@@ -1564,6 +1574,12 @@
 
       array_shift($this->method);
       $this->leave();
+
+      // Register type information
+      $c= new xp·compiler·types·Constructor();
+      $c->parameters= $signature;
+      $c->modifiers= $constructor->modifiers;
+      $this->types[0]->constructor= $c;
     }
     
     /**
@@ -1616,6 +1632,17 @@
           'comment'      => '(Generated)'
         )));
       }
+      
+      foreach ($indexer->parameters as $parameter) {
+        $signature[]= new TypeName($this->resolveType($parameter['type'])->name());
+      }
+
+      // Register type information
+      $i= new xp·compiler·types·Indexer();
+      $i->type= new TypeName($this->resolveType($indexer->type)->name());
+      $i->parameters= $signature;
+      $i->modifiers= $indexer->modifiers;
+      $this->types[0]->indexer= $i;
     }
 
     /**
@@ -1628,6 +1655,13 @@
       foreach ($property->handlers as $name => $statements) {
         $this->properties[0][$name][$property->name]= $statements;
       }
+
+      // Register type information
+      $p= new xp·compiler·types·Property();
+      $p->name= $property->name;
+      $p->type= new TypeName($this->resolveType($property->type)->name());
+      $p->modifiers= $property->modifiers;
+      $this->types[0]->addProperty($p);
     }    
 
     /**
@@ -1716,6 +1750,14 @@
       $op->append('const ')->append($const->name)->append('=');
       $this->emitOne($op, $const->value);
       $op->append(';');
+      
+      // Register type information. 
+      // Value can safely be resolved as only resolveable values are allowed
+      $c= new xp·compiler·types·Constant();
+      $c->type= new TypeName($this->resolveType($const->type)->name());
+      $c->name= $const->name;
+      $c->value= $const->value->resolve();
+      $this->types[0]->addConstant($c);
     }
     
     /**
@@ -1764,9 +1806,17 @@
       if ($field->type->isVariable() && $field->initialization) {
         $field->type= $this->scope[0]->typeOf($field->initialization);
       }
+      $type= $this->resolveType($field->type);
       $this->metadata[0][0][$field->name]= array(
-        DETAIL_ANNOTATIONS  => array('type' => $this->resolveType($field->type)->name())
+        DETAIL_ANNOTATIONS  => array('type' => $type->name())
       );
+
+      // Register type information
+      $f= new xp·compiler·types·Field();
+      $f->name= $field->name;
+      $f->type= new TypeName($type->name());
+      $f->modifiers= $field->modifiers;
+      $this->types[0]->addField($f);
     }
     
     /**
@@ -2291,7 +2341,6 @@
       // Create and initialize op array
       $bytes= new xp·compiler·emit·source·Buffer('', 1);
       
-      array_unshift($this->origins, $tree->origin);
       array_unshift($this->local, array());
       array_unshift($this->scope, $scope->enter(new CompilationUnitScope()));
       $this->scope[0]->importer= new NativeImporter();
@@ -2318,42 +2367,26 @@
         'require_once'=> TRUE,
       );
 
-      $this->cat && $this->cat->infof(
-        '== Enter %s ==', 
-        basename($tree->origin)
-      );
+      $this->cat && $this->cat->infof('== Enter %s ==', basename($tree->origin));
 
       // Import and declarations
-      array_unshift($this->types, new CompiledType());
+      $t= NULL;
       $this->emitAll($bytes, (array)$tree->imports);
       while ($this->scope[0]->declarations) {
+        array_unshift($this->types, new CompiledType());
+
         $decl= current($this->scope[0]->declarations);
         $this->local[0][$decl->name->name]= TRUE;
         $this->emitOne($bytes, $decl);
         array_shift($this->scope[0]->declarations);
+
+        $t || $t= $this->types[0];
       }
 
       // Load used classes
       $this->emitUses($bytes, $this->scope[0]->used);
 
-      // Deprecated
-      switch ($decl= $tree->declaration) {
-        case $decl instanceof ClassNode: 
-          $t= new TypeDeclaration($tree, $this->scope[0]->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Object')));
-          break;
-        case $decl instanceof EnumNode:
-          $t= new TypeDeclaration($tree, $this->scope[0]->resolveType($decl->parent ? $decl->parent : new TypeName('lang.Enum')));
-          break;
-        case $decl instanceof InterfaceNode:
-          $t= new TypeDeclaration($tree, NULL);
-          break;
-      }
-
-      // Breaks lambda / anonymous instance creation tests:
-      // $t= array_shift($this->types);
-
       // Leave scope
-      array_shift($this->origins);
       array_shift($this->local);
       $this->leave();
       

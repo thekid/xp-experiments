@@ -5,7 +5,6 @@
 
 package demo;
 
-import native standard.array_keys;
 import static util.cmd.Console.*;
 
 /**
@@ -14,7 +13,6 @@ import static util.cmd.Console.*;
  * <ul>
  *   <li>Map syntax</li>
  *   <li>New foreach</li>
- *   <li>Using native functions</li>
  *   <li>Static import on demand</li>
  * </ul>
  */
@@ -26,8 +24,8 @@ public class Map {
    */
   public static void main(string[] $args) {
     $a= [ 'three' : 3 ];
-    foreach ($key in array_keys($a)) {
-      writeLine($key, ' => ', $a[$key]);
+    foreach ($key, $value in $a) {
+      writeLine($key, ' => ', $value);
     }
   }
 }

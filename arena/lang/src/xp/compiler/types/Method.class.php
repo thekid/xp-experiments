@@ -36,5 +36,25 @@
     public function name() {
       return $this->name;
     }
+
+    /**
+     * Creates a string representation of this method
+     *
+     * @return  string
+     */
+    public function toString() {
+      $signature= '';
+      foreach ($this->parameters as $parameter) {
+        $signature.= ', '.$parameter->compoundName();
+      }
+      return sprintf(
+        '%s<%s %s %s(%s)>',
+        $this->getClassName(),
+        implode(' ', Modifiers::namesOf($this->modifiers)),
+        $this->returns->compoundName(),
+        $this->name,
+        substr($signature, 2)
+      );
+    }
   }
 ?>
