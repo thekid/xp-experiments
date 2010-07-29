@@ -121,7 +121,7 @@
         
         // Do not add uses() elements for types emitted inside the same sourcefile
         if (isset($this->local[0][$type->name])) continue;
-        
+
         try {
           $op->append("'")->append($this->resolveType($type, FALSE)->name())->append("'");
           $i < $s && $op->append(',');
@@ -366,14 +366,14 @@
      * @param   xp.compiler.ast.MethodCallNode call
      */
     public function emitMethodCall($op, MethodCallNode $call) {
-      $op->mark();
+      $mark= $op->mark();
       $this->emitOne($op, $call->target);
       
       // Check for extension methods
       $ptr= new TypeInstance($this->resolveType($this->scope[0]->typeOf($call->target)));
       if ($this->scope[0]->hasExtension($ptr, $call->name)) {
         $ext= $this->scope[0]->getExtension($ptr, $call->name);
-        $op->insertAtMark($ext->holder->literal().'::'.$call->name.'(');
+        $op->insert($ext->holder->literal().'::'.$call->name.'(', $mark);
         $op->append(', ');
         $this->emitInvocationArguments($op, (array)$call->arguments);
         $op->append(')');
@@ -391,7 +391,7 @@
         $call->target instanceof InstanceCreationNode ||
         $call->target instanceof BracedExpressionNode
       ) {
-        $op->insertAtMark('create(');
+        $op->insert('create(', $mark);
         $op->append(')');
       }
 
@@ -409,14 +409,14 @@
      * @param   xp.compiler.ast.MemberAccessNode access
      */
     public function emitMemberAccess($op, MemberAccessNode $access) {
-      $op->mark();
+      $mark= $op->mark();
       $this->emitOne($op, $access->target);
       
       $type= $this->scope[0]->typeOf($access->target);
       
       // Overload [...].length
       if ($type->isArray() && 'length' === $access->name) {
-        $op->insertAtMark('sizeof(');
+        $op->insert('sizeof(', $mark);
         $op->append(')');
         $this->scope[0]->setType($access, new TypeName('int'));
         return;
@@ -432,7 +432,7 @@
         $access->target instanceof InstanceCreationNode ||
         $access->target instanceof BracedExpressionNode
       ) {
-        $op->insertAtMark('create(');
+        $op->insert('create(', $mark);
         $op->append(')');
       }
 
@@ -457,7 +457,7 @@
      * @param   xp.compiler.ast.ArrayAccessNode access
      */
     public function emitArrayAccess($op, ArrayAccessNode $access) {
-      $op->mark();
+      $mark= $op->mark();
       $this->emitOne($op, $access->target);
       
       $type= $this->scope[0]->typeOf($access->target);
@@ -490,7 +490,7 @@
         !$access->target instanceof VariableNode &&
         !$access->target instanceof ClassMemberNode
       ) {
-        $op->insertAtMark('current(array_slice(');
+        $op->insert('current(array_slice(', $mark);
         $op->append(',');
         $this->emitOne($op, $access->offset);
         $op->append(', 1))');
@@ -1119,7 +1119,6 @@
         $ptr= new TypeDeclaration(new ParseTree(NULL, array(), $decl), $parent);
         $this->scope[0]->declarations[]= $decl;
         $this->scope[0]->setType($new, $unique);
-        $this->scope[0]->addResolved($unique->name, $ptr);
       } else {
         $ptr= $this->resolveType($new->type);
         $this->scope[0]->setType($new, $new->type);
@@ -1884,9 +1883,14 @@
     protected function emitEnum($op, EnumNode $declaration) {
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Enum');
       $parentType= $this->resolveType($parent, FALSE);
-      $thisType= $this->resolveType($declaration->name, FALSE);
+      $thisType= new TypeDeclaration(new ParseTree($this->scope[0]->package, array(), $declaration), $parentType);
+      $this->scope[0]->addResolved('self', $thisType);
+      $this->scope[0]->addResolved('parent', $parentType);
+      
+      // FIXME: ???
       $this->scope[0]->addResolved($declaration->name->name, $thisType);
-      $this->scope[0]->imports[$declaration->name->name]= $declaration->name->name;   // FIXME: ???
+      $this->scope[0]->imports[$declaration->name->name]= $declaration->name->name;
+
       $this->enter(new TypeDeclarationScope());
 
       // Ensure parent class and interfaces are loaded
@@ -1952,7 +1956,6 @@
           $decl->synthetic= TRUE;
           $ptr= new TypeDeclaration(new ParseTree(NULL, array(), $decl), $thisType);
           $this->scope[0]->declarations[]= $decl;
-          $this->scope[0]->addResolved($unique->name, $ptr);
           $op->append('new '.$unique->name.'(');
         } else {
           $op->append('new self(');
@@ -1980,7 +1983,7 @@
       array_shift($this->metadata);
 
       // Register type info
-      $this->types[0]->name= ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name;
+      $this->types[0]->name= $thisType->name();
       $this->types[0]->kind= Types::ENUM_KIND;
       $this->types[0]->literal= $declaration->literal;
       $this->types[0]->parent= $parentType;
@@ -1993,6 +1996,9 @@
      * @param   xp.compiler.ast.InterfaceNode declaration
      */
     protected function emitInterface($op, InterfaceNode $declaration) {
+      $thisType= new TypeDeclaration(new ParseTree($this->scope[0]->package, array(), $declaration));
+      $this->scope[0]->addResolved('self', $thisType);
+
       $this->enter(new TypeDeclarationScope());    
       $this->emitTypeName($op, 'interface', $declaration, (array)$declaration->parents);
       array_unshift($this->metadata, array(array(), array()));
@@ -2020,7 +2026,7 @@
       array_shift($this->metadata);
 
       // Register type info
-      $this->types[0]->name= ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name;
+      $this->types[0]->name= $thisType->name();
       $this->types[0]->kind= Types::INTERFACE_KIND;
       $this->types[0]->literal= $declaration->literal;
       $this->types[0]->parent= NULL;
@@ -2035,6 +2041,10 @@
     protected function emitClass($op, ClassNode $declaration) {
       $parent= $declaration->parent ? $declaration->parent : new TypeName('lang.Object');
       $parentType= $this->resolveType($parent, FALSE);
+      $thisType= new TypeDeclaration(new ParseTree($this->scope[0]->package, array(), $declaration), $parentType);
+      $this->scope[0]->addResolved('self', $thisType);
+      $this->scope[0]->addResolved('parent', $parentType);
+      
       $this->enter(new TypeDeclarationScope());    
       $this->emitTypeName($op, 'class', $declaration, array_merge(
         $declaration->parent ? array($parent) : array(),
@@ -2131,7 +2141,7 @@
       array_shift($this->inits);
 
       // Register type info
-      $this->types[0]->name= ($this->scope[0]->package ? $this->scope[0]->package->name.'.' : '').$declaration->name->name;
+      $this->types[0]->name= $thisType->name();
       $this->types[0]->kind= Types::CLASS_KIND;
       $this->types[0]->literal= $declaration->literal;
       $this->types[0]->parent= $parentType;
@@ -2371,6 +2381,7 @@
 
       // Import and declarations
       $t= NULL;
+      $this->scope[0]->addResolved('self', new TypeDeclaration($tree));   // FIXME: for import self
       $this->emitAll($bytes, (array)$tree->imports);
       while ($this->scope[0]->declarations) {
         array_unshift($this->types, new CompiledType());

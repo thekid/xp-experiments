@@ -54,6 +54,30 @@
      * Test
      *
      */
+    #[@test]
+    public function chainedMethodCallAfterNewObject() {
+      $this->assertEquals(
+        'lang.Object', 
+        $this->run('return new Object().getClass().getName();')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function chainedNestedMethodCallAfterNewObject() {
+      $this->assertEquals(
+        new String('Test'), 
+        $this->run('return new lang.types.String($this.member).concat("Test");')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
     #[@test, @ignore('Known limitation - array access does not work on Indexers')]
     public function arrayAccessAfterNew() {
       $this->assertEquals(

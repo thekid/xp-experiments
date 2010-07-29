@@ -61,6 +61,8 @@
           )),
         )
       );
+      $scope->addResolved('parent', $ptr= $scope->resolveType($scope->declarations[0]->parent));
+      $scope->addResolved('self', new TypeDeclaration(new ParseTree(NULL, array(), $scope->declarations[0]), $ptr));
       $scope->setType(new VariableNode('this'), new TypeName('Fixture'));
       return $this->fixture->verify($call, $scope);
     }

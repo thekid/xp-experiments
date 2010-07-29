@@ -12,7 +12,6 @@
    */
   class xp·compiler·emit·source·Buffer extends Object {
     protected $source= '';
-    protected $mark= -1;
     public $line= 1;
     
     /**
@@ -53,20 +52,12 @@
     /**
      * Marks current position for insertion operations
      *
+     * @return  int
      */
     public function mark() {
-      $this->mark= strlen($this->source);
+      return strlen($this->source);
     }
 
-    /**
-     * Insert source at marked position and return this buffer
-     *
-     * @param   string arg
-     */
-    public function insertAtMark($arg) {
-      $this->insert($arg, $this->mark);
-    }
-    
     /**
      * Set position
      *
