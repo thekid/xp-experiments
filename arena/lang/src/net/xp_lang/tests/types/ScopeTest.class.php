@@ -9,6 +9,7 @@
     'xp.compiler.ast.VariableNode',
     'xp.compiler.emit.source.Emitter',
     'xp.compiler.types.TypeReflection',
+    'xp.compiler.types.ArrayTypeOf',
     'xp.compiler.types.TaskScope',
     'xp.compiler.diagnostic.NullDiagnosticListener',
     'xp.compiler.io.FileManager',
@@ -196,6 +197,25 @@
      *
      */
     #[@test]
+    public function arrayExtension() {
+      with (
+        $objectsType= new ArrayTypeOf(new TypeReflection(XPClass::forName('lang.Object'))), 
+        $sortedMethod= new xp·compiler·types·Method('sorted')
+      ); {
+        $this->fixture->addExtension($objectsType, $sortedMethod);
+        $this->assertTrue($this->fixture->hasExtension($objectsType, $sortedMethod->name));
+        $this->assertEquals(
+          $sortedMethod,
+          $this->fixture->getExtension($objectsType, $sortedMethod->name)
+        );
+      }
+    }
+
+    /**
+     * Test extension method API
+     *
+     */
+    #[@test]
     public function objectExtensionInherited() {
       with (
         $objectType= new TypeReflection(XPClass::forName('lang.Object')), 
@@ -219,7 +239,6 @@
     public function importNonExistantType() {
       $this->fixture->addTypeImport('util.cmd.@@NON_EXISTANT@@');
     }
-
 
     /**
      * Test addPackageImport()

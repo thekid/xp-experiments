@@ -59,7 +59,7 @@
       $this->assertTrue($instance->run('hello'));
     }
  
-     /**
+    /**
      * Test extending an array
      *
      */
@@ -84,5 +84,31 @@
         $instance->run(XPClass::forName('lang.Object'))
       );
     }
- }
+
+    /**
+     * Test extending an array
+     *
+     */
+    #[@test]
+    public function arrayOfSubclassExtension() {
+      $class= $this->define('class', 'ObjectExtension', NULL, '{
+        protected static string[] hashCodes(this Object[] $objects) {
+          $r= [];
+          foreach ($object in $objects) {
+            $r[]= $object.hashCode();
+          }
+          return $r;
+        }
+        
+        public bool run(XPClass[] $classes) {
+          return $classes.hashCodes();
+        }
+      }');
+      $instance= $class->newInstance();
+      $this->assertEquals(
+        array('XPClass:lang.Object', 'XPClass:lang.Generic'),
+        $instance->run(array(XPClass::forName('lang.Object'), XPClass::forName('lang.Generic')))
+      );
+    }
+  }
 ?>

@@ -23,7 +23,8 @@
     'xp.compiler.types.TypeReference', 
     'xp.compiler.types.TypeReflection', 
     'xp.compiler.types.TypeDeclaration',
-    'xp.compiler.types.GenericType'
+    'xp.compiler.types.GenericType',
+    'xp.compiler.types.ArrayTypeOf'
   );
 
   /**
@@ -228,8 +229,7 @@
      */
     public function resolveType(TypeName $name, $register= TRUE) {
       if ($name->isArray()) {
-        $resolved= $this->resolveType($name->arrayComponentType());
-        return new TypeReference(new TypeName($resolved->name().'[]'), $resolved->kind());
+        return new ArrayTypeOf($this->resolveType($name->arrayComponentType()));
       } else if (!$name->isClass()) {
         return new TypeReference($name, Types::PRIMITIVE_KIND);
       } else if ($name->isGeneric()) {
