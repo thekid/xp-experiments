@@ -374,8 +374,10 @@
       if ($this->scope[0]->hasExtension($ptr, $call->name)) {
         $ext= $this->scope[0]->getExtension($ptr, $call->name);
         $op->insert($ext->holder->literal().'::'.$call->name.'(', $mark);
-        $op->append(', ');
-        $this->emitInvocationArguments($op, (array)$call->arguments);
+        if ($call->arguments) {
+          $op->append(', ');
+          $this->emitInvocationArguments($op, $call->arguments, FALSE);
+        }
         $op->append(')');
         $this->scope[0]->setType($call, $ext->returns);
         return;

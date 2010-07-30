@@ -15,7 +15,7 @@
   class net·xp_lang·tests·execution·source·ExtensionMethodsTest extends ExecutionTest {
 
     /**
-     * Test extending
+     * Test extending a class
      *
      */
     #[@test]
@@ -40,23 +40,49 @@
     }
 
     /**
-     * Test extending
+     * Test extending a primitive
      *
      */
     #[@test]
     public function stringExtension() {
       $class= $this->define('class', 'StringExtension', NULL, '{
-        public static bool equal(this string $in, string $cmp) {
-          return $in === $cmp;
+        public static bool equal(this string $in, string $cmp, bool $strict) {
+          return $strict ? $in === $cmp : $in == $cmp;
         }
         
         public bool run(string $cmp) {
-          return "hello".equal($cmp);
+          return "hello".equal($cmp, true);
         }
       }');
       $instance= $class->newInstance();
       $this->assertFalse($instance->run('world'));
       $this->assertTrue($instance->run('hello'));
     }
-  }
+ 
+     /**
+     * Test extending an array
+     *
+     */
+    #[@test]
+    public function arrayExtension() {
+      $class= $this->define('class', 'MethodExtension', NULL, '{
+        protected static string[] names(this lang.reflect.Method[] $methods) {
+          $r= [];
+          foreach ($method in $methods) {
+            $r[]= $method.getName();
+          }
+          return $r;
+        }
+        
+        public bool run(XPClass $class) {
+          return $class.getMethods().names();
+        }
+      }');
+      $instance= $class->newInstance();
+      $this->assertEquals(
+        array('hashCode', 'equals', 'getClassName', 'getClass', 'toString'),
+        $instance->run(XPClass::forName('lang.Object'))
+      );
+    }
+ }
 ?>
