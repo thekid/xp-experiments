@@ -9,11 +9,6 @@ import lang.reflect.Proxy;
 import util.XPIterator;
 import lang.reflect.InvocationHandler;
 
-import native standard.in_array;
-import native standard.substr;
-import native standard.strtolower;
-import native standard.sizeof;
-
 /**
  * Tests the Proxy class
  *
@@ -21,24 +16,16 @@ import native standard.sizeof;
  * @purpose  Unit test
  */
 public class ProxyTest extends TestCase {
-  public InvocationHandler $handler= new InvocationHandler() {
-    public var $invocations;
+  public var $handler= new InvocationHandler() {
+    public [string:var[]] $invocations= [:];
 
-    public var invoke(Proxy $proxy, string $method, var[] $args) { 
-      $this.invocations[$method ~ '_' ~ sizeof($args)]= $args;
+    public var invoke(Proxy? $proxy, string $method, var[]? $args) { 
+      $this.invocations[$method ~ '_' ~ $args.length]= $args;
     }
   };
     
   protected static XPClass $iteratorClass= util.XPIterator::class;
   protected static XPClass $observerClass= util.Observer::class;
-
-  /**
-   * Setup method 
-   *
-   */
-  public void setUp() {
-    $this.handler.invocations= [:];
-  }
 
   /**
    * Helper method which returns a proxy instance for a given list of
@@ -60,7 +47,7 @@ public class ProxyTest extends TestCase {
    * in setUp()
    *
    */
-  protected XPClass<Proxy> proxyClassFor(XPClass[] $interfaces) {
+  protected XPClass proxyClassFor(XPClass[] $interfaces) {
     return Proxy::getProxyClass(
       ClassLoader::getDefault(),
       $interfaces,
@@ -101,8 +88,19 @@ public class ProxyTest extends TestCase {
   [@test]
   public void iteratorInterfaceIsImplemented() {
     $interfaces= $this.proxyClassFor([self::$iteratorClass]).getInterfaces();
-    $this.assertEquals(2, sizeof($interfaces));
+    $this.assertEquals(2, $interfaces.length);
     $this.assertEquals(self::$iteratorClass, $interfaces[1]);
+  }
+  
+  /**
+   * Extension method: Checks whether an object is contained in a given list
+   *
+   */
+  protected static bool contains(this Object[] $list, Object $value) {
+    foreach ($item in $list) {
+      if ($item.equals($value)) return true;
+    }
+    return false;
   }
 
   /**
@@ -112,32 +110,36 @@ public class ProxyTest extends TestCase {
   [@test]
   public void allInterfacesAreImplemented() {
     $interfaces= $this.proxyClassFor([self::$iteratorClass, self::$observerClass]).getInterfaces();
-    $this.assertEquals(3, sizeof($interfaces));
-    $this.assertTrue(in_array(self::$iteratorClass, $interfaces));
-    $this.assertTrue(in_array(self::$observerClass, $interfaces));
+    $this.assertEquals(3, $interfaces.length);
+    $this.assertTrue($interfaces.contains(self::$iteratorClass));
+    $this.assertTrue($interfaces.contains(self::$observerClass));
   }
-
+  
+  /**
+   * Extension method: Retrieves names for a list of method objects
+   *
+   */
+  protected static string[] names(this lang.reflect.Method[] $methods) {
+    $r= [];
+    foreach ($method in $methods) {
+      $r[]= $method.getName();
+    }
+    return $r;
+  }
+  
   /**
    * Tests Proxy implements all Iterator methods
    *
    */
   [@test]
   public void iteratorMethods() {
-    $expected= [
-      'hashcode', 'equals', 'getclassname', 'getclass', 'tostring', // lang.Object
-      'getproxyclass', 'newproxyinstance',                          // lang.reflect.Proxy
-      'hasnext', 'next'                                             // util.XPIterator
-    ];
+    $expected= new string[] {
+      'hasNext', 'next',                                            // util.XPIterator
+      'getProxyClass', 'newProxyInstance',                          // lang.reflect.Proxy
+      'hashCode', 'equals', 'getClassName', 'getClass', 'toString', // lang.Object
+    };
 
-    $methods= $this.proxyClassFor([self::$iteratorClass]).getMethods();
-
-    $this.assertEquals(sizeof($expected), sizeof($methods));
-    foreach ($method in $methods) {
-      $this.assertTrue(
-        in_array(strtolower($method.getName()), $expected), 
-        'Unexpected method "' ~ $method.getName() ~ '"'
-      );
-    }
+    $this.assertEquals($expected, $this.proxyClassFor([self::$iteratorClass]).getMethods().names());
   }
 
   /**
