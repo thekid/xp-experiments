@@ -483,19 +483,19 @@
       }
       
       // Rewrite for unsupported syntax
-      // - $a.getMethods()[2] to current(array_slice($a.getMethods(), 2, 1))
-      // - T::asList()[2] to current(array_slice(T::asList()), 2, 1)
-      // - new int[]{5, 6, 7}[2] to current(array_slice(array(5, 6, 7), 2, 1))
+      // - $a.getMethods()[2] to this($a.getMethods(), 2)
+      // - T::asList()[2] to this(T::asList(), 2)
+      // - new int[]{5, 6, 7}[2] to this(array(5, 6, 7), 2)
       if (
         !$access->target instanceof ArrayAccessNode && 
         !$access->target instanceof MemberAccessNode &&
         !$access->target instanceof VariableNode &&
         !$access->target instanceof ClassMemberNode
       ) {
-        $op->insert('current(array_slice(', $mark);
+        $op->insert('this(', $mark);
         $op->append(',');
         $this->emitOne($op, $access->offset);
-        $op->append(', 1))');
+        $op->append(')');
       } else {
         $op->append('[');
         $access->offset && $this->emitOne($op, $access->offset);
