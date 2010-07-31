@@ -78,7 +78,7 @@
      * Test
      *
      */
-    #[@test, @ignore('Known limitation - array access does not work on Indexers')]
+    #[@test]
     public function arrayAccessAfterNew() {
       $this->assertEquals(
         6,
@@ -90,7 +90,7 @@
      * Test
      *
      */
-    #[@test, @ignore('Known limitation - array access does not work on Indexers')]
+    #[@test]
     public function arrayAccessAfterStaticMethod() {
       $this->assertEquals(
         6,

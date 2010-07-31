@@ -490,7 +490,7 @@
         !$access->target instanceof ArrayAccessNode && 
         !$access->target instanceof MemberAccessNode &&
         !$access->target instanceof VariableNode &&
-        !$access->target instanceof ClassMemberNode
+        !($access->target instanceof ClassMemberNode && $access->target->member instanceof VariableNode)
       ) {
         $op->insert('this(', $mark);
         $op->append(',');
