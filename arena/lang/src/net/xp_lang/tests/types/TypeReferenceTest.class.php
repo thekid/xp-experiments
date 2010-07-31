@@ -82,7 +82,7 @@
      */
     #[@test]
     public function mapIsEnumerable() {
-      $decl= new TypeReference(new TypeName('[int:string]'));
+      $decl= new TypeReference(new TypeName('[:string]'));
       $this->assertTrue($decl->isEnumerable());
     }
 
@@ -103,8 +103,8 @@
      */
     #[@test]
     public function mapEnumerator() {
-      $enum= create(new TypeReference(new TypeName('[int:string]')))->getEnumerator();
-      $this->assertEquals(new TypeName('int'), $enum->key);
+      $enum= create(new TypeReference(new TypeName('[:string]')))->getEnumerator();
+      $this->assertEquals(new TypeName('string'), $enum->key);
       $this->assertEquals(new TypeName('string'), $enum->value);
     }
 
@@ -134,7 +134,7 @@
      */
     #[@test]
     public function mapHasIndexer() {
-      $decl= new TypeReference(new TypeName('[int:string]'));
+      $decl= new TypeReference(new TypeName('[:string]'));
       $this->assertTrue($decl->hasIndexer());
     }
 
@@ -155,9 +155,9 @@
      */
     #[@test]
     public function mapIndexer() {
-      $indexer= create(new TypeReference(new TypeName('[int:string]')))->getIndexer();
+      $indexer= create(new TypeReference(new TypeName('[:string]')))->getIndexer();
       $this->assertEquals(new TypeName('string'), $indexer->type);
-      $this->assertEquals(array(new TypeName('int')), $indexer->parameters);
+      $this->assertEquals(array(new TypeName('string')), $indexer->parameters);
     }
   }
 ?>

@@ -179,7 +179,7 @@
     }
 
     /**
-     * Test "array<key, val>" parameter type becomes "[key:val]"
+     * Test "array<key, val>" parameter type becomes "[:val]"
      *
      */
     #[@test]
@@ -188,7 +188,7 @@
         "/**\n".
         " * @param   array<int, string> a\n".
         " */\n".
-        "public void test([int:string]? \$a) { /* ... */ }",
+        "public void test([:string]? \$a) { /* ... */ }",
         "/**\n".
         " * @param   array<int, string> a\n".
         " */\n".

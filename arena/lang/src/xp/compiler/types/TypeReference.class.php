@@ -97,9 +97,8 @@
         return $e;
       } else if ($this->type->isMap()) {
         $e= new xp·compiler·types·Enumerator();
-        $components= $this->type->mapComponentTypes();
-        $e->key= $components[0];
-        $e->value= $components[1];
+        $e->key= new TypeName('string');
+        $e->value= $this->type->mapComponentType();
         $e->holder= $this;  
         return $e;
       }
@@ -130,9 +129,8 @@
         return $i;
       } else if ($this->type->isMap()) {
         $i= new xp·compiler·types·Indexer();
-        $components= $this->type->mapComponentTypes();
-        $i->type= $components[1];
-        $i->parameters= array($components[0]);
+        $i->type= $this->type->mapComponentType();
+        $i->parameters= array(new Typename('string'));
         $i->holder= $this;
         return $i;
       }
@@ -179,7 +177,7 @@
     public function getMethod($name) {
       $m= new xp·compiler·types·Method();
       $m->name= $name;
-      $m->returns= new TypeName('var');
+      $m->returns= TypeName::$VAR;
       $m->parameters= array();
       $m->holder= $this;
       return $m;
@@ -224,7 +222,7 @@
     public function getField($name) {
       $m= new xp·compiler·types·Field();
       $m->name= $name;
-      $m->type= new TypeName('var');
+      $m->type= TypeName::$VAR;
       $m->holder= $this;
       return $m;
     }
@@ -272,7 +270,7 @@
     /**
      * Returns a lookup map of generic placeholders
      *
-     * @return  [string:int]
+     * @return  [:int]
      */
     public function genericPlaceholders() {
       return array();

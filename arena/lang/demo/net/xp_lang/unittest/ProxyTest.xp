@@ -17,7 +17,7 @@ import lang.reflect.InvocationHandler;
  */
 public class ProxyTest extends TestCase {
   public var $handler= new InvocationHandler() {
-    public [string:var[]] $invocations= [:];
+    public [:var[]] $invocations= [:];
 
     public var invoke(Proxy? $proxy, string $method, var[]? $args) { 
       $this.invocations[$method ~ '_' ~ $args.length]= $args;

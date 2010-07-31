@@ -7,7 +7,6 @@
   uses(
     'unittest.TestCase',
     'xp.compiler.types.MapTypeOf',
-    'xp.compiler.types.TypeReference',
     'xp.compiler.types.TypeReflection'
   );
 
@@ -24,10 +23,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= new MapTypeOf(
-        new TypeReference(new TypeName('string'), Types::PRIMITIVE_KIND),
-        new TypeReflection(XPClass::forName('lang.XPClass'))
-      );
+      $this->fixture= new MapTypeOf(new TypeReflection(XPClass::forName('lang.XPClass')));
     }
   
     /**
@@ -36,7 +32,7 @@
      */
     #[@test]
     public function name() {
-      $this->assertEquals('[string:lang.XPClass]', $this->fixture->name());
+      $this->assertEquals('[:lang.XPClass]', $this->fixture->name());
     }
 
     /**
@@ -55,7 +51,6 @@
     #[@test]
     public function isSubclassOfTypeMap() {
       $this->assertTrue($this->fixture->isSubclassOf(new MapTypeOf(
-        new TypeReference(new TypeName('string'), Types::PRIMITIVE_KIND),
         new TypeReflection(XPClass::forName('lang.Type'))
       )));
     }

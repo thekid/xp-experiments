@@ -39,10 +39,10 @@ Arrays can also have types:
   public static void main(string[] $args) { ... }
 
   /// Instantiation  
-  $m= new [string : string] { 'key' : 'value' };
+  $m= new [:string] { 'key' : 'value' };
   
   // Type
-  public static void main([string : string] $args) { ... }
+  public static void main([:string] $args) { ... }
 </code>
 
 Varargs syntax

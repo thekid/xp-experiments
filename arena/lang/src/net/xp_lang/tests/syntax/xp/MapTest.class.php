@@ -35,93 +35,66 @@
     public function emptyTypedMap() {
       $this->assertEquals(array(new MapNode(array(
         'elements'      => NULL,
-        'type'          => new TypeName('[int:string]'),
+        'type'          => new TypeName('[:string]'),
       ))), $this->parse('
-        new [int:string] {:};
+        new [:string] {:};
       '));
     }
 
     /**
-     * Test "[string:int[]]"
+     * Test "[:int[]]"
      *
      */
     #[@test]
-    public function stringToIntArray() {
+    public function intArrayMap() {
       $this->assertEquals(array(new MapNode(array(
         'elements'      => NULL,
-        'type'          => new TypeName('[string:int[]]'),
+        'type'          => new TypeName('[:int[]]'),
       ))), $this->parse('
-        new [string:int[]] {:};
+        new [:int[]] {:};
       '));
     }
 
     /**
-     * Test "[var:var[]]"
+     * Test "[:var[]]"
      *
      */
     #[@test]
-    public function varToVarArray() {
+    public function varArrayMap() {
       $this->assertEquals(array(new MapNode(array(
         'elements'      => NULL,
-        'type'          => new TypeName('[var:var[]]'),
+        'type'          => new TypeName('[:var[]]'),
       ))), $this->parse('
-        new [var:var[]] {:};
+        new [:var[]] {:};
       '));
     }
 
     /**
-     * Test "[string:[string:int]]"
+     * Test "[:[:int]]"
      *
      */
     #[@test]
-    public function stringToStringIntArrayMap() {
+    public function intMapMap() {
       $this->assertEquals(array(new MapNode(array(
         'elements'      => NULL,
-        'type'          => new TypeName('[string:[string:int]]'),
+        'type'          => new TypeName('[:[:int]]'),
       ))), $this->parse('
-        new [string:[string:int]] {:};
+        new [:[:int]] {:};
       '));
     }
 
     /**
-     * Test "[string:util.Vector<lang.types.String>]"
+     * Test "[:util.Vector<lang.types.String>]"
      *
      */
     #[@test]
     public function stringToGeneric() {
       $this->assertEquals(array(new MapNode(array(
         'elements'      => NULL,
-        'type'          => new TypeName('[string:util.Vector<lang.types.String>]'),
+        'type'          => new TypeName('[:util.Vector<lang.types.String>]'),
       ))), $this->parse('
-        new [string:util.Vector<lang.types.String>] {:};
+        new [:util.Vector<lang.types.String>] {:};
       '));
-    }
-
-    /**
-     * Test
-     *
-     */
-    #[@test, @expect('lang.FormatException')]
-    public function keyMayNotBeAnArray() {
-      $this->parse('new [int[]:string] {:};');
-    }
-
-    /**
-     * Test
-     *
-     */
-    #[@test, @expect('lang.FormatException')]
-    public function keyMayNotBeAMap() {
-      $this->parse('new [[string:string]:string] {:};');
-    }
-
-    /**
-     * Test
-     *
-     */
-    #[@test, @expect('lang.FormatException')]
-    public function keyMayNotBeGeneric() {
-      $this->parse('new [util.Vector<lang.types.String>:string] {:};');
     }
 
     /**
@@ -174,9 +147,9 @@
               new StringNode('three'),
             ),
           ),
-        'type'          => new TypeName('[int:string]'),
+        'type'          => new TypeName('[:string]'),
         ))), 
-        $this->parse('new [int:string] { 1 : "one", 2 : "two", 3 : "three" };')
+        $this->parse('new [:string] { 1 : "one", 2 : "two", 3 : "three" };')
       );
     }
 

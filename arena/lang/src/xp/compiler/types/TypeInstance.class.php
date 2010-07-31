@@ -269,7 +269,7 @@
     /**
      * Returns a lookup map of generic placeholders
      *
-     * @return  [string:int]
+     * @return  [:int]
      */
     public function genericPlaceholders() {
       return $this->declaration->genericPlaceholders();

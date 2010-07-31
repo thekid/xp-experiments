@@ -82,7 +82,7 @@
      */
     #[@test, @expect('text.parser.generic.ParseException')]
     public function noMapsAllowed() {
-      $this->parse('class Numb3rs { const [var:var] FIRST_THREE = [1: "One", 2: "Two", 3: "Three"]; }');
+      $this->parse('class Numb3rs { const [:var] FIRST_THREE = [1: "One", 2: "Two", 3: "Three"]; }');
     }
   }
 ?>

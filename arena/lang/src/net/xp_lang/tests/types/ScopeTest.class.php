@@ -64,7 +64,7 @@
      */
     #[@test]
     public function mapType() {
-      $this->assertEquals(new TypeName('[var:var]'), $this->fixture->typeOf(new MapNode()));
+      $this->assertEquals(new TypeName('[:var]'), $this->fixture->typeOf(new MapNode()));
     }
 
     /**
@@ -73,9 +73,9 @@
      */
     #[@test]
     public function typedMapType() {
-      $this->assertEquals(new TypeName('[int:string]'), $this->fixture->typeOf(new MapNode(array(
+      $this->assertEquals(new TypeName('[:string]'), $this->fixture->typeOf(new MapNode(array(
         'elements'      => NULL,
-        'type'          => new TypeName('[int:string]'),
+        'type'          => new TypeName('[:string]'),
       ))));
     }
     

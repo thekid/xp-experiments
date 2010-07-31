@@ -12,8 +12,7 @@
    * @test  xp://net.xp_lang.tests.types.MapTypeOfTest
    */
   class MapTypeOf extends Types {
-    protected $key= NULL;
-    protected $value= NULL;
+    protected $component= NULL;
     
     /**
      * Constructor
@@ -21,9 +20,8 @@
      * @param   xp.compiler.types.Types key
      * @param   xp.compiler.types.Types value
      */
-    public function __construct(Types $key, Types $value) {
-      $this->key= $key;
-      $this->value= $value;
+    public function __construct(Types $component) {
+      $this->component= $component;
     }
     
     /**
@@ -32,7 +30,7 @@
      * @return  string
      */
     public function name() {
-      return '['.$this->key->name().':'.$this->value->name().']';
+      return '[:'.$this->component->name().']';
     }
 
     /**
@@ -41,7 +39,7 @@
      * @return  xp.compiler.types.Types
      */
     public function parent() {
-      return NULL;    // TBI
+      return new self($this->component->parent());
     }
 
     /**
@@ -59,7 +57,7 @@
      * @return  string
      */
     public function kind() {
-      return $this->value->kind();
+      return $this->component->kind();
     }
 
     /**
@@ -69,7 +67,7 @@
      * @return  bool
      */
     public function isSubclassOf(Types $t) {
-      return $t instanceof self && $this->value->isSubclassOf($t->value);
+      return $t instanceof self && $this->component->isSubclassOf($t->component);
     }
 
     /**
@@ -89,8 +87,8 @@
      */
     public function getEnumerator() {
       $e= new xp·compiler·types·Enumerator();
-      $e->key= new TypeName($this->key->name());
-      $e->value= new TypeName($this->value->name());
+      $e->key= new TypeName('string');
+      $e->value= new TypeName($this->component->name());
       return $e;
     }
 
@@ -228,15 +226,15 @@
      */
     public function getIndexer() {
       $i= new xp·compiler·types·Indexer();
-      $i->parameters= array(new TypeName($this->key->name));
-      $i->type= new TypeName($this->value->name());
+      $i->parameters= array(new TypeName('string'));
+      $i->type= new TypeName($this->component->name());
       return $i;
     }
 
     /**
      * Returns a lookup map of generic placeholders
      *
-     * @return  [string:int]
+     * @return  [:int]
      */
     public function genericPlaceholders() {
       return array();
@@ -249,9 +247,8 @@
      */    
     public function toString() {
       return sprintf(
-        '%s@([%s:%s]>)',
+        '%s@([:%s]>)',
         $this->getClassName(),
-        $this->key->name(),
         $this->value->name()
       );
     }

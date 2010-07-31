@@ -14,7 +14,7 @@
    *   var          : TypeName('var')
    *   string       : TypeName('string')
    *   bool[]       : TypeName('bool[]')
-   *   [string:var] : TypeName('[string:var]')
+   *   [:var]       : TypeName('[:var]')
    *   List<T>      : TypeName('List', [TypeName('T')])
    *   Map<K, V>    : TypeName('Map', [TypeName('K'), TypeName('V')])
    * </pre>
@@ -107,18 +107,16 @@
      * @return  bool
      */
     public function isMap() {
-      return '[' === $this->name{0} && ']' === $this->name{strlen($this->name)- 1};
+      return '[:' === substr($this->name, 0, 2);
     }
 
     /**
      * Return map component type or NULL if this is not a map
      *
-     * @return  xp.compiler.types.TypeName[]
+     * @return  xp.compiler.types.TypeName
      */
-    public function mapComponentTypes() {
-      if (!$this->isMap()) return NULL;
-      list($key, $value)= explode(':', substr($this->name, 1, -1));
-      return array(new self($key), new self($value));
+    public function mapComponentType() {
+      return $this->isMap() ? new self(substr($this->name, 2, -1)) : NULL;
     }
 
     /**

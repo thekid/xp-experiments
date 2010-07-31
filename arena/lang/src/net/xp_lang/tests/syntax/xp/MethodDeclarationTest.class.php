@@ -272,13 +272,13 @@
           ))
         ),
         'name'       => 'map',
-        'returns'    => new TypeName('[int:string]'),
+        'returns'    => new TypeName('[:string]'),
         'parameters' => array(), 
         'throws'     => NULL,
         'body'       => array(),
         'extension'  => NULL
       ))), $this->parse('class Any { 
-        [@test] [int:string] map() { }
+        [@test] [:string] map() { }
       }'));
     }
   }

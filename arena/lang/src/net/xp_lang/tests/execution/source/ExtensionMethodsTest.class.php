@@ -118,7 +118,7 @@
     #[@test]
     public function mapExtension() {
       $class= $this->define('class', 'MapExtension', NULL, '{
-        protected static string[] keys(this [string:string] $map) {
+        protected static string[] keys(this [:string] $map) {
           $r= [];
           foreach ($key, $value in $map) {
             $r[]= $key;
@@ -126,7 +126,7 @@
           return $r;
         }
         
-        public bool run([string:string] $map) {
+        public bool run([:string] $map) {
           return $map.keys();
         }
       }');

@@ -232,8 +232,7 @@
       if ($name->isArray()) {
         return new ArrayTypeOf($this->resolveType($name->arrayComponentType()));
       } else if ($name->isMap()) {
-        $types= $name->mapComponentTypes();
-        return new MapTypeOf($this->resolveType($types[0]), $this->resolveType($types[1]));
+        return new MapTypeOf($this->resolveType($name->mapComponentType()));
       } else if (!$name->isClass()) {
         return new TypeReference($name, Types::PRIMITIVE_KIND);
       } else if ($name->isGeneric()) {
@@ -344,7 +343,7 @@
       if ($node instanceof ArrayNode) {
         return $node->type ? $node->type : new TypeName('var[]');
       } else if ($node instanceof MapNode) {
-        return $node->type ? $node->type : new TypeName('[var:var]');
+        return $node->type ? $node->type : new TypeName('[:var]');
       } else if ($node instanceof StringNode) {
         return new TypeName('string');
       } else if ($node instanceof NaturalNode) {

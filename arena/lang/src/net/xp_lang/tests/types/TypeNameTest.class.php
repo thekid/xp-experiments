@@ -111,8 +111,8 @@
      *
      */
     #[@test]
-    public function intIntMapIsMap() {
-      $this->assertTrue(create(new TypeName('[int:int]'))->isMap());
+    public function intMapIsMap() {
+      $this->assertTrue(create(new TypeName('[:int]'))->isMap());
     }
 
     /**
@@ -206,14 +206,14 @@
     }
 
     /**
-     * Test mapComponentTypes()
+     * Test mapComponentType()
      *
      */
     #[@test]
-    public function mapComponentTypes() {
+    public function mapComponentType() {
       $this->assertEquals(
-        array(new TypeName('string'), new TypeName('int')), 
-        create(new TypeName('[string:int]'))->mapComponentTypes()
+        new TypeName('int'), 
+        create(new TypeName('[:int]'))->mapComponentType()
       );
     }
 
@@ -223,7 +223,7 @@
      */
     #[@test]
     public function mapComponentTypesOfNonMap() {
-      $this->assertEquals(NULL, create(new TypeName('string'))->mapComponentTypes());
+      $this->assertEquals(NULL, create(new TypeName('string'))->mapComponentType());
     }
 
     /**

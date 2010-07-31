@@ -118,13 +118,7 @@
       } else if (isset($rename[$lookup])) {
         return $rename[$lookup].$spec;
       } else if (2 === sscanf($lookup, 'array<%[^,],%[^>]>', $tkey, $tvalue)) {
-        return (
-          '['.
-          $this->mapName(strtr(trim($tkey), $rename), $package, $imports).
-          ':'.
-          $this->mapName(strtr(trim($tvalue), $rename), $package, $imports).
-          ']'
-        );
+        return '[:'.$this->mapName(strtr(trim($tvalue), $rename), $package, $imports).']';
       }
       
       // Fully qualify name if not already qualified
