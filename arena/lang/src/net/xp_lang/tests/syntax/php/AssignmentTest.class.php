@@ -210,20 +210,20 @@
     }
 
     /**
-     * Test assigning to a class net·xp_lang·tests·syntax·php·member
+     * Test assigning to a class member
      *
      */
     #[@test]
     public function toClassMember() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'variable'      => new ClassMemberNode(new TypeName('self'), new VariableNode('instance')),
+        'variable'      => new StaticMemberAccessNode(new TypeName('self'), 'instance'),
         'expression'    => new NullNode(),
         'op'            => '='
       ))), $this->parse('self::$instance= null;'));
     }
 
     /**
-     * Test assigning to a class net·xp_lang·tests·syntax·php·member
+     * Test assigning to a class member
      *
      */
     #[@test]
@@ -231,7 +231,7 @@
       $this->assertEquals(array(new AssignmentNode(array(
         'variable'      => new MemberAccessNode(
           new MethodCallNode(
-            new ClassMemberNode(new TypeName('self'), new VariableNode('instance')),
+            new StaticMemberAccessNode(new TypeName('self'), 'instance'),
             'addAppender',
             NULL
           ),

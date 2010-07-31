@@ -96,9 +96,7 @@
     protected function isWriteable($node) {
       if ($node instanceof VariableNode || $node instanceof ArrayAccessNode) {
         return TRUE;
-      } else if ($node instanceof ClassMemberNode) {
-        return $this->isWriteable($node->member);
-      } else if ($node instanceof MemberAccessNode) {
+      } else if ($node instanceof MemberAccessNode || $node instanceof StaticMemberAccessNode) {
         return TRUE;    // TODO: Check for private, protected
       }
       return FALSE;
@@ -360,6 +358,21 @@
     }
 
     /**
+     * Emit static method call
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.StaticMethodCallNode call
+     */
+    public function emitStaticMethodCall($op, StaticMethodCallNode $call) {
+      $ptr= $this->resolveType($call->type);
+      $op->append($ptr->literal().'::'.$call->name);
+      $this->emitInvocationArguments($op, (array)$call->arguments);
+
+      // Record type
+      $this->scope[0]->setType($call, $ptr->hasMethod($call->name) ? $ptr->getMethod($call->name)->returns : TypeName::$VAR);
+    }
+
+    /**
      * Emit method call
      *
      * @param   resource op
@@ -402,6 +415,20 @@
 
       // Record type
       $this->scope[0]->setType($call, $ptr->hasMethod($call->name) ? $ptr->getMethod($call->name)->returns : TypeName::$VAR);
+    }
+
+    /**
+     * Emit member access
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.StaticMemberAccessNode access
+     */
+    public function emitStaticMemberAccess($op, StaticMemberAccessNode $access) {
+      $ptr= $this->resolveType($access->type);
+      $op->append($ptr->literal().'::$'.$access->name);
+
+      // Record type
+      $this->scope[0]->setType($access, $ptr->hasField($call->name) ? $ptr->getField($call->name)->type : TypeName::$VAR);
     }
 
     /**
@@ -489,7 +516,7 @@
         !$access->target instanceof ArrayAccessNode && 
         !$access->target instanceof MemberAccessNode &&
         !$access->target instanceof VariableNode &&
-        !($access->target instanceof ClassMemberNode && $access->target->member instanceof VariableNode)
+        !$access->target instanceof StaticMemberAccessNode
       ) {
         $op->insert('this(', $mark);
         $op->append(',');
@@ -501,6 +528,34 @@
         $op->append(']');
       }
       $this->scope[0]->setType($access, $result);
+    }
+
+    /**
+     * Emit constant access
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ConstantAccessNode access
+     */
+    public function emitConstantAccess($op, ConstantAccessNode $access) {
+      $ptr= $this->resolveType($access->type);
+      $op->append($ptr->literal().'::'.$access->name);
+
+      // Record type
+      $this->scope[0]->setType($access, $ptr->hasConstant($call->name) ? $ptr->getConstant($call->name)->type : TypeName::$VAR);
+    }
+
+    /**
+     * Emit class access
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.ClassAccessNode access
+     */
+    public function emitClassAccess($op, ClassAccessNode $access) {
+      $ptr= $this->resolveType($access->type);
+      $op->append('XPClass::forName(\''.$ptr->name().'\')');
+
+      // Record type
+      $this->scope[0]->setType($access, new TypeName('lang.XPClass'));
     }
 
     /**
@@ -857,68 +912,6 @@
       $op->append(') {');
       $this->emitAll($op, (array)$switch->cases);
       $op->append('}');
-    }
-    
-    /**
-     * Emit class members, for example:
-     * <code>
-     *   XPClass::forName();        // static method call
-     *   lang.types.String::class;  // special "class" member
-     *   Tokens::T_STRING;          // class constant
-     *   self::$instance;           // static member variable
-     *   parent::__construct();     // super class call, here: constructor
-     * </code>
-     *
-     * @param   resource op
-     * @param   xp.compiler.ast.ClassMemberNode ref
-     */
-    protected function emitClassMember($op, ClassMemberNode $ref) {
-      $ptr= $this->resolveType($ref->class);
-      if ($ref->member instanceof InvocationNode) {
-      
-        if ('__construct' === $ref->member->name) {
-
-          // Constructor calls. FIXME: Should this be a 
-          if (!$ptr->hasConstructor()) {
-            $this->warn('T305', 'Type '.$ptr->toString().' has no constructor', $ref);
-          }
-        } else {
-
-          // Static method call
-          if (!$ptr->hasMethod($ref->member->name)) {
-            $this->warn('T305', 'Cannot resolve '.$ref->member->name.'() in type '.$ptr->toString(), $ref);
-          } else {
-            $m= $ptr->getMethod($ref->member->name);
-            $this->scope[0]->setType($ref, $m->returns);
-          }
-        }
-
-        $op->append($ptr->literal().'::'.$ref->member->name);
-        $this->emitInvocationArguments($op, (array)$ref->member->arguments);
-      } else if ($ref->member instanceof VariableNode) {
-      
-        // Static member
-        if (!$ptr->hasField($ref->member->name)) {
-          $this->warn('T305', 'Cannot resolve '.$ref->member->name.' in type '.$ptr->toString(), $ref);
-        } else {
-          $f= $ptr->getField($ref->member->name);
-          $this->scope[0]->setType($ref, $f->type);
-        }
-
-        $op->append($ptr->literal().'::$'.$ref->member->name);
-      } else if ($ref->member instanceof ConstantNode && 'class' === $ref->member->value) {
-        
-        // Magic "class" member
-        $op->append('XPClass::forName(\''.$ptr->name().'\')');
-        $this->scope[0]->setType($ref, new TypeName('lang.XPClass'));
-      } else if ($ref->member instanceof ConstantNode) {
-
-        // Class constant
-        $op->append($ptr->literal().'::'.$ref->member->value);
-      } else {
-        $this->error('M405', 'Cannot emit class member '.xp::stringOf($ref->member), $ref);
-        return;
-      }
     }
     
     /**
@@ -1334,7 +1327,7 @@
       foreach ($annotations as $annotation) {
         $params= array();
         foreach ((array)$annotation->parameters as $name => $value) {
-          if ($value instanceof ClassMemberNode) {    // class literal
+          if ($value instanceof ClassAccessNode) {    // class literal
             $params[$name]= $this->resolveType($value->class)->name();
           } else if ($value instanceof Resolveable) {
             $params[$name]= $value->resolve();
@@ -1500,7 +1493,7 @@
       if ($this->inits[0][TRUE]) {
         foreach ($this->inits[0][TRUE] as $field) {
           $this->emitOne($op, new AssignmentNode(array(
-            'variable'   => new ClassMemberNode(new TypeName('self'), new VariableNode($field->name)),
+            'variable'   => new StaticMemberAccessNode(new TypeName('self'), $field->name),
             'expression' => $field->initialization,
             'op'         => '=',
           )));
@@ -1926,9 +1919,10 @@
         'parameters' => NULL,
         'throws'     => NULL,
         'body'       => array(
-          new ReturnNode(new ClassMemberNode(
+          new ReturnNode(new StaticMethodCallNode(
             new TypeName('parent'),
-            new InvocationNode('membersOf', array(new StringNode($thisType->literal())))
+            'membersOf', 
+            array(new StringNode($thisType->literal()))
           ))
         ),
         'extension'  => NULL,
@@ -2090,7 +2084,7 @@
             $parameters[]= array('name' => '··a'.$i, 'type' => $type);    // TODO: default
             $arguments[]= new VariableNode('··a'.$i);
           }
-          $body= array(new ClassMemberNode(new TypeName('parent'), new InvocationNode('__construct', $arguments)));
+          $body= array(new StaticMethodCallNode(new TypeName('parent'), '__construct', $arguments));
         } else {
           $body= array();
           $arguments= array();

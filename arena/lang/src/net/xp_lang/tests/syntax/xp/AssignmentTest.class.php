@@ -214,7 +214,7 @@
     #[@test]
     public function toClassMember() {
       $this->assertEquals(array(new AssignmentNode(array(
-        'variable'      => new ClassMemberNode(new TypeName('self'), new VariableNode('instance')),
+        'variable'      => new StaticMemberAccessNode(new TypeName('self'), 'instance'),
         'expression'    => new NullNode(),
         'op'            => '='
       ))), $this->parse('self::$instance= null;'));
@@ -229,7 +229,7 @@
       $this->assertEquals(array(new AssignmentNode(array(
         'variable'      => new MemberAccessNode(
           new MethodCallNode(
-            new ClassMemberNode(new TypeName('self'), new VariableNode('instance')),
+            new StaticMemberAccessNode(new TypeName('self'), 'instance'),
             'addAppender',
             NULL
           ),

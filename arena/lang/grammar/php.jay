@@ -34,7 +34,13 @@
     'xp.compiler.ast.WhileNode',
     'xp.compiler.ast.AssignmentNode',
     'xp.compiler.ast.InvocationNode',
+    'xp.compiler.ast.MethodCallNode',
+    'xp.compiler.ast.StaticMethodCallNode',
+    'xp.compiler.ast.MemberAccessNode',
+    'xp.compiler.ast.StaticMemberAccessNode',
     'xp.compiler.ast.ConstantNode',
+    'xp.compiler.ast.ConstantAccessNode',
+    'xp.compiler.ast.ClassAccessNode',
     'xp.compiler.ast.IntegerNode',
     'xp.compiler.ast.HexNode',
     'xp.compiler.ast.DecimalNode',
@@ -43,7 +49,6 @@
     'xp.compiler.ast.NullNode',
     'xp.compiler.ast.ArrayNode',
     'xp.compiler.ast.MapNode',
-    'xp.compiler.ast.ClassMemberNode',
     'xp.compiler.ast.ClassConstantNode',
     'xp.compiler.ast.InstanceOfNode',
     'xp.compiler.ast.ComparisonNode',
@@ -510,14 +515,14 @@ instancecreation:
 ;
 
 staticmember:
-    T_WORD { 
-      $$= $yyLex->create(new ConstantNode()); $$->value= $1;
-    }
-  | T_VARIABLE { 
-      $$= $yyLex->create(new VariableNode($1)); 
+    T_VARIABLE { 
+      $$= new StaticMemberAccessNode(NULL, $1); 
     }
   | T_WORD '(' expressionlist_opt ')' { 
-      $$= $yyLex->create(new InvocationNode($1, $3)); 
+      $$= new StaticMethodCallNode(NULL, $1, $3); 
+    }
+  | T_WORD {
+      $$= new ConstantAccessNode(NULL, $1);
     }
 ;
 
@@ -533,13 +538,14 @@ expression:
       $3->position= $p;
       $$= $3;
     }
-  | qualifiedname T_DOUBLE_COLON { $2= $yyLex->create(new ClassMemberNode(new TypeName($1))); } staticmember chain_opt {
-      $2->member= $4;
+  | qualifiedname T_DOUBLE_COLON { $p= $yyLex->position; } staticmember chain_opt {
+      $4->position= $p;
+      $4->type= new TypeName($1);
       if ($5) {
         $$= $5[0];
-        $5[1]->target= $2;
+        $5[1]->target= $4;
       } else {
-        $$= $2;
+        $$= $4;
       }
     } 
   | T_WORD '(' { $2= $yyLex->create(new InvocationNode($1)); } expressionlist_opt ')' chain_opt { 

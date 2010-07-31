@@ -36,8 +36,12 @@
     'xp.compiler.ast.AssignmentNode',
     'xp.compiler.ast.InvocationNode',
     'xp.compiler.ast.MethodCallNode',
+    'xp.compiler.ast.StaticMethodCallNode',
     'xp.compiler.ast.MemberAccessNode',
+    'xp.compiler.ast.StaticMemberAccessNode',
     'xp.compiler.ast.ConstantNode',
+    'xp.compiler.ast.ConstantAccessNode',
+    'xp.compiler.ast.ClassAccessNode',
     'xp.compiler.ast.IntegerNode',
     'xp.compiler.ast.HexNode',
     'xp.compiler.ast.DecimalNode',
@@ -46,7 +50,6 @@
     'xp.compiler.ast.NullNode',
     'xp.compiler.ast.ArrayNode',
     'xp.compiler.ast.MapNode',
-    'xp.compiler.ast.ClassMemberNode',
     'xp.compiler.ast.InstanceOfNode',
     'xp.compiler.ast.ComparisonNode',
     'xp.compiler.ast.BinaryOpNode',
@@ -195,6 +198,15 @@
     }
 
     /**
+     * Visit member access
+     *
+     * @param   xp.compiler.ast.Node node
+     */
+    protected function visitStaticMemberAccess(StaticMemberAccessNode $node) {
+      return $node;
+    }
+
+    /**
      * Visit method call
      *
      * @param   xp.compiler.ast.Node node
@@ -205,12 +217,29 @@
     }
 
     /**
-     * Visit a class member
+     * Visit method call
      *
      * @param   xp.compiler.ast.Node node
      */
-    protected function visitClassMember(ClassMemberNode $node) {
-      $node->member= $this->visitOne($node->member);
+    protected function visitStaticMethodCall(StaticMethodCallNode $node) {
+      return $node;
+    }
+
+    /**
+     * Visit member access
+     *
+     * @param   xp.compiler.ast.Node node
+     */
+    protected function visitConstantAccess(ConstantAccessNode $node) {
+      return $node;
+    }
+
+    /**
+     * Visit member access
+     *
+     * @param   xp.compiler.ast.Node node
+     */
+    protected function visitClassAccess(ClassAccessNode $node) {
       return $node;
     }
 

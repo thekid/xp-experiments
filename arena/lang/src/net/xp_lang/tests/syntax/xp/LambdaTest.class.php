@@ -153,9 +153,10 @@
       $this->assertEquals(
         array(new LambdaNode(
           array(),
-          array(new ReturnNode(new ClassMemberNode(
+          array(new ReturnNode(new StaticMethodCallNode(
             new TypeName('Console'),
-            new InvocationNode('write', array(new StringNode('Hello')))
+            'write', 
+            array(new StringNode('Hello'))
           )))
         )), 
         $this->parse('{ => Console::write("Hello") };')

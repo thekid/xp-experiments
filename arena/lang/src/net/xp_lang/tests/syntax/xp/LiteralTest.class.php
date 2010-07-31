@@ -229,7 +229,7 @@
     #[@test]
     public function classLiteral() {
       $this->assertEquals(
-        array(new ClassMemberNode(new TypeName('lang.types.String'), new ConstantNode('class'))),
+        array(new ClassAccessNode(new TypeName('lang.types.String'))),
         $this->parse('lang.types.String::class;')
       );
     }

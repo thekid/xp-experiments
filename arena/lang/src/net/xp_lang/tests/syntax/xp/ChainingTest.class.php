@@ -107,7 +107,7 @@
     public function chainedAfterStaticMethod() {
       $this->assertEquals(
         array(new MethodCallNode(
-          new ClassMemberNode(new TypeName('Logger'), new InvocationNode('getInstance', array())),
+          new StaticMethodCallNode(new TypeName('Logger'), 'getInstance', array()),
           'configure', 
           array(new StringNode('etc'))
         )), 

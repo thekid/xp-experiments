@@ -39,14 +39,13 @@
      * @return  bool
      */
     protected function isWriteable($node) {
-      if ($node instanceof VariableNode || $node instanceof ArrayAccessNode || $node instanceof MemberAccessNode) {
-        return TRUE;
-      } else if ($node instanceof ClassMemberNode) {
-        return $this->isWriteable($node->member);
-      } else if ($node instanceof DynamicVariableReferenceNode) {
-        return TRUE;
-      }
-      return FALSE;
+      return (
+        $node instanceof VariableNode || 
+        $node instanceof ArrayAccessNode || 
+        $node instanceof MemberAccessNode ||
+        $node instanceof StaticMemberAccessNode ||
+        $node instanceof DynamicVariableReferenceNode
+      );
     }
     
     /**
@@ -59,7 +58,7 @@
     public function verify(xp·compiler·ast·Node $node, Scope $scope) {
       $a= cast($node, 'xp.compiler.ast.AssignmentNode');
       if (!$this->isWriteable($a->variable)) {
-        return array('A403', 'Cannot assign to '.$a->variable->getClassName().'s');
+        return array('A403', 'Cannot assign to '.($a->variable instanceof Generic ? $a->variable->getClassName() : xp::stringOf($a->variable)).'s');
       }
     }
   }
