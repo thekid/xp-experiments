@@ -16,6 +16,12 @@ and to use array offsets on method return values:
   XPClass::forName($name).getMethods()[0];
 </code>
 
+<summary>
+See also:
+* Features in PHP trunk: Array dereferencing
+  http://schlueters.de/blog/archives/138-.html
+</summary>
+
 Array and map syntax
 ~~~~~~~~~~~~~~~~~~~~
 The <tt>array</tt> keyword from the PHP language has been replaced by
