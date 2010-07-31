@@ -218,11 +218,11 @@
     }
 
     /**
-     * Test mapComponentTypes()
+     * Test mapComponentType()
      *
      */
     #[@test]
-    public function mapComponentTypesOfNonMap() {
+    public function mapComponentTypeOfNonMap() {
       $this->assertEquals(NULL, create(new TypeName('string'))->mapComponentType());
     }
 
