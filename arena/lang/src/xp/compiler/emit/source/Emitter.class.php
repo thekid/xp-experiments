@@ -467,8 +467,7 @@
       if ($type->isArray()) {
         $result= $type->arrayComponentType();
       } else if ($type->isMap()) {
-        $components= $type->mapComponentTypes();
-        $result= $components[1];
+        $result= $type->mapComponentType();
       } else if ($type->isClass()) {
         $ptr= new TypeInstance($this->resolveType($type));
         if ($ptr->hasIndexer()) {
