@@ -16,7 +16,6 @@
    * @see      xp://xp.compiler.types.ArrayTypeOf
    */
   class ArrayTypeOfTest extends TestCase {
-
     protected $fixture= NULL;
     
     /**
@@ -72,7 +71,7 @@
       $this->assertTrue($this->fixture->isSubclassOf(new ArrayTypeOf(new TypeReflection(XPClass::forName('lang.Object')))));
     }
  
-     /**
+    /**
      * Test isSubclassOf()
      *
      */
@@ -80,5 +79,5 @@
     public function isNotSubclassOfObject() {
       $this->assertFalse($this->fixture->isSubclassOf(new TypeReflection(XPClass::forName('lang.Object'))));
     }
- }
+  }
 ?>

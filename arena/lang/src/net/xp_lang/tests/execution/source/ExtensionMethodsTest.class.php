@@ -110,5 +110,31 @@
         $instance->run(array(XPClass::forName('lang.Object'), XPClass::forName('lang.Generic')))
       );
     }
+
+    /**
+     * Test extending a map
+     *
+     */
+    #[@test]
+    public function mapExtension() {
+      $class= $this->define('class', 'MapExtension', NULL, '{
+        protected static string[] keys(this [string:string] $map) {
+          $r= [];
+          foreach ($key, $value in $map) {
+            $r[]= $key;
+          }
+          return $r;
+        }
+        
+        public bool run([string:string] $map) {
+          return $map.keys();
+        }
+      }');
+      $instance= $class->newInstance();
+      $this->assertEquals(
+        array('color', 'name', 'model'),
+        $instance->run(array('color' => 'black', 'name' => 'Camera', 'model' => '500'))
+      );
+    }
   }
 ?>

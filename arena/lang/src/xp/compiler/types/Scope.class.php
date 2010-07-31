@@ -24,7 +24,8 @@
     'xp.compiler.types.TypeReflection', 
     'xp.compiler.types.TypeDeclaration',
     'xp.compiler.types.GenericType',
-    'xp.compiler.types.ArrayTypeOf'
+    'xp.compiler.types.ArrayTypeOf',
+    'xp.compiler.types.MapTypeOf'
   );
 
   /**
@@ -230,6 +231,9 @@
     public function resolveType(TypeName $name, $register= TRUE) {
       if ($name->isArray()) {
         return new ArrayTypeOf($this->resolveType($name->arrayComponentType()));
+      } else if ($name->isMap()) {
+        $types= $name->mapComponentTypes();
+        return new MapTypeOf($this->resolveType($types[0]), $this->resolveType($types[1]));
       } else if (!$name->isClass()) {
         return new TypeReference($name, Types::PRIMITIVE_KIND);
       } else if ($name->isGeneric()) {

@@ -216,6 +216,25 @@
      *
      */
     #[@test]
+    public function mapExtension() {
+      with (
+        $mapType= new MapTypeOf(new TypeReference(new TypeName('string'), Types::PRIMITIVE_KIND), new TypeReflection(XPClass::forName('lang.Object'))), 
+        $keyMethod= new xp·compiler·types·Method('key')
+      ); {
+        $this->fixture->addExtension($mapType, $keyMethod);
+        $this->assertTrue($this->fixture->hasExtension($mapType, $keyMethod->name));
+        $this->assertEquals(
+          $keyMethod,
+          $this->fixture->getExtension($mapType, $keyMethod->name)
+        );
+      }
+    }
+
+    /**
+     * Test extension method API
+     *
+     */
+    #[@test]
     public function objectExtensionInherited() {
       with (
         $objectType= new TypeReflection(XPClass::forName('lang.Object')), 
