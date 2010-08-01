@@ -136,5 +136,31 @@
         $instance->run(array('color' => 'black', 'name' => 'Camera', 'model' => '500'))
       );
     }
+
+    /**
+     * Test extending a map
+     *
+     */
+    #[@test]
+    public function mapOfSubclassExtension() {
+      $class= $this->define('class', 'ObjectMapExtension', NULL, '{
+        protected static Object[] values(this [:Object] $map) {
+          $r= [];
+          foreach ($value in $map) {
+            $r[]= $value;
+          }
+          return $r;
+        }
+        
+        public bool run([:XPClass] $map) {
+          return $map.values();
+        }
+      }');
+      $instance= $class->newInstance();
+      $this->assertEquals(
+        array(XPClass::forName('lang.Object'), $this->getClass()),
+        $instance->run(array('object' => XPClass::forName('lang.Object'), 'self' => $this->getClass()))
+      );
+    }
   }
 ?>
