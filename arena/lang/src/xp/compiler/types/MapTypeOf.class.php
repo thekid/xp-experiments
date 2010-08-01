@@ -249,7 +249,7 @@
       return sprintf(
         '%s@([:%s]>)',
         $this->getClassName(),
-        $this->value->name()
+        $this->component->name()
       );
     }
   }
