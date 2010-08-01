@@ -128,6 +128,28 @@
     }
 
     /**
+     * Test hasProperty() on compiled type
+     *
+     */
+    #[@test]
+    public function classPropertyExists() {
+      $t= $this->compile('class Person { public string name { get { } set { } } }');
+      $this->assertTrue($t->hasProperty('name'));
+    }
+
+    /**
+     * Test getProperty() on compiled type
+     *
+     */
+    #[@test]
+    public function classProperty() {
+      $f= $this->compile('class Person { public string name { get { } set { } } }')->getProperty('name');
+      $this->assertEquals('name', $f->name);
+      $this->assertEquals(new TypeName('string'), $f->type);
+      $this->assertEquals(MODIFIER_PUBLIC, $f->modifiers);
+    }
+
+    /**
      * Test hasField() on compiled type
      *
      */
