@@ -260,5 +260,26 @@
       $this->assertEquals(MODIFIER_PUBLIC, $m->modifiers);
       $this->assertEquals(array(), $m->parameters);
     }
+
+    /**
+     * Test hasIndexer() on compiled type
+     *
+     */
+    #[@test]
+    public function classIndexerExists() {
+      $t= $this->compile('class ArrayList<T> { public T this[int $offset] { get { } set { } isset { } unset { } }}');
+      $this->assertTrue($t->hasIndexer('color'));
+    }
+
+    /**
+     * Test getIndexer() on compiled type
+     *
+     */
+    #[@test]
+    public function classIndexer() {
+      $i= $this->compile('class ArrayList<T> { public T this[int $offset] { get { } set { } isset { } unset { } }}')->getIndexer();
+      $this->assertEquals(new TypeName('T'), $i->type);
+      $this->assertEquals(array(new TypeName('int')), $i->parameters);
+    }
   }
 ?>
