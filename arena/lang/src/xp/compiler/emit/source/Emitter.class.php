@@ -1234,7 +1234,10 @@
         DETAIL_ARGUMENTS    => array(),
         DETAIL_RETURNS      => $return->name(),
         DETAIL_THROWS       => array(),
-        DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$operator->comment),
+        DETAIL_COMMENT      => $operator->comment
+          ? trim(preg_replace('/\n\s+\* ?/', "\n", "\n ".substr($operator->comment, 4, strpos($operator->comment, '* @')- 2)))
+          : NULL
+        ,
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$operator->annotations)
       );
       array_unshift($this->method, $name);
@@ -1461,7 +1464,10 @@
         DETAIL_ARGUMENTS    => array(),
         DETAIL_RETURNS      => $return->name(),
         DETAIL_THROWS       => array(),
-        DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$method->comment),
+        DETAIL_COMMENT      => $method->comment
+          ? trim(preg_replace('/\n\s+\* ?/', "\n", "\n ".substr($method->comment, 4, strpos($method->comment, '* @')- 2)))
+          : NULL
+        ,
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$method->annotations)
       );
 
