@@ -1,0 +1,19 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package demo;
+
+/**
+ * Generic filter
+ *
+ */
+public interface Filter<T> {
+
+  /**
+   * Returns whether this filter accepts this element
+   *
+   */
+  public bool accept(T $element);
+}
