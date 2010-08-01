@@ -121,7 +121,19 @@
     public function addTypeImport($import) {
       $p= strrpos($import, '.');
       $this->imports[substr($import, $p+ 1)]= $import;
-      $this->resolveType(new TypeName($import));
+      $ptr= $this->resolveType(new TypeName($import));
+      $qualified= $ptr->name();
+
+      // Check if this import created extension methods
+      // FIXME: Use $this->resolved[$qualified]->getExtensions()
+      foreach (xp::$registry as $k => $value) {
+        if ($value instanceof ReflectionMethod && $qualified === xp::nameOf($value->class)) {
+          $this->addExtension(
+            $this->resolveType(new TypeName(substr($k, 0, strpos($k, '::')))), 
+            $ptr->getMethod($value->name)
+          );
+        }
+      }
     }
 
     /**
@@ -146,7 +158,7 @@
      * @return  string
      */
     protected function lookupExtension(Types $type, $name) {
-    
+
       // Check parent chain
       do {
         $k= $type->name().$name;
@@ -280,7 +292,11 @@
       // we can simply use this class. TODO: Use specialized 
       // JitClassLoader?
       if (!$this->resolved->containsKey($qualified)) {
-        if (ClassLoader::getDefault()->providesClass($qualified)) {
+        if (
+          class_exists(xp::reflect($qualified), FALSE) || 
+          interface_exists(xp::reflect($qualified), FALSE) || 
+          ClassLoader::getDefault()->providesClass($qualified)
+        ) {
           try {
             $this->resolved[$qualified]= new TypeReflection(XPClass::forName($qualified));
           } catch (Throwable $e) {
@@ -295,17 +311,6 @@
             throw new ResolveException('Cannot resolve '.$name->toString(), 507, $e);
           }
           $this->resolved[$qualified]= $type;
-        }
-        
-        // Check if this import created extension methods
-        // FIXME: Use $this->resolved[$qualified]->getExtensions()
-        foreach (xp::$registry as $k => $value) {
-          if ($value instanceof ReflectionMethod && $qualified === xp::nameOf($value->class)) {
-            $this->addExtension(
-              $this->resolveType(new TypeName(substr($k, 0, strpos($k, '::')))), 
-              $this->resolved[$qualified]->getMethod($value->name)
-            );
-          }
         }
         $register && $this->used[]= new TypeName($qualified);
       }

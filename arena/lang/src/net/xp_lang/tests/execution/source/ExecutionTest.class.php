@@ -22,7 +22,6 @@
   abstract class ExecutionTest extends TestCase {
     protected static $syntax;
     
-    protected $scope;
     protected $emitter;
     protected $counter= 0;
   
@@ -51,12 +50,6 @@
      */
     public function setUp() {
       $this->emitter= new xp·compiler·emit·source·Emitter();
-      $this->scope= new TaskScope(new CompilationTask(
-        new FileSource(new File(__FILE__), self::$syntax),
-        new NullDiagnosticListener(),
-        new FileManager(),
-        $this->emitter
-      ));
       $this->counter= 0;
     }
     
@@ -111,7 +104,12 @@
           implode("\n", $imports).
           ' public '.$type.' '.$class.' '.($parent ? ' extends '.$parent : '').$src
         ), $this->name), 
-        $this->scope
+        new TaskScope(new CompilationTask(
+          new FileSource(new File(__FILE__), self::$syntax),
+          new NullDiagnosticListener(),
+          new FileManager(),
+          $this->emitter
+        ))
       );
       xp::gc();
 

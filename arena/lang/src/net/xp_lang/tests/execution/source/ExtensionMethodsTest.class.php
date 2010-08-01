@@ -162,5 +162,50 @@
         $instance->run(array('object' => XPClass::forName('lang.Object'), 'self' => $this->getClass()))
       );
     }
+
+    /**
+     * Test extension methods do not apply if not imported
+     *
+     */
+    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method XPClass::fieldsNamed')]
+    public function extensionDoesNotApplyIfNotImported() {
+      $this->run('return self::class.fieldsNamed(text.regex.Pattern::compile("_.*"));');
+    }
+
+    /**
+     * Test extension methods do not apply if not imported
+     *
+     */
+    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method XPClass::fieldsNamed')]
+    public function extensionDoesNotApplyIfOnlyUsed() {
+      $class= $this->define('class', 'ClassFieldExtension1', NULL, '{
+        public static lang.reflect.Field[] fieldsNamed(this lang.XPClass $class, text.regex.Pattern $pattern) {
+          throw new IllegalStateException("Unreachable");
+        }
+      }', array('package demo;'));
+      $this->run('return '.$class->getName().'::class.fieldsNamed(text.regex.Pattern::compile("_.*"));');
+    }
+
+    /**
+     * Test extension methods do not apply if not imported
+     *
+     */
+    #[@test]
+    public function extensionApplies() {
+      $class= $this->define('class', 'ClassFieldExtension2', NULL, '{
+        public static lang.reflect.Field[] fieldsNamed(this lang.XPClass $class, text.regex.Pattern $pattern) {
+          $r= new lang.reflect.Field[] { };
+          foreach ($field in $class.getFields()) {
+            if ($pattern.matches($field.getName())) $r[]= $field;
+          }
+          return $r;
+        }
+      }', array('package demo;'));
+
+      $r= $this->run(
+        'return '.$class->getName().'::class.fieldsNamed(text.regex.Pattern::compile("_.*"));', 
+        array('import '.$class->getName().';')
+      );
+    }
   }
 ?>
