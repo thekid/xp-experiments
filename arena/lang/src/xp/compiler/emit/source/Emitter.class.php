@@ -1582,17 +1582,36 @@
      * </code>
      *
      * @param   resource op
-     * @param   string name
+     * @param   xp.compiler.ast.TypeDeclarationNode
      * @param   string qualified
      */
-    protected function registerClass($op, $name, $qualified) {
+    protected function registerClass($op, $declaration, $qualified) {
       if (isset($this->metadata[0]['EXT'])) {     // HACK, this should be accessible in scope
         foreach ($this->metadata[0]['EXT'] as $method => $for) {
-          $op->append('xp::$registry[\''.$for.'::'.$method.'\']= new ReflectionMethod(\''.$name.'\', \''.$method.'\');');
+          $op->append('xp::$registry[\''.$for.'::'.$method.'\']= new ReflectionMethod(\''.$declaration->literal.'\', \''.$method.'\');');
         }
       }
       unset($this->metadata[0]['EXT']);
-      $op->append('xp::$registry[\'class.'.$name.'\']= \''.$qualified.'\';');
+
+      // Retain comment
+      $this->metadata[0]['class'][DETAIL_COMMENT]= $declaration->comment
+        ? trim(preg_replace('/\n\s+\* ?/', "\n", "\n ".substr($declaration->comment, 4, strpos($declaration->comment, '* @')- 2)))
+        : NULL
+      ;
+
+      // Copy annotations
+      $this->metadata[0]['class'][DETAIL_ANNOTATIONS]= $this->annotationsAsMetadata((array)$declaration->annotations);
+
+      // Generics
+      if ($declaration->name->isGeneric()) {
+        $components= '';
+        foreach ($declaration->name->components as $component) {
+          $components.= ', '.$component->name;
+        }
+        $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']= array('self' => substr($components, 2));
+      }
+
+      $op->append('xp::$registry[\'class.'.$declaration->literal.'\']= \''.$qualified.'\';');
       $op->append('xp::$registry[\'details.'.$qualified.'\']= '.var_export($this->metadata[0], TRUE).';');
     }
 
@@ -1824,6 +1843,7 @@
      * @param   xp.compiler.types.TypeName[] dependencies
      */
     protected function emitTypeName($op, $type, TypeDeclarationNode $declaration, $dependencies) {
+      $this->metadata[0]['class']= array();
 
       // Check whether class needs to be fully qualified
       if ($declaration->modifiers & MODIFIER_PACKAGE) {
@@ -1970,13 +1990,8 @@
       // Finish
       $op->append('}');
 
-      $this->metadata[0]['class']= array(
-        DETAIL_COMMENT     => preg_replace('/\n\s+\* ?/', "\n", "\n ".$declaration->comment),
-        DETAIL_ANNOTATIONS => $this->annotationsAsMetadata((array)$declaration->annotations)
-      );
-      
       $this->leave();
-      $this->registerClass($op, $declaration->literal, $thisType->name());
+      $this->registerClass($op, $declaration, $thisType->name());
       array_shift($this->properties);
       array_shift($this->metadata);
 
@@ -2014,22 +2029,8 @@
       }
       $op->append('}');
 
-      $this->metadata[0]['class']= array(
-        DETAIL_COMMENT     => preg_replace('/\n\s+\* ?/', "\n", "\n ".$declaration->comment),
-        DETAIL_ANNOTATIONS => $this->annotationsAsMetadata((array)$declaration->annotations)
-      );
-
-      // Generics
-      if ($declaration->name->isGeneric()) {
-        $components= '';
-        foreach ($declaration->name->components as $component) {
-          $components.= ', '.$component->name;
-        }
-        $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']= array('self' => substr($components, 2));
-      }
-      
       $this->leave();
-      $this->registerClass($op, $declaration->literal, $thisType->name());
+      $this->registerClass($op, $declaration, $thisType->name());
       array_shift($this->metadata);
 
       // Register type info
@@ -2118,20 +2119,6 @@
       }
       $op->append('}');
       
-      $this->metadata[0]['class']= array(
-        DETAIL_COMMENT     => preg_replace('/\n\s+\* ?/', "\n", "\n ".$declaration->comment),
-        DETAIL_ANNOTATIONS => $this->annotationsAsMetadata((array)$declaration->annotations)
-      );
-
-      // Generics
-      if ($declaration->name->isGeneric()) {
-        $components= '';
-        foreach ($declaration->name->components as $component) {
-          $components.= ', '.$component->name;
-        }
-        $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']= array('self' => substr($components, 2));
-      }
-
       // Generic instances have {definition-type, null, [argument-type[0..n]]} 
       // stored  as type names in their details
       if (isset($declaration->generic)) {
@@ -2139,7 +2126,7 @@
       }
 
       $this->leave();
-      $this->registerClass($op, $declaration->literal, $thisType->name());
+      $this->registerClass($op, $declaration, $thisType->name());
       array_shift($this->properties);
       array_shift($this->metadata);
       array_shift($this->inits);
