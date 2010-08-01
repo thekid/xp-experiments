@@ -93,7 +93,7 @@
     }
 
     /**
-     * Test XPClass::getComment() on compiled type
+     * Test Method::getComment() on compiled type
      *
      */
     #[@test]
@@ -107,7 +107,7 @@
     }
 
     /**
-     * Test XPClass::getComment() on compiled type
+     * Test Method::getComment() on compiled type
      *
      */
     #[@test]
@@ -125,7 +125,7 @@
     }
 
     /**
-     * Test XPClass::getComment() on compiled type
+     * Test Method::getComment() on compiled type
      *
      */
     #[@test]
