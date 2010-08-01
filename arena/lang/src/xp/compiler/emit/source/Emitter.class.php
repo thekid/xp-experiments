@@ -1471,7 +1471,7 @@
         foreach ((array)$method->parameters as $arg) {
           if (!$usesGenerics && $this->scope[0]->declarations[0]->name->isPlaceHolder($arg['type'])) $usesGenerics= TRUE;
           $genericParams.= ', '.$arg['type']->compoundName();
-          $arg['vararg'] && $genericParams.= '...';
+          isset($arg['vararg']) && $genericParams.= '...';
         }
         if ($usesGenerics) {
           $this->metadata[0][1][$method->name][DETAIL_ANNOTATIONS]['generic']['params']= substr($genericParams, 2);
@@ -1617,7 +1617,7 @@
     protected function emitIndexer($op, IndexerNode $indexer) {
       $defines= array(
         'get'   => array('offsetGet', $indexer->parameters, $indexer->type),
-        'set'   => array('offsetSet', array_merge($indexer->parameters, array(array('name' => 'value', 'type' => $indexer->type))), TypeName::$VOID),
+        'set'   => array('offsetSet', array_merge($indexer->parameters, array(array('name' => 'value', 'type' => $indexer->type, 'check' => FALSE))), TypeName::$VOID),
         'isset' => array('offsetExists', $indexer->parameters, new TypeName('bool')),
         'unset' => array('offsetUnset', $indexer->parameters, TypeName::$VOID),
       );
