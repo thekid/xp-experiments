@@ -13,7 +13,8 @@
     'xp.compiler.ast.ConstructorNode',
     'xp.compiler.ast.IndexerNode',
     'xp.compiler.ast.PropertyNode',
-    'xp.compiler.ast.StringNode'
+    'xp.compiler.ast.StringNode',
+    'xp.compiler.ast.IntegerNode'
   );
 
   /**
@@ -163,6 +164,30 @@
                 'check' => TRUE
               ))
             ))
+          )
+        )),
+        $this->objectClass()
+      );
+    }
+
+    /**
+     * Returns a type declaration for the coin enum
+     *
+     * @return  xp.compiler.emit.TypeDeclaration
+     */
+    protected function coinEnum() {
+      return new TypeDeclaration(
+        new ParseTree(new TypeName('util.money'), array(), new ClassNode(
+          MODIFIER_PUBLIC, 
+          NULL,
+          new TypeName('Coin'),
+          new TypeName('lang.Enum'),
+          NULL,
+          array(
+            new EnumMemberNode(array('name' => 'penny', 'value' => new IntegerNode('1'), 'body' => NULL)),
+            new EnumMemberNode(array('name' => 'nickel', 'value' => new IntegerNode('2'), 'body' => NULL)),
+            new EnumMemberNode(array('name' => 'dime', 'value' => new IntegerNode('10'), 'body' => NULL)),
+            new EnumMemberNode(array('name' => 'quarter', 'value' => new IntegerNode('25'), 'body' => NULL)),
           )
         )),
         $this->objectClass()
@@ -383,8 +408,7 @@
      */
     #[@test]
     public function stringClassSubclassOfObject() {
-      $decl= $this->stringClass();
-      $this->assertTrue($decl->isSubclassOf($this->objectClass()));
+      $this->assertTrue($this->stringClass()->isSubclassOf($this->objectClass()));
     }
 
     /**
@@ -405,6 +429,15 @@
         $this->stringClass()
       );
       $this->assertTrue($decl->isSubclassOf($this->objectClass()));
+    }
+
+    /**
+     * Test hasField() method
+     *
+     */
+    #[@test]
+    public function coinEnumHasMemberField() {
+      $this->assertTrue($this->coinEnum()->hasField('penny'));
     }
   }
 ?>
