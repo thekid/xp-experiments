@@ -2018,6 +2018,12 @@
         DETAIL_COMMENT     => preg_replace('/\n\s+\* ?/', "\n", "\n ".$declaration->comment),
         DETAIL_ANNOTATIONS => $this->annotationsAsMetadata((array)$declaration->annotations)
       );
+
+      // Generic instances have {definition-type, null, [argument-type[0..n]]} 
+      // stored  as type names in their details
+      if (isset($declaration->generic)) {
+        $this->metadata[0]['class'][DETAIL_GENERIC]= $declaration->generic;
+      }
       
       $this->leave();
       $this->registerClass($op, $declaration->literal, $thisType->name());
