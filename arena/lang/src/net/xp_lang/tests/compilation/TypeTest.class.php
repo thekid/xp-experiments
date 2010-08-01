@@ -261,6 +261,29 @@
     }
 
     /**
+     * Test hasOperator() on compiled type
+     *
+     */
+    #[@test]
+    public function classOperatorExists() {
+      $t= $this->compile('class Complex { public static self operator + (self $a, self $b) { }}');
+      $this->assertTrue($t->hasOperator('+'));
+    }
+
+    /**
+     * Test getOperator() on compiled type
+     *
+     */
+    #[@test]
+    public function classOperator() {
+      $m= $this->compile('class Complex { public static self operator + (self $a, self $b) { }}')->getOperator('+');
+      $this->assertEquals('+', $m->symbol);
+      $this->assertEquals(new TypeName('Complex'), $m->returns);
+      $this->assertEquals(MODIFIER_PUBLIC | MODIFIER_STATIC, $m->modifiers);
+      $this->assertEquals(array(new TypeName('Complex'), new TypeName('Complex')), $m->parameters);
+    }
+
+    /**
      * Test hasMethod() on compiled type
      *
      */
