@@ -1269,11 +1269,14 @@
       $op->append('(');
       $s= sizeof($parameters)- 1;
       $defer= array();
+      $usesGenerics= FALSE;
+      $genericParams= '';
       foreach ($parameters as $i => $param) {
         if (!$param['type']) {
           $t= TypeName::$VAR;
           $ptr= new TypeReference($t);
         } else {
+          if (!$usesGenerics && $this->scope[0]->declarations[0]->name->isPlaceHolder($param['type'])) $usesGenerics= TRUE;
           $t= $param['type'];
           $ptr= $this->resolveType($t);
           if (!$param['check'] || isset($param['vararg'])) {
@@ -1286,11 +1289,13 @@
             // No restriction on primitives possible in PHP
           }
         }
+
         $signature[]= new TypeName($ptr->name());
-        
+        $genericParams.= ', '.$t->compoundName();
         $this->metadata[0][1][$this->method[0]][DETAIL_ARGUMENTS][$i]= $ptr->name();
         
         if (isset($param['vararg'])) {
+          $genericParams.= '...';
           if ($i > 0) {
             $defer[]= '$'.$param['name'].'= array_slice(func_get_args(), '.$i.');';
           } else {
@@ -1331,6 +1336,10 @@
       
       foreach ($defer as $src) {
         $op->append($src);
+      }
+
+      if ($usesGenerics) {
+        $this->metadata[0][1][$this->method[0]][DETAIL_ANNOTATIONS]['generic']['params']= substr($genericParams, 2);
       }
       
       return $signature;
@@ -1467,25 +1476,9 @@
         $signature= $this->emitParameters($op, (array)$method->parameters, ';');
       }
       
-      // Finalize - FIXME: Put this in ...asMetadata()
-      if ($this->scope[0]->declarations[0]->name->isGeneric()) {
-      
-        // Return type
-        if ($this->scope[0]->declarations[0]->name->isPlaceholder($method->returns)) {
-          $this->metadata[0][1][$method->name][DETAIL_ANNOTATIONS]['generic']['return']= $method->returns->compoundName();
-        }
-        
-        // Parameters
-        $genericParams= '';
-        $usesGenerics= FALSE;
-        foreach ((array)$method->parameters as $arg) {
-          if (!$usesGenerics && $this->scope[0]->declarations[0]->name->isPlaceHolder($arg['type'])) $usesGenerics= TRUE;
-          $genericParams.= ', '.$arg['type']->compoundName();
-          isset($arg['vararg']) && $genericParams.= '...';
-        }
-        if ($usesGenerics) {
-          $this->metadata[0][1][$method->name][DETAIL_ANNOTATIONS]['generic']['params']= substr($genericParams, 2);
-        }
+      // Finalize
+      if ($this->scope[0]->declarations[0]->name->isGeneric() && $this->scope[0]->declarations[0]->name->isPlaceholder($method->returns)) {
+        $this->metadata[0][1][$method->name][DETAIL_ANNOTATIONS]['generic']['return']= $method->returns->compoundName();
       }
 
       array_shift($this->method);
@@ -1569,22 +1562,7 @@
         $signature= $this->emitParameters($op, (array)$constructor->parameters, ';');
       }
       
-      // Finalize - FIXME: Put this in ...asMetadata()
-      if ($this->scope[0]->declarations[0]->name->isGeneric()) {
-      
-        // Parameters
-        $genericParams= '';
-        $usesGenerics= FALSE;
-        foreach ((array)$constructor->parameters as $arg) {
-          if (!$usesGenerics && $this->scope[0]->declarations[0]->name->isPlaceHolder($arg['type'])) $usesGenerics= TRUE;
-          $genericParams.= ', '.$arg['type']->compoundName();
-          $arg['vararg'] && $genericParams.= '...';
-        }
-        if ($usesGenerics) {
-          $this->metadata[0][1]['__construct'][DETAIL_ANNOTATIONS]['generic']['params']= substr($genericParams, 2);
-        }
-      }
-
+      // Finalize
       array_shift($this->method);
       $this->leave();
 
