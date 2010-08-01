@@ -1228,19 +1228,29 @@
       );
       
       $this->enter(new MethodScope());
+      $return= $this->resolveType($operator->returns);
+      $name= 'operator··'.$ovl[$operator->symbol];
+      $this->metadata[0][1][$name]= array(
+        DETAIL_ARGUMENTS    => array(),
+        DETAIL_RETURNS      => $return->name(),
+        DETAIL_THROWS       => array(),
+        DETAIL_COMMENT      => preg_replace('/\n\s+\* ?/', "\n  ", "\n ".$operator->comment),
+        DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$operator->annotations)
+      );
+      array_unshift($this->method, $name);
 
-      $op->append('public static function operator··');
-      $op->append($ovl[$operator->symbol]);
+      $op->append('public static function ')->append($name);
       $signature= $this->emitParameters($op, (array)$operator->parameters, '{');
       $this->emitAll($op, (array)$operator->body);
       $op->append('}');
       
+      array_shift($this->method);
       $this->leave();
       
       // Register type information
       $o= new xp·compiler·types·Operator();
       $o->symbol= $operator->symbol;
-      $o->returns= new TypeName($this->resolveType($operator->returns)->name());
+      $o->returns= new TypeName($return->name());
       $o->parameters= $signature;
       $o->modifiers= $operator->modifiers;
       $this->types[0]->addOperator($o);
@@ -1278,7 +1288,7 @@
         }
         $signature[]= new TypeName($ptr->name());
         
-        $this->metadata[0][1][$this->method[0]->name][DETAIL_ARGUMENTS][$i]= $ptr->name();
+        $this->metadata[0][1][$this->method[0]][DETAIL_ARGUMENTS][$i]= $ptr->name();
         
         if (isset($param['vararg'])) {
           if ($i > 0) {
@@ -1446,7 +1456,7 @@
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$method->annotations)
       );
 
-      array_unshift($this->method, $method);
+      array_unshift($this->method, $method->name);
 
       // Parameters, body
       if (NULL !== $method->body) {
@@ -1537,7 +1547,7 @@
         DETAIL_ANNOTATIONS  => $this->annotationsAsMetadata((array)$constructor->annotations)
       );
 
-      array_unshift($this->method, $constructor);
+      array_unshift($this->method, '__construct');
 
       // Arguments, initializations, body
       if (NULL !== $constructor->body) {
