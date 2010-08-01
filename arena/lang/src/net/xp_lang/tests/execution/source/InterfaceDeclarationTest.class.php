@@ -91,5 +91,20 @@
         }
       }');
     }
+
+    /**
+     * Test a generic interface declaration
+     *
+     */
+    #[@test]
+    public function genericInterface() {
+      $class= $this->define('interface', 'Filter<T>', NULL, '{ 
+        public bool accept(T $element);
+      }');
+      $this->assertTrue($class->isGenericDefinition());
+      $this->assertEquals(array('T'), $class->genericComponents());
+
+      $this->assertEquals(array('params' => 'T'), $class->getMethod('accept')->getAnnotation('generic'));
+    }
   }
 ?>

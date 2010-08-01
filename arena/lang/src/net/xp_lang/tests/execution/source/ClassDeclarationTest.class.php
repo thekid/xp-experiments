@@ -75,7 +75,8 @@
         }
       }');
       
-      $this->assertEquals(array('self' => 'T'), $class->getAnnotation('generic'));
+      $this->assertTrue($class->isGenericDefinition());
+      $this->assertEquals(array('T'), $class->genericComponents('generic'));
       $this->assertEquals(array('params' => 'T', 'return' => 'T'), $class->getMethod('add')->getAnnotation('generic'));
       $this->assertEquals(array('return' => 'T[]'), $class->getMethod('elements')->getAnnotation('generic'));
       $this->assertEquals(

@@ -2019,10 +2019,13 @@
         DETAIL_ANNOTATIONS => $this->annotationsAsMetadata((array)$declaration->annotations)
       );
 
-      // Generic instances have {definition-type, null, [argument-type[0..n]]} 
-      // stored  as type names in their details
-      if (isset($declaration->generic)) {
-        $this->metadata[0]['class'][DETAIL_GENERIC]= $declaration->generic;
+      // Generics
+      if ($declaration->name->isGeneric()) {
+        $components= '';
+        foreach ($declaration->name->components as $component) {
+          $components.= ', '.$component->name;
+        }
+        $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']= array('self' => substr($components, 2));
       }
       
       $this->leave();
@@ -2113,24 +2116,21 @@
       if ($this->inits[0][TRUE]) {
         $this->emitOne($op, new StaticInitializerNode(NULL));
       }
-      
-      // Generics
-      $meta= array();
-      if ($declaration->name->isGeneric()) {
-        $meta= array('generic' => array('self' => ''));
-        $s= sizeof($declaration->name->components)- 1;
-        foreach ($declaration->name->components as $i => $component) {
-          $meta['generic']['self'].= ($i < $s ? ', ' : '').$component->compoundName();
-        }
-      }
-      
-      // Finish
       $op->append('}');
       
       $this->metadata[0]['class']= array(
         DETAIL_COMMENT     => preg_replace('/\n\s+\* ?/', "\n", "\n ".$declaration->comment),
-        DETAIL_ANNOTATIONS => array_merge($meta, $this->annotationsAsMetadata((array)$declaration->annotations))
+        DETAIL_ANNOTATIONS => $this->annotationsAsMetadata((array)$declaration->annotations)
       );
+
+      // Generics
+      if ($declaration->name->isGeneric()) {
+        $components= '';
+        foreach ($declaration->name->components as $component) {
+          $components.= ', '.$component->name;
+        }
+        $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']= array('self' => substr($components, 2));
+      }
 
       // Generic instances have {definition-type, null, [argument-type[0..n]]} 
       // stored  as type names in their details
