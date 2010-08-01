@@ -438,7 +438,7 @@
       $op->append($ptr->literal().'::$'.$access->name);
 
       // Record type
-      $this->scope[0]->setType($access, $ptr->hasField($call->name) ? $ptr->getField($call->name)->type : TypeName::$VAR);
+      $this->scope[0]->setType($access, $ptr->hasField($access->name) ? $ptr->getField($access->name)->type : TypeName::$VAR);
     }
 
     /**
@@ -551,7 +551,7 @@
       $op->append($ptr->literal().'::'.$access->name);
 
       // Record type
-      $this->scope[0]->setType($access, $ptr->hasConstant($call->name) ? $ptr->getConstant($call->name)->type : TypeName::$VAR);
+      $this->scope[0]->setType($access, $ptr->hasConstant($access->name) ? $ptr->getConstant($access->name)->type : TypeName::$VAR);
     }
 
     /**
