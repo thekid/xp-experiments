@@ -62,6 +62,18 @@
     }
 
     /**
+     * Test getField() on compiled type
+     *
+     */
+    #[@test]
+    public function classField() {
+      $f= $this->compile('class Person { public string $name; }')->getField('name');
+      $this->assertEquals('name', $f->name);
+      $this->assertEquals(new TypeName('string'), $f->type);
+      $this->assertEquals(MODIFIER_PUBLIC, $f->modifiers);
+    }
+
+    /**
      * Test hasField() on compiled type
      *
      */
@@ -69,6 +81,18 @@
     public function classStaticFieldExists() {
       $t= $this->compile('class Logger { public static self $instance; }');
       $this->assertTrue($t->hasField('instance'));
+    }
+
+    /**
+     * Test getField() on compiled type
+     *
+     */
+    #[@test]
+    public function classStaticField() {
+      $f= $this->compile('class Logger { public static self $instance; }')->getField('instance');
+      $this->assertEquals('instance', $f->name);
+      $this->assertEquals(new TypeName('Logger'), $f->type);
+      $this->assertEquals(MODIFIER_STATIC | MODIFIER_PUBLIC, $f->modifiers);
     }
     
     /**
@@ -82,6 +106,18 @@
     }
 
     /**
+     * Test getField() on compiled type
+     *
+     */
+    #[@test]
+    public function enumField() {
+      $f= $this->compile('enum Days { MON, TUE, WED, THU, FRI, SAT, SUN }')->getField('MON');
+      $this->assertEquals('MON', $f->name);
+      $this->assertEquals(new TypeName('Days'), $f->type);
+      $this->assertEquals(MODIFIER_STATIC | MODIFIER_PUBLIC, $f->modifiers);
+    }
+
+    /**
      * Test hasConstant() on compiled type
      *
      */
@@ -89,6 +125,18 @@
     public function classConstantExists() {
       $t= $this->compile('class StringConstants { const string LF= "\n"; }');
       $this->assertTrue($t->hasConstant('LF'));
+    }
+
+    /**
+     * Test getConstant() on compiled type
+     *
+     */
+    #[@test]
+    public function classConstant() {
+      $c= $this->compile('class StringConstants { const string LF= "\n"; }')->getConstant('LF');
+      $this->assertEquals('LF', $c->name);
+      $this->assertEquals(new TypeName('string'), $c->type);
+      $this->assertEquals("\n", $c->value);
     }
 
     /**
@@ -102,6 +150,18 @@
     }
 
     /**
+     * Test getConstant() on compiled type
+     *
+     */
+    #[@test]
+    public function interfaceConstant() {
+      $c= $this->compile('interface StringConstants { const string LF= "\n"; }')->getConstant('LF');
+      $this->assertEquals('LF', $c->name);
+      $this->assertEquals(new TypeName('string'), $c->type);
+      $this->assertEquals("\n", $c->value);
+    }
+
+    /**
      * Test hasMethod() on compiled type
      *
      */
@@ -112,6 +172,19 @@
     }
 
     /**
+     * Test getMethod() on compiled type
+     *
+     */
+    #[@test]
+    public function classMethod() {
+      $m= $this->compile('class String { public self substring(int $start, int $len) { }}')->getMethod('substring');
+      $this->assertEquals('substring', $m->name);
+      $this->assertEquals(new TypeName('String'), $m->returns);
+      $this->assertEquals(MODIFIER_PUBLIC, $m->modifiers);
+      $this->assertEquals(array(new TypeName('int'), new TypeName('int')), $m->parameters);
+    }
+
+    /**
      * Test hasMethod() on compiled type
      *
      */
@@ -119,6 +192,19 @@
     public function enumMethodExists() {
       $t= $this->compile('enum Coin { penny(1), nickel(2), dime(10), quarter(25); public string color() { }}');
       $this->assertTrue($t->hasMethod('color'));
+    }
+
+    /**
+     * Test getMethod() on compiled type
+     *
+     */
+    #[@test]
+    public function enumMethod() {
+      $m= $this->compile('enum Coin { penny(1), nickel(2), dime(10), quarter(25); public string color() { }}')->getMethod('color');
+      $this->assertEquals('color', $m->name);
+      $this->assertEquals(new TypeName('string'), $m->returns);
+      $this->assertEquals(MODIFIER_PUBLIC, $m->modifiers);
+      $this->assertEquals(array(), $m->parameters);
     }
   }
 ?>
