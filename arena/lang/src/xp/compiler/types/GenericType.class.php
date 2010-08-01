@@ -276,7 +276,7 @@
     public function getIndexer() {
       if (NULL !== ($indexer= $this->definition->getIndexer())) {
         $indexer->type= $this->rewrite($indexer->type);
-        $indexer->parameters= $this->rewriteAll($indexer->parameters);
+        $indexer->parameter= $this->rewrite($indexer->parameter);
         return $indexer;
       }
       return NULL;

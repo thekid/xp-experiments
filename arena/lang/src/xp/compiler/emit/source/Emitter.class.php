@@ -1247,26 +1247,26 @@
     }
 
     /**
-     * Emit method arguments
+     * Emit method parameters
      *
      * @param   resource op
-     * @param   array<string, *>[] arguments
+     * @param   array<string, *>[] parameters
      * @param   string delim
      * @return  xp.compiler.TypeName[] the signature
      */
-    protected function emitParameters($op, array $arguments, $delim) {
+    protected function emitParameters($op, array $parameters, $delim) {
       $signature= array();
       $op->append('(');
-      $s= sizeof($arguments)- 1;
+      $s= sizeof($parameters)- 1;
       $defer= array();
-      foreach ($arguments as $i => $arg) {
-        if (!$arg['type']) {
+      foreach ($parameters as $i => $param) {
+        if (!$param['type']) {
           $t= TypeName::$VAR;
           $ptr= new TypeReference($t);
         } else {
-          $t= $arg['type'];
+          $t= $param['type'];
           $ptr= $this->resolveType($t);
-          if (!$arg['check'] || isset($arg['vararg'])) {
+          if (!$param['check'] || isset($param['vararg'])) {
             // No runtime type checks
           } else if ($t->isArray() || $t->isMap()) {
             $op->append('array ');
@@ -1280,23 +1280,23 @@
         
         $this->metadata[0][1][$this->method[0]->name][DETAIL_ARGUMENTS][$i]= $ptr->name();
         
-        if (isset($arg['vararg'])) {
+        if (isset($param['vararg'])) {
           if ($i > 0) {
-            $defer[]= '$'.$arg['name'].'= array_slice(func_get_args(), '.$i.');';
+            $defer[]= '$'.$param['name'].'= array_slice(func_get_args(), '.$i.');';
           } else {
-            $defer[]= '$'.$arg['name'].'= func_get_args();';
+            $defer[]= '$'.$param['name'].'= func_get_args();';
           }
-          $this->scope[0]->setType(new VariableNode($arg['name']), new TypeName($t->name.'[]'));
+          $this->scope[0]->setType(new VariableNode($param['name']), new TypeName($t->name.'[]'));
           break;
         }
         
-        $op->append('$'.$arg['name']);
-        if (isset($arg['default'])) {
+        $op->append('$'.$param['name']);
+        if (isset($param['default'])) {
           $op->append('= ');
           $resolveable= FALSE; 
-          if ($arg['default'] instanceof Resolveable) {
+          if ($param['default'] instanceof Resolveable) {
             try {
-              $init= $arg['default']->resolve();
+              $init= $param['default']->resolve();
               $op->append(var_export($init, TRUE));
               $resolveable= TRUE; 
             } catch (IllegalStateException $e) {
@@ -1306,15 +1306,15 @@
             $op->append('NULL');
             $init= new xp·compiler·emit·source·Buffer('', $op->line);
             $init->append('if (func_num_args() < ')->append($i + 1)->append(') { ');
-            $init->append('$')->append($arg['name'])->append('= ');
-            $this->emitOne($init, $arg['default']);
+            $init->append('$')->append($param['name'])->append('= ');
+            $this->emitOne($init, $param['default']);
             $init->append('; }');
             $defer[]= $init;
           }
         }
-        $i < $s && !isset($arguments[$i+ 1]['vararg']) && $op->append(',');
+        $i < $s && !isset($parameters[$i+ 1]['vararg']) && $op->append(',');
         
-        $this->scope[0]->setType(new VariableNode($arg['name']), $t);
+        $this->scope[0]->setType(new VariableNode($param['name']), $t);
       }
       $op->append(')');
       $op->append($delim);
@@ -1615,11 +1615,12 @@
      * @param   xp.compiler.ast.IndexerNode indexer
      */
     protected function emitIndexer($op, IndexerNode $indexer) {
+      $params= array($indexer->parameter);
       $defines= array(
-        'get'   => array('offsetGet', $indexer->parameters, $indexer->type),
-        'set'   => array('offsetSet', array_merge($indexer->parameters, array(array('name' => 'value', 'type' => $indexer->type, 'check' => FALSE))), TypeName::$VOID),
-        'isset' => array('offsetExists', $indexer->parameters, new TypeName('bool')),
-        'unset' => array('offsetUnset', $indexer->parameters, TypeName::$VOID),
+        'get'   => array('offsetGet', $params, $indexer->type),
+        'set'   => array('offsetSet', array_merge($params, array(array('name' => 'value', 'type' => $indexer->type, 'check' => FALSE))), TypeName::$VOID),
+        'isset' => array('offsetExists', $params, new TypeName('bool')),
+        'unset' => array('offsetUnset', $params, TypeName::$VOID),
       );
 
       foreach ($indexer->handlers as $name => $statements) {
@@ -1636,14 +1637,10 @@
         )));
       }
       
-      foreach ($indexer->parameters as $parameter) {
-        $signature[]= new TypeName($this->resolveType($parameter['type'])->name());
-      }
-
       // Register type information
       $i= new xp·compiler·types·Indexer();
       $i->type= new TypeName($this->resolveType($indexer->type)->name());
-      $i->parameters= $signature;
+      $i->parameter= new TypeName($this->resolveType($indexer->parameter['type'])->name());
       $i->modifiers= $indexer->modifiers;
       $this->types[0]->indexer= $i;
     }

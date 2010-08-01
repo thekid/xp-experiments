@@ -124,13 +124,13 @@
       if ($this->type->isArray()) {
         $i= new xp·compiler·types·Indexer();
         $i->type= $this->type->arrayComponentType();
-        $i->parameters= array(new Typename('int'));
+        $i->parameter= new Typename('int');
         $i->holder= $this;
         return $i;
       } else if ($this->type->isMap()) {
         $i= new xp·compiler·types·Indexer();
         $i->type= $this->type->mapComponentType();
-        $i->parameters= array(new Typename('string'));
+        $i->parameter= new Typename('string');
         $i->holder= $this;
         return $i;
       }

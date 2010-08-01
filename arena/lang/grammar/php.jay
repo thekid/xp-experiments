@@ -291,7 +291,7 @@ initialization_opt:
 
 // {{{ Methods and operators
 method:
-    decorations T_FUNCTION T_WORD '(' { $4= $yyLex->create('__construct' == $3 ? new ConstructorNode() :  new MethodNode(), TRUE); } arguments_opt ')' returntype_opt methodbody {
+    decorations T_FUNCTION T_WORD '(' { $4= $yyLex->create('__construct' == $3 ? new ConstructorNode() :  new MethodNode(), TRUE); } parameters_opt ')' returntype_opt methodbody {
       $4->modifiers= $1[0];
       $4->annotations= $1[1];
       $4->returns= $8;
@@ -352,17 +352,17 @@ methodbody:
   | '{' statements_opt '}' { $$= (array)$2; }
 ;
 
-arguments_opt:
+parameters_opt:
     /* empty */ { $$= NULL; }
-  | arguments   { $$= $1; }
+  | parameters  { $$= $1; }
 ;
 
-arguments:
-    argument  { $$= array($1); }
-  | argument ',' arguments { $$= array_merge(array($1), $3); }
+parameters:
+    parameter  { $$= array($1); }
+  | parameter ',' parameters { $$= array_merge(array($1), $3); }
 ;
 
-argument:
+parameter:
 	typeref T_VARIABLE initialization_opt { $$= array('name' => $2, 'type' => $1, 'check' => TRUE); $3 && $$['default']= $3; }
   | T_VARIABLE initialization_opt { $$= array('name' => $1, 'type' => new TypeName('var'), 'check' => FALSE); $2 && $$['default']= $2; }
 ;

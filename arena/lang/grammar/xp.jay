@@ -337,7 +337,7 @@ field:
 
 property:
     T_WORD { $$= $yyLex->create(new PropertyNode(array('name' => $1))); }
-  | T_THIS '[' arguments ']' { $$= $yyLex->create(new IndexerNode(array('parameters' => $3))); }
+  | T_THIS '[' parameter ']' { $$= $yyLex->create(new IndexerNode(array('parameter' => $3))); }
 ;
 
 getsets:
@@ -358,7 +358,7 @@ initialization_opt:
 
 // {{{ Methods and operators
 method:
-    decorations typeref T_WORD '(' { $4= $yyLex->create(new MethodNode(), TRUE); } extension_arguments_opt ')' throws_opt methodbody {
+    decorations typeref T_WORD '(' { $4= $yyLex->create(new MethodNode(), TRUE); } extension_parameters_opt ')' throws_opt methodbody {
       $4->modifiers= $1[0];
       $4->annotations= $1[1];
       $4->returns= $2;
@@ -369,7 +369,7 @@ method:
       $4->extension= $6[1];
       $$= $4;
     }
-  | decorations T_WORD '(' { $p= $yyLex->position; } arguments_opt ')' throws_opt methodbody {
+  | decorations T_WORD '(' { $p= $yyLex->position; } parameters_opt ')' throws_opt methodbody {
       // Assert only certain methods are allowed here. This could be done by making
       // __construct and friends keywords - or this way!
       switch ($2) {
@@ -394,7 +394,7 @@ method:
       $$->throws= $7;
       $$->body= $8;
     }
-  | decorations typeref T_OPERATOR operator '(' { $5= $yyLex->create(new OperatorNode(), TRUE); } arguments_opt ')' throws_opt methodbody {
+  | decorations typeref T_OPERATOR operator '(' { $5= $yyLex->create(new OperatorNode(), TRUE); } parameters_opt ')' throws_opt methodbody {
       $5->modifiers= $1[0];
       $5->annotations= $1[1];
       $5->returns= $2;
@@ -448,28 +448,28 @@ methodbody:
   | '{' statements_opt '}' { $$= (array)$2; }
 ;
 
-extension_arguments_opt:
+extension_parameters_opt:
     /* empty */       { $$= array(NULL, NULL); }
-  | T_THIS arguments  { $$= array($2, $2[0]['type']); }
-  | arguments         { $$= array($1, NULL); }
+  | T_THIS parameters { $$= array($2, $2[0]['type']); }
+  | parameters        { $$= array($1, NULL); }
 ;
 
-arguments_opt:
+parameters_opt:
     /* empty */ { $$= NULL; }
-  | arguments   { $$= $1; }
+  | parameters  { $$= $1; }
 ;
 
-arguments:
-    argument  { $$= array($1); }
-  | arguments ',' argument { $$= array_merge($1, array($3)); }
+parameters:
+    parameter                { $$= array($1); }
+  | parameters ',' parameter { $$= array_merge($1, array($3)); }
 ;
 
-argument:
-	argtyperef T_VARIABLE initialization_opt { $$= array_merge(array('name' => $2), $1); $3 && $$['default']= $3; }
-  | argtyperef T_DOTS '.' T_VARIABLE { $$= array_merge(array('name' => $4, 'vararg' => TRUE), $1); }
+parameter:
+	paramtyperef T_VARIABLE initialization_opt { $$= array_merge(array('name' => $2), $1); $3 && $$['default']= $3; }
+  | paramtyperef T_DOTS '.' T_VARIABLE { $$= array_merge(array('name' => $4, 'vararg' => TRUE), $1); }
 ;
 
-argtyperef:
+paramtyperef:
     typeref { $$= array('type' => $1, 'check' => TRUE); }
   | typeref '?' { $$= array('type' => $1, 'check' => FALSE); }
 ;
@@ -756,7 +756,7 @@ expression:
   | T_CLONE expression { 
       $$= $yyLex->create(new CloneNode($2)); break;
     }
-  | expression T_AS argtyperef { 
+  | expression T_AS paramtyperef { 
       $$= $yyLex->create(new CastNode(array_merge($3, array('expression' => $1)))); 
     }
   | assignment { 

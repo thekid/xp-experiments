@@ -227,7 +227,7 @@
      */
     public function getIndexer() {
       $i= new xp·compiler·types·Indexer();
-      $i->parameters= array(new TypeName('int'));
+      $i->parameter= new TypeName('int');
       $i->type= new TypeName($this->component->name());
       return $i;
     }

@@ -279,7 +279,7 @@
     public function classIndexer() {
       $i= $this->compile('class ArrayList<T> { public T this[int $offset] { get { } set { } isset { } unset { } }}')->getIndexer();
       $this->assertEquals(new TypeName('T'), $i->type);
-      $this->assertEquals(array(new TypeName('int')), $i->parameters);
+      $this->assertEquals(new TypeName('int'), $i->parameter);
     }
   }
 ?>

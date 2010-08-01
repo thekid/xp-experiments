@@ -146,7 +146,7 @@
     public function arrayIndexer() {
       $indexer= create(new TypeReference(new TypeName('int[]')))->getIndexer();
       $this->assertEquals(new TypeName('int'), $indexer->type);
-      $this->assertEquals(array(new TypeName('int')), $indexer->parameters);
+      $this->assertEquals(new TypeName('int'), $indexer->parameter);
     }
 
     /**
@@ -157,7 +157,7 @@
     public function mapIndexer() {
       $indexer= create(new TypeReference(new TypeName('[:string]')))->getIndexer();
       $this->assertEquals(new TypeName('string'), $indexer->type);
-      $this->assertEquals(array(new TypeName('string')), $indexer->parameters);
+      $this->assertEquals(new TypeName('string'), $indexer->parameter);
     }
   }
 ?>

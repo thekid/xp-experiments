@@ -33,9 +33,9 @@
    */
   class IndexerNode extends TypeMemberNode {
     public $type= NULL;
-    public $parameters= NULL;
+    public $parameter= NULL;
     public $handlers= array();
-
+    
     /**
      * Returns this routine's name
      *

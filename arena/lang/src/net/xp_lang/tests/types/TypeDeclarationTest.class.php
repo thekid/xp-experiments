@@ -158,11 +158,11 @@
             )),
             new IndexerNode(array(
               'type'       => new TypeName('string'),
-              'parameters' => array(array(
+              'parameter'  => array(
                 'name'  => 'offset',
                 'type'  => new TypeName('int'),
                 'check' => TRUE
-              ))
+              )
             ))
           )
         )),
@@ -358,7 +358,7 @@
     public function stringClassIndexer() {
       $indexer= $this->stringClass()->getIndexer();
       $this->assertEquals(new TypeName('string'), $indexer->type);
-      $this->assertEquals(array(new TypeName('int')), $indexer->parameters);
+      $this->assertEquals(new TypeName('int'), $indexer->parameter);
     }
 
     /**

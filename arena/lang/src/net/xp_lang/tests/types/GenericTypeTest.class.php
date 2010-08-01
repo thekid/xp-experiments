@@ -59,7 +59,7 @@
      */
     #[@test]
     public function hashTableIndexerParameters() {
-      $this->assertEquals(array(new TypeName('string')), $this->newGenericHashTableType()->getIndexer()->parameters);
+      $this->assertEquals(new TypeName('string'), $this->newGenericHashTableType()->getIndexer()->parameter);
     }
 
     /**
@@ -95,7 +95,7 @@
      */
     #[@test]
     public function vectorIndexerParameters() {
-      $this->assertEquals(array(new TypeName('int')), $this->newGenericVectorType()->getIndexer()->parameters);
+      $this->assertEquals(new TypeName('int'), $this->newGenericVectorType()->getIndexer()->parameter);
     }
 
     /**

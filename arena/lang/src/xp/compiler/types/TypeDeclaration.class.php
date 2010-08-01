@@ -346,10 +346,7 @@
         if (!$member instanceof IndexerNode) continue;
         $i= new xp·compiler·types·Indexer();
         $i->type= $member->type;
-        $i->parameters= array();
-        foreach ($member->parameters as $p) {
-          $i->parameters[]= $p['type'];
-        }
+        $i->parameter= $member->parameter['type'];
         $i->holder= $this;
         return $i;
       }

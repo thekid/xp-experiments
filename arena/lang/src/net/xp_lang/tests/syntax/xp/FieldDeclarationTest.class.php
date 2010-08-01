@@ -139,12 +139,10 @@
           'modifiers'  => MODIFIER_PUBLIC,
           'annotations'=> NULL,
           'type'       => new TypeName('T'),
-          'parameters' => array(
-            array(
-              'name'  => 'offset',
-              'type'  => new TypeName('int'),
-              'check' => TRUE
-            )
+          'parameter'  => array(
+            'name'  => 'offset',
+            'type'  => new TypeName('int'),
+            'check' => TRUE
           ),
           'handlers'   => array(
             'get'   => NULL,

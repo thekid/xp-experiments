@@ -343,10 +343,7 @@
       with ($method= $this->class->getMethod('offsetGet')); {
         $i= new xp·compiler·types·Indexer();
         $i->type= $this->typeNameOf($method->getReturnTypeName());
-        $i->parameters= array();
-        foreach ($method->getParameters() as $p) {
-          $i->parameters[]= $this->typeNameOf($p->getTypeName());
-        }
+        $i->parameter= $this->typeNameOf($method->getParameter(0)->getTypeName());
         $i->holder= $this;
         return $i;
       }

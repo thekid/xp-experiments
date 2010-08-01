@@ -210,7 +210,7 @@
     public function stringClassIndexer() {
       $indexer= create(new TypeReflection(XPClass::forName('lang.types.String')))->getIndexer();
       $this->assertEquals(new TypeName('lang.types.Character'), $indexer->type);
-      $this->assertEquals(array(new TypeName('int')), $indexer->parameters);
+      $this->assertEquals(new TypeName('int'), $indexer->parameter);
     }
 
     /**
