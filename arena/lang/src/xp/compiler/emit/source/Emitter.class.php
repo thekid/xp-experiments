@@ -2271,30 +2271,28 @@
      * @param   xp.compiler.ast.Node in
      * @return  int
      */
-    protected function emitOne($op, xp·compiler·ast·Node $in) {
+    protected function emitOne($op, $in) {
       $node= $this->optimizations->optimize($in);
 
-      // Search emission method
-      $target= 'emit'.substr(get_class($node), 0, -strlen('Node'));
-      if (method_exists($this, $target)) {
-        $op->position($node->position);
-        $this->cat && $this->cat->debugf(
-          '@%-3d Emit %s: %s',
-          $node->position[0], 
-          $node->getClassName(), 
-          $node->hashCode()
-        );
-        try {
-          $this->checks->verify($node, $this->scope[0], $this) && call_user_func(array($this, $target), $op, $node);
-        } catch (Throwable $e) {
-          $this->error('0500', $e->toString(), $node);
-          return 0;
-        }
-        return 1;
-      } else {
+      $op->position($node->position);
+      $this->cat && $this->cat->debugf(
+        '@%-3d Emit %s: %s',
+        $node->position[0], 
+        $node->getClassName(), 
+        $node->hashCode()
+      );
+      
+      try {
+        $this->checks->verify($node, $this->scope[0], $this) && call_user_func(array($this, 'emit'.substr(get_class($node), 0, -4)), $op, $node);
+      } catch (Error $e) {
         $this->error('0422', 'Cannot emit '.$node->getClassName(), $node);
         return 0;
+      } catch (Throwable $e) {
+        $this->error('0500', $e->toString(), $node);
+        return 0;
       }
+
+      return 1;
     }
     
     /**
