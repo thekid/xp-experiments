@@ -721,7 +721,7 @@
      * @param   xp.compiler.ast.ContinueNode statement
      */
     protected function emitContinue($op, ContinueNode $statement) {
-      $op->append('continue;');
+      $op->append('continue');
     }
 
     /**
@@ -731,7 +731,7 @@
      * @param   xp.compiler.ast.BreakNode statement
      */
     protected function emitBreak($op, BreakNode $statement) {
-      $op->append('break;');
+      $op->append('break');
     }
 
     /**
