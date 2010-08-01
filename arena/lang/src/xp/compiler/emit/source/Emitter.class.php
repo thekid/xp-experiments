@@ -1799,17 +1799,12 @@
         }
       }
 
-      
-      if (Modifiers::isPublic($field->modifiers)) {
-        $op->append('public ');
-      } else if (Modifiers::isProtected($field->modifiers)) {
-        $op->append('protected ');
-      } else if (Modifiers::isPrivate($field->modifiers)) {
-        $op->append('private ');
+      switch ($field->modifiers & (MODIFIER_PUBLIC | MODIFIER_PROTECTED | MODIFIER_PRIVATE)) {
+        case MODIFIER_PRIVATE: $op->append('private '); break;
+        case MODIFIER_PROTECTED: $op->append('protected '); break;
+        default: $op->append('public '); break;
       }
-      if (Modifiers::isStatic($field->modifiers)) {
-        $op->append('static ');
-      }
+      $static && $op->append('static ');
       $op->append('$'.$field->name);
       $initializable && $op->append('= ')->append(var_export($init, TRUE));
       $op->append(';');
