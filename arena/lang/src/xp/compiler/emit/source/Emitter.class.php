@@ -29,33 +29,43 @@
   /**
    * Emits sourcecode using PHP sourcecode
    *
-   * @test     xp://tests.execution.source.AnnotationTest
-   * @test     xp://tests.execution.source.ArrayTest
-   * @test     xp://tests.execution.source.AssignmentTest
-   * @test     xp://tests.execution.source.CastingTest
-   * @test     xp://tests.execution.source.CatchTest
-   * @test     xp://tests.execution.source.ChainingTest
-   * @test     xp://tests.execution.source.ClassDeclarationTest
-   * @test     xp://tests.execution.source.ComparisonTest
-   * @test     xp://tests.execution.source.ConcatTest
-   * @test     xp://tests.execution.source.DefaultArgsTest
-   * @test     xp://tests.execution.source.EnumDeclarationTest
-   * @test     xp://tests.execution.source.ExtensionMethodsTest
-   * @test     xp://tests.execution.source.FinallyTest
-   * @test     xp://tests.execution.source.InstanceCreationTest
-   * @test     xp://tests.execution.source.InterfaceDeclarationTest
-   * @test     xp://tests.execution.source.LambdaTest
-   * @test     xp://tests.execution.source.LoopExecutionTest
-   * @test     xp://tests.execution.source.MathTest
-   * @test     xp://tests.execution.source.MultiCatchTest
-   * @test     xp://tests.execution.source.OperatorTest
-   * @test     xp://tests.execution.source.PropertiesTest
-   * @test     xp://tests.execution.source.StaticImportTest
-   * @test     xp://tests.execution.source.TernaryOperatorTest
-   * @test     xp://tests.execution.source.VarArgsTest
-   * @test     xp://tests.execution.source.VariablesTest
-   * @test     xp://tests.execution.source.WithTest
-   * @see      xp://xp.compiler.ast.Node
+   * @test     xp://net.xp_lang.tests.execution.source.AnnotationTest
+   * @test     xp://net.xp_lang.tests.execution.source.ArrayTest
+   * @test     xp://net.xp_lang.tests.execution.source.AssignmentTest
+   * @test     xp://net.xp_lang.tests.execution.source.AutoPropertiesTest
+   * @test     xp://net.xp_lang.tests.execution.source.CastingTest
+   * @test     xp://net.xp_lang.tests.execution.source.CatchTest
+   * @test     xp://net.xp_lang.tests.execution.source.ChainingTest
+   * @test     xp://net.xp_lang.tests.execution.source.ClassDeclarationTest
+   * @test     xp://net.xp_lang.tests.execution.source.ComparisonTest
+   * @test     xp://net.xp_lang.tests.execution.source.ConcatTest
+   * @test     xp://net.xp_lang.tests.execution.source.DefaultArgsTest
+   * @test     xp://net.xp_lang.tests.execution.source.EnumDeclarationTest
+   * @test     xp://net.xp_lang.tests.execution.source.ExecutionTest
+   * @test     xp://net.xp_lang.tests.execution.source.ExtensionMethodsTest
+   * @test     xp://net.xp_lang.tests.execution.source.Filter
+   * @test     xp://net.xp_lang.tests.execution.source.FinallyTest
+   * @test     xp://net.xp_lang.tests.execution.source.Functions
+   * @test     xp://net.xp_lang.tests.execution.source.InstanceCreationTest
+   * @test     xp://net.xp_lang.tests.execution.source.InterfaceDeclarationTest
+   * @test     xp://net.xp_lang.tests.execution.source.LambdaTest
+   * @test     xp://net.xp_lang.tests.execution.source.LoopExecutionTest
+   * @test     xp://net.xp_lang.tests.execution.source.MathTest
+   * @test     xp://net.xp_lang.tests.execution.source.MemberInitTest
+   * @test     xp://net.xp_lang.tests.execution.source.MethodOverloadingTest
+   * @test     xp://net.xp_lang.tests.execution.source.MultiCatchTest
+   * @test     xp://net.xp_lang.tests.execution.source.NativeClassUsageTest
+   * @test     xp://net.xp_lang.tests.execution.source.OperatorOverloadingTest
+   * @test     xp://net.xp_lang.tests.execution.source.OperatorTest
+   * @test     xp://net.xp_lang.tests.execution.source.PropertiesTest
+   * @test     xp://net.xp_lang.tests.execution.source.StaticImportTest
+   * @test     xp://net.xp_lang.tests.execution.source.StringBuffer
+   * @test     xp://net.xp_lang.tests.execution.source.TernaryOperatorTest
+   * @test     xp://net.xp_lang.tests.execution.source.VarArgsTest
+   * @test     xp://net.xp_lang.tests.execution.source.VariablesTest
+   * @test     xp://net.xp_lang.tests.execution.source.WithTest
+   * @test     xp://net.xp_lang.tests.compilation.TypeTest
+   * @see      xp://xp.compiler.ast.ParseTree
    */
   class xp·compiler·emit·source·Emitter extends Emitter {
     protected 
@@ -1728,9 +1738,17 @@
 
       // Add field metadata (type, stored in @type annotation, see
       // lang.reflect.Field and lang.XPClass::detailsForField())
+      $type= $this->resolveType(new TypeName('self'));
       $this->metadata[0][0][$member->name]= array(
-        DETAIL_ANNOTATIONS  => array('type' => $this->resolveType(new TypeName('self'))->name())
+        DETAIL_ANNOTATIONS  => array('type' => $type->name())
       );
+
+      // Register type information
+      $f= new xp·compiler·types·Field();
+      $f->name= $member->name;
+      $f->type= new TypeName($type->name());
+      $f->modifiers= MODIFIER_PUBLIC | MODIFIER_STATIC;
+      $this->types[0]->addField($f);
     }  
 
     /**
