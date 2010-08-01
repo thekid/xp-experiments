@@ -52,6 +52,60 @@
     }
 
     /**
+     * Test name() on compiled type
+     *
+     */
+    #[@test]
+    public function name() {
+      $this->assertEquals('Person', $this->compile('class Person { }')->name());
+    }
+
+    /**
+     * Test name() on compiled type
+     *
+     */
+    #[@test]
+    public function nameInsidePackage() {
+      $this->assertEquals('demo.Person', $this->compile('package demo; class Person { }')->name());
+    }
+
+    /**
+     * Test name() on compiled type
+     *
+     */
+    #[@test]
+    public function packageNameInsidePackage() {
+      $this->assertEquals('demo.Person', $this->compile('package demo; package class Person { }')->name());
+    }
+
+    /**
+     * Test literal() on compiled type
+     *
+     */
+    #[@test]
+    public function literal() {
+      $this->assertEquals('Person', $this->compile('class Person { }')->literal());
+    }
+
+    /**
+     * Test literal() on compiled type
+     *
+     */
+    #[@test]
+    public function literalInsidePackage() {
+      $this->assertEquals('Person', $this->compile('package demo; class Person { }')->literal());
+    }
+
+    /**
+     * Test literal() on compiled type
+     *
+     */
+    #[@test]
+    public function packageLiteralInsidePackage() {
+      $this->assertEquals('demo·Person', $this->compile('package demo; package class Person { }')->literal());
+    }
+
+    /**
      * Test hasField() on compiled type
      *
      */
