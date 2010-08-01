@@ -103,5 +103,29 @@
     public function emptyForLoop() {
       $this->assertEquals(0, $this->run('for ($s= 3; $s; $s--) { } return $s;'));
     }
+
+    /**
+     * Test continue
+     *
+     */
+    #[@test]
+    public function continueInsideLoop() {
+      $this->assertEquals(4, $this->run('foreach ($n in [1, 2, 3, 4]) {
+        continue;
+        throw new Error("Unreachable");
+      } return $n;'));
+    }
+
+    /**
+     * Test break
+     *
+     */
+    #[@test]
+    public function breakInsideLoop() {
+      $this->assertEquals(1, $this->run('foreach ($n in [1, 2, 3, 4]) {
+        break;
+        throw new Error("Unreachable");
+      } return $n;'));
+    }
   }
 ?>
