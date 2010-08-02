@@ -65,7 +65,7 @@
           "show variables like 'sql_mode'"
         )))));
       } catch (IOException $e) {
-        throw new SQLStatementFailedException($e->getMessage());
+        // Ignore
       }
       
       // NO_BACKSLASH_ESCAPES: Disable the use of the backslash character 

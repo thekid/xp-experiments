@@ -89,7 +89,6 @@
       }
 
       // Scramble
-      $scrambler= MySqlPassword::$PROTOCOL_41;
       $init= unpack('Lthread/a8scramble', substr($buf, $p+ 1, 13));
       if (strlen($buf)- $p- 14 >= 2) {
         $capabilities= current(unpack('v', substr($buf, $p+ 14, 2)));
@@ -121,7 +120,7 @@
           chr(8).                    // Charset 8 = latin1, 33 = utf8
           str_repeat("\0", 23).      // Filler
           $user."\0".
-          ($password ? chr(20).$scrambler->scramble($password, $init['scramble']) : chr(0))
+          ($password ? chr(20).MySqlPassword::$PROTOCOL_41->scramble($password, $init['scramble']) : chr(0))
         );
       } else {
         $flags= (
@@ -134,7 +133,7 @@
           pack('v', $flags).
           $this->int3(1024 * 1024 * 1024).
           $user."\0".
-          $scrambler->scramble($password, $init['scramble'])."\0"
+          substr(MySqlPassword::$PROTOCOL_40->scramble($password, $init['scramble']), 0, 8)."\0"
         );
       }
       $this->write($data);
@@ -330,7 +329,7 @@
      * @throws  peer.ProtocolException
      */
     protected function write($arg) {
-      // DEBUG Console::$err->writeLine('W ', new Bytes($arg));
+      // DEBUG Console::$err->writeLine('W-> ', new Bytes($arg));
 
       $ptr= 0;
       while (strlen($arg)- $ptr > self::MAX_PACKET_LENGTH) {

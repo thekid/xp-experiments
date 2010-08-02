@@ -14,10 +14,19 @@
    */
   abstract class MySqlPassword extends Enum {
     public static 
+      $PROTOCOL_40= NULL,
       $PROTOCOL_41= NULL;
     
     static function __static() {
-      self::$PROTOCOL_41= newinstance(__CLASS__, array(0, '$PROTOCOL_41'), '{
+      self::$PROTOCOL_40= newinstance(__CLASS__, array(0, '$PROTOCOL_40'), '{
+        static function __static() { }
+        
+        public function scramble($password, $message) {
+          if ("" === $password || NULL === $password) return "";
+          raise("lang.MethodNotImplementedException", "scramble() not yet supported for 4.0");
+        }
+      }');
+      self::$PROTOCOL_41= newinstance(__CLASS__, array(1, '$PROTOCOL_41'), '{
         static function __static() { }
         public function scramble($password, $message) {
           if ("" === $password || NULL === $password) return "";
