@@ -192,6 +192,25 @@
     }
     
     /**
+     * Returns length encoded binary
+     *
+     * @param   string data
+     * @param   int l
+     * @param   &int consumed
+     * @return  int
+     */
+    protected function lbin($data, $l, &$consumed) {
+      $o= $consumed+ 1;
+      switch ($l) {
+        case 2: $n= ord($data[$o]); break;
+        case 3: $n= ord($data[$o]) + ord($data[$o+ 1]) * 256;
+        case 4: $n= ord($data[$o]) + ord($data[$o+ 1]) * 256 + ord($data[$o+ 2]) * 65536;
+      }
+      $consumed+= $l;
+      return $n;
+    }
+    
+    /**
      * Returns length encoded string
      *
      * @param   string data
@@ -225,7 +244,7 @@
       $field['org_table']= $this->lstr($f, $consumed);
       $field['name']= $this->lstr($f, $consumed);
       $field['org_name']= $this->lstr($f, $consumed);
-      return array_merge($field, unpack('vcharsetnr/Vlength/ctype/vflags/cdecimals', substr($f, $consumed+ 1, 10)));
+      return array_merge($field, unpack('vcharsetnr/Vlength/Ctype/vflags/Cdecimals', substr($f, $consumed+ 1, 10)));
     }
 
     /**
@@ -242,8 +261,11 @@
       $field['org_table']= NULL;
       $field['name']= $this->lstr($f, $consumed);
       $field['org_name']= NULL;
-      $field['charsetnr']= NULL;
-      return array_merge($field, unpack('Vlength/ctype/vflags/cdecimals', substr($f, $consumed+ 1, 10)));
+      $field['length']= $this->lbin($f, 4, $consumed);
+      $field['type']= $this->lbin($f, 2, $consumed);
+      $field['flags']= $this->lbin($f, 2, $consumed);
+      $field['decimals']= ord($f{$consumed+ 1});
+      return $field;
     }
     
     /**
