@@ -13,6 +13,7 @@
    */
   class MySqlxProtocol extends Object {
     protected $pkt= 0;
+    protected $sock= NULL;
     public $connected= FALSE;
     const MAX_PACKET_LENGTH = 16777215;   // 256 * 256 * 256 - 1
 
@@ -140,6 +141,7 @@
       }
       $this->write($data);
       $this->read();
+      $this->pkt= 0;
       $this->connected= TRUE;
     }
 
@@ -275,8 +277,6 @@
      * @return  var
      */
     public function query($sql) {
-      $this->pkt= 0;    // Reset packet number, every command starts a new transaction
-      
       $this->write(chr(self::COM_QUERY).$sql);
       $data= $this->read();
       $consumed= 0;
@@ -285,10 +285,13 @@
       if (NULL === $nfields) {          // LOAD DATA LOCAL INFILE
       
         // TODO: Implement
-      
+        $this->pkt= 0;
+        
+        return NULL;
       } else if (0 === $nfields) {      // Results from an insert / update / delete query
         $affected= $this->length($data, $consumed, TRUE);
         $identity= $this->length($data, $consumed, TRUE);
+        $this->pkt= 0;
         
         // TODO: What do we return here?
         return $affected;
@@ -303,8 +306,15 @@
         // DEBUG Console::$err->writeLine('F ', $fields);
         return $fields;
       }
-            
-      return NULL;
+    }
+    
+    /**
+     * Check whether connection is ready
+     *
+     * @return  bool
+     */
+    public function ready() {
+      return 0 === $this->pkt;
     }
 
     /**
@@ -316,6 +326,7 @@
       if (is_array($r= $this->query($sql))) {
         $this->cancel();
       }
+      $this->pkt= 0;
     }
     
     /**
@@ -326,7 +337,10 @@
      */
     public function fetch($fields) {
       $r= $this->read();
-      if ("\376" === $r{0} && strlen($r) < 9) return NULL;
+      if ("\376" === $r{0} && strlen($r) < 9) {
+        $this->pkt= 0;
+        return NULL;
+      }
 
       $record= array();
       $consumed= 0;
@@ -355,6 +369,7 @@
         $r= $this->read();
         $i++;
       } while (!("\376" === $r{0} && strlen($r) < 9));
+      $this->pkt= 0;
       return $i;
     }
     
@@ -369,6 +384,7 @@
       while ($record= $this->fetch($fields)) {
         $records[]= $record;
       }
+      $this->pkt= 0;
       return $records;
     }
     
@@ -431,6 +447,7 @@
       // 0xFF indicates an error
       if ("\377" !== $buf{0}) return $buf;
 
+      $this->pkt= 0;
       $sqlstate= '00000';
       $errno= -1;
       $error= 'Unknown error';
@@ -443,6 +460,15 @@
         $error= substr($buf, $p);
       }
       throw new MySqlxProtocolException($error, $errno, $sqlstate);
+    }
+    
+    /**
+     * Creates a string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'('.xp::stringOf($this->sock->getHandle()).', P@'.$this->pkt.')';
     }
   }
 ?>
