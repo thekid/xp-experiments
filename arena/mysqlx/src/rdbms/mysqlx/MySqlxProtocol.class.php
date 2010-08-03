@@ -122,6 +122,7 @@
           $user."\0".
           ($password ? chr(20).MySqlPassword::$PROTOCOL_41->scramble($password, $init['scramble']) : chr(0))
         );
+        $this->fieldparser= 'field_41';
       } else {
         $flags= (
           self::CLIENT_LONG_PASSWORD | 
@@ -135,6 +136,7 @@
           $user."\0".
           substr(MySqlPassword::$PROTOCOL_40->scramble($password, $init['scramble']), 0, 8)."\0"
         );
+        $this->fieldparser= 'field_40';
       }
       $this->write($data);
       $this->read();
@@ -209,6 +211,42 @@
     }
     
     /**
+     * Field information (4.1+)
+     *
+     * @param   string
+     * @return  [:var] meta
+     */
+    protected function field_41($f) {
+      $consumed= 0;
+      $field= array();
+      $field['catalog']= $this->lstr($f, $consumed);
+      $field['db']= $this->lstr($f, $consumed);
+      $field['table']= $this->lstr($f, $consumed);
+      $field['org_table']= $this->lstr($f, $consumed);
+      $field['name']= $this->lstr($f, $consumed);
+      $field['org_name']= $this->lstr($f, $consumed);
+      return array_merge($field, unpack('vcharsetnr/Vlength/ctype/vflags/cdecimals', substr($f, $consumed+ 1, 10)));
+    }
+
+    /**
+     * Field information (<=4.0)
+     *
+     * @param   string
+     * @return  [:var] meta
+     */
+    protected function field_40($f) {
+      $consumed= 0;
+      $field= array();
+      $field['catalog']= $field['db']= NULL;
+      $field['table']= $this->lstr($f, $consumed);
+      $field['org_table']= NULL;
+      $field['name']= $this->lstr($f, $consumed);
+      $field['org_name']= NULL;
+      $field['charsetnr']= NULL;
+      return array_merge($field, unpack('Vlength/ctype/vflags/cdecimals', substr($f, $consumed+ 1, 10)));
+    }
+    
+    /**
      * Issues a query and returns the results
      *
      * @param   string sql
@@ -236,17 +274,7 @@
         $extra= $this->length($data, $consumed, TRUE);
         $fields= array();
         for ($i= 0; $i < $nfields; $i++) {
-          $f= $this->read();
-          $consumed= 0;
-          $field= array();
-          $field['catalog']= $this->lstr($f, $consumed);
-          $field['db']= $this->lstr($f, $consumed);
-          $field['table']= $this->lstr($f, $consumed);
-          $field['org_table']= $this->lstr($f, $consumed);
-          $field['name']= $this->lstr($f, $consumed);
-          $field['org_name']= $this->lstr($f, $consumed);
-          $field= array_merge($field, unpack('vcharsetnr/Vlength/ctype/vflags/cdecimals', substr($f, $consumed+ 1, 10)));
-          $fields[]= $field;
+          $fields[]= $this->{$this->fieldparser}($this->read());
         }
         $this->read();                  // EOF[ields] record
         
