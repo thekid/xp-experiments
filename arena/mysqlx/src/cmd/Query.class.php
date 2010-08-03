@@ -56,6 +56,7 @@
         try {
           $q= $this->connection->query($query);
           if ($q instanceof ResultSet) {
+             $this->err->writeLine($q);
             $i= 0;
             while ($r= $q->next()) {
               $this->out->writeLine(++$i, ': ', $r);

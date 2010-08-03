@@ -7,6 +7,7 @@
   uses(
     'rdbms.DBConnection',
     'rdbms.mysqlx.MySqlxResultSet',
+    'rdbms.mysqlx.MySqlxBufferedResultSet',
     'rdbms.mysqlx.MySqlxProtocol',
     'rdbms.Transaction',
     'rdbms.StatementFormatter',
@@ -143,6 +144,7 @@
       }
       
       try {
+        $this->handle->ready() || $this->handle->cancel();
         $result= $this->handle->query($sql);
       } catch (MySqlxProtocolException $e) {
         $message= $e->getMessage().' (sqlstate '.$e->sqlstate.')';
@@ -162,12 +164,10 @@
       }
 
       if (!$buffered || $this->flags & DB_UNBUFFERED) {
-        // Unbuffered
+        return is_array($result) ? new MysqlxResultSet($this->handle, $result, $this->tz) : $result;
       } else {
-        // TODO: Cache
+        return is_array($result) ? new MysqlxBufferedResultSet($this->handle, $result, $this->tz) : $result;
       }
-      
-      return is_array($result) ? new MysqlxResultSet($this->handle, $result, $this->tz) : $result;
     }
 
     /**
