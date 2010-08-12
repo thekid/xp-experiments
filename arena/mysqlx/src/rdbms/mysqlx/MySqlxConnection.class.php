@@ -162,7 +162,7 @@
       } catch (IOException $e) {
         throw new SQLStatementFailedException($e->getMessage());
       }
-
+      
       if (!$buffered || $this->flags & DB_UNBUFFERED) {
         return is_array($result) ? new MysqlxResultSet($this->handle, $result, $this->tz) : $result;
       } else {
@@ -200,6 +200,15 @@
      */
     public function commit($name) { 
       return $this->query('commit');
+    }
+
+    /**
+     * Creates a string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'(->'.$this->dsn->toString().', '.$this->handle->toString().')';
     }
   }
 ?>
