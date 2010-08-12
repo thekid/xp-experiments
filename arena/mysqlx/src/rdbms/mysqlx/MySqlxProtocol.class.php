@@ -350,7 +350,7 @@
         if (3 === $type) {
           $record[$field['name']]= intval($value);
         } else if (12 === $type) {
-          $record[$field['name']]= '0000-00-00 00:00:00' === $value ? NULL : new Date($value);
+          $record[$field['name']]= NULL === $value || '0000-00-00 00:00:00' === $value ? NULL : new Date($value);
         } else {
           $record[$field['name']]= $value;
         }
