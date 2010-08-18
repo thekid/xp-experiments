@@ -35,10 +35,11 @@
      * @return  xp.compiler.types.TypeName
      */
     protected function rewrite(TypeName $type) {
-      return isset($this->placeholders[$type->name])
-        ? $this->components[$this->placeholders[$type->name]]
-        : $type
-      ;
+      $n= $type->compoundName();
+      foreach ($this->placeholders as $placeholder => $offset) {
+        $n= str_replace($placeholder, $this->components[$offset]->compoundName(), $n);
+      }
+      return new TypeName($n);
     }
 
     /**

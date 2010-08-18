@@ -81,6 +81,15 @@
     }
 
     /**
+     * Test HashTable method
+     *
+     */
+    #[@test]
+    public function hashTableKeysMethodReturns() {
+      $this->assertEquals(new TypeName('string[]'), $this->newGenericHashTableType()->getMethod('keys')->returns);
+    }
+
+    /**
      * Test Vector indexer
      *
      */
