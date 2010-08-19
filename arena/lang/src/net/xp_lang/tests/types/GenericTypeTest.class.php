@@ -43,6 +43,114 @@
         array(new TypeName('string'))
       );
     }    
+
+    /**
+     * Test rewriting
+     *
+     */
+    #[@test]
+    public function rewriteSimpleType() {
+      $this->assertEquals(
+        new TypeName('string'),
+        $this->newGenericHashTableType()->rewrite(new TypeName('K'))
+      );
+    }
+
+    /**
+     * Test rewriting
+     *
+     */
+    #[@test]
+    public function rewriteArrayType() {
+      $this->assertEquals(
+        new TypeName('string[]'),
+        $this->newGenericHashTableType()->rewrite(new TypeName('K[]'))
+      );
+    }
+
+    /**
+     * Test rewriting
+     *
+     */
+    #[@test]
+    public function rewriteMapType() {
+      $this->assertEquals(
+        new TypeName('[:string]'),
+        $this->newGenericHashTableType()->rewrite(new TypeName('[:K]'))
+      );
+    }
+
+    /**
+     * Test rewriting
+     *
+     */
+    #[@test]
+    public function rewriteGenericListTypeWithPlaceholder() {
+      $this->assertEquals(
+        new TypeName('List', array(new TypeName('string'))),
+        $this->newGenericHashTableType()->rewrite(new TypeName('List', array(new TypeName('K'))))
+      );
+    }
+
+    /**
+     * Test rewriting
+     *
+     */
+    #[@test]
+    public function rewriteGenericListTypeWithoutPlaceholder() {
+      $this->assertEquals(
+        new TypeName('List', array(new TypeName('int'))),
+        $this->newGenericHashTableType()->rewrite(new TypeName('List', array(new TypeName('int'))))
+      );
+    }
+
+    /**
+     * Test rewriting
+     *
+     */
+    #[@test]
+    public function rewriteGenericMapTypeBothPlaceholders() {
+      $this->assertEquals(
+        new TypeName('Map', array(new TypeName('string'), new TypeName('lang.Object'))),
+        $this->newGenericHashTableType()->rewrite(new TypeName('Map', array(new TypeName('K'), new TypeName('V'))))
+      );
+    }
+
+    /**
+     * Test rewriting
+     *
+     */
+    #[@test]
+    public function rewriteGenericMapTypeOnePlaceholder() {
+      $this->assertEquals(
+        new TypeName('Map', array(new TypeName('string'), new TypeName('int'))),
+        $this->newGenericHashTableType()->rewrite(new TypeName('Map', array(new TypeName('K'), new TypeName('int'))))
+      );
+    }
+
+    /**
+     * Test rewriting
+     *
+     */
+    #[@test]
+    public function rewriteInt() {
+      $this->assertEquals(
+        new TypeName('int'),
+        $this->newGenericHashTableType()->rewrite(new TypeName('int'))
+      );
+    }
+
+    /**
+     * Test rewriting
+     *
+     */
+    #[@test]
+    public function rewriteTypeContainingComponentName() {
+      $this->assertEquals(
+        new TypeName('Key'),
+        $this->newGenericHashTableType()->rewrite(new TypeName('Key'))
+      );
+    }
     
     /**
      * Test HashTable indexer

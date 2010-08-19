@@ -31,15 +31,33 @@
     /**
      * Rewrite a placeholder for a real type
      *
+     * Given the definition with Map<K, V> and components being [string, Object]
+     * the rewriting should yield the following:
+     * <pre>
+     *   int        => int                    # Not a placeholder, leave as-is
+     *   K          => string                 # Simple type
+     *   V          => Object                 # Simple type
+     *   K[]        => string[]               # Array type
+     *   [:K]       => [:string]              # Map type
+     *   List<K>    => List<string>           # Generic type
+     *   Map<K, V>  => Map<string, Object>    # Generic type
+     * </pre>
+     *
      * @param   xp.compiler.types.TypeName
      * @return  xp.compiler.types.TypeName
      */
-    protected function rewrite(TypeName $type) {
-      $n= $type->compoundName();
-      foreach ($this->placeholders as $placeholder => $offset) {
-        $n= str_replace($placeholder, $this->components[$offset]->compoundName(), $n);
+    public function rewrite(TypeName $type) {
+      if ($type->isArray()) {
+        return new TypeName($this->rewrite($type->arrayComponentType())->name.'[]');
+      } else if ($type->isMap()) {
+        return new TypeName('[:'.$this->rewrite($type->mapComponentType())->name.']');
+      } else if ($type->isGeneric()) {
+        return new TypeName($type->name, $this->rewriteAll($type->components));
+      } else if (isset($this->placeholders[$type->name])) {
+        return $this->components[$this->placeholders[$type->name]];
+      } else {
+        return $type;
       }
-      return new TypeName($n);
     }
 
     /**
