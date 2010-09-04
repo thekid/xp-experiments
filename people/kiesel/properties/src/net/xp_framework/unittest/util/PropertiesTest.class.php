@@ -105,7 +105,6 @@ bool="yes"
 [sectiontwo]
 array="1|2|3|5"
 hash="one:1|two:2"
-
 '
         , $mos->getBytes()
       );

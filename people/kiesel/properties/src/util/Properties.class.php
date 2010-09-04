@@ -9,6 +9,7 @@
     'io.File',
     'util.Hashmap',
     'util.PropertiesReader',
+    'util.PropertiesWriter',
     'io.streams.MemoryInputStream',
     'io.streams.TextReader',
     'io.streams.TextWriter'
@@ -132,34 +133,12 @@
       $fd= new File($this->_file);
       $fd->open(FILE_MODE_WRITE);
       
-      $this->saveToStream(new TextWriter($fd->getOutputStream()));
+      $this->saveToWriter(new TextWriter($fd->getOutputStream(), 'iso-8859-1'));
       $fd->close();
     }
     
     public function saveToWriter(TextWriter $writer) {
-      foreach ($this->_data as $name => $section) {
-        $writer->writeLine('['.$name.']');
-        
-        foreach ($section as $key => $value) {
-          if (';' == $key{0}) {
-            $writer->writeLine('; '.$value);
-            continue;
-          }
-          
-          if ($value instanceof Hashmap) {
-            $str= '';
-            foreach ($value->keys() as $k) {
-              $str.= '|'.$k.':'.$value->get($k);
-            }
-            $value= substr($str, 1);
-          }
-          if (is_array($value)) $value= implode('|', $value);
-          if (is_string($value)) $value= '"'.$value.'"';
-          $writer->writeLine($key.'='.strval($value));
-        }
-        
-        $writer->writeLine();
-      }
+      create(new PropertiesWriter($writer))->writeFrom($this);
     }
 
     /**
