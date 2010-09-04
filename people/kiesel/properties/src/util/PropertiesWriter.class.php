@@ -9,11 +9,21 @@
   class PropertiesWriter extends Object {
     protected
       $writer  = NULL;
-      
+
+    /**
+     * Constructor.
+     * 
+     * @param 	io.streams.TextWriter writer
+     */
     public function __construct(TextWriter $writer) {
       $this->writer= $writer;
     }
     
+    /**
+     * Write properties stream from given properties object
+     * 
+     * @param 	util.Properties prop
+     */
     public function writeFrom(Properties $prop) {
       $section= $prop->getFirstSection();
       while ($section) {
