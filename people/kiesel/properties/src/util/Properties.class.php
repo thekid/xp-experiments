@@ -7,7 +7,10 @@
   uses(
     'io.IOException',
     'io.File',
-    'util.Hashmap'
+    'util.Hashmap',
+    'io.streams.MemoryInputStream',
+    'io.streams.TextReader',
+    'io.streams.TextWriter'
   );
   
   /**
@@ -64,44 +67,69 @@
      * @return  util.Properties
      */
     public static function fromString($str) {
-      with ($prop= new self(NULL)); {
-        $section= NULL;
-        $prop->_data= array();
-        if ($t= strtok($str, "\r\n")) do {
-          switch ($t{0}) {
-            case ';':
-            case '#':
-              break;
+      with($prop= new self(NULL)); {
+        $prop->readFromStream(new TextReader(new MemoryInputStream($str), 'iso-8859-1'));
+        return $prop;
+      }      
+    }
+    
+    /**
+     * Read ini settings from a stream
+     * 
+     * @param 	io.streams.InputStream str
+     * @throws 	lang.FormatException if not well-formed
+     */
+    protected function readFromStream(TextReader $reader) {
+      $section= NULL;
+      $this->_data= array();
+            
+      $line= 0;
+      while (NULL !== ($t= $reader->readLine())) {
+        $line++;
+        
+        // Skip zero-length or comment-only lines
+        if (empty($t)) continue;
+        
+        // Skip whitespace lines
+        if (' ' == $t{0} && '' == trim($t, " \t")) continue;
+        
+        // Check for new section
+        if ('[' == $t{0}) {
+          if (FALSE === ($p= strrpos($t, ']')))
+            throw new FormatException('Unexpected format for opening section at line '.$line);
+          
+          $section= substr($t, 1, $p- 1);
+          $this->_data[$section]= array();
+          continue;
+        }
+        
+        // Read comments
+        if (';' == $t{0} || '#' == $t{0}) {
+          $this->_data[$section][';'.$line]= substr($t, 1);
+          continue;
+        }
 
-            case '[':
-              $p= strpos($t, '[');
-              $section= substr($t, $p+ 1, strpos($t, ']', $p)- 1);
-              $prop->_data[$section]= array();
-              break;
+        // Process regular line
+        if (FALSE === ($p= strpos($t, '='))) continue;
+        //  throw new FormatException('Not an assignment in line '.$line);
+          
+        $key= trim(substr($t, 0, $p));
+        $value= trim(substr($t, $p+ 1), ' ');
+        
+        // Check for string quotations
+        if (strlen($value) && ('"' == ($quote= $value{0}))) {
+          $value= trim($value, $quote);
+          $value= trim(substr($value, 0, ($p= strpos($value, '"')) !== FALSE
+            ? $p : strlen($value)
+          ));
+        
+        // Check for comment
+        } else if (FALSE !== ($p= strpos($value, ';'))) {
+          $value= trim(substr($value, 0, $p));
+        }
 
-            default:
-              if (FALSE === ($p= strpos($t, '='))) break;
-              $key= trim(substr($t, 0, $p));
-              $value= trim(substr($t, $p+ 1), ' ');
-              
-              // Check for string quotations
-              if (strlen($value) && ('"' == ($quote= $value{0}))) {
-                $value= trim($value, $quote);
-                $value= trim(substr($value, 0, ($p= strpos($value, '"')) !== FALSE
-                  ? $p : strlen($value)
-                ));
-              
-              // Check for comment
-              } else if (FALSE !== ($p= strpos($value, ';'))) {
-                $value= trim(substr($value, 0, $p));
-              }
-
-              $prop->_data[$section][$key]= $value;
-              break;
-          }
-        } while ($t= strtok("\r\n"));
+        $this->_data[$section][$key]= $value;
       }
-      return $prop;
     }
     
     /**
@@ -141,13 +169,8 @@
      */
     protected function _load($force= FALSE) {
       if (!$force && NULL !== $this->_data) return;
-      $this->_data= parse_ini_file($this->_file, TRUE);
-      if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-        $e= new IOException('The file "'.$this->_file.'" could not be read');
-        xp::gc(__FILE__);
-        $this->_data= NULL;
-        throw $e;
-      }
+      
+      $this->readFromStream(new TextReader(create(new File($this->_file))->getInputStream()));
     }
     
     /**
@@ -167,32 +190,34 @@
       $fd= new File($this->_file);
       $fd->open(FILE_MODE_WRITE);
       
-      foreach (array_keys($this->_data) as $section) {
-        $fd->write(sprintf("[%s]\n", $section));
-        
-        foreach ($this->_data[$section] as $key => $val) {
-          if (';' == $key{0}) {
-            $fd->write(sprintf("\n; %s\n", $val)); 
-          } else {
-            if ($val instanceof Hashmap) {
-              $str= '';
-              foreach ($val->keys() as $k) {
-                $str.= '|'.$k.':'.$val->get($k);
-              }
-              $val= substr($str, 1);
-            }
-            if (is_array($val)) $val= implode('|', $val);
-            if (is_string($val)) $val= '"'.$val.'"';
-            $fd->write(sprintf(
-              "%s=%s\n",
-              $key,
-              strval($val)
-            ));
-          }
-        }
-        $fd->write("\n");
-      }
+      $this->saveToStream(new TextWriter($fd->getOutputStream()));
       $fd->close();
+    }
+    
+    public function saveToWriter(TextWriter $writer) {
+      foreach ($this->_data as $name => $section) {
+        $writer->writeLine('['.$name.']');
+        
+        foreach ($section as $key => $value) {
+          if (';' == $key{0}) {
+            $writer->writeLine('; '.$value);
+            continue;
+          }
+          
+          if ($value instanceof Hashmap) {
+            $str= '';
+            foreach ($value->keys() as $k) {
+              $str.= '|'.$k.':'.$value->get($k);
+            }
+            $value= substr($str, 1);
+          }
+          if (is_array($value)) $value= implode('|', $value);
+          if (is_string($value)) $value= '"'.$value.'"';
+          $writer->writeLine($key.'='.strval($value));
+        }
+        
+        $writer->writeLine();
+      }
     }
 
     /**
