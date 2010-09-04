@@ -117,16 +117,9 @@
     }
     
     /**
-     * Reload all data from the file
-     *
-     */
-    public function reset() {
-      return $this->_load(TRUE);
-    }
-    
-    /**
      * Save properties to the file
      *
+     * @deprecated Use saveToWriter instead
      * @throws  io.IOException if the property file could not be written
      */
     public function save() {
@@ -137,10 +130,23 @@
       $fd->close();
     }
     
+    /**
+     * Save properties to writer
+     * 
+     * @param 	io.streams.Writer writer
+     */
     public function saveToWriter(TextWriter $writer) {
       create(new PropertiesWriter($writer))->writeFrom($this);
     }
 
+    /**
+     * Reload all data from the file
+     *
+     */
+    public function reset() {
+      return $this->_load(TRUE);
+    }
+    
     /**
      * Get the first configuration section
      *
