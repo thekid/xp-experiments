@@ -7,11 +7,24 @@
   uses('io.streams.TextReader');
   
   class PropertiesReader extends Object {
+    protected
+      $reader  = NULL;
     
+    /**
+     * Constructor.
+     *
+     * @param	io.streams.TextReader reader
+     */
     public function __construct(TextReader $reader) {
       $this->reader= $reader;
     }
     
+    /**
+     * Read properties from wire format into given properties object
+     * 
+     * @param 	util.Properties prop
+     * @throws	lang.FormatException if data is not well formed
+     */
     public function readInto(Properties $prop) {
       $section= NULL;
             
@@ -65,5 +78,4 @@
       return $prop;
     }
   }
-
 ?>
