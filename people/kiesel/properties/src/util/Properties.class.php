@@ -410,8 +410,7 @@
      * @return  string name
      */
     public function writeSection($name, $overwrite= FALSE) {
-      $this->_load();
-      if ($overwrite || !$this->hasSection($name)) $this->_data[$name]= array();
+      if ($overwrite || !isset($this->_data[$name])) $this->_data[$name]= array();
       return $name;
     }
     
@@ -423,8 +422,7 @@
      * @param   string value
      */
     public function writeString($section, $key, $value) {
-      $this->_load();
-      if (!$this->hasSection($section)) $this->_data[$section]= array();
+      if (!isset($this->_data[$section])) $this->_data[$section]= array();
       $this->_data[$section][$key]= (string)$value;
     }
     
@@ -436,8 +434,7 @@
      * @param   int value
      */
     public function writeInteger($section, $key, $value) {
-      $this->_load();
-      if (!$this->hasSection($section)) $this->_data[$section]= array();
+      if (!isset($this->_data[$section])) $this->_data[$section]= array();
       $this->_data[$section][$key]= (int)$value;
     }
     
@@ -449,8 +446,7 @@
      * @param   float value
      */
     public function writeFloat($section, $key, $value) {
-      $this->_load();
-      if (!$this->hasSection($section)) $this->_data[$section]= array();
+      if (!isset($this->_data[$section])) $this->_data[$section]= array();
       $this->_data[$section][$key]= (float)$value;
     }
 
@@ -462,8 +458,7 @@
      * @param   bool value
      */
     public function writeBool($section, $key, $value) {
-      $this->_load();
-      if (!$this->hasSection($section)) $this->_data[$section]= array();
+      if (!isset($this->_data[$section])) $this->_data[$section]= array();
       $this->_data[$section][$key]= $value ? 'yes' : 'no';
     }
     
@@ -475,8 +470,7 @@
      * @param   array value
      */
     public function writeArray($section, $key, $value) {
-      $this->_load();
-      if (!$this->hasSection($section)) $this->_data[$section]= array();
+      if (!isset($this->_data[$section])) $this->_data[$section]= array();
       $this->_data[$section][$key]= $value;
     }
 
@@ -488,8 +482,7 @@
      * @param   var value either a util.Hashmap or an array
      */
     public function writeHash($section, $key, $value) {
-      $this->_load();
-      if (!$this->hasSection($section)) $this->_data[$section]= array();
+      if (!isset($this->_data[$section])) $this->_data[$section]= array();
       if ($value instanceof Hashmap) {
         $this->_data[$section][$key]= $value;
       } else {
@@ -505,8 +498,7 @@
      * @param   string comment
      */
     public function writeComment($section, $comment) {
-      $this->_load();
-      if (!$this->hasSection($section)) $this->_data[$section]= array();
+      if (!isset($this->_data[$section])) $this->_data[$section]= array();
       $this->_data[$section][';'.sizeof($this->_data[$section])]= $comment;
     }
     

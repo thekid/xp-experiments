@@ -93,7 +93,7 @@ key="value"
       $p->writeHash('sectiontwo', 'hash', new Hashmap(array('one' => 1, 'two' => 2)));
       
       $mos= new MemoryOutputStream();
-      $p->saveToStream(new TextWriter($mos));
+      $p->saveToWriter(new TextWriter($mos));
       
       $this->assertEquals('[sectionone]
 string="foo bar"
