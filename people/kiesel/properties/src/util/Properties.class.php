@@ -8,6 +8,7 @@
     'io.IOException',
     'io.File',
     'util.Hashmap',
+    'util.PropertiesReader',
     'io.streams.MemoryInputStream',
     'io.streams.TextReader',
     'io.streams.TextWriter'
@@ -67,69 +68,8 @@
      * @return  util.Properties
      */
     public static function fromString($str) {
-      with($prop= new self(NULL)); {
-        $prop->readFromStream(new TextReader(new MemoryInputStream($str), 'iso-8859-1'));
-        return $prop;
-      }      
-    }
-    
-    /**
-     * Read ini settings from a stream
-     * 
-     * @param 	io.streams.InputStream str
-     * @throws 	lang.FormatException if not well-formed
-     */
-    protected function readFromStream(TextReader $reader) {
-      $section= NULL;
-      $this->_data= array();
-            
-      $line= 0;
-      while (NULL !== ($t= $reader->readLine())) {
-        $line++;
-        
-        // Skip zero-length or comment-only lines
-        if (empty($t)) continue;
-        
-        // Skip whitespace lines
-        if (' ' == $t{0} && '' == trim($t, " \t")) continue;
-        
-        // Check for new section
-        if ('[' == $t{0}) {
-          if (FALSE === ($p= strrpos($t, ']')))
-            throw new FormatException('Unexpected format for opening section at line '.$line);
-          
-          $section= substr($t, 1, $p- 1);
-          $this->_data[$section]= array();
-          continue;
-        }
-        
-        // Read comments
-        if (';' == $t{0} || '#' == $t{0}) {
-          $this->_data[$section][';'.$line]= substr($t, 1);
-          continue;
-        }
-
-        // Process regular line
-        if (FALSE === ($p= strpos($t, '='))) continue;
-        //  throw new FormatException('Not an assignment in line '.$line);
-          
-        $key= trim(substr($t, 0, $p));
-        $value= trim(substr($t, $p+ 1), ' ');
-        
-        // Check for string quotations
-        if (strlen($value) && ('"' == ($quote= $value{0}))) {
-          $value= trim($value, $quote);
-          $value= trim(substr($value, 0, ($p= strpos($value, '"')) !== FALSE
-            ? $p : strlen($value)
-          ));
-        
-        // Check for comment
-        } else if (FALSE !== ($p= strpos($value, ';'))) {
-          $value= trim(substr($value, 0, $p));
-        }
-
-        $this->_data[$section][$key]= $value;
-      }
+      $prop= new self(NULL);
+      return create(new PropertiesReader(new TextReader(new MemoryInputStream($str), 'iso-8859-1')))->readInto($prop);
     }
     
     /**
@@ -170,7 +110,9 @@
     protected function _load($force= FALSE) {
       if (!$force && NULL !== $this->_data) return;
       
-      $this->readFromStream(new TextReader(create(new File($this->_file))->getInputStream()));
+      create(new PropertiesReader(
+        new TextReader(create(new File($this->_file))->getInputStream(), 'iso-8859-1') 
+      ))->readInto($this);
     }
     
     /**
