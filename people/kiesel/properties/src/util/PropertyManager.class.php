@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: PropertyManager.class.php 10594 2007-06-11 10:04:54Z friebe $ 
+ * $Id$ 
  */
 
   uses('util.Properties');

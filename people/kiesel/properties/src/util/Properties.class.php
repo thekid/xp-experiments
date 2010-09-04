@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  * 
- * $Id: Properties.class.php 14694 2010-07-05 09:48:41Z olli $
+ * $Id$
  */
 
   uses(
