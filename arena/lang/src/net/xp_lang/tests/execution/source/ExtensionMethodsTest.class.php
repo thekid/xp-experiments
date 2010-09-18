@@ -167,7 +167,7 @@
      * Test extension methods do not apply if not imported
      *
      */
-    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method XPClass::fieldsNamed')]
+    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method lang.XPClass::fieldsNamed() from scope SourceExtensionDoesNotApplyIfNotImported·0')]
     public function extensionDoesNotApplyIfNotImported() {
       $this->run('return self::class.fieldsNamed(text.regex.Pattern::compile("_.*"));');
     }
@@ -176,7 +176,7 @@
      * Test extension methods do not apply if not imported
      *
      */
-    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method XPClass::fieldsNamed')]
+    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method lang.XPClass::fieldsNamed() from scope SourceExtensionDoesNotApplyIfOnlyUsed·0')]
     public function extensionDoesNotApplyIfOnlyUsed() {
       $class= $this->define('class', 'ClassFieldExtension1', NULL, '{
         public static lang.reflect.Field[] fieldsNamed(this lang.XPClass $class, text.regex.Pattern $pattern) {
