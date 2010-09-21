@@ -26,6 +26,90 @@
     }
 
     /**
+     * Static field read handler
+     *
+     */
+    public static function __getStatic($name) {
+      if ("\7" === $name{0}) {
+        $t= debug_backtrace();
+        return eval('return '.$t[1]['args'][0][0].'::$'.substr($name, 1).';');
+      }
+      return NULL;
+    }
+
+    /**
+     * Static field read handler
+     *
+     */
+    public static function __setStatic($name, $value) {
+      if ("\7" === $name{0}) {
+        $t= debug_backtrace();
+        eval($t[1]['args'][0][0].'::$'.substr($name, 1).'= $value;');
+        return;
+      }
+    }
+
+    /**
+     * Static method handler
+     *
+     */
+    public static function __callStatic($name, $args) {
+      if ("\7" === $name{0}) {
+        $t= debug_backtrace();
+        return call_user_func_array(array($t[1]['args'][0][0], substr($name, 1)), $args);
+      }
+      $t= debug_backtrace();
+      throw new Error('Call to undefined method '.$t[1]['class'].'::'.$name);
+    }
+
+    /**
+     * Field read handler
+     *
+     */
+    public function __get($name) {
+      if ("\7" === $name{0}) {
+        return $this->{substr($name, 1)};
+      }
+      $t= debug_backtrace();
+      throw new Error('Read on undeclared member '.$t[1]['class'].'::'.$name);
+      return NULL;
+    }
+
+    /**
+     * Field write handler
+     *
+     */
+    public function __set($name, $value) {
+      if ("\7" === $name{0}) {
+        $this->{substr($name, 1)}= $value;
+        return;
+      }
+      $t= debug_backtrace();
+      throw new Error('Read on undeclared member '.$t[1]['class'].'::'.$name);
+      $this->{$name}= $value;
+    }
+    
+    /**
+     * Method handler
+     *
+     */
+    public function __call($name, $args) {
+      if ("\7" === $name{0}) {
+        return call_user_func_array(array($this, substr($name, 1)), $args);
+      }
+      $t= debug_backtrace();
+      $scope= $t[2]['class'];
+      if (isset(xp::$registry['ext'][$scope])) {
+        foreach (xp::$registry['ext'][$scope] as $type => $class) {
+          if (!$this instanceof $type || !method_exists($class, $name)) continue;
+          array_unshift($args, $this);
+          return call_user_func_array(array($class, $name), $args);
+        }
+      }
+      throw new Error('Call to undefined method '.$this->getClassName().'::'.$name.'() from scope '.xp::nameOf($scope));
+    }
+
+    /**
      * Returns a hashcode for this object
      *
      * @return  string
@@ -67,7 +151,7 @@
     public function getClass() {
       return new XPClass($this);
     }
-
+    
     /**
      * Creates a string representation of this object. In general, the toString 
      * method returns a string that "textually represents" this object. The result 
@@ -91,33 +175,6 @@
     public function toString() {
       if (!$this->__id) $this->__id= microtime();
       return xp::stringOf($this);
-    }
-
-    /**
-     * Magic method __call()
-     *
-     * @see php://__call
-     */
-    public function __call($method, $args) {
-      raise('lang.RuntimeError', 'Call to undeclared method '.$this->getClassName().'::'.$method.'()');
-    }
-
-    /**
-     * Magic method __set()
-     *
-     * @see php://__set
-     */
-    public function __set($key, $value) {
-      raise('lang.RuntimeError', 'Write on undeclared property "'.$this->getClassName().'::'.$key.'"');
-    }
-
-    /**
-     * Magic method __get()
-     *
-     * @see php://__get
-     */
-    public function __get($key) {
-      raise('lang.RuntimeError', 'Read on undeclared property "'.$this->getClassName().'::'.$key.'"');
     }
   }
 ?>

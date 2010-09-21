@@ -125,6 +125,20 @@
     }
     // }}}
 
+    // {{{ public static void extensions(string class, string scope)
+    //     Registers extension methods for a certain scope
+    static function extensions($class, $scope) {
+      foreach (create(new XPClass($class))->getMethods() as $method) {
+        if (MODIFIER_STATIC & $method->getModifiers() && $method->numParameters() > 0) {
+          $param= $method->getParameter(0);
+          if ('self' === $param->getName()) {
+            self::$registry['ext'][$scope][xp::reflect($param->getTypeName())]= $class;
+          }
+        }
+      }
+    }
+    // }}}
+
     // {{{ public void gc([string file default NULL])
     //     Runs the garbage collector
     static function gc($file= NULL) {
@@ -372,41 +386,43 @@
       throw new IllegalArgumentException($msg.' @ '.$file.':'.$line);
     } else {
       $bt= debug_backtrace();
-      $class= (isset($bt[1]['class']) ? $bt[1]['class'] : 0);
-      $method= (isset($bt[1]['function']) ? $bt[1]['function'] : 0);
+      $class= (isset($bt[1]['class']) ? $bt[1]['class'] : NULL);
+      $method= (isset($bt[1]['function']) ? $bt[1]['function'] : NULL);
       
       if (!isset(xp::$registry['errors'][$file][$line][$msg])) {
         xp::$registry['errors'][$file][$line][$msg]= array(
-          'class' => $class,
+          'class'   => $class,
           'method'  => $method,
-          'cnt'     => 0
+          'cnt'     => 1
         );
+      } else {
+        xp::$registry['errors'][$file][$line][$msg]['cnt']++;
+      }
+    }
+    
+    switch ($msg) {
+      case 1 == preg_match('/^Undefined (offset|variable|index)/', $msg):
+      case 1 == preg_match('/^Use of undefined constant/', $msg):
+      case 1 == preg_match('/to string conversion$/', $msg):
+      case 1 == preg_match('/^Missing argument/', $msg):
+      case 1 == preg_match('/^Illegal string offset/', $msg):
+      case 1 == preg_match('/^Illegal offset type/', $msg): {
+
+        // Check we're not running within a unittest - in such, standard
+        // behaviour should be kept...
+        $inTest= FALSE;
+        foreach (debug_backtrace(TRUE) as $scope) {
+          if (isset($scope['object']) && $scope['object'] instanceof TestCase) {
+            $inTest= TRUE;
+          }
+        }
+
+        !$inTest && raise('lang.RuntimeError', 'Strictness violation "'.$msg.'"');
+        // Bails
       }
 
-      switch ($msg) {
-        case 1 == preg_match('/^Undefined (offset|variable|index)/', $msg):
-        case 1 == preg_match('/^Use of undefined constant/', $msg):
-        case 1 == preg_match('/to string conversion$/', $msg):
-        case 1 == preg_match('/^Missing argument/', $msg):
-        case 1 == preg_match('/^Illegal string offset/', $msg):
-        case 1 == preg_match('/^Illegal offset type/', $msg): {
-        
-          // Check we're not running within a unittest - in such, standard
-          // behaviour should be kept...
-          $inTest= FALSE;
-          foreach (debug_backtrace(TRUE) as $scope) {
-            if (isset($scope['object']) && $scope['object'] instanceof TestCase) {
-              $inTest= TRUE;
-            }
-          }
-        
-          !$inTest && raise('lang.RuntimeError', 'Strictness violation "'.$msg.'"');
-          // Bails
-        }
-
-        default: {
-          xp::$registry['errors'][$file][$line][$msg]['cnt']++;
-        }
+      default: {
+        xp::$registry['errors'][$file][$line][$msg]['cnt']++;
       }
     }
   }
@@ -415,12 +431,20 @@
   // {{{ void uses (string* args)
   //     Uses one or more classes
   function uses() {
+    $scope= NULL;
     foreach (func_get_args() as $str) {
-      xp::$registry['loader']->loadClass0($str);
+      $class= xp::$registry['loader']->loadClass0($str);
+      if (method_exists($class, '__import')) {
+        if (NULL === $scope) {
+          $trace= debug_backtrace();
+          $scope= xp::reflect($trace[2]['args'][0]);
+        }
+        call_user_func(array($class, '__import'), $scope);
+      }
     }
   }
   // }}}
-  
+
   // {{{ void raise (string classname, var* args)
   //     throws an exception by a given class name
   function raise($classname) {
@@ -453,13 +477,37 @@
     raise('lang.ClassCastException', 'Cannot cast '.xp::typeOf($expression).' to '.$type);
    }
 
-  // {{{ proto bool is(string class, lang.Object object)
-  //     Checks whether a given object is of the class, a subclass or implements an interface
-  function is($class, $object) {
-    if (NULL === $class) return $object instanceof null;
-
-    $class= xp::reflect($class);
-    return $object instanceof $class;
+  // {{{ proto bool is(string type, var object)
+  //     Checks whether a given object is an instance of the type given
+  function is($type, $object) {
+    if (NULL === $type) {
+      return $object instanceof null;
+    } else if ('int' === $type) {
+      return is_int($object);
+    } else if ('double' === $type) {
+      return is_double($object);
+    } else if ('string' === $type) {
+      return is_string($object);
+    } else if ('bool' === $type) {
+      return is_bool($object);
+    } else if ('var' === $type) {
+      return TRUE;
+    } else if ('[]' === substr($type, -2)) {
+      $type= substr($type, 0, -2);
+      foreach ($object as $element) {
+        if (!is($type, $element)) return FALSE;
+      }
+      return TRUE;
+    } else if ('[:' === substr($type, 0, 2)) {
+      $type= substr($type, 2, -1);
+      foreach ($object as $element) {
+        if (!is($type, $element)) return FALSE;
+      }
+      return TRUE;
+    } else {
+      $type= xp::reflect($type);
+      return $object instanceof $type;
+    }
   }
   // }}}
 
@@ -476,39 +524,51 @@
   }
   // }}}
   
-  // {{{ proto var ref(var object)
+  // {{{ proto deprecated var ref(var object)
   //     Creates a "reference" to an object
   function ref(&$object) {
     return array(&$object);
   }
   // }}}
 
-  // {{{ proto &var deref(&var expr)
+  // {{{ proto deprecated &var deref(&mixed expr)
   //     Dereferences an expression
   function &deref(&$expr) {
     if (is_array($expr)) return $expr[0]; else return $expr;
   }
   // }}}
 
-  // {{{ proto lang.Object newinstance(string classname, var[] args, string bytes)
+  // {{{ proto var this(var expr, var offset)
+  //     Indexer access for a given expression
+  function this($expr, $offset) {
+    return $expr[$offset];
+  }
+  // }}}
+  
+  // {{{ proto lang.Object newinstance(string spec, var[] args, string bytes)
   //     Anonymous instance creation
-  function newinstance($classname, $args, $bytes) {
+  function newinstance($spec, $args, $bytes) {
     static $u= 0;
 
-    $class= xp::reflect($classname);
-    if (!class_exists($class) && !interface_exists($class)) {
-      xp::error(xp::stringOf(new Error('Class "'.$classname.'" does not exist')));
-      // Bails
+    // Check for an anonymous generic 
+    if (strstr($spec, '<')) {
+      $type= Type::forName($spec)->literal();
+    } else {
+      $type= xp::reflect(strstr($spec, '.') ? $spec : xp::nameOf($spec));
+      if (!class_exists($type, FALSE) && !interface_exists($type, FALSE)) {
+        xp::error(xp::stringOf(new Error('Class "'.$spec.'" does not exist')));
+        // Bails
+      }
     }
 
-    $name= $class.'·'.(++$u);
+    $name= $type.'·'.(++$u);
     
     // Checks whether an interface or a class was given
     $cl= DynamicClassLoader::instanceFor(__FUNCTION__);
-    if (interface_exists($class)) {
-      $cl->setClassBytes($name, 'class '.$name.' extends Object implements '.$class.' '.$bytes);
+    if (interface_exists($type)) {
+      $cl->setClassBytes($name, 'class '.$name.' extends Object implements '.$type.' '.$bytes);
     } else {
-      $cl->setClassBytes($name, 'class '.$name.' extends '.$class.' '.$bytes);
+      $cl->setClassBytes($name, 'class '.$name.' extends '.$type.' '.$bytes);
     }
 
     $cl->loadClass0($name);
@@ -526,29 +586,67 @@
   function create($spec) {
     if ($spec instanceof Generic) return $spec;
 
-    sscanf($spec, 'new %[^<]<%[^>]>', $classname, $types);
-    $class= xp::reflect($classname);
+    // Parse type specification: "new " TYPE "()"?
+    // TYPE:= B "<" ARGS ">"
+    // ARGS:= TYPE [ "," TYPE [ "," ... ]]
+    $b= strpos($spec, '<');
+    $base= substr($spec, 4, $b- 4);
+    $typeargs= Type::forNames(substr($spec, $b+ 1, strrpos($spec, '>')- $b- 1));
     
-    // Check whether class is generic
-    if (!property_exists($class, '__generic')) {
-      throw new IllegalArgumentException('Class '.$classname.' is not generic');
+    // BC check: For classes with __generic field, instanciate without 
+    // invoking the constructor and pass type information. This is done 
+    // so that the constructur can already use generic types.
+    $class= XPClass::forName(strstr($base, '.') ? $base : xp::nameOf($base));
+    if ($class->hasField('__generic')) {
+      $__id= microtime();
+      $name= xp::reflect($classname);
+      $instance= unserialize('O:'.strlen($name).':"'.$name.'":1:{s:4:"__id";s:'.strlen($__id).':"'.$__id.'";}');
+      foreach ($typeargs as $type) {
+        $instance->__generic[]= xp::reflect($type->getName());
+      }
+
+      // Call constructor if available
+      if (method_exists($instance, '__construct')) {
+        $a= func_get_args();
+        call_user_func_array(array($instance, '__construct'), array_slice($a, 1));
+      }
+
+      return $instance;
     }
     
-    // Instanciate without invoking the constructor and pass type information. 
-    // This is done so that the constructur can already use generic types.
-    $__id= microtime();
-    $instance= unserialize('O:'.strlen($class).':"'.$class.'":1:{s:4:"__id";s:'.strlen($__id).':"'.$__id.'";}');
-    foreach (explode(',', $types) as $type) {
-      $instance->__generic[]= xp::reflect(trim($type));
-    }
-    
-    // Call constructor if available
-    if (method_exists($instance, '__construct')) {
-      $a= func_get_args();
-      call_user_func_array(array($instance, '__construct'), array_slice($a, 1));
+    // BC: Wrap IllegalStateExceptions into IllegalArgumentExceptions
+    try {
+      $type= $class->newGenericType($typeargs);
+    } catch (IllegalStateException $e) {
+      throw new IllegalArgumentException($e->getMessage());
     }
 
-    return $instance;
+    // Instantiate
+    if ($type->hasConstructor()) {
+      $args= func_get_args();
+      try {
+        return $type->getConstructor()->newInstance(array_slice($args, 1));
+      } catch (TargetInvocationException $e) {
+        throw $e->getCause();
+      }
+    } else {
+      return $type->newInstance();
+    }
+  }
+  // }}}
+
+  // {{{ lang.Type typeof(mixed arg)
+  //     Returns type
+  function typeof($arg) {
+    if ($arg instanceof Generic) {
+      return $arg->getClass();
+    } else if (NULL === $arg) {
+      return Type::$VOID;
+    } else if (is_array($arg)) {
+      return 0 === key($arg) ? ArrayType::forName('var[]') : MapType::forName('[:var]');
+    } else {
+      return Primitive::forName(gettype($arg));
+    }
   }
   // }}}
 

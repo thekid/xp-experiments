@@ -25,13 +25,12 @@ implementation adds checks for:
 
 Prerequisites
 -------------
-This overlay requires XP 5.7.9 or greater.
+This overlay requires XP 5.8.0RC3 or greater.
 
 Installation
 -------------
 
-Before anything works, you'll need the patch from RFC #0201. Then
-just append the path
+Just append the path
 
   ~/devel/xp.forge/trunk/experiments/arena/strict/
 

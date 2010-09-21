@@ -46,18 +46,33 @@
      * @param   string message
      */
     public function __construct($message) {
-      static $except= array(
-        'call_user_func_array'  => 1, 
-        'call_user_func'        => 1, 
-        'object'                => 1
-      );
       $this->__id= microtime();
       $this->message= is_string($message) ? $message : xp::stringOf($message);
+      $this->fillInStackTrace();
+    }
+    
+    /**
+     * Fills in stack trace information. 
+     *
+     * @return  lang.Throwable this
+     */
+    public function fillInStackTrace() {
+      static $except= array(
+        'call_user_func_array'  => 1, 
+        'call_user_func'        => 1
+      );
 
-      $errors= xp::$registry['errors'];
-      foreach (debug_backtrace() as $trace) {
-        if (!isset($trace['function']) || isset($except[$trace['function']])) continue;
-        if (isset($trace['object']) && '__construct' == $trace['function'] && $trace['object'] instanceof self) continue;
+      // Error messages
+      foreach (xp::$registry['errors'] as $file => $list) {
+        $this->addStackTraceFor($file, NULL, NULL, NULL, array(), $list);
+      }
+
+      foreach (debug_backtrace() as $i => $trace) {
+        if (
+          !isset($trace['function']) || 
+          isset($except[$trace['function']]) ||
+          (isset($trace['object']) && $trace['object'] instanceof self)
+        ) continue;
 
         // Not all of these are always set: debug_backtrace() should
         // initialize these - at least - to NULL, IMO => Workaround.
@@ -70,11 +85,7 @@
           array(array('' => 1))
         );
       }
-      
-      // Remaining error messages
-      foreach ($errors as $file => $list) {
-        $this->addStackTraceFor($file, NULL, NULL, NULL, array(), $list);
-      }
+      return $this;
     }
     
     /**
@@ -226,7 +237,7 @@
      * @see php://__call
      */
     public function __call($method, $args) {
-      raise('lang.RuntimeError', 'Call to undeclared method '.$this->getClassName().'::'.$method.'()');
+      throw new Error('Call to undeclared method '.$this->getClassName().'::'.$method.'()');
     }
 
     /**
@@ -235,7 +246,7 @@
      * @see php://__set
      */
     public function __set($key, $value) {
-      raise('lang.RuntimeError', 'Write on undeclared property "'.$this->getClassName().'::'.$key.'"');
+      throw new Error('Write on undeclared property "'.$this->getClassName().'::'.$key.'"');
     }
 
     /**
@@ -244,7 +255,7 @@
      * @see php://__get
      */
     public function __get($key) {
-      raise('lang.RuntimeError', 'Read on undeclared property "'.$this->getClassName().'::'.$key.'"');
+      throw new Error('Read on undeclared property "'.$this->getClassName().'::'.$key.'"');
     }
   }
 ?>
