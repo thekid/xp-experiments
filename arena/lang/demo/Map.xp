@@ -23,7 +23,7 @@ public class Map {
    *
    */
   public static void main(string[] $args) {
-    $a= [ 'three' : 3 ];
+    $a= [ three : 3 ];
     foreach ($key, $value in $a) {
       writeLine($key, ' => ', $value);
     }
