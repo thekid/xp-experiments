@@ -72,7 +72,11 @@
           $value= trim(substr($value, 0, $p));
         }
 
-        $prop->writeString($section, $key, $value);
+        if (2 == sscanf($key, '%[^[][%[^]]', $l, $r)) {
+          $prop->writeHashString($section, $l, $r, $value);
+        } else {
+          $prop->writeString($section, $key, $value);
+        }
       }
       
       return $prop;

@@ -238,6 +238,8 @@
       $this->_load();
       if (!isset($this->_data[$section][$key])) return $default;
       
+      if (is_array($this->_data[$section][$key])) return new Hashmap($this->_data[$section][$key]);
+      
       $return= array();
       foreach (explode('|', $this->_data[$section][$key]) as $val) {
         if (strstr($val, ':')) {
@@ -352,6 +354,17 @@
       if (!isset($this->_data[$section])) $this->_data[$section]= array();
       $this->_data[$section][$key]= (string)$value;
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function writeHashString($section, $key, $element, $value) {
+      if (!isset($this->_data[$section][$key])) $this->_data[$section][$key]= array();
+      $this->_data[$section][$key][$element]= (string)$value;
+    }    
     
     /**
      * Add a string (and the section, if necessary)

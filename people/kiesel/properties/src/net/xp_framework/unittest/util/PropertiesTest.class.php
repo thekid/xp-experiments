@@ -375,5 +375,21 @@ foo=bar
       $this->assertEquals('empty', $p->getNextSection());     
       $this->assertEquals('final', $p->getNextSection());
     }
+    
+    /**
+     * Test reading array keys is supported
+     *
+     */
+    #[@test]
+    public function readExplodedArray() {
+      $p= Properties::fromString('
+[section]
+key[one]=value1
+key[two]=value2
+      ');
+      
+      $this->assertEquals(new Hashmap(array('one' => 'value1', 'two' => 'value2')), $p->readHash('section', 'key'));
+    }
+    
   }
 ?>
