@@ -72,8 +72,13 @@
           $value= trim(substr($value, 0, $p));
         }
 
-        if (2 == sscanf($key, '%[^[][%[^]]', $l, $r)) {
-          $prop->writeHashString($section, $l, $r, $value);
+        if (FALSE !== ($p= strpos($key, '['))) {
+          sscanf($key, '%[^[][%[^]]', $l, $r);
+          if (NULL === $r) {
+            $prop->addArrayElement($section, $l, $value);
+          } else {
+            $prop->addHashElement($section, $l, $r, $value);
+          }
         } else {
           $prop->writeString($section, $key, $value);
         }

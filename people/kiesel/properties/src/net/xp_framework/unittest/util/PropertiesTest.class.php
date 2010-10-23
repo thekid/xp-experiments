@@ -381,7 +381,7 @@ foo=bar
      *
      */
     #[@test]
-    public function readExplodedArray() {
+    public function readExplodedHashmap() {
       $p= Properties::fromString('
 [section]
 key[one]=value1
@@ -391,5 +391,19 @@ key[two]=value2
       $this->assertEquals(new Hashmap(array('one' => 'value1', 'two' => 'value2')), $p->readHash('section', 'key'));
     }
     
+    /**
+     * Test reading array keys is supported
+     *
+     */
+    #[@test]
+    public function readExplodedArray() {
+      $p= Properties::fromString('
+[section]
+key[]=value1
+key[]=value2
+      ');
+      
+      $this->assertEquals(array('value1', 'value2'), $p->readArray('section', 'key'));
+    }
   }
 ?>

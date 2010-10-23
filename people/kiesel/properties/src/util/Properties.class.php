@@ -220,6 +220,10 @@
      */
     public function readArray($section, $key, $default= array()) {
       $this->_load();
+      
+      // Check if array was exploded
+      if (is_array($this->_data[$section][$key])) return $this->_data[$section][$key];
+      
       return isset($this->_data[$section][$key])
         ? '' == $this->_data[$section][$key] ? array() : explode('|', $this->_data[$section][$key])
         : $default
@@ -361,10 +365,10 @@
      * @param   
      * @return  
      */
-    public function writeHashString($section, $key, $element, $value) {
+    public function addHashElement($section, $key, $element, $value) {
       if (!isset($this->_data[$section][$key])) $this->_data[$section][$key]= array();
       $this->_data[$section][$key][$element]= (string)$value;
-    }    
+    }
     
     /**
      * Add a string (and the section, if necessary)
@@ -412,6 +416,17 @@
     public function writeArray($section, $key, $value) {
       if (!isset($this->_data[$section])) $this->_data[$section]= array();
       $this->_data[$section][$key]= $value;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function addArrayElement($section, $key, $value) {
+      if (!isset($this->_data[$section])) $this->_data[$section]= array();
+      $this->_data[$section][$key][]= $value;
     }
 
     /**
