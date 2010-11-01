@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report>
+    <event code="RC_DYNAMIC_ERROR" source="PHPCS/Generic">
+        <name>Erreur PHP_CodeSniffer</name>
+        <message>:message</message>
+        <level>ERROR</level>
+        <category>Maintainability</category>
+    </event>
+    <event code="RC_DYNAMIC_WARNING" source="PHPCS/Generic">
+        <name>Warning PHP_CodeSniffer</name>
+        <message>:message</message>
+        <level>WARNING</level>
+        <category>Maintainability</category>
+    </event>
+    <event code="MISSING_CLASS_COMMENT">
+	<name>XP Class Comment</name>
+	<message>XP style class comment missing</message>
+	<level>WARNING</level>
+	<category>Maintainability</category>
+    </event>
+</report>

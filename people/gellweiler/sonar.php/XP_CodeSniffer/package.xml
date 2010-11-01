@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.9.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0     http://pear.php.net/dtd/tasks-1.0.xsd     http://pear.php.net/dtd/package-2.0     http://pear.php.net/dtd/package-2.0.xsd">
+ <name>XP_CodeSniffer</name>
+ <uri>http://xp-framework.net/PEAR</uri>
+ <summary>xp coding standards</summary>
+ <description>xp coding standards for codesniffer</description>
+ <lead>
+  <name>Christian Gellweiler</name>
+  <user>gelli</user>
+  <email>cgellweiler@googlemail.com</email>
+  <active>yes</active>
+ </lead>
+ <date>2010-11-01</date>
+ <time>15:03:18</time>
+ <version>
+  <release>0.1</release>
+  <api>0.1</api>
+ </version>
+ <stability>
+  <release>alpha</release>
+  <api>alpha</api>
+ </stability>
+ <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD Style</license>
+ <notes>
+Initial Release
+ </notes>
+ <contents>
+  <dir baseinstalldir="." name="/">
+   <file baseinstalldir="." md5sum="d1aee47f7c120815f4289a2f7f5df14c" name="SQLI/CodeSniffer/Standards/xp/xpCodingStandard.php" role="php" />
+   <file baseinstalldir="." md5sum="7798b8b968ce9ed629f86e133247101a" name="SQLI/CodeSniffer/Standards/xp/parser/ClassCommentParser.php" role="php" />
+   <file baseinstalldir="." md5sum="a2f3d6afda3f13e8d30a60bf15ad4cc0" name="SQLI/CodeSniffer/Standards/xp/Sniffs/Core/ClassCommentSniff.php" role="php" />
+   <file baseinstalldir="." md5sum="afcbd5a0fde4d3b44e54de3ad5e816e7" name="SQLI/CodeSniffer/Standards/xp/Sniffs/Core/ClassDeclarationSniff.php" role="php" />
+   <file baseinstalldir="." md5sum="43acd352d0ae6993bebeb3896d89c467" name="SQLI/CodeSniffer/Standards/xp/Sniffs/Core/ClassHeaderSniff.php" role="php" />
+   <file baseinstalldir="." md5sum="fa46d02b8fe0e926cfa86c236c4e8547" name="SQLI/CodeSniffer/Standards/xp/Sniffs/Core/FunctionCommentSniff.php" role="php" />
+   <file baseinstalldir="." md5sum="7f6d5543d1e746f9cd2b418ac7e61ea2" name="SQLI/CodeSniffer/Standards/xp/Sniffs/Core/FunctionDeclarationArgumentSpacingSniff.php" role="php" />
+   <file baseinstalldir="." md5sum="e861f01e1678bd48472e8609feb0ab23" name="SQLI/CodeSniffer/Standards/xp/Sniffs/Core/LineLengthSniff.php" role="php" />
+   <file baseinstalldir="." md5sum="b708d371a4e91bfeb40a3d471faac817" name="SQLI/CodeSniffer/Standards/xp/Sniffs/Core/MemberVarScopeSniff.php" role="php" />
+   <file baseinstalldir="." md5sum="23f513a9553b7271b05a2d19c9bdcc87" name="SQLI/CodeSniffer/Standards/xp/Sniffs/Core/MultipleStatementAlignmentSniff.php" role="php" />
+   <file baseinstalldir="." md5sum="96321937378cf007d53d037b21ca2da1" name="SQLI/CodeSniffer/Standards/xp/Sniffs/Core/OpenTagSniff.php" role="php" />
+   <file baseinstalldir="." md5sum="3de76719aa7ec519960c1664fd39dfbb" name="SQLI/CodeSniffer/Standards/xp/Sniffs/Core/ScopeClosingBraceSniff.php" role="php" />
+   <file baseinstalldir="." md5sum="c3d850b72402c22d9c6b17fba3c866f2" name="SQLI/CodeSniffer/Standards/xp/Sniffs/Core/ScopeIndentSniff.php" role="php" />
+   <file baseinstalldir="." md5sum="067403f51824fc96c091a0dae8c1ea55" name="SQLI/CodeSniffer/Standards/xp/Sniffs/Core/ValidVariableNameSniff.php" role="php" />
+   <file baseinstalldir="." md5sum="c092b63af945358df61c1e2b4f7cf95b" name="SQLI/CodeSniffer/Standards/xp/Sniffs/Core/WhitespaceAfterKeywordSniff.php" role="php" />
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <phprelease />
+ <changelog>
+  <release>
+   <version>
+    <release>0.1</release>
+    <api>0.1</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2010-11-01</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD Style</license>
+   <notes>
+Initial Release
+   </notes>
+  </release>
+ </changelog>
+</package>
