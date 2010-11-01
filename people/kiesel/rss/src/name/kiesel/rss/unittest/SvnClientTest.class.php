@@ -114,12 +114,27 @@
     #[@test]
     public function retrieveLogReturnsWrappedSvnLogEntries() {
       $log= $this->mockedClientOutputForLog()->queryLog(2);
-      
+
       $this->assertEquals('14934', $log->entry(0)->getRevision());
       $this->assertEquals('friebe', $log->entry(0)->getAuthor());
+      $this->assertEquals('- MFH: Force sybase client charset to iso_1', $log->entry(0)->getMessage());
     }
     
-    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function logEntryContainsLogPaths() {
+      $log= $this->mockedClientOutputForLog()->queryLog(2);
+
+      $this->assertInstanceOf('name.kiesel.rss.svn.SvnLogPaths', $log->entry(0)->getPaths());
+      $this->assertEquals(2, $log->entry(0)->getPaths()->pathCount());
+      
+      $this->assertEquals('M', $log->entry(0)->getPaths()->pathAt(0)->getAction());
+      $this->assertEquals('file', $log->entry(0)->getPaths()->pathAt(0)->getKind());
+      $this->assertEquals('/branches/xp5_7/skeleton/rdbms/sybase/SybaseConnection.class.php', $log->entry(0)->getPaths()->pathAt(0)->getPath());
+    }
     
   }
 ?>

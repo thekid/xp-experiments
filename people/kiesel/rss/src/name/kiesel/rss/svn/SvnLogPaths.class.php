@@ -4,8 +4,6 @@
  * $Id$ 
  */
 
-  uses('name.kiesel.rss.svn.SvnLogEntry');
-
   /**
    * (Insert class' description here)
    *
@@ -13,10 +11,10 @@
    * @see      reference
    * @purpose  purpose
    */
-  class SvnLog extends Object {
+  class SvnLogPaths extends Object {
     protected
-      $entries  = NULL;
-      
+      $paths  = NULL;
+    
     /**
      * (Insert method's description here)
      *
@@ -24,18 +22,7 @@
      * @return  
      */
     public function __construct() {
-      $this->entries= create('new util.collections.Vector<name.kiesel.rss.svn.SvnLogEntry>()');
-    }
-      
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    #[@xmlmapping(element= 'logentry', class= 'name.kiesel.rss.svn.SvnLogEntry')]
-    public function addEntry($entry) {
-      $this->entries[]= $entry;
+      $this->paths= create('new util.collections.Vector<name.kiesel.rss.svn.SvnLogPath>()');
     }
     
     /**
@@ -44,8 +31,19 @@
      * @param   
      * @return  
      */
-    public function entrySize() {
-      return $this->entries->size();
+    #[@xmlmapping(element= 'path', class= 'name.kiesel.rss.svn.SvnLogPath')]
+    public function addPath($path) {
+      $this->paths[]= $path;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function pathCount() {
+      return $this->paths->size();
     }    
     
     /**
@@ -54,8 +52,8 @@
      * @param   
      * @return  
      */
-    public function entry($offset) {
-      return $this->entries[$offset];
-    }    
+    public function pathAt($offset) {
+      return $this->paths[$offset];
+    }
   }
 ?>

@@ -16,7 +16,7 @@
       $revision = NULL,
       $author   = NULL,
       $date     = NULL,
-      $paths    = array(),
+      $paths    = NULL,
       $message  = NULL;
     
     /**
@@ -59,6 +59,48 @@
      */
     public function getAuthor() {
       return $this->author;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlmapping(element= 'msg')]
+    public function setMessage($m) {
+      $this->message= $m;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function getMessage() {
+      return $this->message;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlmapping(element= 'paths', class= 'name.kiesel.rss.svn.SvnLogPaths')]
+    public function setPaths($p) {
+      $this->paths= $p;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function getPaths() {
+      return $this->paths;
     }    
     
         
