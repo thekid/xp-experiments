@@ -38,10 +38,15 @@
      * @param   
      * @return  
      */
-    public function buildCommand($action, array $ext= NULL) {
-      $cmd= array($action, '--xml');
+    public function buildCommand($action, array $ext= array()) {
+      $cmd= array($action);
       
       foreach ($ext as $k => $v) {
+      
+        // Skip "empty" arguments
+        if (NULL === $v) continue;
+        
+        // Handle switches
         if (is_numeric($k)) {
           $cmd[]= '--'.$v;
           continue;
@@ -61,7 +66,7 @@
      * @return  
      */
     public function queryLogAsString($max= NULL) {
-      $cmd= $this->buildCommand('log', array('verbose', 'limit' => $max));
+      $cmd= $this->buildCommand('log', array('xml', 'verbose', 'limit' => $max));
       $out= $this->invokeSvn($cmd);
 
       return $out;
@@ -79,6 +84,19 @@
         new StringInputSource($this->queryLogAsString($max)),
         'name.kiesel.rss.svn.SvnLog'
       );
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function queryDiffForChangeSet($revision) {
+      $cmd= $this->buildCommand('diff', array('change' => $revision));
+      $out= $this->invokeSvn($cmd);
+      
+      return $out;
     }
     
     /**
