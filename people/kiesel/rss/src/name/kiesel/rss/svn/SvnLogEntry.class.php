@@ -3,6 +3,8 @@
  *
  * $Id$ 
  */
+ 
+  uses('util.Date');
 
   /**
    * (Insert class' description here)
@@ -103,8 +105,25 @@
       return $this->paths;
     }    
     
-        
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlmapping(element= 'date')]
+    public function setDate($d) {
+      $this->date= new Date($d);
+    }
     
-        
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function getDate() {
+      return $this->date;
+    }    
   }
 ?>

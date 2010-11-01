@@ -81,7 +81,7 @@
       
       $this->assertEquals('text/xml', $response->getHeader('Content-type'));
       $rdf= RDFNewsFeed::fromString($response->getContent());
+      echo $rdf->getSource(0);
     }
-    
   }
 ?>

@@ -198,6 +198,7 @@ Index: branches/xp5_7/ChangeLog
 
       $this->assertEquals('14934', $log->entry(0)->getRevision());
       $this->assertEquals('friebe', $log->entry(0)->getAuthor());
+      $this->assertEquals(new Date('2010-10-29 19:18:32+0200'), $log->entry(0)->getDate());
       $this->assertEquals('- MFH: Force sybase client charset to iso_1', $log->entry(0)->getMessage());
     }
     

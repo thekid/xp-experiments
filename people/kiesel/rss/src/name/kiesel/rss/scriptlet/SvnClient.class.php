@@ -66,10 +66,7 @@
      * @return  
      */
     public function queryLogAsString($max= NULL) {
-      $cmd= $this->buildCommand('log', array('xml', 'verbose', 'limit' => $max));
-      $out= $this->invokeSvn($cmd);
-
-      return $out;
+      return $this->invokeSvn($this->buildCommand('log', array('xml', 'verbose', 'limit' => $max)));
     }
     
     /**
