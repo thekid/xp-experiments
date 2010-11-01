@@ -853,7 +853,8 @@
 		<description>CPC_INCR_NO_ESPACE : Expected no space before :operator 1
 			found</description>
 	</rule>
-
+    
+    <!-- XP RULES HERE -->
 	<rule key="xp/Core/ClassCommentSniff/MISSING_CLASS_COMMENT"
 		priority="MAJOR">
 		<category name="Maintainability" />
