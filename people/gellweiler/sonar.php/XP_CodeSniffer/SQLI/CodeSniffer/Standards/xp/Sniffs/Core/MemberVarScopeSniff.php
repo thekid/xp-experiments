@@ -14,8 +14,8 @@
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
 
-if (class_exists('PHP_CodeSniffer_Standards_AbstractVariableSniff', true) === false) {
-    throw new PHP_CodeSniffer_Exception('Class PHP_CodeSniffer_Standards_AbstractVariableSniff not found');
+if (class_exists('SQLI_CodeSniffer_Standards_xp_AbstractVariableSniff', true) === false) {
+    throw new PHP_CodeSniffer_Exception('Class SQLI_CodeSniffer_Standards_xp_AbstractVariableSniff not found');
 }
 
 /**
@@ -30,7 +30,7 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractVariableSniff', true) === fa
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class xp_Sniffs_Core_MemberVarScopeSniff extends PHP_CodeSniffer_Standards_AbstractVariableSniff
+class xp_Sniffs_Core_MemberVarScopeSniff extends SQLI_CodeSniffer_Standards_xp_AbstractVariableSniff
 {
 
 
@@ -50,8 +50,13 @@ class xp_Sniffs_Core_MemberVarScopeSniff extends PHP_CodeSniffer_Standards_Abstr
 
         if (($modifier === false)) { // || ($tokens[$modifier]['line'] !== $tokens[$stackPtr]['line'])) {
             $var   = $tokens[$stackPtr]['content'];
-            $error = "Scope modifier not specified for member variable \"$var\"";
-            $phpcsFile->addError($error, $stackPtr);
+            $error = 'Scope modifier not specified for member variable "'.$var.'"';
+            //$phpcsFile->addError($error, $stackPtr);
+            $phpcsFile->addEvent(
+              'XP_MEMBER_VAR_SCOPE_NOT_SPECIFIED', 
+              array('message'=> $error),
+              $stackPtr
+            );
         }
 
     }//end processMemberVar()

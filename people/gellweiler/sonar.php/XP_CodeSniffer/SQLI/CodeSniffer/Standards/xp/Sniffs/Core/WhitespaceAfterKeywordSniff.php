@@ -30,7 +30,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class xp_Sniffs_Core_WhitespaceAfterKeywordSniff implements PHP_CodeSniffer_Sniff
+class xp_Sniffs_Core_WhitespaceAfterKeywordSniff implements SQLI_CodeSniffer_Sniff
 {
 
     /**
@@ -81,8 +81,14 @@ class xp_Sniffs_Core_WhitespaceAfterKeywordSniff implements PHP_CodeSniffer_Snif
         if ($nextToken['code'] === T_WHITESPACE) {
           
         } else {
-          $error= sprintf('Not enough whitespace after Keyword %s', $tokens[$stackPtr]['content']);
-          $phpcsFile->addError($error, $stackPtr);
+          $error= sprintf('Not enough whitespace after Keyword: %s', $tokens[$stackPtr]['content']);
+          //$phpcsFile->addError($error, $stackPtr);
+          $phpcsFile->addEvent(
+            'XP_WHITESPACE_AFTER_KEYWORD_MISSING', 
+            array('message'=> $error),
+            $stackPtr
+          );
+          
         }
         
     } //end process

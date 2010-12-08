@@ -30,7 +30,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class xp_Sniffs_Core_MultipleStatementAlignmentSniff implements PHP_CodeSniffer_Sniff
+class xp_Sniffs_Core_MultipleStatementAlignmentSniff implements SQLI_CodeSniffer_Sniff
 {
 
     /**
@@ -287,9 +287,19 @@ class xp_Sniffs_Core_MultipleStatementAlignmentSniff implements PHP_CodeSniffer_
                 }
 
                 if ($this->error === true) {
-                    $phpcsFile->addError($error, $assignment);
+                    //$phpcsFile->addError($error, $assignment);
+                    $phpcsFile->addEvent(
+                      'XP_MULTIPLE_STATEMENT_ALIGNMENT_EQUALS_SIGN_NOT_ALIGNED_CORRECTLY', 
+                      array('message'=> $error),
+                      $stackPtr
+                    );
                 } else {
-                    $phpcsFile->addWarning($error, $assignment);
+                    //$phpcsFile->addWarning($error, $assignment);
+                    $phpcsFile->addEvent(
+                      'XP_MULTIPLE_STATEMENT_ALIGNMENT_EQUALS_SIGN_NOT_ALIGNED_WITH_SURROUNDING_ASSIGNMENTS', 
+                      array('message'=> $error),
+                      $stackPtr
+                    );
                 }
             }//end if
         }//end foreach

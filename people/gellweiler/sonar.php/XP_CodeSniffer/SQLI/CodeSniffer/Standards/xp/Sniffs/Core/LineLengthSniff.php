@@ -30,7 +30,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class xp_Sniffs_Core_LineLengthSniff implements PHP_CodeSniffer_Sniff
+class xp_Sniffs_Core_LineLengthSniff implements SQLI_CodeSniffer_Sniff
 {
 
     /**
@@ -119,10 +119,20 @@ class xp_Sniffs_Core_LineLengthSniff implements PHP_CodeSniffer_Sniff
             $lineLength = strlen($lineContent);
             if ($this->absoluteLineLimit > 0 && $lineLength > $this->absoluteLineLimit) {
                 $error = 'Line exceeds maximum limit of '.$this->absoluteLineLimit." characters; contains $lineLength characters";
-                $phpcsFile->addError($error, $stackPtr);
+                //$phpcsFile->addError($error, $stackPtr);
+                $phpcsFile->addEvent(
+                  'XP_LINE_LENGTH_EXCEEDS_MAXIMUM_LIMIT', 
+                  array('message'=> $error),
+                  $stackPtr
+                );
             } else if ($lineLength > $this->lineLimit) {
                 $warning = 'Line exceeds '.$this->lineLimit." characters; contains $lineLength characters";
-                $phpcsFile->addWarning($warning, $stackPtr);
+                //$phpcsFile->addWarning($warning, $stackPtr);
+                $phpcsFile->addEvent(
+                'XP_LINE_LENGTH_EXCEEDS_LIMIT', 
+                array('message'=> $warning),
+                $stackPtr
+              );
             }
         }
 

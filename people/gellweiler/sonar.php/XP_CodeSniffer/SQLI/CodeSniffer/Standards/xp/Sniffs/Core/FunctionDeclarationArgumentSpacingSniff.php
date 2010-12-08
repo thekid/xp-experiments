@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class xp_Sniffs_Core_FunctionDeclarationArgumentSpacingSniff implements PHP_CodeSniffer_Sniff
+class xp_Sniffs_Core_FunctionDeclarationArgumentSpacingSniff implements SQLI_CodeSniffer_Sniff
 {
 
 
@@ -77,23 +77,26 @@ class xp_Sniffs_Core_FunctionDeclarationArgumentSpacingSniff implements PHP_Code
             if ($nextCode === T_EQUAL) {
                 // Check parameter default spacing.
                 if (($nextToken - $nextParam) > 1) {
-                    $gap   = strlen($tokens[($nextParam + 1)]['content']);
-                    $arg   = $tokens[$nextParam]['content'];
-                    $error = "Expected 0 spaces between argument \"$arg\" and equals sign; $gap found";
-                    $phpcsFile->addError($error, $nextToken);
+                    //$gap   = strlen($tokens[($nextParam + 1)]['content']);
+                    //$arg   = $tokens[$nextParam]['content'];
+                    //$error = "Expected 0 spaces between argument \"$arg\" and equals sign; $gap found";
+                    //$phpcsFile->addError($error, $nextToken);
+                    $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_SPACING_NOPSACE_BEFORE_EQUALS', array(), $nextToken);
                 }
 
                 if ($tokens[($nextToken + 1)]['code'] === T_WHITESPACE && $tokens[($nextToken + 1)]['content'] !== ' ') {
-                    $gap   = strlen($tokens[($nextToken + 1)]['content']);
-                    $arg   = $tokens[$nextParam]['content'];
-                    $error = "Expected 1 space between default value and equals sign for argument \"$arg\"; $gap found";
-                    $phpcsFile->addError($error, $nextToken);
+                    //$gap   = strlen($tokens[($nextToken + 1)]['content']);
+                    //$arg   = $tokens[$nextParam]['content'];
+                    //$error = "Expected 1 space between default value and equals sign for argument \"$arg\"; $gap found";
+                    //$phpcsFile->addError($error, $nextToken);
+                    $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_SPACING_ONESPACE_AFTER_EQUALS', array(), $nextToken);
                 }
                 
                 if ($tokens[($nextToken + 1)]['code'] !== T_WHITESPACE) {
-                    $arg   = $tokens[$nextParam]['content'];
-                    $error = "Expected 1 space between default value and equals sign for argument \"$arg\"; 0 found";
-                    $phpcsFile->addError($error, $nextToken);
+                    //$arg   = $tokens[$nextParam]['content'];
+                    //$error = "Expected 1 space between default value and equals sign for argument \"$arg\"; 0 found";
+                    //$phpcsFile->addError($error, $nextToken);
+                    $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_SPACING_ONESPACE_AFTER_EQUALS', array(), $nextToken);
                 }
             }
 
@@ -102,10 +105,11 @@ class xp_Sniffs_Core_FunctionDeclarationArgumentSpacingSniff implements PHP_Code
             if ($nextComma !== false) {
                 // Comma found.
                 if ($tokens[($nextComma - 1)]['code'] === T_WHITESPACE) {
-                    $space = strlen($tokens[($nextComma - 1)]['content']);
-                    $arg   = $tokens[$nextParam]['content'];
-                    $error = "Expected 0 spaces between argument \"$arg\" and comma; $space found";
-                    $phpcsFile->addError($error, $nextToken);
+                    //$space = strlen($tokens[($nextComma - 1)]['content']);
+                    //$arg   = $tokens[$nextParam]['content'];
+                    //$error = "Expected 0 spaces between argument \"$arg\" and comma; $space found";
+                    //$phpcsFile->addError($error, $nextToken);
+                    $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_SPACING_NOSPACE_BEFORE_COMMA', array(), $nextToken);
                 }
             }
 
@@ -137,29 +141,34 @@ class xp_Sniffs_Core_FunctionDeclarationArgumentSpacingSniff implements PHP_Code
                         $hint = $tokens[$nextToken]['content'];
 
                         if ($gap !== 1) {
-                            $error = "Expected 1 space between type hint and argument \"$arg\"; $gap found";
-                            $phpcsFile->addError($error, $nextToken);
+                            //$error = "Expected 1 space between type hint and argument \"$arg\"; $gap found";
+                            //$phpcsFile->addError($error, $nextToken);
+                            $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_ONESPACE_AFTER_HINT', array(), $nextToken);
                         }
 
                         if ($multiLine === false) {
                             if ($tokens[($comma + 1)]['code'] !== T_WHITESPACE) {
-                                $error = "Expected 1 space between comma and type hint \"$hint\"; 0 found";
-                                $phpcsFile->addError($error, $nextToken);
+                                //$error = "Expected 1 space between comma and type hint \"$hint\"; 0 found";
+                                //$phpcsFile->addError($error, $nextToken);
+                                $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_ONESPACE_BETWEEN_COMMA_AND_HINT', array(), $nextToken);
                             } else {
                                 $gap = strlen($tokens[($comma + 1)]['content']);
                                 if ($gap !== 1) {
-                                    $error = "Expected 1 space between comma and type hint \"$hint\"; $gap found";
-                                    $phpcsFile->addError($error, $nextToken);
+                                    //$error = "Expected 1 space between comma and type hint \"$hint\"; $gap found";
+                                    //$phpcsFile->addError($error, $nextToken);
+                                    $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_ONESPACE_BETWEEN_COMMA_AND_HINT', array(), $nextToken);
                                 }
                             }
                         }
                     } else if ($multiLine === false && $gap !== 1) {
-                        $error = "Expected 1 space between comma and argument \"$arg\"; $gap found";
-                        $phpcsFile->addError($error, $nextToken);
+                        //$error = "Expected 1 space between comma and argument \"$arg\"; $gap found";
+                        //$phpcsFile->addError($error, $nextToken);
+                        $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_ONESPACE_BETWEEN_COMMA_AND_ARGUMENT', array(), $nextToken);
                     }//end if
                 } else {
-                    $error = "Expected 1 space between comma and argument \"$arg\"; 0 found";
-                    $phpcsFile->addError($error, $nextToken);
+                    //$error = "Expected 1 space between comma and argument \"$arg\"; 0 found";
+                    //$phpcsFile->addError($error, $nextToken);
+                    $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_ONESPACE_BETWEEN_COMMA_AND_ARGUMENT', array(), $nextToken);
                 }//end if
             } else {
                 // First argument in function declaration.
@@ -180,20 +189,23 @@ class xp_Sniffs_Core_FunctionDeclarationArgumentSpacingSniff implements PHP_Code
                         $hint = $tokens[$nextToken]['content'];
 
                         if ($gap !== 1) {
-                            $error = "Expected 1 space between type hint and argument \"$arg\"; $gap found";
-                            $phpcsFile->addError($error, $nextToken);
+                            //$error = "Expected 1 space between type hint and argument \"$arg\"; $gap found";
+                            //$phpcsFile->addError($error, $nextToken);
+                            $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_ONESPACE_AFTER_HINT', array(), $nextToken);
                         }
 
                         if ($multiLine === false
                             && $tokens[($bracket + 1)]['code'] === T_WHITESPACE
                         ) {
-                            $gap   = strlen($tokens[($bracket + 1)]['content']);
-                            $error = "Expected 0 spaces between opening bracket and type hint \"$hint\"; $gap found";
-                            $phpcsFile->addError($error, $nextToken);
+                            //$gap   = strlen($tokens[($bracket + 1)]['content']);
+                            //$error = "Expected 0 spaces between opening bracket and type hint \"$hint\"; $gap found";
+                            //$phpcsFile->addError($error, $nextToken);
+                            $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_ONESPACE_BETWEEN_BRACKET_AND_HINT', array(), $nextToken);
                         }
                     } else if ($multiLine === false) {
-                        $error = "Expected 0 spaces between opening bracket and argument \"$arg\"; $gap found";
-                        $phpcsFile->addError($error, $nextToken);
+                        //$error = "Expected 0 spaces between opening bracket and argument \"$arg\"; $gap found";
+                        //$phpcsFile->addError($error, $nextToken);
+                        $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_ONESPACE_BETWEEN_BRACKET_AND_ARGUMENT', array(), $nextToken);
                     }
                 }//end if
             }//end if
@@ -205,18 +217,20 @@ class xp_Sniffs_Core_FunctionDeclarationArgumentSpacingSniff implements PHP_Code
         if (empty($params) === true) {
             // There are no parameters for this function.
             if (($closeBracket - $openBracket) !== 1) {
-                $space = strlen($tokens[($closeBracket - 1)]['content']);
-                $error = "Expected 0 spaces between brackets of function declaration; $space found";
-                $phpcsFile->addError($error, $stackPtr);
+                //$space = strlen($tokens[($closeBracket - 1)]['content']);
+                //$error = "Expected 0 spaces between brackets of function declaration; $space found";
+                //$phpcsFile->addError($error, $stackPtr);
+                $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_ONESPACE_BETWEEN_BRACKETS', array(), $stackPtr);
             }
         } else if ($multiLine === false
             && $tokens[($closeBracket - 1)]['code'] === T_WHITESPACE
         ) {
-            $lastParam = array_pop($params);
-            $arg       = $tokens[$lastParam]['content'];
-            $gap       = strlen($tokens[($closeBracket - 1)]['content']);
-            $error     = "Expected 0 spaces between argument \"$arg\" and closing bracket; $gap found";
-            $phpcsFile->addError($error, $closeBracket);
+            //$lastParam = array_pop($params);
+            //$arg       = $tokens[$lastParam]['content'];
+            //$gap       = strlen($tokens[($closeBracket - 1)]['content']);
+            //$error     = "Expected 0 spaces between argument \"$arg\" and closing bracket; $gap found";
+            //$phpcsFile->addError($error, $closeBracket);
+            $phpcsFile->addEvent('XP_FUNCTION_DECLARATION_ARGUMENT_NOSPACE_BETWEEN_ARGUMENT_AND_CLOSING_BRACKET', array(), $closeBracket);
         }
 
     }//end process()

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Parses and verifies the doc comments for classes.
  *
@@ -98,23 +99,24 @@ class xp_Sniffs_Core_ClassCommentSniff implements SQLI_CodeSniffer_Sniff
     protected function findDocComment($stackPtr, $phpcsFile) {
         $find   = array(T_ABSTRACT, T_WHITESPACE, T_FINAL);
         $tokens = $phpcsFile->getTokens();
-	$type   = strtolower($tokens[$stackPtr]['content']);
+        $type = strtolower($tokens[$stackPtr]['content']);
         $commentEnd = $phpcsFile->findPrevious($find, ($stackPtr - 1), null, true);
 
         if ($commentEnd !== false && $tokens[$commentEnd]['code'] === T_COMMENT) {
-        
+
             // Check for annotation
             if ('#[@' === substr($tokens[$commentEnd]['content'], 0, 3)) {
               return $this->findDocComment($stackPtr - 1, $phpcsFile);
             }
-        
-            $error = "You must use \"/**\" style comments for a $type comment";
-            $phpcsFile->addError($error, $stackPtr);
+
+            //$error = "You must use \"/**\" style comments for a $type comment";
+            //$phpcsFile->addError($error, $stackPtr);
+            $phpcsFile->addEvent('XP_CLASS_COMMENT_INVALID', array(), $stackPtr);
             return FALSE;
 
         } else if ($commentEnd === false || $tokens[$commentEnd]['code'] !== T_DOC_COMMENT) {
-            $phpcsFile->addEvent(sprintf('MISSING_%s_COMMENT', strtoupper($type)), array(), $stackPtr);
-//            $phpcsFile->addError("Missing $type doc comment", $stackPtr);
+            //$phpcsFile->addError("Missing $type doc comment", $stackPtr);
+            $phpcsFile->addEvent('XP_CLASS_COMMENT_MISSING', array(), $stackPtr);
             return FALSE;
         }
         
@@ -169,8 +171,9 @@ class xp_Sniffs_Core_ClassCommentSniff implements SQLI_CodeSniffer_Sniff
                         if ($newlineToken !== false) {
                             // Blank line between the class and the doc block.
                             // The doc block is most likely a file comment.
-                            $error = "Missing $type doc comment";
-                            $phpcsFile->addError($error, ($stackPtr + 1));
+                            //$error = "Missing $type doc comment";
+                            //$phpcsFile->addError($error, ($stackPtr + 1));
+                            $phpcsFile->addEvent('XP_CLASS_COMMENT_MISSING', array(), ($stackPtr + 1));
                             return;
                         }
                     }//end if
@@ -188,15 +191,17 @@ class xp_Sniffs_Core_ClassCommentSniff implements SQLI_CodeSniffer_Sniff
             $this->commentParser = new SQLI_CodeSniffer_Standards_xp_parser_ClassCommentParser($comment, $phpcsFile);
             $this->commentParser->parse();
         } catch (PHP_CodeSniffer_CommentParser_ParserException $e) {
-            $line = ($e->getLineWithinComment() + $commentStart);
-            $phpcsFile->addError($e->getMessage(), $line);
+            //$line = ($e->getLineWithinComment() + $commentStart);
+            //$phpcsFile->addError($e->getMessage(), $line);
+            $phpcsFile->addEvent('XP_CLASS_COMMENT_EXCEPTION', array('message' => $e->getMessage()), $line);
             return;
         }
 
         $comment = $this->commentParser->getComment();
         if (is_null($comment) === true) {
-            $error = ucfirst($type).' doc comment is empty';
-            $phpcsFile->addError($error, $commentStart);
+            //$error = ucfirst($type).' doc comment is empty';
+            //$phpcsFile->addError($error, $commentStart);
+            $phpcsFile->addEvent('XP_CLASS_COMMENT_EMPTY', array(), ($stackPtr + 1));
             return;
         }
 
@@ -206,8 +211,9 @@ class xp_Sniffs_Core_ClassCommentSniff implements SQLI_CodeSniffer_Sniff
         $newlineSpan  = strspn($short, $phpcsFile->eolChar);
         if ($short !== '' && $newlineSpan > 0) {
             $line  = ($newlineSpan > 1) ? 'newlines' : 'newline';
-            $error = "Extra $line found before $type comment short description";
-            $phpcsFile->addWarning($error, ($commentStart + 1));
+            //$error = "Extra $line found before $type comment short description";
+            //$phpcsFile->addWarning($error, ($commentStart + 1));
+            $phpcsFile->addEvent('XP_CLASS_COMMENT_EXTRA_NEWLINE_BEFORE_SHORT_DESCRIPTION', array(), ($commentStart + 1));
         }
 
         $newlineCount = (substr_count($short, $phpcsFile->eolChar) + 1);
@@ -218,8 +224,9 @@ class xp_Sniffs_Core_ClassCommentSniff implements SQLI_CodeSniffer_Sniff
             $between        = $comment->getWhiteSpaceBetween();
             $newlineBetween = substr_count($between, $phpcsFile->eolChar);
             if ($newlineBetween !== 2) {
-                $error = "There must be exactly one blank line between descriptions in $type comments";
-                $phpcsFile->addError($error, ($commentStart + $newlineCount + 1));
+                //$error = "There must be exactly one blank line between descriptions in $type comments";
+                //$phpcsFile->addError($error, ($commentStart + $newlineCount + 1));
+                $phpcsFile->addEvent('XP_CLASS_COMMENT_EXTRA_NEWLINE_BETWEEN_DESCRIPTION', array(), ($commentStart + $newlineCount + 1));
             }
 
             $newlineCount += $newlineBetween;
@@ -230,12 +237,14 @@ class xp_Sniffs_Core_ClassCommentSniff implements SQLI_CodeSniffer_Sniff
         if (count($tags) > 1) {
             $newlineSpan = $comment->getNewlineAfter();
             if ($newlineSpan !== 2) {
-                $error = "There must be exactly one blank line before the tags in $type comments";
                 if ($long !== '') {
                     $newlineCount += (substr_count($long, $phpcsFile->eolChar) - $newlineSpan + 1);
                 }
 
-                $phpcsFile->addError($error, ($commentStart + $newlineCount));
+                //$error = "There must be exactly one blank line before the tags in $type comments";
+                //$phpcsFile->addError($error, ($commentStart + $newlineCount));
+                $phpcsFile->addEvent('XP_CLASS_COMMENT_EXTRA_NEWLINE_BEFORE_TAGS', array(), ($commentStart + $newlineCount));
+
                 $short = rtrim($short, $phpcsFile->eolChar.' ');
             }
         }
@@ -265,7 +274,8 @@ class xp_Sniffs_Core_ClassCommentSniff implements SQLI_CodeSniffer_Sniff
 
         foreach ($this->commentParser->getUnknown() as $unknown) {
           $error= sprintf('Tag @%s not allowed in class comment', $unknown['tag']);
-          $this->currentFile->addError($error, $commentStart + $unknown['line']);
+         //$this->currentFile->addError($error, $commentStart + $unknown['line']);
+          $this->currentFile->addEvent('XP_CLASS_COMMENT_TAG_INVALID', array('message' => $error), $commentStart + $unknown['line']);
         }
 
         foreach ($this->tags as $tag => $info) {
@@ -273,7 +283,8 @@ class xp_Sniffs_Core_ClassCommentSniff implements SQLI_CodeSniffer_Sniff
             // Required tag missing.
             if ($info['required'] === true && in_array($tag, $foundTags) === false) {
                 $error = "Missing @$tag tag in class comment";
-                $this->currentFile->addError($error, $commentEnd);
+                //$this->currentFile->addError($error, $commentEnd);
+                $this->currentFile->addEvent('XP_CLASS_COMMENT_TAG_MISSING', array('message' => $error), $commentEnd);
                 continue;
             }
             
@@ -302,7 +313,8 @@ class xp_Sniffs_Core_ClassCommentSniff implements SQLI_CodeSniffer_Sniff
                 // Multiple occurance not allowed.
                 if ($info['allow_multiple'] === false) {
                     $error = "Only 1 @$tag tag is allowed in a class comment";
-                    $this->currentFile->addError($error, $errorPos);
+                    //$this->currentFile->addError($error, $errorPos);
+                    $this->currentFile->addEvent('XP_CLASS_COMMENT_TAG_DUPLICATE', array('message' => $error), $errorPos);
                 } else {
                     // Make sure same tags are grouped together.
                     $i     = 0;
@@ -312,7 +324,8 @@ class xp_Sniffs_Core_ClassCommentSniff implements SQLI_CodeSniffer_Sniff
                             $errorPosIndex
                                 = ($errorPos + $tagElement[$i]->getLine());
                             $error = "@$tag tags must be grouped together";
-                            $this->currentFile->addError($error, $errorPosIndex);
+                            //$this->currentFile->addError($error, $errorPosIndex);
+                            $this->currentFile->addEvent('XP_CLASS_COMMENT_TAG_GROPUPPED', array('message' => $error), $errorPosIndex);
                         }
 
                         $i++;

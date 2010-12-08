@@ -28,7 +28,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class xp_Sniffs_Core_ScopeClosingBraceSniff implements PHP_CodeSniffer_Sniff
+class xp_Sniffs_Core_ScopeClosingBraceSniff implements SQLI_CodeSniffer_Sniff
 {
 
 
@@ -97,7 +97,12 @@ class xp_Sniffs_Core_ScopeClosingBraceSniff implements PHP_CodeSniffer_Sniff
 
         if ($tokens[$lastContent]['line'] === $tokens[$scopeEnd]['line']) {
             $error = 'Closing brace must be on a line by itself';
-            $phpcsFile->addError($error, $scopeEnd);
+            //$phpcsFile->addError($error, $scopeEnd);
+            $phpcsFile->addEvent(
+              'XP_SCOPE_CLOSING_BRACE_CLOSING_BRACE_MUST_BE_ON_A_LINE_BY_ITSELF', 
+              array('message'=> $error),
+              $scopeEnd
+            );
             return;
         }
 
@@ -111,12 +116,22 @@ class xp_Sniffs_Core_ScopeClosingBraceSniff implements PHP_CodeSniffer_Sniff
             // CASE or DEFAULT statement.
             if ($braceIndent !== ($startColumn + 2)) {
                 $error = 'Break statement indented incorrectly; expected '.($startColumn + 1).' spaces, found '.($braceIndent - 1);
-                $phpcsFile->addError($error, $scopeEnd);
+                //$phpcsFile->addError($error, $scopeEnd);
+                $phpcsFile->addEvent(
+                  'XP_SCOPE_CLOSING_BRACE_BREAK_STATEMENT_INDENTED_INCORRECTLY', 
+                  array('message'=> $error),
+                  $scopeEnd
+                );
             }
         } else {
             if ($braceIndent !== $startColumn) {
                 $error = 'Closing brace indented incorrectly; expected '.($startColumn - 1).' spaces, found '.($braceIndent - 1);
-                $phpcsFile->addError($error, $scopeEnd);
+                //$phpcsFile->addError($error, $scopeEnd);
+                $phpcsFile->addEvent(
+                  'XP_SCOPE_CLOSING_BRACE_CLOSING_BRACE_INDENTED_INCORRECTLY', 
+                  array('message'=> $error),
+                  $scopeEnd
+                );
             }
         }
 

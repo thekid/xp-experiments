@@ -43,7 +43,7 @@ if (class_exists('PHP_CodeSniffer_CommentParser_ClassCommentParser', true) === f
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
 
-class xp_Sniffs_Core_ClassHeaderSniff implements PHP_CodeSniffer_Sniff
+class xp_Sniffs_Core_ClassHeaderSniff implements SQLI_CodeSniffer_Sniff
 {
 
     /**
@@ -103,20 +103,23 @@ class xp_Sniffs_Core_ClassHeaderSniff implements PHP_CodeSniffer_Sniff
             // We are only interested if this is the first open tag.
             return;
         } else if ($tokens[$commentStart]['code'] !== T_COMMENT) {
-            $error = 'You must use "/*" style comments for a file comment';
-            $phpcsFile->addError($error, $commentStart);
+            //$error = 'You must use "/*" style comments for a file comment';
+            //$phpcsFile->addError($error, $commentStart);
+            $phpcsFile->addEvent('XP_CLASS_HEADER_INVALID', $commentStart);
             return;
         } else if ($commentStart === false
             || $tokens[$commentStart]['code'] !== T_COMMENT
         ) {
-            $phpcsFile->addError('Missing file doc comment', $errorToken);
+            //$phpcsFile->addError('Missing file doc comment', $errorToken);
+            $phpcsFile->addEvent('XP_CLASS_HEADER_MISSING', $commentStart);
             return;
         } else {
             
             // File header must directly follow opening tag
             if ($tokens[$commentStart]['line'] !== $tokens[$stackPtr]['line']+1) {
-              $error = 'File header not directly following open tag';
-              $phpcsFile->addError($error, $commentStart);
+              //$error = 'File header not directly following open tag';
+              //$phpcsFile->addError($error, $commentStart);
+              $phpcsFile->addEvent('XP_CLASS_HEADER_NOT_AFTER_OPEN_TAG', $commentStart);
             }
 
             // Extract the header comment docblock.
@@ -138,7 +141,8 @@ class xp_Sniffs_Core_ClassHeaderSniff implements PHP_CodeSniffer_Sniff
                 $this->commentParser->parse();
             } catch (PHP_CodeSniffer_CommentParser_ParserException $e) {
                 $line = ($e->getLineWithinComment() + $commentStart);
-                $phpcsFile->addError($e->getMessage(), $line);
+                //$phpcsFile->addError($e->getMessage(), $line);
+                $phpcsFile->addEvent('XP_CLASS_HEADER_EXCEPTION', array('message' => $e->getMessage()), $line);
                 return;
             }
 
@@ -151,14 +155,16 @@ class xp_Sniffs_Core_ClassHeaderSniff implements PHP_CodeSniffer_Sniff
             
             if ($short !== '' && $newlineSpan > 0) {
                 $line  = ($newlineSpan > 1) ? 'newlines' : 'newline';
-                $error = "Extra $line found before file comment short description";
-                $phpcsFile->addError($error, ($commentStart + 1));
+                //$error = "Extra $line found before file comment short description";
+                //$phpcsFile->addError($error, ($commentStart + 1));
+                $phpcsFile->addEvent('XP_CLASS_HEADER_NEWLINE_BEFORE_SHORT_DESCRIPTION', array(), ($commentStart + 1));
             }
             
             $found= FALSE;
             if (strstr(trim($short), '$Id')) {
-                $error = "There must be an empty line between SVN ID tag and the description";
-                $phpcsFile->addError($error, ($commentStart));
+                //$error = "There must be an empty line between SVN ID tag and the description";
+                //$phpcsFile->addError($error, ($commentStart));
+                $phpcsFile->addEvent('XP_CLASS_HEADER_EMPTYLINE_BETWEEN_SHORT_DESCRIPTION_AND_SVNID', array(), $commentStart + 1);
                 $found= TRUE;
             }
 
@@ -171,24 +177,28 @@ class xp_Sniffs_Core_ClassHeaderSniff implements PHP_CodeSniffer_Sniff
                 $between        = $comment->getWhiteSpaceBetween();
                 $newlineBetween = substr_count($between, $phpcsFile->eolChar);
                 if ($newlineBetween !== 2) {
-                    $error = 'There must be exactly one blank line between description and the ID Tag';
-                    $phpcsFile->addError($error, ($commentStart + $newlineCount + 1));
+                    //$error = 'There must be exactly one blank line between description and the ID Tag';
+                    //$phpcsFile->addError($error, ($commentStart + $newlineCount + 1));
+                    $phpcsFile->addEvent('XP_CLASS_HEADER_EMPTYLINE_BETWEEN_DESCRIPTION_AND_ID', array(), ($commentStart + $newlineCount + 1));
                 }
 
                 
                 if (!strstr(trim($long), '$Id')) {
-                    $error = 'SVN Id tag is corrupt';
-                    $phpcsFile->addError($error, ($commentStart + $newlineCount + 1));
+                    //$error = 'SVN Id tag is corrupt';
+                    //$phpcsFile->addError($error, ($commentStart + $newlineCount + 1));
+                    $phpcsFile->addEvent('XP_CLASS_HEADER_SVNID_CORRUPT', array(), ($commentStart + $newlineCount + 1));
                 }
                 $newlineCount += $newlineBetween;
             } elseif (!$found) {
-              $error = 'SVN Id tag is missing';
-              $phpcsFile->addError($error, ($commentStart + $newlineCount + 1));
+              //$error = 'SVN Id tag is missing';
+              //$phpcsFile->addError($error, ($commentStart + $newlineCount + 1));
+              $phpcsFile->addEvent('XP_CLASS_HEADER_SVNID_MISSING', array(), ($commentStart + $newlineCount + 1));
             }
             
             if (2 < $comment->getNewlineAfter()) {
-              $error = 'Extra content after SVN ID Tag';
-              $phpcsFile->addError($error, ($commentStart + $newlineCount));
+              //$error = 'Extra content after SVN ID Tag';
+              //$phpcsFile->addError($error, ($commentStart + $newlineCount));
+              $phpcsFile->addEvent('XP_CLASS_HEADER_CONTENT_AFTER_SVNID', array(), ($commentStart + $newlineCount));
             }
             
         }//end if

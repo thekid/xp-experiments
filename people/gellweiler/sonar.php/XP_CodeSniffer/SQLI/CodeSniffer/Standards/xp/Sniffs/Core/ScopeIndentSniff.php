@@ -30,7 +30,7 @@
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class xp_Sniffs_Core_ScopeIndentSniff implements PHP_CodeSniffer_Sniff
+class xp_Sniffs_Core_ScopeIndentSniff implements SQLI_CodeSniffer_Sniff
 {
 
     /**
@@ -125,7 +125,12 @@ class xp_Sniffs_Core_ScopeIndentSniff implements PHP_CodeSniffer_Sniff
             $error  = 'Line indented incorrectly; expected ';
             $error .= ($expectedIndent - 1).' spaces, found ';
             $error .= ($tokens[$firstToken]['column'] - 1);
-            $phpcsFile->addWarning($error, $stackPtr);
+            //$phpcsFile->addWarning($error, $stackPtr);
+            $phpcsFile->addEvent(
+              'XP_SCOPE_INDENT_LINE_INDENTED_INCORRECTLY', 
+              array('message'=> $error),
+              $stackPtr
+            );
         }
 
         $scopeOpener = $tokens[$stackPtr]['scope_opener'];
@@ -266,7 +271,12 @@ class xp_Sniffs_Core_ScopeIndentSniff implements PHP_CodeSniffer_Sniff
 
                         $error .= ($indent - 1).' spaces, found ';
                         $error .= ($column - 1);
-                        $phpcsFile->addWarning($error, $firstToken);
+                        //$phpcsFile->addWarning($error, $firstToken);
+                        $phpcsFile->addEvent(
+                          'XP_SCOPE_INDENT_LINE_INDENTED_INCORRECTLY', 
+                          array('message'=> $error),
+                          $stackPtr
+                        );
                     }
                 }
             }//end if

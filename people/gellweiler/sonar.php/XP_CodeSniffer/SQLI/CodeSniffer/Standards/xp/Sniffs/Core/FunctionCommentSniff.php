@@ -45,7 +45,7 @@ if (class_exists('PHP_CodeSniffer_CommentParser_FunctionCommentParser', true) ==
  * @version   Release: 1.2.0
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
+class xp_Sniffs_Core_FunctionCommentSniff implements SQLI_CodeSniffer_Sniff
 {
 
     /**
@@ -117,12 +117,14 @@ class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
               return $this->findDocComment($stackPtr - 1, $phpcsFile);
             }
         
-            $error = "You must use \"/**\" style comments for a $type comment";
-            $phpcsFile->addError($error, $stackPtr);
+            //$error = "You must use \"/**\" style comments for a $type comment";
+            //$phpcsFile->addError($error, $stackPtr);
+            $phpcsFile->addEvent('XP_FUNCTION_COMMENT_INVALID', array(), $stackPtr);
             return FALSE;
 
         } else if ($code !== T_DOC_COMMENT) {
-            $phpcsFile->addError('Missing function doc comment', $stackPtr);
+            //$phpcsFile->addError('Missing function doc comment', $stackPtr);
+            $phpcsFile->addEvent('XP_FUNCTION_COMMENT_MISSING', array(), $stackPtr);
             return FALSE;
         }
 
@@ -161,7 +163,8 @@ class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
         $ignore[]  = T_COMMENT;
         $prevToken = $phpcsFile->findPrevious($ignore, ($stackPtr - 1), null, true);
         if ($prevToken !== $commentEnd) {
-            $phpcsFile->addError('Missing function doc comment', $stackPtr);
+            //$phpcsFile->addError('Missing function doc comment', $stackPtr);
+            $phpcsFile->addEvent('XP_FUNCTION_COMMENT_MISSING', array(), $stackPtr);
             return;
         }
         
@@ -179,8 +182,9 @@ class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
             if ($newlineToken !== false) {
                 // Blank line between the class and the doc block.
                 // The doc block is most likely a file comment.
-                $error = "Missing $type doc comment";
-                $phpcsFile->addError($error, ($stackPtr + 1));
+                //$error = "Missing $type doc comment";
+                //$phpcsFile->addError($error, ($stackPtr + 1));
+                $phpcsFile->addEvent('XP_FUNCTION_COMMENT_MISSING', array(), ($stackPtr + 1));
                 return;
             }
         }//end if
@@ -202,7 +206,8 @@ class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
         if ($tokens[$prevToken]['code'] === T_OPEN_TAG) {
             // Is this the first open tag?
             if ($stackPtr === 0 || $phpcsFile->findPrevious(T_OPEN_TAG, ($prevToken - 1)) === false) {
-                $phpcsFile->addError('Missing function doc comment', $stackPtr);
+                //$phpcsFile->addError('Missing function doc comment', $stackPtr);
+                $phpcsFile->addEvent('XP_FUNCTION_COMMENT_MISSING', array(), $stackPtr);
                 return;
             }
         }
@@ -221,8 +226,9 @@ class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
 
         $comment = $this->commentParser->getComment();
         if (is_null($comment) === true) {
-            $error = 'Function doc comment is empty';
-            $phpcsFile->addError($error, $commentStart);
+            //$error = 'Function doc comment is empty';
+            //$phpcsFile->addError($error, $commentStart);
+            $phpcsFile->addEvent('XP_FUNCTION_COMMENT_EMPTY', array(), $commentStart);
             return;
         }
 
@@ -240,9 +246,10 @@ class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
         $newlineCount = 0;
         $newlineSpan  = strspn($short, $phpcsFile->eolChar);
         if ($short !== '' && $newlineSpan > 0) {
-            $line  = ($newlineSpan > 1) ? 'newlines' : 'newline';
-            $error = "Extra $line found before function comment short description";
-            $phpcsFile->addError($error, ($commentStart + 1));
+            //$line  = ($newlineSpan > 1) ? 'newlines' : 'newline';
+            //$error = "Extra $line found before function comment short description";
+            //$phpcsFile->addError($error, ($commentStart + 1));
+            $phpcsFile->addEvent('XP_FUNCTION_COMMENT_NEWLINE_BEFORE_SHORT_DESCRIPTION', array(), ($commentStart + 1));
         }
 
         $newlineCount = (substr_count($short, $phpcsFile->eolChar) + 1);
@@ -253,8 +260,9 @@ class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
             $between        = $comment->getWhiteSpaceBetween();
             $newlineBetween = substr_count($between, $phpcsFile->eolChar);
             if ($newlineBetween !== 2) {
-                $error = 'There must be exactly one blank line between descriptions in function comment';
-                $phpcsFile->addError($error, ($commentStart + $newlineCount + 1));
+                //$error = 'There must be exactly one blank line between descriptions in function comment';
+                //$phpcsFile->addError($error, ($commentStart + $newlineCount + 1));
+                $phpcsFile->addEvent('XP_FUNCTION_COMMENT_EXTRA_NEWLINE_BETWEEN_DESCRIPTION', array(), ($commentStart + $newlineCount + 1));
             }
 
             $newlineCount += $newlineBetween;
@@ -270,7 +278,8 @@ class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
                     $newlineCount += (substr_count($long, $phpcsFile->eolChar) - $newlineSpan + 1);
                 }
 
-                $phpcsFile->addError($error, ($commentStart + $newlineCount));
+                //$phpcsFile->addError($error, ($commentStart + $newlineCount));
+                $phpcsFile->addEvent('XP_FUNCTION_COMMENT_EXTRA_NEWLINE_BEFORE_TAGS', array(), ($commentStart + $newlineCount));
                 $short = rtrim($short, $phpcsFile->eolChar.' ');
             }
         }
@@ -298,8 +307,9 @@ class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
             $errorPos  = ($commentStart + $throw->getLine());
 
             if ($exception === '') {
-                $error = '@throws tag must contain the exception class name';
-                $this->currentFile->addError($error, $errorPos);
+                //$error = '@throws tag must contain the exception class name';
+                //$this->currentFile->addError($error, $errorPos);
+                $this->currentFile->addEvent('XP_FUNCTION_COMMENT_THROWS_MUST_CONTAIN_CLASSNAME', array(), $errorPos);
             }
         }
 
@@ -329,12 +339,14 @@ class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
         if ($isSpecialMethod === false && $methodName !== $className) {
             // Report missing return tag.
             if ($this->commentParser->getReturn() === null) {
-                $error = 'Missing @return tag in function comment';
-                $this->currentFile->addError($error, $commentEnd);
+                //$error = 'Missing @return tag in function comment';
+                //$this->currentFile->addError($error, $commentEnd);
+                $this->currentFile->addEvent('XP_FUNCTION_COMMENT_RETURN_MISSING', array(), $commentEnd);
             } else if (trim($this->commentParser->getReturn()->getRawContent()) === '') {
-                $error    = '@return tag is empty in function comment';
+                //$error    = '@return tag is empty in function comment';
                 $errorPos = ($commentStart + $this->commentParser->getReturn()->getLine());
-                $this->currentFile->addError($error, $errorPos);
+                //$this->currentFile->addError($error, $errorPos);
+                $this->currentFile->addEvent('XP_FUNCTION_COMMENT_RETURN_EMPTY', array(), $errorPos);
             }
         }
 
@@ -438,36 +450,40 @@ class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
                         $error .= '" does not match actual variable name "'.$realName;
                         $error .= '" at position '.$pos;
 
-                        $this->currentFile->addError($error, $errorPos);
+                        //$this->currentFile->addError($error, $errorPos);
+                        $this->currentFile->addEvent('XP_FUNCTION_COMMENT_PARAM_NOMATCH', array('message' => $error), $errorPos);
                     }
                 } else {
                     // We must have an extra parameter comment.
                     $error = 'Superfluous doc comment at position '.$pos;
-                    $this->currentFile->addError($error, $errorPos);
+                    //$this->currentFile->addError($error, $errorPos);
+                    $this->currentFile->addEvent('XP_FUNCTION_COMMENT_PARAM_SUPERFLUOUS', array('message' => $error), $errorPos);
                 }
 
                 if ($param->getVarName() === '') {
                     $error = 'Missing parameter name at position '.$pos;
-                     $this->currentFile->addError($error, $errorPos);
+                     //$this->currentFile->addError($error, $errorPos);
+                     $this->currentFile->addEvent('XP_FUNCTION_COMMENT_PARAM_MISSING_NAME', array('message' => $error), $errorPos);
                 }
                 
                 // var_dump($realParams[($pos - 1)]['pass_by_reference']);
 
                 if ($param->getType() === '') {
                     $error = 'Missing type at position '.$pos;
-                    $this->currentFile->addError($error, $errorPos);
+                    //$this->currentFile->addError($error, $errorPos);
+                    $this->currentFile->addEvent('XP_FUNCTION_COMMENT_PARAM_MISSING_TYPE', array('message' => $error), $errorPos);
                 } else if (
                     ($realParams[($pos - 1)]['pass_by_reference'] === FALSE) &&
                     ('&' === substr($param->getType(), 0, 1))
                 ) {
                     $error = 'Apidoc states parameter is passed by reference but it is not at position '.$pos;
-                    $this->currentFile->addError($error, $errorPos);
+                    //$this->currentFile->addError($error, $errorPos);
                 } else if (
                     ($realParams[($pos - 1)]['pass_by_reference'] === TRUE) && 
                     ('&' !== substr($param->getType(), 0, 1))
                 ) {
                     $error = 'Apidoc states parameter is not passed by reference but it is at position '.$pos;
-                    $this->currentFile->addError($error, $errorPos);
+                    //$this->currentFile->addError($error, $errorPos);
                 }
 
                 /* if ($paramComment === '') {
@@ -481,12 +497,14 @@ class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
 
             if ($spaceBeforeVar !== 1 && $spaceBeforeVar !== 10000 && $spaceBeforeComment !== 10000) {
                 $error = 'Expected 1 space after the longest type';
-                $this->currentFile->addError($error, $longestType);
+                //$this->currentFile->addError($error, $longestType);
+                $this->currentFile->addEvent('XP_FUNCTION_COMMENT_SPACE_AFTER_LONGEST_TYPE', array(), $longestType);
             }
 
             if ($spaceBeforeComment !== 1 && $spaceBeforeComment !== 10000) {
                 $error = 'Expected 1 space after the longest variable name';
-                $this->currentFile->addError($error, $longestVar);
+                //$this->currentFile->addError($error, $longestVar);
+                $this->currentFile->addEvent('XP_FUNCTION_COMMENT_SPACE_AFTER_LONGEST_VARIABLE', array(), $longestType);
             }
 
         }//end if
@@ -507,7 +525,8 @@ class xp_Sniffs_Core_FunctionCommentSniff implements PHP_CodeSniffer_Sniff
             }
 
             $error = 'Doc comment for "'.$neededParam.'" missing';
-            $this->currentFile->addError($error, $errorPos);
+            //$this->currentFile->addError($error, $errorPos);
+            $this->currentFile->addEvent('XP_FUNCTION_COMMENT_PARAM_MISSING', array('message' => $error), $errorPos);
         }
 
     }//end processParams()
