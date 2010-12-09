@@ -1,0 +1,116 @@
+<component-set>
+	<components>
+		<component>
+			<role>
+				org.apache.maven.lifecycle.mapping.LifecycleMapping
+			</role>
+			<role-hint>xp-framework</role-hint>
+			<implementation>
+				org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
+			</implementation>
+			<configuration>
+				<phases>
+					<generate-resources>
+						org.apache.maven.plugins:maven-plugin-plugin:descriptor
+					</generate-resources>
+					<process-resources>
+						org.apache.maven.plugins:maven-resources-plugin:resources
+					</process-resources>
+					<compile>
+       net.xp_framework:maven-hello-plugin:xp-compile
+					</compile>
+					<process-test-resources>
+						org.apache.maven.plugins:maven-resources-plugin:testResources
+					</process-test-resources>
+					<test>
+						net.xp_framework:maven-hello-plugin:xp-unittest
+					</test>
+					<package>
+						org.apache.maven.plugins:maven-jar-plugin:jar ,
+						org.apache.maven.plugins:maven-plugin-plugin:addPluginArtifactMetadata
+					</package>
+					<install>
+						org.apache.maven.plugins:maven-install-plugin:install,
+						org.apache.maven.plugins:maven-plugin-plugin:updateRegistry
+					</install>
+					<deploy>
+						org.apache.maven.plugins:maven-deploy-plugin:deploy
+					</deploy>
+				</phases>
+			</configuration>
+		</component>
+
+		<component>
+			<role>
+				org.apache.maven.artifact.handler.ArtifactHandler
+			</role>
+			<role-hint>xp-framework</role-hint>
+			<implementation>
+				org.apache.maven.artifact.handler.DefaultArtifactHandler
+			</implementation>
+			<configuration>
+				<type>xp-framework</type>
+				<extension>jar</extension>
+				<language>php</language>
+
+				<addedToClasspath>true</addedToClasspath>
+			</configuration>
+		</component>
+
+		<component>
+			<role>
+				org.apache.maven.lifecycle.mapping.LifecycleMapping
+			</role>
+			<role-hint>xp-framework</role-hint>
+			<implementation>
+				org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
+			</implementation>
+			<configuration>
+				<phases>
+					<generate-resources>
+						org.apache.maven.plugins:maven-plugin-plugin:descriptor
+					</generate-resources>
+					<process-resources>
+						org.apache.maven.plugins:maven-resources-plugin:resources
+					</process-resources>
+					<!-- compile>
+						org.phpmaven:maven-php-plugin:php-validate
+					</compile -->
+					<process-test-resources>
+						org.apache.maven.plugins:maven-resources-plugin:testResources
+					</process-test-resources>
+					<test>
+						net.xp_framework:maven-hello-plugin:xp-unittest
+					</test>
+					<package>
+						org.apache.maven.plugins:maven-jar-plugin:jar ,
+						org.apache.maven.plugins:maven-plugin-plugin:addPluginArtifactMetadata
+					</package>
+					<install>
+						org.apache.maven.plugins:maven-install-plugin:install,
+						org.apache.maven.plugins:maven-plugin-plugin:updateRegistry
+					</install>
+					<deploy>
+						org.apache.maven.plugins:maven-deploy-plugin:deploy
+					</deploy>
+				</phases>
+			</configuration>
+		</component>
+
+		<component>
+			<role>
+				org.apache.maven.artifact.handler.ArtifactHandler
+			</role>
+			<role-hint>xp-framework</role-hint>
+			<implementation>
+				org.apache.maven.artifact.handler.DefaultArtifactHandler
+			</implementation>
+			<configuration>
+				<type>php</type>
+				<extension>jar</extension>
+				<language>php</language>
+				<addedToClasspath>true</addedToClasspath>
+			</configuration>
+		</component>
+	</components>
+</component-set>
