@@ -1,11 +1,13 @@
 package net.xp_framework;
 
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.util.DirectoryWalkListener;
 import org.codehaus.plexus.util.DirectoryWalker;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import org.apache.maven.project.MavenProject;
 
 import org.codehaus.plexus.util.cli.CommandLineException;
@@ -33,7 +35,7 @@ public class UnittestMojo extends AbstractMojo implements DirectoryWalkListener 
 	private List<String> testPathElements;
 
 	/**
-	 * @parameter expression="/src/test/php"
+	 * @parameter expression="${project.build.testSourceDirectory}"
 	 * @required
 	 */
 	private String testSourceDirectory;
@@ -57,16 +59,12 @@ public class UnittestMojo extends AbstractMojo implements DirectoryWalkListener 
 	private List<String> testCaseFiles= new ArrayList<String>();
 
     public void execute() throws MojoExecutionException {
-  		this.getLog().info("Running XP xar command...");
-
-        // this.getLog().info("Files to test: " + FileSetTransformer.toFileList(this.testPathElements));
-        this.getLog().info("Got the following elements: " + this.testPathElements + "testSource = " + this.testSourceDirectory + "; base = " + this.project.getBasedir());
-
+  		this.getLog().info("Running XP unittest...");
 		this.project.addTestCompileSourceRoot(this.testSourceDirectory);
 
 		// Scan for test cases
 		DirectoryWalker walker= new DirectoryWalker();
-		walker.setBaseDir(new File(this.project.getBasedir() + this.testSourceDirectory));
+		walker.setBaseDir(new File(this.testSourceDirectory));
 		walker.addDirectoryWalkListener(this);
 		walker.addSCMExcludes();
 
@@ -78,6 +76,22 @@ public class UnittestMojo extends AbstractMojo implements DirectoryWalkListener 
 
 		// After having found test cases, invoke them!
 		Commandline cli= new Commandline("unittest");
+		try {
+			// Build classpaths
+			Iterator<String> i= this.project.getTestClasspathElements().iterator();
+			StringBuilder cp= new StringBuilder(1024);
+			while (i.hasNext()) {
+				cp.append(i.next());
+				if (i.hasNext()) {
+					cp.append(':');
+				}
+			}
+			
+			cli.addArguments(new String[] { "-cp", cp.toString() });
+		} catch (DependencyResolutionRequiredException ex) {
+			this.getLog().error(ex);
+		}
+
 		String[] s= new String[this.testCaseFiles.size()];
 		s= this.testCaseFiles.toArray(s);
 		cli.addArguments(s);
