@@ -15,6 +15,8 @@ import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 
+import org.apache.commons.lang.SystemUtils;
+
 import java.util.List;
 
 /**
@@ -83,11 +85,15 @@ public class UnittestMojo extends AbstractMojo implements DirectoryWalkListener 
 			while (i.hasNext()) {
 				cp.append(i.next());
 				if (i.hasNext()) {
+                                    if (SystemUtils.IS_OS_WINDOWS) {
+                                        cp.append(';');
+                                    } else {
 					cp.append(':');
+                                    }
 				}
 			}
 			
-			cli.addArguments(new String[] { "-cp", cp.toString() });
+			cli.addArguments(new String[] { "-cp", '"' + cp.toString() + '"' });
 		} catch (DependencyResolutionRequiredException ex) {
 			this.getLog().error(ex);
 		}
