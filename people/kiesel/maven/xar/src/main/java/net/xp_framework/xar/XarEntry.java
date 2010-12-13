@@ -9,7 +9,7 @@ package net.xp_framework.xar;
  *
  * @author kiesel
  */
-class XarEntry {
+public class XarEntry {
     private String id = null;
     private int offset= -1;
     private int size= -1;

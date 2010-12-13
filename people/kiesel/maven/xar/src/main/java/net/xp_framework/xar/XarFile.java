@@ -11,10 +11,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
+import java.io.RandomAccessFile;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,23 +26,23 @@ public class XarFile {
     
     protected String name = null;
     protected Map<String, XarEntry> entries= null;
-    protected File file= null;
+    protected long bodyOffset= 0;
+    protected RandomAccessFile file= null;
 
     public XarFile(File file) throws FileNotFoundException, IOException {
-        this.file= file;
+        this.file= new RandomAccessFile(file, "r");
         this.readIndex();
     }
 
     public XarFile(String fileName) throws IOException {
-        this.file= new File(fileName);
+        this.file= new RandomAccessFile(new File(fileName), "r");
         this.readIndex();
     }
 
     private void readIndex() throws FileNotFoundException, IOException {
-        FileInputStream in= new FileInputStream(this.file);
 
         byte[] header= new byte[ARCHIVE_HEADER_SIZE];
-        in.read(header);
+        this.file.read(header);
 
         String magic= new String(header, 0, 2);
         if (magic.equals("CCA")) throw new IOException("Given file is not a .xar archive - Illegal magic value: " + magic);
@@ -54,11 +53,11 @@ public class XarFile {
         int indexSize= this.intFromBytes(header, 4);
 
         System.out.println("Index size= " + String.valueOf(indexSize));
-        this.entries= new Hashtable<String,XarEntry>(indexSize);
+        this.entries= new HashMap<String,XarEntry>(indexSize);
 
         for (int i= 0; i < indexSize; i++) {
             byte[] bytes= new byte[ARCHIVE_INDEX_ENTRY_SIZE];
-            in.read(bytes);
+            this.file.read(bytes);
 
             String id= new String(bytes, 0, 240);
             int size= this.intFromBytes(bytes, 240);
@@ -68,16 +67,23 @@ public class XarFile {
             System.out.println("     Size: " + size + " / offset: " + offset);
             this.entries.put(id, new XarEntry(id, offset, size));
         }
+
+        this.bodyOffset= this.file.getFilePointer();
     }
 
     public XarEntry getEntry(String id) {
         return this.entries.get(id);
     }
 
+    public Collection<XarEntry> entries() {
+        return this.entries.values();
+    }
+
     public InputStream getInputStream(XarEntry e) throws IOException {
-        FileInputStream is= new FileInputStream(this.file);
         byte[] data= new byte[e.getSize()];
-        is.read(data, e.getOffset(), e.getSize());
+
+        this.file.seek(e.getOffset() + this.bodyOffset);
+        this.file.read(data);
 
         return new ByteArrayInputStream(data);
     }
