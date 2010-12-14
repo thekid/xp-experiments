@@ -5,6 +5,8 @@
 
 package net.xp_framework.xar;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  *
  * @author kiesel
@@ -22,8 +24,16 @@ public class XarEntry {
     }
 
     public XarEntry(String id, byte[] data) {
+        try {
+            if (id.getBytes("iso-8859-1").length > 240) {
+                throw new IllegalArgumentException("Name of id must not exceed 240 bytes");
+            }
+        } catch (UnsupportedEncodingException ex) {
+            throw new IllegalArgumentException("Name must be encodable in iso-8859-1");
+        }
         this.id= id;
         this.data= data;
+        this.size= data.length;
     }
 
     public String getId() {
@@ -48,5 +58,9 @@ public class XarEntry {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public byte[] getBytes() {
+        return this.data;
     }
 }
