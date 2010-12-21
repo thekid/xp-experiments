@@ -23,6 +23,7 @@
    * @purpose  Database connection
    */
   class MySqlxConnection extends DBConnection {
+    protected $affected= -1;
 
     /**
      * Constructor
@@ -123,7 +124,7 @@
      * @return  int
      */
     protected function affectedRows() {
-      return -1;    // TBI
+      return $this->affected;
     }    
     
     /**
@@ -163,10 +164,16 @@
         throw new SQLStatementFailedException($e->getMessage());
       }
       
+      if (!is_array($result)) {
+        $this->affected= $result;
+        return TRUE;
+      }
+
+      $this->affected= -1;
       if (!$buffered || $this->flags & DB_UNBUFFERED) {
-        return is_array($result) ? new MysqlxResultSet($this->handle, $result, $this->tz) : $result;
+        return new MysqlxResultSet($this->handle, $result, $this->tz);
       } else {
-        return is_array($result) ? new MysqlxBufferedResultSet($this->handle, $result, $this->tz) : $result;
+        return new MysqlxBufferedResultSet($this->handle, $result, $this->tz);
       }
     }
 
