@@ -6,6 +6,7 @@
 
   uses(
     'util.cmd.Command',
+    'rdbms.DriverManager',
     'rdbms.mysqlx.MySqlxConnection',
     'util.profiling.Timer'
   );
@@ -61,7 +62,7 @@
               $this->out->writeLine(++$i, ': ', $r);
             }
           } else {
-            $this->out->writeLine($q);
+            $this->out->writeLine(typeof($q), ': ', $q);
           }
         } catch (Throwable $e) {
           $this->err->writeLine($e);
