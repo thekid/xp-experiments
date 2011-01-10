@@ -1,0 +1,19 @@
+XP to JS compiler / JS mini-XP-runtime
+======================================
+Works only on Windows at the moment!
+
+Test
+----
+<pre>
+  $ cscript /nologo main.js Hello World
+  Hello World
+</pre>
+
+<pre>
+  $ cscript /nologo main.js Hello 
+  *** Uncaught exception IllegalArgumentException(Argument required)
+    at function IllegalArgumentException(message)
+    at function(args)
+    at function(obj, args)
+    at <main>
+</pre>
