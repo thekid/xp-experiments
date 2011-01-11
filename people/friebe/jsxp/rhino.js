@@ -3,10 +3,6 @@ var $xp= this;
 
 var argv= arguments; 
 
-var include = function(filename) {
-  return readFile(filename);		// XXX: Use load(filename)!  
-}
-
 $xp.out= {
   write : function(data) {
     java.lang.System.out.print(data);    
@@ -52,7 +48,7 @@ function uses() {
     name = arguments[i].substring(arguments[i].lastIndexOf('.')+ 1, arguments[i].length);
     if (typeof($xp[name]) === 'function') continue;
 
-    eval(include(arguments[i].replace(/\./g, '/') + '.js'));
+    load(arguments[i].replace(/\./g, '/') + '.js');
     $xp[name]= eval(name);
   }
 }
