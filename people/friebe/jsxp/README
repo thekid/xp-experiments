@@ -5,12 +5,12 @@ Works only on Windows at the moment!
 Test
 ----
 <pre>
-  $ cscript /nologo main.js Hello World
+  $ cscript /nologo cscript.js Hello World
   Hello World
 </pre>
 
 <pre>
-  $ cscript /nologo main.js Hello 
+  $ cscript /nologo cscript.js Hello 
   *** Uncaught exception IllegalArgumentException(Argument required)
     at function IllegalArgumentException(message)
     at function(args)
