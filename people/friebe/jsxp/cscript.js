@@ -1,15 +1,28 @@
 // {{{ Platform 
-var $xp= this;
-var fso= new ActiveXObject('Scripting.FileSystemObject');
+var $xp = this;
+var fso = new ActiveXObject('Scripting.FileSystemObject');
 
-var argv= new Array();
-for (var i= 0; i < WScript.Arguments.Count(); i++) {
+var argv = new Array();
+for (var i = 0; i < WScript.Arguments.Count(); i++) {
   argv.push(WScript.Arguments.Item(i));
 }
 
 var include = function(filename) {
   return fso.OpenTextFile(filename, 1).ReadAll();
 }
+
+$xp.out= {
+  write : function(data) {
+    WScript.StdOut.Write(data);
+  },
+  writeLine : function(data) {
+    WScript.StdOut.Write(data);
+    WScript.StdOut.WriteBlankLines(1);
+  },
+  writeLines : function(n) {
+    WScript.StdOut.WriteBlankLines(n);
+  }
+};
 // }}}
 
 $xp.stringOf= function(object) {
