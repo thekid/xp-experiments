@@ -25,12 +25,20 @@ XPClass.prototype.getName = function() {
 }
 
 XPClass.prototype.newInstance = function() {
-  return new ($xp[this.reflect])();
+  function Instance() { }
+  Instance.prototype = $xp[this.reflect].prototype;
+
+  var instance = new Instance();
+  instance.constructor = $xp[this.reflect];
+  $xp[this.reflect].apply(instance, arguments);
+  return instance;
 }
 
 XPClass.prototype.getMethod = function(name) {
   if (typeof($xp[this.reflect][name]) !== 'function') {
-    throw new IllegalArgumentException('No such method ' + this.name + '::' + name);
+    if (typeof($xp[this.reflect].prototype[name]) !== 'function') {
+      throw new IllegalArgumentException('No such method ' + this.name + '::' + name);
+    }
   }
   return new Method(this, name);
 }
