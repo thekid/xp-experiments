@@ -65,6 +65,9 @@ Object.prototype.getClass = function() {
 Object.prototype.getClassName = function() {
   return this.__class;
 }
+Object.prototype.equals = function(cmp) {
+  return this == cmp;
+}
 Error.prototype.toString = function() {
   return 'Error<' + this.name + ': ' + this.message + '>';
 }

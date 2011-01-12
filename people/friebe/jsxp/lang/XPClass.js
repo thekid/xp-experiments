@@ -71,4 +71,8 @@ XPClass.prototype.getFields = function() {
   gather(this, $xp[this.reflect].prototype, true, 0);
   return fields;
 }
+
+Object.prototype.equals = function(cmp) {
+  return this.name === cmp.name;
+}
 // }}}
