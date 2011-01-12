@@ -34,4 +34,14 @@ TestCase.prototype.assertEquals = function(a, b) {
     throw new AssertionFailedError('Expected ' + a + ' but have ' + b);
   }
 }
+
+TestCase.prototype.assertInstanceOf = function(type, value) {
+  var actual = typeof(value);
+  if (actual === 'object') {
+    actual = value.getClassName();
+  }
+  if (actual !== type) {
+    throw new AssertionFailedError('Expected ' + type + ' but have ' + actual);
+  }
+}
 // }}}

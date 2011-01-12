@@ -4,22 +4,32 @@ uses('unittest.TestCase');
 function XPClassTest(name) {
   {
     TestCase.call(this, name);
-    this.__class = 'XPClassTest';
+    this.__class = 'tests.XPClassTest';
   }
 }
 
 XPClassTest.prototype= new TestCase();
 
 XPClassTest.prototype.testGetName = function() {
-  this.assertEquals('XPClassTest', this.getClass().getName());
+  this.assertEquals('tests.XPClassTest', this.getClass().getName());
 }
 
 XPClassTest.prototype.testForName = function() {
-  this.assertEquals(this.getClass(), XPClass.forName('XPClassTest'));
+  this.assertEquals(this.getClass(), XPClass.forName('tests.XPClassTest'));
 }
 
 XPClassTest.prototype.testGetFields = function() {
-  fields= this.getClass().getFields();
-  this.assertEquals('name', fields[2].getName());
+  var fields= this.getClass().getFields();
+  var names= '';
+  for (var i= 0; i < fields.length; i++) {
+    names += fields[i].getName()+ ',';
+  }
+  var o= names.indexOf('name');
+  this.assertEquals('name', names.substring(o, names.indexOf(',', o)));
+}
+
+XPClassTest.prototype.testHasNameField = function() {
+  var field= this.getClass().getField('name');
+  this.assertInstanceOf('lang.reflect.Field', field);
 }
 // }}}

@@ -1,7 +1,7 @@
 // {{{ Method
 function Method(clazz, name, modifiers) {
   {
-    this.__class = 'Method';
+    this.__class = 'lang.reflect.Method';
     this.clazz = clazz;
     this.name = name;
     this.modifiers = modifiers;
@@ -17,7 +17,7 @@ Method.prototype.getName = function() {
 }
 
 Method.prototype.toString = function() {
-  return 'lang.reflect.Method<' + (this.modifiers & 1 ? 'static ' : '') + this.clazz.name + '::' + this.name + '>';
+  return this.getClassName() + '<' + (this.modifiers & 1 ? 'static ' : '') + this.clazz.name + '::' + this.name + '>';
 }
 
 Method.prototype.invoke = function(obj, args) {
