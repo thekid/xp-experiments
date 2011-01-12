@@ -5,6 +5,7 @@ function XPClass(name) {
   {
     this.__class = 'lang.XPClass';
     this.name = name;
+    this.reflect = name.substring(name.lastIndexOf('.')+ 1, name.length);
   }
 }
 
@@ -24,11 +25,11 @@ XPClass.prototype.getName = function() {
 }
 
 XPClass.prototype.newInstance = function() {
-  return new ($xp[this.name])();
+  return new ($xp[this.reflect])();
 }
 
 XPClass.prototype.getMethod = function(name) {
-  if (typeof($xp[this.name][name]) !== 'function') {
+  if (typeof($xp[this.reflect][name]) !== 'function') {
     throw new IllegalArgumentException('No such method ' + this.name + '::' + name);
   }
   return new Method(this, name);
@@ -44,13 +45,13 @@ XPClass.prototype.getMethods = function() {
     }
   };
 
-  gather(this, $xp[this.name], false, Modifiers.STATIC);
-  gather(this, $xp[this.name].prototype, true, 0);
+  gather(this, $xp[this.reflect], false, Modifiers.STATIC);
+  gather(this, $xp[this.reflect].prototype, true, 0);
   return methods;
 }
 
 XPClass.prototype.getField = function(name) {
-  if (typeof($xp[this.name][name]) === 'function') {
+  if (typeof($xp[this.reflect][name]) === 'function') {
     throw new IllegalArgumentException('No such field ' + this.name + '::' + name);
   }
   return new Field(this, name);
@@ -66,8 +67,8 @@ XPClass.prototype.getFields = function() {
     }
   };
 
-  gather(this, $xp[this.name], false, Modifiers.STATIC);
-  gather(this, $xp[this.name].prototype, true, 0);
+  gather(this, $xp[this.reflect], false, Modifiers.STATIC);
+  gather(this, $xp[this.reflect].prototype, true, 0);
   return fields;
 }
 // }}}
