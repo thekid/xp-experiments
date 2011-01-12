@@ -3,7 +3,7 @@ function Throwable(message) {
   {
     this.__class = 'Throwable';
     this.message = message;
-    this.fillInStacktrace(arguments.callee.caller);
+    // this.fillInStacktrace(arguments.callee.caller);
   }  
 }
 
