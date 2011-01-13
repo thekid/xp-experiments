@@ -1,12 +1,12 @@
 uses('lang.Throwable');
 
 // {{{ AssertionFailedError
-function AssertionFailedError(message) {
+unittest.AssertionFailedError = function(message) {
   {
-    Throwable.call(this, message);
-    this.__class = 'AssertionFailedError';
+    lang.Throwable.call(this, message);
+    this.__class = 'unittest.AssertionFailedError';
   }
 }
 
-AssertionFailedError.prototype= new Throwable();
+unittest.AssertionFailedError.prototype= new lang.Throwable();
 // }}}

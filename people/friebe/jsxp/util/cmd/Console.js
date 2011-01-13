@@ -1,23 +1,23 @@
 // {{{ Console
-function Console() {
+util.cmd.Console = function() {
   {
-    this.__class = 'Console';
+    this.__class = 'util.cmd.Console';
   }
 }
 
-Console.write = function() {
+util.cmd.Console.write = function() {
   for (var i= 0; i < arguments.length; i++) {
     $xp.out.write(arguments[i]);
   }
 }
 
-Console.writeLine = function() {
+util.cmd.Console.writeLine = function() {
   for (var i= 0; i < arguments.length; i++) {
     $xp.out.write(arguments[i]);
   }
   $xp.out.writeLines(1);
 }
 
-Console.prototype= new Object();
+util.cmd.Console.prototype= new Object();
 // }}}
 

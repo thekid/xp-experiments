@@ -1,12 +1,12 @@
 uses('lang.Throwable');
 
 // {{{ IllegalArgumentException
-function IllegalArgumentException(message) {
+lang.IllegalArgumentException = function(message) {
   {
-    Throwable.call(this, message);
-    this.__class = 'IllegalArgumentException';
+    lang.Throwable.call(this, message);
+    this.__class = 'lang.IllegalArgumentException';
   }
 }
 
-IllegalArgumentException.prototype= new Throwable();
+lang.IllegalArgumentException.prototype= new lang.Throwable();
 // }}}

@@ -49,18 +49,23 @@ $xp.stringOf= function(object) {
 }
 
 function uses() {
-  var name;
   for (var i= 0; i < arguments.length; i++) {
-    name = arguments[i].substring(arguments[i].lastIndexOf('.')+ 1, arguments[i].length);
-    if (typeof($xp[name]) === 'function') continue;
+    if (typeof($xp[arguments[i]]) === 'function') continue;
 
+    var names = arguments[i].split('.');
+    var it = $xp;
+    for (var n= 0; n < names.length - 1; n++) {
+      if (typeof(it[names[n]]) === 'undefined') it[names[n]]= {};
+      it = it[names[n]];
+    }
+    
     eval(include(arguments[i].replace(/\./g, '/') + '.js'));
-    $xp[name]= eval(name);
+    $xp[arguments[i]]= it[names[n]]= eval(arguments[i]);
   }
 }
 
 Object.prototype.getClass = function() {
-  return new XPClass(this.__class);
+  return new lang.XPClass(this.__class);
 }
 Object.prototype.getClassName = function() {
   return this.__class;
@@ -79,7 +84,7 @@ uses('lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
 
 try {
   clazz = argv.shift();
-  XPClass.forName(clazz).getMethod('main').invoke(null, [argv]);
+  lang.XPClass.forName(clazz).getMethod('main').invoke(null, [argv]);
 } catch (e) {
-  Console.writeLine('*** Uncaught exception ', e.toString());
+  util.cmd.Console.writeLine('*** Uncaught exception ', e.toString());
 }

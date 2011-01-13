@@ -1,5 +1,5 @@
 // {{{ Hello
-function Hello() {
+Hello = function() {
   {
     this.__class = 'Hello';
   }
@@ -9,8 +9,8 @@ Hello.prototype = new Object();
 
 Hello.main = function(args) {
   if (args.length < 1) {
-    throw new IllegalArgumentException('Argument required');
+    throw new lang.IllegalArgumentException('Argument required');
   }
-  Console.writeLine('Hello ', args[0]);
+  util.cmd.Console.writeLine('Hello ', args[0]);
 }
 // }}}

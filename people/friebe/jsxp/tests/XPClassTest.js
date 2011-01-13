@@ -1,24 +1,24 @@
 uses('unittest.TestCase');
 
 // {{{ XPClassTest
-function XPClassTest(name) {
+tests.XPClassTest = function(name) {
   {
-    TestCase.call(this, name);
+    unittest.TestCase.call(this, name);
     this.__class = 'tests.XPClassTest';
   }
 }
 
-XPClassTest.prototype= new TestCase();
+tests.XPClassTest.prototype= new unittest.TestCase();
 
-XPClassTest.prototype.testGetName = function() {
+tests.XPClassTest.prototype.testGetName = function() {
   this.assertEquals('tests.XPClassTest', this.getClass().getName());
 }
 
-XPClassTest.prototype.testForName = function() {
-  this.assertEquals(this.getClass(), XPClass.forName('tests.XPClassTest'));
+tests.XPClassTest.prototype.testForName = function() {
+  this.assertEquals(this.getClass(), lang.XPClass.forName('tests.XPClassTest'));
 }
 
-XPClassTest.prototype.testGetFields = function() {
+tests.XPClassTest.prototype.testGetFields = function() {
   var fields= this.getClass().getFields();
   var names= '';
   for (var i= 0; i < fields.length; i++) {
@@ -28,12 +28,12 @@ XPClassTest.prototype.testGetFields = function() {
   this.assertEquals('name', names.substring(o, names.indexOf(',', o)));
 }
 
-XPClassTest.prototype.testHasNameField = function() {
+tests.XPClassTest.prototype.testHasNameField = function() {
   var field= this.getClass().getField('name');
   this.assertInstanceOf('lang.reflect.Field', field);
 }
 
-XPClassTest.prototype.testGetMethods = function() {
+tests.XPClassTest.prototype.testGetMethods = function() {
   var methods= this.getClass().getMethods();
   var names= '';
   for (var i= 0; i < methods.length; i++) {
@@ -43,7 +43,7 @@ XPClassTest.prototype.testGetMethods = function() {
   this.assertEquals(this.name, names.substring(o, names.indexOf(',', o)));
 }
 
-XPClassTest.prototype.testHasThisMethod = function() {
+tests.XPClassTest.prototype.testHasThisMethod = function() {
   var method= this.getClass().getMethod(this.name);
   this.assertInstanceOf('lang.reflect.Method', method);
 }

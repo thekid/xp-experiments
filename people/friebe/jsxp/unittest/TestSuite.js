@@ -1,25 +1,25 @@
 uses('unittest.AssertionFailedError', 'unittest.TestFailure', 'unittest.TestSuccess');
 
 // {{{ TestSuite
-function TestSuite() {
+unittest.TestSuite = function() {
   {
-    this.__class = 'TestSuite';
+    this.__class = 'unittest.TestSuite';
   }
 }
 
-TestSuite.prototype= new Object();
+unittest.TestSuite.prototype= new Object();
 
-TestSuite.prototype.tests = new Array();
-TestSuite.prototype.outcome = new Array();
+unittest.TestSuite.prototype.tests = new Array();
+unittest.TestSuite.prototype.outcome = new Array();
 
-TestSuite.prototype.addTestClass = function(clazz) {
+unittest.TestSuite.prototype.addTestClass = function(clazz) {
   this.tests.push(clazz);
 }
 
-TestSuite.prototype.run = function() {
+unittest.TestSuite.prototype.run = function() {
 
   // Run tests
-  Console.write('[');
+  util.cmd.Console.write('[');
   for (var i= 0; i < this.tests.length; i++) {
     var methods = this.tests[i].getMethods();
 
@@ -30,28 +30,28 @@ TestSuite.prototype.run = function() {
       instance.setUp();
       try {
         methods[m].invoke(instance, []);
-        Console.write('.');
-        this.outcome.push(new TestSuccess(instance));
+        util.cmd.Console.write('.');
+        this.outcome.push(new unittest.TestSuccess(instance));
       } catch (e) {
-        Console.write('E');
-        this.outcome.push(new TestFailure(instance, e));
+        util.cmd.Console.write('E');
+        this.outcome.push(new unittest.TestFailure(instance, e));
       }
       instance.tearDown();
     }
   }
-  Console.writeLine(']');
-  Console.writeLine();
+  util.cmd.Console.writeLine(']');
+  util.cmd.Console.writeLine();
   
   // Display all failures
   var failed= 0;
   var total= 0;
   for (var i= 0; i < this.outcome.length; i++) {
     total++;
-    if (!(this.outcome[i] instanceof TestFailure)) continue;
+    if (!(this.outcome[i] instanceof unittest.TestFailure)) continue;
     failed++;
-    Console.writeLine('F ', this.outcome[i].toString());
+    util.cmd.Console.writeLine('F ', this.outcome[i].toString());
   }
-  Console.writeLine(
+  util.cmd.Console.writeLine(
     failed ? 'FAIL: ' : 'OK: ', 
     total.toString(), ' run, ', 
     (total - failed).toString(), ' succeeded, ', 

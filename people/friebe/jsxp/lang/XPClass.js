@@ -1,86 +1,86 @@
 uses('lang.reflect.Field', 'lang.reflect.Method');
 
 // {{{ XPClass
-function XPClass(name) {
+lang.XPClass = function(name) {
   {
     this.__class = 'lang.XPClass';
     this.name = name;
-    this.reflect = name.substring(name.lastIndexOf('.')+ 1, name.length);
+    this.reflect = $xp[name];
   }
 }
 
-XPClass.forName = function(name) {
+lang.XPClass.forName = function(name) {
   uses(name);
-  return new XPClass(name);
+  return new lang.XPClass(name);
 }
 
-XPClass.prototype= new Object();
+lang.XPClass.prototype= new Object();
 
-XPClass.prototype.toString = function() {
+lang.XPClass.prototype.toString = function() {
   return this.getClassName() + '<' + this.name + '>';
 }
 
-XPClass.prototype.getName = function() {
+lang.XPClass.prototype.getName = function() {
   return this.name;
 }
 
-XPClass.prototype.newInstance = function() {
+lang.XPClass.prototype.newInstance = function() {
   function Instance() { }
-  Instance.prototype = $xp[this.reflect].prototype;
+  Instance.prototype = this.reflect.prototype;
 
   var instance = new Instance();
-  instance.constructor = $xp[this.reflect];
-  $xp[this.reflect].apply(instance, arguments);
+  instance.constructor = this.reflect;
+  this.reflect.apply(instance, arguments);
   return instance;
 }
 
-XPClass.prototype.getMethod = function(name) {
-  if (typeof($xp[this.reflect][name]) !== 'function') {
-    if (typeof($xp[this.reflect].prototype[name]) !== 'function') {
-      throw new IllegalArgumentException('No such method ' + this.name + '::' + name);
+lang.XPClass.prototype.getMethod = function(name) {
+  if (typeof(this.reflect[name]) !== 'function') {
+    if (typeof(this.reflect.prototype[name]) !== 'function') {
+      throw new lang.IllegalArgumentException('No such method ' + this.name + '::' + name);
     }
   }
-  return new Method(this, name);
+  return new lang.reflect.Method(this, name);
 }
 
-XPClass.prototype.getMethods = function() {
+lang.XPClass.prototype.getMethods = function() {
   var methods = new Array();
   var gather = function(self, object, parent, modifiers) {
     for (var member in object) {
       if ((parent || object.hasOwnProperty(member)) && typeof(object[member]) === 'function') {
-        methods.push(new Method(self, member, modifiers));
+        methods.push(new lang.reflect.Method(self, member, modifiers));
       }
     }
   };
 
-  gather(this, $xp[this.reflect], false, Modifiers.STATIC);
-  gather(this, $xp[this.reflect].prototype, true, 0);
+  gather(this, this.reflect, false, Modifiers.STATIC);
+  gather(this, this.reflect.prototype, true, 0);
   return methods;
 }
 
-XPClass.prototype.getField = function(name) {
-  if (typeof($xp[this.reflect][name]) === 'function') {
-    throw new IllegalArgumentException('No such field ' + this.name + '::' + name);
+lang.XPClass.prototype.getField = function(name) {
+  if (typeof(this.reflect[name]) === 'function') {
+    throw new lang.IllegalArgumentException('No such field ' + this.name + '::' + name);
   }
-  return new Field(this, name);
+  return new lang.reflect.Field(this, name);
 }
 
-XPClass.prototype.getFields = function() {
+lang.XPClass.prototype.getFields = function() {
   var fields = new Array();
   var gather = function(self, object, parent, modifiers) {
     for (var member in object) {
       if ((parent || object.hasOwnProperty(member)) && typeof(object[member]) !== 'function') {
-        fields.push(new Field(self, member, modifiers));
+        fields.push(new lang.reflect.Field(self, member, modifiers));
       }
     }
   };
 
-  gather(this, $xp[this.reflect], false, Modifiers.STATIC);
-  gather(this, $xp[this.reflect].prototype, true, 0);
+  gather(this, this.reflect, false, Modifiers.STATIC);
+  gather(this, this.reflect.prototype, true, 0);
   return fields;
 }
 
-Object.prototype.equals = function(cmp) {
+lang.XPClass.prototype.equals = function(cmp) {
   return this.name === cmp.name;
 }
 // }}}

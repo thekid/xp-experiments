@@ -1,7 +1,7 @@
 uses('unittest.TestSuite');
 
 // {{{ Unittest
-function Unittest() {
+Unittest = function() {
   {
     this.__class = 'Unittest';
   }
@@ -10,9 +10,9 @@ function Unittest() {
 Unittest.prototype = new Object();
 
 Unittest.main = function(args) {
-  var suite = new TestSuite();
+  var suite = new unittest.TestSuite();
   for (var i= 0; i < args.length; i++) {
-    suite.addTestClass(XPClass.forName(args[i]));
+    suite.addTestClass(lang.XPClass.forName(args[i]));
   }
   suite.run();
 }

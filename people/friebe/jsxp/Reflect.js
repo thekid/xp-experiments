@@ -1,19 +1,19 @@
 // {{{ Reflect
-function Reflect() {
+Reflect = function() {
   {
     this.__class = 'Reflect';
   }
 }
 
 Reflect.main = function(args) {
-  clazz= XPClass.forName(args[0]);
+  clazz= lang.XPClass.forName(args[0]);
 
-  Console.writeLine(clazz);
-  Console.writeLine('Methods: ', clazz.getMethods());
-  Console.writeLine('Fields:  ', clazz.getFields());
+  util.cmd.Console.writeLine(clazz);
+  util.cmd.Console.writeLine('Methods: ', clazz.getMethods());
+  util.cmd.Console.writeLine('Fields:  ', clazz.getFields());
 
   instance= clazz.newInstance();
-  Console.writeLine(instance);
-  Console.writeLine(instance.getClass());
+  util.cmd.Console.writeLine(instance);
+  util.cmd.Console.writeLine(instance.getClass());
 }
 // }}}

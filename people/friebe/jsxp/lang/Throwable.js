@@ -1,18 +1,18 @@
 // {{{ Throwable
-function Throwable(message) {
+lang.Throwable = function(message) {
   {
-    this.__class = 'Throwable';
+    this.__class = 'lang.Throwable';
     this.message = message;
     // this.fillInStacktrace(arguments.callee.caller);
   }  
 }
 
-Throwable.prototype= new Error();
+lang.Throwable.prototype= new Error();
 
-Throwable.prototype.message = '';
-Throwable.prototype.stacktrace = new Array();
+lang.Throwable.prototype.message = '';
+lang.Throwable.prototype.stacktrace = new Array();
 
-Throwable.prototype.fillInStacktrace = function (f) {
+lang.Throwable.prototype.fillInStacktrace = function (f) {
   var representation;
   while (f) {
     representation = f.toString();
@@ -24,7 +24,7 @@ Throwable.prototype.fillInStacktrace = function (f) {
   }
 }
 
-Throwable.prototype.toString = function() {
+lang.Throwable.prototype.toString = function() {
   var r = this.__class + '(' + this.message + ")\n";
   for (var i= 0; i < this.stacktrace.length; i++) {
     r += '  at ' + this.stacktrace[i] + "\n";

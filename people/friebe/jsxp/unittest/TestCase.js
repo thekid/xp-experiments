@@ -1,47 +1,47 @@
 uses('unittest.AssertionFailedError');
 
 // {{{ TestCase
-function TestCase(name) {
+unittest.TestCase = function(name) {
   {
-    this.__class = 'TestCase';
+    this.__class = 'unittest.TestCase';
     this.name = name;
   }
 }
 
-TestCase.prototype= new Object();
+unittest.TestCase.prototype= new Object();
 
-TestCase.prototype.name = '';
+unittest.TestCase.prototype.name = '';
 
-TestCase.prototype.getName = function() {
+unittest.TestCase.prototype.getName = function() {
   return this.name;
 }
 
-TestCase.prototype.setUp = function() {
+unittest.TestCase.prototype.setUp = function() {
   // Empty
 }
 
-TestCase.prototype.tearDown = function() {
+unittest.TestCase.prototype.tearDown = function() {
   // Empty
 }
 
-TestCase.prototype.assertEquals = function(a, b) {
+unittest.TestCase.prototype.assertEquals = function(a, b) {
   if (typeof(a) === 'object') {
     r= a.equals(b);
   } else {
     r= a === b;
   }
   if (!r) {
-    throw new AssertionFailedError('Expected ' + a + ' but have ' + b);
+    throw new unittest.AssertionFailedError('Expected ' + a + ' but have ' + b);
   }
 }
 
-TestCase.prototype.assertInstanceOf = function(type, value) {
+unittest.TestCase.prototype.assertInstanceOf = function(type, value) {
   var actual = typeof(value);
   if (actual === 'object') {
     actual = value.getClassName();
   }
   if (actual !== type) {
-    throw new AssertionFailedError('Expected ' + type + ' but have ' + actual);
+    throw new unittest.AssertionFailedError('Expected ' + type + ' but have ' + actual);
   }
 }
 // }}}

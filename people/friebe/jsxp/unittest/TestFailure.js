@@ -1,18 +1,18 @@
 // {{{ TestFailure
-function TestFailure(test, throwable) {
+unittest.TestFailure = function(test, throwable) {
   {
-    this.__class = 'TestFailure';
+    this.__class = 'unittest.TestFailure';
     this.test = test;
     this.throwable = throwable;
   }
 }
 
-TestFailure.prototype= new Object();
+unittest.TestFailure.prototype= new Object();
 
-TestFailure.prototype.test = null;
-TestFailure.prototype.throwable = null;
+unittest.TestFailure.prototype.test = null;
+unittest.TestFailure.prototype.throwable = null;
 
-TestFailure.prototype.toString = function() {
+unittest.TestFailure.prototype.toString = function() {
   return this.getClassName() + 
     '(test= ' + this.test.getClassName() + '::' + this.test.getName() + ") {\n  " + 
     this.throwable.toString() +

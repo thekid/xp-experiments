@@ -1,5 +1,5 @@
 // {{{ Field
-function Field(clazz, name, modifiers) {
+lang.reflect.Field = function(clazz, name, modifiers) {
   {
     this.__class = 'lang.reflect.Field';
     this.clazz = clazz;
@@ -8,13 +8,13 @@ function Field(clazz, name, modifiers) {
   }
 }
 
-Field.prototype= new Object();
+lang.reflect.Field.prototype= new Object();
 
-Field.prototype.getName = function() {
+lang.reflect.Field.prototype.getName = function() {
   return this.name;
 }
 
-Field.prototype.toString = function() {
+lang.reflect.Field.prototype.toString = function() {
   return this.getClassName() + '<' + (this.modifiers & 1 ? 'static ' : '') + this.clazz.name + '::' + this.name + '>';
 }
 // }}}

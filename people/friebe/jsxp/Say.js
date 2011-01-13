@@ -1,5 +1,5 @@
 // {{{ Say
-function Say() {
+Say = function() {
   {
     this.__class = 'Say';
   }
@@ -14,6 +14,6 @@ Say.prototype= new Object();
 Say.prototype.greeting = 'Hello';
 
 Say.prototype.hello= function(name) {
-  Console.writeLine(this.greeting, ' ', name);
+  util.cmd.Console.writeLine(this.greeting, ' ', name);
 }
 // }}}
