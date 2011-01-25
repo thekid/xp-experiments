@@ -1,0 +1,68 @@
+import scriptlet.HttpScriptlet;
+import scriptlet.HttpScriptletRequest;
+import scriptlet.HttpScriptletResponse;
+import peer.http.HttpConstants;
+import xml.rdf.RDFNewsFeed;
+import name.kiesel.rss.scriptlet.SvnClient;
+
+import native standard.ucfirst;
+
+/**
+ * Rss scriplet
+ *
+ */
+class RssScriptlet extends HttpScriptlet {
+
+  /**
+   * Handle GET request
+   *
+   */
+  public void doGet(HttpScriptletRequest $request, HttpScriptletResponse $response) {
+    try {
+      $this.getClass().getMethod('perform' ~ ucfirst($request.getParam('action', 'usage'))
+        .invoke($this, [$request, $response])
+      );
+    } catch (Throwable $t) {
+      $response.setStatus(HttpConstants::STATUS_INTERNAL_SERVER_ERROR);
+    }
+  }
+  
+  /**
+   * Usage handler
+   *
+   */
+  public void performUsage(HttpScriptletRequest $request, HttpScriptletResponse $response) {
+    $response.setContentType('text/html');
+    $response.write('<html><body><h1>Help</h1><p>Here comes the usage.</p></body></html>');
+  }
+  
+  /**
+   * Log handler
+   *
+   */
+  public void performLog(HttpScriptletRequest $request, HttpScriptletResponse $response) {
+    $repository= $request.getParam('repository');
+    $client= new SvnClient();
+    $client.bind($repository);
+    
+    $result= $client.queryLog($request.getParam('limit', 100));
+    $feed= new RDFNewsFeed();
+    $feed.setChannel(
+      'SVN ChangeLog for ' ~ $repository,
+      $repository,
+      'SVN Log History'
+    );
+    
+    for ($i= 0; $i < $result.entrySize(); $i++) {
+      $feed.addItem(
+        '[SVN] Revision ' ~ $result.entry($i).getRevision() ~ ' by ' ~ $result.entry($i).getAuthor(),
+        '',
+        $result.entry($i).getMessage(),
+        $result.entry($i).getDate()
+      );
+    }
+    
+    $response.setContentType('text/xml');
+    $response.write($feed.getSource(0));
+  }
+}
