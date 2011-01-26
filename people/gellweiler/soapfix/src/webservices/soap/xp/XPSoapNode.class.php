@@ -16,7 +16,6 @@
    * SOAP Node
    *
    * @see   xp://xml.Node
-   * @test  xp:(/
    */
   class XPSoapNode extends Node {
     public 
