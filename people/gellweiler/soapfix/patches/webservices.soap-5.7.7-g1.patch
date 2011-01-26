@@ -1,0 +1,725 @@
+Only in 5.7.7: gui
+Only in 5.7.7: img
+Only in 5.7.7: io
+Only in 5.7.7: lang
+Only in 5.7.7: peer
+Only in 5.7.7: rdbms
+Only in 5.7.7: remote
+Only in 5.7.7: sapi
+Only in 5.7.7: scriptlet
+Only in 5.7.7: security
+Only in src: .svn
+Only in 5.7.7: text
+Only in 5.7.7: unittest
+Only in 5.7.7: util
+Only in 5.7.7: VERSION
+Only in 5.7.7/webservices: json
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/CommonSoapFault.class.php src/webservices/soap/CommonSoapFault.class.php
+--- 5.7.7/webservices/soap/CommonSoapFault.class.php	2011-01-26 11:41:27.000000000 +0100
++++ src/webservices/soap/CommonSoapFault.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: CommonSoapFault.class.php 12562 2008-09-29 13:04:33Z kiesel $ 
++ * $Id: CommonSoapFault.class.php 12249 2010-03-29 15:33:50Z gelli $ 
+  */
+   
+   /**
+@@ -22,7 +22,7 @@
+      * @param   string faultcode
+      * @param   string faultstring
+      * @param   string faultactor default NULL
+-     * @param   mixed detail default NULL
++     * @param   var detail default NULL
+      */  
+     public function __construct(
+       $faultcode, 
+@@ -93,7 +93,7 @@
+     /**
+      * Set Detail
+      *
+-     * @param   mixed detail
++     * @param   var detail
+      */
+     public function setDetail($detail) {
+       $this->detail= $detail;
+@@ -102,7 +102,7 @@
+     /**
+      * Get Detail
+      *
+-     * @return  mixed
++     * @return  var
+      */
+     public function getDetail() {
+       return $this->detail;
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/interop/Round2BaseClient.class.php src/webservices/soap/interop/Round2BaseClient.class.php
+--- 5.7.7/webservices/soap/interop/Round2BaseClient.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/interop/Round2BaseClient.class.php	2010-03-30 01:00:49.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: Round2BaseClient.class.php 11588 2007-12-24 15:04:36Z kiesel $ 
++ * $Id: Round2BaseClient.class.php 12249 2010-03-29 15:33:50Z gelli $ 
+  */
+ 
+   uses('webservices.soap.SoapDriver');
+Only in src/webservices/soap/interop: .svn
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/native/NativeSoapClient.class.php src/webservices/soap/native/NativeSoapClient.class.php
+--- 5.7.7/webservices/soap/native/NativeSoapClient.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/native/NativeSoapClient.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: NativeSoapClient.class.php 13677 2009-10-08 14:41:26Z gelli $ 
++ * $Id: NativeSoapClient.class.php 12249 2010-03-29 15:33:50Z gelli $ 
+  */
+ 
+   uses(
+@@ -150,8 +150,8 @@
+      * Iterate over all arguments to wrap them into ext/soap
+      * value objects, if needed
+      *
+-     * @param   mixed[]
+-     * @return  mixed[]
++     * @param   var[]
++     * @return  var[]
+      */
+     protected function checkParams($args) {
+       foreach ($args as $i => $a) {
+@@ -166,8 +166,8 @@
+     /**
+      * Wrap single argument to ext/soap value object
+      *
+-     * @param   mixed parameter
+-     * @return  mixed
++     * @param   var parameter
++     * @return  var
+      * @throws  lang.IllegalArgumentException if parameter type cannot be converted
+      */
+     protected function wrapParameter($parameter) {
+@@ -210,8 +210,8 @@
+      * Invoke method call
+      *
+      * @param   string method name
+-     * @param   mixed vars
+-     * @return  mixed answer
++     * @param   var vars
++     * @return  var answer
+      * @throws  webservices.soap.SOAPFaultException
+      */
+     public function invoke() {
+Only in src/webservices/soap/native: .svn
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/Parameter.class.php src/webservices/soap/Parameter.class.php
+--- 5.7.7/webservices/soap/Parameter.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/Parameter.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: Parameter.class.php 12560 2008-09-29 11:10:40Z kiesel $ 
++ * $Id: Parameter.class.php 12249 2010-03-29 15:33:50Z gelli $ 
+  */
+ 
+   /**
+@@ -18,7 +18,7 @@
+      * Constructor
+      *
+      * @param   string name
+-     * @param   mixed value default NULL
++     * @param   var value default NULL
+      */
+     public function __construct($name, $value= NULL) {
+       $this->name= $name;
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/rpc/SoapRpcRequest.class.php src/webservices/soap/rpc/SoapRpcRequest.class.php
+--- 5.7.7/webservices/soap/rpc/SoapRpcRequest.class.php	2011-01-26 11:41:27.000000000 +0100
++++ src/webservices/soap/rpc/SoapRpcRequest.class.php	2010-03-30 01:00:49.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SoapRpcRequest.class.php 12667 2008-12-02 16:12:00Z gelli $
++ * $Id: SoapRpcRequest.class.php 12249 2010-03-29 15:33:50Z gelli $
+  */
+  
+   uses(
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/rpc/SoapRpcResponse.class.php src/webservices/soap/rpc/SoapRpcResponse.class.php
+--- 5.7.7/webservices/soap/rpc/SoapRpcResponse.class.php	2011-01-26 11:41:27.000000000 +0100
++++ src/webservices/soap/rpc/SoapRpcResponse.class.php	2010-03-30 01:00:49.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SoapRpcResponse.class.php 13240 2009-07-20 07:40:50Z kiesel $
++ * $Id: SoapRpcResponse.class.php 12249 2010-03-29 15:33:50Z gelli $
+  */
+  
+   uses('scriptlet.rpc.AbstractRpcResponse', 'peer.http.HttpConstants');
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/rpc/SoapRpcRouter.class.php src/webservices/soap/rpc/SoapRpcRouter.class.php
+--- 5.7.7/webservices/soap/rpc/SoapRpcRouter.class.php	2011-01-26 11:41:27.000000000 +0100
++++ src/webservices/soap/rpc/SoapRpcRouter.class.php	2010-03-30 01:00:49.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SoapRpcRouter.class.php 13111 2009-06-07 13:05:59Z friebe $
++ * $Id: SoapRpcRouter.class.php 12249 2010-03-29 15:33:50Z gelli $
+  */
+   uses(
+     'scriptlet.rpc.AbstractRpcRouter',
+@@ -89,7 +89,7 @@
+      * Calls the handler that the action reflects to
+      *
+      * @param   webservices.xmlrpc.XmlRpcMessage message object (from request)
+-     * @return  mixed result of method call
++     * @return  var result of method call
+      * @throws  lang.IllegalArgumentException if there is no such method
+      * @throws  lang.IllegalAccessException for non-public methods
+      */
+Only in src/webservices/soap/rpc: .svn
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/SoapDriver.class.php src/webservices/soap/SoapDriver.class.php
+--- 5.7.7/webservices/soap/SoapDriver.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/SoapDriver.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SoapDriver.class.php 11950 2008-03-24 20:42:24Z friebe $ 
++ * $Id: SoapDriver.class.php 12249 2010-03-29 15:33:50Z gelli $ 
+  */
+     
+   /**
+@@ -63,7 +63,7 @@
+     /**
+      * Retrieve an instance of the class
+      *
+-     * @return  object self::$instance
++     * @return  webservices.soap.SoapDriver self::$instance
+      */
+     public static function getInstance() {
+       if (NULL === self::$instance) {
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/SOAPFaultException.class.php src/webservices/soap/SOAPFaultException.class.php
+--- 5.7.7/webservices/soap/SOAPFaultException.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/SOAPFaultException.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SOAPFaultException.class.php 10594 2007-06-11 10:04:54Z friebe $ 
++ * $Id: SOAPFaultException.class.php 12249 2010-03-29 15:33:50Z gelli $ 
+  */
+ 
+   /**
+Only in src/webservices/soap: .svn
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/transport/SOAPHTTPTransport.class.php src/webservices/soap/transport/SOAPHTTPTransport.class.php
+--- 5.7.7/webservices/soap/transport/SOAPHTTPTransport.class.php	2011-01-26 11:41:27.000000000 +0100
++++ src/webservices/soap/transport/SOAPHTTPTransport.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SOAPHTTPTransport.class.php 13654 2009-10-06 09:01:16Z kiesel $ 
++ * $Id: SOAPHTTPTransport.class.php 12249 2010-03-29 15:33:50Z gelli $ 
+  */
+ 
+   uses(
+@@ -120,7 +120,7 @@
+       $headers= $this->_headers;
+ 
+       // Action
+-      $this->action= $message->action;
++      $this->_action= $message->action;
+ 
+       switch ($this->_actiontype) {
+         case self::ACTION_COMPUTE:
+@@ -180,7 +180,7 @@
+ 
+           $this->cat && $this->cat->debug('<<<', $xml);
+           $answer= XPSoapMessage::fromString($xml);
+-          $answer->action= $this->action;
++          $answer->action= $this->_action;
+ 
+           // Fault?
+           if (NULL !== ($fault= $answer->getFault())) {
+Only in src/webservices/soap/transport: .svn
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/types/SOAPBase64Binary.class.php src/webservices/soap/types/SOAPBase64Binary.class.php
+--- 5.7.7/webservices/soap/types/SOAPBase64Binary.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/types/SOAPBase64Binary.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SOAPBase64Binary.class.php 10594 2007-06-11 10:04:54Z friebe $
++ * $Id: SOAPBase64Binary.class.php 12249 2010-03-29 15:33:50Z gelli $
+  */
+ 
+   uses('webservices.soap.types.SoapType');
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/types/SOAPDateTime.class.php src/webservices/soap/types/SOAPDateTime.class.php
+--- 5.7.7/webservices/soap/types/SOAPDateTime.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/types/SOAPDateTime.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SOAPDateTime.class.php 11502 2007-12-17 15:17:49Z kiesel $
++ * $Id: SOAPDateTime.class.php 12249 2010-03-29 15:33:50Z gelli $
+  */
+ 
+   uses('util.Date', 'webservices.soap.types.SoapType');
+@@ -21,7 +21,7 @@
+     /**
+      * Constructor
+      *
+-     * @param   mixed arg
++     * @param   var arg
+      */
+     public function __construct($arg) {
+       $this->value= new Date($arg);
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/types/SOAPDecimal.class.php src/webservices/soap/types/SOAPDecimal.class.php
+--- 5.7.7/webservices/soap/types/SOAPDecimal.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/types/SOAPDecimal.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SOAPDecimal.class.php 13012 2009-04-28 04:50:01Z friebe $
++ * $Id: SOAPDecimal.class.php 12249 2010-03-29 15:33:50Z gelli $
+  */
+ 
+   uses('webservices.soap.types.SoapType');
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/types/SOAPDouble.class.php src/webservices/soap/types/SOAPDouble.class.php
+--- 5.7.7/webservices/soap/types/SOAPDouble.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/types/SOAPDouble.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SOAPDouble.class.php 13012 2009-04-28 04:50:01Z friebe $
++ * $Id: SOAPDouble.class.php 12249 2010-03-29 15:33:50Z gelli $
+  */
+ 
+   uses('webservices.soap.types.SoapType');
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/types/SOAPHashMap.class.php src/webservices/soap/types/SOAPHashMap.class.php
+--- 5.7.7/webservices/soap/types/SOAPHashMap.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/types/SOAPHashMap.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SOAPHashMap.class.php 10015 2007-04-16 16:36:48Z kiesel $
++ * $Id: SOAPHashMap.class.php 12249 2010-03-29 15:33:50Z gelli $
+  */
+ 
+   uses('webservices.soap.xp.XPSoapNode', 'webservices.soap.types.SoapType');
+@@ -35,7 +35,7 @@
+     /**
+      * Return a string representation for use in SOAP
+      *
+-     * @return  mixed
++     * @return  var
+      */
+     public function toString() {
+       return '';
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/types/SOAPHexBinary.class.php src/webservices/soap/types/SOAPHexBinary.class.php
+--- 5.7.7/webservices/soap/types/SOAPHexBinary.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/types/SOAPHexBinary.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SOAPHexBinary.class.php 10594 2007-06-11 10:04:54Z friebe $
++ * $Id: SOAPHexBinary.class.php 12249 2010-03-29 15:33:50Z gelli $
+  */
+ 
+   uses('webservices.soap.types.SoapType');
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/types/SOAPLong.class.php src/webservices/soap/types/SOAPLong.class.php
+--- 5.7.7/webservices/soap/types/SOAPLong.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/types/SOAPLong.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SOAPLong.class.php 8971 2006-12-27 15:27:10Z friebe $
++ * $Id: SOAPLong.class.php 12249 2010-03-29 15:33:50Z gelli $
+  */
+ 
+   uses('webservices.soap.types.SoapType');
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/types/SoapType.class.php src/webservices/soap/types/SoapType.class.php
+--- 5.7.7/webservices/soap/types/SoapType.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/types/SoapType.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SoapType.class.php 10196 2007-05-04 10:56:54Z kiesel $ 
++ * $Id: SoapType.class.php 12249 2010-03-29 15:33:50Z gelli $ 
+  */
+ 
+   /**
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/types/SOAPVector.class.php src/webservices/soap/types/SOAPVector.class.php
+--- 5.7.7/webservices/soap/types/SOAPVector.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/types/SOAPVector.class.php	2010-03-30 01:00:49.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: SOAPVector.class.php 10191 2007-05-03 13:03:25Z olli $
++ * $Id: SOAPVector.class.php 12249 2010-03-29 15:33:50Z gelli $
+  */
+ 
+   uses('webservices.soap.xp.XPSoapNode', 'webservices.soap.types.SoapType');
+@@ -32,7 +32,7 @@
+     /**
+      * Return a string representation for use in SOAP
+      *
+-     * @return  mixed
++     * @return  var
+      */
+     public function toString() {
+       return $this->_vector;
+Only in src/webservices/soap/types: .svn
+Only in src/webservices/soap/xp: .svn
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/xp/XPSoapClient.class.php src/webservices/soap/xp/XPSoapClient.class.php
+--- 5.7.7/webservices/soap/xp/XPSoapClient.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/xp/XPSoapClient.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: XPSoapClient.class.php 13059 2009-05-29 10:02:51Z olli $ 
++ * $Id: XPSoapClient.class.php 12249 2010-03-29 15:33:50Z gelli $ 
+  */
+ 
+   uses(
+@@ -114,8 +114,8 @@
+      * Invoke method call
+      *
+      * @param   string method name
+-     * @param   mixed vars
+-     * @return  mixed answer
++     * @param   var vars
++     * @return  var answer
+      * @throws  lang.IllegalArgumentException
+      * @throws  webservices.soap.SOAPFaultException
+      */
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/xp/XPSoapHeader.class.php src/webservices/soap/xp/XPSoapHeader.class.php
+--- 5.7.7/webservices/soap/xp/XPSoapHeader.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/xp/XPSoapHeader.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: XPSoapHeader.class.php 10015 2007-04-16 16:36:48Z kiesel $ 
++ * $Id: XPSoapHeader.class.php 12249 2010-03-29 15:33:50Z gelli $ 
+  */
+ 
+   /**
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/xp/XPSoapHeaderElement.class.php src/webservices/soap/xp/XPSoapHeaderElement.class.php
+--- 5.7.7/webservices/soap/xp/XPSoapHeaderElement.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/xp/XPSoapHeaderElement.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: XPSoapHeaderElement.class.php 10015 2007-04-16 16:36:48Z kiesel $ 
++ * $Id: XPSoapHeaderElement.class.php 12249 2010-03-29 15:33:50Z gelli $ 
+  */
+ 
+   uses('webservices.soap.xp.XPSoapNode', 'webservices.soap.xp.XPSoapHeader');
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/xp/XPSoapMapping.class.php src/webservices/soap/xp/XPSoapMapping.class.php
+--- 5.7.7/webservices/soap/xp/XPSoapMapping.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/xp/XPSoapMapping.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: XPSoapMapping.class.php 10015 2007-04-16 16:36:48Z kiesel $ 
++ * $Id: XPSoapMapping.class.php 12249 2010-03-29 15:33:50Z gelli $ 
+  */
+ 
+   uses('xml.QName');
+@@ -38,7 +38,7 @@
+      * Fetch a qname for a class.
+      *
+      * @param   lang.XPClass class
+-     * @return  mixed xml.QName or NULL if no mapping exists
++     * @return  var xml.QName or NULL if no mapping exists
+      */
+     public function qnameFor(XPClass $class) {
+       if (!isset($this->_c2q[$class->getName()])) return NULL;
+@@ -49,7 +49,7 @@
+      * Fetch a class for a qname
+      *
+      * @param   xml.QName qname
+-     * @return  mixed lang.XPClass or NULL if no mapping exists
++     * @return  var lang.XPClass or NULL if no mapping exists
+      */
+     public function classFor(QName $qname) {
+       if (!isset($this->_q2c[$qname->toString()])) return NULL;
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/xp/XPSoapMessage.class.php src/webservices/soap/xp/XPSoapMessage.class.php
+--- 5.7.7/webservices/soap/xp/XPSoapMessage.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/xp/XPSoapMessage.class.php	2010-04-17 01:01:07.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: XPSoapMessage.class.php 13654 2009-10-06 09:01:16Z kiesel $
++ * $Id: XPSoapMessage.class.php 12268 2010-04-16 11:55:29Z gelli $
+  */
+ 
+   uses(
+@@ -168,6 +168,11 @@
+       foreach (array_keys($node->children) as $i) {
+         $this->body->children[0]->addChild($node->children[$i]);
+       }
++
++      // Add all collected namespaces
++      foreach ($node->namespaces as $namespace => $identifier) {
++        $this->root->setAttribute('xmlns:'.$identifier, $namespace);
++      }
+     }
+ 
+     /**
+@@ -183,7 +188,7 @@
+      * @param   xml.Node child
+      * @param   string context default NULL
+      * @param   webservices.soap.xp.XPSoapMapping mapping
+-     * @return  mixed result
++     * @return  var result
+      */
+     public function unmarshall($child, $context= NULL) {
+       // DEBUG Console::writeLine('Unmarshalling ', $child->name, ' (', var_export($child->attribute, 1), ') >>> ', $child->content, '<<<', "\n"); // DEBUG
+@@ -252,12 +257,12 @@
+             // Arrays of other types
+             // ~~~~~~~~~~~~~~~~~~~~~
+             // <item SOAP-ENC:arrayType="xsd:int[4]"/>
+-            if ($this->namespaces[XMLNS_XP] == $ns) {
++            if (0 === strpos($ns, $this->namespaces[XMLNS_XP])) {
+               try {
+                 $result= Collection::forClass(XPClass::forName($childType)->getName());
+               } catch (ClassNotFoundException $e) {
+ 
+-                // TBD: Probably, unknown remote classes should we returned as
++                // TBD: Probably, unknown remote classes should be returned as
+                 // UnknownRemoteObject, just like in the remote package.
+                 $result= Collection::forClass('lang.Object');
+                 $result->__qname= $childType;
+@@ -318,9 +323,10 @@
+             // <item xmlns:xp="http://xp-framework.net/xmlns/xp" xsi:type="xp:de.schlund.db.irc.IrcChannel"/>        
+             //
+             // For other objects, check SOAPMapping registry
+-            if (isset($this->namespaces[XMLNS_XP]) && $this->namespaces[XMLNS_XP] == $regs[1]) {
++            $ns = array_search($regs[1], $this->namespaces);
++            if (0 === strpos($ns, XMLNS_XP)) {
+               try {
+-                $xpclass= XPClass::forName($regs[2]);
++                $xpclass= XPClass::forName(substr($ns, strrpos($ns, '/')+ 1).'.'.$regs[2]);
+               } catch (ClassNotFoundException $e) {
+                 $xpclass= NULL;
+               }
+@@ -361,7 +367,7 @@
+      * @param   bool names default FALSE
+      * @param   string context default NULL
+      * @param   array mapping
+-     * @return  mixed data
++     * @return  var data
+      */    
+     protected function _recurseData($node, $names= FALSE, $context= NULL) {
+       if (empty($node->children)) {
+@@ -413,7 +419,7 @@
+      * @param   int faultcode
+      * @param   string faultstring
+      * @param   string faultactor default NULL
+-     * @param   mixed detail default NULL
++     * @param   var detail default NULL
+      */    
+     public function setFault($faultcode, $faultstring, $faultactor= NULL, $detail= NULL) {
+       $this->root->children[0]->children[0]= XPSoapNode::fromObject(new CommonSoapFault(
+@@ -519,6 +525,7 @@
+      */
+     public function getFault() {
+       if ($body= $this->_bodyElement()) {
++        $this->_retrieveNamespaces($body->children[0]);
+         if (0 != strcasecmp(
+           $body->children[0]->getName(), 
+           $this->namespaces[XMLNS_SOAPENV].':Fault'
+@@ -540,7 +547,7 @@
+      *
+      * @param   string context default 'ENUM'
+      * @param   webservices.soap.xp.XPSoapMapping mapping
+-     * @return  mixed data
++     * @return  var data
+      * @throws  lang.FormatException in case no XMLNS_SOAPENV:Body was found
+      */
+     public function getData($context= 'ENUM') {
+diff -ur '--exclude=\*.svn' 5.7.7/webservices/soap/xp/XPSoapNode.class.php src/webservices/soap/xp/XPSoapNode.class.php
+--- 5.7.7/webservices/soap/xp/XPSoapNode.class.php	2011-01-26 11:41:28.000000000 +0100
++++ src/webservices/soap/xp/XPSoapNode.class.php	2010-03-30 01:00:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ <?php
+ /* This class is part of the XP framework
+  *
+- * $Id: XPSoapNode.class.php 13654 2009-10-06 09:01:16Z kiesel $ 
++ * $Id: XPSoapNode.class.php 12249 2010-03-29 15:33:50Z gelli $ 
+  */
+ 
+   uses(
+@@ -16,15 +16,19 @@
+    * SOAP Node
+    *
+    * @see   xp://xml.Node
++   * @test  xp:(/
+    */
+   class XPSoapNode extends Node {
+     public 
+       $namespace= 'ctl';
+-    
++
++    public
++      $namespaces= array();
++
+     /**
+      * Get type name by content
+      *
+-     * @param   mixed content
++     * @param   var content
+      * @return  string typename, e.g. "xsd:string"
+      */
+     protected function _typeName($content) {
+@@ -41,8 +45,8 @@
+     /**
+      * Format content
+      *
+-     * @param   mixed content
+-     * @return  mixed content, formatted, if necessary
++     * @param   var content
++     * @return  var content, formatted, if necessary
+      */
+     protected function _contentFormat($content) {
+       if (is_bool($content)) {
+@@ -55,8 +59,8 @@
+      * Get content in iso-8859-1 encoding (the default).
+      *
+      * @param   string encoding
+-     * @param   mixed namespaces
+-     * @return  mixed data
++     * @param   var namespaces
++     * @return  var data
+      */
+     public function getContent($encoding= NULL, $namespaces= NULL) {
+       $ret= $this->content;
+@@ -111,10 +115,42 @@
+     }
+     
+     /**
++     * Get namespace identfier for 
++     *
++     * @param   lang.Object obj
++     * @return  string
++     */
++    protected function namespaceIdentifierForObject($obj) {
++      $ns= 'http://xp-framework.net/xmlns/xp/'. $obj->getClass()->getPackage()->getName();
++
++      if (!isset($this->namespaces[$ns])) {
++        $this->namespaces[$ns]= 'ns'.(string)(sizeof($this->namespaces) + 1);
++      }
++     
++      return $this->namespaces[$ns];
++    }
++
++    /**
++     * (Insert method's description here)
++     *
++     * @param   
++     * @return  
++     */
++    protected function namespaceIdentifierForQname($qname) {
++      $ns= $qname->namespace;
++
++      if (!isset($this->namespaces[$ns])) {
++        $this->namespaces[$ns]= $qname->prefix ? $qname->prefix : 'ns'.(string)(sizeof($this->namespaces) + 1);
++      }
++      
++      return $this->namespaces[$ns];
++    }
++
++    /**
+      * Marshaller
+      *
+      * @param   webservices.soap.xp.XPSoapNode child
+-     * @param   mixed value
++     * @param   var value
+      * @param   webservices.soap.xp.XPSoapMapping mapping
+      */
+     protected function _marshall($child, $value, $mapping) {
+@@ -174,38 +210,38 @@
+         return;
+       }
+       
+-      if (($value instanceof Generic) && NULL !== ($qname= $mapping->qnameFor($value->getClass()))) {
+-        $ns++;
+-        $child->attribute['xmlns:ns'.$ns]= $qname->namespace;
+-        $child->attribute['xsi:type']= 'ns'.$ns.':'.$qname->localpart;
++      if (!$value instanceof Generic && is_object($value)) {  // Any other object, e.g. "stdClass"
++        $child->attribute['xmlns:php']= 'http://xp-framework.net/xmlns/php';
++        $child->attribute['xsi:type']= 'php:'.get_class($value);
++        $this->_recurse($child, get_object_vars($value), $mapping);
++        return;        
++      }
++
++      if (($value instanceof Generic) && $mapping && NULL !== ($qname= $mapping->qnameFor($value->getClass()))) {
++      
++        $nsid= $this->namespaceIdentifierForQname($qname);
++        $child->attribute['xmlns:'.$nsid]= $qname->namespace;
++        $child->attribute['xsi:type']= $nsid.':'.$qname->localpart;
+         
+         $this->_recurse($child, get_object_vars($value), $mapping);
+         return;
+       }
+       
++      $nsid= $this->namespaceIdentifierForObject($value);
++      
+       if ($value instanceof Collection) { // XP collection
+         $child->attribute['xsi:type']= 'SOAP-ENC:Array';
+-        $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
+-        $child->attribute['SOAP-ENC:arrayType']= 'xp:'.$value->getElementClassName().'['.$value->size().']';
++        $child->attribute['SOAP-ENC:arrayType']= $nsid.':'.$value->getElementClassName().'['.$value->size().']';
+         $this->_recurse($child, $value->values(), $mapping);
+         return;
+       }
+       
+       if ($value instanceof Generic) {     // XP objects
+-        $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
+-        $child->attribute['xsi:type']= 'xp:'.$value->getClassName();
++        $child->attribute['xsi:type']= $nsid.':'.$value->getClass()->getSimpleName();
+         $this->_recurse($child, get_object_vars($value), $mapping);
+         return;
+       }
+       
+-      if (is_object($value)) {          // Any other object, e.g. "stdClass"
+-        $ns++;
+-        $child->attribute['xmlns:ns'.$ns]= 'http://xp-framework.net/xmlns/php';
+-        $child->attribute['xsi:type']= 'ns'.$ns.':'.get_class($value);
+-        $this->_recurse($child, get_object_vars($value), $mapping);
+-        return;        
+-      }
+-      
+       // Any other type is simply ignored
+     }
+     
+@@ -255,7 +291,7 @@
+      *   $n= Node::fromObject($object);
+      * </code>
+      *
+-     * @param   object obj
++     * @param   lang.Generic obj
+      * @param   string name default NULL
+      * @param   webservices.soap.xp.XPSoapMapping mapping
+      * @return  xml.Node
+Only in src/webservices: .svn
+Only in 5.7.7/webservices: uddi
+Only in 5.7.7/webservices: wddx
+Only in 5.7.7/webservices: xmlrpc
+Only in 5.7.7: xml
