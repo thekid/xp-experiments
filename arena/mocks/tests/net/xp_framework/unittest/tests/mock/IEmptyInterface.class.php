@@ -1,10 +1,9 @@
 <?php
-/* This interface is part of the XP framework
- *
- * $Id$
- */
+  /* This interface is part of the XP framework
+   *
+   * $Id$
+   */
 
-  uses();
 
   /**
    * Dummy interface used in other tests
@@ -13,7 +12,5 @@
    * @purpose  Unit Test
    */
   interface IEmptyInterface {
-      
   }
-
 ?>
