@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('unittest.mock.MockBuilder',
+  uses('unittest.mock.Mockery',
        'lang.Type',
        'lang.reflect.Proxy',
        'net.xp_framework.unittest.tests.mock.IEmptyInterface',
@@ -14,10 +14,10 @@
   /**
    * Class for automaticly stubbing interfaces
    *
-   * @see      xp://unittest.MockBuilder
+   * @see      xp://unittest.mock.Mockery
    * @purpose  Unit Test
    */
-  class MockBuilderTest extends TestCase {
+  class MockeryTest extends TestCase {
 
     private $sut=null;
     /**
@@ -25,7 +25,7 @@
      *
      */
     public function setUp() {
-      $this->sut=new MockBuilder();
+      $this->sut=new Mockery();
     }
       
     /**
@@ -33,7 +33,7 @@
      */
     #[@test]
     public function canCreate() {
-      new MockBuilder();
+      new Mockery();
     }
     /**
      * Can create mock for empty interface

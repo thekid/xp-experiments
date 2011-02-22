@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('unittest.mock.MockBuilder',
+  uses('unittest.mock.Mockery',
        'lang.Type',
        'lang.reflect.Proxy',
        'net.xp_framework.unittest.tests.mock.IEmptyInterface',

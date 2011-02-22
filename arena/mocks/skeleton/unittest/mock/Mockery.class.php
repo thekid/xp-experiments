@@ -13,7 +13,7 @@
    *
    * @purpose  Mockery
    */
-  class MockBuilder extends Object {
+  class Mockery extends Object {
     /**
      * Builds a stub instance for the specified type.
      *
