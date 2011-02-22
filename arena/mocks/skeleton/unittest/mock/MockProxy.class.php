@@ -40,10 +40,4 @@
     public function setReturnValue($method, $value) {
       $this->returnExpectationMap[$method]=$value;
     }
-
-    public static function getProxyBase() {
-      return __CLASS__;
-    }
   }
-  
-?>

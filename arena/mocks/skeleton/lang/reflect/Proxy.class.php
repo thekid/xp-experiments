@@ -29,6 +29,21 @@
     }
     
     /**
+     * @deprecated Use non-static getProxyClass instead
+     * 
+     * Retrieves a Proxy instance.
+     *
+     * @param   lang.IClassLoader classloader
+     * @param   lang.XPClass[] interfaces names of the interfaces to implement
+     * @return  lang.XPClass
+     * @throws  lang.IllegalArgumentException
+     */
+    public static function getProxyClass(IClassLoader $classloader, array $interfaces) {
+      $proxy= new Proxy();
+      return $proxy->buildProxyClass($classloader, $interfaces);
+    }
+    
+    /**
      * Returns the XPClass object for a proxy class given a class loader 
      * and an array of interfaces.  The proxy class will be defined by the 
      * specified class loader and will implement all of the supplied 
@@ -39,7 +54,7 @@
      * @return  lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
-    public static function getProxyClass(IClassLoader $classloader, array $interfaces) {
+    public function buildProxyClass(IClassLoader $classloader, array $interfaces) {
       static $num= 0;
       static $cache= array();
       
@@ -57,7 +72,7 @@
 
       // Create proxy class' name, using a unique identifier and a prefix
       $name= PROXY_PREFIX.($num++);
-      $bytes= 'class '.$name.' extends '.static::getProxyBase().' implements ';
+      $bytes= 'class '.$name.' extends '.xp::reflect($this->getClassName()).' implements ';
       $added= array();
       
       for ($j= 0; $j < $t; $j++) {
@@ -125,7 +140,6 @@
         }
       }
       $bytes.= ' }';
-
       // Define the generated class
       try {
         $dyn= DynamicClassLoader::instanceFor(__METHOD__);
@@ -137,9 +151,11 @@
 
       // Update cache and return XPClass object
       $cache[$key]= $class;
+      
+      
       return $class;
     }
-  
+    
     /**
      * Returns an instance of a proxy class for the specified interfaces
      * that dispatches method invocations to the specified invocation
@@ -151,17 +167,22 @@
      * @return  lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
-    public static function newProxyInstance($classloader, $interfaces, $handler) {
-      return self::getProxyClass($classloader, $interfaces)->newInstance($handler);
+    public function createProxyInstance($classloader, $interfaces, $handler) {
+      return $this->buildProxyClass($classloader, $interfaces)->newInstance($handler);
     }
-
+    
     /**
-     * Returns the class name from which a generated proxy instance is derived.
+     * @deprecated Use non-static createProxyInstance instead
      *
-     * @return  string
+     * @param   lang.ClassLoader classloader
+     * @param   lang.XPClass[] interfaces
+     * @param   lang.reflect.InvocationHandler handler
+     * @return  lang.XPClass
+     * @throws  lang.IllegalArgumentException
      */
-    public static function getProxyBase() {
-      return __CLASS__;
+    public static function newProxyInstance($classloader, $interfaces, $handler) {
+      $proxy= new Proxy();
+      return $proxy->createProxyInstance($classloader, $interfaces, $handler);
     }
   }
 ?>
