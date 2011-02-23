@@ -70,25 +70,45 @@
     }
 
     /**
-     * Can create mock for non-empty interface
+     * Can call replay
      */
     #[@test]
-    public function mockedReturnValueIsNullByDefault() {
+    public function canCallReplay() {
       $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
-      $this->assertTrue($object->foo()=== NULL);
+      $object->replay();
     }
 
     /**
-     * Can create mock for non-empty interface
+     * Can call interface methods
      */
     #[@test]
+    public function canCallInterfaceMethods() {
+      $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object->foo();
+    }
+
+    /**
+     * Can call returns() on mocked object
+     */
+    #[@test]
+    public function canCallReturnsFluently() {
+      $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object->foo()->returns(null);
+    }
+
+    /**
+     * Defined value returned in replay mode
+     */
+    #[@test, @ignore]
     public function canDefineReturnValue() {
       $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 
       $return = new Object();
-      $object->setReturnValue('foo', $return);
+      $object->foo()->returns($return);
 
+      $object->replay();
       $this->assertTrue($object->foo()=== $return);
     }
+
   }
 ?>

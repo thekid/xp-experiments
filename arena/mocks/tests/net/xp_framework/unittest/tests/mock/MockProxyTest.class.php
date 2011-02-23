@@ -4,7 +4,8 @@
  * $Id$
  */
 
-  uses('unittest.mock.Mockery',
+  uses('unittest.mock.MockProxy',
+       'unittest.mock.Mockery',
        'lang.Type',
        'lang.reflect.Proxy',
        'net.xp_framework.unittest.tests.mock.IEmptyInterface',
@@ -26,7 +27,7 @@
      *
      */
     public function setUp() {
-      $this->sut=new MockProxy();
+      $this->sut=new MockProxy(new Mockery());
     }
 
     /**
@@ -34,62 +35,75 @@
      */
     #[@test]
     public function canCreate() {
-      new MockProxy();
-    }
-    /**
-     * Can call setReturnValue
-     */
-    #[@test]
-    public function canSetReturnValue() {
-      $this->sut->setReturnValue('foo', 'bar');
-    }
-    /**
-     * Can call setReturnValue twice
-     */
-    #[@test]
-    public function canSetReturnValueTwice() {
-      $this->sut->setReturnValue('foo', 'bar');
-      $this->sut->setReturnValue('foo', 'bar');
-    }
-
-    /**
-     * Invoke returns null by default
-     */
-    #[@test]
-    public function invokeReturnsNullByDefault() {
-      $this->assertNull($this->sut->invoke('blub', 'foo', null));
-    }
-
-    /**
-     * First parameter is ignored when calling invoke
-     */
-    #[@test]
-    public function invokesFirstParameterMayBeNull() {
-      $this->assertNull($this->sut->invoke(null, 'foo', null));
-    }
-    /**
-     * The specified return value is actually stored and returned
-     */
-    #[@test]
-    public function specifiedReturnValueIsActuallyReturned() {
-      $return= 'asdfjklö';
-      $this->sut->setReturnValue('foo', $return);
-      $this->assertEquals( $return, $this->sut->invoke(null, 'foo', null));
+      new MockProxy(new Mockery());
     }
     
     /**
-     * Return value can be redefined.
+     * The mock proxy should provide information obout its state
      */
     #[@test]
-    public function canOverwriteReturnValue() {
-      $return= 'asdfjklö';
-      $this->sut->setReturnValue('foo', $return);
-      $this->assertEquals( $return, $this->sut->invoke(null, 'foo', null));
-
-      $otherReturn= 42;
-      $this->sut->setReturnValue('foo', $otherReturn);
-      $this->assertNotEquals($return, $this->sut->invoke(null, 'foo', null));
-      $this->assertEquals( $otherReturn, $this->sut->invoke(null, 'foo', null));
+    public function canCallIsRecording() {
+      $this->sut->isRecording();
     }
+    /**
+     * The mock is in recording state initially.
+     */
+    #[@test]
+    public function mockIsInRecordingStateInitially() {
+      $this->assertTrue($this->sut->isRecording());
+    }
+
+    /**
+     * Can call invoke
+     */
+    #[@test]
+    public function canCallInvoke() {
+      $this->sut->invoke(null, 'foo', null);
+    }
+
+    /**
+     * Invoke returns some object
+     */
+    #[@test]
+    public function invokeReturnsObject() {
+      $this->assertObject($this->sut->invoke(null, 'foo', null));
+    }
+
+    /**
+     * Can call replay
+     */
+    #[@test]
+    public function canCallReplay() {
+      $this->sut->replay();
+    }
+
+    /**
+     * Can call is Replaying method
+     */
+    #[@test]
+    public function canCallIsReplaying() {
+      $this->sut->isReplaying();
+    }
+
+    /**
+     * Not in replay state initially
+     */
+    #[@test]
+    public function notInReplayStateInitially() {
+      $this->assertFalse($this->sut->isReplaying());
+    }
+    
+    /**
+     * State changes from recording to replay after call to replay();
+     */
+    #[@test]
+    public function stateChangesAfterReplayCall() {
+        $this->assertTrue($this->sut->isRecording());
+        $this->assertFalse($this->sut->isReplaying());
+        $this->sut->replay();
+        $this->assertFalse($this->sut->isRecording());
+        $this->assertTrue($this->sut->isReplaying());
+    }
+
   }
 ?>

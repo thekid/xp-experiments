@@ -6,20 +6,23 @@
  */
 
   uses('lang.reflect.InvocationHandler',
-       'lang.reflect.Proxy');
+       'lang.reflect.Proxy',
+       'unittest.mock.RecordState');
 
   /**
-   * TBD
+   * A mock proxy.
    *
    * @purpose 
    */
   class MockProxy extends Proxy implements InvocationHandler {
     private
-      $returnExpectationMap=array();
+      $mockState= null;
 
     public function __construct() {
       parent::__construct($this);
+      $this->mockState= new RecordState();
     }
+    
     /**
      * Processes a method invocation on a proxy instance and returns
      * the result.
@@ -30,14 +33,31 @@
      * @return  var
      */
     public function invoke($proxy, $method, $args) {
-      if(!array_key_exists($method, $this->returnExpectationMap))
-        return null;
-
-      //return mapped return value
-      return $this->returnExpectationMap[$method];
+      return $this->mockState->handleInvocation($method, $args);
     }
 
-    public function setReturnValue($method, $value) {
-      $this->returnExpectationMap[$method]=$value;
+    /**
+     * Indicates whether this proxy is in recoding state
+     *
+     * @return boolean
+     */
+    public function isRecording() {
+        return $this->mockState instanceof RecordState;
+    }
+
+    /**
+     * Indicates whether this proxy is in replaying state
+     *
+     * @return boolean
+     */
+    public function isReplaying() {
+        return !$this->isRecording();
+    }
+
+    /**
+     * Switches state to replay mode
+     */
+    public function replay() {
+        $this->mockState= new ReplayState();
     }
   }

@@ -28,8 +28,9 @@
       }
 
       $defaultCL= ClassLoader::getDefault();
+
       $proxy= new MockProxy();
-      $proxyClass= $proxy->buildProxyClass($defaultCL, array($type));
+      $proxyClass= $proxy->createProxyClass($defaultCL, array($type));
       return $proxyClass->newInstance();
     }
   }

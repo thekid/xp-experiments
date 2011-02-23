@@ -40,7 +40,7 @@
      */
     public static function getProxyClass(IClassLoader $classloader, array $interfaces) {
       $proxy= new Proxy();
-      return $proxy->buildProxyClass($classloader, $interfaces);
+      return $proxy->createProxyClass($classloader, $interfaces);
     }
     
     /**
@@ -54,7 +54,7 @@
      * @return  lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
-    public function buildProxyClass(IClassLoader $classloader, array $interfaces) {
+    public function createProxyClass(IClassLoader $classloader, array $interfaces) {
       static $num= 0;
       static $cache= array();
       
