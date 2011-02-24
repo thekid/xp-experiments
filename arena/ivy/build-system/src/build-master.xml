@@ -39,20 +39,6 @@
     </unzip>
   </target>
   
-  <target name="xp.compile.sources" extensionOf="compile">
-    <mkdir dir="${build.target.classes}"/>
-    <copy todir="${build.target.classes}">
-      <path refid="build.sourceDirectory"/>
-    </copy>
-  </target>
-  
-  <target name="xp.compile.tests" extensionOf="compile">
-    <mkdir dir="${build.target.testClasses}"/>
-    <copy todir="${build.target.testClasses}">
-      <path refid="build.testSourceDirectory"/>
-    </copy>
-  </target>
-  
   <target name="xp.install" extensionOf="install" depends="ivy-info">
     <echo>===> Installing ${ivy.organisation}#${ivy.module} @ local</echo>
 

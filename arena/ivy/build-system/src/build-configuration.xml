@@ -6,8 +6,9 @@
    !
    ! Configurable (public) settings
    !-->
-  <path id="build.sourceDirectory" path="${basedir}/src/main/">
-    <fileset dir="${basedir}/src/main/" includes="**/*"/>
+  <path id="build.sourceDirectory">
+    <fileset dir="${basedir}/src/main/php" includes="*"/>
+    <fileset dir="${basedir}/src/main/xsl" includes="*"/>
   </path>
   <path id="build.testSourceDirectory" path="${basedir}/src/test/">
     <fileset dir="${basedir}/src/test/" includes="**/*"/>
