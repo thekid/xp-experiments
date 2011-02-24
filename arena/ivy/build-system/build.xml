@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<project name="xp-framework-build-system" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+  <import file="../build/build-master.xml"/>
+
+  <path id="build.sourceDirectory">
+    <fileset dir="${basedir}/src">
+      <include name="*.xml"/>
+    </fileset>
+  </path>
+
+  <path id="build.testSourceDirectory"/>
+
+  <target name="xp.package.build" extensionOf="package">
+    <zip basedir="${build.target}/classes" destfile="${build.target}/${ivy.module}-${ivy.revision}.zip"/>
+  </target>
+</project>

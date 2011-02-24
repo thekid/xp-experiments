@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<ivy-module
+ version="2.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd"
+>
+  <info
+   organisation="net.xp_framework" module="build" status="integration"
+   revision="1.0"
+  />
+  <configurations>
+    <conf name="default" description="Required for a build"/>
+    <conf name="test" description="Required for a test run"/>
+  </configurations>
+  <publications>
+    <artifact name="build" ext="zip"/>
+  </publications>
+</ivy-module>

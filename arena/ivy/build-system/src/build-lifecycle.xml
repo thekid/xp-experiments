@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<project name="lifecycle" basedir=".">
+  
+  <!--
+   ! The following extension points are the "real" targets; plugins
+   ! may register as extension of those.
+   !
+   !-->
+  <extension-point name="clean"/>
+  <extension-point name="usage"/>
+  <extension-point name="validate"/>
+  <extension-point name="prepare"/>
+  <extension-point name="compile" depends="prepare"/>
+  <extension-point name="test" depends="compile"/>
+  <extension-point name="integration-test" depends="test"/>
+  <extension-point name="package" depends="test"/>
+  <extension-point name="verify" depends="package"/>
+  <extension-point name="install" depends="verify"/>
+  <extension-point name="deploy" depends="verify"/>
+  
+  <target name="lifecycle-usage" extensionOf="usage">
+    <echo level="info">XP framework module build lifecycle
+------------------------------------
+
+The following (public) targets exist for being called:
+
+&gt; clean
+  Clean up workspace and removes all build leftovers
+
+&gt; usage
+  Print usage &amp; help information
+
+&gt; validate
+  Validate the project setup
+
+&gt; prepare
+  Perform pre-compile tasks
+
+&gt; compile
+  Compile sources
+
+&gt; test
+  Run unittests
+
+&gt; integration-test
+  Run integration tests
+
+&gt; package
+  Wrap sources into distributable package
+
+&gt; verify
+  Verify packaging
+
+&gt; install
+  Install package into local repository
+
+&gt; deploy
+  Install package into shared / public repository
+    </echo>
+  </target>
+</project>
