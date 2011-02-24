@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="xp-framework-build-installer" xmlns:ivy="antlib:org.apache.ivy.ant">
+  <property name="install.dir" value="${user.home}/.ant/xp-build"/>
+  <property name="version" value="1.0"/>
+
+  <echo>===> Installing XP Framework build system into ${install.dir}</echo>
+  <mkdir dir="${install.dir}"/>
+
+  <echo>===> Downloading build scripts</echo>
+  <get src="http://xp-framework.net/repository/net.xp_framework/build/build-${version}.zip" dest="${install.dir}"/>
+  <unzip dest="${install.dir}" src="${install.dir}/build-${version}.zip"/>
+</project>

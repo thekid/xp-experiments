@@ -5,6 +5,7 @@
   <path id="build.sourceDirectory">
     <fileset dir="${basedir}/src">
       <include name="*.xml"/>
+      <exclude name="installer.xml"/>
     </fileset>
   </path>
 

@@ -13,6 +13,6 @@
     <conf name="test" description="Required for a test run"/>
   </configurations>
   <publications>
-    <artifact name="build" ext="zip"/>
+    <artifact name="build" ext="zip" type="zip"/>
   </publications>
 </ivy-module>
