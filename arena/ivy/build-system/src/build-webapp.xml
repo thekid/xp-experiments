@@ -17,6 +17,7 @@
     <!-- mkdir dir="${build.target.webapp}/lib"/ -->
     <copy todir="${build.target.webapp}/lib">
       <fileset refid="package.fileset"/>
+      <fileset refid="
       <mapper type="flatten"/>
     </copy>
 

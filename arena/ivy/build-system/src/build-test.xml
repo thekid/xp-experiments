@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="xp-framework-compile">
+  <target name="xp.test.createpath">
+    <!-- Build classpath for unittests -->
+    <ivy:cachefileset
+     type="xar"
+     conf="default,test"
+     setid="test.path.dependencies"
+    />
+    <pathconvert property="test.path" pathsep="&#10;">
+      <path>
+        <fileset refid="test.path.dependencies"/>
+        <pathelement path="${build.target}/bootstrap"/>
+        <pathelement path="${build.target.testClasses}"/>
+        <pathelement path="${build.target.classes}"/>
+      </path>
+    </pathconvert>
+
+    <!-- Generate ivy.pth for use by tests -->
+    <echo file="${build.target}/bootstrap/ivy.pth">${test.path}</echo>
+    <pathconvert property="test.use_xp">
+      <path>
+        <pathelement path="${build.target}/bootstrap"/>
+      </path>
+    </pathconvert>
+  </target>
+
+  <target name="xp.test.byini" unless="skip.tests" depends="xp.test.createpath">
+    <echo>===> Testing (.ini) ${ivy.organisation}#${ivy.module}</echo>
+
+    <!-- Execute unittest for each .ini file -->
+    <apply
+     executable="unittest"
+     failonerror="true"
+     dir="${build.target}/bootstrap"
+    >
+      <env key="USE_XP" value="${test.use_xp}"/>
+      <fileset refid="build.testConfigurations"/>
+      <srcfile/>
+    </apply>
+  </target>
+
+  <target name="xp.test.bypackage" if="build.testPackage" depends="xp.test.createpath">
+    <echo>===> Testing (package) ${ivy.organisation}#${ivy.module}</echo>
+
+    <!-- Execute unittest -->
+    <exec
+     executable="unittest"
+     failonerror="true"
+    >
+      <env key="USE_XP" value="${build.target}/bootstrap/"/>
+      <arg value="${build.testPackage}"/>
+    </exec>
+  </target>
+
+  <target name="xp.test" extensionOf="test" depends="xp.test.byini,xp.test.bypackage"/>
+</project>
