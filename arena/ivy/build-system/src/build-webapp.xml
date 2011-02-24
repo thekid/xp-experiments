@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="xp-framework-webapp">
+  <target name="xp.webapp.compile" extensionOf="compile">
+    <copy todir="${build.target.webapp}">
+      <path refid="build.webappSourceDirectory"/>
+      <path refid="build.configSourceDirectory"/>
+    </copy>
+  </target>
+
+  <target name="xp.webapp.package" extensionOf="package" depends="ivy-info">
+    <zip destfile="${build.target}/${ivy.module}-${ivy.revision}-webapp.zip">
+      <fileset dir="${build.target.webapp}"/>
+    </zip>
+  </target>
+</project>

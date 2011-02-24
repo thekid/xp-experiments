@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="xp-framework-build-configuration">
+
+  <!--
+   ! Section configuration
+   !
+   ! Configurable (public) settings
+   !-->
+  <path id="build.sourceDirectory" path="${basedir}/src/main/">
+    <fileset dir="${basedir}/src/main/" includes="**/*"/>
+  </path>
+  <path id="build.testSourceDirectory" path="${basedir}/src/test/">
+    <fileset dir="${basedir}/src/test/" includes="**/*"/>
+  </path>
+  <fileset id="build.testConfigurations" dir="${basedir}">
+    <include name="unittest.ini"/>
+  </fileset>
+  <path id="build.webappSourceDirectory">
+    <fileset dir="${basedir}/src/resources/" includes="webapp/**"/>
+  </path>
+  <path id="build.configSourceDirectory">
+    <fileset dir="${basedir}/src/resources/" includes="etc/**"/>
+  </path>
+</project>

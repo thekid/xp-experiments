@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
 <project name="xp-framework-master" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
   <dirname property="include.base" file="${ant.file.xp-framework-master}"/>
-  <import file="${include.base}/build-lifecycle.xml"/>
-  <import file="${include.base}/build-installivy.xml"/>
-  <import file="${include.base}/build-xpmacro.xml"/>
 
   <!-- RELEASE or INTEGRATION -->
   <property name="ivy.publish.status" value="integration"/>
@@ -15,6 +12,7 @@
   <property name="build.target" value="${basedir}/target"/>
   <property name="build.target.classes" value="${build.target}/classes"/>
   <property name="build.target.testClasses" value="${build.target}/test-classes"/>
+  <property name="build.target.webapp" value="${build.target}/webapp"/>
   <property name="project.generated.ivy.file" value="${build.target}/ivy.xml"/>
   <property name="project.generated.pom.file" value="${build.target}/pom.xml"/>
   

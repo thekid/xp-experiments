@@ -5,17 +5,18 @@
    !   supply a value for xp.build.home in your environment or
    !   ant script.
    !-->
+  <property environment="env"/>
   <condition property="xp.build.home" value="${env.XPBUILD_HOME}">
-    <isset property="env.XPBUIL_HOME"/>
+    <isset property="env.XPBUILD_HOME"/>
   </condition>
   <property name="xp.build.home" value="${user.home}/.ant/xp-build"/>
 
   <!-- Import files -->
   <import>
-    <filelist dir="${xp.build.home}" files="build-installivy.xml
-      build-lifecycle.xml
-      build-master.xml
-      build-xpmacro.xml"
-    />
+    <fileset dir="${xp.build.home}">
+      <include name="build-*.xml"/>
+      <exclude name="build-loader.xml"/>
+      <exclude name="build-svnexport.xml"/>
+    </fileset>
   </import>
 </project>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="xp-framework-webapp">
-  <target name="xp.webapp.compile" extensionOf="compile">
-    <copy todir="${build.target}/webapp">
-      <fileset dir="${build.webappSourceDirectory}"/>
-    </copy>
-  </target>
-</project>
