@@ -13,18 +13,22 @@
      conf="default"
      setid="package.fileset"
     />
-    <mkdir dir="${build.target.webapp}/lib"/>
+    
+    <!-- mkdir dir="${build.target.webapp}/lib"/ -->
     <copy todir="${build.target.webapp}/lib">
       <fileset refid="package.fileset"/>
       <mapper type="flatten"/>
     </copy>
 
-    <fileset id="pth.fileset" dir="${build.target.webapp}/lib" includes="*.xar"/>
+    <fileset id="pth.fileset" dir="${build.target.webapp}" includes="lib/*.xar"/>
 
     <pathconvert property="package.fileset" pathsep="&#10;">
       <path>
         <fileset refid="pth.fileset"/>
       </path>
+      <mapper>
+        <globmapper from="${build.target.webapp}/*" to="*" handledirsep="true"/>
+      </mapper>
     </pathconvert>
 
     <echo file="${build.target.webapp}/web.pth">${package.fileset}</echo>
