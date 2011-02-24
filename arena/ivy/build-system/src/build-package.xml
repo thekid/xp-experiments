@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="xp-framework-package">
+<project name="xp-framework-package" xmlns:ivy="antlib:org.apache.ivy.ant">
   <target name="xp.package.sources" extensionOf="package" depends="ivy-info">
     <xar dir="${build.target}/classes"
      target="${build.target}/${ivy.module}-${ivy.revision}.xar"
@@ -10,6 +10,7 @@
     <xar dir="${build.target}/test-classes"
      target="${build.target}/${ivy.module}-test-${ivy.revision}.xar"
     />
+    <property name="build.xar" value="${build.target}/${ivy.module}-test-${ivy.revision}.xar"/>
   </target>
 
   <target name="xp.package.meta" extensionOf="package" depends="ivy-info, xp.package.sources, xp.package.tests">
