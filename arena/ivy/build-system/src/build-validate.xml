@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="xp-framework-validate">
+  <target name="xp.validate" extensionOf="validate">
+    <apply
+     executable="php"
+     failonerror="true"
+    >
+      <arg value="-l"/>
+      <path refid="build.sourceDirectory"/>
+    </apply>
+  </target>
+</project>

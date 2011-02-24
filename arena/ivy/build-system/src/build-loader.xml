@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="xp-framework-loader">
+<project name="xp-framework-loader" basedir=".">
 
   <!-- To override the location where XP build scripts are picked up,
    !   supply a value for xp.build.home in your environment or

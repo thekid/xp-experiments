@@ -17,6 +17,7 @@
   </fileset>
   <path id="build.webappSourceDirectory">
     <fileset dir="${basedir}/src/resources/" includes="webapp/**"/>
+    <fileset dir="${basedir}/src/main/" includes="xsl/**"/>
   </path>
   <path id="build.configSourceDirectory">
     <fileset dir="${basedir}/src/resources/" includes="etc/**"/>

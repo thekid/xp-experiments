@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="xp-framework-webapp">
+<project name="xp-framework-webapp" xmlns:ivy="antlib:org.apache.ivy.ant">
   <target name="xp.webapp.compile" extensionOf="compile">
     <copy todir="${build.target.webapp}">
       <path refid="build.webappSourceDirectory"/>
       <path refid="build.configSourceDirectory"/>
     </copy>
+  </target>
+
+  <target name="xp.webapp.pre-package" extensionOf="pre-package">
+    <ivy:cachefileset
+     type="xar"
+     conf="default"
+     setid="package.fileset"
+    />
+    <mkdir dir="${build.target.webapp}/lib"/>
+    <copy todir="${build.target.webapp}/lib">
+      <fileset refid="package.fileset"/>
+      <mapper type="flatten"/>
+    </copy>
+
+    <fileset id="pth.fileset" dir="${build.target.webapp}/lib" includes="*.xar"/>
+
+    <pathconvert property="package.fileset" pathsep="&#10;">
+      <path>
+        <fileset refid="pth.fileset"/>
+      </path>
+    </pathconvert>
+
+    <echo file="${build.target.webapp}/web.pth">${package.fileset}</echo>
+
+
   </target>
 
   <target name="xp.webapp.package" extensionOf="package" depends="ivy-info">

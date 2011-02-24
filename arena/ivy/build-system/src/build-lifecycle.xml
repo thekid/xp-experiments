@@ -13,8 +13,10 @@
   <extension-point name="compile" depends="prepare"/>
   <extension-point name="test" depends="compile"/>
   <extension-point name="integration-test" depends="test"/>
-  <extension-point name="package" depends="test"/>
-  <extension-point name="verify" depends="package"/>
+  <extension-point name="pre-package" depends="test"/>
+  <extension-point name="package" depends="pre-package"/>
+  <extension-point name="post-package" depends="package"/>
+  <extension-point name="verify" depends="post-package"/>
   <extension-point name="install" depends="verify"/>
   <extension-point name="deploy" depends="verify"/>
   
