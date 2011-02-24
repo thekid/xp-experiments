@@ -1,18 +1,21 @@
 <?xml version="1.0"?>
 <project name="xp-framework-loader">
-  <property name="xp.ant.build.dir" value="${user.home}/.ant/build/"/>
-  <property name="xp.ant.lazy" value="true"/>
-  
-  <echo>Bootstrap loading build process from base ${xp.ant.url}</echo>
-  <mkdir dir="${xp.ant.build.dir}"/>
-  <get src="${xp.ant.url}/build-installivy.xml" dest="${xp.ant.build.dir}" skipexisting="${xp.ant.lazy}"/>
-  <get src="${xp.ant.url}/build-lifecycle.xml" dest="${xp.ant.build.dir}" skipexisting="${xp.ant.lazy}"/>
-  <get src="${xp.ant.url}/build-master.xml" dest="${xp.ant.build.dir}" skipexisting="${xp.ant.lazy}"/>
-  <get src="${xp.ant.url}/build-xpmacro.xml" dest="${xp.ant.build.dir}" skipexisting="${xp.ant.lazy}"/>
-  <get src="${xp.ant.url}/ivysettings.xml" dest="${xp.ant.build.dir}" skipexisting="${xp.ant.lazy}"/>
-  <get src="${xp.ant.url}/ivysettings-public.xml" dest="${xp.ant.build.dir}" skipexisting="${xp.ant.lazy}"/>
 
+  <!-- To override the location where XP build scripts are picked up,
+   !   supply a value for xp.build.home in your environment or
+   !   ant script.
+   !-->
+  <condition property="xp.build.home" value="${env.XPBUILD_HOME}">
+    <isset property="env.XPBUIL_HOME"/>
+  </condition>
+  <property name="xp.build.home" value="${user.home}/.ant/xp-build"/>
+
+  <!-- Import files -->
   <import>
-    <fileset dir="${xp.ant.build.dir}" includes="build-*.xml"/>
+    <filelist dir="${xp.build.home}" files="build-installivy.xml
+      build-lifecycle.xml
+      build-master.xml
+      build-xpmacro.xml"
+    />
   </import>
 </project>

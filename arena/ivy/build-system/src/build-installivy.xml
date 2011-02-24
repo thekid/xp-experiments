@@ -1,15 +1,11 @@
 <?xml version="1.0"?>
 <project name="go-ivy">
   <!-- Automatically download ivy & load library -->
-
-  <condition property="ivy.home" value="${env.IVY_HOME}">
-    <isset property="env.IVY_HOME"/>
-  </condition>
-  <property name="ivy.jar.dir" value="${user.home}/.ant/lib" />
   <property name="ivy.install.version" value="2.2.0" />
+  <property name="ivy.jar.dir" value="${user.home}/.ant/lib" />
   <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-${ivy.install.version}.jar" />
-  <available property="ivy.detected" file="${ivy.jar.file}"/>
 
+  <available property="ivy.detected" file="${ivy.jar.file}"/>
   <target name="download-ivy" unless="ivy.detected" description="--> Download ivy">
   	<mkdir dir="${ivy.jar.dir}"/>
 

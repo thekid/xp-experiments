@@ -5,17 +5,6 @@
   <import file="${include.base}/build-installivy.xml"/>
   <import file="${include.base}/build-xpmacro.xml"/>
 
-  <!-- 
-   ! Section configuration
-   !
-   ! Configurable (public) settings
-   !-->
-  <path id="build.sourceDirectory" path="${basedir}/src/main/"/>
-  <path id="build.testSourceDirectory" path="${basedir}/src/test/"/>
-  <fileset id="build.testConfigurations" dir="${basedir}">
-    <include name="unittest.ini"/>
-  </fileset>
-
   <!-- RELEASE or INTEGRATION -->
   <property name="ivy.publish.status" value="integration"/>
   
