@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<project name="xp-nagios">
+  <import file="../build/build-master.xml"/>
+  
+  <path id="build.sourceDirectory">
+    <fileset dir="${basedir}/xp/ports/classes">
+      <include name="org/nagios/**"/>
+      <exclude name="org/nagios/unittest"/>
+    </fileset>
+  </path>
+  
+  <path id="build.testSourceDirectory">
+    <fileset dir="${basedir}/xp/ports/classes">
+      <include name="org/nagios/unittest/**"/>
+    </fileset>
+  </path>
+  
+  <property name="build.testPackage" value="org.nagios.unittest.**"/>
+</project>

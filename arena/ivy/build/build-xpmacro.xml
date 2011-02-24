@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<project name="xp-framework-macro" basedir=".">
+  <macrodef name="xar">
+    <attribute name="target"/>
+    <attribute name="dir"/>
+    
+    <sequential>
+      <exec
+       executable="xar"
+       failonerror="true"
+       dir="@{dir}"
+      >
+        <arg value="cf"/>
+        <arg value="@{target}"/>
+        <arg value="."/>
+      </exec>
+    </sequential>
+  </macrodef>
+</project>

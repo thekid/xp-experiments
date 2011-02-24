@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<project name="xp-framework-tools" basedir=".">
+  <import file="../build/build-master.xml"/>
+
+  <path id="build.sourceDirectory">
+    <fileset dir="${basedir}/xp/tools">
+      <exclude name="*.php"/>
+    </fileset>
+  </path>
+  <path id="build.testSourceDirectory"/>
+  
+  <target name="xp.compile.entrypoints" extensionOf="compile">
+    <mkdir dir="${build.target}/tools"/>
+    <copy todir="${build.target}/tools">
+      <fileset dir="${basedir}/xp/tools">
+        <include name="*.php"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="xp.compile.bootstrap" extensionOf="compile">
+    <copy todir="${build.target}/bootstrap-build">
+      <fileset dir="${basedir}/xp">
+        <include name="tools/*.php"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="xp.package.bootstrap" extensionOf="package" depends="ivy-info">
+    <zip
+     destfile="${build.target}/${ivy.module}-ep-${ivy.revision}.zip"
+    >
+      <zipfileset dir="${build.target}/bootstrap-build"/>
+    </zip>
+  </target>
+</project>

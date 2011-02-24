@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<project name="xp-framework-core" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+  <import file="../build/build-master.xml"/>
+
+  <path id="build.sourceDirectory">
+    <fileset dir="${basedir}/xp/skeleton">
+      <exclude name="lang.base.php"/>
+    </fileset>
+  </path>
+  
+  <path id="build.testSourceDirectory">
+    <fileset dir="${basedir}/xp/ports/classes">
+      <include name="net/xp_framework/unittest/**"/>
+      <include name="net/xp_lang/tests/**"/>
+    </fileset>
+    <fileset dir="${basedir}/xp/ports/unittest">
+      <include name="*.ini"/>
+      <exclude name="isbn.ini"/>
+      <exclude name="stomp.ini"/>
+    </fileset>
+  </path>
+  
+  <fileset id="build.testConfigurations" dir="${build.target}/test-classes">
+    <include name="*.ini"/>
+  </fileset>
+  
+  <target name="xp.compile.bootstrap" extensionOf="compile">
+    <!-- HACK: lang.base.php must be in regular bootstrap classpath, too -->
+    <copy todir="${build.target}/bootstrap" file="${basedir}/xp/skeleton/lang.base.php"/>
+    <copy todir="${build.target}/build-bootstrap" file="${basedir}/xp/skeleton/lang.base.php"/>
+  </target>
+  
+  <target name="xp.package.bootstrap" extensionOf="package" depends="ivy-info">
+    <zip destfile="${build.target}/${ivy.module}-bootstrap-${ivy.revision}.zip">
+      <fileset dir="${build.target}/build-bootstrap"/>
+    </zip>
+  </target>
+</project>

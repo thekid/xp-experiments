@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<project name="xp-nagios">
+  <property name="project.svn.url" value="http://svn.xp-framework.net/xp/trunk/ports/classes"/>
+  
+  <import file="../build/build-master.xml"/>
+  
+  <path id="build.sourceDirectory">
+    <fileset dir="${basedir}/xp">
+      <include name="org/codehaus/stomp/**"/>
+      <exclude name="org/codehaus/stomp/unittest/"/>
+    </fileset>
+  </path>
+  
+  <path id="build.testSourceDirectory">
+    <fileset dir="${basedir}/xp">
+      <include name="org/codehaus/stomp/unittest/**"/>
+      <exclude name="**/*IntegrationTest*"/>
+    </fileset>
+  </path>
+  
+  <property name="build.testPackage" value="org.codehaus.stomp.unittest.**"/>
+</project>
