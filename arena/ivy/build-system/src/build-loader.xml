@@ -13,11 +13,6 @@
 
   <!-- Import files -->
   <import>
-    <fileset dir="${xp.build.home}">
-      <include name="build-*.xml"/>
-      <exclude name="build-loader.xml"/>
-      <exclude name="build-svnexport.xml"/>
-      <exclude name="build-webapp.xml"/>
-    </fileset>
+    <fileset dir="${xp.build.home}/dflt" includes="build-*.xml">
   </import>
 </project>
