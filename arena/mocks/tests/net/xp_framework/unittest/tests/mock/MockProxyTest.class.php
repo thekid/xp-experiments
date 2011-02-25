@@ -27,7 +27,7 @@
      *
      */
     public function setUp() {
-      $this->sut=new MockProxy(new Mockery());
+      $this->sut=new MockProxy();
     }
 
     /**
