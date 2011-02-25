@@ -32,6 +32,7 @@
     <dependency
      name="tools"
      rev="5.8"
+     conf="default->default; test->test"
     />
   </dependencies>
 </ivy-module>

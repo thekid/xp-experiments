@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project name="xp-framework-core" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
-  <import file="../build/build-master.xml"/>
+  <import file="${user.home}/.ant/xp-build/build-loader.xml"/>
+  <import file="${user.home}/.ant/xp-build/build-svnexport.xml"/>
 
   <path id="build.sourceDirectory">
     <fileset dir="${basedir}/xp/skeleton">
