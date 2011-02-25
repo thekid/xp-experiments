@@ -9,14 +9,13 @@
   <property name="build.sourceDirectory" value="${basedir}/src/main"/>
 
   <fileset id="build.sources.fileset.php" dir="${build.sourceDirectory}/php" erroronmissingdir="false">
-    <include name="**/*.php"/>
+    <include name="**/*"/>
   </fileset>
   <fileset id="build.sources.fileset.xsl" dir="${build.sourceDirectory}/xsl" erroronmissingdir="false">
-    <include name="**/*.xsl"/>
-    <include name="**/*.xml"/>
+    <include name="**/*"/>
   </fileset>
   <path id="build.testSourceDirectory" path="${basedir}/src/test/">
-    <fileset dir="${basedir}/src/test/" includes="**/*"/>
+    <fileset dir="${basedir}/src/test/" erroronmissingdir="false"/>
   </path>
   <fileset id="build.testConfigurations" dir="${basedir}">
     <include name="unittest.ini"/>
