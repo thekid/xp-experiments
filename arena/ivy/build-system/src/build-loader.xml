@@ -17,6 +17,7 @@
       <include name="build-*.xml"/>
       <exclude name="build-loader.xml"/>
       <exclude name="build-svnexport.xml"/>
+      <exclude name="build-webapp.xml"/>
     </fileset>
   </import>
 </project>

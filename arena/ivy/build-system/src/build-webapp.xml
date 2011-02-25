@@ -8,6 +8,7 @@
   </target>
 
   <target name="xp.webapp.pre-package" extensionOf="pre-package">
+    <echo>foobar</echo>
     <ivy:cachefileset
      type="xar"
      conf="default"
@@ -23,7 +24,7 @@
 
     <fileset id="pth.fileset" dir="${build.target.webapp}" includes="lib/*.xar"/>
 
-    <pathconvert property="package.fileset" pathsep="&#10;">
+    <pathconvert property="package.fileset" pathsep="&#10;" dirsep="/">
       <path>
         <fileset refid="pth.fileset"/>
       </path>
@@ -33,8 +34,13 @@
     </pathconvert>
 
     <echo file="${build.target.webapp}/web.pth">${package.fileset}</echo>
-
-
+  </target>
+  
+  <target name="xp.webapp.descriptor" extensionOf="pre-package">
+    <copy todir="${build.target.webapp}">
+      <path refid="build.containerConfigDirectory"/>
+      <filterset filterfile="${basedir}/src/resources/webapp.properties"/>
+    </copy>
   </target>
 
   <target name="xp.webapp.package" extensionOf="package" depends="ivy-info">

@@ -23,4 +23,10 @@
   <path id="build.configSourceDirectory">
     <fileset dir="${basedir}/src/resources/" includes="etc/**"/>
   </path>
+  <path id="build.containerConfigDirectory">
+    <fileset dir="${basedir}/src/resources/">
+      <include name="container/*"/>
+      <exclude name="**/*.properties"/>
+    </fileset>
+  </path>
 </project>
