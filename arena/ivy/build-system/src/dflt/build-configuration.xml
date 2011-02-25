@@ -6,19 +6,15 @@
    !
    ! Configurable (public) settings
    !-->
-  <path id="build.sourceDirectory">
-    <path refid="build.sourceDirectory.php"/>
-    <path refid="build.sourceDirectory.xsl"/>
-  </path>
-  <path id="build.sourceDirectory.php">
-    <fileset dir="${basedir}/src/main/php"/>
-  </path>
-  <path id="build.sourceDirectory.xsl">
-    <fileset dir="${basedir}/src/main/xsl"/>
-  </path>
-  <path id="build.sourceDirectory.xp">
-    <fileset dir="${asedir}/src/main/xp" includes="**/*.xp"/>
-  </path>
+  <property name="build.sourceDirectory" value="${basedir}/src/main"/>
+
+  <fileset id="build.sources.fileset.php" dir="${build.sourceDirectory}">
+    <include name="php/**/*.php"/>
+  </fileset>
+  <fileset id="build.sources.fileset.xsl" dir="${build.sourceDirectory}">
+    <include name="xsl/**/*.xsl"/>
+    <include name="xsl/**/*.xml"/>
+  </fileset>
   <path id="build.testSourceDirectory" path="${basedir}/src/test/">
     <fileset dir="${basedir}/src/test/" includes="**/*"/>
   </path>

@@ -13,6 +13,8 @@
 
   <!-- Import files -->
   <import>
-    <fileset dir="${xp.build.home}/dflt" includes="build-*.xml">
+    <fileset dir="${xp.build.home}/dflt">
+      <include name="build-*.xml"/>
+    </fileset>
   </import>
 </project>
