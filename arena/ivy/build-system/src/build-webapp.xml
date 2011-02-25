@@ -8,7 +8,6 @@
   </target>
 
   <target name="xp.webapp.pre-package" extensionOf="pre-package">
-    <echo>foobar</echo>
     <ivy:cachefileset
      type="xar"
      conf="default"
@@ -39,7 +38,10 @@
   <target name="xp.webapp.descriptor" extensionOf="pre-package">
     <copy todir="${build.target.webapp}">
       <path refid="build.containerConfigDirectory"/>
-      <filterset filterfile="${basedir}/src/resources/webapp.properties"/>
+      <filterset filtersfile="${basedir}/src/resources/container/webapp.properties">
+        <filter token="name" value="${ivy.module}-${ivy.revision}"/>
+        <filter token="php_include_path" value="~:@base@/@name@/bootstrap"/>
+      </filterset>
     </copy>
   </target>
 

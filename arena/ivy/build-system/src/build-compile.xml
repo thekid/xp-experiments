@@ -3,8 +3,16 @@
   <target name="xp.compile.sources" extensionOf="compile">
     <mkdir dir="${build.target.classes}"/>
     <copy todir="${build.target.classes}">
-      <path refid="build.sourceDirectory"/>
+      <path refid="build.sourceDirectory.php"/>
     </copy>
+    <copy todir="${build.target.classes}" failonerror="false">
+      <path refid="build.sourceDirectory.xsl"/>
+    </copy>
+  </target>
+
+  <target name="xp.compile.sources.xp">
+    <path refid="build.sourceDirectory.xp"/>
+    <!-- TODO: Call "xcc" -->
   </target>
 
   <target name="xp.compile.tests" extensionOf="compile">
@@ -13,6 +21,5 @@
       <path refid="build.testSourceDirectory"/>
     </copy>
   </target>
-
 
 </project>
