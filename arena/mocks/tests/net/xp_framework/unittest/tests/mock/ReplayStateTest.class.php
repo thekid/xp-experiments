@@ -53,7 +53,7 @@
     /**
      * if expectation exists, return value is returned                        
      */
-    #[@test, @ignore]
+    #[@test]
     public function handleInvocation_withExistingExpectation_returnExpectationsReturnValue() {
       $myExpectation=new Expectation();
       $myExpectation->setReturn('foobar');

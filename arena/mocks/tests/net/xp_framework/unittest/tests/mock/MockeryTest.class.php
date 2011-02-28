@@ -99,7 +99,7 @@
     /**
      * Defined value returned in replay mode
      */
-    #[@test, @ignore]
+    #[@test]
     public function canDefineReturnValue() {
       $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 

@@ -38,7 +38,10 @@
      * @return  var
      */
     public function handleInvocation($method, $args) {
-
+      if(!$this->expectationMap->containsKey($method))
+        return null;
+      
+      return $this->expectationMap->get($method)->getNext()->getReturn();      
     }
   }
 
