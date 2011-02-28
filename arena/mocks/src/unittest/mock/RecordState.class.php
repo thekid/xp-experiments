@@ -7,6 +7,8 @@
 
   uses('unittest.mock.IMockState',
        'unittest.mock.MethodOptions',
+       'unittest.mock.Expectation',
+       'unittest.mock.ExpectationList',
        'lang.IllegalArgumentException',
        'util.Hashmap',
        'util.collections.Vector');
