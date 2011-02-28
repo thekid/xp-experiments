@@ -110,5 +110,20 @@
       $this->assertTrue($object->foo()=== $return);
     }
 
+    /**
+     * If no expectations are left, null is returned
+     */
+    #[@test]
+    public function missingExpectationLeadsToNull() {
+      $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+
+      $object->foo()->returns(new Object());
+
+      $object->replay();
+      $this->assertInstanceOf('lang.Object', $object->foo());
+      $this->assertNull($object->foo());
+      $this->assertNull($object->foo());
+      $this->assertNull($object->foo());
+    }
   }
 ?>

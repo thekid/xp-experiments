@@ -50,6 +50,7 @@
     public function canHandleInvocation() {
       $this->sut->handleInvocation(null, null);
     }
+    
     /**
      * if expectation exists, return value is returned                        
      */
@@ -65,6 +66,21 @@
       
       $this->assertEquals($myExpectation->getReturn(), $this->sut->handleInvocation('foo', null));
     }
-
+    /**
+     * if no expectations are left, null is returned                       
+     */
+    #[@test]
+    public function handleInvocation_missingExpectationLeadToNull() {
+      $myExpectation=new Expectation();
+      $myExpectation->setReturn('foobar');
+      
+      $expectationsList=new ExpectationList();
+      $expectationsList->add($myExpectation);
+      
+      $this->expectationMap->put('foo', $expectationsList);
+      
+      $this->assertEquals($myExpectation->getReturn(), $this->sut->handleInvocation('foo', null));
+      $this->assertNull($this->sut->handleInvocation('foo', null));
+    }
   }
 ?>
