@@ -17,12 +17,13 @@
     private 
       $sut=null,
       $expectationMap;
+    
     /**
      * Creates the fixture;
      *
      */
     public function setUp() {
-      $this->expectationMap= new Hashmap();    
+      $this->expectationMap= new Hashmap();
       $this->sut=new ReplayState($this->expectationMap);
     }
       
@@ -52,12 +53,14 @@
     /**
      * if expectation exists, return value is returned                        
      */
-    #[@test, @ignore]
+    #[@test]
     public function handleInvocation_withExistingExpectation_returnExpectationsReturnValue() {
       $myExpectation=new Expectation();
       $myExpectation->setReturn('foobar');
       
-      $expectationsList=new Vector(array($myExpectation));
+      $expectationsList=new ExpectationList();
+      $expectationsList->add($myExpectation);
+      
       $this->expectationMap->put('foo', $expectationsList);
       
       $this->assertEquals($myExpectation->getReturn(), $this->sut->handleInvocation('foo', null));

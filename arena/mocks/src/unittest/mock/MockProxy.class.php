@@ -14,7 +14,7 @@
   /**
    * A mock proxy.
    *
-   * @purpose 
+   * @purpose Mocking
    */
   class MockProxy extends Proxy implements InvocationHandler {
     private
@@ -65,3 +65,4 @@
         $this->mockState= new ReplayState($this->expectionMap);
     }
   }
+?>

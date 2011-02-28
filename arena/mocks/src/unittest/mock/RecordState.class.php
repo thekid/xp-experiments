@@ -12,9 +12,9 @@
        'util.collections.Vector');
 
   /**
-   * Recording state.
+   * Record expectations on a mock object.
    *
-   * @purpose Record expectations on a mock object.
+   * @purpose Mocking
    */
   class RecordState extends Object implements IMockState {
     private
@@ -42,7 +42,7 @@
     public function handleInvocation($method, $args) {
       $expectation= new Expectation();
 
-      $methodExpectations= new Vector();
+      $methodExpectations= new ExpectationList();
       if($this->expectationMap->containsKey($method))
         $methodExpectations= $this->expectationMap->get($method);
       else
@@ -53,3 +53,5 @@
       return new MethodOptions($expectation);
     }
   }
+
+?>

@@ -6,14 +6,13 @@
  */
 
 /**
- * TODO: Description
+ * Interface for expectation types
  *
- * @see      TODO: xp://fqdn
- * @purpose  TODO: Purpose
+ * @see      xp://unittest.mock.IExpectation
+ * @purpose  Mocking
  */
   interface IExpectation {
     function getReturn();
     function setReturn($value);
   }
-
-
+?>

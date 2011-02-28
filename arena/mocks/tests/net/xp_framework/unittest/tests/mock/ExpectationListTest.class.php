@@ -94,3 +94,5 @@
       $this->sut->add(new Object());
     }
   }
+
+?>

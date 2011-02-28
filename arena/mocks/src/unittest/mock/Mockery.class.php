@@ -11,7 +11,7 @@
   /**
    * Class for creating mock/stub instances of arbitrary types
    *
-   * @purpose  Mockery
+   * @purpose  Mocking
    */
   class Mockery extends Object {
     /**
@@ -34,4 +34,5 @@
       return $proxyClass->newInstance();
     }
   }
+
 ?>

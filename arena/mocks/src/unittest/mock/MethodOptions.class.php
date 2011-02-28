@@ -9,9 +9,9 @@
        'unittest.mock.Expectation');
 
   /**
-   * TODO
+   * Implements a fluent interface for specifying mock expectation.
    *
-   * @purpose 
+   * @purpose Mocking
    */
   class MethodOptions extends Object implements IMethodOptions {
     private
@@ -30,10 +30,11 @@
     }
     
     /**
-     * TODO
+     * Specifies the expected return value.
      */
     public function returns($value) {
       $this->expectation->setReturn($value);
       return $this;
     }
   }
+?>

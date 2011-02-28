@@ -7,13 +7,12 @@
   uses('unittest.mock.IExpectation');
 
   /**
- * TODO: Description
- *
- * @see TODO: xp://fqdn
- * @purpose TODO: purpose
- */
+   * Expectation to a method call.
+   *
+   * @see xp://unittest.mock.Expectation
+   * @purpose Mocking
+   */
   class Expectation extends Object implements IExpectation {
-
     /**
      * Constructor
      */
@@ -28,6 +27,6 @@
     public function setReturn($value) {
         $this->return=$value;
     }
-
 }
 
+?>
