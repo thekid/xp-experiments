@@ -17,15 +17,15 @@
      *
      */
     public function setUp() {
-      $this->sut=new MethodOptions();
+      $this->sut=new MethodOptions(new Expectation());
     }
       
     /**
      * Can create.
      */
-    #[@test]
-    public function canCreate() {
-      new MethodOptions();
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function expectationRequiredOnCreate() {
+      new MethodOptions(null);
     }
 
     /**
@@ -36,5 +36,18 @@
       $this->sut->returns(null);
     }
 
+    /**
+     * When returns is called, the expectation's return value should be set too.
+     */
+    #[@test]
+    public function returns_valueSetInExpectation() {
+      $expectation=new Expectation();
+      $sut= new MethodOptions($expectation);
+      $expected=new Object();
+
+      $sut->returns($expected);
+
+      $this->assertEquals($expected, $expectation->getReturn());
+    }
   }
 ?>

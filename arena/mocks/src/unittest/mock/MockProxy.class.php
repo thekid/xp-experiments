@@ -7,7 +7,9 @@
 
   uses('lang.reflect.InvocationHandler',
        'lang.reflect.Proxy',
-       'unittest.mock.RecordState');
+       'unittest.mock.RecordState',
+       'unittest.mock.Expectation',
+       'util.Hashmap');
 
   /**
    * A mock proxy.
@@ -16,11 +18,13 @@
    */
   class MockProxy extends Proxy implements InvocationHandler {
     private
-      $mockState= null;
+      $mockState= null,
+      $expectionMap= null;
 
     public function __construct() {
       parent::__construct($this);
-      $this->mockState= new RecordState();
+      $this->expectionMap= new Hashmap();
+      $this->mockState= new RecordState($this->expectionMap);
     }
     
     /**

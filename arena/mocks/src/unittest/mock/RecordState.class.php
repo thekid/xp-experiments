@@ -6,14 +6,32 @@
  */
 
   uses('unittest.mock.IMockState',
-       'unittest.mock.MethodOptions');
+       'unittest.mock.MethodOptions',
+       'lang.IllegalArgumentException',
+       'util.Hashmap',
+       'util.collections.Vector');
 
   /**
-   * TBD
+   * Recording state.
    *
-   * @purpose 
+   * @purpose Record expectations on a mock object.
    */
   class RecordState extends Object implements IMockState {
+    private
+      $expectationMap= null;
+
+    /**
+     * Constructor
+     *
+     * @param Hashmap expectationsMap
+     */
+    public function  __construct($expectationMap) {
+      if(!($expectationMap instanceof Hashmap))
+        throw new IllegalArgumentException('Invalid expectation map passed.');
+      
+      $this->expectationMap= $expectationMap;
+    }
+
     /**
      * Records the call as expectation and returns the mehtod options object.
      *
@@ -22,6 +40,16 @@
      * @return  var
      */
     public function handleInvocation($method, $args) {
-      return new MethodOptions();
+      $expectation= new Expectation();
+
+      $methodExpectations= new Vector();
+      if($this->expectationMap->containsKey($method))
+        $methodExpectations= $this->expectationMap->get($method);
+      else
+        $this->expectationMap->put($method, $methodExpectations);
+      
+      $methodExpectations->add($expectation);
+
+      return new MethodOptions($expectation);
     }
   }
