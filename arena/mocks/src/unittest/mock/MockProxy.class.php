@@ -8,6 +8,7 @@
   uses('lang.reflect.InvocationHandler',
        'lang.reflect.Proxy',
        'unittest.mock.RecordState',
+       'unittest.mock.ReplayState',
        'unittest.mock.Expectation',
        'util.Hashmap');
 
