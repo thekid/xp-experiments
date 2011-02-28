@@ -168,7 +168,7 @@
      * @throws  lang.IllegalArgumentException
      */
     public function createProxyInstance($classloader, $interfaces, $handler) {
-      return $this->buildProxyClass($classloader, $interfaces)->newInstance($handler);
+      return $this->createProxyClass($classloader, $interfaces)->newInstance($handler);
     }
     
     /**
