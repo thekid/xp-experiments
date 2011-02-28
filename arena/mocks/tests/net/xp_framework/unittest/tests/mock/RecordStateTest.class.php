@@ -58,9 +58,8 @@
       $this->sut->handleInvocation('foo', null);
       $this->assertEquals(1, $this->expectationMap->size());
       $expectationList= $this->expectationMap->get('foo');
-      $this->assertInstanceOf('util.collections.IList', $expectationList);
-      $this->assertEquals(1, $expectationList->size());
-      $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->get(0));
+      $this->assertInstanceOf('unittest.mock.ExpectationList', $expectationList);
+      $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->getNext());
     }
 
     /**
@@ -70,8 +69,8 @@
     public function newExpectationCreatedOnHandleInvocation_twoDifferentMethods() {
       $this->sut->handleInvocation('foo', null);
       $this->sut->handleInvocation('bar', null);
-      $this->assertInstanceOf('unittest.mock.Expectation', $this->expectationMap->get('foo')->get(0));
-      $this->assertInstanceOf('unittest.mock.Expectation', $this->expectationMap->get('bar')->get(0));
+      $this->assertInstanceOf('unittest.mock.Expectation', $this->expectationMap->get('foo')->getNext());
+      $this->assertInstanceOf('unittest.mock.Expectation', $this->expectationMap->get('bar')->getNext());
     }
 
         /**
@@ -83,10 +82,9 @@
       $this->sut->handleInvocation('foo', null);
       $expectationList= $this->expectationMap->get('foo');
 
-      $this->assertInstanceOf('util.collections.IList', $expectationList);
-      $this->assertEquals(2, $expectationList->size());
-      $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->get(0));
-      $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->get(1));
+      $this->assertInstanceOf('unittest.mock.ExpectationList', $expectationList);
+      $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->getNext());
+      $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->getNext());
 
     }
   }
