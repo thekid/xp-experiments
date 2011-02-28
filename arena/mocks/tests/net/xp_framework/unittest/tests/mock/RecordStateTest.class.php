@@ -4,7 +4,8 @@
  * $Id$
  */
  
-  uses('unittest.mock.RecordState');
+  uses('unittest.mock.RecordState',
+       'util.Hashmap');
 
   /**
    * TODO: Description
@@ -27,7 +28,7 @@
     }
       
     /**
-     * Can create.
+     * Cannot create without valid Hasmap.
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function expectationMapRequiredOnCreate() {
@@ -35,9 +36,16 @@
     }
     
     /**
-     * Can create.
+     * Can create with valid hasmap.
      */
-    #[@test
+    #[@test]
+    public function canCreate() {
+      new RecordState(new Hashmap());
+    }
+    /**
+     * Can call handleInvocation.
+     */
+    #[@test]
     public function canHandleInvocation() {
       $this->sut->handleInvocation(null, null);
     }

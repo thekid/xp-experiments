@@ -62,6 +62,6 @@
      * Switches state to replay mode
      */
     public function replay() {
-        $this->mockState= new ReplayState();
+        $this->mockState= new ReplayState($this->expectionMap);
     }
   }
