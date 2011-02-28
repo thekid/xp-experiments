@@ -39,8 +39,8 @@
      * Can create mock for empty interface
      */
     #[@test]
-    public function canbuildMockForEmptyInterface() {
-      $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IEmptyInterface');
+    public function canCreateMockForEmptyInterface() {
+      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IEmptyInterface');
       $this->assertInstanceOf('net.xp_framework.unittest.tests.mock.IEmptyInterface', $object);
     }
 
@@ -48,8 +48,8 @@
      * Can create mock for non-empty interface
      */
     #[@test]
-    public function canbuildMockForComplexInterface() {
-      $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+    public function canCreateMockForComplexInterface() {
+      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
       $this->assertInstanceOf('net.xp_framework.unittest.tests.mock.IComplexInterface', $object);
     }
 
@@ -57,16 +57,16 @@
      * Can create mock for non-empty interface
      */
     #[@test, @expect('lang.ClassNotFoundException')]
-    public function cannotbuildMockForUnknownTypes() {
-      $this->sut->buildMock('foooooo.Unknown');
+    public function cannotCreateMockForUnknownTypes() {
+      $this->sut->createMock('foooooo.Unknown');
     }
 
     /**
      * Can create mock for non-empty interface
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    public function cannotbuildMockForNonXPClassTypes() {
-      $this->sut->buildMock('string');
+    public function cannotCreateMockForNonXPClassTypes() {
+      $this->sut->createMock('string');
     }
 
     /**
@@ -74,7 +74,7 @@
      */
     #[@test]
     public function canCallReplay() {
-      $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
       $object->replay();
     }
 
@@ -83,7 +83,7 @@
      */
     #[@test]
     public function canCallInterfaceMethods() {
-      $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
       $object->foo();
     }
 
@@ -92,7 +92,7 @@
      */
     #[@test]
     public function canCallReturnsFluently() {
-      $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
       $object->foo()->returns(null);
     }
 
@@ -101,7 +101,7 @@
      */
     #[@test]
     public function canDefineReturnValue() {
-      $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 
       $return = new Object();
       $object->foo()->returns($return);
@@ -115,7 +115,7 @@
      */
     #[@test]
     public function missingExpectationLeadsToNull() {
-      $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 
       $object->foo()->returns(new Object());
 
@@ -131,7 +131,7 @@
      */
     #[@test]
     public function recordedReturnsAreInCorrectOrder() {
-      $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 
       $return1="foo";
       $return2="bar";

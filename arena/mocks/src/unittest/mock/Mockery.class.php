@@ -20,7 +20,7 @@
      * @param   string typeName
      * @return  Object
      */
-    public function buildMock($typeName) {
+    public function createMock($typeName) {
       $type = Type::forName($typeName);
 
       if (!($type instanceof XPClass)) {
