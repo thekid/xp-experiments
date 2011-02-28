@@ -125,5 +125,28 @@
       $this->assertNull($object->foo());
       $this->assertNull($object->foo());
     }
+    
+    /**
+     * If no expectations are left, null is returned
+     */
+    #[@test]
+    public function recordedReturnsAreInCorrectOrder() {
+      $object= $this->sut->buildMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+
+      $return1="foo";
+      $return2="bar";
+      $return3="baz";
+      
+      $object->foo()->returns($return1);
+      $object->foo()->returns($return2);
+      $object->foo()->returns($return3);
+      $object->replay();
+      
+      $this->assertEquals($return1, $object->foo());
+      $this->assertEquals($return2, $object->foo());
+      $this->assertEquals($return3, $object->foo());
+      $this->assertNull($object->foo());
+
+    }
   }
 ?>

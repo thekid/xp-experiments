@@ -15,11 +15,11 @@ Installation
 
 Just append the path
 
-  ~/devel/xp.forge/trunk/experiments/arena/strict/
+  ~/devel/xp.forge/trunk/experiments/arena/mocks/
 
 to the use= setting in you xp.ini (usually located where your
 runners are).
 For use in a web environment you have to add
-this to you include_path setting in Apache configuration as
+this to you include_path setting in Apache configuration as 
 the first (!) path element.
--------------
+
