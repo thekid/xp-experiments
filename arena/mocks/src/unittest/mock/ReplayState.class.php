@@ -16,7 +16,7 @@
    * @purpose Replay expectations 
    */
   class ReplayState extends Object implements IMockState {
-        private
+    private
       $expectationMap= null;
         
     /**
