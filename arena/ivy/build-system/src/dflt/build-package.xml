@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="xp-framework-package" xmlns:ivy="antlib:org.apache.ivy.ant">
-  <target name="xp.package.sources" extensionOf="package" depends="ivy-info">
-    <xar dir="${build.target}/classes"
-     target="${build.target}/${ivy.module}-${ivy.revision}.xar"
+<project name="xp-framework-package" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+  
+  <target name="xp.package.sources" extensionOf="package" depends="ivy-info, xp.build.number">
+    <xar
+     dir="${build.target}/classes"
+     target="${build.target}/${ivy.module}-${ivy.new.revision}.xar"
     />
   </target>
 
-  <target name="xp.package.tests" extensionOf="package" depends="ivy-info">
-    <xar dir="${build.target}/test-classes"
-     target="${build.target}/${ivy.module}-test-${ivy.revision}.xar"
+  <target name="xp.package.tests" extensionOf="package" depends="ivy-info, xp.build.number">
+    <xar
+     dir="${build.target}/test-classes"
+     target="${build.target}/${ivy.module}-test-${ivy.new.revision}.xar"
     />
-    <property name="build.xar" value="${build.target}/${ivy.module}-test-${ivy.revision}.xar"/>
+    <property name="build.xar" value="${build.target}/${ivy.module}-test-${ivy.new.version}.xar"/>
   </target>
 
   <target name="xp.package.meta" extensionOf="package" depends="ivy-info, xp.package.sources, xp.package.tests">
     <echo>===> Packaging ${ivy.organisation}#${ivy.module}</echo>
 
     <ivy:resolve/>
-    <ivy:deliver
-     deliverpattern="${build.target}/ivy.xml"
-     revision="${ivy.revision}${project.qualifier}"
-     pubrevision="${ivy.revision}${project.qualifier}"
-     pubdate="now"
-     status="${ivy.publish.status}"
+    <ivy:deliver 
+     deliverpattern="${build.target}/ivy-${ivy.new.revision}.xml"
+     pubrevision="${ivy.new.revision}"
     />
 
     <ivy:makepom
-     ivyfile="${build.target}/ivy.xml"
+     ivyfile="${build.target}/ivy-${ivy.new.revision}.xml"
      pomfile="${build.target}/pom.xml"
      printIvyInfo="false"
     />

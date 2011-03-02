@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="xp-framework-test" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="xp-framework-test" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
   <target name="xp.test.createpath">
     <!-- Build classpath for unittests -->
     <ivy:cachefileset

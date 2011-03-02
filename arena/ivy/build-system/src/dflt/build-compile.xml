@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="xp-framework-compile">
+<project name="xp-framework-compile" basedir=".">
   <target name="xp.compile.sources" extensionOf="compile" depends="xp.compile.dest, xp.compile.sources.php, xp.compile.sources.xsl">
   </target>
 
