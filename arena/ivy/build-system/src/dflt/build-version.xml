@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="xp-framework-version" xmlns:ivy="antlib:org.apache.ivy.ant">
+  
+  <target name="xp.build-mode" depends="ivy-info">
+    <condition property="xp.build.mode.release">
+      <equals arg1="${ivy.status}" arg2="release"/>
+    </condition>
+
+    <condition property="xp.build.mode.milestone">
+      <equals arg1="${ivy.status}" arg2="milestone"/>
+    </condition>
+
+    <condition property="xp.build.mode.integration">
+      <equals arg1="${ivy.status}" arg2="integration"/>
+    </condition>
+  </target>
+
+  <target name="xp.build.number.release" depends="ivy-info, build-mode" if="xp.build.mode.release">
+    <property name="ivy.new.revision" value="${ivy.revision}"/>
+  </target>
+
+  <target name="xp.build.number.milestone" depends="ivy-info, build-mode" if="xp.build.mode.milestone">
+    <ivy:buildnumber 
+     organisation="${ivy.organisation}"
+     module="${ivy.module}"
+     revision="${ivy.revision}-RC"
+     revSep=""
+     defaultBuildNumber="1"
+    />
+  </target>
+
+  <target name="xp.build.number.integration" depends="ivy-info, build-mode" if="xp.build.mode.integration">
+    <ivy:buildnumber
+     organisation="${ivy.organisation}"
+     module="${ivy.module}"
+     revision="${ivy.revision}."
+     defaultBuildNumber="1"
+    />
+  </target>
+
+  <target name="xp.build.number" depends="xp.build.number.release, xp.build.number.milestone, xp.build.number.integration"/>
+</project>

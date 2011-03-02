@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="xp-framework-release" basedir=".">
+  
+  <target name="xp.install" extensionOf="install" depends="ivy-info">
+    <echo>===> Installing ${ivy.organisation}#${ivy.module} @ local</echo>
+
+    <ivy:publish
+     artifactspattern="${build.target}/[artifact]-[revision].[ext]"
+     resolver="local"
+     revision="${ivy.revision}${project.qualifier}"
+     pubrevision="${ivy.revision}${project.qualifier}"
+     pubdate="now"
+     overwrite="true"
+     publishivy="true"
+     status="${ivy.publish.status}"
+    />
+  </target>
+
+  <target name="xp.deploy" extensionOf="deploy" depends="ivy-info">
+    <echo>===> Deploying ${ivy.organisation}#${ivy.module} @ shared</echo>
+    <ivy:publish
+     artifactspattern="${build.target}/[artifact]-[revision].[ext]"
+     resolver="shared"
+     revision="${ivy.revision}${project.qualifier}"
+     pubrevision="${ivy.revision}${project.qualifier}"
+     pubdate="now"
+     overwrite="true"
+     publishivy="true"
+     status="${ivy.publish.status}"
+    />
+  </target>
+
+
+  <target name="xp.deploy.public" depends="ivy-info">
+    <echo>===> Deploying ${ivy.organisation}#${ivy.module} @ public-authenticated</echo>
+    <ivy:publish
+     artifactspattern="${build.target}/[artifact]-[revision].[ext]"
+     resolver="public-authenticated"
+     revision="${ivy.revision}${project.qualifier}"
+     pubrevision="${ivy.revision}${project.qualifier}"
+     pubdate="now"
+     overwrite="true"
+     publishivy="true"
+     status="${ivy.publish.status}"
+    />
+  </target>
+</project>

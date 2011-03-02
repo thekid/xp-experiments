@@ -2,12 +2,6 @@
 <project name="xp-framework-master" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
   <dirname property="include.base" file="${ant.file.xp-framework-master}"/>
 
-  <!-- RELEASE or INTEGRATION -->
-  <property name="ivy.publish.status" value="integration"/>
-  
-  <!-- -SNAPSHOT or empty -->
-  <property name="project.qualifier" value=""/>
-  
   <!-- Private settings -->
   <property name="build.target" value="${basedir}/target"/>
   <property name="build.target.classes" value="${build.target}/classes"/>
@@ -39,50 +33,6 @@
     </unzip>
   </target>
   
-  <target name="xp.install" extensionOf="install" depends="ivy-info">
-    <echo>===> Installing ${ivy.organisation}#${ivy.module} @ local</echo>
-
-    <ivy:publish
-     artifactspattern="${build.target}/[artifact]-[revision].[ext]"
-     resolver="local"
-     revision="${ivy.revision}${project.qualifier}"
-     pubrevision="${ivy.revision}${project.qualifier}"
-     pubdate="now"
-     overwrite="true"
-     publishivy="true"
-     status="${ivy.publish.status}"
-    />
-  </target>
-  
-  <target name="xp.deploy" extensionOf="deploy" depends="ivy-info">
-    <echo>===> Deploying ${ivy.organisation}#${ivy.module} @ shared</echo>
-    <ivy:publish
-     artifactspattern="${build.target}/[artifact]-[revision].[ext]"
-     resolver="shared"
-     revision="${ivy.revision}${project.qualifier}"
-     pubrevision="${ivy.revision}${project.qualifier}"
-     pubdate="now"
-     overwrite="true"
-     publishivy="true"
-     status="${ivy.publish.status}"
-    />
-  </target>
-
-
-  <target name="xp.deploy.public" depends="ivy-info">
-    <echo>===> Deploying ${ivy.organisation}#${ivy.module} @ public-authenticated</echo>
-    <ivy:publish
-     artifactspattern="${build.target}/[artifact]-[revision].[ext]"
-     resolver="public-authenticated"
-     revision="${ivy.revision}${project.qualifier}"
-     pubrevision="${ivy.revision}${project.qualifier}"
-     pubdate="now"
-     overwrite="true"
-     publishivy="true"
-     status="${ivy.publish.status}"
-    />
-  </target>
-
   <target name="xp.clean.ivycache" extensionOf="clean" depends="ivy-info">
     <ivy:cleancache/>
   </target>
