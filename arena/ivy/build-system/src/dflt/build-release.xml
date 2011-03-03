@@ -6,6 +6,7 @@
 
     <ivy:publish
      artifactspattern="${build.target}/[artifact]-[revision].[ext]"
+     revision="${ivy.new.revision}"
      resolver="local"
      overwrite="true"
      publishivy="true"
