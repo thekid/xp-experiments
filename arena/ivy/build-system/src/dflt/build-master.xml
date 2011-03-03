@@ -27,6 +27,7 @@
      type="zip"
      setid="build.bootstrap"
     />
+    <ivy:resolve/>
 
     <unzip dest="${build.target}/bootstrap">
       <fileset refid="build.bootstrap"/>

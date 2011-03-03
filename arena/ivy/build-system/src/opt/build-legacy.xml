@@ -6,23 +6,26 @@
    !
    ! Configurable (public) settings
    !-->
-  <fileset id="build.sources.fileset.php" dir="${build.sourceDirectory}/src/main/php" erroronmissingdir="false">
-    <include name="**/*"/>
+  <fileset id="build.sources.fileset.php" dir="${basedir}/src" erroronmissingdir="false">
+    <exclude name="**/unittest/**"/>
   </fileset>
-  <fileset id="build.sources.fileset.xsl" dir="${build.sourceDirectory}/src/main/xsl" erroronmissingdir="false">
-    <include name="**/*"/>
+  <fileset id="build.sources.fileset.xsl" dir="${basedir}/src" erroronmissingdir="false">
+    <include name="**/*.xml"/>
+    <include name="**/*.xsl"/>
   </fileset>
-  <fileset id="build.testSourceDirectory" dir="${basedir}/src/test/" erroronmissingdir="false"/>
+  <path id="build.testSourceDirectory">
+    <fileset dir="${basedir}/src/" erroronmissingdir="false">
+      <include name="**/unittest/**"/>
+    </fileset>
+  </path>
   <fileset id="build.testConfigurations" dir="${basedir}">
     <include name="unittest.ini"/>
   </fileset>
-
-  <!-- Required in build-webapp -->
   <path id="build.webappSourceDirectory">
-    <fileset dir="${basedir}/src/resources/" includes="webapp/**"/>
+    <fileset dir="${basedir}/doc_root/" includes="webapp/**"/>
   </path>
   <path id="build.configSourceDirectory">
-    <fileset dir="${basedir}/src/resources/" includes="etc/**"/>
+    <fileset dir="${basedir}" includes="etc/**"/>
   </path>
   <path id="build.containerConfigDirectory">
     <fileset dir="${basedir}/src/resources/">
