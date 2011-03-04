@@ -14,21 +14,13 @@
   </target>
 
   <target name="xp.publish" extensionOf="publish" depends="ivy-info">
-    <echo>===> Deploying ${ivy.organisation}#${ivy.module} @ shared</echo>
+    <property name="ivy.publish.resolver" value="shared"/>
+    <echo>===> Deploying ${ivy.organisation}#${ivy.module} @ ${ivy.publish.resolver}</echo>
 
     <ivy:publish
      artifactspattern="${build.target}/[artifact]-[revision].[ext]"
      revision="${ivy.new.revision}"
-     resolver="shared"
-     publishivy="true"
-    />
-  </target>
-
-  <target name="xp.publish.public" depends="ivy-info">
-    <echo>===> Deploying ${ivy.organisation}#${ivy.module} @ public-authenticated</echo>
-    <ivy:publish
-     artifactspattern="${build.target}/[artifact]-[revision].[ext]"
-     resolver="public-authenticated"
+     resolver="${ivy.publish.resolver}"
      publishivy="true"
     />
   </target>

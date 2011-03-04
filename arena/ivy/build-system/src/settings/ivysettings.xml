@@ -1,9 +1,16 @@
 <?xml version="1.0"?>
 <ivysettings>
-  <settings defaultResolver="local"/>
+  <settings defaultResolver="shared"/>
+
+  <!-- settings for public XP repository -->
   <include url="ivysettings-public.xml"/>
-  <include url="${ivy.home}/ivysettings-shared.xml"/>
+
+  <!-- repository settings -->
+  <include url="${ivy.home}/ivysettings-repositories.xml"/>
+
+  <!-- credentials file -->
+  <include url="${ivy.home}/ivysettings-credentials.xml"/>
+
+  <!-- global "ivy" local repository configuration -->
   <include url="${ivy.default.settings.dir}/ivysettings-local.xml"/>
-  <!-- include urlivysettings="${ivy.default.settings.dir}/ivysettings-main-chain.xml"/ -->
-  <!-- include url="${ivy.default.settings.dir}/ivysettings-default-chain.xml"/-->
 </ivysettings>

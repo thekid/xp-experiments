@@ -9,6 +9,10 @@
   <property name="build.target.webapp" value="${build.target}/webapp"/>
   <property name="project.generated.ivy.file" value="${build.target}/ivy.xml"/>
   <property name="project.generated.pom.file" value="${build.target}/pom.xml"/>
+
+  <!-- Try some settings locations -->
+  <property file="${xp.build.home}/svn.properties"/>
+  <property file="${user.home}/.ant/svn.properties"/>
   
   <available property="build.test.exist.unittest.ini" file="${basedir}/unittest.ini"/>
   
