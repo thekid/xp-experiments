@@ -34,7 +34,8 @@
     <ivy:buildnumber
      organisation="${ivy.organisation}"
      module="${ivy.module}"
-     revision="${ivy.revision}."
+     revision="${ivy.revision}-pre"
+     revSep=""
      defaultBuildNumber="1"
      resolver="${ivy.publish.resolver}"
     />
