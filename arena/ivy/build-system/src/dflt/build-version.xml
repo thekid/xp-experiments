@@ -15,28 +15,28 @@
     </condition>
   </target>
 
-  <target name="xp.build.number.release" depends="ivy-info, xp.build.mode" if="xp.build.mode.release">
+  <target name="xp.build.number.release" depends="xp.build.mode" if="xp.build.mode.release">
     <property name="ivy.new.revision" value="${ivy.revision}"/>
   </target>
 
-  <target name="xp.build.number.milestone" depends="ivy-info, xp.build.mode" if="xp.build.mode.milestone">
+  <target name="xp.build.number.milestone" depends="xp.build.mode, xp.get.resolver" if="xp.build.mode.milestone">
     <ivy:buildnumber 
      organisation="${ivy.organisation}"
      module="${ivy.module}"
      revision="${ivy.revision}-RC"
      revSep=""
      defaultBuildNumber="1"
-     resolver="shared"
+     resolver="${ivy.publish.resolver}"
     />
   </target>
 
-  <target name="xp.build.number.integration" depends="ivy-info, xp.build.mode" if="xp.build.mode.integration">
+  <target name="xp.build.number.integration" depends="xp.build.mode, xp.get.resolver" if="xp.build.mode.integration">
     <ivy:buildnumber
      organisation="${ivy.organisation}"
      module="${ivy.module}"
      revision="${ivy.revision}."
      defaultBuildNumber="1"
-     resolver="shared"
+     resolver="${ivy.publish.resolver}"
     />
   </target>
 
