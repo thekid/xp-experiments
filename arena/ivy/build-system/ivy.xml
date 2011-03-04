@@ -5,8 +5,8 @@
  xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd"
 >
   <info
-   organisation="net.xp_framework" module="build" status="integration"
-   revision="1.0"
+   organisation="net.xp_framework" module="build" status="release"
+   revision="1.1"
   />
   <configurations>
     <conf name="default" description="Required for a build"/>
