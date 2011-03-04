@@ -6,7 +6,7 @@
   <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-${ivy.install.version}.jar" />
 
   <available property="ivy.detected" file="${ivy.jar.file}"/>
-  <target name="download-ivy" unless="ivy.detected" description="--> Download ivy">
+  <target name="download-ivy" unless="ivy.detected">
   	<mkdir dir="${ivy.jar.dir}"/>
 
     <echo message="Downloading &amp; loading ivy..."/>
@@ -17,7 +17,7 @@
     />
   </target>
   
-  <target name="install-ivy" depends="download-ivy" unless="ivy.detected" description="--> Load ivy jar">
+  <target name="install-ivy" depends="download-ivy" unless="ivy.detected">
   	<path id="ivy.lib.path">
   	  <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
   	</path>
