@@ -1,17 +1,15 @@
 <?xml version="1.0"?>
 <project name="xp-framework-build-system" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
-  <import file="../build/build-master.xml"/>
+  <import file="${user.home}/.ant/xp-build/build-loader.xml"/>
 
-  <path id="build.sourceDirectory">
-    <fileset dir="${basedir}/src">
-      <include name="*.xml"/>
-      <exclude name="installer.xml"/>
-    </fileset>
-  </path>
+  <fileset id="build.sources.fileset.php" dir="${basedir}/src">
+    <include name="**/*.xml"/>
+    <exclude name="installer.xml"/>
+  </fileset>
 
   <path id="build.testSourceDirectory"/>
 
-  <target name="xp.package.build" extensionOf="package">
-    <zip basedir="${build.target}/classes" destfile="${build.target}/${ivy.module}-${ivy.revision}.zip"/>
+  <target name="xp.package.build" extensionOf="package" depends="xp.build.number">
+    <zip basedir="${build.target}/classes" destfile="${build.target}/${ivy.module}-${ivy.new.revision}.zip"/>
   </target>
 </project>
