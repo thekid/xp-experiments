@@ -8,7 +8,12 @@
     />
   </target>
 
-  <target name="xp.package.tests" extensionOf="package" depends="ivy-info, xp.build.number">
+  <target name="xp.package.tests.exist">
+    <fileset id="tests" dir="${build.target.testClasses}"/>
+    <pathconvert property="xp.tests.exist" refid="tests" setonempty="false"/>
+  </target>
+
+  <target name="xp.package.tests" extensionOf="package" depends="ivy-info, xp.build.number" if="xp.tests.exist">
     <xar
      dir="${build.target}/test-classes"
      target="${build.target}/${ivy.module}-test-${ivy.new.revision}.xar"
