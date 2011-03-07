@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<project name="go-ivy" basedir=".">
+<project name="xp-framework-build-install" basedir=".">
   <!-- Automatically download ivy & load library -->
   <property name="ivy.install.version" value="2.2.0" />
-  <property name="ivy.jar.dir" value="${user.home}/.ant/lib" />
-  <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-${ivy.install.version}.jar" />
+  <property name="xp.build.lib.dir" value="${user.home}/.ant/lib" />
+  <property name="ivy.jar.file" value="${xp.build.lib.dir}/ivy-${ivy.install.version}.jar" />
 
   <available property="ivy.detected" file="${ivy.jar.file}"/>
   <target name="download-ivy" unless="ivy.detected">
@@ -17,7 +17,7 @@
     />
   </target>
   
-  <target name="install-ivy" depends="download-ivy" unless="ivy.detected">
+  <target name="install-ivy" depends="download-ivy, install-ivysvn" unless="ivy.detected">
   	<path id="ivy.lib.path">
   	  <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
   	</path>
@@ -26,5 +26,22 @@
   	 uri="antlib:org.apache.ivy.ant"
      classpathref="ivy.lib.path"
     />
-  </target>  
+  </target>
+
+  <target name="install-ivysvn" unless="ivy.detected">
+    <get
+     src="http://ivysvn.googlecode.com/files/ivysvnresolver-2.2.0-bin.tgz"
+     dest="${ivy.jar.dir}"
+    />
+    <untar 
+     src="${ivy.jar.dir}/ivysvnresolver-2.2.0-bin.tgz"
+     dest="${ivy.jar.dir}"
+     compression="gzip"
+    >
+      <patternset>
+        <include name="**/*.jar"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </untar>
+  </target>
 </project>
