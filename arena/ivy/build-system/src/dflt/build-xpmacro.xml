@@ -1,15 +1,38 @@
 <?xml version="1.0"?>
-<project name="xp-framework-macro" basedir=".">
+<project name="xp-framework-macro" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+  
   <macrodef name="xar">
     <attribute name="target"/>
     <attribute name="dir"/>
     
     <sequential>
+      <!-- Build classpath for xar -->
+      <ivy:cachefileset
+       type="xar"
+       conf="default"
+       setid="xar.path.dependencies"
+      />
+      <pathconvert property="xar.path" pathsep="&#10;">
+        <path>
+          <fileset refid="xar.path.dependencies"/>
+          <pathelement path="${build.target}/bootstrap"/>
+        </path>
+      </pathconvert>
+
+      <!-- Generate ivy.pth for use by xar -->
+      <echo file="${build.target}/ivy.pth">${xar.path}</echo>
+      <pathconvert property="xar.use_xp">
+        <path>
+          <pathelement path="${build.target}/bootstrap"/>
+        </path>
+      </pathconvert>
+
       <exec
        executable="xar"
        failonerror="true"
        dir="@{dir}"
       >
+        <env key="USE_XP" value="${xar.use_xp}"/>
         <arg value="cf"/>
         <arg value="@{target}"/>
         <arg value="."/>
