@@ -31,11 +31,11 @@
   <target name="install-ivysvn" unless="ivy.detected">
     <get
      src="http://ivysvn.googlecode.com/files/ivysvnresolver-2.2.0-bin.tgz"
-     dest="${ivy.jar.dir}"
+     dest="${xp.build.lib.dir}"
     />
     <untar 
-     src="${ivy.jar.dir}/ivysvnresolver-2.2.0-bin.tgz"
-     dest="${ivy.jar.dir}"
+     src="${xp.build.lib.dir}/ivysvnresolver-2.2.0-bin.tgz"
+     dest="${xp.build.lib.dir}"
      compression="gzip"
     >
       <patternset>
