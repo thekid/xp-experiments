@@ -30,8 +30,8 @@
         throw new IllegalArgumentException('Cannot mock other types than XPClass types.');
       }
 
-      $parentClass=XPClass::forName('lang.Object');
-      $interfaces=array();
+      $parentClass=null;
+      $interfaces=array(XPClass::forName('unittest.mock.IMock'));
       if($type->isInterface())
         $interfaces[]=$type;
       else 
@@ -41,18 +41,17 @@
 
       $proxy= new Proxy();
       $proxyClass= $proxy->createProxyClass($defaultCL, $interfaces, $parentClass);
-      $mock= $proxyClass->newInstance();
+      $mock= $proxyClass->newInstance(new MockProxy());
       
       $this->mocks[]= $mock;
       return $mock;
     }
-    
     /**
      * Replays all mocks.
      */
     public function replayAll() {
       foreach($this->mocks as $mock)
-        $mock->replay();
+        $mock->_replayMock();
     }
 
 

@@ -17,13 +17,12 @@
    *
    * @purpose Mocking
    */
-  class MockProxy extends Proxy implements InvocationHandler {
+  class MockProxy extends Object implements InvocationHandler {
     private
       $mockState= null,
       $expectionMap= null;
 
     public function __construct() {
-      parent::__construct($this);
       $this->expectionMap= new Hashmap();
       $this->mockState= new RecordState($this->expectionMap);
     }
@@ -38,9 +37,18 @@
      * @return  var
      */
     public function invoke($proxy, $method, $args) {
+      switch($method) {
+        case '_replayMock':
+          return $this->replay();
+        case '_isMockRecording':
+          return $this->isRecording();
+        case '_isMockReplaying':
+          return $this->isReplaying();
+      }
+        
       return $this->mockState->handleInvocation($method, $args);
     }
-
+    
     /**
      * Indicates whether this proxy is in recoding state
      *

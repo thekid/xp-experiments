@@ -20,13 +20,13 @@
    */
   class MockeryTest extends TestCase {
 
-    private $sut=null;
+    private $fixture=null;
     /**
      * Creates the fixture;
      *
      */
     public function setUp() {
-      $this->sut=new Mockery();
+      $this->fixture=new Mockery();
     }
       
     /**
@@ -41,7 +41,7 @@
      */
     #[@test]
     public function canCreateMockForEmptyInterface() {
-      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IEmptyInterface');
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IEmptyInterface');
       $this->assertInstanceOf('net.xp_framework.unittest.tests.mock.IEmptyInterface', $object);
     }
 
@@ -50,7 +50,7 @@
      */
     #[@test]
     public function canCreateMockForComplexInterface() {
-      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
       $this->assertInstanceOf('net.xp_framework.unittest.tests.mock.IComplexInterface', $object);
     }
 
@@ -59,7 +59,7 @@
      */
     #[@test, @expect('lang.ClassNotFoundException')]
     public function cannotCreateMockForUnknownTypes() {
-      $this->sut->createMock('foooooo.Unknown');
+      $this->fixture->createMock('foooooo.Unknown');
     }
 
     /**
@@ -67,7 +67,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function cannotCreateMockForNonXPClassTypes() {
-      $this->sut->createMock('string');
+      $this->fixture->createMock('string');
     }
 
     /**
@@ -75,8 +75,8 @@
      */
     #[@test]
     public function canCallReplay() {
-      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
-      $object->replay();
+      $mock= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $mock->_replayMock();
     }
 
     /**
@@ -84,7 +84,7 @@
      */
     #[@test]
     public function canCallInterfaceMethods() {
-      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
       $object->foo();
     }
 
@@ -93,7 +93,7 @@
      */
     #[@test]
     public function canCallReturnsFluently() {
-      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
       $object->foo()->returns(null);
     }
 
@@ -102,12 +102,12 @@
      */
     #[@test]
     public function canDefineReturnValue() {
-      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 
       $return = new Object();
       $object->foo()->returns($return);
 
-      $object->replay();
+      $object->_replayMock();
       $this->assertTrue($object->foo()=== $return);
     }
 
@@ -116,11 +116,11 @@
      */
     #[@test]
     public function missingExpectationLeadsToNull() {
-      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 
       $object->foo()->returns(new Object());
 
-      $object->replay();
+      $object->_replayMock();
       $this->assertInstanceOf('lang.Object', $object->foo());
       $this->assertNull($object->foo());
       $this->assertNull($object->foo());
@@ -132,7 +132,7 @@
      */
     #[@test]
     public function recordedReturnsAreInCorrectOrder() {
-      $object= $this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 
       $return1="foo";
       $return2="bar";
@@ -141,7 +141,7 @@
       $object->foo()->returns($return1);
       $object->foo()->returns($return2);
       $object->foo()->returns($return3);
-      $object->replay();
+      $object->_replayMock();
       
       $this->assertEquals($return1, $object->foo());
       $this->assertEquals($return2, $object->foo());
@@ -155,7 +155,7 @@
      */
     #[@test]
     public function canCallReplayAll() {
-      $this->sut->replayAll();
+      $this->fixture->replayAll();
     }
     
     /**
@@ -163,19 +163,19 @@
      */
     #[@test]
     public function replayAllSetsAllMocksInReplayMode() {
-      $object1=$this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
-      $object2=$this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
-      $object3=$this->sut->createMock('net.xp_framework.unittest.tests.mock.IEmptyInterface');
+      $object1=$this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object2=$this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object3=$this->fixture->createMock('net.xp_framework.unittest.tests.mock.IEmptyInterface');
      
-      $this->assertTrue($object1->isRecording());
-      $this->assertTrue($object2->isRecording());
-      $this->assertTrue($object3->isRecording());
+      $this->assertTrue($object1->_isMockRecording());
+      $this->assertTrue($object2->_isMockRecording());
+      $this->assertTrue($object3->_isMockRecording());
 
-      $this->sut->replayAll();
+      $this->fixture->replayAll();
       
-      $this->assertTrue($object1->isReplaying());
-      $this->assertTrue($object2->isReplaying());
-      $this->assertTrue($object3->isReplaying());
+      $this->assertTrue($object1->_isMockReplaying());
+      $this->assertTrue($object2->_isMockReplaying());
+      $this->assertTrue($object3->_isMockReplaying());
     }
   }
 ?>

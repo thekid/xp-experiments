@@ -16,19 +16,7 @@
    * @purpose  Dynamically create classes
    * @see      http://java.sun.com/j2se/1.5.0/docs/api/java/lang/reflect/Proxy.html
    */
-  class Proxy extends Object {
-    public
-      $_h= NULL;
-
-    /**
-     * Constructor
-     *
-     * @param   lang.reflect.InvocationHandler handler
-     */
-    public function __construct($handler=NULL) {
-      $this->_h= $handler;
-    }
-    
+  class Proxy extends Object {   
     /**
      * @deprecated Use non-static getProxyClass instead
      * 
@@ -100,53 +88,10 @@
         
         // Implement all the interface's methods
         foreach ($if->getMethods() as $m) {
-        
-          // Check for already declared methods, do not redeclare them
+           // Check for already declared methods, do not redeclare them
           if (isset($added[$m->getName()])) continue;
           $added[$m->getName()]= TRUE;
-
-          // Build signature and argument list
-          if ($m->hasAnnotation('overloaded')) {
-            $signatures= $m->getAnnotation('overloaded', 'signatures');
-            $max= 0;
-            $cases= array();
-            foreach ($signatures as $signature) {
-              $args= sizeof($signature);
-              $max= max($max, $args- 1);
-              if (isset($cases[$args])) continue;
-              
-              $cases[$args]= (
-                'case '.$args.': '.
-                'return $this->_h->invoke($this, \''.$m->getName(TRUE).'\', array('.
-                ($args ? '$_'.implode(', $_', range(0, $args- 1)) : '').'));'
-              );
-            }
-
-            // Create method
-            $bytes.= (
-              'function '.$m->getName().'($_'.implode('= NULL, $_', range(0, $max)).'= NULL) { '.
-              'switch (func_num_args()) {'.implode("\n", $cases).
-              ' default: throw new IllegalArgumentException(\'Illegal number of arguments\'); }'.
-              '}'."\n"
-            );
-          } else {
-            $signature= $args= '';
-            foreach ($m->getParameters() as $param) {
-              $restriction= $param->getTypeRestriction();
-              $signature.= ', '.($restriction ? xp::reflect($restriction->getName()) : '').' $'.$param->getName();
-              $args.= ', $'.$param->getName();
-              $param->isOptional() && $signature.= '= '.var_export($param->getDefaultValue(), TRUE);
-            }
-            $signature= substr($signature, 2);
-            $args= substr($args, 2);
-
-            // Create method
-            $bytes.= (
-              'function '.$m->getName().'('.$signature.') { '.
-              'return $this->_h->invoke($this, \''.$m->getName(TRUE).'\', array('.$args.')); '.
-              '}'."\n"
-            );
-          }
+          $bytes.=$this->generateMethod($m);
         }
       }
       $bytes.= ' }';
@@ -168,16 +113,67 @@
       return $class;
     }
 
+    private function getHandlerName() {
+      return '_h';
+    }
     /**
      *
      */
-    function generatePreamble() {
-      $preamble='private $_h=null;'."\n\n";
+    private function generatePreamble() {
+      $handlerName=$this->getHandlerName();
+      
+      $preamble='private $'.$handlerName.'=null;'."\n\n";
       $preamble.='public function __construct($handler) {'."\n".
-                 '  $this->_h=$handler;'."\n".
+                 '  $this->'.$handlerName.'=$handler;'."\n".
                  "}\n";
 
       return $preamble;
+    }
+    private function generateMethod($method) {
+      $bytes='';
+      // Build signature and argument list
+      if ($method->hasAnnotation('overloaded')) {
+        $signatures= $method->getAnnotation('overloaded', 'signatures');
+        $methodax= 0;
+        $cases= array();
+        foreach ($signatures as $signature) {
+          $args= sizeof($signature);
+          $methodax= max($methodax, $args- 1);
+          if (isset($cases[$args])) continue;
+
+          $cases[$args]= (
+            'case '.$args.': '.
+            'return $this->_h->invoke($this, \''.$method->getName(TRUE).'\', array('.
+            ($args ? '$_'.implode(', $_', range(0, $args- 1)) : '').'));'
+          );
+        }
+
+        // Create method
+        $bytes.= (
+          'function '.$method->getName().'($_'.implode('= NULL, $_', range(0, $methodax)).'= NULL) { '.
+          'switch (func_num_args()) {'.implode("\n", $cases).
+          ' default: throw new IllegalArgumentException(\'Illegal number of arguments\'); }'.
+          '}'."\n"
+        );
+      } else {
+        $signature= $args= '';
+        foreach ($method->getParameters() as $param) {
+          $restriction= $param->getTypeRestriction();
+          $signature.= ', '.($restriction ? xp::reflect($restriction->getName()) : '').' $'.$param->getName();
+          $args.= ', $'.$param->getName();
+          $param->isOptional() && $signature.= '= '.var_export($param->getDefaultValue(), TRUE);
+        }
+        $signature= substr($signature, 2);
+        $args= substr($args, 2);
+
+        // Create method
+        $bytes.= (
+          'function '.$method->getName().'('.$signature.') { '.
+          'return $this->_h->invoke($this, \''.$method->getName(TRUE).'\', array('.$args.')); '.
+          '}'."\n"
+        );
+      }
+      return $bytes;
     }
     /**
      * Returns an instance of a proxy class for the specified interfaces
