@@ -14,6 +14,9 @@
    * @purpose  Mocking
    */
   class Mockery extends Object {
+    private
+      $mocks= array();
+
     /**
      * Builds a stub instance for the specified type.
      *
@@ -38,8 +41,21 @@
 
       $proxy= new Proxy();
       $proxyClass= $proxy->createProxyClass($defaultCL, $interfaces, $parentClass);
-      return $proxyClass->newInstance();
+      $mock= $proxyClass->newInstance();
+      
+      $this->mocks[]= $mock;
+      return $mock;
     }
+    
+    /**
+     * Replays all mocks.
+     */
+    public function replayAll() {
+      foreach($this->mocks as $mock)
+        $mock->replay();
+    }
+
+
   }
 
 ?>

@@ -4,7 +4,8 @@
  * $Id$
  */
  
-  uses('unittest.mock.Mockery',
+  uses('unittest.TestCase',
+       'unittest.mock.Mockery',
        'lang.Type',
        'lang.reflect.Proxy',
        'net.xp_framework.unittest.tests.mock.IEmptyInterface',
@@ -147,6 +148,34 @@
       $this->assertEquals($return3, $object->foo());
       $this->assertNull($object->foo());
 
+    }
+    
+    /**
+     * Mockery has replayAll method                       
+     */
+    #[@test]
+    public function canCallReplayAll() {
+      $this->sut->replayAll();
+    }
+    
+    /**
+                             
+     */
+    #[@test]
+    public function replayAllSetsAllMocksInReplayMode() {
+      $object1=$this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object2=$this->sut->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object3=$this->sut->createMock('net.xp_framework.unittest.tests.mock.IEmptyInterface');
+     
+      $this->assertTrue($object1->isRecording());
+      $this->assertTrue($object2->isRecording());
+      $this->assertTrue($object3->isRecording());
+
+      $this->sut->replayAll();
+      
+      $this->assertTrue($object1->isReplaying());
+      $this->assertTrue($object2->isReplaying());
+      $this->assertTrue($object3->isReplaying());
     }
   }
 ?>
