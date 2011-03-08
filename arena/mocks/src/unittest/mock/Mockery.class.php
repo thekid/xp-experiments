@@ -27,10 +27,17 @@
         throw new IllegalArgumentException('Cannot mock other types than XPClass types.');
       }
 
+      $parentClass=XPClass::forName('lang.Object');
+      $interfaces=array();
+      if($type->isInterface())
+        $interfaces[]=$type;
+      else 
+        $parentClass=$type;
+
       $defaultCL= ClassLoader::getDefault();
 
-      $proxy= new MockProxy();
-      $proxyClass= $proxy->createProxyClass($defaultCL, array($type));
+      $proxy= new Proxy();
+      $proxyClass= $proxy->createProxyClass($defaultCL, $interfaces, $parentClass);
       return $proxyClass->newInstance();
     }
   }

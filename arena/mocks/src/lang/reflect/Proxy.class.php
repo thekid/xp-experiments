@@ -4,6 +4,7 @@
  * $Id: Proxy.class.php 14483 2010-04-17 14:30:29Z friebe $ 
  */
 
+  uses('lang.reflect.IProxy');
   define('PROXY_PREFIX',    'Proxy·');
 
   /**
@@ -54,7 +55,7 @@
      * @return  lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
-    public function createProxyClass(IClassLoader $classloader, array $interfaces) {
+    public function createProxyClass(IClassLoader $classloader, array $interfaces, $baseClass=NULL) {
       static $num= 0;
       static $cache= array();
       
@@ -63,6 +64,7 @@
         throw new IllegalArgumentException('Interfaces may not be empty');
       }
 
+
       // Calculate cache key (composed of the names of all interfaces)
       $key= $classloader->hashCode().':'.implode(';', array_map(
         create_function('$i', 'return $i->getName();'), 
@@ -70,16 +72,24 @@
       ));
       if (isset($cache[$key])) return $cache[$key];
 
-      // Create proxy class' name, using a unique identifier and a prefix
+      if (!$baseClass)
+        $baseClass = XPClass::forName('lang.Object');
+
+    // Create proxy class' name, using a unique identifier and a prefix
       $name= PROXY_PREFIX.($num++);
-      $bytes= 'class '.$name.' extends '.xp::reflect($this->getClassName()).' implements ';
+      $bytes= 'class '.$name.' extends '.xp::reflect($baseClass->getName()).' implements IProxy, ';
       $added= array();
+
+
       
       for ($j= 0; $j < $t; $j++) {
         $bytes.= xp::reflect($interfaces[$j]->getName()).', ';
       }
       $bytes= substr($bytes, 0, -2)." {\n";
 
+      //add instance variables and constructor
+      $bytes.=$this->generatePreamble();
+      
       for ($j= 0; $j < $t; $j++) {
         $if= $interfaces[$j];
         
@@ -140,6 +150,8 @@
         }
       }
       $bytes.= ' }';
+
+      //var_dump($bytes);
       // Define the generated class
       try {
         $dyn= DynamicClassLoader::instanceFor(__METHOD__);
@@ -155,7 +167,18 @@
       
       return $class;
     }
-    
+
+    /**
+     *
+     */
+    function generatePreamble() {
+      $preamble='private $_h=null;'."\n\n";
+      $preamble.='public function __construct($handler) {'."\n".
+                 '  $this->_h=$handler;'."\n".
+                 "}\n";
+
+      return $preamble;
+    }
     /**
      * Returns an instance of a proxy class for the specified interfaces
      * that dispatches method invocations to the specified invocation
