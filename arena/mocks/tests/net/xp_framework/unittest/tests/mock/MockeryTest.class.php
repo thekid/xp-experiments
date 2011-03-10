@@ -6,7 +6,6 @@
  
   uses('unittest.TestCase',
        'unittest.mock.Mockery',
-       'lang.Type',
        'lang.reflect.Proxy',
        'net.xp_framework.unittest.tests.mock.IEmptyInterface',
        'net.xp_framework.unittest.tests.mock.IComplexInterface',
@@ -85,7 +84,6 @@
      */
     #[@test]
     public function canCallInterfaceMethods() {
-      var_dump('############################ foooooo ###');
       $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
       $object->foo();
     }
@@ -182,7 +180,7 @@
     /**
                         
      */
-  #[@test]
+    #[@test]
     public function can_createMock_fromAbstractClass() {
       $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy');
     }

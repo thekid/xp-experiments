@@ -22,10 +22,12 @@
     private
       $classLoader= null,
       $overwriteExisting= false,
-      $cache= array(),
-      $num= 0,
       $added= array();
 
+    private static 
+      $num=0,
+      $cache=array();
+    
     /**
      *
      * @param lang.ClassLoader $classLoader
@@ -75,13 +77,16 @@
 
       $this->added= array();
 
+
       if (!$baseClass)
         $baseClass = XPClass::forName('lang.Object');
 
       //check if class is already in cache
       $key= $this->buildCacheId($baseClass, $interfaces);
-      if(NULL!==($cached=$this->tryGetFromCache($key)))
+      if(NULL !== ($cached=$this->tryGetFromCache($key))) {
+
         return $cached;
+      }
 
       //write class definition
       //class <name> extends <baseClass> implements IProxy, <interfaces> {
@@ -103,10 +108,9 @@
 
       //create the actual class
       $class= $this->createClass($bytes);
-
       // Update cache+counter and return XPClass object
-      $this->cache[$key]= $class;
-      $this->num++;
+      self::$cache[$key]= $class;
+      self::$num++;
       
       return $class;
     }
@@ -138,7 +142,7 @@
      * @return string
      */
     public function getProxyName() {
-      return PROXY_PREFIX.($this->num);
+      return PROXY_PREFIX.(self::$num);
     }
 
     /**
@@ -148,9 +152,9 @@
      * @return lang.XPClass
      */
     private function tryGetFromCache($key) {
+      if(isset(self::$cache[$key])) 
+        return self::$cache[$key];
       
-      if (isset($this->cache[$key])) return $this->cache[$key];
-
       return null;
     }
     /**
@@ -160,6 +164,7 @@
      * @return string
      */
     private function buildCacheId($baseClass, $interfaces) {
+
       $key= $this->classLoader->hashCode().':'.$baseClass->getName().';';
       return $key.implode(';', array_map(create_function('$i', 'return $i->getName();'), $interfaces));
     }
@@ -219,7 +224,7 @@
      * @param lang.XPClass baseClass
      */
     private function generateBaseClassMethods($baseClass) {
-      
+      $bytes='';
       foreach($baseClass->getMethods() as $m) {
         if($this->overwriteExisting || ($m->getModifiers()&2) == 2) { //implement abstract methods
           // Check for already declared methods, do not redeclare them
@@ -228,6 +233,7 @@
           $bytes.=$this->generateMethod($m);
         }
       }
+      return $bytes;
     }
 
     /**
@@ -295,9 +301,7 @@
       try {
         $dyn= DynamicClassLoader::instanceFor(__METHOD__);
         $dyn->setClassBytes($this->getProxyName(), $bytes);
-        var_dump($bytes);
         $class= $dyn->loadClass($this->getProxyName());
-        var_dump($class->getMethods());
       } catch (FormatException $e) {
         throw new IllegalArgumentException($e->getMessage());
       }

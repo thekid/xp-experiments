@@ -29,6 +29,7 @@
       if (!($type instanceof XPClass)) {
         throw new IllegalArgumentException('Cannot mock other types than XPClass types.');
       }
+      
 
       $parentClass=null;
       $interfaces=array(XPClass::forName('unittest.mock.IMock'));
