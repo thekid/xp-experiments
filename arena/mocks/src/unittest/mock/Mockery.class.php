@@ -42,7 +42,6 @@
       $proxy= new Proxy();
       $proxyClass= $proxy->createProxyClass($defaultCL, $interfaces, $parentClass);
       $mock= $proxyClass->newInstance(new MockProxy());
-      
       $this->mocks[]= $mock;
       return $mock;
     }

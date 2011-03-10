@@ -4,7 +4,9 @@
  * $Id: Proxy.class.php 14483 2010-04-17 14:30:29Z friebe $ 
  */
 
-  uses('lang.reflect.IProxy');
+  uses('lang.reflect.IProxy',
+       'lang.ClassLoader');
+
   define('PROXY_PREFIX',    'Proxy·');
 
   /**
@@ -17,6 +19,32 @@
    * @see      http://java.sun.com/j2se/1.5.0/docs/api/java/lang/reflect/Proxy.html
    */
   class Proxy extends Object {   
+    private
+      $classLoader= null,
+      $overwriteExisting= false,
+      $cache= array(),
+      $num= 0,
+      $added= array();
+
+    /**
+     *
+     * @param lang.ClassLoader $classLoader
+     */
+    public function  __construct($classLoader=NULL) {
+      if($classLoader==null)
+        $this->classLoader= ClassLoader::getDefault();
+      else
+        $this->classLoader= $classLoader;
+    }
+    
+    /**
+     * Sets whether to overwrite existing implementations of concrete methods.
+     * @param boolean value
+     */
+    public function setOverwriteExisting($value){
+      $this->overwriteExisting=$value;
+    }
+    
     /**
      * @deprecated Use non-static getProxyClass instead
      * 
@@ -44,80 +72,111 @@
      * @throws  lang.IllegalArgumentException
      */
     public function createProxyClass(IClassLoader $classloader, array $interfaces, $baseClass=NULL) {
-      static $num= 0;
-      static $cache= array();
-      
-      $t= sizeof($interfaces);
-      if (0 === $t) {
-        throw new IllegalArgumentException('Interfaces may not be empty');
-      }
 
-
-      // Calculate cache key (composed of the names of all interfaces)
-      $key= $classloader->hashCode().':'.implode(';', array_map(
-        create_function('$i', 'return $i->getName();'), 
-        $interfaces
-      ));
-      if (isset($cache[$key])) return $cache[$key];
+      $this->added= array();
 
       if (!$baseClass)
         $baseClass = XPClass::forName('lang.Object');
 
-    // Create proxy class' name, using a unique identifier and a prefix
-      $name= PROXY_PREFIX.($num++);
-      $bytes= 'class '.$name.' extends '.xp::reflect($baseClass->getName()).' implements IProxy, ';
-      $added= array();
+      //check if class is already in cache
+      $key= $this->buildCacheId($baseClass, $interfaces);
+      if(NULL!==($cached=$this->tryGetFromCache($key)))
+        return $cached;
 
-
-      
-      for ($j= 0; $j < $t; $j++) {
-        $bytes.= xp::reflect($interfaces[$j]->getName()).', ';
-      }
-      $bytes= substr($bytes, 0, -2)." {\n";
+      //write class definition
+      //class <name> extends <baseClass> implements IProxy, <interfaces> {
+      $bytes=$this->generateHead($baseClass, $interfaces);
 
       //add instance variables and constructor
       $bytes.=$this->generatePreamble();
-      
-      for ($j= 0; $j < $t; $j++) {
-        $if= $interfaces[$j];
-        
-        // Verify that the Class object actually represents an interface
-        if (!$if->isInterface()) {
-          throw new IllegalArgumentException($if->getName().' is not an interface');
-        }
-        
-        // Implement all the interface's methods
-        foreach ($if->getMethods() as $m) {
-           // Check for already declared methods, do not redeclare them
-          if (isset($added[$m->getName()])) continue;
-          $added[$m->getName()]= TRUE;
-          $bytes.=$this->generateMethod($m);
-        }
+
+      //generate code for (abstract) class methods (if any)
+      $bytes.=$this->generateBaseClassMethods($baseClass);
+
+      //generate code for interface methods
+      for ($j= 0; $j < sizeof($interfaces); $j++) {
+        $bytes.=$this->generateInterfaceMethods($interfaces[$j]);
       }
+
+      //done.
       $bytes.= ' }';
 
-      //var_dump($bytes);
-      // Define the generated class
-      try {
-        $dyn= DynamicClassLoader::instanceFor(__METHOD__);
-        $dyn->setClassBytes($name, $bytes);
-        $class= $dyn->loadClass($name);
-      } catch (FormatException $e) {
-        throw new IllegalArgumentException($e->getMessage());
-      }
+      //create the actual class
+      $class= $this->createClass($bytes);
 
-      // Update cache and return XPClass object
-      $cache[$key]= $class;
-      
+      // Update cache+counter and return XPClass object
+      $this->cache[$key]= $class;
+      $this->num++;
       
       return $class;
     }
 
+    /**
+     * Generates the class header.
+     * "class <name> extends <baseClass> implements IProxy, <interfaces> {"
+     *
+     * @param lang.XPClass baseClass
+     * @param lang.XPClass[] interfaces
+     * @return string 
+     */
+    public function generateHead($baseClass, $interfaces) {
+      // Create proxy class' name, using a unique identifier and a prefix
+      $name= $this->getProxyName();
+      $bytes= 'class '.$name.' extends '.xp::reflect($baseClass->getName()).' implements IProxy, ';
+
+      for ($j= 0; $j < sizeof($interfaces); $j++) {
+        $bytes.= xp::reflect($interfaces[$j]->getName()).', ';
+      }
+      $bytes= substr($bytes, 0, -2)." {\n";
+
+      return $bytes;
+    }
+
+    /**
+     * Generates the name for the current proxy from a prefix and a counter.
+     *
+     * @return string
+     */
+    public function getProxyName() {
+      return PROXY_PREFIX.($this->num);
+    }
+
+    /**
+     * Check if the class is already cached and returns it, otherwise returns null.
+     *
+     * @param string key
+     * @return lang.XPClass
+     */
+    private function tryGetFromCache($key) {
+      
+      if (isset($this->cache[$key])) return $this->cache[$key];
+
+      return null;
+    }
+    /**
+     * Calculate cache key (composed of the names of all interfaces)
+     * @param lang.XPClass baseClass
+     * @param lang.XPClass[] interfaces
+     * @return string
+     */
+    private function buildCacheId($baseClass, $interfaces) {
+      $key= $this->classLoader->hashCode().':'.$baseClass->getName().';';
+      return $key.implode(';', array_map(create_function('$i', 'return $i->getName();'), $interfaces));
+    }
+
+    /**
+     * Returns the name of the handler variable;
+     * @return string
+     */
     private function getHandlerName() {
       return '_h';
     }
+
     /**
+     * Generates code for the class preamble containing initializations of
+     * variables and the constructor.
      *
+     * @return string
      */
     private function generatePreamble() {
       $handlerName=$this->getHandlerName();
@@ -129,6 +188,54 @@
 
       return $preamble;
     }
+
+    /**
+     * Generates code for implementing all interface methods.
+     * 
+     * @param lang.XPClass if
+     * @return string
+     */
+    private function generateInterfaceMethods($if) {
+      $bytes='';
+      // Verify that the Class object actually represents an interface
+      if (!$if->isInterface()) {
+        throw new IllegalArgumentException($if->getName().' is not an interface');
+      }
+
+      // Implement all the interface's methods
+      foreach ($if->getMethods() as $m) {
+         // Check for already declared methods, do not redeclare them
+        if (isset($this->added[$m->getName()])) continue;
+        $this->added[$m->getName()]= TRUE;
+        $bytes.=$this->generateMethod($m);
+      }
+      return $bytes;
+    }
+
+    /**
+     * Generates code for (re)implementation of the (abstract) class methods
+     * of the base class.
+     *
+     * @param lang.XPClass baseClass
+     */
+    private function generateBaseClassMethods($baseClass) {
+      
+      foreach($baseClass->getMethods() as $m) {
+        if($this->overwriteExisting || ($m->getModifiers()&2) == 2) { //implement abstract methods
+          // Check for already declared methods, do not redeclare them
+          if (isset($this->added[$m->getName()])) continue;
+          $this->added[$m->getName()]= TRUE;
+          $bytes.=$this->generateMethod($m);
+        }
+      }
+    }
+
+    /**
+     * Generates code for a method.
+     * 
+     * @param lang.reflect.Method method
+     * @return string
+     */
     private function generateMethod($method) {
       $bytes='';
       // Build signature and argument list
@@ -150,7 +257,7 @@
 
         // Create method
         $bytes.= (
-          'function '.$method->getName().'($_'.implode('= NULL, $_', range(0, $methodax)).'= NULL) { '.
+          'public function '.$method->getName().'($_'.implode('= NULL, $_', range(0, $methodax)).'= NULL) { '.
           'switch (func_num_args()) {'.implode("\n", $cases).
           ' default: throw new IllegalArgumentException(\'Illegal number of arguments\'); }'.
           '}'."\n"
@@ -168,13 +275,35 @@
 
         // Create method
         $bytes.= (
-          'function '.$method->getName().'('.$signature.') { '.
+          'public function '.$method->getName().'('.$signature.') { '.
           'return $this->_h->invoke($this, \''.$method->getName(TRUE).'\', array('.$args.')); '.
           '}'."\n"
         );
       }
       return $bytes;
     }
+
+    /**
+     * Creates an XPClass instance from the specified code using a
+     * DynamicClassLoader.
+     *
+     * @param string bytes
+     * @return lang.XPClass
+     */
+    private function createClass($bytes) {
+      // Define the generated class
+      try {
+        $dyn= DynamicClassLoader::instanceFor(__METHOD__);
+        $dyn->setClassBytes($this->getProxyName(), $bytes);
+        var_dump($bytes);
+        $class= $dyn->loadClass($this->getProxyName());
+        var_dump($class->getMethods());
+      } catch (FormatException $e) {
+        throw new IllegalArgumentException($e->getMessage());
+      }
+      return $class;
+    }
+    
     /**
      * Returns an instance of a proxy class for the specified interfaces
      * that dispatches method invocations to the specified invocation

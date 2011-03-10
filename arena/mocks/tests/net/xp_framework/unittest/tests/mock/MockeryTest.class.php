@@ -85,6 +85,7 @@
      */
     #[@test]
     public function canCallInterfaceMethods() {
+      var_dump('############################ foooooo ###');
       $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
       $object->foo();
     }
@@ -178,5 +179,14 @@
       $this->assertTrue($object2->_isMockReplaying());
       $this->assertTrue($object3->_isMockReplaying());
     }
+    /**
+                        
+     */
+  #[@test]
+    public function can_createMock_fromAbstractClass() {
+      $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy');
+    }
+    
+    
   }
 ?>
