@@ -105,5 +105,22 @@
         $this->assertTrue($this->sut->isReplaying());
     }
 
+    /**
+     * It should be always safe to call replay. Even if already in replay mode
+     */
+    #[@test]
+    public function callingReplayTwice_stateShouldNotChange() {
+      $this->sut->invoke(null, 'foo', null)->returns('foo1');
+      $this->sut->invoke(null, 'foo', null)->returns('foo2');
+      $this->sut->invoke(null, 'bar', null)->returns('bar');
+      $this->sut->replay();
+
+      $this->assertEquals('foo1', $this->sut->invoke(null, 'foo', null));
+      $this->assertEquals('bar', $this->sut->invoke(null, 'bar', null));
+
+      $this->sut->replay(); //should not start over
+      $this->assertEquals('foo2', $this->sut->invoke(null, 'foo', null));
+      $this->assertEquals(null, $this->sut->invoke(null, 'bar', null));
+    }
   }
 ?>
