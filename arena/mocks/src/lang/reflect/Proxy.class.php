@@ -77,7 +77,6 @@
 
       $this->added= array();
 
-
       if (!$baseClass)
         $baseClass = XPClass::forName('lang.Object');
 
@@ -102,7 +101,6 @@
       for ($j= 0; $j < sizeof($interfaces); $j++) {
         $bytes.=$this->generateInterfaceMethods($interfaces[$j]);
       }
-
       //done.
       $bytes.= ' }';
 
@@ -164,9 +162,11 @@
      * @return string
      */
     private function buildCacheId($baseClass, $interfaces) {
-
       $key= $this->classLoader->hashCode().':'.$baseClass->getName().';';
-      return $key.implode(';', array_map(create_function('$i', 'return $i->getName();'), $interfaces));
+      $key.=implode(';', array_map(create_function('$i', 'return $i->getName();'), $interfaces));
+      $key.=$this->overwriteExisting?'override':'';
+
+      return $key;
     }
 
     /**

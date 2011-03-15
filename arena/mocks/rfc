@@ -34,7 +34,8 @@ following features may follow:
 * Behaviour verification
 * Execution order verification
 * Strick mocks (unsatisfied expectation)
-* 
+* Rewinding the replay state
+* Switching back to record after replay started
 
 Example (Return values):
 Consider an interface like the following.

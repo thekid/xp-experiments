@@ -21,15 +21,15 @@
      * Builds a stub instance for the specified type.
      *
      * @param   string typeName
+     * @param   boolean overrideAll
      * @return  Object
      */
-    public function createMock($typeName) {
+    public function createMock($typeName, $overrideAll=false) {
       $type = Type::forName($typeName);
 
       if (!($type instanceof XPClass)) {
         throw new IllegalArgumentException('Cannot mock other types than XPClass types.');
       }
-      
 
       $parentClass=null;
       $interfaces=array(XPClass::forName('unittest.mock.IMock'));
@@ -41,6 +41,7 @@
       $defaultCL= ClassLoader::getDefault();
 
       $proxy= new Proxy();
+      $proxy->setOverwriteExisting($overrideAll);
       $proxyClass= $proxy->createProxyClass($defaultCL, $interfaces, $parentClass);
       $mock= $proxyClass->newInstance(new MockProxy());
       $this->mocks[]= $mock;

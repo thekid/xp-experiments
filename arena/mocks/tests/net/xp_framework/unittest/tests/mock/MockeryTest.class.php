@@ -178,13 +178,56 @@
       $this->assertTrue($object3->_isMockReplaying());
     }
     /**
-                        
+     * 
      */
     #[@test]
     public function can_createMock_fromAbstractClass() {
-      $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy');
+      $obj= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy');
+      $this->assertInstanceOf('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy', $obj);
     }
     
-    
+    /**
+     * 
+     */
+    #[@test]
+    public function abstractMethodAreMocked() {
+      $obj= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy');
+
+      $baz_expect='BAAAAZ!';
+      $obj->baz(null)->returns($baz_expect);
+
+      $bar_expect='BAAARRR';
+      $obj->bar(null, null)->returns($bar_expect);
+
+      $obj->_replayMock();
+
+      $this->assertEquals($baz_expect, $obj->baz(null));
+      $this->assertEquals($bar_expect, $obj->bar(null, null));
+    }
+
+    /**
+     * 
+     */
+    #[@test]
+    public function concreteClassesNotMocked() {
+      $obj= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy');
+
+      $this->assertEquals('IComplexInterface.foo', $obj->foo());
+    }
+    /**
+     *
+     */
+    #[@test]
+    public function concreteClassesMocked_whenSpecifiedSo() {
+      $obj= $this->fixture->createMock(
+              'net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy',
+              true);
+
+      $foo_expect='fooooo';
+      $obj->foo()->returns($foo_expect);
+      $obj->_replayMock();
+
+      $this->assertEquals($foo_expect, $obj->foo());
+    }
   }
 ?>
