@@ -29,7 +29,8 @@
       $cache=array();
     
     /**
-     *
+     * Constructor
+     * 
      * @param lang.ClassLoader $classLoader
      */
     public function  __construct($classLoader=NULL) {
@@ -41,27 +42,13 @@
     
     /**
      * Sets whether to overwrite existing implementations of concrete methods.
+     * 
      * @param boolean value
      */
     public function setOverwriteExisting($value){
       $this->overwriteExisting=$value;
     }
-    
-    /**
-     * @deprecated Use non-static getProxyClass instead
-     * 
-     * Retrieves a Proxy instance.
-     *
-     * @param   lang.IClassLoader classloader
-     * @param   lang.XPClass[] interfaces names of the interfaces to implement
-     * @return  lang.XPClass
-     * @throws  lang.IllegalArgumentException
-     */
-    public static function getProxyClass(IClassLoader $classloader, array $interfaces) {
-      $proxy= new Proxy();
-      return $proxy->createProxyClass($classloader, $interfaces);
-    }
-    
+       
     /**
      * Returns the XPClass object for a proxy class given a class loader 
      * and an array of interfaces.  The proxy class will be defined by the 
@@ -74,7 +61,6 @@
      * @throws  lang.IllegalArgumentException
      */
     public function createProxyClass(IClassLoader $classloader, array $interfaces, $baseClass=NULL) {
-
       $this->added= array();
 
       if (!$baseClass)
@@ -121,7 +107,7 @@
      * @param lang.XPClass[] interfaces
      * @return string 
      */
-    public function generateHead($baseClass, $interfaces) {
+    private function generateHead($baseClass, $interfaces) {
       // Create proxy class' name, using a unique identifier and a prefix
       $name= $this->getProxyName();
       $bytes= 'class '.$name.' extends '.xp::reflect($baseClass->getName()).' implements IProxy, ';
@@ -155,6 +141,7 @@
       
       return null;
     }
+    
     /**
      * Calculate cache key (composed of the names of all interfaces)
      * @param lang.XPClass baseClass
@@ -321,6 +308,21 @@
      */
     public function createProxyInstance($classloader, $interfaces, $handler) {
       return $this->createProxyClass($classloader, $interfaces)->newInstance($handler);
+    }
+    
+    /**
+     * @deprecated Use non-static getProxyClass instead
+     * 
+     * Retrieves a Proxy instance.
+     *
+     * @param   lang.IClassLoader classloader
+     * @param   lang.XPClass[] interfaces names of the interfaces to implement
+     * @return  lang.XPClass
+     * @throws  lang.IllegalArgumentException
+     */
+    public static function getProxyClass(IClassLoader $classloader, array $interfaces) {
+      $proxy= new Proxy();
+      return $proxy->createProxyClass($classloader, $interfaces);
     }
     
     /**
