@@ -1,0 +1,55 @@
+$Id$
+
+This file collects things that still need to be implemented / decided / ...
+
+Implementation
+===============
+
+* Introduce new artifact type "bootstrap" and replace "zip" with it
+  . all "bootstrap" types should indicate they're needed before any XP
+    execution takes places
+  . extension should remain "zip", though
+
+* Improve "install.xml" build file
+  . could this use ivy already to fetch dependencies?
+  . auto-detection of missing libraries should be improved:
+    currently, existance of ivy-${version}.xar indicates whether *all* libs
+    are available, and this might not be sufficient in all places; it should
+    check each lib independently.
+
+* Implement build "complete" web application zip:
+  . add all required files & dependencies
+  . create Web container configuration (eg. apache vhost config)
+  . define set of replaceable tokens, if any
+
+* Implement build command line application zip:
+  . add all required files & dependencies
+
+* Add support for code generation
+  . simple frontend for `cgen`
+  . added to "generate-sources" target
+
+* Implement syntax checks
+  . `php -l` for .php in "validate" phase
+  . xmllint for .xml, .xsl
+
+
+Documentation
+==============
+
+* "public" variables
+  . which ant settings may a user change
+
+* Targets / phases and their idea
+  . may one add new targets? phases?
+  . overrideing allowed?
+
+
+Open decisions
+===============
+
+* Custom targets
+  . should these be allowed? Eg. this could be a proprietary deployment
+    mechanism, or some proprietary custom tasks
+    ("make install")
+
