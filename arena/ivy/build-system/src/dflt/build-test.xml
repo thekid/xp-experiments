@@ -26,7 +26,7 @@
   </target>
 
   <target name="xp.test.byini" unless="skip.tests" depends="xp.test.createpath">
-    <echo>===> Testing (.ini) ${ivy.organisation}#${ivy.module}</echo>
+    <echo>===> Testing ${ivy.organisation}#${ivy.module} - by configuration</echo>
 
     <!-- Execute unittest for each .ini file -->
     <apply
@@ -41,7 +41,7 @@
   </target>
 
   <target name="xp.test.bypackage" if="build.testPackage" depends="xp.test.createpath">
-    <echo>===> Testing (package) ${ivy.organisation}#${ivy.module}</echo>
+    <echo>===> Testing ${ivy.organisation}#${ivy.module} - by package</echo>
 
     <!-- Execute unittest -->
     <exec
