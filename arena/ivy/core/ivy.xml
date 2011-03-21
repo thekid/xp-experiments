@@ -26,7 +26,7 @@
   <publications>
     <artifact name="core" type="xar" ext="xar" conf="default"/>
     <artifact name="core-test" type="xar" ext="xar" conf="test"/>
-    <artifact name="core-bootstrap" type="zip" conf="default"/>
+    <artifact name="core-bootstrap" type="bootstrap" ext="zip" conf="default"/>
   </publications>
   <dependencies>
     <dependency
