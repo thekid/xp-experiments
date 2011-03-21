@@ -22,7 +22,7 @@ XP Mockery - Introduction
   which is not part of the official XP-Framework yet. Thus please use with caution, it 
   might break EVERYTHING.
 
-* You can find the example classes in the xp-forge repository https://svn.xp-framework.net/home/svn/xpforge/trunk/experiments/arena/mocks/tests/tutorial
+* You can find the example classes in the xp-forge repository svn+ssh://svn.xp-framework.net/home/svn/xpforge/trunk/experiments/arena/mocks/tests/tutorial
 
 2) Usage
 
@@ -102,6 +102,7 @@ XP Mockery - Introduction
 		  $fixture->readContextData(); //returns null
 		}
 	
+* Return Values
   - by default each method of a mocked object returns null. However we might need the dependent object to return actual stuff.
 	For example to completely test the method getSecretStuff, we need to check two cases. 
 	  1) $this->context->hasPermission("rt=foo,rn=bar") returns TRUE;
@@ -136,7 +137,8 @@ XP Mockery - Introduction
 		  $fixture= new MyService($context);
 		  $this->assertEquals("abracadabra!", $fixture->getSecretStuff());
 		}
-		
+
+* Repetitions
   - note that the defintion of the return value is only valid for one call
 		$context->hasPermission(null)->returns(TRUE);
 		$mockery->replayAll();
@@ -156,11 +158,11 @@ XP Mockery - Introduction
 	
   - a third call to hasPermission would again yield null
 	
-  - if you want the same value to be returned a specific number of times you can use ->repeat($numOfRepeats) 
+  - if you want the same value to be returned a specific number of times you can use ->repeat($numOfRepetions) 
     or  ->repeatAny() to repeat the same value permanently
 	
 		
-		$context->hasPermission(null)->returns(TRUE)->repeat(1); //first call
+		$context->hasPermission(null)->returns(TRUE)->repeat(2); //first call
 		$mockery->replayAll();		
 	
 		$context->hasPermission(null); //first call -> TRUE
@@ -168,6 +170,7 @@ XP Mockery - Introduction
 		$context->hasPermission(null); //second call -> FALSE
 
 
+* Record/Replay/Verfiy
   - now about that $mockery->replayAll() call. This is part of the Record/Replay/Verfiy paradigm,
     that is used for the mocking framework. In the Record phase you tell your mocks how they should
     behave. With replayAll you activate the Replay Phase. Now when you call methods on your mocks
@@ -175,6 +178,6 @@ XP Mockery - Introduction
     you check whether your recorded expectations are fulfilled.
 	
 	  
-	- that's it for now.
+  - that's it for now.
 	
-	- Happy Mocking!
+* Happy Mocking!
