@@ -19,5 +19,9 @@
      * @return  var
      */
     function returns($value);
+
+    function repeat($count);
+
+    function repeatAny();
   }
 ?>

@@ -93,6 +93,21 @@
     public function cannotAddObjects() {
       $this->sut->add(new Object());
     }
+
+
+    /**
+     * getNext returns an expectation is returned twice if repeat is set to 1
+     */
+    #[@test]
+    public function getNext_SameExpectationTwice_whenRepeatIs1() {
+      $expect=new Expectation();
+      $expect->setRepeat(1);
+      $this->sut->add($expect);
+
+      $this->assertEquals($expect, $this->sut->getNext());
+      $this->assertEquals($expect, $this->sut->getNext());
+      $this->assertNull($this->sut->getNext());
+    }
   }
 
 ?>

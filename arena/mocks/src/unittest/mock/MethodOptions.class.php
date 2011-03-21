@@ -31,10 +31,32 @@
     
     /**
      * Specifies the expected return value.
+     *
+     * @return IMethodOptions
      */
     public function returns($value) {
       $this->expectation->setReturn($value);
       return $this;
+    }
+
+    /**
+     * Specifies the number of calls that are expected for the method.
+     *
+     * @param int repeatCount
+     * @return IMethodOptions
+     */
+    public function repeat($repeatCount) {
+      $this->expectation->setRepeat($repeatCount);
+      return $this;
+    }
+    
+    /**
+     * Specifies that this expection is valid for all calls the method.
+     * 
+     * @return IMethodOptions
+     */
+    public function repeatAny() {
+      return $this->repeat(-1);
     }
   }
 ?>

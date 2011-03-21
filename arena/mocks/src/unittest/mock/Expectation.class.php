@@ -27,6 +27,27 @@
     public function setReturn($value) {
         $this->return=$value;
     }
+
+    private $repeat=0;
+    public function  getRepeat() {
+        return $this->repeat;
+    }
+    public function setRepeat($value) {
+        $this->repeat=$value;
+    }
+
+    private $actualCalls=0;
+    public function getActualCalls() {
+        return $this->actualCalls;
+    }
+    public function incActualCalls() {
+        $this->actualCalls += 1;
+    }
+
+    public function canRepeat() {
+      return $this->repeat==-1 //unlimited repeats
+          || $this->actualCalls <= $this->repeat; //limit not reached
+    }
 }
 
 ?>

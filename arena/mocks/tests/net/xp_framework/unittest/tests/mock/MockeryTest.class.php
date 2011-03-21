@@ -229,5 +229,41 @@
 
       $this->assertEquals($foo_expect, $obj->foo());
     }
+
+    /**
+     * can define return object for two calls with repeat
+     */
+    #[@test]
+    public function canCallRepeat() {
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+
+      $expected= "myFooReturn";
+      $object->foo()->returns($expected)->repeat(1);
+      $this->fixture->replayAll();
+
+      $this->assertEquals($expected, $object->foo());
+      $this->assertEquals($expected, $object->foo());
+      $this->assertNull($object->foo());
+    }
+
+
+    /**
+     * can define return object for two calls with repeat
+     */
+    #[@test]
+    public function canCallRepeatAny() {
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+
+      $expected= "myFooReturn";
+      $object->foo()->returns($expected)->repeatAny();
+      $this->fixture->replayAll();
+
+      $this->assertEquals($expected, $object->foo());
+      $this->assertEquals($expected, $object->foo());
+      $this->assertEquals($expected, $object->foo());
+      $this->assertEquals($expected, $object->foo());
+      $this->assertEquals($expected, $object->foo());
+      $this->assertEquals($expected, $object->foo());
+    }
   }
 ?>

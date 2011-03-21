@@ -4,7 +4,9 @@
  * $Id$
  */
  
-  uses('unittest.mock.ReplayState');
+  uses('unittest.mock.ReplayState',
+       'unittest.mock.Expectation',
+       'unittest.mock.ExpectationList');
 
   /**
    * TODO: Description
@@ -70,7 +72,7 @@
      * if no expectations are left, null is returned                       
      */
     #[@test]
-    public function handleInvocation_missingExpectationLeadToNull() {
+    public function handleInvocation_missingExpectation_returnsNull() {
       $myExpectation=new Expectation();
       $myExpectation->setReturn('foobar');
       
@@ -79,6 +81,25 @@
       
       $this->expectationMap->put('foo', $expectationsList);
       
+      $this->assertEquals($myExpectation->getReturn(), $this->sut->handleInvocation('foo', null));
+      $this->assertNull($this->sut->handleInvocation('foo', null));
+    }
+
+    /**
+     * 
+     */
+    #[@test]
+    public function handleInvocation_ExpectationRepeatedOnce_returnExpectationsReturnValueTwice() {
+      $myExpectation=new Expectation();
+      $myExpectation->setReturn('foobar');
+      $myExpectation->setRepeat(1);
+
+      $expectationsList=new ExpectationList();
+      $expectationsList->add($myExpectation);
+
+      $this->expectationMap->put('foo', $expectationsList);
+
+      $this->assertEquals($myExpectation->getReturn(), $this->sut->handleInvocation('foo', null));
       $this->assertEquals($myExpectation->getReturn(), $this->sut->handleInvocation('foo', null));
       $this->assertNull($this->sut->handleInvocation('foo', null));
     }

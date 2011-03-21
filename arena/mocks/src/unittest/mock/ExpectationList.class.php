@@ -44,8 +44,14 @@
       public function getNext() {
         if($this->current >= $this->list->size())
           return null;
+
+        //check whether the current expectation is repeated
+        $expectation=$this->list->get($this->current);
+        $expectation->incActualCalls(); //increase call counter
         
-        return $this->list->get($this->current++);
+        if(!$expectation->canRepeat()) $this->current++; //no more repetitions left -> next expectation
+
+        return $expectation;
       }
 
     
