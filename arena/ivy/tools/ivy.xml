@@ -26,6 +26,6 @@
   <publications>
     <artifact name="tools" type="xar" ext="xar" conf="default"/>
     <artifact name="tools-test" type="xar" ext="xar" conf="test"/>
-    <artifact name="tools-ep" type="zip" conf="default"/>
+    <artifact name="tools-bootstrap" type="bootstrap" ext="zip" conf="default"/>
   </publications>
 </ivy-module>

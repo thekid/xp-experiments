@@ -1,14 +1,12 @@
 <?xml version="1.0"?>
 <project name="xp-framework-tools" basedir=".">
-  <import file="../build/build-master.xml"/>
+  <import file="${user.home}/.ant/xp-build/build-loader.xml"/>
+  <import file="${xp.build.home}/opt/build-svnexport.xml"/>
 
-  <path id="build.sourceDirectory">
-    <fileset dir="${basedir}/xp/tools">
-      <exclude name="*.php"/>
-    </fileset>
-  </path>
-  <path id="build.testSourceDirectory"/>
-  
+  <fileset id="build.sources.fileset.php" dir="${basedir}/xp/tools">
+    <exclude name="*.php"/>
+  </fileset>
+
   <target name="xp.compile.entrypoints" extensionOf="compile">
     <mkdir dir="${build.target}/tools"/>
     <copy todir="${build.target}/tools">
@@ -24,6 +22,20 @@
         <include name="tools/*.php"/>
       </fileset>
     </copy>
+  </target>
+
+  <target name="xp.package.sources" extensionOf="package" depends="ivy-info">
+    <xar-with-cp
+     dir="${build.target}/classes"
+     target="${build.target}/${ivy.module}-${ivy.new.revision}.xar"
+    >
+      <classpath>
+        <path>
+          <pathelement path="${basedir}/xp/skeleton"/>
+          <pathelement path="${basedir}/xp"/>
+        </path>
+      </classpath>
+    </xar-with-cp>
   </target>
   
   <target name="xp.package.bootstrap" extensionOf="package" depends="ivy-info">
