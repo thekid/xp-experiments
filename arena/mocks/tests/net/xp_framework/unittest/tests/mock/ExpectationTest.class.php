@@ -53,7 +53,7 @@
      */
     #[@test]
     public function repeat_is0_byDefault() {
-      $this->assertEquals(0, $this->sut->getRepeat());
+      $this->assertEquals(1, $this->sut->getRepeat());
     }
 
     /**
@@ -114,8 +114,8 @@
      * CanRepeat with repeat==1 returns 2 times true and then false
      */
     #[@test]
-    public function canRepeat_withNumericRepeat1_TrueTwice() {
-      $this->sut->setRepeat(1);
+    public function canRepeat_withNumericRepeat2_TrueTwice() {
+      $this->sut->setRepeat(2);
       $this->assertTrue($this->sut->canRepeat());
       $this->sut->incActualCalls();
       $this->assertTrue($this->sut->canRepeat());

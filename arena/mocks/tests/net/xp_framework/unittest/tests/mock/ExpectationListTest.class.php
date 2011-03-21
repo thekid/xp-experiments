@@ -99,9 +99,9 @@
      * getNext returns an expectation is returned twice if repeat is set to 1
      */
     #[@test]
-    public function getNext_SameExpectationTwice_whenRepeatIs1() {
+    public function getNext_SameExpectationTwice_whenRepeatIs2() {
       $expect=new Expectation();
-      $expect->setRepeat(1);
+      $expect->setRepeat(2);
       $this->sut->add($expect);
 
       $this->assertEquals($expect, $this->sut->getNext());

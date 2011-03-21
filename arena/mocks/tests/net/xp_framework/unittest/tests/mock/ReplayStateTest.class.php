@@ -89,10 +89,10 @@
      * 
      */
     #[@test]
-    public function handleInvocation_ExpectationRepeatedOnce_returnExpectationsReturnValueTwice() {
+    public function handleInvocation_ExpectationRepeatedTwice_returnExpectationsReturnValueTwice() {
       $myExpectation=new Expectation();
       $myExpectation->setReturn('foobar');
-      $myExpectation->setRepeat(1);
+      $myExpectation->setRepeat(2);
 
       $expectationsList=new ExpectationList();
       $expectationsList->add($myExpectation);

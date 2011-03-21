@@ -28,7 +28,7 @@
         $this->return=$value;
     }
 
-    private $repeat=0;
+    private $repeat=1;
     public function  getRepeat() {
         return $this->repeat;
     }
@@ -46,7 +46,7 @@
 
     public function canRepeat() {
       return $this->repeat==-1 //unlimited repeats
-          || $this->actualCalls <= $this->repeat; //limit not reached
+          || $this->actualCalls < $this->repeat; //limit not reached
     }
 }
 
