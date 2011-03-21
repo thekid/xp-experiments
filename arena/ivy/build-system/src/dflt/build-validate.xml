@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="xp-framework-validate" basedir=".">
+<project name="xp-framework-validate" basedir="." xmlns:select="antlib:org.apache.tools.ant.types.resources.selectors">
   <target name="xp.validate" extensionOf="validate">
     <apply
      executable="php"
      failonerror="true"
     >
       <arg value="-l"/>
-      <path refid="build.sourceDirectory"/>
+      <restrict>
+        <fileset refid="build.sources.fileset.php"/>
+        <select:name name="*.php"/>
+      </restrict>
     </apply>
   </target>
 </project>

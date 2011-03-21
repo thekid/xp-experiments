@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="xp-framework-svnexport">
+<project name="xp-framework-svnexport" basedir=".">
   <property name="project.svn.url" value="http://svn.xp-framework.net/xp/trunk/"/>
   <available property="xp.checkout.exists" file="${basedir}/xp"/>
 

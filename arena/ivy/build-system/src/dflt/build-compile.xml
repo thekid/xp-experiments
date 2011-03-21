@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="xp-framework-compile" basedir=".">
-  <target name="xp.compile.sources" extensionOf="compile" depends="xp.compile.dest, xp.compile.sources.php, xp.compile.sources.xsl">
+  <target name="xp.compile.sources" extensionOf="compile" depends="xp.compile.sources.php, xp.compile.sources.xsl">
   </target>
 
   <target name="xp.compile.dest">
@@ -27,7 +27,7 @@
   <target name="xp.compile.tests" extensionOf="compile">
     <mkdir dir="${build.target.testClasses}"/>
     <copy todir="${build.target.testClasses}">
-      <path refid="build.testSourceDirectory"/>
+      <fileset refid="build.testSourceDirectory"/>
     </copy>
   </target>
 
