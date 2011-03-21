@@ -12,27 +12,32 @@
        conf="default"
        setid="xar.path.dependencies"
       />
+      <xar-with-cp target="@{target}" dir="@{dir}">
+        <classpath><fileset refid="xar.path.dependencies"/></classpath>
+      </xar-with-cp>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="xar-with-cp">
+    <attribute name="target"/>
+    <attribute name="dir"/>
+    <element name="classpath"/>
+
+    <sequential>
       <pathconvert property="xar.path" pathsep="&#10;">
-        <path>
-          <fileset refid="xar.path.dependencies"/>
-          <pathelement path="${build.target}/bootstrap"/>
-        </path>
+        <classpath/>
       </pathconvert>
 
       <!-- Generate ivy.pth for use by xar -->
+      <echo>${xar.path}</echo>
       <echo file="${build.target}/ivy.pth">${xar.path}</echo>
-      <pathconvert property="xar.use_xp">
-        <path>
-          <pathelement path="${build.target}/bootstrap"/>
-        </path>
-      </pathconvert>
 
       <exec
        executable="xar"
        failonerror="true"
        dir="@{dir}"
       >
-        <env key="USE_XP" value="${xar.use_xp}"/>
+        <env key="USE_XP" value="${build.target}/bootstrap"/>
         <arg value="cf"/>
         <arg value="@{target}"/>
         <arg value="."/>

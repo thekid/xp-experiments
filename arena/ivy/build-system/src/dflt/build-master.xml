@@ -28,7 +28,7 @@
     <ivy:resolve/>
     
     <ivy:cachefileset
-     type="zip"
+     type="bootstrap"
      setid="build.bootstrap"
     />
     <ivy:resolve/>
