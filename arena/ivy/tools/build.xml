@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <project name="xp-framework-tools" basedir=".">
+  <property name="ivy.publish.resolver" value="public-authenticated"/>
   <import file="${user.home}/.ant/xp-build/build-loader.xml"/>
   <import file="${xp.build.home}/opt/build-svnexport.xml"/>
 
@@ -8,7 +9,6 @@
   </fileset>
 
   <target name="xp.compile.entrypoints" extensionOf="compile">
-    <mkdir dir="${build.target}/tools"/>
     <copy todir="${build.target}/tools">
       <fileset dir="${basedir}/xp/tools">
         <include name="*.php"/>
@@ -22,9 +22,15 @@
         <include name="tools/*.php"/>
       </fileset>
     </copy>
+
+    <copy todir="${build.target}/bootstrap">
+      <fileset dir="${basedir}/xp">
+        <include name="tools/*.php"/>
+      </fileset>
+    </copy>
   </target>
 
-  <target name="xp.package.sources" extensionOf="package" depends="ivy-info">
+  <target name="xp.package.sources" extensionOf="package" depends="ivy-info, xp.build.number">
     <xar-with-cp
      dir="${build.target}/classes"
      target="${build.target}/${ivy.module}-${ivy.new.revision}.xar"
@@ -33,14 +39,15 @@
         <path>
           <pathelement path="${basedir}/xp/skeleton"/>
           <pathelement path="${basedir}/xp"/>
+          <pathelement path="${basedir}/xp/tools"/>
         </path>
       </classpath>
     </xar-with-cp>
   </target>
   
-  <target name="xp.package.bootstrap" extensionOf="package" depends="ivy-info">
+  <target name="xp.package.bootstrap" extensionOf="package" depends="ivy-info, xp.build.number">
     <zip
-     destfile="${build.target}/${ivy.module}-ep-${ivy.revision}.zip"
+     destfile="${build.target}/${ivy.module}-bootstrap-${ivy.new.revision}.zip"
     >
       <zipfileset dir="${build.target}/bootstrap-build"/>
     </zip>
