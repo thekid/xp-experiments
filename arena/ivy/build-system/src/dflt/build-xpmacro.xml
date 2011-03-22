@@ -29,8 +29,7 @@
       </pathconvert>
 
       <!-- Generate ivy.pth for use by xar -->
-      <echo>${xar.path}</echo>
-      <echo file="${build.target}/ivy.pth">${xar.path}</echo>
+      <echo file="${build.target}/bootstrap/ivy.pth">${xar.path}</echo>
 
       <exec
        executable="xar"
