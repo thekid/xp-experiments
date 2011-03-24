@@ -13,7 +13,12 @@
        setid="xar.path.dependencies"
       />
       <xar-with-cp target="@{target}" dir="@{dir}">
-        <classpath><fileset refid="xar.path.dependencies"/></classpath>
+        <classpath>
+          <fileset refid="xar.path.dependencies"/>
+          <path>
+            <pathelement path="${build.target}/bootstrap"/>
+          </path>
+        </classpath>
       </xar-with-cp>
     </sequential>
   </macrodef>

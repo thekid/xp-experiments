@@ -18,7 +18,6 @@
      dir="${build.target}/test-classes"
      target="${build.target}/${ivy.module}-test-${ivy.new.revision}.xar"
     />
-    <property name="build.xar" value="${build.target}/${ivy.module}-test-${ivy.new.version}.xar"/>
   </target>
 
   <target name="xp.package.meta" extensionOf="package" depends="ivy-info, xp.package.sources, xp.package.tests">
