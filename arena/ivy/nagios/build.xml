@@ -1,19 +1,16 @@
 <?xml version="1.0"?>
 <project name="xp-nagios">
-  <import file="../build/build-master.xml"/>
+  <import file="${user.home}/.ant/xp-build/build-loader.xml"/>
+  <import file="${xp.build.home}/opt/build-svnexport.xml"/>
   
-  <path id="build.sourceDirectory">
-    <fileset dir="${basedir}/xp/ports/classes">
-      <include name="org/nagios/**"/>
-      <exclude name="org/nagios/unittest"/>
-    </fileset>
-  </path>
+  <fileset id="build.sources.fileset.php" dir="${basedir}/xp/ports/classes">
+    <include name="org/nagios/**"/>
+    <exclude name="org/nagios/unittest"/>
+  </fileset>
   
-  <path id="build.testSourceDirectory">
-    <fileset dir="${basedir}/xp/ports/classes">
-      <include name="org/nagios/unittest/**"/>
-    </fileset>
-  </path>
+  <fileset id="build.testSourceDirectory" dir="${basedir}/xp/ports/classes">
+    <include name="org/nagios/unittest/**"/>
+  </fileset>
   
   <property name="build.testPackage" value="org.nagios.unittest.**"/>
 </project>
