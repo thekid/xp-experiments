@@ -8,14 +8,8 @@
    organisation="net.xp_framework" 
    module="stomp"
    status="integration"
-   revision="5.8"
+   revision="5.8.1"
   >
-    <extends 
-     organisation="net.xp_framework"
-     module="core"
-     revision="5.8"
-     location="../core/ivy.xml"
-    />
     <license name="BSD"/>
     <description homepage="http://xp-framework.net/">
       The stomp module is an add-on to the XP framework that adds
@@ -32,6 +26,6 @@
     <artifact name="stomp-test" type="xar" ext="xar" conf="test"/>
   </publications>
   <dependencies>
-    <dependency name="core" rev="5.8"/>
+    <dependency org="net.xp_framework" name="core" rev="5.8.1+"/>
   </dependencies>
 </ivy-module>
