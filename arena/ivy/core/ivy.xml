@@ -8,7 +8,7 @@
    organisation="net.xp_framework" 
    module="core"
    status="integration"
-   revision="5.8"
+   revision="5.8.1"
   >
     <license name="BSD"/>
     <description homepage="http://xp-framework.net/">
@@ -31,7 +31,7 @@
   <dependencies>
     <dependency
      name="tools"
-     rev="5.8"
+     rev="5.8.1+"
      conf="default->default; test->test"
     />
   </dependencies>

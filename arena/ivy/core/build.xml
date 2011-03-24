@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="xp-framework-core" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
-  <property name="build.sourceDirectory" value="${basedir}/xp/skeleton"/>
+  <property name="ivy.publish.resolver" value="public-authenticated"/>
   <import file="${user.home}/.ant/xp-build/build-loader.xml"/>
   <import file="${xp.build.home}/opt/build-svnexport.xml"/>
 
@@ -8,17 +8,15 @@
     <exclude name="lang.base.php"/>
   </fileset>
   
-  <path id="build.testSourceDirectory">
-    <fileset dir="${basedir}/xp/ports/classes">
-      <include name="net/xp_framework/unittest/**"/>
-      <include name="net/xp_lang/tests/**"/>
-    </fileset>
-    <fileset dir="${basedir}/xp/ports/unittest">
-      <include name="*.ini"/>
-      <exclude name="isbn.ini"/>
-      <exclude name="stomp.ini"/>
-    </fileset>
-  </path>
+  <fileset id="build.testSourceDirectory" dir="${basedir}/xp/ports/classes">
+    <include name="net/xp_framework/unittest/**"/>
+    <include name="net/xp_lang/tests/**"/>
+  </fileset>
+  <fileset dir="${basedir}/xp/ports/unittest">
+    <include name="*.ini"/>
+    <exclude name="isbn.ini"/>
+    <exclude name="stomp.ini"/>
+  </fileset>
   
   <fileset id="build.testConfigurations" dir="${build.target}/test-classes">
     <include name="*.ini"/>
@@ -30,9 +28,53 @@
     <copy todir="${build.target}/build-bootstrap" file="${basedir}/xp/skeleton/lang.base.php"/>
   </target>
   
-  <target name="xp.package.bootstrap" extensionOf="package" depends="ivy-info">
-    <zip destfile="${build.target}/${ivy.module}-bootstrap-${ivy.revision}.zip">
+  <target name="xp.package.bootstrap" extensionOf="package" depends="ivy-info, xp.build.number">
+    <zip destfile="${build.target}/${ivy.module}-bootstrap-${ivy.new.revision}.zip">
       <fileset dir="${build.target}/build-bootstrap"/>
     </zip>
+  </target>
+
+  <target name="xp.package.sources" extensionOf="package" depends="ivy-info, xp.build.number">
+    <!-- Build classpath for xar -->
+    <ivy:cachefileset
+     type="xar"
+     conf="default"
+     setid="xar.path.dependencies"
+    />
+
+    <xar-with-cp
+     dir="${build.target}/classes"
+     target="${build.target}/${ivy.module}-${ivy.new.revision}.xar"
+    >
+      <classpath>
+        <fileset refid="xar.path.dependencies"/>
+        <path>
+          <pathelement path="${build.target}/bootstrap"/>
+          <pathelement path="${basedir}/xp/skeleton"/>
+        </path>
+      </classpath>
+    </xar-with-cp>
+  </target>
+
+  <target name="xp.package.tests" extensionOf="package" depends="ivy-info, xp.build.number">
+    <!-- Build classpath for xar -->
+    <ivy:cachefileset
+     type="xar"
+     conf="default"
+     setid="xar.path.dependencies"
+    />
+
+    <xar-with-cp
+     dir="${build.target}/test-classes"
+     target="${build.target}/${ivy.module}-test-${ivy.new.revision}.xar"
+    >
+      <classpath>
+        <fileset refid="xar.path.dependencies"/>
+        <path>
+          <pathelement path="${build.target}/bootstrap"/>
+          <pathelement path="${basedir}/xp/skeleton"/>
+        </path>
+      </classpath>
+    </xar-with-cp>
   </target>
 </project>
