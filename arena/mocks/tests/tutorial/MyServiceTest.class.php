@@ -46,7 +46,6 @@ uses('unittest.TestCase',
 		  $fixture= new MyService($context);
 		  $this->assertEquals("abracadabra!", $fixture->getSecretStuff());
 		}
-
   }
 
 ?>

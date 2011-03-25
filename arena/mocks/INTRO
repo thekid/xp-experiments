@@ -12,8 +12,8 @@ XP Mockery - Introduction
   3) repetions of returns
  
 * Not implemented:
-  1) Behaviour verification  
-  3) Method argument matching
+  2) Method argument matching
+  3) Behaviour verification
   4) Execution order verification
   5) Strict  mocks (unsatisfied expectation)
   6) Rewinding the replay state
@@ -82,7 +82,7 @@ XP Mockery - Introduction
 		#[@test]
 		public function can_call_readContextData() {
 		  $fixture= new MyService(null);
-		  $fixture->readContextData(); //OOPS! calls $this->context->hasPermission("rt=foo,rn=bar") inside but $this->context is null
+		  $fixture->readContextData();
 		}
 
   - so we need to initialize an actual IContext. However we might have no concrete class which implements
@@ -167,7 +167,7 @@ XP Mockery - Introduction
 	
 		$context->hasPermission(null); //first call -> TRUE
 		$context->hasPermission(null); //second call -> TRUE //repeat
-		$context->hasPermission(null); //second call -> FALSE
+		$context->hasPermission(null); //third call -> NULL
 
 
 * Record/Replay/Verfiy

@@ -18,8 +18,8 @@
       return $this->context->getData();
     }
 
-	  public function getSecretStuff() {
-		if($this->context->hasPermission("rt=foo,rn=bar"))
+    public function getSecretStuff() {
+		  if ($this->context->hasPermission("rt=foo,rn=bar"))
 	      return $this->secret;
 	    else
         throw new IllegalAccessException("Netter Versuch, Robert!");
