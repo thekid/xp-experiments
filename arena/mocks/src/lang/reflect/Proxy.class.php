@@ -63,13 +63,12 @@
     public function createProxyClass(IClassLoader $classloader, array $interfaces, $baseClass=NULL) {
       $this->added= array();
 
-      if (!$baseClass)
+      if (!$baseClass) {
         $baseClass = XPClass::forName('lang.Object');
-
+      }
       //check if class is already in cache
       $key= $this->buildCacheId($baseClass, $interfaces);
       if(NULL !== ($cached=$this->tryGetFromCache($key))) {
-
         return $cached;
       }
 
@@ -212,7 +211,14 @@
      */
     private function generateBaseClassMethods($baseClass) {
       $bytes='';
+
+      $reservedMethods= XPClass::forName('lang.Generic')->getMethods();
+      $reservedMethodNames= array_map(create_function('$i', 'return $i->getName();'), $reservedMethods);
+      
       foreach($baseClass->getMethods() as $m) {
+        if(in_array($m->getName(), $reservedMethodNames)) //do not overwrite reserved methods
+          continue;
+        
         if($this->overwriteExisting || ($m->getModifiers()&2) == 2) { //implement abstract methods
           // Check for already declared methods, do not redeclare them
           if (isset($this->added[$m->getName()])) continue;
@@ -223,6 +229,7 @@
       return $bytes;
     }
 
+    
     /**
      * Generates code for a method.
      * 

@@ -81,15 +81,6 @@
     }
 
     /**
-     * Tests passing a list of empty interfaces
-     *
-     */
-    #[@test, @expect('lang.IllegalArgumentException')]
-    public function emptyInterfaces() {
-      Proxy::getProxyClass(ClassLoader::getDefault(), array());
-    }
-
-    /**
      * Tests passing NULL for interfaces
      *
      */
@@ -229,5 +220,71 @@
       $interfaces= $proxy->getInterfaces();
       $this->assertTrue(in_array(XPClass::forName('lang.reflect.IProxy'), $interfaces));
   }
+
+  /**
+   * TODO: description
+   */
+  #[@test]
+  public function concrete_methods_should_not_be_changed_by_default() {
+    $proxyBuilder= new Proxy();
+    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
+      array(),
+      XPClass::forName('net.xp_framework.unittest.reflection.AbstractDummy'));
+
+    $proxy= $class->newInstance($this->handler);
+    $this->assertEquals('concreteMethod', $proxy->concreteMethod());
   }
+
+  /**
+   * TODO: description
+   */
+  #[@test]
+  public function abstract_methods_should_delegated_to_handler() {
+    $proxyBuilder= new Proxy();
+    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
+      array(),
+      XPClass::forName('net.xp_framework.unittest.reflection.AbstractDummy'));
+
+    $proxy= $class->newInstance($this->handler);
+    $proxy->abstractMethod();
+
+    $this->assertArray($this->handler->invocations['abstractMethod_0']);
+  }
+
+  /**
+   * TODO: description
+   */
+  #[@test]
+  public function with_overwriteAll_abstract_methods_should_delegated_to_handler() {
+    $proxyBuilder= new Proxy();
+    $proxyBuilder->setOverwriteExisting(TRUE);
+    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
+      array(),
+      XPClass::forName('net.xp_framework.unittest.reflection.AbstractDummy'));
+
+    $proxy= $class->newInstance($this->handler);
+    $proxy->concreteMethod();
+    $this->assertArray($this->handler->invocations['concreteMethod_0']);
+  }
+
+  /**
+   * TODO: description
+   */
+  #[@test]
+  public function reserved_methods_should_not_be_overridden() {
+    $proxyBuilder= new Proxy();
+    $proxyBuilder->setOverwriteExisting(TRUE);
+    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
+      array(),
+      XPClass::forName('net.xp_framework.unittest.reflection.AbstractDummy'));
+
+    $proxy= $class->newInstance($this->handler);
+
+    $proxy->equals(new Object());
+    $this->assertFalse(isset($this->handler->invocations['equals_1']));
+  }
+
+
+}
 ?>
+
