@@ -10,9 +10,10 @@ XP Mockery - Introduction
   1) generating mocks/stubs (all methods return null by default)
   2) return values of mocks/stubs
   3) repetions of returns
- 
+  4) basic argument matching
+
 * Not implemented:
-  2) Method argument matching
+  2) Generic argument matching
   3) Behaviour verification
   4) Execution order verification
   5) Strict  mocks (unsatisfied expectation)
@@ -119,7 +120,8 @@ XP Mockery - Introduction
 		public function getSecretStuff_works_withPermissions() {
 		  $mockery=new Mockery();
 		  $context= $mockery->createMock('tutorial.IContext');
-		  $context->hasPermission(null)->returns(TRUE); //tell hasPermission to return TRUE
+      $permission= "rt=foo,rn=bar";
+		  $context->hasPermission($permission)->returns(TRUE); //tell hasPermission to return TRUE
 		  $mockery->replayAll();
 
 		  $fixture= new MyService($context);
@@ -131,7 +133,8 @@ XP Mockery - Introduction
 		public function getSecretStuff_throwsException_whithoutPermissions() {
 		  $mockery=new Mockery();
 		  $context= $mockery->createMock('tutorial.IContext');
-		  $context->hasPermission(null)->returns(FALSE); //no permissions
+      $permission= "rt=foo,rn=bar";
+		  $context->hasPermission($permission)->returns(FALSE); //no permissions
 		  $mockery->replayAll();
 
 		  $fixture= new MyService($context);
@@ -140,21 +143,21 @@ XP Mockery - Introduction
 
 * Repetitions
   - note that the defintion of the return value is only valid for one call
-		$context->hasPermission(null)->returns(TRUE);
+		$context->hasPermission($permission)->returns(TRUE);
 		$mockery->replayAll();
 		
-		$context->hasPermission(null); //first call -> TRUE
-		$context->hasPermission(null); //second call -> null
+		$context->hasPermission($permission); //first call -> TRUE
+		$context->hasPermission($permission); //second call -> null
 	
   - thus if you expect that hasPermission is called twice, you need to define the return values 
 	for both calls, i.e.
 	  
-		$context->hasPermission(null)->returns(TRUE); //first call
-		$context->hasPermission(null)->returns(FALSE); //second call
+		$context->hasPermission($permission)->returns(TRUE); //first call
+		$context->hasPermission($permission)->returns(FALSE); //second call
 		$mockery->replayAll();
 		
-		$context->hasPermission(null); //first call -> TRUE
-		$context->hasPermission(null); //second call -> FALSE 
+		$context->hasPermission($permission); //first call -> TRUE
+		$context->hasPermission($permission); //second call -> FALSE
 	
   - a third call to hasPermission would again yield null
 	
@@ -162,12 +165,12 @@ XP Mockery - Introduction
     or  ->repeatAny() to repeat the same value permanently
 	
 		
-		$context->hasPermission(null)->returns(TRUE)->repeat(2); //first call
+		$context->hasPermission($permission)->returns(TRUE)->repeat(2); //first call
 		$mockery->replayAll();		
 	
-		$context->hasPermission(null); //first call -> TRUE
-		$context->hasPermission(null); //second call -> TRUE //repeat
-		$context->hasPermission(null); //third call -> NULL
+		$context->hasPermission($permission); //first call -> TRUE
+		$context->hasPermission($permission); //second call -> TRUE //repeat
+		$context->hasPermission($permission); //third call -> NULL
 
 
 * Record/Replay/Verfiy
@@ -177,7 +180,8 @@ XP Mockery - Introduction
     they will actually return the stuff you have recorded. In Verification phase (not implemented yet)
     you check whether your recorded expectations are fulfilled.
 	
-	  
-  - that's it for now.
-	
-* Happy Mocking!
+* Argument Matching
+  - TBD
+
+* that's it for now.
+	- Happy Mocking!

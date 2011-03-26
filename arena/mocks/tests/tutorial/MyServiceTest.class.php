@@ -29,7 +29,8 @@ uses('unittest.TestCase',
 		public function getSecretStuff_works_withPermissions() {
       $mockery=new Mockery();
       $context= $mockery->createMock('tutorial.IContext');
-      $context->hasPermission(null)->returns(TRUE); //tell hasPermissions to return TRUE
+      $permission= "rt=foo,rn=bar"; 
+      $context->hasPermission($permission)->returns(TRUE); //tell hasPermissions to return TRUE
       $mockery->replayAll();
 
 		  $fixture= new MyService($context);
@@ -40,7 +41,8 @@ uses('unittest.TestCase',
 		public function getSecretStuff_throwsException_whithoutPermissions() {
       $mockery=new Mockery();
       $context= $mockery->createMock('tutorial.IContext');
-      $context->hasPermission(null)->returns(FALSE); //no permissions
+      $permission= "rt=foo,rn=bar";
+		  $context->hasPermission($permission)->returns(FALSE); //no permissions
       $mockery->replayAll();
 
 		  $fixture= new MyService($context);
