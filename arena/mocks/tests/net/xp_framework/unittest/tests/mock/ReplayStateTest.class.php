@@ -86,7 +86,7 @@
     }
 
     /**
-     * 
+     * Repetions work in replay state.
      */
     #[@test]
     public function handleInvocation_ExpectationRepeatedTwice_returnExpectationsReturnValueTwice() {

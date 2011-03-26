@@ -7,7 +7,7 @@
   uses('unittest.mock.MethodOptions');
 
   /**
-   * TODO
+   * Tests for the MethodOptions class.
    */
   class MethodOptionsTest extends TestCase {
 

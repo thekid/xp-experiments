@@ -59,7 +59,7 @@
       $this->assertEquals(1, $this->expectationMap->size());
       $expectationList= $this->expectationMap->get('foo');
       $this->assertInstanceOf('unittest.mock.ExpectationList', $expectationList);
-      $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->getNext());
+      $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->getNext(array()));
     }
 
     /**
@@ -69,11 +69,11 @@
     public function newExpectationCreatedOnHandleInvocation_twoDifferentMethods() {
       $this->sut->handleInvocation('foo', null);
       $this->sut->handleInvocation('bar', null);
-      $this->assertInstanceOf('unittest.mock.Expectation', $this->expectationMap->get('foo')->getNext());
-      $this->assertInstanceOf('unittest.mock.Expectation', $this->expectationMap->get('bar')->getNext());
+      $this->assertInstanceOf('unittest.mock.Expectation', $this->expectationMap->get('foo')->getNext(array()));
+      $this->assertInstanceOf('unittest.mock.Expectation', $this->expectationMap->get('bar')->getNext(array()));
     }
 
-        /**
+    /**
      * a new expectation is created when calling handleInvocation
      */
     #[@test]
@@ -83,9 +83,22 @@
       $expectationList= $this->expectationMap->get('foo');
 
       $this->assertInstanceOf('unittest.mock.ExpectationList', $expectationList);
-      $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->getNext());
-      $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->getNext());
+      $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->getNext(array()));
+      $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->getNext(array()));
 
+    }
+
+    /**
+     * The expectations arguments should be set in handleInvocation.
+     */
+    #[@test]
+    public function method_call_should_set_arguments() {
+      $args= array('1', 2, 3.0);
+      $this->sut->handleInvocation('foo', $args);
+
+      $expectationList= $this->expectationMap->get('foo');
+      $expectedExpectaton= $expectationList->getNext($args);
+      $this->assertObject($expectedExpectaton);
     }
   }
 ?>

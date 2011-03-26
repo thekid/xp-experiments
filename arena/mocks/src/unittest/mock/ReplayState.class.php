@@ -41,7 +41,7 @@
       if(!$this->expectationMap->containsKey($method))
         return null;
       
-      $nextExpectation= $this->expectationMap->get($method)->getNext();
+      $nextExpectation= $this->expectationMap->get($method)->getNext($args);
       if(!$nextExpectation) //no more expectations
         return null;
       

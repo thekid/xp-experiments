@@ -8,8 +8,8 @@
   uses('unittest.mock.Expectation');
 
   /**
- * Test cases for
- */
+   * Test cases for
+   */
   class ExpectationTest extends TestCase {
 
     private $sut = null;
@@ -21,7 +21,6 @@
     public function setUp() {
         $this->sut = new Expectation();
     }
-
 
     /**
      * Can create.
@@ -92,6 +91,7 @@
       $this->assertFalse($this->sut->canRepeat());
       
     }
+
     /**
      * CanRepeat should be true if repeat is set to -1,
      * even after incActualCalls
@@ -122,5 +122,75 @@
       $this->sut->incActualCalls();
       $this->assertFalse($this->sut->canRepeat());
     }
+
+    /**
+     * set/getArguments
+     */
+    #[@test]
+    public function setArguments_should_set_arguments() {
+      $expected= array('foo', 'bar', 5);
+      $this->sut->setArguments($expected);
+      $actual= $this->sut->getArguments();
+      $this->assertEquals($expected, $actual);   
+    }
+
+    /**
+     * doesMatchArgs exists
+     */
+    #[@test]
+    public function cancall_doesMatchArgs() {
+      $this->sut->doesMatchArgs(array());
+    }
+
+    /**
+     * The number of arguments is relevant for matching.
+     */
+    #[@test]
+    public function argument_count_should_be_considered_when_matching_args() {
+      $this->sut->setArguments(array(1, 2));
+      $this->assertTrue($this->sut->doesMatchArgs(array(1, 2)));
+      $this->assertFalse($this->sut->doesMatchArgs(array()));
+      $this->assertFalse($this->sut->doesMatchArgs(array(1)));
+      $this->assertFalse($this->sut->doesMatchArgs(array(1, 2, 3)));
+    }
+
+    /**
+     * Types are relevant for matching arguments.
+     */
+   #[@test]
+    public function doesMatch_should_return_false_on_differentTypes() {
+      $this->sut->setArguments(array('1'));
+
+      $this->assertFalse($this->sut->doesMatchArgs(array(1)));
+    }
+
+    /**
+     * Equality is of course relevant for argument matching.
+     */
+  #[@test]
+    public function doesMatch_should_return_true_if_args_are_equal() {
+      $this->sut->setArguments(array('1', 2, 3.0, '4'));
+
+      $this->assertTrue($this->sut->doesMatchArgs(array('1', 2, 3.0, '4')));
+    }
+    /**
+     * Unequal arguments should not match.
+     */
+    #[@test]
+    public function doesMatch_should_return_false_if_args_are_unequal() {
+      $this->sut->setArguments(array('1', 2, 3.0, '4'));
+
+      $this->assertFalse($this->sut->doesMatchArgs(array('x', 2, 3.0, '4')));
+    }
+
+    /**
+     * null is also a valid argument.
+     */
+    public function doesMatch_should_work_with_null() {
+      $this->sut->setArguments(array(null, null));
+
+      $this->assertFalse($this->sut->doesMatchArgs(array(null, null)));
+    }
+
   }
 ?>

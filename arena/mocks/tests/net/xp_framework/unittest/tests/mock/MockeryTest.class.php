@@ -159,7 +159,8 @@
     }
     
     /**
-                             
+     * All mocks created by one mockery are set to replay mode when
+     * replayAll is called.
      */
     #[@test]
     public function replayAllSetsAllMocksInReplayMode() {
@@ -177,8 +178,9 @@
       $this->assertTrue($object2->_isMockReplaying());
       $this->assertTrue($object3->_isMockReplaying());
     }
+    
     /**
-     * 
+     * "Partial" mocks are also possible.
      */
     #[@test]
     public function can_createMock_fromAbstractClass() {
@@ -187,7 +189,7 @@
     }
     
     /**
-     * 
+     * Abstract methods should be implemented (and delegated to the handler).
      */
     #[@test]
     public function abstractMethodAreMocked() {
@@ -206,10 +208,11 @@
     }
 
     /**
-     * 
+     * The concretely implemented methods should not be mocked if
+     * overrideAll is unset.
      */
     #[@test]
-    public function concreteClassesNotMocked() {
+    public function concreteMethodsNotMocked() {
       $obj= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy');
 
       $this->assertEquals('IComplexInterface.foo', $obj->foo());
@@ -264,6 +267,23 @@
       $this->assertEquals($expected, $object->foo());
       $this->assertEquals($expected, $object->foo());
       $this->assertEquals($expected, $object->foo());
+    }
+
+    /**
+     * when recording calls, the arguments should be considered.
+     */
+    #[@test]
+    public function method_arguments_should_be_considered_in_recodring() {
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+
+      $conf1Expect='c1';
+      $conf2Expect='c2';
+      $object->bar('X', 'Conf1')->returns($conf1Expect);
+      $object->bar('X', 'Conf2')->returns($conf2Expect);
+      $this->fixture->replayAll();
+
+      $this->assertEquals($conf2Expect, $object->bar('X', 'Conf2'));
+      $this->assertEquals($conf1Expect, $object->bar('X', 'Conf1'));
     }
   }
 ?>

@@ -36,7 +36,7 @@
      */
     #[@test]
     public function canCallGetNext() {
-      $this->sut->getNext();
+      $this->sut->getNext(array());
     }
     
     /**
@@ -44,7 +44,7 @@
      */
     #[@test]
     public function getNext_returnNullByDefault() {
-      $this->assertNull($this->sut->getNext());
+      $this->assertNull($this->sut->getNext(array()));
     }
     
     /**
@@ -63,7 +63,7 @@
       $expect=new Expectation();
       $this->sut->add($expect);
       
-      $this->assertEquals($expect, $this->sut->getNext());
+      $this->assertEquals($expect, $this->sut->getNext(array()));
     }
     
     /**
@@ -74,8 +74,8 @@
       $expect=new Expectation();
       $this->sut->add($expect);
       
-      $this->assertEquals($expect, $this->sut->getNext());
-      $this->assertNull($this->sut->getNext());
+      $this->assertEquals($expect, $this->sut->getNext(array()));
+      $this->assertNull($this->sut->getNext(array()));
     }
     
     /**
@@ -104,9 +104,9 @@
       $expect->setRepeat(2);
       $this->sut->add($expect);
 
-      $this->assertEquals($expect, $this->sut->getNext());
-      $this->assertEquals($expect, $this->sut->getNext());
-      $this->assertNull($this->sut->getNext());
+      $this->assertEquals($expect, $this->sut->getNext(array()));
+      $this->assertEquals($expect, $this->sut->getNext(array()));
+      $this->assertNull($this->sut->getNext(array()));
     }
   }
 
