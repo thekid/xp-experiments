@@ -5,7 +5,10 @@
  */
 
 
-  uses('unittest.mock.Expectation');
+  uses(
+    'unittest.mock.Expectation',
+    'unittest.mock.arguments.Arg'
+  );
 
   /**
    * Test cases for
@@ -186,11 +189,24 @@
     /**
      * null is also a valid argument.
      */
+    #[@test]
     public function doesMatch_should_work_with_null() {
       $this->sut->setArguments(array(null, null));
 
-      $this->assertFalse($this->sut->doesMatchArgs(array(null, null)));
+      $this->assertTrue($this->sut->doesMatchArgs(array(null, null)));
     }
 
+    /**
+     * Arg::any() should work for any arguments
+     */
+    #[@test]
+    public function doesMatch_should_work_with_generic_AnyMatcher() {
+      $this->sut->setArguments(array(Arg::any()));
+
+       $this->assertTrue($this->sut->doesMatchArgs(array(null)));
+       $this->assertTrue($this->sut->doesMatchArgs(array("test")));
+       $this->assertTrue($this->sut->doesMatchArgs(array(42)));
+       $this->assertTrue($this->sut->doesMatchArgs(array(new Object())));
+    }
   }
 ?>

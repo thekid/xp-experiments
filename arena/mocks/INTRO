@@ -4,21 +4,21 @@ XP Mockery - Introduction
 
 * The mock library is still under development and does not yet implement 
   all the features grown-up mocking frameworks do. So here is a feature list
-  and a list of stuff that is not yet implemented (in order of importance)
+  and a list of things that are not yet implemented (in order of importance)
 
 * Implemented:
   1) generating mocks/stubs (all methods return null by default)
   2) return values of mocks/stubs
   3) repetions of returns
-  4) basic argument matching
+  4) argument matching
 
 * Not implemented:
-  2) Generic argument matching
   3) Behaviour verification
   4) Execution order verification
   5) Strict  mocks (unsatisfied expectation)
   6) Rewinding the replay state
-  
+  7) More predefined argument matchers (by type, regex)
+
 * The mock library uses a heavily refactored version of the lang.reflect.Proxy class,
   which is not part of the official XP-Framework yet. Thus please use with caution, it 
   might break EVERYTHING.
@@ -173,6 +173,38 @@ XP Mockery - Introduction
 		$context->hasPermission($permission); //third call -> NULL
 
 
+* Argument Matching
+  - When methods have a wide range of input values, it might be difficult
+    to define all expectations. Just imagine if getSecretStuff would
+    check 10 different permissions. We would have to specify an expectation
+    for each of them. For such cases there is a generic argument matching
+    mechanism.
+
+  - We can use Arg::any() if the argument is irrelevant.
+    $context->hasPermission(Arg::any())->returns(TRUE); //return TRUE, for any argument
+
+  - If specific argument matching rules are required, we may implement an own
+    argument matching class. This class has to implement the IArgumentMatching
+    interface.
+
+    class MySpecialMatcher extends Object implements IArgumentMatching {
+      /**
+       * Special matching.
+       *
+       * @return boolean
+       */
+      public function machtes($value) {
+        //implement matching logic here
+      }
+    }
+
+  - The object is passed as a parameter
+    $context->hasPermissions(new MySpecialMatcher())->retuns("foo")->repeatAny();
+
+    $mockery->replayAll();
+    $context->hasPermissions("foobar"); //"foobar" is passed to the matches 
+                                        // method of the MySpecialMatcher object
+
 * Record/Replay/Verfiy
   - now about that $mockery->replayAll() call. This is part of the Record/Replay/Verfiy paradigm,
     that is used for the mocking framework. In the Record phase you tell your mocks how they should
@@ -180,8 +212,6 @@ XP Mockery - Introduction
     they will actually return the stuff you have recorded. In Verification phase (not implemented yet)
     you check whether your recorded expectations are fulfilled.
 	
-* Argument Matching
-  - TBD
 
 * that's it for now.
 	- Happy Mocking!

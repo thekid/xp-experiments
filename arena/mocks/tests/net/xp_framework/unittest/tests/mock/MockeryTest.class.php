@@ -285,5 +285,21 @@
       $this->assertEquals($conf2Expect, $object->bar('X', 'Conf2'));
       $this->assertEquals($conf1Expect, $object->bar('X', 'Conf1'));
     }
+
+    /**
+     * It should be possible to define expectations for any arguments.
+     */
+    #[@test]
+    public function arg_any_accepts_all_arguments() {
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+
+      $expect='c1';
+      $object->bar(Arg::any(), Arg::any())->returns($expect)->repeatAny();
+      $this->fixture->replayAll();
+
+      $this->assertEquals($expect, $object->bar(null, null));
+      $this->assertEquals($expect, $object->bar(34, "foo"));
+      $this->assertEquals($expect, $object->bar(23.0, new Object));
+    }
   }
 ?>

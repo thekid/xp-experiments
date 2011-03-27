@@ -5,7 +5,7 @@
  * $Id$
  */
 
-  uses();
+  uses('unittest.mock.arguments.IArgumentMatcher');
 
   /**
    * Expectation to a method call.
@@ -118,14 +118,19 @@
 
     /**
      * Indicates whether the argument on postion $pos machtes the specified
-     * value.
-     * 
+     * value.     * 
      * @param int pos
      * @param mixed $value
      * @return boolean
      */
     private function doesMatchArg($pos, $value) {
       $argVal = $this->args[$pos];
+
+      if($argVal instanceof IArgumentMatcher) {
+        
+        return $argVal->matches($value);
+      }
+      
       return $this->_compare($argVal, $value);
     }
 
