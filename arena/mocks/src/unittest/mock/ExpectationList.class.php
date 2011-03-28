@@ -12,17 +12,18 @@
    * @purpose
    */
   class ExpectationList extends Object {
-
     private
     $list = null,
-    $called = null;
-
+    $called = null,
+    $unexpected= null;
+    
     /**
      * Constructor      
      */
     public function __construct() {
       $this->list = new Vector();
       $this->called = new Vector();
+      $this->unexpected = new Vector();
     }
 
     /**
@@ -85,5 +86,22 @@
       $this->called->add($expectation); 
     }
 
+    /**
+     * Stores a call in the $unexpected list.
+     *
+     * @param string method
+     * @param mixed[] args
+     */
+    public function fileUnexpected($method, $args) {
+      $this->unexpected->add(array($method, $args));
+    }
+
+    public function getExpectations() {
+      return $this->list;
+    }
+
+    public function getCalled() {
+      return $this->called;
+    }
   }
 ?>

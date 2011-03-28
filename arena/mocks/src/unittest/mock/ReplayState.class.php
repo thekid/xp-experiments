@@ -29,6 +29,7 @@
         throw new IllegalArgumentException('Invalid expectation map passed.');
       
       $this->expectationMap= $expectationMap;
+      $this->unexpectedCalls= new Vector();
     }
     /**
      * Handles calls to methods regarding the 
@@ -40,10 +41,13 @@
     public function handleInvocation($method, $args) {
       if(!$this->expectationMap->containsKey($method))
         return null;
-      
-      $nextExpectation= $this->expectationMap->get($method)->getNext($args);
-      if(!$nextExpectation) //no more expectations
+
+      $expectationList= $this->expectationMap->get($method);
+      $nextExpectation= $expectationList->getNext($args);
+      if(!$nextExpectation) {//no more expectations
+        $expectationList->fileUnexpected($method, $args);
         return null;
+      }
       
       return $nextExpectation->getReturn();      
     }

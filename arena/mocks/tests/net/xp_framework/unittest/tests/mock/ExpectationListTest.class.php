@@ -108,6 +108,50 @@
       $this->assertEquals($expect, $this->sut->getNext(array()));
       $this->assertNull($this->sut->getNext(array()));
     }
+
+    /**
+     * ExpectationList should provide access to the left over expectations
+     */
+    #[@test]
+    public function should_provide_access_to_left_expectations() {
+      $expect=new Expectation();
+      $this->sut->add($expect);
+
+      $list= $this->sut->getExpectations();
+      $this->assertEquals(1, sizeof($list));
+      $this->assertEquals($expect, $list[0]);
+    }
+    /**
+     * ExpectationList should provide access to the "used" expectations
+     */
+    #[@test]
+    public function should_provide_access_to_used_expectations() {
+      $expect=new Expectation();
+      $this->sut->add($expect);
+      $this->sut->getNext(array());
+      
+      $list= $this->sut->getCalled();
+      $this->assertEquals(1, sizeof($list));
+      $this->assertEquals($expect, $list[0]);
+    }
+
+    /**
+
+     */
+  #[@test]
+    public function expectation_should_be_moved_to_calledList_after_usage() {
+      $expect=new Expectation();
+      $this->sut->add($expect);
+      $list= $this->sut->getExpectations();
+      $this->assertEquals(1, sizeof($list));
+      $this->assertEquals($expect, $list[0]);
+      
+      $this->sut->getNext(array());
+
+      $list= $this->sut->getCalled();
+      $this->assertEquals(1, sizeof($list));
+      $this->assertEquals($expect, $list[0]);
+    }
   }
 
 ?>

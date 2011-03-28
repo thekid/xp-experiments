@@ -55,6 +55,13 @@
         $mock->_replayMock();
     }
 
+    /**
+     * Verifies all mocks.
+     */
+    public function verifyAll() {
+      foreach($this->mocks as $mock)
+        $mock->_verifyMock();
+    }
 
   }
 

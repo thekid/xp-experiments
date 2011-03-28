@@ -4,12 +4,14 @@
  * $Id$
  */
  
-  uses('unittest.TestCase',
-       'unittest.mock.Mockery',
-       'lang.reflect.Proxy',
-       'net.xp_framework.unittest.tests.mock.IEmptyInterface',
-       'net.xp_framework.unittest.tests.mock.IComplexInterface',
-       'net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy'
+  uses(
+    'unittest.TestCase',
+    'unittest.mock.Mockery',
+    'lang.reflect.Proxy',
+    'net.xp_framework.unittest.tests.mock.IEmptyInterface',
+    'net.xp_framework.unittest.tests.mock.IComplexInterface',
+    'net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy',
+    'unittest.mock.ExpectationViolationException'
   );
 
   /**
@@ -300,6 +302,65 @@
       $this->assertEquals($expect, $object->bar(null, null));
       $this->assertEquals($expect, $object->bar(34, "foo"));
       $this->assertEquals($expect, $object->bar(23.0, new Object));
+    }
+
+    /**
+     * Unexpected calls should fail, when _verifyMock is called.
+     */
+    #[@test, @expect('unittest.mock.ExpectationViolationException')]
+    public function unexpected_calls_should_fail_on_mock_object_verification() {
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+
+      $object->foo(); //expect a call to foo
+      $this->fixture->replayAll();
+
+      $object->_verifyMock(); // expected call to foo missing -> fail
+    }
+
+     /**
+     * verifyAll() verifies all mocks of that mockery.
+     */
+    #[@test]
+    public function verfyAll_should_verfiy_all_mocks__positive_case() {
+      $object1= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object2= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object3= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object4= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+
+      $object1->foo();
+      $object2->foo();
+      $object3->foo();
+      $object4->foo();
+      $this->fixture->replayAll();
+
+      $object1->foo();
+      $object2->foo();
+      $object3->foo();
+      $object4->foo();
+      $this->fixture->verifyAll();
+    }
+
+    /**
+     * verifyAll() verifies all mocks of that mockery.
+     */
+    #[@test, @expect('unittest.mock.ExpectationViolationException')]
+    public function verfyAll_should_verfiy_all_mocks__negative_case() {
+      $object1= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object2= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object3= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object4= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      
+      $object1->foo();
+      $object2->foo();
+      $object3->foo();
+      $object4->foo();
+      $this->fixture->replayAll();
+
+      $object1->foo();
+      $object2->foo();
+      $object3->foo();
+      //missed call on $object4->foo();
+      $this->fixture->verifyAll();
     }
   }
 ?>
