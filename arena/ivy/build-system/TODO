@@ -9,6 +9,7 @@ Implementation
   . all "bootstrap" types should indicate they're needed before any XP
     execution takes places
   . extension should remain "zip", though
+  Status: DONE
 
 * Improve "install.xml" build file
   . could this use ivy already to fetch dependencies?

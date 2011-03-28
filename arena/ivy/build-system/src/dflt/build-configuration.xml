@@ -21,17 +21,11 @@
   <!-- property name="ivy.publish.resolver" value="shared"/ -->
 
   <!-- Required in build-webapp -->
-  <path id="build.webappSourceDirectory">
-    <fileset dir="${basedir}/src/resources/" includes="webapp/**"/>
-  </path>
-  <path id="build.configSourceDirectory">
-    <fileset dir="${basedir}/src/resources/" includes="etc/**"/>
-  </path>
-  <path id="build.containerConfigDirectory">
-    <fileset dir="${basedir}/src/resources/">
-      <include name="container/*"/>
-      <exclude name="**/*.properties"/>
-    </fileset>
-  </path>
+  <fileset id="build.webappSourceDirectory" dir="${basedir}/src/resources/" includes="webapp/**" erroronmissingdir="false"/>
+  <fileset id="build.configSourceDirectory" dir="${basedir}/src/resources/" includes="etc/**" erroronmissingdir="false"/>
+  <fileset id="build.containerConfigDirectory" dir="${basedir}/src/resources/" erroronmissingdir="false">
+    <include name="container/*"/>
+    <exclude name="**/*.properties"/>
+  </fileset>
 
 </project>

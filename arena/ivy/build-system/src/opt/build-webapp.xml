@@ -2,8 +2,8 @@
 <project name="xp-framework-webapp" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
   <target name="xp.webapp.compile" extensionOf="compile">
     <copy todir="${build.target.webapp}">
-      <path refid="build.webappSourceDirectory"/>
-      <path refid="build.configSourceDirectory"/>
+      <fileset refid="build.webappSourceDirectory"/>
+      <fileset refid="build.configSourceDirectory"/>
     </copy>
   </target>
 
@@ -37,7 +37,7 @@
   
   <target name="xp.webapp.descriptor" extensionOf="pre-package">
     <copy todir="${build.target.webapp}">
-      <path refid="build.containerConfigDirectory"/>
+      <fileset refid="build.containerConfigDirectory"/>
       <filterset filtersfile="${basedir}/src/resources/container/webapp.properties">
         <filter token="name" value="${ivy.module}-${ivy.revision}"/>
         <filter token="php_include_path" value="~:@base@/@name@/bootstrap"/>

@@ -21,16 +21,10 @@
   <fileset id="build.testConfigurations" dir="${basedir}">
     <include name="unittest.ini"/>
   </fileset>
-  <path id="build.webappSourceDirectory">
-    <fileset dir="${basedir}/doc_root/" includes="webapp/**"/>
-  </path>
-  <path id="build.configSourceDirectory">
-    <fileset dir="${basedir}" includes="etc/**"/>
-  </path>
-  <path id="build.containerConfigDirectory">
-    <fileset dir="${basedir}/src/resources/">
-      <include name="container/*"/>
-      <exclude name="**/*.properties"/>
-    </fileset>
-  </path>
+  <fileset id="build.webappSourceDirectory" dir="${basedir}/doc_root" erroronmissingdir="false"/>
+  <fileset id="build.configSourceDirectory" dir="${basedir}" includes="etc/**"  erroronmissingdir="false"/>
+  <fileset id="build.containerConfigDirectory" dir="${basedir}/src/resources/" erroronmissingdir="false">
+    <include name="container/*"/>
+    <exclude name="**/*.properties"/>
+  </fileset>
 </project>
