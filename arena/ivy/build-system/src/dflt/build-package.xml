@@ -3,7 +3,7 @@
   
   <target name="xp.package.sources" extensionOf="package" depends="ivy-info, xp.build.number">
     <xar
-     dir="${build.target}/classes"
+     dir="${build.target.classes}"
      target="${build.target}/${ivy.module}-${ivy.new.revision}.xar"
     />
   </target>
@@ -15,7 +15,7 @@
 
   <target name="xp.package.tests" extensionOf="package" depends="ivy-info, xp.build.number, xp.package.tests.exist" if="xp.tests.exist">
     <xar
-     dir="${build.target}/test-classes"
+     dir="${build.target.testClasses}"
      target="${build.target}/${ivy.module}-test-${ivy.new.revision}.xar"
     />
   </target>

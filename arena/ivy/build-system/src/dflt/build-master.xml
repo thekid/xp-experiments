@@ -24,7 +24,7 @@
     <ivy:info/>
   </target>
 
-  <target name="xp.setup.paths" extensionOf="prepare">
+  <target name="xp.setup.paths" extensionOf="prepare" depends="ivy-info">
     <ivy:resolve/>
     
     <ivy:cachefileset

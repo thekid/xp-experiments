@@ -13,11 +13,11 @@
     <include name="**/*.xml"/>
     <include name="**/*.xsl"/>
   </fileset>
-  <path id="build.testSourceDirectory">
-    <fileset dir="${basedir}/src/" erroronmissingdir="false">
-      <include name="**/unittest/**"/>
-    </fileset>
-  </path>
+
+  <fileset id="build.testSourceDirectory" dir="${basedir}/src/" erroronmissingdir="false">
+    <include name="**/unittest/**"/>
+  </fileset>
+
   <fileset id="build.testConfigurations" dir="${basedir}">
     <include name="unittest.ini"/>
   </fileset>
