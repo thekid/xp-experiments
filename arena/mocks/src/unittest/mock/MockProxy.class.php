@@ -11,6 +11,7 @@
     'unittest.mock.RecordState',
     'unittest.mock.ReplayState',
     'unittest.mock.Expectation',
+    'unittest.mock.ExpectationViolationException',
     'util.Hashmap'
   );
 
