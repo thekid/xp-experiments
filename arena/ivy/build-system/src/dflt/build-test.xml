@@ -4,7 +4,7 @@
     <!-- Build classpath for unittests -->
     <ivy:cachefileset
      type="xar"
-     conf="default,test"
+     conf="*"
      setid="test.path.dependencies"
     />
     <pathconvert property="test.path" pathsep="&#10;">
