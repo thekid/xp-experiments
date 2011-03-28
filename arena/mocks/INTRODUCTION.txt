@@ -1,4 +1,4 @@
-﻿XP Mockery - Introduction
+XP Mockery - Introduction
 
 1) Preface
 
@@ -9,7 +9,7 @@
 * Implemented:
   1) generating mocks/stubs (all methods return null by default)
   2) return values of mocks/stubs
-  3) repetions of returns
+  3) repetitions of returns
   4) argument matching
   5) Behaviour verification
 
