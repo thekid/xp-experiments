@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="xp-framework-tagdeploy" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+  <target name="publish:tag" depends="ivy-info, xp.get.tagname">
+    <echo>===> Deploying to tag ${xp.build.tag}</echo>
+
+    <exec executable="xpsvn" failonerror="true">
+      <arg value="open"/>
+      <arg value="-u"/>
+      <arg value="${xp.build.tag}"/>
+    </exec>
+
+    <exec executable="xpsvn" failonerror="true" outputproperty="xp.build.tag.dir">
+      <arg value="print-dir"/>
+    </exec>
+
+    <sync failonerror="true" todir="${xp.build.tag.dir}">
+      <fileset dir="${build.target}/${build.target.webapp}"/>
+    </sync>
+  </target>
+
+  <target name="xp.get.tagname" depends="xp.build.mode, xp.tagname.integration, xp.tagname.release, xp.tagname.milestone"/>
+
+  <target name="xp.tagname.release" if="xp.build.mode.release">
+    <property name="xp.build.tag">${ivy.extra.tag}_RELEASE</property>
+  </target>
+
+  <target name="xp.tagname.milestone" if="xp.build.mode.milestone">
+    <property name="xp.build.tag">${ivy.extra.tag}_QARELEASE</property>
+  </target>
+
+  <target name="xp.tagname.integration" if="xp.build.mode.integration">
+    <fail>Target not supported for integration build.</fail>
+  </target>
+</project>
