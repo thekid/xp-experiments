@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="xp-framework-tagdeploy" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
   
-  <target name="publish:tag" depends="xp.provide.dependencies, ivy-info, xp.get.tagname, xp.publish.get.wc, xp.build.number">
+  <target name="publish:tag" description="Publish latest app artifact into tag"
+   depends="xp.provide.dependencies, ivy-info, xp.get.tagname, xp.publish.get.wc, xp.build.number"
+  >
     <echo>===> Deploying to tag ${xp.build.tag}</echo>
     <echo>     Repository: ${ivy.extra.repository}</echo>
     <echo>     Current version: ${ivy.revision}</echo>
 
+    <!-- Retrieve application artifacts and store in xp.artifacts.app -->
     <ivy:cachefileset
      inline="true" 
      organisation="${ivy.organisation}"
@@ -16,7 +19,7 @@
      transitive="false"
     />
 
-
+    <!-- Extract application artifacts to SVN checkout -->
     <sync todir="${build.target}/${xp.build.tag}" includeEmptyDirs="true" overwrite="true">
       <zipfileset>
         <zipfileset refid="xp.artifacts.app"/>
@@ -26,6 +29,7 @@
       </preserveintarget>
     </sync>
 
+    <!-- Merge changes (svn delete deleted, svn add added, then commit -->
     <svn svnkit="true" javahl="false">
       <add dir="${build.target}/${xp.build.tag}" force="true" recurse="true"/>
       <delete>
