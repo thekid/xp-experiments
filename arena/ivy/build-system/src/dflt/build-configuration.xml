@@ -20,8 +20,8 @@
   <!-- Override default publish resolver - defaults to "shared", override in build.xml -->
   <!-- property name="ivy.publish.resolver" value="shared"/ -->
 
-  <!-- Required in build-webapp -->
-  <fileset id="build.webappSourceDirectory" dir="${basedir}/src/resources/" includes="webapp/**" erroronmissingdir="false"/>
+  <!-- Required in build-app -->
+  <fileset id="build.appSourceDirectory" dir="${basedir}/src/resources/" includes="webapp/**" erroronmissingdir="false"/>
   <fileset id="build.configSourceDirectory" dir="${basedir}/src/resources/" includes="etc/**" erroronmissingdir="false"/>
   <fileset id="build.containerConfigDirectory" dir="${basedir}/src/resources/" erroronmissingdir="false">
     <include name="container/*"/>

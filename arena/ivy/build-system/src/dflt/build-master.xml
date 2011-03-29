@@ -6,7 +6,7 @@
   <property name="build.target" value="${basedir}/target"/>
   <property name="build.target.classes" value="${build.target}/classes"/>
   <property name="build.target.testClasses" value="${build.target}/test-classes"/>
-  <property name="build.target.webapp" value="${build.target}/webapp"/>
+  <property name="build.target.app" value="${build.target}/app"/>
   <property name="project.generated.ivy.file" value="${build.target}/ivy.xml"/>
   <property name="project.generated.pom.file" value="${build.target}/pom.xml"/>
 
@@ -20,7 +20,7 @@
     <ivy:settings file="${xp.build.home}/settings/ivysettings.xml"/>
   </target>
   
-  <target name="ivy-info">
+  <target name="ivy-info" depends="xp.setup.ivy">
     <ivy:info/>
   </target>
 

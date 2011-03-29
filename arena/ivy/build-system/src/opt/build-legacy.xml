@@ -21,7 +21,7 @@
   <fileset id="build.testConfigurations" dir="${basedir}">
     <include name="unittest.ini"/>
   </fileset>
-  <fileset id="build.webappSourceDirectory" dir="${basedir}/doc_root" erroronmissingdir="false"/>
+  <fileset id="build.appSourceDirectory" dir="${basedir}/doc_root" erroronmissingdir="false"/>
   <fileset id="build.configSourceDirectory" dir="${basedir}" includes="etc/**"  erroronmissingdir="false"/>
   <fileset id="build.containerConfigDirectory" dir="${basedir}/src/resources/" erroronmissingdir="false">
     <include name="container/*"/>
