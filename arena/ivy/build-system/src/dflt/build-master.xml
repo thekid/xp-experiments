@@ -16,7 +16,7 @@
   
   <available property="build.test.exist.unittest.ini" file="${basedir}/unittest.ini"/>
   
-  <target name="setup-ivy" extensionOf="prepare" depends="install-ivy">
+  <target name="xp.setup.ivy" extensionOf="prepare" depends="xp.provide.dependencies">
     <ivy:settings file="${xp.build.home}/settings/ivysettings.xml"/>
   </target>
   

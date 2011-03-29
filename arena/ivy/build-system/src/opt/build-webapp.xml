@@ -53,7 +53,7 @@
 
   <target name="xp.webapp.package" extensionOf="package" depends="ivy-info, xp.build.number">
     <zip destfile="${build.target}/${ivy.module}-webapp-${ivy.new.revision}.zip">
-      <fileset dir="${build.target.webapp}"/>
+      <fileset dir="${build.target}" includes="webapp/**"/>
     </zip>
   </target>
 </project>

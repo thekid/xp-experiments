@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="xp-framework-tagdeploy" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
-  <target name="publish:tag" depends="ivy-info, xp.get.tagname">
+  <target name="publish:tag" depends="xp.provide.dependencies, ivy-info, xp.get.tagname, xp.build.number">
     <echo>===> Deploying to tag ${xp.build.tag}</echo>
+    <echo>     Repository: ${ivy.extra.repository}</echo>
 
-    <exec executable="xpsvn" failonerror="true">
-      <arg value="open"/>
-      <arg value="-u"/>
-      <arg value="${xp.build.tag}"/>
-    </exec>
+    <svn svnkit="true" javahl="false">
+      <checkout url="${ivy.extra.repository}/${xp.build.tag}" destPath="${build.target}/${xp.build.tag}"/>
+    </svn>
 
-    <exec executable="xpsvn" failonerror="true" outputproperty="xp.build.tag.dir">
-      <arg value="print-dir"/>
-    </exec>
-
-    <sync failonerror="true" todir="${xp.build.tag.dir}">
-      <fileset dir="${build.target}/${build.target.webapp}"/>
+    <sync todir="${build.target}/${xp.build.tag}" includeEmptyDirs="true">
+      <zipfileset src="${build.target}/${ivy.module}-webapp-${ivy.new.revision}.zip"/>
+      <preserveintarget>
+        <include name="**/.svn/**"/>
+      </preserveintarget>
     </sync>
+
+    <svn svnkit="true" javahl="false">
+      <add dir="${build.target}/${xp.build.tag}" force="true" recurse="true"/>
+      <delete>
+        <svnFileSet dir="${build.target}/${xp.build.tag}">
+          <svnMissing/>
+        </svnFileSet>
+      </delete>
+
+      <propset path="${build.target}/${xp.build.tag}" name="xp.ivy.version" value="${ivy.new.revision}"/>
+      <commit dir="${build.target}/${xp.build.tag}" message="- Publishing ${ivy.module}-${ivy.new.revision}"/>
+    </svn>
   </target>
 
   <target name="xp.get.tagname" depends="xp.build.mode, xp.tagname.integration, xp.tagname.release, xp.tagname.milestone"/>
