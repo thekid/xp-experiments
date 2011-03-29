@@ -7,8 +7,6 @@
     <exclude name="installer.xml"/>
   </fileset>
 
-  <path id="build.testSourceDirectory"/>
-
   <target name="xp.package.sources" extensionOf="package" depends="xp.build.number">
     <zip basedir="${build.target}/classes" destfile="${build.target}/${ivy.module}-${ivy.new.revision}.zip"/>
   </target>
