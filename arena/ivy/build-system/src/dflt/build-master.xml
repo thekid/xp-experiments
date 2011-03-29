@@ -26,12 +26,7 @@
 
   <target name="xp.setup.paths" extensionOf="prepare" depends="ivy-info">
     <ivy:resolve/>
-    
-    <ivy:cachefileset
-     type="bootstrap"
-     setid="build.bootstrap"
-    />
-    <ivy:resolve/>
+    <ivy:cachefileset type="bootstrap" setid="build.bootstrap"/>
 
     <unzip dest="${build.target}/bootstrap">
       <fileset refid="build.bootstrap"/>

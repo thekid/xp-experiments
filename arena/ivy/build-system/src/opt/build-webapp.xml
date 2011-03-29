@@ -5,6 +5,12 @@
       <fileset refid="build.webappSourceDirectory"/>
       <fileset refid="build.configSourceDirectory"/>
     </copy>
+    <copy todir="${build.target.webapp}/src">
+      <fileset refid="build.sources.fileset.php"/>
+    </copy>
+    <copy todir="${build.target.webapp}/xsl">
+      <fileset refid="build.sources.fileset.xsl"/>
+    </copy>
   </target>
 
   <target name="xp.webapp.pre-package" extensionOf="pre-package">
