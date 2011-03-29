@@ -9,6 +9,7 @@
   <property name="build.target.app" value="${build.target}/app"/>
   <property name="project.generated.ivy.file" value="${build.target}/ivy.xml"/>
   <property name="project.generated.pom.file" value="${build.target}/pom.xml"/>
+  <property name="xp.overwrite" value="false"/>
 
   <!-- Try some settings locations -->
   <property file="${xp.build.home}/svn.properties"/>

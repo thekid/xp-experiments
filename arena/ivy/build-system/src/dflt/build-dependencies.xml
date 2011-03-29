@@ -8,7 +8,7 @@
   <available property="xp.deps.available.ivy" file="${ivy.jar.file}"/>
   <available property="xp.deps.available.ivysvn" file="${xp.build.lib.dir}/ivysvnresolver.jar"/>
   <available property="xp.deps.available.svnant" file="${xp.build.lib.dir}/svnant.jar"/>
-  <available property="xp.deps.available.jsch" file="${xp.build.lib.dir}/jsch.jar"/>
+  <available property="xp.deps.available.jsch" file="${xp.build.lib.dir}/jsch-0.1.44.jar"/>
 
   <target name="xp.provide.dependencies" depends="xp.install.ivy, xp.install.ivysvn, xp.install.svnant, xp.install.jsch">
    	<path id="ivy.lib.path">

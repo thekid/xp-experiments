@@ -24,6 +24,7 @@
      artifactspattern="${build.target}/[artifact]-[revision].[ext]"
      revision="${ivy.new.revision}"
      resolver="${ivy.publish.resolver}"
+     overwrite="${xp.overwrite}"
      publishivy="true"
     />
   </target>
