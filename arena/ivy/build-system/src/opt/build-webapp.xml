@@ -8,23 +8,22 @@
   </target>
 
   <target name="xp.webapp.pre-package" extensionOf="pre-package">
-    <ivy:cachefileset
-     type="xar"
-     conf="default"
-     setid="package.fileset"
-    />
-    
-    <!-- mkdir dir="${build.target.webapp}/lib"/ -->
-    <copy todir="${build.target.webapp}/lib">
-      <fileset refid="package.fileset"/>
-      <fileset dir="${build.target}" includes="${build.xar}"/>
-      <mapper type="flatten"/>
-    </copy>
+    <!-- Retrieve all dependee artifacts and put them into lib/ -->
+    <ivy:retrieve type="xar" conf="default" pattern="${build.target.webapp}/lib/[artifact]-[revision].[ext]"/>
 
+    <!-- Retrieve bootstrap -->
+    <ivy:cachefileset type="bootstrap" conf="default" setid="bootstrap.fileset"/>
+    <unzip dest="${build.target.webapp}/lib/bootstrap">
+      <fileset refid="bootstrap.fileset"/>
+    </unzip>
+
+    <!-- Build .pth file -->
+    <ivy:cachefileset type="xar" conf="default" setid="package.fileset"/>
     <fileset id="pth.fileset" dir="${build.target.webapp}" includes="lib/*.xar"/>
 
     <pathconvert property="package.fileset" pathsep="&#10;" dirsep="/">
       <path>
+        <pathelement path="${build.target.webapp}/lib/bootstrap"/>
         <fileset refid="pth.fileset"/>
       </path>
       <mapper>
@@ -32,7 +31,8 @@
       </mapper>
     </pathconvert>
 
-    <echo file="${build.target.webapp}/web.pth">${package.fileset}</echo>
+    <!-- Output result to project.pth -->
+    <echo file="${build.target.webapp}/project.pth">${package.fileset}</echo>
   </target>
   
   <target name="xp.webapp.descriptor" extensionOf="pre-package">
@@ -45,8 +45,8 @@
     </copy>
   </target>
 
-  <target name="xp.webapp.package" extensionOf="package" depends="ivy-info">
-    <zip destfile="${build.target}/${ivy.module}-webapp-${ivy.revision}.zip">
+  <target name="xp.webapp.package" extensionOf="package" depends="ivy-info, xp.build.number">
+    <zip destfile="${build.target}/${ivy.module}-webapp-${ivy.new.revision}.zip">
       <fileset dir="${build.target.webapp}"/>
     </zip>
   </target>
