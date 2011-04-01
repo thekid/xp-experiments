@@ -6,16 +6,17 @@
    !
    ! Configurable (public) settings
    !-->
-  <fileset id="build.sources.fileset.php" dir="${basedir}/src" erroronmissingdir="false">
+  <fileset id="build.sources.fileset.php" dir="${basedir}" erroronmissingdir="false">
+    <include name="src/**"/>
     <exclude name="**/unittest/**"/>
   </fileset>
-  <fileset id="build.sources.fileset.xsl" dir="${basedir}/src" erroronmissingdir="false">
-    <include name="**/*.xml"/>
-    <include name="**/*.xsl"/>
+  <fileset id="build.sources.fileset.xsl" dir="${basedir}" erroronmissingdir="false">
+    <include name="xsl/**/*.xml"/>
+    <include name="xsl/**/*.xsl"/>
   </fileset>
 
-  <fileset id="build.testSourceDirectory" dir="${basedir}/src/" erroronmissingdir="false">
-    <include name="**/unittest/**"/>
+  <fileset id="build.testSourceDirectory" dir="${basedir}/" erroronmissingdir="false">
+    <include name="src/**/unittest/**"/>
   </fileset>
 
   <fileset id="build.testConfigurations" dir="${basedir}">

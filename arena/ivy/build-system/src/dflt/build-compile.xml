@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="xp-framework-compile" basedir=".">
-  <target name="xp.compile.sources" extensionOf="compile" depends="xp.compile.sources.php, xp.compile.sources.xsl">
-  </target>
-
-  <target name="xp.compile.dest">
-    <mkdir dir="${build.target.classes}"/>
-  </target>
+  <target name="xp.compile.sources" extensionOf="compile" depends="xp.compile.sources.php, xp.compile.sources.xsl"/>
 
   <target name="xp.compile.sources.php">
     <copy todir="${build.target.classes}">
       <fileset refid="build.sources.fileset.php"/>
+      <cutdirsmapper dirs="1"/>
     </copy>
   </target>
 
   <target name="xp.compile.sources.xsl">
     <copy todir="${build.target.classes}">
       <fileset refid="build.sources.fileset.xsl"/>
+      <cutdirsmapper dirs="1"/>
     </copy>
   </target>
 
@@ -28,6 +25,7 @@
     <mkdir dir="${build.target.testClasses}"/>
     <copy todir="${build.target.testClasses}">
       <fileset refid="build.testSourceDirectory"/>
+      <cutdirsmapper dirs="1"/>
     </copy>
   </target>
 
