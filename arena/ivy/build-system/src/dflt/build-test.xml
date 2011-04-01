@@ -9,10 +9,10 @@
     />
     <pathconvert property="test.path" pathsep="&#10;">
       <path>
-        <fileset refid="test.path.dependencies"/>
-        <pathelement path="${build.target}/bootstrap"/>
         <pathelement path="${build.target.testClasses}"/>
         <pathelement path="${build.target.classes}"/>
+        <fileset refid="test.path.dependencies"/>
+        <pathelement path="${build.target}/bootstrap"/>
       </path>
     </pathconvert>
 
