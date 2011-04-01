@@ -7,7 +7,7 @@
   <info
    organisation="net.xp_framework" 
    module="build"
-   status="integration"
+   status="release"
    revision="1.2.1"
   />
   <configurations>
