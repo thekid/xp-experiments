@@ -2,6 +2,16 @@ XP Framework Build System ChangeLog
 ========================================================================
 $Id$
 
+Version ?-?-?, released ????-??-??
+----------------------------------
+
+Bugfixes
+--------
+- Fixed bug w/ difference in legacy project layout and
+  maven-style layout
+  (kiesel)
+
+
 Version 1.2, released 2011-03-29
 ----------------------------------
 
@@ -14,11 +24,15 @@ Bugfixes
 
 Features
 ~~~~~~~~
-- Only generate .xar for tests, if tests exist
+- Made build only generate .xar for tests, if tests exist
   (kiesel)
-- Introduce new type "bootstrap" for artifacts
+- Introduced new type "bootstrap" for artifacts
   (kiesel)
-- 
+- Added build-app.xml to create application artifacts
+  (kiesel)
+- Implemented updating an svn tag with application artifact
+  (kiesel)
+
 
 Version 1.1, released 2011-03-04
 ----------------------------------
@@ -29,9 +43,8 @@ Features
   (kiesel)
 
 
-Version 1.0, released ????-??-??
+Version 1.0, released 2011-02-24
 ----------------------------------
-SVN version: ?????
 
 Features
 ~~~~~~~~
