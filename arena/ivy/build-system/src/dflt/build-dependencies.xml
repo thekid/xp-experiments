@@ -5,12 +5,13 @@
   <property name="xp.build.lib.dir" value="${user.home}/.ant/lib" />
   <property name="ivy.jar.file" value="${xp.build.lib.dir}/ivy-${ivy.install.version}.jar" />
 
+  <antversion property="xp.ant.version" atleast="1.8.2"/>
   <available property="xp.deps.available.ivy" file="${ivy.jar.file}"/>
   <available property="xp.deps.available.ivysvn" file="${xp.build.lib.dir}/ivysvnresolver.jar"/>
   <available property="xp.deps.available.svnant" file="${xp.build.lib.dir}/svnant.jar"/>
   <available property="xp.deps.available.jsch" file="${xp.build.lib.dir}/jsch-0.1.44.jar"/>
 
-  <target name="xp.provide.dependencies" depends="xp.install.ivy, xp.install.ivysvn, xp.install.svnant, xp.install.jsch">
+  <target name="xp.provide.dependencies" depends="xp.check.ant, xp.install.ivy, xp.install.ivysvn, xp.install.svnant, xp.install.jsch">
    	<path id="ivy.lib.path">
       <fileset dir="${xp.build.lib.dir}">
         <include name="ivy-${ivy.install.version}.jar"/>
@@ -34,6 +35,10 @@
         </fileset>
       </classpath>
     </taskdef>
+  </target>
+
+  <target name="xp.check.ant" unless="xp.ant.version">
+    <fail>At least ant 1.8.2 required</fail>
   </target>
 
   <target name="xp.install.ivy" unless="xp.deps.available.ivy">
