@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <project name="xp-framework-master" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
-  <dirname property="include.base" file="${ant.file.xp-framework-master}"/>
 
   <!-- Private settings -->
   <property name="build.target" value="${basedir}/target"/>
@@ -14,8 +13,6 @@
   <!-- Try some settings locations -->
   <property file="${xp.build.home}/svn.properties"/>
   <property file="${user.home}/.ant/svn.properties"/>
-  
-  <available property="build.test.exist.unittest.ini" file="${basedir}/unittest.ini"/>
   
   <target name="xp.setup.ivy" extensionOf="prepare" depends="xp.provide.dependencies">
     <ivy:settings file="${xp.build.home}/settings/ivysettings.xml"/>

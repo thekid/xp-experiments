@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="xp-framework-test" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+  <available property="build.test.exist.unittest.ini" file="${basedir}/unittest.ini"/>
+
   <target name="xp.test.createpath">
     <!-- Build classpath for unittests -->
     <ivy:cachefileset

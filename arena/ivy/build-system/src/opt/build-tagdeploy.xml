@@ -39,7 +39,7 @@
       </delete>
 
       <propset path="${build.target}/${xp.build.tag}" name="xp.ivy.version" value="${ivy.revision}"/>
-      <commit dir="${build.target}/${xp.build.tag}" message="- Publishing ${ivy.module}-${ivy.new.revision}"/>
+      <commit dir="${build.target}/${xp.build.tag}" message="- Publishing ${ivy.module}-${ivy.revision}"/>
     </svn>
   </target>
 
