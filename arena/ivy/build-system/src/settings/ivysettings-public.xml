@@ -6,17 +6,17 @@
         <ivy pattern="http://xp-framework.net/repository/[organisation]/[module]/ivy-[revision].xml"/>
         <artifact pattern="http://xp-framework.net/repository/[organisation]/[module]/[artifact]-[revision].[ext]"/>
       </url>
-
-      <ssh name="public-authenticated"
-       keyFile="${user.home}/.ssh/id_dsa"
-       user="cgi"
-       host="xpsrv.net"
-       publishPermissions="0644"
-      >
-        <ivy pattern="/home/httpd/xp.php3.de/doc_root/repository/[organisation]/[module]/ivy-[revision].xml"/>
-        <artifact pattern="/home/httpd/xp.php3.de/doc_root/repository/[organisation]/[module]/[artifact]-[revision].[ext]"/>
-      </ssh>
     </chain>
+
+    <ssh name="public-authenticated"
+     keyFile="${user.home}/.ssh/id_dsa"
+     user="cgi"
+     host="xpsrv.net"
+     publishPermissions="0644"
+    >
+      <ivy pattern="/home/httpd/xp.php3.de/doc_root/repository/[organisation]/[module]/ivy-[revision].xml"/>
+      <artifact pattern="/home/httpd/xp.php3.de/doc_root/repository/[organisation]/[module]/[artifact]-[revision].[ext]"/>
+    </ssh>
   </resolvers>
 
   <modules>
