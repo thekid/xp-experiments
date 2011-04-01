@@ -1,0 +1,39 @@
+XP Framework Build System ChangeLog
+========================================================================
+$Id$
+
+Version 1.2, released 2011-03-29
+----------------------------------
+
+Bugfixes
+~~~~~~~~
+- Fixed autodetected for missing jars
+  (kiesel)
+- Fixed build on Windows
+  (kiesel)
+
+Features
+~~~~~~~~
+- Only generate .xar for tests, if tests exist
+  (kiesel)
+- Introduce new type "bootstrap" for artifacts
+  (kiesel)
+- 
+
+Version 1.1, released 2011-03-04
+----------------------------------
+
+Features
+~~~~~~~~
+- More features implemented
+  (kiesel)
+
+
+Version 1.0, released ????-??-??
+----------------------------------
+SVN version: ?????
+
+Features
+~~~~~~~~
+- Initial revision
+  (kiesel)
