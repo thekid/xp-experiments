@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="xp-framework-release" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
-  <target name="xp.get.resolver">
-    <property name="ivy.publish.resolver" value="shared"/>
+  <target name="xp.get.resolver" depends="xp.get.resolver.integration, xp.get.resolver.release"/>
+
+  <target name="xp.get.resolver.integration" if="xp.build.mode.integration">
+    <property name="xp.publish.resolver" value="shared-publish-snapshots"/>
+  </target>
+
+  <target name="xp.get.resolver.release" unless="xp.build.mode.integration">
+    <property name="xp.publish.resolver" value="shared-publish-releases"/>
   </target>
 
   <target name="xp.install" extensionOf="install" depends="ivy-info, xp.get.resolver">
@@ -23,7 +29,7 @@
     <ivy:publish
      artifactspattern="${build.target}/[artifact]-[revision].[ext]"
      revision="${ivy.new.revision}"
-     resolver="${ivy.publish.resolver}"
+     resolver="${xp.publish.resolver}"
      overwrite="${xp.overwrite}"
      publishivy="true"
     />

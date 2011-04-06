@@ -18,7 +18,7 @@
   </fileset>
 
   <!-- Override default publish resolver - defaults to "shared", override in build.xml -->
-  <!-- property name="ivy.publish.resolver" value="shared"/ -->
+  <!-- property name="xp.publish.resolver" value="shared-snapshots"/ -->
 
   <!-- Required in build-app -->
   <fileset id="build.appSourceDirectory" dir="${basedir}/src/resources/" includes="webapp/**" erroronmissingdir="false"/>

@@ -26,7 +26,7 @@
      revision="${ivy.revision}-RC"
      revSep=""
      defaultBuildNumber="1"
-     resolver="${ivy.publish.resolver}"
+     resolver="${xp.publish.resolver}"
     />
   </target>
 
@@ -37,7 +37,7 @@
      revision="${ivy.revision}-pre"
      revSep=""
      defaultBuildNumber="1"
-     resolver="${ivy.publish.resolver}"
+     resolver="${xp.publish.resolver}"
     />
   </target>
 
