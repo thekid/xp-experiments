@@ -31,7 +31,7 @@
 
     <ivy:makepom
      ivyfile="${build.target}/ivy-${ivy.new.revision}.xml"
-     pomfile="${build.target}/pom.xml"
+     pomfile="${build.target}/${ivy.module}-${ivy.new.revision}.pom"
      printIvyInfo="false"
     />
   </target>

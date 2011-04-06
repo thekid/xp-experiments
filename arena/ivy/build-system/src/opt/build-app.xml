@@ -7,9 +7,11 @@
     </copy>
     <copy todir="${build.target.app}/src">
       <fileset refid="build.sources.fileset.php"/>
+      <cutdirsmapper dirs="1"/>
     </copy>
     <copy todir="${build.target.app}/xsl">
       <fileset refid="build.sources.fileset.xsl"/>
+      <cutdirsmapper dirs="1"/>
     </copy>
   </target>
 
@@ -29,8 +31,8 @@
 
     <pathconvert property="package.fileset" pathsep="&#10;" dirsep="/">
       <path>
-        <pathelement path="${build.target.app}/lib/bootstrap"/>
         <fileset refid="pth.fileset"/>
+        <pathelement path="${build.target.app}/lib/bootstrap"/>
       </path>
       <mapper>
         <globmapper from="${build.target.app}/*" to="*" handledirsep="true"/>

@@ -5,6 +5,19 @@ $Id$
 Version ?-?-?, released ????-??-??
 ----------------------------------
 
+Version 1.2.2, released 2011-04-06
+----------------------------------
+
+Features
+--------
+- Maven pom.xml will now be named [module]-[revision].pom
+  (kiesel)
+- Prefer local path over dependencies' class path
+  (kiesel)
+
+Version 1.2.1, released 2011-04-01
+----------------------------------
+
 Bugfixes
 --------
 - Fixed bug w/ difference in legacy project layout and
