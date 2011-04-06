@@ -11,13 +11,16 @@
   <property file="${xp.build.home}/svn.properties"/>
   <property file="${user.home}/.ant/svn.properties"/>
   
-  <target name="xp.setup.ivy" extensionOf="prepare" depends="xp.provide.dependencies">
-    <ivy:settings file="${xp.build.home}/settings/ivysettings.xml"/>
+  <target name="xp.setup.ivy" depends="xp.provide.dependencies">
+    <ivy:info file="ivy.xml"/>
+    
+    <property name="xp.lookup.resolver" value="shared-lookup-${ivy.status}"/>
+    <property name="xp.publish.resolver" value="shared-publish-${ivy.status}"/>
+    
+    <ivy:configure file="${xp.build.home}/settings/ivysettings.xml" override="true"/>
   </target>
   
-  <target name="ivy-info" depends="xp.setup.ivy">
-    <ivy:info/>
-  </target>
+  <target name="ivy-info" depends="xp.setup.ivy"/>
 
   <target name="xp.setup.paths" extensionOf="prepare" depends="ivy-info">
     <ivy:resolve/>

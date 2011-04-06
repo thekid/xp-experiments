@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="xp-framework-release" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
-  <target name="xp.get.resolver" depends="xp.get.resolver.integration, xp.get.resolver.release, xp.get.overwrite"/>
+  <target name="xp.get.resolver" depends="xp.get.resolver.integration, xp.get.resolver.release"/>
 
   <target name="xp.get.resolver.integration" if="xp.build.mode.integration">
     <property name="xp.publish.resolver" value="shared-publish-snapshots"/>

@@ -31,14 +31,7 @@
   </target>
 
   <target name="xp.build.number.integration" depends="xp.build.mode, xp.get.resolver" if="xp.build.mode.integration">
-    <ivy:buildnumber
-     organisation="${ivy.organisation}"
-     module="${ivy.module}"
-     revision="${ivy.revision}-pre"
-     revSep=""
-     defaultBuildNumber="1"
-     resolver="${xp.publish.resolver}"
-    />
+    <property name="ivy.new.revision" value="${ivy.revision}-SNAPSHOT"/>
   </target>
 
   <target name="xp.build.number" depends="xp.build.number.release, xp.build.number.milestone, xp.build.number.integration"/>
