@@ -2,9 +2,9 @@
 <project name="xp-framework-build-system" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
   <import file="${user.home}/.ant/xp-build/build-loader.xml"/>
 
-  <fileset id="build.sources.fileset.php" dir="${basedir}/src">
-    <include name="**/*.xml"/>
-    <exclude name="installer.xml"/>
+  <fileset id="build.sources.fileset.php" dir="${basedir}">
+    <include name="src/**/*.xml"/>
+    <exclude name="src/installer.xml"/>
   </fileset>
 
   <target name="xp.package.sources" extensionOf="package" depends="xp.build.number">
