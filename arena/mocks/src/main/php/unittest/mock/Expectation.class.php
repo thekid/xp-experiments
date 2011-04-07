@@ -42,7 +42,7 @@
       return $this->repeat;
     }
     /**
-     * Gets the number of repetions of this expectation.
+     * Sets the number of repetions of this expectation.
      * 
      * @param int value
      */
@@ -50,6 +50,23 @@
       $this->repeat = $value;
     }
 
+    private $exception= null;
+    /**
+     * Gets the exception, that is thrown on a method call.
+     *
+     * @return lang.Throwable
+     */
+    public function getException() {
+      return $this->exception;
+    }
+    /**
+     * Sets the exception that is to be thrown on a method call.
+     *
+     * @param lang.Throwable The exception.
+     */
+    public function setException(Throwable $exception) {
+      $this->exception= $exception;
+    }
     private $actualCalls = 0;
     /**
      * Gets the number of actual calls for this expectation.

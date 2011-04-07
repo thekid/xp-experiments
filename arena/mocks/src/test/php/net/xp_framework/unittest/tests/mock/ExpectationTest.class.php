@@ -203,10 +203,30 @@
     public function doesMatch_should_work_with_generic_AnyMatcher() {
       $this->sut->setArguments(array(Arg::any()));
 
-       $this->assertTrue($this->sut->doesMatchArgs(array(null)));
-       $this->assertTrue($this->sut->doesMatchArgs(array("test")));
-       $this->assertTrue($this->sut->doesMatchArgs(array(42)));
-       $this->assertTrue($this->sut->doesMatchArgs(array(new Object())));
+      $this->assertTrue($this->sut->doesMatchArgs(array(null)));
+      $this->assertTrue($this->sut->doesMatchArgs(array("test")));
+      $this->assertTrue($this->sut->doesMatchArgs(array(42)));
+      $this->assertTrue($this->sut->doesMatchArgs(array(new Object())));
+    }
+
+    /**
+     * Set's the exception that is to be thrown on execution
+     */
+    #[@test]
+    public function setExceptions_should_set_exception() {
+      $expected= new XPException('foo');
+      $this->sut->setException($expected);
+      $actual= $this->sut->getException();
+
+      $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * When returns is called after throws
+     */
+    #[@test]
+    public function setReturn_sets_exception_property_to_null() {
+      
     }
   }
 ?>

@@ -362,5 +362,34 @@
       //missed call on $object4->foo();
       $this->fixture->verifyAll();
     }
+
+    /**
+     * It should be possible to define an exception that is thrown on a call
+     */
+    #[@test]
+    public function canCall_throws_on_mock_object() {
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object->foo()->throws(new XPException('foo'));
+    }
+
+    /**
+     * When a expectation with "throws" is defined on a mock, then this exception
+     * should be thrown when the expected method is called in replay mode.
+     */
+    #[@test]
+    public function mock_with_throws_should_throw_the_specified_exception() {
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $expected= new IllegalStateException('foo');
+      $object->foo()->throws($expected);
+
+      $this->fixture->replayAll();
+      try { $object->foo(); }
+      catch(IllegalStateException $actual) {
+        $this->assertEquals($expected, $actual);
+        return;
+      }
+
+      $this->fail('No exception thrown.', null, $expected);
+    }
   }
 ?>

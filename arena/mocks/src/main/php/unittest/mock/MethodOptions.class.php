@@ -32,10 +32,22 @@
     /**
      * Specifies the expected return value.
      *
+     * @param  var The value that is to be returned on a method call.
      * @return IMethodOptions
      */
     public function returns($value) {
       $this->expectation->setReturn($value);
+      return $this;
+    }
+
+    /**
+     * Specifies the exception that is to be thrown.
+     *
+     * @param  lang.Throwable the exception that is to be thrown on a method call.
+     * @return IMethodOptions
+     */
+    public function throws(Throwable $exception) {
+      $this->expectation->setException($exception);
       return $this;
     }
 

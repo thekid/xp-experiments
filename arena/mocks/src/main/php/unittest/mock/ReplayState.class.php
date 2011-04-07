@@ -48,6 +48,9 @@
         $expectationList->fileUnexpected($method, $args);
         return null;
       }
+
+      if(null != $nextExpectation->getException())
+        throw $nextExpectation->getException();
       
       return $nextExpectation->getReturn();      
     }

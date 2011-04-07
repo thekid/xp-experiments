@@ -103,5 +103,27 @@
       $this->assertEquals($myExpectation->getReturn(), $this->sut->handleInvocation('foo', null));
       $this->assertNull($this->sut->handleInvocation('foo', null));
     }
+
+    /**
+
+     */
+  #[@test]
+    public function handleInvocation_should_throw_exception_when_expectation_defines_one() {
+      $expected= new XPException('foo');
+      $myExpectation=new Expectation();
+      $myExpectation->setException($expected);
+      $expectationsList=new ExpectationList();
+      $expectationsList->add($myExpectation);
+      
+      $this->expectationMap->put('foo', $expectationsList);
+
+      try { $this->sut->handleInvocation('foo', null); }
+      catch(XPException $e) {
+        $this->assertEquals($expected, $e);
+        return;
+      }
+
+      $this->fail('Exception not thrown.', null, $expect);
+    }
   }
 ?>

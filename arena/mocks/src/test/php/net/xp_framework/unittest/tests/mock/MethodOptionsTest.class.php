@@ -49,5 +49,20 @@
 
       $this->assertEquals($expected, $expectation->getReturn());
     }
+
+    /**
+     * when throws is used, the expectations exception property should be set
+     * to the passed value.
+     */
+    #[@test]
+    public function throws_sets_the_exception_property_of_the_expectation() {
+      $expectation=new Expectation();
+      $sut= new MethodOptions($expectation);
+      $expected=new XPException('foo');
+
+      $sut->throws($expected);
+
+      $this->assertEquals($expected, $expectation->getException());
+    }
   }
 ?>
