@@ -5,6 +5,23 @@ $Id$
 Version ?-?-?, released ????-??-??
 ----------------------------------
 
+Version 1.2.3, released 2011-04-07
+----------------------------------
+
+Heads up!
+---------
+- Implemented using different resolvers for each build type; these resolvers
+  must really exist for the build to happen.
+  (kiesel)
+
+Features
+--------
+- Made snapshots build as -SNAPSHOT
+  (kiesel)
+- Made installer clean old installation before installing new one
+  (kiesel)
+
+
 Version 1.2.2, released 2011-04-06
 ----------------------------------
 
