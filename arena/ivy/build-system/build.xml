@@ -11,5 +11,5 @@
     <zip basedir="${build.target}/classes" destfile="${build.target}/${ivy.module}-${ivy.new.revision}.zip"/>
   </target>
 
-  <property name="ivy.publish.resolver" value="public-authenticated"/>
+  <property name="xp.publish.resolver" value="public-authenticated"/>
 </project>
