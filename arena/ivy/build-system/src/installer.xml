@@ -6,7 +6,7 @@
   <echo>===> Installing XP Framework build system into ${install.dir}</echo>
   <mkdir dir="${install.dir}"/>
   <delete>
-    <fileset dir="${install.dir}" include="**/*"/>
+    <fileset dir="${install.dir}" includes="**/*"/>
   </delete>
 
   <echo>===> Downloading build scripts</echo>
