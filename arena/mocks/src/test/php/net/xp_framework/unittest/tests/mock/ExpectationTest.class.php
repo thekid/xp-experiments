@@ -221,12 +221,5 @@
       $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * When returns is called after throws
-     */
-    #[@test]
-    public function setReturn_sets_exception_property_to_null() {
-      
-    }
   }
 ?>
