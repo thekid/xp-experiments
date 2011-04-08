@@ -6,8 +6,8 @@
 >
   <info 
    organisation="net.xp_framework" 
-   module="core"
-   status="integration"
+   module="xp-core"
+   status="release"
    revision="5.8.1"
   >
     <license name="BSD"/>
@@ -24,15 +24,14 @@
     <conf name="test" description="test configuration" visibility="public"/>
   </configurations>
   <publications>
-    <artifact name="core" type="xar" ext="xar" conf="default"/>
-    <artifact name="core-test" type="xar" ext="xar" conf="test"/>
-    <artifact name="core-bootstrap" type="bootstrap" ext="zip" conf="default"/>
+    <artifact name="xp-core" type="xar" ext="xar" conf="default"/>
+    <artifact name="xp-core-test" type="xar" ext="xar" conf="test"/>
+    <artifact name="xp-core-bootstrap" type="bootstrap" ext="zip" conf="default"/>
   </publications>
   <dependencies>
     <dependency
-     name="tools"
-     rev="5.8.1+"
-     conf="default->default; test->test"
+     name="xp-tools"
+     rev="5.8.1"
     />
   </dependencies>
 </ivy-module>

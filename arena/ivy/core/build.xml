@@ -1,21 +1,22 @@
 <?xml version="1.0"?>
 <project name="xp-framework-core" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
-  <property name="ivy.publish.resolver" value="public-authenticated"/>
+  <property name="xp.publish.resolver" value="public-authenticated"/>
+  <property name="project.svn.revision" value="15321"/>
+
   <import file="${user.home}/.ant/xp-build/build-loader.xml"/>
   <import file="${xp.build.home}/opt/build-svnexport.xml"/>
 
-  <fileset id="build.sources.fileset.php" dir="${basedir}/xp/skeleton">
-    <exclude name="lang.base.php"/>
+  <fileset id="build.sources.fileset.php" dir="${basedir}/xp">
+    <include name="skeleton/**"/>
+    <exclude name="skeleton/lang.base.php"/>
   </fileset>
   
-  <fileset id="build.testSourceDirectory" dir="${basedir}/xp/ports/classes">
-    <include name="net/xp_framework/unittest/**"/>
-    <include name="net/xp_lang/tests/**"/>
-  </fileset>
-  <fileset dir="${basedir}/xp/ports/unittest">
-    <include name="*.ini"/>
-    <exclude name="isbn.ini"/>
-    <exclude name="stomp.ini"/>
+  <fileset id="build.testSourceDirectory" dir="${basedir}/xp/ports">
+    <include name="classes/net/xp_framework/unittest/**"/>
+    <include name="classes/net/xp_lang/tests/**"/>
+    <include name="unittest/*.ini"/>
+    <exclude name="unittest/isbn.ini"/>
+    <exclude name="unittest/stomp.ini"/>
   </fileset>
   
   <fileset id="build.testConfigurations" dir="${build.target}/test-classes">
