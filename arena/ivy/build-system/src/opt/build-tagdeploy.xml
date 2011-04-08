@@ -30,7 +30,7 @@
     </sync>
 
     <!-- Merge changes (svn delete deleted, svn add added, then commit -->
-    <svn svnkit="true" javahl="false">
+    <svn svnkit="true" javahl="false" failonerror="true">
       <add dir="${build.target}/${xp.build.tag}" force="true" recurse="true"/>
       <delete>
         <svnFileSet dir="${build.target}/${xp.build.tag}">
@@ -50,13 +50,13 @@
   </target>
 
   <target name="xp.publish.checkout" depends="xp.get.tagname" unless="xp.publish.checkedout">
-    <svn svnkit="true" javahl="false">
+    <svn svnkit="true" javahl="false" failonerror="true">
       <checkout url="${ivy.extra.repository}/${xp.build.tag}" destPath="${build.target}/${xp.build.tag}"/>
     </svn>
   </target>
 
   <target name="xp.publish.update" depends="xp.get.tagname" if="xp.publish.checkedout">
-    <svn svnkit="true" javahl="false">
+    <svn svnkit="true" javahl="false" failonerror="true">
       <update dir="${build.target}/${xp.build.tag}"/>
     </svn>
   </target>

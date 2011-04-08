@@ -5,6 +5,16 @@ $Id$
 Version ?-?-?, released ????-??-??
 ----------------------------------
 
+Features
+--------
+- Added option to build certain SVN revision w/ build-svnexport.xml
+  (kiesel)
+- Changed svn commands to use svnkit only
+  (kiesel)
+- Renamed some build files
+  (kiesel)
+
+
 Version 1.2.3, released 2011-04-07
 ----------------------------------
 
