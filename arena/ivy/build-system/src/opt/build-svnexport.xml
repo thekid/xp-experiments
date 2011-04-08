@@ -1,15 +1,14 @@
 <?xml version="1.0"?>
 <project name="xp-framework-svnexport" basedir=".">
   <property name="project.svn.url" value="http://svn.xp-framework.net/xp/trunk/"/>
+  <property name="project.svn.revision" value="HEAD"/>
   <available property="xp.checkout.exists" file="${basedir}/xp"/>
 
   <target name="xp.prepare" extensionOf="prepare" unless="xp.checkout.exists">
     <echo>===> Doing checkout for ${ivy.organisation}#${ivy.module}</echo>
-    <exec executable="svn">
-      <arg value="export"/>
-      <arg value="${project.svn.url}"/>
-      <arg value="xp"/>
-    </exec>
+    <svn svnkit="true" javahl="false" failonerror="true">
+      <export srcUrl="${project.svn.url}" destPath="${basedir}/xp" revision="${project.svn.revision}"/>
+    </svn>
   </target>
   
   <target name="xp.clean.checkout" extensionOf="clean">
