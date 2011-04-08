@@ -1,16 +1,17 @@
 <?xml version="1.0"?>
 <project name="xp-nagios">
+  <property name="xp.publish.resolver" value="public-authenticated"/>
+  
   <import file="${user.home}/.ant/xp-build/build-loader.xml"/>
   <import file="${xp.build.home}/opt/build-svnexport.xml"/>
-  <property name="ivy.publish.resolver" value="public-authenticated"/>
   
-  <fileset id="build.sources.fileset.php" dir="${basedir}/xp/ports/classes">
-    <include name="org/codehaus/stomp/**"/>
-    <exclude name="org/codehaus/stomp/unittest/"/>
+  <fileset id="build.sources.fileset.php" dir="${basedir}/xp/ports">
+    <include name="classes/org/codehaus/stomp/**"/>
+    <exclude name="classes/org/codehaus/stomp/unittest/"/>
   </fileset>
   
-  <fileset id="build.testSourceDirectory" dir="${basedir}/xp/ports/classes">
-    <include name="org/codehaus/stomp/unittest/**"/>
+  <fileset id="build.testSourceDirectory" dir="${basedir}/xp/ports">
+    <include name="classes/org/codehaus/stomp/unittest/**"/>
     <exclude name="**/*IntegrationTest*"/>
   </fileset>
   

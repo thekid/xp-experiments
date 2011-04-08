@@ -7,7 +7,7 @@
   <info 
    organisation="net.xp_framework" 
    module="stomp"
-   status="integration"
+   status="release"
    revision="5.8.1"
   >
     <license name="BSD"/>
@@ -26,6 +26,10 @@
     <artifact name="stomp-test" type="xar" ext="xar" conf="test"/>
   </publications>
   <dependencies>
-    <dependency org="net.xp_framework" name="core" rev="5.8.1+"/>
+    <dependency 
+     org="net.xp_framework" 
+     name="xp-core" 
+     rev="5.8.1"
+    />
   </dependencies>
 </ivy-module>
