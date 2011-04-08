@@ -6,8 +6,8 @@
 >
   <info 
    organisation="net.xp_framework" 
-   module="tools"
-   status="integration"
+   module="xp-tools"
+   status="release"
    revision="5.8.1"
   >
     <license name="BSD"/>
@@ -24,8 +24,7 @@
     <conf name="test" visibility="public"/>
   </configurations>
   <publications>
-    <artifact name="tools" type="xar" ext="xar" conf="default"/>
-    <artifact name="tools-test" type="xar" ext="xar" conf="test"/>
-    <artifact name="tools-bootstrap" type="bootstrap" ext="zip" conf="default"/>
+    <artifact name="xp-tools" type="xar" ext="xar" conf="default"/>
+    <artifact name="xp-tools-bootstrap" type="bootstrap" ext="zip" conf="default"/>
   </publications>
 </ivy-module>
