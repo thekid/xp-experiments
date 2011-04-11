@@ -1,0 +1,428 @@
+   0  $accept : expression $end
+
+   1  expression : object
+   2             | array
+   3             | string
+   4             | atom
+
+   5  object : semiobject
+
+   6  semiobject : '{' objectcontent '}'
+   7             | '{' '}'
+
+   8  objectcontent : objectpart
+   9                | objectcontent ',' objectpart
+
+  10  objectpart : string ':' expression
+
+  11  array : '[' arraycontent ']'
+  12        | '[' ']'
+
+  13  arraycontent : expression
+  14               | arraycontent ',' expression
+
+  15  string : '"' word '"'
+  16         | '"' '"'
+
+  17  word : stringpart
+  18       | word stringpart
+
+  19  stringpart : T_STRING
+  20             | T_ESCAPE_QUOTATION
+  21             | T_ESCAPE_REVERSESOLIDUS
+  22             | T_ESCAPE_SOLIDUS
+  23             | T_ESCAPE_BACKSPACE
+  24             | T_ESCAPE_FORMFEED
+  25             | T_ESCAPE_NEWLINE
+  26             | T_ESCAPE_CARRIAGERETURN
+  27             | T_ESCAPE_HORIZONTALTAB
+  28             | T_ESCAPE_UNICODE
+
+  29  atom : T_TRUE
+  30       | T_FALSE
+  31       | T_NULL
+  32       | T_FLOAT
+  33       | T_INT
+
+state 0
+	$accept : . expression $end  (0)
+
+	T_TRUE  shift 1
+	T_FALSE  shift 2
+	T_NULL  shift 3
+	T_INT  shift 4
+	T_FLOAT  shift 5
+	'{'  shift 6
+	'['  shift 7
+	'"'  shift 8
+	.  error
+
+	expression  goto 9
+	object  goto 10
+	array  goto 11
+	string  goto 12
+	atom  goto 13
+	semiobject  goto 14
+
+
+state 1
+	atom : T_TRUE .  (29)
+
+	.  reduce 29
+
+
+state 2
+	atom : T_FALSE .  (30)
+
+	.  reduce 30
+
+
+state 3
+	atom : T_NULL .  (31)
+
+	.  reduce 31
+
+
+state 4
+	atom : T_INT .  (33)
+
+	.  reduce 33
+
+
+state 5
+	atom : T_FLOAT .  (32)
+
+	.  reduce 32
+
+
+state 6
+	semiobject : '{' . objectcontent '}'  (6)
+	semiobject : '{' . '}'  (7)
+
+	'}'  shift 15
+	'"'  shift 8
+	.  error
+
+	string  goto 16
+	objectcontent  goto 17
+	objectpart  goto 18
+
+
+state 7
+	array : '[' . arraycontent ']'  (11)
+	array : '[' . ']'  (12)
+
+	T_TRUE  shift 1
+	T_FALSE  shift 2
+	T_NULL  shift 3
+	T_INT  shift 4
+	T_FLOAT  shift 5
+	'{'  shift 6
+	'['  shift 7
+	']'  shift 19
+	'"'  shift 8
+	.  error
+
+	expression  goto 20
+	object  goto 10
+	array  goto 11
+	string  goto 12
+	atom  goto 13
+	semiobject  goto 14
+	arraycontent  goto 21
+
+
+state 8
+	string : '"' . word '"'  (15)
+	string : '"' . '"'  (16)
+
+	T_STRING  shift 22
+	T_ESCAPE_QUOTATION  shift 23
+	T_ESCAPE_REVERSESOLIDUS  shift 24
+	T_ESCAPE_SOLIDUS  shift 25
+	T_ESCAPE_BACKSPACE  shift 26
+	T_ESCAPE_FORMFEED  shift 27
+	T_ESCAPE_NEWLINE  shift 28
+	T_ESCAPE_CARRIAGERETURN  shift 29
+	T_ESCAPE_HORIZONTALTAB  shift 30
+	T_ESCAPE_UNICODE  shift 31
+	'"'  shift 32
+	.  error
+
+	word  goto 33
+	stringpart  goto 34
+
+
+state 9
+	$accept : expression . $end  (0)
+
+	$end  accept
+
+
+state 10
+	expression : object .  (1)
+
+	.  reduce 1
+
+
+state 11
+	expression : array .  (2)
+
+	.  reduce 2
+
+
+state 12
+	expression : string .  (3)
+
+	.  reduce 3
+
+
+state 13
+	expression : atom .  (4)
+
+	.  reduce 4
+
+
+state 14
+	object : semiobject .  (5)
+
+	.  reduce 5
+
+
+state 15
+	semiobject : '{' '}' .  (7)
+
+	.  reduce 7
+
+
+state 16
+	objectpart : string . ':' expression  (10)
+
+	':'  shift 35
+	.  error
+
+
+state 17
+	semiobject : '{' objectcontent . '}'  (6)
+	objectcontent : objectcontent . ',' objectpart  (9)
+
+	'}'  shift 36
+	','  shift 37
+	.  error
+
+
+state 18
+	objectcontent : objectpart .  (8)
+
+	.  reduce 8
+
+
+state 19
+	array : '[' ']' .  (12)
+
+	.  reduce 12
+
+
+state 20
+	arraycontent : expression .  (13)
+
+	.  reduce 13
+
+
+state 21
+	array : '[' arraycontent . ']'  (11)
+	arraycontent : arraycontent . ',' expression  (14)
+
+	','  shift 38
+	']'  shift 39
+	.  error
+
+
+state 22
+	stringpart : T_STRING .  (19)
+
+	.  reduce 19
+
+
+state 23
+	stringpart : T_ESCAPE_QUOTATION .  (20)
+
+	.  reduce 20
+
+
+state 24
+	stringpart : T_ESCAPE_REVERSESOLIDUS .  (21)
+
+	.  reduce 21
+
+
+state 25
+	stringpart : T_ESCAPE_SOLIDUS .  (22)
+
+	.  reduce 22
+
+
+state 26
+	stringpart : T_ESCAPE_BACKSPACE .  (23)
+
+	.  reduce 23
+
+
+state 27
+	stringpart : T_ESCAPE_FORMFEED .  (24)
+
+	.  reduce 24
+
+
+state 28
+	stringpart : T_ESCAPE_NEWLINE .  (25)
+
+	.  reduce 25
+
+
+state 29
+	stringpart : T_ESCAPE_CARRIAGERETURN .  (26)
+
+	.  reduce 26
+
+
+state 30
+	stringpart : T_ESCAPE_HORIZONTALTAB .  (27)
+
+	.  reduce 27
+
+
+state 31
+	stringpart : T_ESCAPE_UNICODE .  (28)
+
+	.  reduce 28
+
+
+state 32
+	string : '"' '"' .  (16)
+
+	.  reduce 16
+
+
+state 33
+	string : '"' word . '"'  (15)
+	word : word . stringpart  (18)
+
+	T_STRING  shift 22
+	T_ESCAPE_QUOTATION  shift 23
+	T_ESCAPE_REVERSESOLIDUS  shift 24
+	T_ESCAPE_SOLIDUS  shift 25
+	T_ESCAPE_BACKSPACE  shift 26
+	T_ESCAPE_FORMFEED  shift 27
+	T_ESCAPE_NEWLINE  shift 28
+	T_ESCAPE_CARRIAGERETURN  shift 29
+	T_ESCAPE_HORIZONTALTAB  shift 30
+	T_ESCAPE_UNICODE  shift 31
+	'"'  shift 40
+	.  error
+
+	stringpart  goto 41
+
+
+state 34
+	word : stringpart .  (17)
+
+	.  reduce 17
+
+
+state 35
+	objectpart : string ':' . expression  (10)
+
+	T_TRUE  shift 1
+	T_FALSE  shift 2
+	T_NULL  shift 3
+	T_INT  shift 4
+	T_FLOAT  shift 5
+	'{'  shift 6
+	'['  shift 7
+	'"'  shift 8
+	.  error
+
+	expression  goto 42
+	object  goto 10
+	array  goto 11
+	string  goto 12
+	atom  goto 13
+	semiobject  goto 14
+
+
+state 36
+	semiobject : '{' objectcontent '}' .  (6)
+
+	.  reduce 6
+
+
+state 37
+	objectcontent : objectcontent ',' . objectpart  (9)
+
+	'"'  shift 8
+	.  error
+
+	string  goto 16
+	objectpart  goto 43
+
+
+state 38
+	arraycontent : arraycontent ',' . expression  (14)
+
+	T_TRUE  shift 1
+	T_FALSE  shift 2
+	T_NULL  shift 3
+	T_INT  shift 4
+	T_FLOAT  shift 5
+	'{'  shift 6
+	'['  shift 7
+	'"'  shift 8
+	.  error
+
+	expression  goto 44
+	object  goto 10
+	array  goto 11
+	string  goto 12
+	atom  goto 13
+	semiobject  goto 14
+
+
+state 39
+	array : '[' arraycontent ']' .  (11)
+
+	.  reduce 11
+
+
+state 40
+	string : '"' word '"' .  (15)
+
+	.  reduce 15
+
+
+state 41
+	word : word stringpart .  (18)
+
+	.  reduce 18
+
+
+state 42
+	objectpart : string ':' expression .  (10)
+
+	.  reduce 10
+
+
+state 43
+	objectcontent : objectcontent ',' objectpart .  (9)
+
+	.  reduce 9
+
+
+state 44
+	arraycontent : arraycontent ',' expression .  (14)
+
+	.  reduce 14
+
+
+24 terminals, 12 nonterminals
+34 grammar rules, 45 states
