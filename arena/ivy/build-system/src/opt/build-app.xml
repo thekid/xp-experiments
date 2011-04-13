@@ -55,7 +55,7 @@
 
   <target name="xp.app.package" extensionOf="package" depends="ivy-info, xp.build.number">
     <zip destfile="${build.target}/${ivy.module}-app-${ivy.new.revision}.zip">
-      <fileset dir="${build.target}" includes="app/**"/>
+      <zipfileset dir="${build.target}/app" prefix="${ivy.module}"/>
     </zip>
   </target>
 </project>

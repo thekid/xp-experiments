@@ -5,6 +5,12 @@ $Id$
 Version ?-?-?, released ????-??-??
 ----------------------------------
 
+Heads up!
+---------
+- Changed build-app.xml, so the ivy module name will be used as primary directory
+  within the application zip instead of "app"
+  (kiesel)
+
 Features
 --------
 - Added option to build certain SVN revision w/ build-svnexport.xml
