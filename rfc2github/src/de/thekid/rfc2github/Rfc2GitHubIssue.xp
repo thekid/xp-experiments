@@ -83,7 +83,7 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
   protected [:var] locateRfc(var[] $results, string $title) {
     foreach ($result in $results) {
       $issue= $result as [:var];
-      if ($title === $issue['title']) return $issue;
+      if ('open' === $issue['state'] && $title === $issue['title']) return $issue;
     }
     return null;
   }
@@ -144,9 +144,9 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     $this.out.writeLine('#', $id, ': ', $caption, ' ', $fields);
     
     // Check if we already know the issue
-    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, 'issues/search', [
-      state : 'open',
-      term  : $id
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, 'issues/list', [
+      by    : 'label',
+      label : 'rfc'
     ]));
     $results= $response.result()['issues'] as var[];
     $issue= $this.locateRfc($results, $title);
