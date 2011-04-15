@@ -64,17 +64,17 @@
          switch ($event->getLevel()) {
            default:
            case LogLevel::DEBUG: $type= "LOG"; break;
-           case LogLevel::INFO: $ype= "INFO"; break;
+           case LogLevel::INFO: $type= "INFO"; break;
            case LogLevel::WARN: $type= "WARN"; break;
            case LogLevel::ERROR: $type= "ERROR"; break;
          }
 
          $str= $encoder->encode(array(
-           array('type' => $type),
+           array('Type' => $type),
            array($fmtd)
          ));
 
-         $offset= 0; $k= 1;
+         $offset= 0;
          $out= strlen($str);
          while ($offset < strlen($str)) {
            $use= substr($str, $offset, 4000);
@@ -84,10 +84,10 @@
 
            if ($offset < strlen($str)) $out.= '\\';
 
-           $response->setHeader(sprintf('X-Wf-1-1-%d-%d', $i, $k++), $out);
-         }
+           $response->setHeader(sprintf('X-Wf-1-1-1-%d', $i++), $out);
 
-         $i++;
+           $out= '';
+         }
        }
      }
   }
