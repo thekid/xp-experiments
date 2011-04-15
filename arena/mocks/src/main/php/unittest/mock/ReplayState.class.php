@@ -17,7 +17,8 @@
    */
   class ReplayState extends Object implements IMockState {
     private
-      $expectationMap= null;
+      $unexpectedCalls= NULL,
+      $expectationMap= NULL;
         
     /**
      * Constructor
@@ -40,16 +41,16 @@
      */
     public function handleInvocation($method, $args) {
       if(!$this->expectationMap->containsKey($method))
-        return null;
+        return NULL;
 
       $expectationList= $this->expectationMap->get($method);
       $nextExpectation= $expectationList->getNext($args);
       if(!$nextExpectation) {//no more expectations
         $expectationList->fileUnexpected($method, $args);
-        return null;
+        return NULL;
       }
 
-      if(null != $nextExpectation->getException())
+      if(NULL != $nextExpectation->getException())
         throw $nextExpectation->getException();
       
       return $nextExpectation->getReturn();      
