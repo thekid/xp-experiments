@@ -71,7 +71,7 @@
 
          $str= $encoder->encode(array(
            array('Type' => $type),
-           array($fmtd)
+           $fmtd
          ));
 
          $offset= 0;

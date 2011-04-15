@@ -115,7 +115,7 @@
       $this->fixture->info('Simple Message!');
       $this->finalize();
 
-      $this->assertEquals('47|[ { "Type" : "INFO" } , [ "Simple Message!" ] ]|', $this->response->getHeader('X-Wf-1-1-1-1'));
+      $this->assertEquals('43|[ { "Type" : "INFO" } , "Simple Message!" ]|', $this->response->getHeader('X-Wf-1-1-1-1'));
     }
 
     /**
@@ -143,9 +143,9 @@
       $this->fixture->info($msg= str_repeat('The large message!!!', 400));  // 8000 bytes
       $this->finalize();
 
-      $this->assertEquals((strlen($msg)+32).'|[ { "Type" : "INFO" } , [ "'.substr($msg, 0, 4000-27).'|\\', $this->response->getHeader('X-Wf-1-1-1-1'));
-      $this->assertEquals('|'.substr($msg, 4000-27, 4000).'|\\', $this->response->getHeader('X-Wf-1-1-1-2'));
-      $this->assertEquals('|'.substr($msg, 8000-27, 4000).'" ] ]|', $this->response->getHeader('X-Wf-1-1-1-3'));
+      $this->assertEquals((strlen($msg)+28).'|[ { "Type" : "INFO" } , "'.substr($msg, 0, 4000-25).'|\\', $this->response->getHeader('X-Wf-1-1-1-1'));
+      $this->assertEquals('|'.substr($msg, 4000-25, 4000).'|\\', $this->response->getHeader('X-Wf-1-1-1-2'));
+      $this->assertEquals('|'.substr($msg, 8000-25, 4000).'" ]|', $this->response->getHeader('X-Wf-1-1-1-3'));
     }
   }
 ?>
