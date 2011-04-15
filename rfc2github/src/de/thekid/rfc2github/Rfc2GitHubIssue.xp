@@ -60,7 +60,7 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     $request= $this.conn.create(new HttpRequest());
     $target= '/api/v2/json/' ~ $method ~ '/' ~ $this.target;
     foreach ($value in $parameters) {
-      $target ~= '/' ~ $value;
+      $target ~= '/' ~ urlencode($value);
     }
     $request.setTarget($target);
     $request.setParameters($this.identity);
@@ -73,6 +73,18 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
    */
   protected ApiResponse sendApiRequest(HttpRequest $request) {
     return new ApiResponse($this.conn.send($request));
+  }
+  
+  /**
+   * Locates an RFC
+   *
+   */
+  protected [:var] locateRfc(var[] $results, string $caption) {
+    foreach ($result in $results) {
+      $issue= $result as [:var];
+      if ($caption === $issue['title']) return $issue;
+    }
+    return null;
   }
   
   /**
@@ -106,6 +118,10 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
           case 'created':
             $fields['created']= util.Date::fromString($value);
             break;
+
+          case 'category':
+            $fields['category']= trim($value, '<>');
+            break;
             
           default:
             $fields[$key]= $value;
@@ -130,43 +146,37 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       term  : urlencode($caption)
     ]));
     $results= $response.result()['issues'] as var[];
-    switch ($results.length) {
-      case 1: 
-        $number= $results[0]['number'];
-        $this.out.writeLine('Found existing issue #', $number);
+    $issue= $this.locateRfc($results, $caption);
 
-        $update= $this.newApiRequest('issues/edit', [number: $number]);
-        $update.setParameter('title', $caption);
-        $update.setParameter('body', $content);
-        $response= $this.sendApiRequest($update);
-        if (200 != $response.status()) {
-          $this.err.writeLine('*** ', $response);
-          return 1;
-        }
+    if (null === $issue) {
+      $this.out.writeLine('Nothing found, creating new issue');
 
-        $issue= $response.result()['issue'] as [:var];
-        $this.out.writeLine('Updated issue #', $issue['number']);
-        break;
-      
-      case 0:
-        $this.out.writeLine('Nothing found, creating new issue');
-
-        $create= $this.newApiRequest('issues/open');
-        $create.setParameter('title', $caption);
-        $create.setParameter('body', $content);
-        $response= $this.sendApiRequest($create);
-        if (201 != $response.status()) {
-          $this.err.writeLine('*** ', $response);
-          return 1;
-        }
-        
-        $issue= $response.result()['issue'] as [:var];
-        $this.out.writeLine('Created issue #', $issue['number']);
-        break;
-      
-      default:
-        $this.err.writeLine('*** Ambiguous: ', $results);
+      $create= $this.newApiRequest('issues/open');
+      $create.setParameter('title', $caption);
+      $create.setParameter('body', $content);
+      $response= $this.sendApiRequest($create);
+      if (201 != $response.status()) {
+        $this.err.writeLine('*** ', $response);
         return 1;
+      }
+
+      $issue= $response.result()['issue'] as [:var];
+      $this.out.writeLine('Created issue #', $issue['number']);
+    } else {
+      $number= $results[0]['number'];
+      $this.out.writeLine('Found existing issue #', $number);
+
+      $update= $this.newApiRequest('issues/edit', [number: $number]);
+      $update.setParameter('title', $caption);
+      $update.setParameter('body', $content);
+      $response= $this.sendApiRequest($update);
+      if (200 != $response.status()) {
+        $this.err.writeLine('*** ', $response);
+        return 1;
+      }
+
+      $issue= $response.result()['issue'] as [:var];
+      $this.out.writeLine('Updated issue #', $issue['number']);
     }
     
     // Attach "rfc" label
@@ -182,5 +192,12 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       number : $issue['number']]
     ));
     $this.out.writeLine('Labeled it ', $fields['status.id'], ': ', $response.status());
+
+    // Add label for category
+    $response= $this.sendApiRequest($this.newApiRequest('issues/label/add', [
+      label  : $fields['category'], 
+      number : $issue['number']]
+    ));
+    $this.out.writeLine('Labeled it ', $fields['category'], ': ', $response.status());
   }
 }
