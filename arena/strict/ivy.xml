@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<ivy-module version="1.0" xmlns:one="http://oneandone.org/idev/ivy/">
+  <info
+   organisation="net.xp_framework"
+   module="strict-lib"
+   revision="1.0"
+   status="milestone"
+  />
+  <publications>
+    <artifact name="strict-lib" conf="default" type="xar"/>
+  </publications>
+  <dependencies>
+     <dependency org="net.xp_framework" name="core" rev="[5.8,)"/>
+  </dependencies>
+</ivy-module>

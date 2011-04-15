@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<project name="strict-lib" xmlns:ivy="antlib:org.apache.ivy.ant" default="usage">
+  <import file="${user.home}/.ant/xp-build/build-loader.xml"/>
+  <import file="${xp.build.home}/opt/build-tagdeploy.xml"/>
+</project>
