@@ -1,0 +1,62 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package de.thekid.rfc2github;
+
+import peer.http.HttpResponse;
+import io.streams.Streams;
+import webservices.json.JsonFactory;
+import webservices.json.IJsonDecoder;
+
+/**
+ * GitHub API response wrapper
+ *
+ */
+public class ApiResponse {
+  protected HttpResponse $response;
+  protected [:var] $result= null;
+  protected IJsonDecoder $decoder= JsonFactory::create();
+  
+  /**
+   * Constructor
+   *
+   */
+  public __construct(HttpResponse $response) {
+    $this.response= $response;
+  }
+  
+  /**
+   * Accessor for API response's status
+   *
+   */
+  public int status() {
+    return $this.response.statusCode();
+  }
+  
+  /**
+   * Returns payload
+   *
+   */
+  public [:var] result() {
+    if (null === $this.result) {
+      $raw= Streams::readAll($this.response.getInputStream());
+
+      try {
+        $this.result= $this.decoder.decode($raw);
+      } catch (Throwable $e) {
+        $this.result= [body: $raw];
+      }
+    }
+    return $this.result;
+  }
+  
+  /**
+   * Creates a string representation
+   *
+   */
+  public string toString() {
+    return $this.response.toString();
+  }
+}

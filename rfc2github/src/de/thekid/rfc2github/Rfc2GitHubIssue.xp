@@ -1,0 +1,186 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package de.thekid.rfc2github;
+
+import peer.http.*;
+import io.File;
+
+import native standard.sscanf;
+import native standard.strtok;
+import native standard.strtok;
+import native standard.explode;
+import native standard.trim;
+import native standard.ltrim;
+import native standard.urlencode;
+
+import native core.strncmp;
+
+/**
+ * Imports XP Framework RFCs to Github issues
+ *
+ * @see      http://develop.github.com/p/issues.html
+ * @see      https://github.com/thekid/experiments/issues
+ */
+public class Rfc2GitHubIssue extends util.cmd.Command {
+  protected File $origin;
+  protected HttpConnection $conn= new HttpConnection('http://github.com');
+  protected [:string] $identity;
+  protected string $target;
+  
+  /**
+   * Sets origin filename
+   *
+   */
+  [@arg(position= 0)]
+  public void setOriginFile(string $file) {
+    $this.origin= new File($file);
+  }
+
+  /**
+   * Sets target (user:token@owner/repo)
+   *
+   */
+  [@arg(position= 1)]
+  public void setTarget(string $target) {
+    $user= $token= $owner= $repo= null;
+    sscanf($target, "%[^:]:%[^@]@%[^/]/%[^\r]", $user, $token, $owner, $repo);
+    
+    $this.identity= [login : $user, token : $token];
+    $this.target= $owner ~ '/' ~ $repo;
+  }
+  
+  /**
+   * Creates a new API request
+   *
+   */
+  protected HttpRequest newApiRequest(string $method, [:string] $parameters= [:]) {
+    $request= $this.conn.create(new HttpRequest());
+    $target= '/api/v2/json/' ~ $method ~ '/' ~ $this.target;
+    foreach ($value in $parameters) {
+      $target ~= '/' ~ $value;
+    }
+    $request.setTarget($target);
+    $request.setParameters($this.identity);
+    return $request;
+  }
+
+  /**
+   * Creates a new API request
+   *
+   */
+  protected ApiResponse sendApiRequest(HttpRequest $request) {
+    return new ApiResponse($this.conn.send($request));
+  }
+  
+  /**
+   * Entry point method
+   *
+   */
+  public void run() {
+  
+    // Parse RFC into caption, fields and body text
+    $fields= [:];
+    with ($st= new text.StreamTokenizer($this.origin.getInputStream(), "\n")) {
+      $caption= $st.nextToken();
+      $st.nextToken('@');
+      
+      while ($st.hasMoreTokens()) {
+        if ('' === ($t= ltrim($st.nextToken(), '@'))) break;   // End of attributes
+
+        $key= $value= null;
+        sscanf($t, "%[^:]: %[^\r]", $key, $value);
+
+        switch ($key) {
+          case 'status':
+            $fields['status.id']= strtok($value, ',( ');
+            $fields['status.text']= strtok("\0");
+            break;
+
+          case 'authors':
+            $fields['authors']= explode(', ', $value);
+            break;
+
+          case 'created':
+            $fields['created']= util.Date::fromString($value);
+            break;
+            
+          default:
+            $fields[$key]= $value;
+            break;
+        }
+      }
+
+      // Rest of text (use a token that is not very likely to appear so
+      // scanning will happen in large chunks).
+      $content= '';
+      while ($st.hasMoreTokens("\0")) {
+        $content ~= $st.nextToken("\0");
+      }
+      $content= trim($content);
+    }
+    
+    $this.out.writeLine($caption, ' ', $fields);
+    
+    // Check if we already know the issue
+    $response= $this.sendApiRequest($this.newApiRequest('issues/search', [
+      state : 'open',
+      term  : urlencode($caption)
+    ]));
+    $results= $response.result()['issues'] as var[];
+    switch ($results.length) {
+      case 1: 
+        $number= $results[0]['number'];
+        $this.out.writeLine('Found existing issue #', $number);
+
+        $update= $this.newApiRequest('issues/edit', [number: $number]);
+        $update.setParameter('title', $caption);
+        $update.setParameter('body', $content);
+        $response= $this.sendApiRequest($update);
+        if (200 != $response.status()) {
+          $this.err.writeLine('*** ', $response);
+          return 1;
+        }
+
+        $issue= $response.result()['issue'] as [:var];
+        $this.out.writeLine('Updated issue #', $issue['number']);
+        break;
+      
+      case 0:
+        $this.out.writeLine('Nothing found, creating new issue');
+
+        $create= $this.newApiRequest('issues/open');
+        $create.setParameter('title', $caption);
+        $create.setParameter('body', $content);
+        $response= $this.sendApiRequest($create);
+        if (201 != $response.status()) {
+          $this.err.writeLine('*** ', $response);
+          return 1;
+        }
+        
+        $issue= $response.result()['issue'] as [:var];
+        $this.out.writeLine('Created issue #', $issue['number']);
+        break;
+      
+      default:
+        $this.err.writeLine('*** Ambiguous: ', $results);
+        return 1;
+    }
+    
+    // Attach "rfc" label
+    $response= $this.sendApiRequest($this.newApiRequest('issues/label/add', [
+      label  : 'rfc', 
+      number : $issue['number']]
+    ));
+    $this.out.writeLine('Labeled it an RFC: ', $response.status());
+    
+    // Add status label 
+    $response= $this.sendApiRequest($this.newApiRequest('issues/label/add', [
+      label  : $fields['status.id'], 
+      number : $issue['number']]
+    ));
+    $this.out.writeLine('Labeled it ', $fields['status.id'], ': ', $response.status());
+  }
+}
