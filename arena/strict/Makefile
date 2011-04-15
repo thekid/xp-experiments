@@ -1,2 +1,2 @@
 test:
-	unittest -cp tests net.xp_framework.unittest.core.IllegalAccessOnObjectTest net.xp_framework.unittest.core.IllegalAccessOnThrowableTest
+	unittest -cp src/test/php net.xp_framework.unittest.core.IllegalAccessOnObjectTest net.xp_framework.unittest.core.IllegalAccessOnThrowableTest
