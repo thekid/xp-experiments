@@ -139,6 +139,10 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
         $content ~= $st.nextToken("\0");
       }
       $content= trim($content);
+      
+      // TODO: Convert to markdown
+      // http://daringfireball.net/projects/markdown/syntax
+      
     }
     
     $this.out.writeLine('#', $id, ': ', $caption, ' ', $fields);
