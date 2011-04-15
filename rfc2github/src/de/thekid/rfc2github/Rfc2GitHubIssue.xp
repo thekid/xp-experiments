@@ -56,9 +56,10 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
    * Creates a new API request
    *
    */
-  protected HttpRequest newApiRequest(string $method, [:string] $parameters= [:]) {
+  protected HttpRequest newApiRequest(string $method, string $area, [:string] $parameters= [:]) {
     $request= $this.conn.create(new HttpRequest());
-    $target= '/api/v2/json/' ~ $method ~ '/' ~ $this.target;
+    $request.setMethod($method);
+    $target= '/api/v2/json/' ~ $area ~ '/' ~ $this.target;
     foreach ($value in $parameters) {
       $target ~= '/' ~ urlencode($value);
     }
@@ -79,10 +80,10 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
    * Locates an RFC
    *
    */
-  protected [:var] locateRfc(var[] $results, string $caption) {
+  protected [:var] locateRfc(var[] $results, string $title) {
     foreach ($result in $results) {
       $issue= $result as [:var];
-      if ($caption === $issue['title']) return $issue;
+      if ($title === $issue['title']) return $issue;
     }
     return null;
   }
@@ -96,7 +97,9 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     // Parse RFC into caption, fields and body text
     $fields= [:];
     with ($st= new text.StreamTokenizer($this.origin.getInputStream(), "\n")) {
-      $caption= $st.nextToken();
+      $title= $st.nextToken();
+      $id= $caption= null;
+      sscanf($title, "RFC %4s: %[^\r]", $id, $caption);
       $st.nextToken('@');
       
       while ($st.hasMoreTokens()) {
@@ -138,21 +141,21 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       $content= trim($content);
     }
     
-    $this.out.writeLine($caption, ' ', $fields);
+    $this.out.writeLine('#', $id, ': ', $caption, ' ', $fields);
     
     // Check if we already know the issue
-    $response= $this.sendApiRequest($this.newApiRequest('issues/search', [
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, 'issues/search', [
       state : 'open',
-      term  : urlencode($caption)
+      term  : $id
     ]));
     $results= $response.result()['issues'] as var[];
-    $issue= $this.locateRfc($results, $caption);
+    $issue= $this.locateRfc($results, $title);
 
     if (null === $issue) {
       $this.out.writeLine('Nothing found, creating new issue');
 
-      $create= $this.newApiRequest('issues/open');
-      $create.setParameter('title', $caption);
+      $create= $this.newApiRequest(HttpConstants::POST, 'issues/open');
+      $create.setParameter('title', $title);
       $create.setParameter('body', $content);
       $response= $this.sendApiRequest($create);
       if (201 != $response.status()) {
@@ -163,11 +166,10 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       $issue= $response.result()['issue'] as [:var];
       $this.out.writeLine('Created issue #', $issue['number']);
     } else {
-      $number= $results[0]['number'];
-      $this.out.writeLine('Found existing issue #', $number);
+      $this.out.writeLine('Found existing issue #', $issue['number']);
 
-      $update= $this.newApiRequest('issues/edit', [number: $number]);
-      $update.setParameter('title', $caption);
+      $update= $this.newApiRequest(HttpConstants::POST, 'issues/edit', [number: $issue['number']]);
+      $update.setParameter('title', $title);
       $update.setParameter('body', $content);
       $response= $this.sendApiRequest($update);
       if (200 != $response.status()) {
@@ -175,26 +177,25 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
         return 1;
       }
 
-      $issue= $response.result()['issue'] as [:var];
       $this.out.writeLine('Updated issue #', $issue['number']);
     }
     
     // Attach "rfc" label
-    $response= $this.sendApiRequest($this.newApiRequest('issues/label/add', [
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
       label  : 'rfc', 
       number : $issue['number']]
     ));
     $this.out.writeLine('Labeled it an RFC: ', $response.status());
     
     // Add status label 
-    $response= $this.sendApiRequest($this.newApiRequest('issues/label/add', [
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
       label  : $fields['status.id'], 
       number : $issue['number']]
     ));
     $this.out.writeLine('Labeled it ', $fields['status.id'], ': ', $response.status());
 
     // Add label for category
-    $response= $this.sendApiRequest($this.newApiRequest('issues/label/add', [
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
       label  : $fields['category'], 
       number : $issue['number']]
     ));
