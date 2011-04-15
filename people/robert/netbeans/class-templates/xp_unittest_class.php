@@ -6,14 +6,14 @@
 
   uses(
     'unittest.TestCase',
-    'path.to.${name}'
+    'path.to.testing.class'
   );
 
   /**
    * @TODO: Description and path of ${name}
    *
    * @purpose  unittest of ${name}
-   * @see      xp://path.to.${name}
+   * @see      xp://path.to.testing.class
    */
   class ${name} extends TestCase {
 
