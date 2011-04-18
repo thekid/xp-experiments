@@ -12,7 +12,7 @@
   /**
    * @TODO: Description and path of ${name}
    *
-   * @purpose  unittest of ${name}
+   * @purpose  unittest
    * @see      xp://path.to.testing.class
    */
   class ${name} extends TestCase {
