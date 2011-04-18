@@ -25,6 +25,8 @@
         <pathelement path="${build.target}/bootstrap"/>
       </path>
     </pathconvert>
+
+    <mkdir dir="${build.target}/testresults"/>
   </target>
 
   <target name="xp.test.byini" unless="skip.tests" depends="xp.test.createpath">
@@ -35,10 +37,15 @@
      executable="unittest"
      failonerror="true"
      dir="${build.target}/bootstrap"
+     dest="${build.target}/testresults"
     >
       <env key="USE_XP" value="${test.use_xp}"/>
-      <fileset refid="build.testConfigurations"/>
+      <arg value="-l"/>
+      <arg value="unittest.XmlTestListener"/>
+      <mapper type="glob" from="*.ini" to="*.xml"/>
+      <targetfile prefix="testresult-"/>
       <srcfile/>
+      <fileset refid="build.testConfigurations"/>
     </apply>
   </target>
 
@@ -51,6 +58,9 @@
      failonerror="true"
     >
       <env key="USE_XP" value="${build.target}/bootstrap/"/>
+      <arg value="-l"/>
+      <arg value="unittest.XmlTestListener"/>
+      <arg value="${build.target}/testresults/testresult-package.xml"/>
       <arg value="${build.testPackage}"/>
     </exec>
   </target>

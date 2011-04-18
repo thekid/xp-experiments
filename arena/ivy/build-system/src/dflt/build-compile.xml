@@ -2,31 +2,46 @@
 <project name="xp-framework-compile" basedir=".">
   <target name="xp.compile.sources" extensionOf="compile" depends="xp.compile.sources.php, xp.compile.sources.xsl"/>
 
-  <target name="xp.compile.sources.php">
+  <target name="xp.compile.sources.php" depends="xp.compile.generatefilter">
     <copy todir="${build.target.classes}">
       <fileset refid="build.sources.fileset.php"/>
+      <filterset refid="xp.filterset.compile"/>
       <cutdirsmapper dirs="1"/>
     </copy>
   </target>
 
-  <target name="xp.compile.sources.xsl">
+  <target name="xp.compile.sources.xsl" depends="xp.compile.generatefilter">
     <copy todir="${build.target.classes}">
       <fileset refid="build.sources.fileset.xsl"/>
+      <filterset refid="xp.filterset.compile"/>
       <cutdirsmapper dirs="1"/>
     </copy>
   </target>
 
-  <target name="xp.compile.sources.xp">
+  <target name="xp.compile.sources.xp" depends="xp.compile.generatefilter">
     <path refid="build.sourceDirectory.xp"/>
     <!-- TODO: Call "xcc" -->
   </target>
 
-  <target name="xp.compile.tests" extensionOf="compile">
+  <target name="xp.compile.tests" extensionOf="compile" depends="xp.compile.generatefilter">
     <mkdir dir="${build.target.testClasses}"/>
     <copy todir="${build.target.testClasses}">
       <fileset refid="build.testSourceDirectory"/>
+      <filterset refid="xp.filterset.compile"/>
       <cutdirsmapper dirs="1"/>
     </copy>
+  </target>
+
+  <target name="xp.compile.generatefilter" depends="ivy-info">
+    <!-- Predefined filterset used on compile -->
+    <filterset id="xp.filterset.compile" begintoken="@@" endtoken="@@">
+      <filter token="user" value="${user.name}"/>
+      <filter token="xp.build.version" value="@@module.revision@@"/>
+      <filter token="module.name" value="${ivy.module}"/>
+      <filter token="module.org" value="${ivy.organisation}"/>
+      <filter token="module.revision" value="${ivy.revision}"/>
+      <filter token="module.fullname" value="${ivy.organisation}.${ivy.module}-${ivy.revision}"/>
+    </filterset>
   </target>
 
 </project>

@@ -6,6 +6,7 @@
   <property name="build.target.classes" value="${build.target}/classes"/>
   <property name="build.target.testClasses" value="${build.target}/test-classes"/>
   <property name="build.target.app" value="${build.target}/app"/>
+  <property name="xp.build.version" value="@@xp.build.version@@"/>
 
   <!-- Try some settings locations -->
   <property file="${xp.build.home}/svn.properties"/>
@@ -13,6 +14,8 @@
   
   <target name="xp.setup.ivy" depends="xp.provide.dependencies">
     <ivy:info file="ivy.xml"/>
+
+    <echo>:: This is XP Framework Build System version ${xp.build.version} :: </echo>
     
     <property name="xp.lookup.resolver" value="shared-lookup-${ivy.status}"/>
     <property name="xp.publish.resolver" value="shared-publish-${ivy.status}"/>

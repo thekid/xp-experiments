@@ -27,5 +27,4 @@
     <include name="container/*"/>
     <exclude name="**/*.properties"/>
   </fileset>
-
 </project>

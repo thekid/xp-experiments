@@ -13,6 +13,14 @@ Heads up!
 
 Features
 --------
+- Added support for replacing tokens in source files by pre-defined
+  values (module name, version, ...)
+  (kiesel)
+- Added support to generate testresult xml files with test results
+  for later parsing
+  (kiesel)
+- Added support to validate .xsl / .xml files in "validate" phase
+  (kiesel)
 - Added option to build certain SVN revision w/ build-svnexport.xml
   (kiesel)
 - Changed svn commands to use svnkit only
