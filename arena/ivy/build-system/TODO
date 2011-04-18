@@ -13,18 +13,18 @@ Implementation
 
 * Improve "install.xml" build file
   . could this use ivy already to fetch dependencies?
-  . auto-detection of missing libraries should be improved:
-    currently, existance of ivy-${version}.xar indicates whether *all* libs
-    are available, and this might not be sufficient in all places; it should
-    check each lib independently.
+  Status: TODO
 
 * Implement build "complete" web application zip:
   . add all required files & dependencies
+  Status: DONE
   . create Web container configuration (eg. apache vhost config)
   . define set of replaceable tokens, if any
+  Status: TODO
 
 * Implement build command line application zip:
   . add all required files & dependencies
+  Status: DONE
 
 * Add support for code generation
   . simple frontend for `cgen`
