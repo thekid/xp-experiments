@@ -23,8 +23,12 @@
 
 Current Content of the Code Templates
 
+- fc  (public function with no argument)
 - fc1 (public function with one argument)
 - fc2 (public function with two arguments)
 - ut  (public function for unittests)
 - utt (public function for unittests that expects an Exception
 
+Removed Netbeans Code Templates
+
+- cls (class template)
