@@ -42,7 +42,15 @@
       if (NULL === $this->resolver) {
         $this->resolver= Resolvers::systemResolver();
       }
-      Console::writeLine(new Bytes($this->resolver->send(new peer·net·Message($name))));
+      
+      $message= new peer·net·Message();
+      $message->setType(1);                 // "A"
+      $message->setFlags(0x0100 & 0x0300);  // recursion & queryspecmask
+      
+      //XXX RECORD XXX
+      $message->addRecord($this->name);   
+
+      return $this->resolver->send($message);
     }
   }
 ?>
