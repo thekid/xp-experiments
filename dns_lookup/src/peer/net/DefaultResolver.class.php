@@ -47,6 +47,7 @@
     
     protected function read($length) {
       $chunk= $this->sock->readBinary($length);
+      Console::writeLine('READ ', $length, '= ', new Bytes($chunk));
       $this->offset+= strlen($chunk);
       return $chunk;
     }
@@ -65,7 +66,7 @@
           $this->labels[$this->offset]= $label;
         } else {
           $offset= (($l & 0x3F) << 8) + ord($this->read(1));
-          Console::writeLine('PTR-OFFSET ', $offset);
+          Console::writeLine('PTR-OFFSET ', $offset, ' @ ', $this->labels);
           $labels[]= $this->labels[$offset];
           return implode('.', $labels);
         }
@@ -126,6 +127,7 @@
       if ($header['id'] !== $query->getId()) {
         throw new ProtocolException('Expected answer for #'.$query->getId().', have '.$header['id']);
       }
+      $this->sock->setBlocking(FALSE);
       
       $this->labels= array();
       $this->offset= 1;
@@ -134,13 +136,14 @@
       // Parse questions
       for ($i= 0; $i < $header['qdcount']; $i++) {
         $domain= $this->readDomain();
-        Console::writeLine(new Bytes($this->read(4)));    // QTYPE, QCLASS?!
+        $this->read(4);    // QTYPE, QCLASS -> skip for the moment
       }
       
       // Parse answers
       for ($i= 0; $i < $header['ancount']; $i++) {
         $r= unpack('ntype/nclass/Nttl/nlength', $this->read(10));
         Console::writeLine('RECORD ', $r);
+
         switch ($r['type']) {
           case 1:   // A
             // $record= new ARecord();
@@ -148,6 +151,7 @@
               'domain' => $domain,
               'ip'     => implode('.', unpack('Ca/Cb/Cc/Cd', $this->read(4)))
             );
+            $this->read(2);   // WTF?
             break;
           
           case 15:  // MX
@@ -160,14 +164,13 @@
               'pri'    => $pri['level']
             );
             break;
-            
           
           default:
             throw new ProtocolException('Unknown record type '.$r['type']);
         }
+        
         $return->addRecord($record);
       }
-      
 
       return $return;
     }
