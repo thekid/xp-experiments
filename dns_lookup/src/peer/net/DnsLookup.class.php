@@ -19,9 +19,11 @@
      * (Insert method's description here)
      *
      * @param   
+     * @param   
      */
-    public function __construct($name) {
+    public function __construct($name, $type= 1) {
       $this->name= $name;
+      $this->type= $type;
     }
   
     /**
@@ -44,7 +46,7 @@
       }
       
       $message= new peer·net·Message();
-      $message->setType(1);                 // "A"
+      $message->setType($this->type);
       $message->setFlags(0x0100 & 0x0300);  // recursion & queryspecmask
       
       //XXX RECORD XXX
