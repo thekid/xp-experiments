@@ -172,7 +172,7 @@
         $return->addRecord($record);
       }
 
-      return $return;
+      return $return->getRecords();
     }
     
     /**
