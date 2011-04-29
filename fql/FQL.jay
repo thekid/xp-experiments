@@ -1,6 +1,6 @@
 %{
   uses(
-    'FilterFactory',
+    'io.collections.query.FilterFactory',
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator',
     'io.collections.iterate.NameEqualsFilter',

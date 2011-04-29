@@ -3,11 +3,11 @@
  *
  * $Id$
  */
-  uses('text.parser.generic.AbstractParser');
 
+  
 #line 2 "FQL.jay"
   uses(
-    'FilterFactory',
+    'io.collections.query.FilterFactory',
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator',
     'io.collections.iterate.NameEqualsFilter',
@@ -17,19 +17,8 @@
     'io.collections.iterate.NameMatchesFilter'
   );
 #line 20 "-"
-  define('TOKEN_T_SELECT',  259);
-  define('TOKEN_T_FROM',  260);
-  define('TOKEN_T_WHERE',  261);
-  define('TOKEN_T_STRING',  262);
-  define('TOKEN_T_AND',  263);
-  define('TOKEN_T_OR',  264);
-  define('TOKEN_T_WORD',  266);
-  define('TOKEN_T_LIKE',  267);
-  define('TOKEN_T_NUMBER',  268);
-  define('TOKEN_T_ILIKE',  269);
-  define('TOKEN_T_MATCHES',  270);
-  define('TOKEN_T_REGEX',  271);
-  define('TOKEN_YY_ERRORCODE', 256);
+
+  uses('text.parser.generic.AbstractParser');
 
   /**
    * Generated parser class
@@ -37,6 +26,20 @@
    * @purpose  Parser implementation
    */
   class FQLParser extends AbstractParser {
+    const T_SELECT= 259;
+    const T_FROM= 260;
+    const T_WHERE= 261;
+    const T_STRING= 262;
+    const T_AND= 263;
+    const T_OR= 264;
+    const T_WORD= 266;
+    const T_LIKE= 267;
+    const T_NUMBER= 268;
+    const T_ILIKE= 269;
+    const T_MATCHES= 270;
+    const T_REGEX= 271;
+    const YY_ERRORCODE= 256;
+
     protected static $yyLhs= array(-1,
           0,     1,     2,     2,     3,     3,     3,     4,     4,     7, 
           7,     7,     8,     8,     5,     5,     5,     6,     6, 
@@ -382,7 +385,7 @@
     {
           $yyVal= '';
         } break;
-#line 386 "-"
+#line 389 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];
