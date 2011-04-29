@@ -1,3 +1,0 @@
-#!/bin/sh
-PHP=`/usr/bin/which php`
-$PHP -dextension="oel.so" $*

@@ -1,4 +1,0 @@
-ARG_ENABLE("oel", "enable opcode engeneering library module", "no");
-if (PHP_OEL != "no") {
-  EXTENSION("oel", "oel.c");
-}

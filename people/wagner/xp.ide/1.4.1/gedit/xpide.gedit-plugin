@@ -1,9 +1,0 @@
-[Gedit Plugin]
-Loader=python
-Module=xpide
-IAge=2
-Name=XP IDE
-Description=Plugin to ease PHP code production  in the XP framework (http://www.xp-framework.net)
-Authors=Ruben Wagner (ruben.wagner@gmx.net)
-Copyright=Copyright © 2009 Ruben Wagner (ruben.wagner@gmx.net)
-Website=http://www.xp-framework.net
