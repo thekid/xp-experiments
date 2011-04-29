@@ -1,0 +1,208 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package de.thekid.rfc2github;
+
+import peer.http.*;
+import io.File;
+
+import native standard.sscanf;
+import native standard.strtok;
+import native standard.strtok;
+import native standard.explode;
+import native standard.trim;
+import native standard.ltrim;
+import native standard.urlencode;
+
+import native core.strncmp;
+
+/**
+ * Imports XP Framework RFCs to Github issues
+ *
+ * @see      http://develop.github.com/p/issues.html
+ * @see      https://github.com/thekid/experiments/issues
+ */
+public class Rfc2GitHubIssue extends util.cmd.Command {
+  protected File $origin;
+  protected HttpConnection $conn= new HttpConnection('http://github.com');
+  protected [:string] $identity;
+  protected string $target;
+  
+  /**
+   * Sets origin filename
+   *
+   */
+  [@arg(position= 0)]
+  public void setOriginFile(string $file) {
+    $this.origin= new File($file);
+  }
+
+  /**
+   * Sets target (user:token@owner/repo)
+   *
+   */
+  [@arg(position= 1)]
+  public void setTarget(string $target) {
+    $user= $token= $owner= $repo= null;
+    sscanf($target, "%[^:]:%[^@]@%[^/]/%[^\r]", $user, $token, $owner, $repo);
+    
+    $this.identity= [login : $user, token : $token];
+    $this.target= $owner ~ '/' ~ $repo;
+  }
+  
+  /**
+   * Creates a new API request
+   *
+   */
+  protected HttpRequest newApiRequest(string $method, string $area, [:string] $parameters= [:]) {
+    $request= $this.conn.create(new HttpRequest());
+    $request.setMethod($method);
+    $target= '/api/v2/json/' ~ $area ~ '/' ~ $this.target;
+    foreach ($value in $parameters) {
+      $target ~= '/' ~ urlencode($value);
+    }
+    $request.setTarget($target);
+    $request.setParameters($this.identity);
+    return $request;
+  }
+
+  /**
+   * Creates a new API request
+   *
+   */
+  protected ApiResponse sendApiRequest(HttpRequest $request) {
+    return new ApiResponse($this.conn.send($request));
+  }
+  
+  /**
+   * Locates an RFC
+   *
+   */
+  protected [:var] locateRfc(var[] $results, string $title) {
+    foreach ($result in $results) {
+      $issue= $result as [:var];
+      if ('open' === $issue['state'] && $title === $issue['title']) return $issue;
+    }
+    return null;
+  }
+  
+  /**
+   * Entry point method
+   *
+   */
+  public void run() {
+  
+    // Parse RFC into caption, fields and body text
+    $fields= [:];
+    with ($st= new text.StreamTokenizer($this.origin.getInputStream(), "\n")) {
+      $title= $st.nextToken();
+      $id= $caption= null;
+      sscanf($title, "RFC %4s: %[^\r]", $id, $caption);
+      $st.nextToken('@');
+      
+      while ($st.hasMoreTokens()) {
+        if ('' === ($t= ltrim($st.nextToken(), '@'))) break;   // End of attributes
+
+        $key= $value= null;
+        sscanf($t, "%[^:]: %[^\r]", $key, $value);
+
+        switch ($key) {
+          case 'status':
+            $fields['status.id']= strtok($value, ',( ');
+            $fields['status.text']= strtok("\0");
+            break;
+
+          case 'authors':
+            $fields['authors']= explode(', ', $value);
+            break;
+
+          case 'created':
+            $fields['created']= util.Date::fromString($value);
+            break;
+
+          case 'category':
+            $fields['category']= trim($value, '<>');
+            break;
+            
+          default:
+            $fields[$key]= $value;
+            break;
+        }
+      }
+
+      // Rest of text (use a token that is not very likely to appear so
+      // scanning will happen in large chunks).
+      $content= '';
+      while ($st.hasMoreTokens("\0")) {
+        $content ~= $st.nextToken("\0");
+      }
+      $content= trim($content);
+      
+      // TODO: Convert to markdown
+      // http://daringfireball.net/projects/markdown/syntax
+      
+    }
+    
+    $this.out.writeLine('#', $id, ': ', $caption, ' ', $fields);
+    
+    // Check if we already know the issue
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, 'issues/list', [
+      by    : 'label',
+      label : 'rfc'
+    ]));
+    $results= $response.result()['issues'] as var[];
+    $issue= $this.locateRfc($results, $title);
+
+    if (null === $issue) {
+      $this.out.writeLine('Nothing found, creating new issue');
+
+      $create= $this.newApiRequest(HttpConstants::POST, 'issues/open');
+      $create.setParameter('title', $title);
+      $create.setParameter('body', $content);
+      $response= $this.sendApiRequest($create);
+      if (201 != $response.status()) {
+        $this.err.writeLine('*** ', $response);
+        return 1;
+      }
+
+      $issue= $response.result()['issue'] as [:var];
+      $this.out.writeLine('Created issue #', $issue['number']);
+    } else {
+      $this.out.writeLine('Found existing issue #', $issue['number']);
+
+      $update= $this.newApiRequest(HttpConstants::POST, 'issues/edit', [number: $issue['number']]);
+      $update.setParameter('title', $title);
+      $update.setParameter('body', $content);
+      $response= $this.sendApiRequest($update);
+      if (200 != $response.status()) {
+        $this.err.writeLine('*** ', $response);
+        return 1;
+      }
+
+      $this.out.writeLine('Updated issue #', $issue['number']);
+    }
+    
+    // Attach "rfc" label
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
+      label  : 'rfc', 
+      number : $issue['number']]
+    ));
+    $this.out.writeLine('Labeled it an RFC: ', $response.status());
+    
+    // Add status label 
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
+      label  : $fields['status.id'], 
+      number : $issue['number']]
+    ));
+    $this.out.writeLine('Labeled it ', $fields['status.id'], ': ', $response.status());
+
+    // Add label for category
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
+      label  : $fields['category'], 
+      number : $issue['number']]
+    ));
+    $this.out.writeLine('Labeled it ', $fields['category'], ': ', $response.status());
+  }
+}
