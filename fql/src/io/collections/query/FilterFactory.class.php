@@ -46,16 +46,16 @@
       
       $key= $field.$operator;
       if (!isset($lookup[$key])) {
-        throw(new IllegalArgumentException('Unknown filter "'.$key.'"'));
+        throw new IllegalArgumentException('Unknown filter "'.$key.'"');
       }
 
       $constructor= XPClass::forName(sprintf('io.collections.iterate.%sFilter', $lookup[$key]))->getConstructor();
-      $arguments= $constructor->getArguments();
+      $parameters= $constructor->getParameters();
       
-      switch ($s= sizeof($arguments)) {
+      switch ($s= sizeof($parameters)) {
         case 0: return $constructor->newInstance();
 
-        case 1: switch ($arguments[0]->getType()) {
+        case 1: switch ($parameters[0]->getType()) {
           case 'util.Date': {
             try {
               $arg= Date::fromString($value);
