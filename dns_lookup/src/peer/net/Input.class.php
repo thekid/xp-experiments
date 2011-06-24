@@ -15,21 +15,31 @@
     protected $offset= 0;
 
     /**
-     * (Insert method's description here)
+     * Creates a new input instance
      *
-     * @param   
-     * @param   
+     * @param   string bytes
      */
     public function __construct($bytes) {
       $this->bytes= $bytes;
     }
 
+    /**
+     * Read a specified number of bytes
+     *
+     * @param   int length
+     * @return  string
+     */
     public function read($length) {
       $chunk= substr($this->bytes, $this->offset, $length);
       $this->offset+= $length;
       return $chunk;
     }
     
+    /**
+     * Reads a single label
+     *
+     * @return  string
+     */
     public function readLabel() {
       $l= ord($this->read(1));
       if ($l <= 0) {
@@ -40,13 +50,17 @@
         $n= (($l & 0x3F) << 8) + ord($this->read(1)) - 12;
         $prev= $this->offset;
         $this->offset= $n;
-        $label= $this->readDomain();
+        $label= $this->readLabel();
         $this->offset= $prev;
-        $l= 0;
       }
       return $label;
     }
 
+    /**
+     * Reads a domain - consists of multiple labels
+     *
+     * @return  string
+     */
     public function readDomain() {
       $labels= array();
       $l= 1;
