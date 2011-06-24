@@ -136,6 +136,23 @@
             $record= new CNAMERecord($domain, $target);
             break;
 
+          case 6:    // SOA
+            $mname= $input->readDomain();
+            $rname= $input->readDomain();
+            $data= unpack('Nserial/Nrefresh/Nretry/Nexpire/Nminimum-ttl', $input->read(20));
+
+            $record= new SOARecord(
+              $domain, 
+              $mname, 
+              $rname,
+              sprintf('%u', $data['serial']) + 0, 
+              $data['refresh'], 
+              $data['retry'], 
+              $data['expire'], 
+              $data['minimum-ttl']
+            );
+            break;
+
           case 28:   // AAAA
             $ip= unpack('H*', $input->read(16));
 

@@ -44,6 +44,19 @@
             $records[]= new CNAMERecord($r['host'], $r['target']);
             break;
 
+          case 'SOA':
+            $records[]= new SOARecord(
+              $r['host'], 
+              $r['mname'], 
+              $r['rname'],
+              $r['serial'], 
+              $r['refresh'], 
+              $r['retry'], 
+              $r['expire'], 
+              $r['minimum-ttl']
+            );
+            break;
+
           case 'AAAA':
             $records[]= new CNAMERecord($r['host'], $r['ipv6']);
             break;
@@ -61,7 +74,15 @@
             break;
 
           case 'NAPTR':
-            $records[]= new NAPTRRecord($r['host'], $r['order'], $r['pref'], strtoupper($r['flags']), $r['services'], $r['regex'], $r['replacement']);
+            $records[]= new NAPTRRecord(
+              $r['host'], 
+              $r['order'], 
+              $r['pref'], 
+              strtoupper($r['flags']), 
+              $r['services'], 
+              $r['regex'], 
+              $r['replacement']
+            );
             break;
           
           default:

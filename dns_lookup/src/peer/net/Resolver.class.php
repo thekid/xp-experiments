@@ -15,7 +15,8 @@
     'peer.net.AAAARecord',
     'peer.net.TXTRecord',
     'peer.net.SRVRecord',
-    'peer.net.NAPTRRecord'
+    'peer.net.NAPTRRecord',
+    'peer.net.SOARecord'
   );
 
   /**
