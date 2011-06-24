@@ -14,6 +14,7 @@
    *   $records= $l->run();
    * </code>
    *
+   * @see     php://dns_get_record
    * @see     http://www.lavantech.com/dnscomponent/javadoc/com/lavantech/net/dns/DNSLookup.html
    * @see     http://www.netfor2.com/dns.htm
    */
