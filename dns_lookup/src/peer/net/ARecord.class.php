@@ -4,19 +4,20 @@
  * $Id$ 
  */
 
-  uses('peer.net.Record');
+  uses('peer.net.Record', 'peer.net.Inet4Address');
 
   /**
-   * (Insert class' description here)
+   * A record
    *
    */
   class ARecord extends peer·net·Record {
-   
+    protected $address;
+    
     /**
-     * (Insert method's description here)
+     * Creates a new record
      *
-     * @param   
-     * @param   
+     * @param   string name
+     * @param   string address
      */
     public function __construct($name, $address) {
       parent::__construct($name);
@@ -24,10 +25,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Gets an IPV4 address
      *
-     * @param   
-     * @return  
+     * @return  peer.net.Inet4Address
      */
     public function getAddress() {
       return new Inet4Address($this->address);
