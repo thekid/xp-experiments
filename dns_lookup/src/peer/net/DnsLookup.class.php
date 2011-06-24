@@ -41,6 +41,17 @@
     public function setResolver(peer·net·Resolver $resolver) {
       $this->resolver= $resolver;
     }
+
+    /**
+     * Set resolver to use
+     *
+     * @param   peer.net.Resolver resolver
+     * @return  peer.net.DnsLookup this
+     */
+    public function withResolver(peer·net·Resolver $resolver) {
+      $this->resolver= $resolver;
+      return $this;
+    }
     
     /**
      * Runs this lookup
