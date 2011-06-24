@@ -50,6 +50,10 @@
       // $TSIG,
       // $TA,
       // $DLV,
+      
+      // $AXFR,
+      // $IXFR,
+      // $OPT,
       $ANY;
     
     static function __static() {
