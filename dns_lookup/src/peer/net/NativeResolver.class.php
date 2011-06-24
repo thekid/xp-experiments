@@ -36,6 +36,18 @@
             $records[]= new ARecord($result['host'], $result['ip']);
             break;
 
+          case 'NS': 
+            $records[]= new NSRecord($result['host'], $result['target']);
+            break;
+          
+          case 'CNAME':
+            $records[]= new CNAMERecord($result['host'], $result['target']);
+            break;
+
+          case 'AAAA':
+            $records[]= new CNAMERecord($result['host'], $result['ipv6']);
+            break;
+
           case 'MX': 
             $records[]= new MXRecord($result['host'], $result['pri'], $result['target']);
             break;
@@ -44,10 +56,10 @@
             $records[]= new TXTRecord($result['host'], $result['txt']);
             break;
 
-          case 'NS': 
-            $records[]= new NSRecord($result['host'], $result['target']);
+          case 'SRV': 
+            $records[]= new SRVRecord($result['host'], $result['pri'], $result['weight'], $result['port'], $result['target']);
             break;
-          
+
           // TODO: Implement rest
           
           default:

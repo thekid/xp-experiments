@@ -13,7 +13,8 @@
     'peer.net.MXRecord',
     'peer.net.NSRecord',
     'peer.net.AAAARecord',
-    'peer.net.TXTRecord'
+    'peer.net.TXTRecord',
+    'peer.net.SRVRecord'
   );
 
   /**

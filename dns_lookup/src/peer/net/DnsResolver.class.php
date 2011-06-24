@@ -155,6 +155,13 @@
             $record= new TXTRecord($domain, $text);
             break;
           
+          case 33:  // SRV
+            $data= unpack('npri/nweight/nport', $input->read(6));
+            $target= $input->readDomain();
+            
+            $record= new SRVRecord($domain, $data['pri'], $data['weight'], $data['port'], $target);
+            break;
+
           default:
             throw new ProtocolException('Unknown record type '.$r['type']);
         }
