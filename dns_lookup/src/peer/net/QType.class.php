@@ -9,32 +9,47 @@
   /**
    * DNS query types
    *
+   * @see   http://en.wikipedia.org/wiki/List_of_DNS_record_types
    * @see   rfc://1035 Section "3.2.2. TYPE values" and "3.2.3 QTYPE values".
+   * @see   rfc://2782 A DNS RR for specifying the location of services (DNS SRV)
+   * @see   rfc://3596 DNS Extensions to Support IP Version 6
    */
   class QType extends Enum {
     public static 
       $A, 
       $NS, 
-      // Obsolete $MD,
-      // Obsolete $MF,
       $CNAME, 
       $SOA, 
-      // Experimental $MB,
-      // Experimental $MG,
-      // Experimental $MR,
-      // Experimental $NULL,
-      $WKS,
       $PTR, 
-      $HINFO, 
-      $MINFO, 
       $MX, 
       $TXT, 
-
-      $A6, 
+      // $RP,
+      // $AFSDB,
+      // $SIG,
+      // $KEY,
+      $AAAA, 
+      // $LOC
       $SRV, 
       $NAPTR, 
-      $AAAA, 
-      
+      // $KX,
+      // $CERT,
+      // $DNAME,
+      // $APL,
+      // $DS,
+      // $SSHFP,
+      // $IPSECKEY,
+      // $RRSIG,
+      // $NSEC,
+      // $DNSKEY,
+      // $DHCID,
+      // $NSEC3,
+      // $NSEC3PARAM,
+      // $HIP,
+      // $SPF,
+      // $TKEY,
+      // $TSIG,
+      // $TA,
+      // $DLV,
       $ANY;
     
     static function __static() {
@@ -42,17 +57,13 @@
       self::$NS= new self(2, 'NS');
       self::$CNAME= new self(5, 'CNAME');
       self::$SOA= new self(6, 'SOA');
-      self::$WKS= new self(11, 'WKS');
       self::$PTR= new self(12, 'PTR');
-      self::$HINFO= new self(13, 'HINFO');
-      self::$MINFO= new self(14, 'MINFO');
       self::$MX= new self(15, 'MX');
       self::$TXT= new self(16, 'TXT');
-
       self::$AAAA= new self(28, 'AAAA');
       self::$SRV= new self(33, 'SRV');
       self::$NAPTR= new self(35, 'NAPTR');
-      self::$A6= new self(38, 'A6');
+
       self::$ANY= new self(255, 'ANY');
     }
     
