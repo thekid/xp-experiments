@@ -19,8 +19,8 @@
     /**
      * Returns the default resolver. This is the native resolver when we 
      * are running on a PHP version / OS combination that supports the
-     * dns_get_record() function, the results of the systemResolver() 
-     * method otherwise.
+     * dns_get_record() function, and it is not broken on this combination.
+     * Otherwise, the default resolver is what systemResolver() returns.
      * 
      * Note: Results from this methods are cached.
      *
@@ -28,10 +28,23 @@
      */
     public static function defaultResolver() {
       if (NULL === self::$default) {
-        if (function_exists('dns_get_record')) {
-          self::$default= new NativeResolver();
-        } else {
+      
+        // Check for broken dns_get_record() for NAPTR records. Compare:
+        //
+        // http://lxr.php.net/opengrok/xref/PHP_5_3/ext/standard/dns_win32.c#308 vs.
+        // http://lxr.php.net/opengrok/xref/PHP_5_4/ext/standard/dns_win32.c#315
+        //
+        // The DNS_TYPE_NAPTR case is jumped into, but the #if is not executed in 
+        // the current builds, so basically the case statement is a NOOP, leaving 
+        // the array without a "type" element. Fixed in branches/PHP_5_4 and trunk
+        // but not backported to PHP_5_3 branch.
+        if (!function_exists('dns_get_record') || (
+          0 === strncasecmp(PHP_OS, 'Win', 3) && 
+          version_compare(phpversion(), '5.4.0', 'lt')
+        )) {
           self::$default= self::systemResolver();
+        } else {
+          self::$default= new NativeResolver();
         }
       }
       return self::$default;

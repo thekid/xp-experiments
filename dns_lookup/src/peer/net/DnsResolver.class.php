@@ -161,6 +161,16 @@
             
             $record= new SRVRecord($domain, $data['pri'], $data['weight'], $data['port'], $target);
             break;
+          
+          case 35:  // NAPTR
+            $data= unpack('norder/npref', $input->read(4));
+            $flags= strtoupper($input->readLabel());
+            $services= $input->readLabel();
+            $regex= $input->readLabel();
+            $replacement= $input->readLabel();
+
+            $record= new NAPTRRecord($domain, $data['order'], $data['pref'], $flags, $services, $regex, $replacement);
+            break;
 
           default:
             throw new ProtocolException('Unknown record type '.$r['type']);

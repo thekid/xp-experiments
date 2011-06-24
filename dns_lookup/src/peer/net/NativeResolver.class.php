@@ -30,40 +30,42 @@
       
       $results= dns_get_record(this($query->getRecords(), 0), constant($type));
       $records= array();
-      foreach ($results as $result) {
-        switch ($result['type']) {
+      foreach ($results as $r) {
+        switch ($r['type']) {
           case 'A': 
-            $records[]= new ARecord($result['host'], $result['ip']);
+            $records[]= new ARecord($r['host'], $r['ip']);
             break;
 
           case 'NS': 
-            $records[]= new NSRecord($result['host'], $result['target']);
+            $records[]= new NSRecord($r['host'], $r['target']);
             break;
           
           case 'CNAME':
-            $records[]= new CNAMERecord($result['host'], $result['target']);
+            $records[]= new CNAMERecord($r['host'], $r['target']);
             break;
 
           case 'AAAA':
-            $records[]= new CNAMERecord($result['host'], $result['ipv6']);
+            $records[]= new CNAMERecord($r['host'], $r['ipv6']);
             break;
 
           case 'MX': 
-            $records[]= new MXRecord($result['host'], $result['pri'], $result['target']);
+            $records[]= new MXRecord($r['host'], $r['pri'], $r['target']);
             break;
 
           case 'TXT': 
-            $records[]= new TXTRecord($result['host'], $result['txt']);
+            $records[]= new TXTRecord($r['host'], $r['txt']);
             break;
 
           case 'SRV': 
-            $records[]= new SRVRecord($result['host'], $result['pri'], $result['weight'], $result['port'], $result['target']);
+            $records[]= new SRVRecord($r['host'], $r['pri'], $r['weight'], $r['port'], $r['target']);
             break;
 
-          // TODO: Implement rest
+          case 'NAPTR':
+            $records[]= new NAPTRRecord($r['host'], $r['order'], $r['pref'], strtoupper($r['flags']), $r['services'], $r['regex'], $r['replacement']);
+            break;
           
           default:
-            throw new ProtocolException('Unknown record type '.$result['type']);
+            throw new ProtocolException('Unknown record type '.$r['type']);
         }
       }
       

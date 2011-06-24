@@ -29,6 +29,23 @@
       $this->offset+= $length;
       return $chunk;
     }
+    
+    public function readLabel() {
+      $l= ord($this->read(1));
+      if ($l <= 0) {
+        return NULL;
+      } else if ($l < 64) {
+        $label= $this->read($l);
+      } else {
+        $n= (($l & 0x3F) << 8) + ord($this->read(1)) - 12;
+        $prev= $this->offset;
+        $this->offset= $n;
+        $label= $this->readDomain();
+        $this->offset= $prev;
+        $l= 0;
+      }
+      return $label;
+    }
 
     public function readDomain() {
       $labels= array();
