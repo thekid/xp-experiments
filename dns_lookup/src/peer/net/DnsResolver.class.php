@@ -20,7 +20,7 @@
    * Resolver that works against a single DNS server
    *
    */
-  class DefaultResolver extends Object implements peer·net·Resolver {
+  class DnsResolver extends Object implements peer·net·Resolver {
     protected $sock= NULL;
   
     /**

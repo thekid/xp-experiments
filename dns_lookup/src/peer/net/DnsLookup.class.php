@@ -60,7 +60,7 @@
      */
     public function run() {
       if (NULL === $this->resolver) {
-        $this->resolver= Resolvers::systemResolver();
+        $this->resolver= Resolvers::defaultResolver();
       }
       
       $message= new peer·net·Message();
