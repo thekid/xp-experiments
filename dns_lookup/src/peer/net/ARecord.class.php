@@ -39,7 +39,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->address.')';
+      return $this->getClassName().'('.$this->address->toString().')';
     }
   }
 ?>
