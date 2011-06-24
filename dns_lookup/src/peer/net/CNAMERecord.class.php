@@ -11,20 +11,35 @@
    *
    */
   class CNAMERecord extends peer·net·Record {
-   
+    protected $target;
+    
     /**
-     * (Insert method's description here)
+     * Creates a new NS record
      *
-     * @param   
-     * @param   
-     */
+     * @param   string name
+     * @param   string target
+     */   
     public function __construct($name, $target) {
       parent::__construct($name);
       $this->target= $target;
     }
 
+    /**
+     * Returns target
+     *
+     * @return  string
+     */
     public function getTarget() {
       return $this->target;
+    }
+
+    /**
+     * Creates a string representation of this record
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'(->'.$this->target.')';
     }
   }
 ?>
