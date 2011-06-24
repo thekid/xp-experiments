@@ -58,7 +58,7 @@
             break;
 
           case 'AAAA':
-            $records[]= new CNAMERecord($r['host'], $r['ipv6']);
+            $records[]= new AAAARecord($r['host'], $r['ipv6']);
             break;
 
           case 'MX': 
