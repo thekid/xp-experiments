@@ -154,9 +154,9 @@
             break;
 
           case 28:   // AAAA
-            $ip= unpack('H*', $input->read(16));
+            $ip= unpack('H*quads', $input->read(16));
 
-            $record= new AAAARecord($domain, $ip);
+            $record= new AAAARecord($domain, substr(chunk_split($ip['quads'], 4, ':'), 0, -1));
             break;
           
           case 15:  // MX
