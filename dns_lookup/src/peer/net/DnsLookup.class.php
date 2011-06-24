@@ -7,16 +7,26 @@
   uses('peer.net.Resolvers');
 
   /**
-   * A DNS lookup
+   * DNS lookup
    *
+   * Usage examples
+   * ==============
+   * Most simple usage:
    * <code>
    *   $l= new DnsLookup('xp-framework.net');
    *   $records= $l->run();
    * </code>
    *
-   * @see     php://dns_get_record
-   * @see     http://www.lavantech.com/dnscomponent/javadoc/com/lavantech/net/dns/DNSLookup.html
-   * @see     http://www.netfor2.com/dns.htm
+   * Using the system resolvers instead of the default:
+   * <code>
+   *   $l= new DnsLookup('xp-framework.net');
+   *   $l->setResolver(Resolvers::systemResolver());
+   *   $records= $l->run();
+   * </code>
+   *
+   * @see   xp://peer.net.Resolvers
+   * @see   http://www.lavantech.com/dnscomponent/javadoc/com/lavantech/net/dns/DNSLookup.html
+   * @see   http://www.netfor2.com/dns.htm
    */
   class DnsLookup extends Object {
     protected $name= '';
