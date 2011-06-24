@@ -11,7 +11,7 @@
    *
    */
   class ARecord extends peer·net·Record {
-    protected $address;
+    protected $address = NULL;
     
     /**
      * Creates a new record
@@ -21,7 +21,7 @@
      */
     public function __construct($name, $address) {
       parent::__construct($name);
-      $this->address= $address;
+      $this->address= $address instanceof Inet4Address ? $address : new Inet4Address($address);
     }
     
     /**
@@ -30,7 +30,7 @@
      * @return  peer.net.Inet4Address
      */
     public function getAddress() {
-      return new Inet4Address($this->address);
+      return $this->address;
     }
 
     /**

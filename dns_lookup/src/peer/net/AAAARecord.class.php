@@ -11,16 +11,17 @@
    *
    */
   class AAAARecord extends peer·net·Record {
+    protected $address = NULL;
    
     /**
      * Creates a new record
      *
      * @param   string name
-     * @param   string address
+     * @param   var address
      */
     public function __construct($name, $address) {
       parent::__construct($name);
-      $this->address= $address;
+      $this->address= $address instanceof Inet6Address ? $address : new Inet6Address($address);
     }
 
     /**
@@ -29,7 +30,7 @@
      * @return  peer.net.Inet6Address
      */
     public function getAddress() {
-      return new Inet6Address($this->address);
+      return $this->address;
     }
 
     /**
@@ -38,7 +39,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->address.')';
+      return $this->getClassName().'('.$this->address->toString().')';
     }
   }
 ?>
