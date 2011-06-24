@@ -7,22 +7,20 @@
   uses('peer.net.Record');
 
   /**
-   * MX
+   * NS
    *
    */
-  class MXRecord extends peer·net·Record {
-    protected $priority, $target;
-
+  class NSRecord extends peer·net·Record {
+    protected $target;
+    
     /**
-     * Creates a new MX record
+     * Creates a new NS record
      *
      * @param   string name
-     * @param   int priority
      * @param   string target
      */
-    public function __construct($name, $priority, $target) {
+    public function __construct($name, $target) {
       parent::__construct($name);
-      $this->priority= $priority;
       $this->target= $target;
     }
 
@@ -34,23 +32,14 @@
     public function getTarget() {
       return $this->target;
     }
-
-    /**
-     * Returns priority
-     *
-     * @return  int
-     */
-    public function getPriority() {
-      return $this->priority;
-    }
-
+    
     /**
      * Creates a string representation of this record
      *
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'(->'.$this->target.', pri '.$this->priority.')';
+      return $this->getClassName().'(->'.$this->target.')';
     }
   }
 ?>

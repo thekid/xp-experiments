@@ -23,8 +23,23 @@
       $this->address= $address;
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
     public function getAddress() {
       return new Inet4Address($this->address);
+    }
+
+    /**
+     * Creates a string representation of this record
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->address.')';
     }
   }
 ?>

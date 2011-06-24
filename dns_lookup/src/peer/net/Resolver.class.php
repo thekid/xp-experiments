@@ -6,7 +6,15 @@
 
   $package= 'peer.net';
 
-  uses('peer.net.Message');
+  uses(
+    'peer.net.Message',
+    'peer.net.ARecord',
+    'peer.net.CNAMERecord',
+    'peer.net.MXRecord',
+    'peer.net.NSRecord',
+    'peer.net.AAAARecord',
+    'peer.net.TXTRecord'
+  );
 
   /**
    * Resolver

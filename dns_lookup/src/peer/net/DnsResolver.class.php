@@ -9,16 +9,13 @@
     'peer.net.Message', 
     'peer.UDPSocket',
     'peer.ProtocolException',
-    'peer.net.Input',
-    'peer.net.ARecord',
-    'peer.net.CNAMERecord',
-    'peer.net.MXRecord',
-    'peer.net.AAAARecord'
+    'peer.net.Input'
   );
 
   /**
    * Resolver that works against a single DNS server
    *
+   * @see   rfc://1035
    */
   class DnsResolver extends Object implements peer·net·Resolver {
     protected $sock= NULL;
@@ -86,8 +83,8 @@
       
       $send.= pack(
         'nn', 
-        $query->getType(),    // QTYPE
-        1                     // QCLASS
+        $query->getType()->ordinal(),    // QTYPE
+        1                                // QCLASS ("IN")
       );
       // }}}
 
@@ -127,6 +124,12 @@
             $record= new ARecord($domain, $ip);
             break;
           
+          case 2:   // NS
+            $target= $input->readDomain();
+
+            $record= new NSRecord($domain, $target);
+            break;
+
           case 5:    // CNAME
             $target= $input->readDomain();
 
@@ -143,7 +146,13 @@
             $pri= unpack('nlevel', $input->read(2));
             $ns= $input->readDomain();
             
-            $record= new MXRecord($domain, $pri, $ns);
+            $record= new MXRecord($domain, $pri['level'], $ns);
+            break;
+
+          case 16:  // TXT
+            $text= $input->read($r['length']);
+            
+            $record= new TXTRecord($domain, $text);
             break;
           
           default:

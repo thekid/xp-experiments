@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.net.Resolvers');
+  uses('peer.net.Resolvers', 'peer.net.QType');
 
   /**
    * DNS lookup
@@ -24,7 +24,7 @@
    *   $records= $l->run();
    * </code>
    *
-   * @test  xp://
+   * @test  xp://net.xp_framework.unittest.peer.net.DnsLookupTest
    * @see   xp://peer.net.Resolvers
    * @see   http://www.lavantech.com/dnscomponent/javadoc/com/lavantech/net/dns/DNSLookup.html
    * @see   http://www.netfor2.com/dns.htm
@@ -37,11 +37,11 @@
      * Create a new lookup
      *
      * @param   string name
-     * @param   int type
+     * @param   peer.net.QType type
      */
-    public function __construct($name, $type= 1) {
+    public function __construct($name, QType $type= NULL) {
       $this->name= $name;
-      $this->type= $type;
+      $this->type= NULL === $type ? QType::$ANY : $type;
     }
   
     /**

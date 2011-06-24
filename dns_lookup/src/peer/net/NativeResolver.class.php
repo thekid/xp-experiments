@@ -6,11 +6,7 @@
 
   uses(
     'peer.net.Resolver', 
-    'peer.net.Message', 
-    'peer.net.ARecord',
-    'peer.net.CNAMERecord',
-    'peer.net.MXRecord',
-    'peer.net.AAAARecord'
+    'peer.net.Message'
   );
 
   /**
@@ -27,13 +23,29 @@
      * @return  peer.net.Record[] records
      */
     public function send(peer·net·Message $query) {
-      $results= dns_get_record(this($query->getRecords(), 0), $query->getType());
-
+      $type= 'DNS_'.$query->getType()->name();
+      if (!defined($type)) {
+        throw new IllegalArgumentException('Unsupported type '.$type);
+      }
+      
+      $results= dns_get_record(this($query->getRecords(), 0), constant($type));
       $records= array();
       foreach ($results as $result) {
         switch ($result['type']) {
           case 'A': 
             $records[]= new ARecord($result['host'], $result['ip']);
+            break;
+
+          case 'MX': 
+            $records[]= new MXRecord($result['host'], $result['pri'], $result['target']);
+            break;
+
+          case 'TXT': 
+            $records[]= new TXTRecord($result['host'], $result['txt']);
+            break;
+
+          case 'NS': 
+            $records[]= new NSRecord($result['host'], $result['target']);
             break;
           
           // TODO: Implement rest
