@@ -7,7 +7,6 @@
   uses(
     'unittest.TestCase',
     'peer.ConnectException',
-    'peer.net.Resolver',
     'peer.net.ARecord',
     'peer.net.CompositeResolver',
     'net.xp_framework.unittest.peer.net.FakeResolver'
