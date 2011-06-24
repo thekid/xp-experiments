@@ -4,11 +4,14 @@
  * $Id$ 
  */
 
-  uses('peer.net.DefaultResolver', 'peer.net.CompositeResolver');
+  uses('peer.net.DefaultResolver', 'peer.net.CompositeResolver', 'peer.net.NativeResolver');
 
   /**
-   * (Insert class' description here)
+   * System / resolvers interface
    *
+   * @see   http://linux.die.net/man/5/resolv.conf
+   * @see   http://msdn.microsoft.com/en-us/library/aa394217(v=vs.85).aspx
+   * @see   php://dns_get_record
    */
   class Resolvers extends Object {
     
@@ -19,7 +22,13 @@
      */
     public static function systemResolver() {
     
-      // Fetch DNS server(s)
+      // Check for native function
+      if (function_exists('dns_get_record')) {
+        return new NativeResolver();
+      }
+    
+      // No dns_get_record() support, use our handcrafted solution. Create a 
+      // composite resolver from the DNS server(s) list we get from the OS.
       $resolver= new CompositeResolver();
       if (strncasecmp(PHP_OS, 'Win', 3) === 0) {
         try {

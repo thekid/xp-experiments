@@ -45,6 +45,15 @@
       
       return $records;
     }
+    
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'(*->dns_get_record)';
+    }
   }
 ?>
   
