@@ -24,6 +24,7 @@
    *   $records= $l->run();
    * </code>
    *
+   * @test  xp://
    * @see   xp://peer.net.Resolvers
    * @see   http://www.lavantech.com/dnscomponent/javadoc/com/lavantech/net/dns/DNSLookup.html
    * @see   http://www.netfor2.com/dns.htm
@@ -64,15 +65,24 @@
     }
     
     /**
+     * Gets resolver in use
+     *
+     * @param   peer.net.Resolver resolver
+     * @return  peer.net.Resolver 
+     */
+    public function getResolver() {
+      if (NULL === $this->resolver) {
+        $this->resolver= Resolvers::defaultResolver();
+      }
+      return $this->resolver;
+    }
+    
+    /**
      * Runs this lookup
      *
      * @return  peer.net.Record[]
      */
     public function run() {
-      if (NULL === $this->resolver) {
-        $this->resolver= Resolvers::defaultResolver();
-      }
-      
       $message= new peer·net·Message();
       $message->setType($this->type);
       $message->setFlags(0x0100 & 0x0300);  // recursion & queryspecmask
@@ -80,7 +90,7 @@
       //XXX RECORD XXX
       $message->addRecord($this->name);   
 
-      return $this->resolver->send($message);
+      return $this->getResolver()->send($message);
     }
   }
 ?>
