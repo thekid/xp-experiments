@@ -7,8 +7,14 @@
   uses('peer.net.Resolvers');
 
   /**
-   * (Insert class' description here)
+   * A DNS lookup
    *
+   * <code>
+   *   $l= new DnsLookup('xp-framework.net');
+   *   $records= $l->run();
+   * </code>
+   *
+   * @see     http://www.lavantech.com/dnscomponent/javadoc/com/lavantech/net/dns/DNSLookup.html
    * @see     http://www.netfor2.com/dns.htm
    */
   class DnsLookup extends Object {
@@ -16,10 +22,10 @@
     protected $resolver= NULL;
   
     /**
-     * (Insert method's description here)
+     * Create a new lookup
      *
-     * @param   
-     * @param   
+     * @param   string name
+     * @param   int type
      */
     public function __construct($name, $type= 1) {
       $this->name= $name;
@@ -27,18 +33,18 @@
     }
   
     /**
-     * (Insert method's description here)
+     * Set resolver to use
      *
-     * @param   
+     * @param   peer.net.Resolver resolver
      */
     public function setResolver(peer·net·Resolver $resolver) {
       $this->resolver= $resolver;
     }
     
     /**
-     * (Insert method's description here)
+     * Runs this lookup
      *
-     * @return  
+     * @return  peer.net.Record[]
      */
     public function run() {
       if (NULL === $this->resolver) {
