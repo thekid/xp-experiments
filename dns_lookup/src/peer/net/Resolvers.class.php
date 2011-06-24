@@ -35,12 +35,16 @@
         // http://lxr.php.net/opengrok/xref/PHP_5_4/ext/standard/dns_win32.c#315
         //
         // The DNS_TYPE_NAPTR case is jumped into, but the #if is not executed in 
-        // the current builds, so basically the case statement is a NOOP, leaving 
+        // the VC6 builds, so basically the case statement is a NOOP, leaving 
         // the array without a "type" element. Fixed in branches/PHP_5_4 and trunk
-        // but not backported to PHP_5_3 branch.
+        // but not backported to PHP_5_3 branch. As of 5.3.6, the PHP group has
+        // decided no longer to support VC6, so this workaround only applies for
+        // PHP 5.3.0 - PHP 5.3.5. Really, PHP 5.3.5+VC9 would also work here, but
+        // there's no performant way to detect the compiler used, so we'll live
+        // with the workaround.
         if (!function_exists('dns_get_record') || (
           0 === strncasecmp(PHP_OS, 'Win', 3) && 
-          version_compare(phpversion(), '5.4.0', 'lt')
+          version_compare(PHP_VERSION, '5.3.6', 'lt')
         )) {
           self::$default= self::systemResolver();
         } else {
