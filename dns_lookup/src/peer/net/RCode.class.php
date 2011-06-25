@@ -19,7 +19,7 @@
     public static 
       $SUCCESS,
       $FORMERR,
-      $SERVAIL,
+      $SERVFAIL,
       $NXDOMAIN,
       $NOTIMPL,
       $REFUSED,
@@ -39,7 +39,7 @@
     static function __static() {
       self::$SUCCESS= new self(0, 'SUCCESS');
       self::$FORMERR= new self(1, 'FORMERR');
-      self::$SERVAIL= new self(2, 'SERVAIL');
+      self::$SERVFAIL= new self(2, 'SERVFAIL');
       self::$NXDOMAIN= new self(3, 'NXDOMAIN');
       self::$NOTIMPL= new self(4, 'NOTIMPL');
       self::$REFUSED= new self(5, 'REFUSED');
@@ -68,7 +68,7 @@
       static $map= NULL; if (NULL === $map) $map= array(
          0 => self::$SUCCESS,
          1 => self::$FORMERR,
-         2 => self::$SERVAIL,
+         2 => self::$SERVFAIL,
          3 => self::$NXDOMAIN,
          4 => self::$NOTIMPL,
          5 => self::$REFUSED,
