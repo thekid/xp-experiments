@@ -106,6 +106,7 @@
       while ($chunk= $this->sock->readBinary(500)) {
         $input.= $chunk;
       }
+      $this->sock->setBlocking(TRUE);
       $input= new peer·net·Input($input);
       // DEBUG Console::writeLine('INPUT  ', $input);
       
