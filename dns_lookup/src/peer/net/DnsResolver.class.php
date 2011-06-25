@@ -207,6 +207,15 @@
     }
     
     /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'(*->'.$this->sock->toString().')';
+    }
+    
+    /**
      * Destructor. Ensures connection is closed.
      *
      */

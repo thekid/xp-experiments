@@ -15,6 +15,7 @@
   class peer·net·Input extends Object {
     protected $bytes= '';
     protected $offset= 0;
+    protected $offsets= array();
 
     /**
      * Creates a new input instance
@@ -45,15 +46,15 @@
     public function readLabel() {
       $l= ord($this->read(1));
       if ($l <= 0) {
+        if (!empty($this->offsets)) $this->offset= array_pop($this->offsets);
         return NULL;
       } else if ($l < 64) {
         $label= $this->read($l);
       } else {
         $n= (($l & 0x3F) << 8) + ord($this->read(1)) - 12;
-        $prev= $this->offset;
+        $this->offsets[]= $this->offset;
         $this->offset= $n;
         $label= $this->readLabel();
-        $this->offset= $prev;
       }
       return $label;
     }
@@ -65,25 +66,10 @@
      */
     public function readDomain() {
       $labels= array();
-      $l= 1;
-      while ($l > 0) {
-        $l= ord($this->read(1));
-        if ($l <= 0) {
-          break;
-        } else if ($l < 64) {
-          $label= $this->read($l);
-        } else {
-          $n= (($l & 0x3F) << 8) + ord($this->read(1)) - 12;
-          $prev= $this->offset;
-          $this->offset= $n;
-          $label= $this->readDomain();
-          $this->offset= $prev;
-          $l= 0;
-        }
+      while (NULL !== ($label= $this->readLabel())) {
         $labels[]= $label;
       }
       return implode('.', $labels);
     }
-
   }
 ?>
