@@ -30,7 +30,7 @@
     }
 
     /**
-     * Gets type
+     * Gets qtype
      *
      * @return  peer.net.QType
      */
@@ -39,7 +39,7 @@
     }
 
     /**
-     * Gets dclass
+     * Gets qclass
      *
      * @return  int
      */
