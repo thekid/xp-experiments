@@ -85,14 +85,12 @@
      * @return  peer.net.Record[]
      */
     public function run() {
-      $message= new peer·net·Message();
-      $message->setType($this->type);
-      $message->setFlags(0x0100 & 0x0300);  // recursion & queryspecmask
-      
-      //XXX RECORD XXX
-      $message->addRecord($this->name);   
-
-      return $this->getResolver()->send($message);
+      $request= new peer·net·Message();
+      $request->setType($this->type);
+      $request->setFlags(0x0100 & 0x0300);  // recursion & queryspecmask
+      $request->addRecord($this->name);
+      $response= $this->getResolver()->send($request);
+      return $response->getRecords();
     }
   }
 ?>

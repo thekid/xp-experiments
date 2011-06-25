@@ -20,7 +20,7 @@
      * Send query for resolution and return nameservers records
      *
      * @param   peer.net.Message query
-     * @return  peer.net.Record[] records
+     * @return  peer.net.Message The response
      */
     public function send(peer·net·Message $query) {
       $type= 'DNS_'.$query->getType()->name();
@@ -29,23 +29,23 @@
       }
       
       $results= dns_get_record(this($query->getRecords(), 0), constant($type));
-      $records= array();
+      $return= new peer·net·Message(-1);
       foreach ($results as $r) {
         switch ($r['type']) {
           case 'A': 
-            $records[]= new ARecord($r['host'], $r['ttl'], $r['ip']);
+            $return->addRecord(new ARecord($r['host'], $r['ttl'], $r['ip']));
             break;
 
           case 'NS': 
-            $records[]= new NSRecord($r['host'], $r['ttl'], $r['target']);
+            $return->addRecord(new NSRecord($r['host'], $r['ttl'], $r['target']));
             break;
           
           case 'CNAME':
-            $records[]= new CNAMERecord($r['host'], $r['ttl'], $r['target']);
+            $return->addRecord(new CNAMERecord($r['host'], $r['ttl'], $r['target']));
             break;
 
           case 'SOA':
-            $records[]= new SOARecord(
+            $return->addRecord(new SOARecord(
               $r['host'], 
               $r['mname'], 
               $r['rname'],
@@ -54,31 +54,31 @@
               $r['retry'], 
               $r['expire'], 
               $r['minimum-ttl']
-            );
+            ));
             break;
 
           case 'PTR': 
-            $records[]= new PTRRecord($r['host'], $r['ttl'], $r['target']);
+            $return->addRecord(new PTRRecord($r['host'], $r['ttl'], $r['target']));
             break;
 
           case 'MX': 
-            $records[]= new MXRecord($r['host'], $r['ttl'], $r['pri'], $r['target']);
+            $return->addRecord(new MXRecord($r['host'], $r['ttl'], $r['pri'], $r['target']));
             break;
 
           case 'TXT': 
-            $records[]= new TXTRecord($r['host'], $r['ttl'], $r['txt']);
+            $return->addRecord(new TXTRecord($r['host'], $r['ttl'], $r['txt']));
             break;
 
           case 'AAAA':
-            $records[]= new AAAARecord($r['host'], $r['ttl'], $r['ipv6']);
+            $return->addRecord(new AAAARecord($r['host'], $r['ttl'], $r['ipv6']));
             break;
 
           case 'SRV': 
-            $records[]= new SRVRecord($r['host'], $r['ttl'], $r['pri'], $r['weight'], $r['port'], $r['target']);
+            $return->addRecord(new SRVRecord($r['host'], $r['ttl'], $r['pri'], $r['weight'], $r['port'], $r['target']));
             break;
 
           case 'NAPTR':
-            $records[]= new NAPTRRecord(
+            $return->addRecord(new NAPTRRecord(
               $r['host'], 
               $r['order'], 
               $r['pref'], 
@@ -86,7 +86,7 @@
               $r['services'], 
               $r['regex'], 
               $r['replacement']
-            );
+            ));
             break;
           
           default:
@@ -94,7 +94,7 @@
         }
       }
       
-      return $records;
+      return $return;
     }
     
     /**

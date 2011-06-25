@@ -30,7 +30,7 @@
      * Send query for resolution and return nameservers records
      *
      * @param   peer.net.Message query
-     * @return  peer.net.Record[] records
+     * @return  peer.net.Message The response
      */
     public function send(peer·net·Message $query);
   }
