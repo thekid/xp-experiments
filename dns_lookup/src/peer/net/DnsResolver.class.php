@@ -105,6 +105,7 @@
         $input.= $chunk;
       }
       $input= new peer·net·Input($input);
+      // DEBUG Console::writeLine('INPUT  ', $input);
       
       // Parse questions
       for ($i= 0; $i < $header['qdcount']; $i++) {
@@ -114,93 +115,9 @@
       
       // Parse answers
       for ($i= 0; $i < $header['ancount']; $i++) {
-        $name= $input->readDomain();
-        $r= unpack('ntype/nclass/Nttl/nlength', $input->read(10));
+        $record= $input->readRecord();
 
-        switch ($r['type']) {
-          case 1:   // A
-            $ip= implode('.', unpack('Ca/Cb/Cc/Cd', $input->read(4)));
-
-            $record= new ARecord($domain, $ip);
-            break;
-          
-          case 2:   // NS
-            $target= $input->readDomain();
-
-            $record= new NSRecord($domain, $target);
-            break;
-
-          case 5:    // CNAME
-            $target= $input->readDomain();
-
-            $record= new CNAMERecord($domain, $target);
-            break;
-
-          case 6:    // SOA
-            $mname= $input->readDomain();
-            $rname= $input->readDomain();
-            $data= unpack('Nserial/Nrefresh/Nretry/Nexpire/Nminimum-ttl', $input->read(20));
-            
-            $record= new SOARecord(
-              $domain, 
-              $mname, 
-              $rname,
-              sprintf('%u', $data['serial']) + 0,   // convert from unsigned
-              $data['refresh'], 
-              $data['retry'], 
-              $data['expire'], 
-              $data['minimum-ttl']
-            );
-            break;
-            
-          case 12:  // PTR
-            $target= $input->readDomain();
-
-            $record= new PTRRecord($domain, $target);
-            break;
-
-          case 15:  // MX
-            $pri= unpack('nlevel', $input->read(2));
-            $ns= $input->readDomain();
-            
-            $record= new MXRecord($domain, $pri['level'], $ns);
-            break;
-
-          case 16:  // TXT
-            $text= $input->read($r['length']);
-            
-            $record= new TXTRecord($domain, $text);
-            break;
-          
-          case 28:   // AAAA
-            $ip= unpack('H*quads', $input->read(16));
-
-            $record= new AAAARecord($domain, substr(chunk_split($ip['quads'], 4, ':'), 0, -1));
-            break;
-          
-          case 33:  // SRV
-            $data= unpack('npri/nweight/nport', $input->read(6));
-            $target= $input->readDomain();
-            
-            $record= new SRVRecord($domain, $data['pri'], $data['weight'], $data['port'], $target);
-            break;
-          
-          case 35:  // NAPTR
-            $data= unpack('norder/npref', $input->read(4));
-            $flags= strtoupper($input->readLabel());
-            $services= $input->readLabel();
-            $regex= $input->readLabel();
-            $replacement= $input->readLabel();
-
-            $record= new NAPTRRecord($domain, $data['order'], $data['pref'], $flags, $services, $regex, $replacement);
-            break;
-
-          default:
-            throw new ProtocolException('Unknown record type '.$r['type']);
-        }
-        
         // DEBUG Console::writeLine('RECORD ', $record);
-        // DEBUG Console::writeLine('INPUT  ', $input);
         $return->addRecord($record);
       }
 

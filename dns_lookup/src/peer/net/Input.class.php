@@ -75,6 +75,77 @@
     }
     
     /**
+     * Read a single record
+     *
+     * @return  peer.net.Record
+     */
+    public function readRecord() {
+      $domain= $this->readDomain();
+      $r= unpack('ntype/nclass/Nttl/nlength', $this->read(10));
+
+      switch ($r['type']) {
+        case 1:   // A
+          $ip= implode('.', unpack('Ca/Cb/Cc/Cd', $this->read(4)));
+          return new ARecord($domain, $ip);
+
+        case 2:   // NS
+          $target= $this->readDomain();
+          return new NSRecord($domain, $target);
+
+        case 5:    // CNAME
+          $target= $this->readDomain();
+          return new CNAMERecord($domain, $target);
+
+        case 6:    // SOA
+          $mname= $this->readDomain();
+          $rname= $this->readDomain();
+          $data= unpack('Nserial/Nrefresh/Nretry/Nexpire/Nminimum-ttl', $this->read(20));
+          return new SOARecord(
+            $domain, 
+            $mname, 
+            $rname,
+            sprintf('%u', $data['serial']) + 0,   // convert from unsigned
+            $data['refresh'], 
+            $data['retry'], 
+            $data['expire'], 
+            $data['minimum-ttl']
+          );
+
+        case 12:  // PTR
+          $target= $this->readDomain();
+          return new PTRRecord($domain, $target);
+
+        case 15:  // MX
+          $pri= unpack('nlevel', $this->read(2));
+          $ns= $this->readDomain();
+          return new MXRecord($domain, $pri['level'], $ns);
+
+        case 16:  // TXT
+          $text= $this->read($r['length']);
+          return new TXTRecord($domain, $text);
+
+        case 28:   // AAAA
+          $ip= unpack('H*quads', $this->read(16));
+          return new AAAARecord($domain, substr(chunk_split($ip['quads'], 4, ':'), 0, -1));
+
+        case 33:  // SRV
+          $data= unpack('npri/nweight/nport', $this->read(6));
+          $target= $this->readDomain();
+          return new SRVRecord($domain, $data['pri'], $data['weight'], $data['port'], $target);
+
+        case 35:  // NAPTR
+          $data= unpack('norder/npref', $this->read(4));
+          $flags= strtoupper($this->readLabel());
+          $services= $this->readLabel();
+          $regex= $this->readLabel();
+          $replacement= $this->readLabel();
+          return new NAPTRRecord($domain, $data['order'], $data['pref'], $flags, $services, $regex, $replacement);
+
+      }
+      throw new ProtocolException('Unknown record type '.$r['type']);
+    }
+    
+    /**
      * Creates a string representation where all bytes between ASCII 0..32
      * and 127..255 are escaped in octal escape sequences, the rest is 
      * displayed as is.

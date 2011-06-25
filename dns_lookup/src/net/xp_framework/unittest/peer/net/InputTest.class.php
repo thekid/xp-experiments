@@ -125,49 +125,36 @@
       $r= unpack('ntype/nclass', $fixture->read(4));
       $this->assertEquals(255, $r['type']);           // ANY
       
-      // The "A" record
-      $this->assertEquals('thekid.de', $fixture->readDomain());
-      $r= unpack('ntype/nclass/Nttl/nlength', $fixture->read(10));
-      $this->assertEquals(1, $r['type']);             // A
-      $ip= implode('.', unpack('Ca/Cb/Cc/Cd', $fixture->read(4)));
-      $this->assertEquals('82.165.88.119', $ip);
-      
-      // The "SOA" record
-      $this->assertEquals('thekid.de', $fixture->readDomain());
-      $r= unpack('ntype/nclass/Nttl/nlength', $fixture->read(10));
-      $this->assertEquals(6, $r['type']);             // SOA
-      $this->assertEquals('ns5.schlund.de', $fixture->readDomain());
-      $this->assertEquals('hostmaster.schlund.de', $fixture->readDomain());
-      $r= unpack('Nserial/Nrefresh/Nretry/Nexpire/Nminimum-ttl', $fixture->read(20));
-      $this->assertEquals(2007031303, $r['serial']);
-      
-      // The primary "MX" record
-      $this->assertEquals('thekid.de', $fixture->readDomain());
-      $r= unpack('ntype/nclass/Nttl/nlength', $fixture->read(10));
-      $this->assertEquals(15, $r['type']);            // MX
-      $pri= unpack('nlevel', $fixture->read(2));
-      $this->assertEquals(10, $pri['level']);
-      $this->assertEquals('mx01.schlund.de', $fixture->readDomain());
-
-      // The seconday "MX" record
-      $this->assertEquals('thekid.de', $fixture->readDomain());
-      $r= unpack('ntype/nclass/Nttl/nlength', $fixture->read(10));
-      $this->assertEquals(15, $r['type']);            // MX
-      $pri= unpack('nlevel', $fixture->read(2));
-      $this->assertEquals(10, $pri['level']);
-      $this->assertEquals('mx00.schlund.de', $fixture->readDomain());
-
-      // The primary "NS" record
-      $this->assertEquals('thekid.de', $fixture->readDomain());
-      $r= unpack('ntype/nclass/Nttl/nlength', $fixture->read(10));
-      $this->assertEquals(2, $r['type']);             // NS
-      $this->assertEquals('ns5.schlund.de', $fixture->readDomain());
-
-      // The secondary "NS" record
-      $this->assertEquals('thekid.de', $fixture->readDomain());
-      $r= unpack('ntype/nclass/Nttl/nlength', $fixture->read(10));
-      $this->assertEquals(2, $r['type']);             // NS
-      $this->assertEquals('ns6.schlund.de', $fixture->readDomain());
+      $this->assertEquals(
+        new ARecord('thekid.de', '82.165.88.119'), 
+        $fixture->readRecord(), 
+        'A'
+      );
+      $this->assertEquals(
+        new SOARecord('thekid.de', 'ns5.schlund.de', 'hostmaster.schlund.de', 2007031303, 28800, 7200, 604800, 86400),
+        $fixture->readRecord(), 
+        'SOA'
+      );
+      $this->assertEquals(
+        new MXRecord('thekid.de', 10, 'mx01.schlund.de'),
+        $fixture->readRecord(), 
+        'Primary MX'
+      );
+      $this->assertEquals(
+        new MXRecord('thekid.de', 10, 'mx00.schlund.de'),
+        $fixture->readRecord(), 
+        'Secondary MX'
+      );
+      $this->assertEquals(
+        new NSRecord('thekid.de', 'ns5.schlund.de'),
+        $fixture->readRecord(), 
+        'Primary NS'
+      );
+      $this->assertEquals(
+        new NSRecord('thekid.de', 'ns6.schlund.de'),
+        $fixture->readRecord(), 
+        'Secondary NS'
+      );
       
       // @end
       $this->assertEquals('*', $fixture->read(1));
