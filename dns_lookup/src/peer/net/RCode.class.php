@@ -9,7 +9,11 @@
   /**
    * DNS rcodes
    *
-   * @see   rfc://1035 Section "4.1.1. Header section format"
+   * @see   rfc://1035
+   * @see   rfc://2136
+   * @see   rfc://2845
+   * @see   rfc://2930
+   * @see   rfc://4635
    */
   class RCode extends Enum {
     public static 
@@ -27,7 +31,10 @@
       $BADVERS,
       $BADSIG,
       $BADTIME,
-      $BADMODE;
+      $BADMODE,
+      $BADNAME,
+      $BADALG,
+      $BADTRUNK;
     
     static function __static() {
       self::$SUCCESS= new self(0, 'SUCCESS');
@@ -45,6 +52,9 @@
       self::$BADSIG= new self(17, 'BADSIG');
       self::$BADTIME= new self(18, 'BADTIME');
       self::$BADMODE= new self(19, 'BADMODE');
+      self::$BADNAME= new self(20, 'BADNAME');
+      self::$BADALG= new self(21, 'BADALG');
+      self::$BADTRUNK= new self(22, 'BADTRUNK');
     }
     
     /**
