@@ -114,7 +114,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'(ttl '.$this->ttl.' '.$this->flags.': "'.$this->service.'" "'.$this->regex.'" "'.$this->replacement.'", order= '.$this->order.' pref= '.$this->pref.');';
+      return $this->getClassName().'('.$this->name.' ttl '.$this->ttl.' '.$this->flags.': "'.$this->service.'" "'.$this->regex.'" "'.$this->replacement.'", order= '.$this->order.' pref= '.$this->pref.');';
     }
   }
 ?>

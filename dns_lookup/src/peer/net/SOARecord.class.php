@@ -130,13 +130,14 @@
      */
     public function toString() {
       return sprintf(
-        "%s(ttl %d, %s %s, serial %d)@{\n".
+        "%s(%s ttl %d, %s %s, serial %d)@{\n".
         "  [refresh] %d\n".
         "  [retry]   %d\n".
         "  [expire]  %d\n".
         "  [min-ttl] %d\n".
         "}",
         $this->getClassName(),
+        $this->name,
         $this->ttl,
         $this->mname,
         $this->rname,

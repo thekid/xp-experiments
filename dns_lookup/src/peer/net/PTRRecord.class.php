@@ -58,7 +58,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'(ttl '.$this->ttl.' ->'.$this->target.')';
+      return $this->getClassName().'('.$this->name.' ttl '.$this->ttl.' ->'.$this->target.')';
     }
   }
 ?>

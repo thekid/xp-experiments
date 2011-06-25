@@ -92,7 +92,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'(ttl '.$this->ttl.' ->'.$this->target.':'.$this->port.', pri '.$this->priority.' weight '.$this->weight.')';
+      return $this->getClassName().'('.$this->name.' ttl '.$this->ttl.' ->'.$this->target.':'.$this->port.', pri '.$this->priority.' weight '.$this->weight.')';
     }
   }
 ?>
