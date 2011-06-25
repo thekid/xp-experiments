@@ -5,6 +5,8 @@
  */
 
   $package= 'peer.net';
+  
+  uses('peer.net.RCode');
 
   /**
    * Response to a DNS lookup
@@ -18,18 +20,18 @@
     /**
      * Create a new instance
      *
-     * @param   int result
-     * @param   int records
+     * @param   var result either an int or a peer.net.RCode instance
+     * @param   peer.net.Record[] records
      */
     public function __construct($result, $records) {
-      $this->result= $result;
+      $this->result= $result instanceof RCode ? $result : RCode::forCode($result);
       $this->records= $records;
     }
 
     /**
      * Gets result
      *
-     * @return  int
+     * @return  peer.net.RCode
      */
     public function result() {
       return $this->result;
@@ -50,7 +52,13 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->result.')'.xp::stringOf($this->records);
+      return sprintf(
+        '%s(#%d: %s)@%s',
+        $this->getClassName(),
+        $this->result->ordinal(),
+        $this->result->name(),
+        xp::stringOf($this->records)
+      );
     }
   }
 ?>
