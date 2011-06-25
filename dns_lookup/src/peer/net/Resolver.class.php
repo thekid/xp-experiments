@@ -7,6 +7,7 @@
   $package= 'peer.net';
 
   uses(
+    'peer.net.ResolveException',
     'peer.net.Message',
     'peer.net.ARecord',
     'peer.net.CNAMERecord',
@@ -31,6 +32,8 @@
      *
      * @param   peer.net.Message query
      * @return  peer.net.Message The response
+     * @throws  peer.net.ResolveException
+     * @throws  lang.Throwable
      */
     public function send(peer·net·Message $query);
   }
