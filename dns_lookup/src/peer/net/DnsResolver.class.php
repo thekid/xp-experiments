@@ -152,13 +152,13 @@
               $data['minimum-ttl']
             );
             break;
+            
+          case 12:  // PTR
+            $target= $input->readDomain();
 
-          case 28:   // AAAA
-            $ip= unpack('H*quads', $input->read(16));
-
-            $record= new AAAARecord($domain, substr(chunk_split($ip['quads'], 4, ':'), 0, -1));
+            $record= new PTRRecord($domain, $target);
             break;
-          
+
           case 15:  // MX
             $pri= unpack('nlevel', $input->read(2));
             $ns= $input->readDomain();
@@ -170,6 +170,12 @@
             $text= $input->read($r['length']);
             
             $record= new TXTRecord($domain, $text);
+            break;
+          
+          case 28:   // AAAA
+            $ip= unpack('H*quads', $input->read(16));
+
+            $record= new AAAARecord($domain, substr(chunk_split($ip['quads'], 4, ':'), 0, -1));
             break;
           
           case 33:  // SRV

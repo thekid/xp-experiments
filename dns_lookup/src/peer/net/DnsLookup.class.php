@@ -27,6 +27,7 @@
    * @test  xp://net.xp_framework.unittest.peer.net.DnsLookupTest
    * @see   xp://peer.net.Resolvers
    * @see   http://www.lavantech.com/dnscomponent/javadoc/com/lavantech/net/dns/DNSLookup.html
+   * @see   http://www.xbill.org/dnsjava/
    * @see   http://www.netfor2.com/dns.htm
    */
   class DnsLookup extends Object {

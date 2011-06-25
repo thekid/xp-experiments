@@ -57,8 +57,8 @@
             );
             break;
 
-          case 'AAAA':
-            $records[]= new AAAARecord($r['host'], $r['ipv6']);
+          case 'PTR': 
+            $records[]= new PTRRecord($r['host'], $r['target']);
             break;
 
           case 'MX': 
@@ -67,6 +67,10 @@
 
           case 'TXT': 
             $records[]= new TXTRecord($r['host'], $r['txt']);
+            break;
+
+          case 'AAAA':
+            $records[]= new AAAARecord($r['host'], $r['ipv6']);
             break;
 
           case 'SRV': 
