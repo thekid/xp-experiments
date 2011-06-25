@@ -12,7 +12,7 @@
    * @test    xp://net.xp_framework.unittest.peer.net.CompositeResolverTest
    */
   class CompositeResolver extends Object implements peer·net·Resolver {
-    protected $resolvers= array();
+    protected $delegates= array();
     
     /**
      * Create a composite resolver
@@ -83,6 +83,19 @@
         }
       }
       throw $t;
+    }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      $s= $this->getClassName()."@{\n";
+      foreach ($this->delegates as $i => $resolver) {
+        $s.= '  '.str_replace("\n", "\n  ", $resolver->toString())."\n";
+      }
+      return $s.'}';
     }
   }
 ?>
