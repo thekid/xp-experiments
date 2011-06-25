@@ -112,12 +112,19 @@
         $input->read(4);    // QTYPE, QCLASS -> skip for the moment
       }
       
-      // Parse answers
+      // Parse answer section 
       for ($i= 0; $i < $header['ancount']; $i++) {
-        $record= $input->readRecord();
-
-        // DEBUG Console::writeLine('RECORD ', $record);
-        $return->addRecord($record);
+        $return->addRecord($input->readRecord());
+      }
+      
+      // Parse authority section
+      for ($i= 0; $i < $header['nscount']; $i++) {
+        $return->addRecord($input->readRecord());
+      }
+      
+      // Parse additional records section
+      for ($i= 0; $i < $header['arcount']; $i++) {
+        $return->addRecord($input->readRecord());
       }
 
       return $return;

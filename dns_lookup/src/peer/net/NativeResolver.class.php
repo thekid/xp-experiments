@@ -29,7 +29,10 @@
         throw new IllegalArgumentException('Unsupported type '.$type);
       }
       
-      $results= dns_get_record($records[0]->getName(), constant($type));
+      $auth= $add= NULL;
+      $query= dns_get_record($records[0]->getName(), constant($type), $auth, $add);
+      $results= array_merge(is_array($query) ? $query : array(), $auth, $add);
+
       $return= new peer·net·Message(-1);
       foreach ($results as $r) {
         switch ($r['type']) {
