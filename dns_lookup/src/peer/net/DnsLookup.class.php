@@ -29,6 +29,13 @@
    *   $records= $l->run();
    * </code>
    *
+   * Using "dns.corporation.org" as DNS server
+   * <code>
+   *   $l= new DnsLookup('xp-framework.net');
+   *   $l->setResolver(new DnsResolver('dns.corporation.org')));
+   *   $records= $l->run();
+   * </code>
+   *
    * @test  xp://net.xp_framework.unittest.peer.net.DnsLookupTest
    * @see   xp://peer.net.Resolvers
    * @see   http://www.lavantech.com/dnscomponent/javadoc/com/lavantech/net/dns/DNSLookup.html
