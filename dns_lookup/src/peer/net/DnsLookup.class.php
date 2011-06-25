@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.net.Resolvers', 'peer.net.QType');
+  uses('peer.net.Resolvers', 'peer.net.QType', 'peer.net.Query');
 
   /**
    * DNS lookup
@@ -86,9 +86,9 @@
      */
     public function run() {
       $request= new peer·net·Message();
-      $request->setType($this->type);
       $request->setFlags(0x0100 & 0x0300);  // recursion & queryspecmask
-      $request->addRecord($this->name);
+      $request->addRecord(new peer·net·Query($this->name, $this->type, 1));
+
       $response= $this->getResolver()->send($request);
       return $response->getRecords();
     }

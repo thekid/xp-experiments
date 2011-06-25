@@ -75,16 +75,15 @@
       //}
       
       // 1 record {{{
-      foreach (explode('.', this($query->getRecords(), 0)) as $label) {
+      $records= $query->getRecords();
+      foreach (explode('.', $records[0]->getName()) as $label) {
         $send.= pack('C', strlen($label)).$label;
       }
       $send.= "\0";
-      // }}}
-      
       $send.= pack(
         'nn', 
-        $query->getType()->ordinal(),    // QTYPE
-        1                                // QCLASS ("IN")
+        $records[0]->getQType()->ordinal(),
+        $records[0]->getQClass()
       );
       // }}}
 

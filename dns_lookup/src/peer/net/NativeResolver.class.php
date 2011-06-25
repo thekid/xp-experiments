@@ -23,12 +23,13 @@
      * @return  peer.net.Message The response
      */
     public function send(peer·net·Message $query) {
-      $type= 'DNS_'.$query->getType()->name();
+      $records= $query->getRecords();
+      $type= 'DNS_'.$records[0]->getQType()->name();
       if (!defined($type)) {
         throw new IllegalArgumentException('Unsupported type '.$type);
       }
       
-      $results= dns_get_record(this($query->getRecords(), 0), constant($type));
+      $results= dns_get_record($records[0]->getName(), constant($type));
       $return= new peer·net·Message(-1);
       foreach ($results as $r) {
         switch ($r['type']) {
