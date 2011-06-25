@@ -7,8 +7,7 @@
   uses(
     'peer.net.Resolvers', 
     'peer.net.QType', 
-    'peer.net.Query',
-    'peer.net.Response'
+    'peer.net.Question'
   );
 
   /**
@@ -98,19 +97,15 @@
      * @throws  peer.net.ResolveException
      */
     public function run() {
-      $request= new peer·net·Message();
-      $request->setFlags(0x0100 & 0x0300);  // recursion & queryspecmask
-      $request->addRecord(new peer·net·Query($this->name, $this->type, 1));
-
       try {
-        $response= $this->getResolver()->send($request);
+        $result= $this->getResolver()->send(new Question($this->name, $this->type, 1));
       } catch (ResolveException $e) {
         throw $e;
       } catch (Throwable $t) {
         throw new ResolveException($t->getMessage(), $t);
       }
       
-      return new peer·net·Response($response->getRcode(), $response->getRecords());
+      return new peer·net·Response($result->getRcode(), $result->getRecords());
     }
   }
 ?>
