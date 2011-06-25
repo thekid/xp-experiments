@@ -9,6 +9,8 @@
   /**
    * DNS Input
    *
+   * @see     xp://peer.net.DnsResolver
+   * @test    xp://net.xp_framework.unittest.peer.net.InputTest
    */
   class peer·net·Input extends Object {
     protected $bytes= '';
