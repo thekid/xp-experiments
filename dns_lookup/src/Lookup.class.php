@@ -26,6 +26,7 @@
         $shift= 2;
       } else {
         $resolver= Resolvers::defaultResolver();
+        $shift= 0;
       }
 
       $name= $args[$shift];
