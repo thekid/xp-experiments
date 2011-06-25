@@ -12,6 +12,7 @@
    */
   abstract class peer·net·Record extends Object {
     protected $name= '';
+    protected $ttl= 0;
 
     /**
      * Creates a new record
@@ -34,9 +35,9 @@
     }
 
     /**
-     * Gets name
+     * Gets TTL
      *
-     * @return  string
+     * @return  int
      */
     public function getTtl() {
       return $this->ttl;
