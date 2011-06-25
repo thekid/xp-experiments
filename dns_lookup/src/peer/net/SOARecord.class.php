@@ -99,6 +99,27 @@
     public function getMinTtl() {
       return new TimeSpan($this->minTtl);
     }
+
+    /**
+     * Returns whether a given object is equal to this record
+     *
+     * @param   var cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self && 
+        $this->name === $this->name && 
+        $this->mname === $cmp->mname &&
+        $this->rname === $cmp->rname &&
+        $this->mname === $cmp->mname &&
+        $this->serial === $cmp->serial &&
+        $this->refresh === $cmp->refresh &&
+        $this->retry === $cmp->retry &&
+        $this->expire === $cmp->expire &&
+        $this->minTtl === $cmp->minTtl
+      );
+    }
     
     /**
      * Creates a string representation of this record

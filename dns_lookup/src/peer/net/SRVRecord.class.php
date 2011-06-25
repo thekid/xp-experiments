@@ -66,6 +66,23 @@
     public function getPort() {
       return $this->port;
     }
+
+    /**
+     * Returns whether a given object is equal to this record
+     *
+     * @param   var cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self && 
+        $this->name === $this->name && 
+        $this->priority === $cmp->priority &&
+        $this->weight === $cmp->weight &&
+        $this->port === $cmp->port &&
+        $this->target === $cmp->target
+      );
+    }
     
     /**
      * Creates a string representation of this record

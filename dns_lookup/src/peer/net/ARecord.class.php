@@ -32,6 +32,20 @@
     public function getAddress() {
       return $this->address;
     }
+    
+    /**
+     * Returns whether a given object is equal to this record
+     *
+     * @param   var cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self && 
+        $this->name === $this->name && 
+        $this->address->equals($cmp->address)
+      );
+    }
 
     /**
      * Creates a string representation of this record

@@ -88,6 +88,25 @@
     }
 
     /**
+     * Returns whether a given object is equal to this record
+     *
+     * @param   var cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self && 
+        $this->name === $this->name && 
+        $this->order === $cmp->order &&
+        $this->pref === $cmp->pref &&
+        $this->flags === $cmp->flags &&
+        $this->service === $cmp->service &&
+        $this->regex === $cmp->regex &&
+        $this->replacement === $cmp->replacement
+      );
+    }
+
+    /**
      * Creates a string representation of this record
      *
      * @return  string
