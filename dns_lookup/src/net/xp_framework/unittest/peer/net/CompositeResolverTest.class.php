@@ -88,7 +88,7 @@
     #[@test]
     public function onlyResolverSucceeds() {
       $this->fixture->addDelegate(create(new FakeResolver())->returning(array($this->record)));
-      $this->assertEquals(array($this->record), $this->fixture->send($this->message));
+      $this->assertEquals(array($this->record), $this->fixture->send($this->message)->getRecords());
     }
 
     /**
@@ -109,7 +109,7 @@
     public function firstResolverFails() {
       $this->fixture->addDelegate(create(new FakeResolver())->throwing(new ConnectException('Cannot connect')));
       $this->fixture->addDelegate(create(new FakeResolver())->returning(array($this->record)));
-      $this->assertEquals(array($this->record), $this->fixture->send($this->message));
+      $this->assertEquals(array($this->record), $this->fixture->send($this->message)->getRecords());
     }
 
     /**
@@ -120,7 +120,7 @@
     public function secondResolverFails() {
       $this->fixture->addDelegate(create(new FakeResolver())->returning(array($this->record)));
       $this->fixture->addDelegate(create(new FakeResolver())->throwing(new Error('Unreachable code!')));
-      $this->assertEquals(array($this->record), $this->fixture->send($this->message));
+      $this->assertEquals(array($this->record), $this->fixture->send($this->message)->getRecords());
     }
   }
 ?>

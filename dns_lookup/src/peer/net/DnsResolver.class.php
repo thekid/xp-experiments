@@ -89,13 +89,16 @@
 
       // Communication
       $this->sock->write($send);
-      $header= unpack('nid/nspec/nqdcount/nancount/nnscount/narcount', $this->sock->readBinary(12));
+      $header= unpack('nid/c1op/c1flags/nqdcount/nancount/nnscount/narcount', $this->sock->readBinary(12));
       
       // Verify header id
       if ($header['id'] !== $query->getId()) {
         throw new ProtocolException('Expected answer for #'.$query->getId().', have '.$header['id']);
       }
+
       $return= new peer·net·Message($header['id']);
+      $return->setOpcode($header['op']);
+      $return->setFlags($header['flags']);
 
       // Read rest of packet (max. 512 bytes for entire message!)
       $this->sock->setBlocking(FALSE);

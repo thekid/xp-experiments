@@ -31,9 +31,17 @@
       
       $auth= $add= NULL;
       $query= dns_get_record($records[0]->getName(), constant($type), $auth, $add);
-      $results= array_merge(is_array($query) ? $query : array(), $auth, $add);
 
       $return= new peer·net·Message(-1);
+      $return->setOpcode(-1);
+      $results= array_merge(is_array($query) ? $query : array(), $auth, $add);
+
+      // NXDOMAIN is the only input we can distinguish
+      if (empty($results)) {
+        $return->setFlags(-125);    
+        return $return;
+      }
+
       foreach ($results as $r) {
         switch ($r['type']) {
           case 'A': 

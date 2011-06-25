@@ -4,7 +4,12 @@
  * $Id$ 
  */
 
-  uses('peer.net.Resolvers', 'peer.net.QType', 'peer.net.Query');
+  uses(
+    'peer.net.Resolvers', 
+    'peer.net.QType', 
+    'peer.net.Query',
+    'peer.net.Response'
+  );
 
   /**
    * DNS lookup
@@ -82,7 +87,7 @@
     /**
      * Runs this lookup
      *
-     * @return  peer.net.Record[]
+     * @return  peer.net.Response
      */
     public function run() {
       $request= new peer·net·Message();
@@ -96,8 +101,8 @@
       } catch (Throwable $t) {
         throw new ResolveException($t->getMessage(), $t);
       }
-
-      return $response->getRecords();
+      
+      return new peer·net·Response($response->getRcode(), $response->getRecords());
     }
   }
 ?>

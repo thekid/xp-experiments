@@ -73,6 +73,15 @@
     public function setFlags($flags) {
       $this->flags= $flags;
     }
+
+    /**
+     * Gets rpcode
+     *
+     * @return  int
+     */
+    public function getRcode() {
+      return $this->flags & 0xF;
+    }
     
     /**
      * Gets opcode

@@ -69,14 +69,14 @@
     #[@test]
     public function succedingResolver() {
       $this->fixture->setResolver(create(new FakeResolver())->returning(array($this->record)));
-      $this->assertEquals(array($this->record), $this->fixture->run());
+      $this->assertEquals(array($this->record), $this->fixture->run()->records());
     }
 
     /**
      * Test
      *
      */
-    #[@test, @expect(class= 'peer.ConnectException', withMessage= 'Cannot connect')]
+    #[@test, @expect(class= 'peer.net.ResolveException', withMessage= 'Cannot connect')]
     public function failingResolver() {
       $this->fixture->setResolver(create(new FakeResolver())->throwing(new ConnectException('Cannot connect')));
       $this->fixture->run();

@@ -41,13 +41,18 @@
      * Send query for resolution and return nameservers records
      *
      * @param   peer.net.Message query
-     * @return  peer.net.Record[] records
+     * @return  peer.net.Message response
      */
     public function send(peer·net·Message $query) {
       if (NULL !== $this->exception) {
         throw $this->exception;
       }
-      return $this->records;
+
+      $message= new peer·net·Message();
+      foreach ($this->records as $record) {
+        $message->addRecord($record);
+      }
+      return $message;
     }
   }
 ?>
