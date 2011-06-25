@@ -32,6 +32,7 @@
    */
   class DnsLookup extends Object {
     protected $name= '';
+    protected $type= NULL;
     protected $resolver= NULL;
   
     /**
