@@ -39,7 +39,7 @@
      * Create a new lookup
      *
      * @param   string name
-     * @param   peer.net.QType type
+     * @param   peer.net.QType type default NULL if omitted, ANY
      */
     public function __construct($name, QType $type= NULL) {
       $this->name= $name;
