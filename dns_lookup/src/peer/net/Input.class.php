@@ -15,7 +15,7 @@
   class peer·net·Input extends Object {
     protected $bytes= '';
     protected $offset= 0;
-    protected $offsets= array();
+    protected $prev= -1;
 
     /**
      * Creates a new input instance
@@ -46,17 +46,19 @@
     public function readLabel() {
       $l= ord($this->read(1));
       if ($l <= 0) {
-        if (!empty($this->offsets)) $this->offset= array_pop($this->offsets);
+        if (-1 !== $this->prev) {
+          $this->offset= $this->prev;
+          $this->prev= -1;
+        }
         return NULL;
       } else if ($l < 64) {
-        $label= $this->read($l);
+        return $this->read($l);
       } else {
         $n= (($l & 0x3F) << 8) + ord($this->read(1)) - 12;
-        $this->offsets[]= $this->offset;
+        if (-1 === $this->prev) $this->prev= $this->offset;
         $this->offset= $n;
-        $label= $this->readLabel();
+        return $this->readLabel();
       }
-      return $label;
     }
 
     /**
@@ -70,6 +72,43 @@
         $labels[]= $label;
       }
       return implode('.', $labels);
+    }
+    
+    /**
+     * Creates a string representation where all bytes between ASCII 0..32
+     * and 127..255 are escaped in octal escape sequences, the rest is 
+     * displayed as is.
+     *
+     * @see     php://addcslashes
+     * @param   string bytes
+     * @return  string 
+     */
+    protected function escaped($bytes) {
+      $r= '';
+      for ($i= 0, $s= strlen($bytes); $i < $s; $i++) {
+        $c= ord($bytes{$i});
+        if ($c < 32 || $c > 126) {
+          $r.= sprintf('\\%03o', $c);
+        } else {
+          $r.= $bytes{$i};
+        }
+      }
+      return $r;
+    }
+    
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        '%s(%d,@%d)<%s>',
+        $this->getClassName(),
+        strlen($this->bytes),
+        $this->offset,
+        $this->escaped($this->bytes)
+      );
     }
   }
 ?>

@@ -104,5 +104,73 @@
       $this->assertEquals('87.106.1.137', $ip);
       $this->assertEquals('*', $fixture->read(1));
     }
+
+    /**
+     * Test a real life example response
+     *
+     */
+    #[@test]
+    public function thekidDotDeLookup() {
+      $fixture= $this->newInstance(
+        "\006thekid\002de\000\000\377\000\001\300\014\000\001\000\001\000\000\004v\000\004R".
+        "\245Xw\300\014\000\006\000\001\000\000Q\277\000/\003ns5\007schlund\300\023\012hostmaster".
+        "\300;w\240\336\007\000\000p\200\000\000\034 \000\011:\200\000\001Q\200\300\014\000\017".
+        "\000\001\000\000Q\277\000\011\000\012\004mx01\300;\300\014\000\017\000\001\000\000Q\277".
+        "\000\011\000\012\004mx00\300;\300\014\000\002\000\001\000\000Q\277\000\002\3007\300\014".
+        "\000\002\000\001\000\000Q\277\000\006\003ns6\300;*"
+      );
+      
+      // Question
+      $this->assertEquals('thekid.de', $fixture->readDomain());
+      $r= unpack('ntype/nclass', $fixture->read(4));
+      $this->assertEquals(255, $r['type']);           // ANY
+      
+      // The "A" record
+      $this->assertEquals('thekid.de', $fixture->readDomain());
+      $r= unpack('ntype/nclass/Nttl/nlength', $fixture->read(10));
+      $this->assertEquals(1, $r['type']);             // A
+      $ip= implode('.', unpack('Ca/Cb/Cc/Cd', $fixture->read(4)));
+      $this->assertEquals('82.165.88.119', $ip);
+      
+      // The "SOA" record
+      $this->assertEquals('thekid.de', $fixture->readDomain());
+      $r= unpack('ntype/nclass/Nttl/nlength', $fixture->read(10));
+      $this->assertEquals(6, $r['type']);             // SOA
+      $this->assertEquals('ns5.schlund.de', $fixture->readDomain());
+      $this->assertEquals('hostmaster.schlund.de', $fixture->readDomain());
+      $r= unpack('Nserial/Nrefresh/Nretry/Nexpire/Nminimum-ttl', $fixture->read(20));
+      $this->assertEquals(2007031303, $r['serial']);
+      
+      // The primary "MX" record
+      $this->assertEquals('thekid.de', $fixture->readDomain());
+      $r= unpack('ntype/nclass/Nttl/nlength', $fixture->read(10));
+      $this->assertEquals(15, $r['type']);            // MX
+      $pri= unpack('nlevel', $fixture->read(2));
+      $this->assertEquals(10, $pri['level']);
+      $this->assertEquals('mx01.schlund.de', $fixture->readDomain());
+
+      // The seconday "MX" record
+      $this->assertEquals('thekid.de', $fixture->readDomain());
+      $r= unpack('ntype/nclass/Nttl/nlength', $fixture->read(10));
+      $this->assertEquals(15, $r['type']);            // MX
+      $pri= unpack('nlevel', $fixture->read(2));
+      $this->assertEquals(10, $pri['level']);
+      $this->assertEquals('mx00.schlund.de', $fixture->readDomain());
+
+      // The primary "NS" record
+      $this->assertEquals('thekid.de', $fixture->readDomain());
+      $r= unpack('ntype/nclass/Nttl/nlength', $fixture->read(10));
+      $this->assertEquals(2, $r['type']);             // NS
+      $this->assertEquals('ns5.schlund.de', $fixture->readDomain());
+
+      // The secondary "NS" record
+      $this->assertEquals('thekid.de', $fixture->readDomain());
+      $r= unpack('ntype/nclass/Nttl/nlength', $fixture->read(10));
+      $this->assertEquals(2, $r['type']);             // NS
+      $this->assertEquals('ns6.schlund.de', $fixture->readDomain());
+      
+      // @end
+      $this->assertEquals('*', $fixture->read(1));
+    }
   }
 ?>

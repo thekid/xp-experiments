@@ -140,12 +140,12 @@
             $mname= $input->readDomain();
             $rname= $input->readDomain();
             $data= unpack('Nserial/Nrefresh/Nretry/Nexpire/Nminimum-ttl', $input->read(20));
-
+            
             $record= new SOARecord(
               $domain, 
               $mname, 
               $rname,
-              sprintf('%u', $data['serial']) + 0, 
+              sprintf('%u', $data['serial']) + 0,   // convert from unsigned
               $data['refresh'], 
               $data['retry'], 
               $data['expire'], 
@@ -200,6 +200,7 @@
         }
         
         // DEBUG Console::writeLine('RECORD ', $record);
+        // DEBUG Console::writeLine('INPUT  ', $input);
         $return->addRecord($record);
       }
 
