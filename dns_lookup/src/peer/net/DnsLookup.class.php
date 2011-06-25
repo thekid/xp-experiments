@@ -88,6 +88,7 @@
      * Runs this lookup
      *
      * @return  peer.net.Response
+     * @throws  peer.net.ResolveException
      */
     public function run() {
       $request= new peer·net·Message();
