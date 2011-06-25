@@ -23,7 +23,15 @@
      * @return  peer.net.Message The response
      */
     public function send(peer·net·Message $query) {
+
+      // Check for multiple records, which, in real life, doesn't work
+      // See http://www.mail-archive.com/comp-protocols-dns-bind@isc.org/msg00165.html
+      // See http://www.maradns.org/multiple.qdcount.html
       $records= $query->getRecords();
+      if (sizeof($records) > 1) {
+        throw new IllegalArgumentException('Multiple questions don\'t work with most servers');
+      }
+
       $type= 'DNS_'.$records[0]->getQType()->name();
       if (!defined($type)) {
         throw new IllegalArgumentException('Unsupported type '.$type);

@@ -54,10 +54,18 @@
      * @return  peer.net.Message The response
      */
     public function send(peer·net·Message $query) {
-      if (!$this->sock->isConnected()) {
-        $this->sock->connect();
-      }
 
+      // Check for multiple records, which, in real life, doesn't work
+      // See http://www.mail-archive.com/comp-protocols-dns-bind@isc.org/msg00165.html
+      // See http://www.maradns.org/multiple.qdcount.html
+      $records= $query->getRecords();
+      if (sizeof($records) > 1) {
+        throw new IllegalArgumentException('Multiple questions don\'t work with most servers');
+      }
+      
+      // Connect if necessary
+      if (!$this->sock->isConnected()) $this->sock->connect();
+      
       // Compose message
       $send= pack(
         'nnnnnn', 
@@ -69,13 +77,6 @@
         0                 // ARCOUNT
       );
       
-      //XXX RECORD
-      //foreach ($this->records as $record) {
-      //  $packet.= $record->getBytes();
-      //}
-      
-      // 1 record {{{
-      $records= $query->getRecords();
       foreach (explode('.', $records[0]->getName()) as $label) {
         $send.= pack('C', strlen($label)).$label;
       }
@@ -85,7 +86,6 @@
         $records[0]->getQType()->ordinal(),
         $records[0]->getQClass()
       );
-      // }}}
 
       // Communication
       $this->sock->write($send);
