@@ -18,13 +18,14 @@
      * Creates a new NS record
      *
      * @param   string name
+     * @param   int ttl
      * @param   int priority
      * @param   int weight
      * @param   int port
      * @param   string target
      */
-    public function __construct($name, $order, $pref, $flags, $service, $regex, $replacement) {
-      parent::__construct($name);
+    public function __construct($name, $ttl, $order, $pref, $flags, $service, $regex, $replacement) {
+      parent::__construct($name, $ttl);
       $this->order= $order;
       $this->pref= $pref;
       $this->flags= $flags;
@@ -96,7 +97,8 @@
     public function equals($cmp) {
       return (
         $cmp instanceof self && 
-        $this->name === $this->name && 
+        $this->name === $cmp->name && 
+        $this->ttl === $cmp->ttl && 
         $this->order === $cmp->order &&
         $this->pref === $cmp->pref &&
         $this->flags === $cmp->flags &&
@@ -112,7 +114,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->flags.': "'.$this->service.'" "'.$this->regex.'" "'.$this->replacement.'", order= '.$this->order.' pref= '.$this->pref.');';
+      return $this->getClassName().'(ttl '.$this->ttl.' '.$this->flags.': "'.$this->service.'" "'.$this->regex.'" "'.$this->replacement.'", order= '.$this->order.' pref= '.$this->pref.');';
     }
   }
 ?>

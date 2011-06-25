@@ -20,10 +20,11 @@
      * Creates a new NS record
      *
      * @param   string name
+     * @param   int ttl
      * @param   string target
      */   
-    public function __construct($name, $target) {
-      parent::__construct($name);
+    public function __construct($name, $ttl, $target) {
+      parent::__construct($name, $ttl);
       $this->target= $target;
     }
 
@@ -45,7 +46,8 @@
     public function equals($cmp) {
       return (
         $cmp instanceof self && 
-        $this->name === $this->name && 
+        $this->name === $cmp->name && 
+        $this->ttl === $cmp->ttl && 
         $this->target === $cmp->target
       );
     }
@@ -56,7 +58,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'(->'.$this->target.')';
+      return $this->getClassName().'(ttl '.$this->ttl.' ->'.$this->target.')';
     }
   }
 ?>

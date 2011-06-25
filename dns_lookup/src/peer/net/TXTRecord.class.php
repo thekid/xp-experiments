@@ -17,10 +17,11 @@
      * Creates a new TXT record
      *
      * @param   string name
+     * @param   int ttl
      * @param   string text
      */
-    public function __construct($name, $text) {
-      parent::__construct($name);
+    public function __construct($name, $ttl, $text) {
+      parent::__construct($name, $ttl);
       $this->text= $text;
     }
 
@@ -42,7 +43,8 @@
     public function equals($cmp) {
       return (
         $cmp instanceof self && 
-        $this->name === $this->name && 
+        $this->name === $cmp->name && 
+        $this->ttl === $cmp->ttl && 
         $this->text === $cmp->text
       );
     }
@@ -53,7 +55,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'("'.$this->text.'")';
+      return $this->getClassName().'(ttl '.$this->ttl.' "'.$this->text.'")';
     }
   }
 ?>

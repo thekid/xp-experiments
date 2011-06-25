@@ -126,32 +126,32 @@
       $this->assertEquals(255, $r['type']);           // ANY
       
       $this->assertEquals(
-        new ARecord('thekid.de', '82.165.88.119'), 
+        new ARecord('thekid.de', 1142, '82.165.88.119'), 
         $fixture->readRecord(), 
         'A'
       );
       $this->assertEquals(
-        new SOARecord('thekid.de', 'ns5.schlund.de', 'hostmaster.schlund.de', 2007031303, 28800, 7200, 604800, 86400),
+        new SOARecord('thekid.de', 20927, 'ns5.schlund.de', 'hostmaster.schlund.de', 2007031303, 28800, 7200, 604800, 86400),
         $fixture->readRecord(), 
         'SOA'
       );
       $this->assertEquals(
-        new MXRecord('thekid.de', 10, 'mx01.schlund.de'),
+        new MXRecord('thekid.de', 20927, 10, 'mx01.schlund.de'),
         $fixture->readRecord(), 
         'Primary MX'
       );
       $this->assertEquals(
-        new MXRecord('thekid.de', 10, 'mx00.schlund.de'),
+        new MXRecord('thekid.de', 20927, 10, 'mx00.schlund.de'),
         $fixture->readRecord(), 
         'Secondary MX'
       );
       $this->assertEquals(
-        new NSRecord('thekid.de', 'ns5.schlund.de'),
+        new NSRecord('thekid.de', 20927, 'ns5.schlund.de'),
         $fixture->readRecord(), 
         'Primary NS'
       );
       $this->assertEquals(
-        new NSRecord('thekid.de', 'ns6.schlund.de'),
+        new NSRecord('thekid.de', 20927, 'ns6.schlund.de'),
         $fixture->readRecord(), 
         'Secondary NS'
       );

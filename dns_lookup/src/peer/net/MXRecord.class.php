@@ -17,11 +17,12 @@
      * Creates a new MX record
      *
      * @param   string name
+     * @param   int ttl
      * @param   int priority
      * @param   string target
      */
-    public function __construct($name, $priority, $target) {
-      parent::__construct($name);
+    public function __construct($name, $ttl, $priority, $target) {
+      parent::__construct($name, $ttl);
       $this->priority= $priority;
       $this->target= $target;
     }
@@ -53,7 +54,8 @@
     public function equals($cmp) {
       return (
         $cmp instanceof self && 
-        $this->name === $this->name && 
+        $this->name === $cmp->name && 
+        $this->ttl === $cmp->ttl && 
         $this->priority === $cmp->priority &&
         $this->target === $cmp->target
       );
@@ -65,7 +67,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'(->'.$this->target.', pri '.$this->priority.')';
+      return $this->getClassName().'(ttl '.$this->ttl.' ->'.$this->target.', pri '.$this->priority.')';
     }
   }
 ?>

@@ -27,7 +27,7 @@
     public function setUp() {
       $this->fixture= new CompositeResolver();
       $this->message= new peer·net·Message();
-      $this->record= new ARecord('example.com', '192.0.43.10');
+      $this->record= new ARecord('example.com', 0, '192.0.43.10');
     }
 
     /**

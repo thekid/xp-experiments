@@ -33,15 +33,15 @@
       foreach ($results as $r) {
         switch ($r['type']) {
           case 'A': 
-            $records[]= new ARecord($r['host'], $r['ip']);
+            $records[]= new ARecord($r['host'], $r['ttl'], $r['ip']);
             break;
 
           case 'NS': 
-            $records[]= new NSRecord($r['host'], $r['target']);
+            $records[]= new NSRecord($r['host'], $r['ttl'], $r['target']);
             break;
           
           case 'CNAME':
-            $records[]= new CNAMERecord($r['host'], $r['target']);
+            $records[]= new CNAMERecord($r['host'], $r['ttl'], $r['target']);
             break;
 
           case 'SOA':
@@ -58,23 +58,23 @@
             break;
 
           case 'PTR': 
-            $records[]= new PTRRecord($r['host'], $r['target']);
+            $records[]= new PTRRecord($r['host'], $r['ttl'], $r['target']);
             break;
 
           case 'MX': 
-            $records[]= new MXRecord($r['host'], $r['pri'], $r['target']);
+            $records[]= new MXRecord($r['host'], $r['ttl'], $r['pri'], $r['target']);
             break;
 
           case 'TXT': 
-            $records[]= new TXTRecord($r['host'], $r['txt']);
+            $records[]= new TXTRecord($r['host'], $r['ttl'], $r['txt']);
             break;
 
           case 'AAAA':
-            $records[]= new AAAARecord($r['host'], $r['ipv6']);
+            $records[]= new AAAARecord($r['host'], $r['ttl'], $r['ipv6']);
             break;
 
           case 'SRV': 
-            $records[]= new SRVRecord($r['host'], $r['pri'], $r['weight'], $r['port'], $r['target']);
+            $records[]= new SRVRecord($r['host'], $r['ttl'], $r['pri'], $r['weight'], $r['port'], $r['target']);
             break;
 
           case 'NAPTR':

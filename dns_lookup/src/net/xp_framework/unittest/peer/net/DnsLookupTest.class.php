@@ -26,7 +26,7 @@
      */
     public function setUp() {
       $this->fixture= new DnsLookup('example.com');
-      $this->record= new ARecord('example.com', '192.0.43.10');
+      $this->record= new ARecord('example.com', 0, '192.0.43.10');
     }
 
     /**

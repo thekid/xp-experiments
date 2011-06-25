@@ -18,13 +18,14 @@
      * Creates a new NS record
      *
      * @param   string name
+     * @param   int ttl
      * @param   int priority
      * @param   int weight
      * @param   int port
      * @param   string target
      */
-    public function __construct($name, $priority, $weight, $port, $target) {
-      parent::__construct($name);
+    public function __construct($name, $ttl, $priority, $weight, $port, $target) {
+      parent::__construct($name, $ttl);
       $this->priority= $priority;
       $this->weight= $weight;
       $this->port= $port;
@@ -76,7 +77,8 @@
     public function equals($cmp) {
       return (
         $cmp instanceof self && 
-        $this->name === $this->name && 
+        $this->name === $cmp->name && 
+        $this->ttl === $cmp->ttl && 
         $this->priority === $cmp->priority &&
         $this->weight === $cmp->weight &&
         $this->port === $cmp->port &&
@@ -90,7 +92,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'(->'.$this->target.':'.$this->port.', pri '.$this->priority.' weight '.$this->weight.')';
+      return $this->getClassName().'(ttl '.$this->ttl.' ->'.$this->target.':'.$this->port.', pri '.$this->priority.' weight '.$this->weight.')';
     }
   }
 ?>

@@ -17,10 +17,11 @@
      * Creates a new record
      *
      * @param   string name
+     * @param   int ttl
      * @param   string address
      */
-    public function __construct($name, $address) {
-      parent::__construct($name);
+    public function __construct($name, $ttl, $address) {
+      parent::__construct($name, $ttl);
       $this->address= $address instanceof Inet4Address ? $address : new Inet4Address($address);
     }
     
@@ -42,7 +43,8 @@
     public function equals($cmp) {
       return (
         $cmp instanceof self && 
-        $this->name === $this->name && 
+        $this->name === $cmp->name && 
+        $this->ttl === $cmp->ttl && 
         $this->address->equals($cmp->address)
       );
     }
@@ -53,7 +55,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->address->toString().')';
+      return $this->getClassName().'(ttl '.$this->ttl.' '.$this->address->toString().')';
     }
   }
 ?>

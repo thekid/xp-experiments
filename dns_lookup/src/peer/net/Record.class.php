@@ -14,22 +14,32 @@
     protected $name= '';
 
     /**
-     * (Insert method's description here)
+     * Creates a new record
      *
-     * @param   
-     * @param   
+     * @param   string name
+     * @param   int ttl
      */
-    public function __construct($name) {
+    public function __construct($name, $ttl) {
       $this->name= $name;
+      $this->ttl= $ttl;
     }
     
     /**
-     * (Insert method's description here)
+     * Gets name
      *
      * @return  string
      */
     public function getName() {
       return $this->name;
+    }
+
+    /**
+     * Gets name
+     *
+     * @return  string
+     */
+    public function getTtl() {
+      return $this->ttl;
     }
   }
 ?>

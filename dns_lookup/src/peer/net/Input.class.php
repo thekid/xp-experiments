@@ -86,15 +86,15 @@
       switch ($r['type']) {
         case 1:   // A
           $ip= implode('.', unpack('Ca/Cb/Cc/Cd', $this->read(4)));
-          return new ARecord($domain, $ip);
+          return new ARecord($domain, $r['ttl'], $ip);
 
         case 2:   // NS
           $target= $this->readDomain();
-          return new NSRecord($domain, $target);
+          return new NSRecord($domain, $r['ttl'], $target);
 
         case 5:    // CNAME
           $target= $this->readDomain();
-          return new CNAMERecord($domain, $target);
+          return new CNAMERecord($domain, $r['ttl'], $target);
 
         case 6:    // SOA
           $mname= $this->readDomain();
@@ -102,6 +102,7 @@
           $data= unpack('Nserial/Nrefresh/Nretry/Nexpire/Nminimum-ttl', $this->read(20));
           return new SOARecord(
             $domain, 
+            $r['ttl'], 
             $mname, 
             $rname,
             sprintf('%u', $data['serial']) + 0,   // convert from unsigned
@@ -113,25 +114,25 @@
 
         case 12:  // PTR
           $target= $this->readDomain();
-          return new PTRRecord($domain, $target);
+          return new PTRRecord($domain, $r['ttl'], $target);
 
         case 15:  // MX
           $pri= unpack('nlevel', $this->read(2));
           $ns= $this->readDomain();
-          return new MXRecord($domain, $pri['level'], $ns);
+          return new MXRecord($domain, $r['ttl'], $pri['level'], $ns);
 
         case 16:  // TXT
           $text= $this->read($r['length']);
-          return new TXTRecord($domain, $text);
+          return new TXTRecord($domain, $r['ttl'], $text);
 
         case 28:   // AAAA
           $ip= unpack('H*quads', $this->read(16));
-          return new AAAARecord($domain, substr(chunk_split($ip['quads'], 4, ':'), 0, -1));
+          return new AAAARecord($domain, $r['ttl'], substr(chunk_split($ip['quads'], 4, ':'), 0, -1));
 
         case 33:  // SRV
           $data= unpack('npri/nweight/nport', $this->read(6));
           $target= $this->readDomain();
-          return new SRVRecord($domain, $data['pri'], $data['weight'], $data['port'], $target);
+          return new SRVRecord($domain, $r['ttl'], $data['pri'], $data['weight'], $data['port'], $target);
 
         case 35:  // NAPTR
           $data= unpack('norder/npref', $this->read(4));
@@ -139,7 +140,7 @@
           $services= $this->readLabel();
           $regex= $this->readLabel();
           $replacement= $this->readLabel();
-          return new NAPTRRecord($domain, $data['order'], $data['pref'], $flags, $services, $regex, $replacement);
+          return new NAPTRRecord($domain, $r['ttl'], $data['order'], $data['pref'], $flags, $services, $regex, $replacement);
 
       }
       throw new ProtocolException('Unknown record type '.$r['type']);

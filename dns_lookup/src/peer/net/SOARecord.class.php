@@ -17,6 +17,7 @@
      * Creates a new NS record
      *
      * @param   string name
+     * @param   int ttl
      * @param   string mname
      * @param   string rname
      * @param   int serial
@@ -25,8 +26,8 @@
      * @param   int expire
      * @param   int minTtl
      */
-    public function __construct($name, $mname, $rname, $serial, $refresh, $retry, $expire, $minTtl) {
-      parent::__construct($name);
+    public function __construct($name, $ttl, $mname, $rname, $serial, $refresh, $retry, $expire, $minTtl) {
+      parent::__construct($name, $ttl);
       $this->mname= $mname;
       $this->rname= $rname;
       $this->mname= $mname;
@@ -109,7 +110,8 @@
     public function equals($cmp) {
       return (
         $cmp instanceof self && 
-        $this->name === $this->name && 
+        $this->name === $cmp->name && 
+        $this->ttl === $cmp->ttl && 
         $this->mname === $cmp->mname &&
         $this->rname === $cmp->rname &&
         $this->mname === $cmp->mname &&
@@ -128,13 +130,14 @@
      */
     public function toString() {
       return sprintf(
-        "%s(%s %s, serial %d)@{\n".
+        "%s(ttl %d, %s %s, serial %d)@{\n".
         "  [refresh] %d\n".
         "  [retry]   %d\n".
         "  [expire]  %d\n".
         "  [min-ttl] %d\n".
         "}",
         $this->getClassName(),
+        $this->ttl,
         $this->mname,
         $this->rname,
         $this->serial,
