@@ -122,7 +122,8 @@
           return new MXRecord($domain, $r['ttl'], $pri['level'], $ns);
 
         case 16:  // TXT
-          $text= $this->read($r['length']);
+          $length= unpack('Cbytes', $this->read(1));
+          $text= $this->read($length['bytes']);
           return new TXTRecord($domain, $r['ttl'], $text);
 
         case 28:   // AAAA
