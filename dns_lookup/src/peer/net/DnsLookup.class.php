@@ -89,7 +89,14 @@
       $request->setFlags(0x0100 & 0x0300);  // recursion & queryspecmask
       $request->addRecord(new peer·net·Query($this->name, $this->type, 1));
 
-      $response= $this->getResolver()->send($request);
+      try {
+        $response= $this->getResolver()->send($request);
+      } catch (ResolveException $e) {
+        throw $e;
+      } catch (Throwable $t) {
+        throw new ResolveException($t->getMessage(), $t);
+      }
+
       return $response->getRecords();
     }
   }
