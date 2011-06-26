@@ -70,17 +70,12 @@
       
       // Qualify name
       $name= $records[0]->getName();
-      if (substr_count($name, '.') < 1) {
-        $names= array($name => TRUE);
-        $this->domain && $names[$name.'.'.$this->domain]= TRUE;
-        foreach ($this->search as $domain) {
-          $names[$name.'.'.$domain]= TRUE;
-        }
-        $names= empty($names) ? array($name) : $names;
-      } else {
-        $names= array($name => TRUE);
+      $names= array($name => TRUE);
+      $this->domain && $names[$name.'.'.$this->domain]= TRUE;
+      foreach ($this->search as $domain) {
+        $names[$name.'.'.$domain]= TRUE;
       }
-     
+
       $return= xp::null();
       foreach ($names as $name => $lookup) {
         // DEBUG Console::write($name);
@@ -129,9 +124,7 @@
         // DEBUG Console::writeLine(' => ', $header['flags']);
         
         // NXDOMAIN -> continue to next in list
-        if (3 === ($header['flags'] & 0xF)) {
-          continue;
-        }
+        if (3 === ($header['flags'] & 0xF)) continue;
         
         $input= new peer·net·Input($input);
         // DEBUG Console::writeLine('INPUT  ', $input);
@@ -156,6 +149,7 @@
         for ($i= 0; $i < $header['arcount']; $i++) {
           $return->addRecord($input->readRecord());
         }
+        break;
       }
 
       return $return;
