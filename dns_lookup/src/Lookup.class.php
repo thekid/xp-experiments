@@ -32,7 +32,7 @@
         $resolver= Resolvers::defaultResolver();
         $shift= 0;
       }
-
+      
       $name= $args[$shift];
       $types= array_slice($args, $shift+ 1);
       Console::writeLine('>>> ', $name, '->(', implode(' & ', $types), ') @ ', $resolver);

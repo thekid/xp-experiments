@@ -37,7 +37,7 @@
         throw new IllegalArgumentException('Unsupported type '.$type);
       }
       
-      $auth= $add= NULL;
+      $auth= $add= array();
       $query= dns_get_record($records[0]->getName(), constant($type), $auth, $add);
 
       $return= new peer·net·Message(-1);
@@ -115,6 +115,24 @@
       }
       
       return $return;
+    }
+
+    /**
+     * Set domain
+     *
+     * @param   string name
+     */
+    public function setDomain($name) {
+      // NOOP, built-in function takes care of this
+    }
+
+    /**
+     * Set search list
+     *
+     * @param   string[] domains
+     */
+    public function setSearch($domains) {
+      // NOOP, built-in function takes care of this
     }
     
     /**

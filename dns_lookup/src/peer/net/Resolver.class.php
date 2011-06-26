@@ -36,5 +36,19 @@
      * @throws  lang.Throwable
      */
     public function send(peer·net·Message $query);
+
+    /**
+     * Set domain
+     *
+     * @param   string name
+     */
+    public function setDomain($name);
+
+    /**
+     * Set search list
+     *
+     * @param   string[] domains
+     */
+    public function setSearch($domains);
   }
 ?>

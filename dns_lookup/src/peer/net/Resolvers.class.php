@@ -66,11 +66,13 @@
       if (strncasecmp(PHP_OS, 'Win', 3) === 0) {
         try {
           $c= new COM('winmgmts://./root/cimv2');
-          $q= $c->ExecQuery('select DNSServerSearchOrder from Win32_NetworkAdapterConfiguration where IPEnabled = true');
+          $q= $c->ExecQuery('select DNSServerSearchOrder, DNSDomain, DNSDomainSuffixSearchOrder from Win32_NetworkAdapterConfiguration where IPEnabled = true');
           foreach ($q as $result) {
             foreach ($result->DNSServerSearchOrder as $server) {
               $resolver->addDelegate(new DnsResolver($server));
             }
+            $resolver->setDomain($result->DNSDomain);
+            $resolver->setSearch($result->DNSDomainSuffixSearchOrder);
           }
         } catch (Exception $e) {
           throw new IllegalStateException($e->getMessage());
@@ -79,6 +81,10 @@
         foreach (file('/etc/resolv.conf') as $line) {
           if (strncmp($line, 'nameserver', 10) === 0) {
             $resolver->addDelegate(new DnsResolver(rtrim(substr($line, 11))));
+          } else if (strncmp($line, 'domain', 6) === 0) {
+            $resolver->setDomain(rtrim(substr($line, 7)));
+          } else if (strncmp($line, 'search', 6) === 0) {
+            $resolver->setSearch(explode(' ', rtrim(substr($line, 7))));
           }
         }
       } else {

@@ -86,6 +86,28 @@
     }
 
     /**
+     * Set domain
+     *
+     * @param   string name
+     */
+    public function setDomain($name) {
+      foreach ($this->delegates as $resolver) {
+        $resolver->setDomain($name);
+      }
+    }
+
+    /**
+     * Set search list
+     *
+     * @param   string[] domains
+     */
+    public function setSearch($domains) {
+      foreach ($this->delegates as $resolver) {
+        $resolver->setSearch($domains);
+      }
+    }
+
+    /**
      * Creates a string representation of this object
      *
      * @return  string

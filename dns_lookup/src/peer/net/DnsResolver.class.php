@@ -19,6 +19,8 @@
    */
   class DnsResolver extends Object implements peer·net·Resolver {
     protected $sock= NULL;
+    protected $domain= NULL;
+    protected $search= NULL;
   
     /**
      * Constructor
@@ -66,72 +68,114 @@
       // Connect if necessary
       if (!$this->sock->isConnected()) $this->sock->connect();
       
-      // Compose message
-      $send= pack(
-        'nnnnnn', 
-        $query->getId(), 
-        $query->getOpcode() | $query->getFlags(),
-        1,                // QDCOUNT
-        0,                // ANCOUNT
-        0,                // NSCOUNT
-        0                 // ARCOUNT
-      );
-      
-      foreach (explode('.', $records[0]->getName()) as $label) {
-        $send.= pack('C', strlen($label)).$label;
+      // Qualify name
+      $name= $records[0]->getName();
+      if (substr_count($name, '.') < 1) {
+        $names= array($name => TRUE);
+        $this->domain && $names[$name.'.'.$this->domain]= TRUE;
+        foreach ($this->search as $domain) {
+          $names[$name.'.'.$domain]= TRUE;
+        }
+        $names= empty($names) ? array($name) : $names;
+      } else {
+        $names= array($name => TRUE);
       }
-      $send.= "\0";
-      $send.= pack(
-        'nn', 
-        $records[0]->getQType()->ordinal(),
-        $records[0]->getQClass()->ordinal()
-      );
+      
+      foreach ($names as $name => $lookup) {
+        // DEBUG Console::write($name);
 
-      // Communication
-      $this->sock->write($send);
-      $header= unpack('nid/c1op/c1flags/nqdcount/nancount/nnscount/narcount', $this->sock->readBinary(12));
-      
-      // Verify header id
-      if ($header['id'] !== $query->getId()) {
-        throw new ProtocolException('Expected answer for #'.$query->getId().', have '.$header['id']);
-      }
+        // Compose message
+        $send= pack(
+          'nnnnnn', 
+          $query->getId(), 
+          $query->getOpcode() | $query->getFlags(),
+          1,                // QDCOUNT
+          0,                // ANCOUNT
+          0,                // NSCOUNT
+          0                 // ARCOUNT
+        );
+        foreach (explode('.', $name) as $label) {
+          $send.= pack('C', strlen($label)).$label;
+        }
+        $send.= "\0";
+        $send.= pack(
+          'nn', 
+          $records[0]->getQType()->ordinal(),
+          $records[0]->getQClass()->ordinal()
+        );
 
-      $return= new peer·net·Message($header['id']);
-      $return->setOpcode($header['op']);
-      $return->setFlags($header['flags']);
+        // Communication
+        $this->sock->write($send);
+        $header= unpack('nid/c1op/c1flags/nqdcount/nancount/nnscount/narcount', $this->sock->readBinary(12));
 
-      // Read rest of packet (max. 512 bytes for entire message!)
-      $this->sock->setBlocking(FALSE);
-      $input= '';
-      while ($chunk= $this->sock->readBinary(500)) {
-        $input.= $chunk;
-      }
-      $this->sock->setBlocking(TRUE);
-      $input= new peer·net·Input($input);
-      // DEBUG Console::writeLine('INPUT  ', $input);
-      
-      // Parse questions
-      for ($i= 0; $i < $header['qdcount']; $i++) {
-        $domain= $input->readDomain();
-        $input->read(4);    // QTYPE, QCLASS -> skip for the moment
-      }
-      
-      // Parse answer section 
-      for ($i= 0; $i < $header['ancount']; $i++) {
-        $return->addRecord($input->readRecord());
-      }
-      
-      // Parse authority section
-      for ($i= 0; $i < $header['nscount']; $i++) {
-        $return->addRecord($input->readRecord());
-      }
-      
-      // Parse additional records section
-      for ($i= 0; $i < $header['arcount']; $i++) {
-        $return->addRecord($input->readRecord());
-      }
+        // Verify header id
+        if ($header['id'] !== $query->getId()) {
+          throw new ProtocolException('Expected answer for #'.$query->getId().', have '.$header['id']);
+        }
 
-      return $return;
+        $return= new peer·net·Message($header['id']);
+        $return->setOpcode($header['op']);
+        $return->setFlags($header['flags']);
+
+        // Read rest of packet (max. 512 bytes for entire message!)
+        $this->sock->setBlocking(FALSE);
+        $input= '';
+        while ($chunk= $this->sock->readBinary(500)) {
+          $input.= $chunk;
+        }
+        $this->sock->setBlocking(TRUE);
+        
+        // DEBUG Console::writeLine(' => ', $header['flags']);
+        
+        // NXDOMAIN -> continue to next in list
+        if (3 === ($header['flags'] & 0xF)) {
+          continue;
+        }
+        
+        $input= new peer·net·Input($input);
+        // DEBUG Console::writeLine('INPUT  ', $input);
+
+        // Parse questions
+        for ($i= 0; $i < $header['qdcount']; $i++) {
+          $domain= $input->readDomain();
+          $input->read(4);    // QTYPE, QCLASS -> skip for the moment
+        }
+
+        // Parse answer section 
+        for ($i= 0; $i < $header['ancount']; $i++) {
+          $return->addRecord($input->readRecord());
+        }
+
+        // Parse authority section
+        for ($i= 0; $i < $header['nscount']; $i++) {
+          $return->addRecord($input->readRecord());
+        }
+
+        // Parse additional records section
+        for ($i= 0; $i < $header['arcount']; $i++) {
+          $return->addRecord($input->readRecord());
+        }
+
+        return $return;
+      }
+    }
+
+    /**
+     * Set domain
+     *
+     * @param   string name
+     */
+    public function setDomain($name) {
+      $this->domain= $name;
+    }
+
+    /**
+     * Set search list
+     *
+     * @param   string[] domains
+     */
+    public function setSearch($domains) {
+      $this->search= $domains;
     }
     
     /**

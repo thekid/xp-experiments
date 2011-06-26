@@ -36,6 +36,24 @@
       $this->exception= $exception;
       return $this;
     }
+
+    /**
+     * Set domain
+     *
+     * @param   string name
+     */
+    public function setDomain($name) {
+      // Intentionally empty
+    }
+
+    /**
+     * Set search list
+     *
+     * @param   string[] domains
+     */
+    public function setSearch($domains) {
+      // Intentionally empty
+    }
     
     /**
      * Send query for resolution and return nameservers records
