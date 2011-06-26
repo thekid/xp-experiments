@@ -7,7 +7,8 @@
   uses(
     'peer.net.Resolvers', 
     'peer.net.QType', 
-    'peer.net.Question'
+    'peer.net.Question',
+    'peer.net.Response'
   );
 
   /**
