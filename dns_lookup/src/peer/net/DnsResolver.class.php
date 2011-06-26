@@ -80,7 +80,8 @@
       } else {
         $names= array($name => TRUE);
       }
-      
+     
+      $return= xp::null();
       foreach ($names as $name => $lookup) {
         // DEBUG Console::write($name);
 
@@ -155,9 +156,9 @@
         for ($i= 0; $i < $header['arcount']; $i++) {
           $return->addRecord($input->readRecord());
         }
-
-        return $return;
       }
+
+      return $return;
     }
 
     /**
