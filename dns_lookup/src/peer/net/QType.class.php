@@ -9,6 +9,7 @@
   /**
    * DNS query types
    *
+   * @test  xp://net.xp_framework.unittest.peer.net.QTypeTest
    * @see   http://en.wikipedia.org/wiki/List_of_DNS_record_types
    * @see   rfc://1035 Section "3.2.2. TYPE values" and "3.2.3 QTYPE values".
    * @see   rfc://2782 A DNS RR for specifying the location of services (DNS SRV)
