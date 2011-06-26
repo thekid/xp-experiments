@@ -9,6 +9,7 @@
   /**
    * DNS rcodes
    *
+   * @test  xp://net.xp_framework.unittest.peer.net.RCodeTest
    * @see   rfc://1035
    * @see   rfc://2136
    * @see   rfc://2845
@@ -64,7 +65,7 @@
      * @return  peet.net.RCode
      * @throws  lang.IllegalArgumentException if this rcode is not known
      */
-    public static function forCode($rcode) {
+    public static function withId($rcode) {
       static $map= NULL; if (NULL === $map) $map= array(
          0 => self::$SUCCESS,
          1 => self::$FORMERR,
@@ -81,6 +82,9 @@
         17 => self::$BADSIG,
         18 => self::$BADTIME,
         19 => self::$BADMODE,
+        20 => self::$BADNAME,
+        21 => self::$BADALG,
+        22 => self::$BADTRUNK,
       );
 
       if (!isset($map[$rcode])) {

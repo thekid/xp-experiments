@@ -24,7 +24,7 @@
      * @param   peer.net.Record[] records
      */
     public function __construct($result, $records) {
-      $this->result= $result instanceof RCode ? $result : RCode::forCode($result);
+      $this->result= $result instanceof RCode ? $result : RCode::withId($result);
       $this->records= $records;
     }
 
