@@ -70,6 +70,18 @@
 
       self::$ANY= new self(255, 'ANY');
     }
+
+    /**
+     * Creates a QType instance from a given 
+     *
+     * @param   string name
+     * @return  peer.net.QType
+     * @throws  lang.IllegalArgumentException in case the enum member does not exist
+     */
+    public static function named($name) {
+      return parent::valueOf(new XPClass(__CLASS__), $name);
+    }
+
     
     /**
      * Returns all enum members
