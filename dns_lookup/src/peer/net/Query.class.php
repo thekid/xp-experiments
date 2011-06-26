@@ -53,7 +53,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->name.' '.$this->type->toString().' / '.$this->dclass.')';
+      return $this->getClassName().'('.$this->name.' '.$this->qtype->toString().' / '.$this->qclass.')';
     }
   }
 ?>
