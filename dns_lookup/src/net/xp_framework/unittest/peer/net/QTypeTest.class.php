@@ -29,6 +29,17 @@
      * Test named() method
      *
      */
+    #[@test]
+    public function coverage() {
+      foreach (QType::values() as $qtype) {
+        $this->assertEquals($qtype, QType::named($qtype->name()), $qtype->name());
+      }
+    }
+
+    /**
+     * Test named() method
+     *
+     */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function lowerCaseNamesNotSupported() {
       QType::named('a');
