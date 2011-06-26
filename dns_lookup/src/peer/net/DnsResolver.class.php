@@ -84,7 +84,7 @@
       $send.= pack(
         'nn', 
         $records[0]->getQType()->ordinal(),
-        $records[0]->getQClass()
+        $records[0]->getQClass()->ordinal()
       );
 
       // Communication

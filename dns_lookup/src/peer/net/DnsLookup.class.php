@@ -43,19 +43,18 @@
    * @see   http://www.netfor2.com/dns.htm
    */
   class DnsLookup extends Object {
-    protected $name= '';
-    protected $type= NULL;
     protected $resolver= NULL;
+    protected $question= NULL;
   
     /**
      * Create a new lookup
      *
      * @param   string name
      * @param   peer.net.QType type default NULL if omitted, ANY
+     * @param   peer.net.QClass qclass default NULL if omitted, IN
      */
-    public function __construct($name, QType $type= NULL) {
-      $this->name= $name;
-      $this->type= NULL === $type ? QType::$ANY : $type;
+    public function __construct($name, QType $type= NULL, QClass $class= NULL) {
+      $this->question= new Question($name, $type, $class);
     }
   
     /**
@@ -99,7 +98,7 @@
      */
     public function run() {
       try {
-        $result= $this->getResolver()->send(new Question($this->name, $this->type, 1));
+        $result= $this->getResolver()->send($this->question);
       } catch (ResolveException $e) {
         throw $e;
       } catch (Throwable $t) {

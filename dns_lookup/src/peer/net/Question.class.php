@@ -7,6 +7,7 @@
   uses(
     'peer.net.Message',
     'peer.net.QType', 
+    'peer.net.QClass', 
     'peer.net.Query'
   );
 
@@ -26,16 +27,16 @@
      *
      * @param   string name
      * @param   peer.net.QType qtype default NULL if omitted, ANY
-     * @param   int qclass default 1
+     * @param   peer.net.QClass qclass default NULL if omitted, IN
      */
-    public function __construct($name, QType $qtype= NULL, $qclass= 1) {
+    public function __construct($name, QType $qtype= NULL, QClass $qclass= NULL) {
       parent::__construct();                // Generate an ID
       $this->setOpcode(0);                  // Question
       $this->setFlags(0x0100 & 0x0300);     // Recursion & Queryspecmask
       $this->addRecord(new peer·net·Query(  // Query record
         $name, 
         NULL === $qtype ? QType::$ANY : $qtype,
-        $qclass
+        NULL === $qclass ? QClass::$IN : $qclass
       ));
     }
     
@@ -46,7 +47,7 @@
      */
     public function hashCode() {
       $r= cast($this->records[0], 'peer.net.Query');
-      return pack('nna*', $r->getQType()->ordinal(), $r->getQClass(), $r->getName());
+      return pack('nna*', $r->getQType()->ordinal(), $r->getQClass()->ordinal(), $r->getName());
     }
     
     /**

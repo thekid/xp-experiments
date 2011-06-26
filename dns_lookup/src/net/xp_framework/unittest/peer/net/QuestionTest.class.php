@@ -7,7 +7,8 @@
   uses(
     'unittest.TestCase',
     'peer.net.Question',
-    'peer.net.QType'
+    'peer.net.QType',
+    'peer.net.QClass'
   );
 
   /**
@@ -24,8 +25,8 @@
     #[@test]
     public function equality() {
       $this->assertEquals(
-        new Question('example.com', QType::$A, 1),
-        new Question('example.com', QType::$A, 1)
+        new Question('example.com', QType::$A, QClass::$IN),
+        new Question('example.com', QType::$A, QClass::$IN)
       );
     }
 
@@ -36,8 +37,8 @@
     #[@test]
     public function withDifferentTypeNotEqual() {
       $this->assertNotEquals(
-        new Question('example.com', QType::$A, 1),
-        new Question('example.com', QType::$AAAA, 1)
+        new Question('example.com', QType::$A, QClass::$IN),
+        new Question('example.com', QType::$AAAA, QClass::$IN)
       );
     }
 
@@ -48,8 +49,8 @@
     #[@test]
     public function withDifferentClassNotEqual() {
       $this->assertNotEquals(
-        new Question('example.com', QType::$A, 1),
-        new Question('example.com', QType::$A, 3)
+        new Question('example.com', QType::$A, QClass::$IN),
+        new Question('example.com', QType::$A, QClass::$CH)
       );
     }
 
@@ -60,8 +61,8 @@
     #[@test]
     public function withDifferentNameNotEqual() {
       $this->assertNotEquals(
-        new Question('example.com', QType::$A, 1),
-        new Question('a.example.com', QType::$A, 1)
+        new Question('example.com', QType::$A, QClass::$IN),
+        new Question('a.example.com', QType::$A, QClass::$IN)
       );
     }
 
@@ -72,7 +73,7 @@
     #[@test]
     public function notEqualToMessage() {
       $this->assertNotEquals(
-        new Question('example.com', QType::$A, 1),
+        new Question('example.com', QType::$A, QClass::$IN),
         new peer·net·Message()
       );
     }
