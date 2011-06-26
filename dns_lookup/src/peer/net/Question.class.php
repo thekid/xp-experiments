@@ -33,7 +33,8 @@
       parent::__construct();                // Generate an ID
       $this->setOpcode(0);                  // Question
       $this->setFlags(0x0100 & 0x0300);     // Recursion & Queryspecmask
-      $this->addRecord(new peer·net·Query(  // Query record
+
+      $this->addRecord(Sections::QUESTION, new peer·net·Query(
         $name, 
         NULL === $qtype ? QType::$ANY : $qtype,
         NULL === $qclass ? QClass::$IN : $qclass
@@ -46,7 +47,7 @@
      * @return  string
      */
     public function hashCode() {
-      $r= cast($this->records[0], 'peer.net.Query');
+      $r= cast($this->records[Sections::QUESTION][0], 'peer.net.Query');
       return pack('nna*', $r->getQType()->ordinal(), $r->getQClass()->ordinal(), $r->getName());
     }
     

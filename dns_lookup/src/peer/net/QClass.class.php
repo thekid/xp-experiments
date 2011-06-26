@@ -27,6 +27,28 @@
       self::$NONE= new self(254, 'NONE');
       self::$ANY= new self(255, 'ANY');
     }
+
+    /**
+     * Returns a QClass instance for a given numeric qclass
+     *
+     * @param   int qclass
+     * @return  peet.net.QClass
+     * @throws  lang.IllegalArgumentException if this qclass is not known
+     */
+    public static function withId($qclass) {
+      static $map= NULL; if (NULL === $map) $map= array(
+        1   => self::$IN,
+        3   => self::$CH,
+        4   => self::$HS,
+        254 => self::$NONE,
+        255 => self::$ANY,
+      );
+
+      if (!isset($map[$qclass])) {
+        throw new IllegalArgumentException('No such qclass #'.$qclass);
+      }
+      return $map[$qclass];
+    }
     
     /**
      * Returns all enum members

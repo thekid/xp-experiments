@@ -53,7 +53,15 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->name.' '.$this->qtype->toString().' / '.$this->qclass.')';
+      return sprintf(
+        '%s("%s" #%d:%s #%d:%s)',
+        $this->getClassName(),
+        $this->name,
+        $this->qtype->ordinal(),
+        $this->qtype->name(),
+        $this->qclass->ordinal(),
+        $this->qclass->name()
+      );
     }
   }
 ?>

@@ -68,7 +68,7 @@
 
       $message= new peer·net·Message();
       foreach ($this->records as $record) {
-        $message->addRecord($record);
+        $message->addRecord(Sections::ANSWER, $record);
       }
       return $message;
     }

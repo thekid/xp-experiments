@@ -73,6 +73,34 @@
     }
 
     /**
+     * Returns a QType instance for a given numeric qtype
+     *
+     * @param   int qtype
+     * @return  peet.net.QType
+     * @throws  lang.IllegalArgumentException if this qtype is not known
+     */
+    public static function withId($qtype) {
+      static $map= NULL; if (NULL === $map) $map= array(
+        1   => self::$A,
+        2   => self::$NS,
+        5   => self::$CNAME,
+        6   => self::$SOA,
+        12  => self::$PTR,
+        15  => self::$MX,
+        16  => self::$TXT,
+        28  => self::$AAAA,
+        33  => self::$SRV,
+        35  => self::$NAPTR,
+        255 => self::$ANY,
+      );
+
+      if (!isset($map[$qtype])) {
+        throw new IllegalArgumentException('No such qtype #'.$qtype);
+      }
+      return $map[$qtype];
+    }
+
+    /**
      * Creates a QType instance from a given 
      *
      * @param   string name

@@ -105,7 +105,7 @@
         throw new ResolveException($t->getMessage(), $t);
       }
       
-      return new peer·net·Response($result->getRcode(), $result->getRecords());
+      return new peer·net·Response($result->getRcode(), $result->allRecords());
     }
   }
 ?>

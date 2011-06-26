@@ -30,9 +30,29 @@
      *
      */
     #[@test]
-    public function coverage() {
+    public function namedMethodCoverage() {
       foreach (QType::values() as $qtype) {
         $this->assertEquals($qtype, QType::named($qtype->name()), $qtype->name());
+      }
+    }
+
+    /**
+     * Test withId() method
+     *
+     */
+    #[@test]
+    public function withId1() {
+      $this->assertEquals(QType::$A, QType::withId(1));
+    }
+
+    /**
+     * Test withId() method
+     *
+     */
+    #[@test]
+    public function withIdMethodCoverage() {
+      foreach (QType::values() as $qtype) {
+        $this->assertEquals($qtype, QType::withId($qtype->ordinal()), $qtype->name());
       }
     }
 

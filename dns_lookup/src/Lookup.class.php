@@ -40,7 +40,7 @@
       $requests= array();
       foreach ($types as $type) {
         $response= $resolver->send(new Question($name, QType::named($type)));
-        $result= new peer·net·Response($response->getRcode(), $response->getRecords());
+        $result= new peer·net·Response($response->getRcode(), $response->allRecords());
 
         Console::writeLine('<<< ', $result);
       }

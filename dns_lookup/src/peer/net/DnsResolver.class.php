@@ -60,7 +60,7 @@
       // Check for multiple records, which, in real life, doesn't work
       // See http://www.mail-archive.com/comp-protocols-dns-bind@isc.org/msg00165.html
       // See http://www.maradns.org/multiple.qdcount.html
-      $records= $query->getRecords();
+      $records= $query->getRecords(Sections::QUESTION);
       if (sizeof($records) > 1) {
         throw new IllegalArgumentException('Multiple questions don\'t work with most servers');
       }
@@ -132,22 +132,27 @@
         // Parse questions
         for ($i= 0; $i < $header['qdcount']; $i++) {
           $domain= $input->readDomain();
-          $input->read(4);    // QTYPE, QCLASS -> skip for the moment
+          $r= unpack('ntype/nclass', $input->read(4));
+          $return->addRecord(Sections::QUESTION, new peer·net·Query(
+            $domain,
+            QType::withId($r['type']),
+            QClass::withId($r['class'])
+          ));
         }
 
         // Parse answer section 
         for ($i= 0; $i < $header['ancount']; $i++) {
-          $return->addRecord($input->readRecord());
+          $return->addRecord(Sections::ANSWER, $input->readRecord());
         }
 
         // Parse authority section
         for ($i= 0; $i < $header['nscount']; $i++) {
-          $return->addRecord($input->readRecord());
+          $return->addRecord(Sections::AUTHORITY, $input->readRecord());
         }
 
         // Parse additional records section
         for ($i= 0; $i < $header['arcount']; $i++) {
-          $return->addRecord($input->readRecord());
+          $return->addRecord(Sections::ADDITIONAL, $input->readRecord());
         }
         break;
       }

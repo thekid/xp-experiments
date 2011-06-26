@@ -5,6 +5,8 @@
  */
 
   $package= 'peer.net';
+  
+  uses('peer.net.Sections');
 
   /**
    * Represents a DNS message
@@ -15,7 +17,12 @@
     protected $flags= 0;
     protected $opcode= 0;
     protected $type= 0;
-    protected $records= array();
+    protected $records= array(
+      Sections::QUESTION    => array(),
+      Sections::ANSWER      => array(),
+      Sections::AUTHORITY   => array(),
+      Sections::ADDITIONAL  => array()
+    );
 
     /**
      * Creates an ID for this message
@@ -104,18 +111,29 @@
     /**
      * Adds a record
      *
+     * @param   int section
      * @param   peer.net.Record record
      */
-    public function addRecord($record) {
-      $this->records[]= $record;
+    public function addRecord($section, $record) {
+      $this->records[$section][]= $record;
+    }
+
+    /**
+     * Gets all records for a given section
+     *
+     * @param   int section
+     * @return  peer.net.Record[]
+     */
+    public function getRecords($section) {
+      return $this->records[$section];
     }
 
     /**
      * Gets all records
      *
-     * @return  peer.net.Record[]
+     * @return  peer.net.Record[][]
      */
-    public function getRecords() {
+    public function allRecords() {
       return $this->records;
     }
   }

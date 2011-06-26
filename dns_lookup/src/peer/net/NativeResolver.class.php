@@ -15,6 +15,67 @@
    * @see   php://dns_get_record
    */
   class NativeResolver extends Object implements peer·net·Resolver {
+  
+    protected function asRecord($r) {
+      switch ($r['type']) {
+        case 'A': 
+          return new ARecord($r['host'], $r['ttl'], $r['ip']);
+
+        case 'NS': 
+          return new NSRecord($r['host'], $r['ttl'], $r['target']);
+
+        case 'CNAME':
+          return new CNAMERecord($r['host'], $r['ttl'], $r['target']);
+
+        case 'PTR': 
+          return new PTRRecord($r['host'], $r['ttl'], $r['target']);
+
+        case 'MX': 
+          return new MXRecord($r['host'], $r['ttl'], $r['pri'], $r['target']);
+
+        case 'TXT': 
+          return new TXTRecord($r['host'], $r['ttl'], $r['txt']);
+
+        case 'AAAA':
+          return new AAAARecord($r['host'], $r['ttl'], $r['ipv6']);
+
+        case 'SOA':
+          return new SOARecord(
+            $r['host'], 
+            $r['mname'], 
+            $r['rname'],
+            $r['serial'], 
+            $r['refresh'], 
+            $r['retry'], 
+            $r['expire'], 
+            $r['minimum-ttl']
+          );
+
+        case 'SRV': 
+          return new SRVRecord(
+            $r['host'], 
+            $r['ttl'], 
+            $r['pri'], 
+            $r['weight'], 
+            $r['port'], 
+            $r['target']
+          );
+
+        case 'NAPTR':
+          return new NAPTRRecord(
+            $r['host'], 
+            $r['order'], 
+            $r['pref'], 
+            strtoupper($r['flags']), 
+            $r['services'], 
+            $r['regex'], 
+            $r['replacement']
+          );
+
+        default:
+          throw new ProtocolException('Unknown record type '.$r['type']);
+      }
+    }
     
     /**
      * Send query for resolution and return nameservers records
@@ -27,7 +88,7 @@
       // Check for multiple records, which, in real life, doesn't work
       // See http://www.mail-archive.com/comp-protocols-dns-bind@isc.org/msg00165.html
       // See http://www.maradns.org/multiple.qdcount.html
-      $records= $query->getRecords();
+      $records= $query->getRecords(Sections::QUESTION);
       if (sizeof($records) > 1) {
         throw new IllegalArgumentException('Multiple questions don\'t work with most servers');
       }
@@ -39,10 +100,11 @@
       
       $auth= $add= array();
       $query= dns_get_record($records[0]->getName(), constant($type), $auth, $add);
+      $results= is_array($query) ? $query : array();
 
       $return= new peer·net·Message(-1);
       $return->setOpcode(-1);
-      $results= array_merge(is_array($query) ? $query : array(), $auth, $add);
+      $return->addRecord(Sections::QUESTION, $records[0]);
 
       // NXDOMAIN is the only input we can distinguish
       if (empty($results)) {
@@ -50,68 +112,19 @@
         return $return;
       }
 
+      // Parse answer section 
       foreach ($results as $r) {
-        switch ($r['type']) {
-          case 'A': 
-            $return->addRecord(new ARecord($r['host'], $r['ttl'], $r['ip']));
-            break;
+        $return->addRecord(Sections::ANSWER, $this->asRecord($r));
+      }
 
-          case 'NS': 
-            $return->addRecord(new NSRecord($r['host'], $r['ttl'], $r['target']));
-            break;
-          
-          case 'CNAME':
-            $return->addRecord(new CNAMERecord($r['host'], $r['ttl'], $r['target']));
-            break;
+      // Parse authority section
+      foreach ($auth as $r) {
+        $return->addRecord(Sections::AUTHORITY, $this->asRecord($r));
+      }
 
-          case 'SOA':
-            $return->addRecord(new SOARecord(
-              $r['host'], 
-              $r['mname'], 
-              $r['rname'],
-              $r['serial'], 
-              $r['refresh'], 
-              $r['retry'], 
-              $r['expire'], 
-              $r['minimum-ttl']
-            ));
-            break;
-
-          case 'PTR': 
-            $return->addRecord(new PTRRecord($r['host'], $r['ttl'], $r['target']));
-            break;
-
-          case 'MX': 
-            $return->addRecord(new MXRecord($r['host'], $r['ttl'], $r['pri'], $r['target']));
-            break;
-
-          case 'TXT': 
-            $return->addRecord(new TXTRecord($r['host'], $r['ttl'], $r['txt']));
-            break;
-
-          case 'AAAA':
-            $return->addRecord(new AAAARecord($r['host'], $r['ttl'], $r['ipv6']));
-            break;
-
-          case 'SRV': 
-            $return->addRecord(new SRVRecord($r['host'], $r['ttl'], $r['pri'], $r['weight'], $r['port'], $r['target']));
-            break;
-
-          case 'NAPTR':
-            $return->addRecord(new NAPTRRecord(
-              $r['host'], 
-              $r['order'], 
-              $r['pref'], 
-              strtoupper($r['flags']), 
-              $r['services'], 
-              $r['regex'], 
-              $r['replacement']
-            ));
-            break;
-          
-          default:
-            throw new ProtocolException('Unknown record type '.$r['type']);
-        }
+      // Parse additional records section
+      foreach ($add as $r) {
+        $return->addRecord(Sections::ADDITIONAL, $this->asRecord($r));
       }
       
       return $return;

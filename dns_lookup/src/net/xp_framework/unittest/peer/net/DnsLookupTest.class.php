@@ -69,7 +69,7 @@
     #[@test]
     public function succedingResolver() {
       $this->fixture->setResolver(create(new FakeResolver())->returning(array($this->record)));
-      $this->assertEquals(array($this->record), $this->fixture->run()->records());
+      $this->assertEquals(array($this->record), $this->fixture->run()->answers());
     }
 
     /**
