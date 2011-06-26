@@ -78,15 +78,18 @@
           throw new IllegalStateException($e->getMessage());
         }
       } else if (file_exists('/etc/resolv.conf')) {
+        $domain= $search= NULL;
         foreach (file('/etc/resolv.conf') as $line) {
           if (strncmp($line, 'nameserver', 10) === 0) {
             $resolver->addDelegate(new DnsResolver(rtrim(substr($line, 11))));
           } else if (strncmp($line, 'domain', 6) === 0) {
-            $resolver->setDomain(rtrim(substr($line, 7)));
+            $domain= rtrim(substr($line, 7)); 
           } else if (strncmp($line, 'search', 6) === 0) {
-            $resolver->setSearch(explode(' ', rtrim(substr($line, 7))));
+            $search= explode(' ', rtrim(substr($line, 7)));
           }
         }
+        $domain && $resolver->setDomain($domain);
+        $search && $resolver->setSearch($search);
       } else {
         throw new IllegalStateException('No system resolvers could be determined');
       }
