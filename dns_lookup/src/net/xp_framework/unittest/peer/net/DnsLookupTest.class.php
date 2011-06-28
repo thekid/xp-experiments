@@ -7,15 +7,15 @@
   uses(
     'unittest.TestCase',
     'peer.ConnectException',
-    'peer.net.DnsLookup',
-    'peer.net.ARecord',
+    'peer.net.dns.DnsLookup',
+    'peer.net.dns.ARecord',
     'net.xp_framework.unittest.peer.net.FakeResolver'
   );
 
   /**
    * TestCase
    *
-   * @see      xp://peer.net.DnsLookup
+   * @see      xp://peer.net.dns.DnsLookup
    */
   class DnsLookupTest extends TestCase {
     protected $fixture, $record;
@@ -76,7 +76,7 @@
      * Test
      *
      */
-    #[@test, @expect(class= 'peer.net.ResolveException', withMessage= 'Cannot connect')]
+    #[@test, @expect(class= 'peer.net.dns.ResolveException', withMessage= 'Cannot connect')]
     public function failingResolver() {
       $this->fixture->setResolver(create(new FakeResolver())->throwing(new ConnectException('Cannot connect')));
       $this->fixture->run();

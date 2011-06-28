@@ -4,14 +4,14 @@
  * $Id$ 
  */
 
-  uses('peer.net.Resolver');
+  uses('peer.net.dns.Resolver');
 
   /**
    * Resolver that queries a list of resolvers
    *
    * @test    xp://net.xp_framework.unittest.peer.net.CompositeResolverTest
    */
-  class CompositeResolver extends Object implements peer·net·Resolver {
+  class CompositeResolver extends Object implements peer·net·dns·Resolver {
     protected $delegates= array();
     
     /**
@@ -26,10 +26,10 @@
     /**
      * Add a resolver delegate to this composite
      *
-     * @param   peer.net.Resolver resolver
-     * @return  peer.net.Resolver the added resolver
+     * @param   peer.net.dns.Resolver resolver
+     * @return  peer.net.dns.Resolver the added resolver
      */
-    public function addDelegate(peer·net·Resolver $resolver) {
+    public function addDelegate(peer·net·dns·Resolver $resolver) {
       $this->delegates[]= $resolver;
       return $resolver;
     }
@@ -37,10 +37,10 @@
     /**
      * Add a resolver delegate to this composite
      *
-     * @param   peer.net.Resolver resolver
-     * @return  peer.net.CompositeResolver this composite resolver
+     * @param   peer.net.dns.Resolver resolver
+     * @return  peer.net.dns.CompositeResolver this composite resolver
      */
-    public function withDelegate(peer·net·Resolver $resolver) {
+    public function withDelegate(peer·net·dns·Resolver $resolver) {
       $this->delegates[]= $resolver;
       return $this;
     }
@@ -57,7 +57,7 @@
     /**
      * Get all resolver delegates
      *
-     * @return  peer.net.Resolver[]
+     * @return  peer.net.dns.Resolver[]
      */
     public function getDelegates() {
       return $this->delegates;
@@ -66,10 +66,10 @@
     /**
      * Send query for resolution and return nameservers records
      *
-     * @param   peer.net.Message query
-     * @return  peer.net.Record[] records
+     * @param   peer.net.dns.Message query
+     * @return  peer.net.dns.Record response
      */
-    public function send(peer·net·Message $query) {
+    public function send(peer·net·dns·Message $query) {
       if (empty($this->delegates)) {
         throw new IllegalStateException('No resolvers to query');
       }

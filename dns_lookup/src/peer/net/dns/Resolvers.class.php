@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('peer.net.CompositeResolver', 'peer.net.DnsResolver', 'peer.net.NativeResolver');
+  uses(
+    'peer.net.dns.CompositeResolver', 
+    'peer.net.dns.DnsResolver', 
+    'peer.net.dns.NativeResolver'
+  );
 
   /**
    * System / resolvers interface

@@ -4,15 +4,15 @@
  * $Id$ 
  */
 
-  $package= 'peer.net';
+  $package= 'peer.net.dns';
   
-  uses('peer.net.Sections');
+  uses('peer.net.dns.Sections');
 
   /**
    * Represents a DNS message
    *
    */
-  class peer·net·Message extends Object {
+  class peer·net·dns·Message extends Object {
     protected $id= 0;
     protected $flags= 0;
     protected $opcode= 0;

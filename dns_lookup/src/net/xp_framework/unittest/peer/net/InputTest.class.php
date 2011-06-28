@@ -6,13 +6,13 @@
 
   uses(
     'unittest.TestCase',
-    'peer.net.Input'
+    'peer.net.dns.Input'
   );
 
   /**
    * TestCase
    *
-   * @see   xp://peer.net.Input
+   * @see   xp://peer.net.dns.Input
    */
   class InputTest extends TestCase {
   
@@ -20,10 +20,10 @@
      * Creates a new Input instance
      *
      * @param   string bytes
-     * @return  peer.net.Input
+     * @return  peer.net.dns.Input
      */
     public function newInstance($bytes) {
-      return new peer·net·Input($bytes);
+      return new peer·net·dns·Input($bytes);
     }
     
     /**

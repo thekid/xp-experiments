@@ -5,10 +5,10 @@
  */
 
   uses(
-    'peer.net.Resolvers', 
-    'peer.net.QType', 
-    'peer.net.Question',
-    'peer.net.Response'
+    'peer.net.dns.Resolvers', 
+    'peer.net.dns.QType', 
+    'peer.net.dns.Question',
+    'peer.net.dns.Response'
   );
 
   /**
@@ -50,8 +50,8 @@
      * Create a new lookup
      *
      * @param   string name
-     * @param   peer.net.QType type default NULL if omitted, ANY
-     * @param   peer.net.QClass qclass default NULL if omitted, IN
+     * @param   peer.net.dns.QType type default NULL if omitted, ANY
+     * @param   peer.net.dns.QClass qclass default NULL if omitted, IN
      */
     public function __construct($name, QType $type= NULL, QClass $class= NULL) {
       $this->question= new Question($name, $type, $class);
@@ -60,19 +60,19 @@
     /**
      * Set resolver to use
      *
-     * @param   peer.net.Resolver resolver
+     * @param   peer.net.dns.Resolver resolver
      */
-    public function setResolver(peer搖et愛esolver $resolver) {
+    public function setResolver(peer搖et搞ns愛esolver $resolver) {
       $this->resolver= $resolver;
     }
 
     /**
      * Set resolver to use
      *
-     * @param   peer.net.Resolver resolver
-     * @return  peer.net.DnsLookup this
+     * @param   peer.net.dns.Resolver resolver
+     * @return  peer.net.dns.DnsLookup this
      */
-    public function withResolver(peer搖et愛esolver $resolver) {
+    public function withResolver(peer搖et搞ns愛esolver $resolver) {
       $this->resolver= $resolver;
       return $this;
     }
@@ -80,8 +80,8 @@
     /**
      * Gets resolver in use
      *
-     * @param   peer.net.Resolver resolver
-     * @return  peer.net.Resolver 
+     * @param   peer.net.dns.Resolver resolver
+     * @return  peer.net.dns.Resolver 
      */
     public function getResolver() {
       if (NULL === $this->resolver) {
@@ -93,8 +93,8 @@
     /**
      * Runs this lookup
      *
-     * @return  peer.net.Response
-     * @throws  peer.net.ResolveException
+     * @return  peer.net.dns.Response
+     * @throws  peer.net.dns.ResolveException
      */
     public function run() {
       try {
@@ -105,7 +105,7 @@
         throw new ResolveException($t->getMessage(), $t);
       }
       
-      return new peer搖et愛esponse($result->getRcode(), $result->allRecords());
+      return new peer搖et搞ns愛esponse($result->getRcode(), $result->allRecords());
     }
   }
 ?>

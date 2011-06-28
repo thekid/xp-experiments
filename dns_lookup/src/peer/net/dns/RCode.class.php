@@ -62,7 +62,7 @@
      * Returns an RCode instance for a given numeric rcode
      *
      * @param   int rcode
-     * @return  peet.net.RCode
+     * @return  peet.net.dns.RCode
      * @throws  lang.IllegalArgumentException if this rcode is not known
      */
     public static function withId($rcode) {

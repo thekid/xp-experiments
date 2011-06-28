@@ -4,36 +4,36 @@
  * $Id$ 
  */
 
-  uses('peer.net.Record', 'peer.net.Inet4Address');
+  uses('peer.net.dns.Record');
 
   /**
-   * A record
+   * TXT
    *
    */
-  class ARecord extends peer·net·Record {
-    protected $address = NULL;
-    
+  class TXTRecord extends peer·net·dns·Record {
+    protected $text;
+   
     /**
-     * Creates a new record
+     * Creates a new TXT record
      *
      * @param   string name
      * @param   int ttl
-     * @param   string address
+     * @param   string text
      */
-    public function __construct($name, $ttl, $address) {
+    public function __construct($name, $ttl, $text) {
       parent::__construct($name, $ttl);
-      $this->address= $address instanceof Inet4Address ? $address : new Inet4Address($address);
+      $this->text= $text;
     }
-    
+
     /**
-     * Gets an IPV4 address
+     * Returns text
      *
-     * @return  peer.net.Inet4Address
+     * @return  string
      */
-    public function getAddress() {
-      return $this->address;
+    public function getText() {
+      return $this->text;
     }
-    
+
     /**
      * Returns whether a given object is equal to this record
      *
@@ -45,7 +45,7 @@
         $cmp instanceof self && 
         $this->name === $cmp->name && 
         $this->ttl === $cmp->ttl && 
-        $this->address->equals($cmp->address)
+        $this->text === $cmp->text
       );
     }
 
@@ -55,7 +55,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->name.' ttl '.$this->ttl.' '.$this->address->toString().')';
+      return $this->getClassName().'('.$this->name.' ttl '.$this->ttl.' "'.$this->text.'")';
     }
   }
 ?>

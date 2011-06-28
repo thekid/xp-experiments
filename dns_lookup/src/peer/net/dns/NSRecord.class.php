@@ -4,16 +4,13 @@
  * $Id$ 
  */
 
-  uses('peer.net.Record');
+  uses('peer.net.dns.Record');
 
   /**
-   * PTR. Pointer to a canonical name. Unlike a CNAME, DNS processing 
-   * does NOT proceed, just the name is returned. The most common use 
-   * is for implementing reverse DNS lookups, but other uses include 
-   * such things as DNS-SD.
+   * NS
    *
    */
-  class PTRRecord extends peer·net·Record {
+  class NSRecord extends peer·net·dns·Record {
     protected $target;
     
     /**
@@ -22,7 +19,7 @@
      * @param   string name
      * @param   int ttl
      * @param   string target
-     */   
+     */
     public function __construct($name, $ttl, $target) {
       parent::__construct($name, $ttl);
       $this->target= $target;
@@ -51,7 +48,7 @@
         $this->target === $cmp->target
       );
     }
-
+    
     /**
      * Creates a string representation of this record
      *

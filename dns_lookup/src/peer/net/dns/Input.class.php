@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  $package= 'peer.net';
+  $package= 'peer.net.dns';
 
   /**
    * DNS Input
@@ -12,7 +12,7 @@
    * @see     xp://peer.net.DnsResolver
    * @test    xp://net.xp_framework.unittest.peer.net.InputTest
    */
-  class peer·net·Input extends Object {
+  class peer·net·dns·Input extends Object {
     protected $bytes= '';
     protected $offset= 0;
     protected $prev= -1;

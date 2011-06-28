@@ -76,7 +76,7 @@
      * Returns a QType instance for a given numeric qtype
      *
      * @param   int qtype
-     * @return  peet.net.QType
+     * @return  peet.net.dns.QType
      * @throws  lang.IllegalArgumentException if this qtype is not known
      */
     public static function withId($qtype) {
@@ -104,7 +104,7 @@
      * Creates a QType instance from a given 
      *
      * @param   string name
-     * @return  peer.net.QType
+     * @return  peer.net.dns.QType
      * @throws  lang.IllegalArgumentException in case the enum member does not exist
      */
     public static function named($name) {

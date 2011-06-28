@@ -4,9 +4,9 @@
  * $Id$ 
  */
 
-  $package= 'peer.net';
+  $package= 'peer.net.dns';
   
-  uses('peer.net.RCode');
+  uses('peer.net.dns.RCode');
 
   /**
    * Response to a DNS lookup
@@ -14,7 +14,7 @@
    * @test  xp://net.xp_framework.unittest.peer.net.ResponseTest
    * @see   xp://peer.net.DnsLookup#run
    */
-  class peer·net·Response extends Object {
+  class peer·net·dns·Response extends Object {
     protected $result= -1;
     protected $records= array();
     

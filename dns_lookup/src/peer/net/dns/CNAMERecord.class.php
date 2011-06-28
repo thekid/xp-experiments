@@ -4,26 +4,24 @@
  * $Id$ 
  */
 
-  uses('peer.net.Record');
+  uses('peer.net.dns.Record');
 
   /**
-   * MX
+   * CNAME
    *
    */
-  class MXRecord extends peer·net·Record {
-    protected $priority, $target;
-
+  class CNAMERecord extends peer·net·dns·Record {
+    protected $target;
+    
     /**
-     * Creates a new MX record
+     * Creates a new NS record
      *
      * @param   string name
      * @param   int ttl
-     * @param   int priority
      * @param   string target
-     */
-    public function __construct($name, $ttl, $priority, $target) {
+     */   
+    public function __construct($name, $ttl, $target) {
       parent::__construct($name, $ttl);
-      $this->priority= $priority;
       $this->target= $target;
     }
 
@@ -37,15 +35,6 @@
     }
 
     /**
-     * Returns priority
-     *
-     * @return  int
-     */
-    public function getPriority() {
-      return $this->priority;
-    }
-
-    /**
      * Returns whether a given object is equal to this record
      *
      * @param   var cmp
@@ -56,7 +45,6 @@
         $cmp instanceof self && 
         $this->name === $cmp->name && 
         $this->ttl === $cmp->ttl && 
-        $this->priority === $cmp->priority &&
         $this->target === $cmp->target
       );
     }
@@ -67,7 +55,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->name.' ttl '.$this->ttl.' ->'.$this->target.', pri '.$this->priority.')';
+      return $this->getClassName().'('.$this->name.' ttl '.$this->ttl.' ->'.$this->target.')';
     }
   }
 ?>

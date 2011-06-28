@@ -5,8 +5,8 @@
  */
 
   uses(
-    'peer.net.Resolver', 
-    'peer.net.Message'
+    'peer.net.dns.Resolver', 
+    'peer.net.dns.Message'
   );
 
   /**
@@ -14,8 +14,14 @@
    *
    * @see   php://dns_get_record
    */
-  class NativeResolver extends Object implements peer·net·Resolver {
+  class NativeResolver extends Object implements peer·net·dns·Resolver {
   
+    /**
+     * Converts an array returned from the native PHP function to a Record
+     *
+     * @param   [:var] r
+     * @return  peer.net.dns.Record
+     */
     protected function asRecord($r) {
       switch ($r['type']) {
         case 'A': 
@@ -80,10 +86,10 @@
     /**
      * Send query for resolution and return nameservers records
      *
-     * @param   peer.net.Message query
-     * @return  peer.net.Message The response
+     * @param   peer.net.dns.Message query
+     * @return  peer.net.dns.Message The response
      */
-    public function send(peer·net·Message $query) {
+    public function send(peer·net·dns·Message $query) {
 
       // Check for multiple records, which, in real life, doesn't work
       // See http://www.mail-archive.com/comp-protocols-dns-bind@isc.org/msg00165.html

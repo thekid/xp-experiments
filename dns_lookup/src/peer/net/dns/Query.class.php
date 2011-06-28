@@ -4,15 +4,15 @@
  * $Id$ 
  */
 
-  $package= 'peer.net';
+  $package= 'peer.net.dns';
 
-  uses('peer.net.Record', 'peer.net.QType');
+  uses('peer.net.dns.Record', 'peer.net.dns.QType');
 
   /**
    * Query record
    *
    */
-  class peer搖et想uery extends peer搖et愛ecord {
+  class peer搖et搞ns想uery extends peer搖et搞ns愛ecord {
     protected $qtype = NULL;
     protected $qclass = 0;
    
@@ -20,8 +20,8 @@
      * Creates a new record
      *
      * @param   string name
-     * @param   peer.net.QType qtype
-     * @param   int qclass
+     * @param   peer.net.dns.QType qtype
+     * @param   peer.net.dns.QClass qclass
      */
     public function __construct($name, $qtype, $qclass) {
       parent::__construct($name, 0);
@@ -32,7 +32,7 @@
     /**
      * Gets qtype
      *
-     * @return  peer.net.QType
+     * @return  peer.net.dns.QType
      */
     public function getQType() {
       return $this->qtype;
@@ -41,7 +41,7 @@
     /**
      * Gets qclass
      *
-     * @return  int
+     * @return  peer.net.dns.QClass
      */
     public function getQClass() {
       return $this->qclass;

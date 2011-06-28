@@ -6,15 +6,15 @@
 
   uses(
     'unittest.TestCase',
-    'peer.net.Question',
-    'peer.net.QType',
-    'peer.net.QClass'
+    'peer.net.dns.Question',
+    'peer.net.dns.QType',
+    'peer.net.dns.QClass'
   );
 
   /**
    * TestCase
    *
-   * @see   xp://peer.net.Question
+   * @see   xp://peer.net.dns.Question
    */
   class QuestionTest extends TestCase {
   
@@ -74,7 +74,7 @@
     public function notEqualToMessage() {
       $this->assertNotEquals(
         new Question('example.com', QType::$A, QClass::$IN),
-        new peer·net·Message()
+        new peer·net·dns·Message()
       );
     }
   }

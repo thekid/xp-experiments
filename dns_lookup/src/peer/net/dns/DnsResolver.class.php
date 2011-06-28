@@ -5,11 +5,11 @@
  */
 
   uses(
-    'peer.net.Resolver', 
-    'peer.net.Message', 
+    'peer.net.dns.Resolver', 
+    'peer.net.dns.Message', 
+    'peer.net.dns.Input',
     'peer.UDPSocket',
-    'peer.ProtocolException',
-    'peer.net.Input'
+    'peer.ProtocolException'
   );
 
   /**
@@ -17,7 +17,7 @@
    *
    * @see   rfc://1035
    */
-  class DnsResolver extends Object implements peer·net·Resolver {
+  class DnsResolver extends Object implements peer·net·dns·Resolver {
     protected $sock= NULL;
     protected $domain= NULL;
     protected $search= NULL;
@@ -52,10 +52,10 @@
     /**
      * Send query for resolution and return nameservers records
      *
-     * @param   peer.net.Message query
-     * @return  peer.net.Message The response
+     * @param   peer.net.dns.Message query
+     * @return  peer.net.dns.Message The response
      */
-    public function send(peer·net·Message $query) {
+    public function send(peer·net·dns·Message $query) {
 
       // Check for multiple records, which, in real life, doesn't work
       // See http://www.mail-archive.com/comp-protocols-dns-bind@isc.org/msg00165.html
@@ -109,7 +109,7 @@
           throw new ProtocolException('Expected answer for #'.$query->getId().', have '.$header['id']);
         }
 
-        $return= new peer·net·Message($header['id']);
+        $return= new peer·net·dns·Message($header['id']);
         $return->setOpcode($header['op']);
         $return->setFlags($header['flags']);
 
@@ -126,14 +126,14 @@
         // NXDOMAIN -> continue to next in list
         if (3 === ($header['flags'] & 0xF)) continue;
         
-        $input= new peer·net·Input($input);
+        $input= new peer·net·dns·Input($input);
         // DEBUG Console::writeLine('INPUT  ', $input);
 
         // Parse questions
         for ($i= 0; $i < $header['qdcount']; $i++) {
           $domain= $input->readDomain();
           $r= unpack('ntype/nclass', $input->read(4));
-          $return->addRecord(Sections::QUESTION, new peer·net·Query(
+          $return->addRecord(Sections::QUESTION, new peer·net·dns·Query(
             $domain,
             QType::withId($r['type']),
             QClass::withId($r['class'])

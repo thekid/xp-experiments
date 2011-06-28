@@ -4,28 +4,28 @@
  * $Id$ 
  */
 
-  $package= 'peer.net';
+  $package= 'peer.net.dns';
 
   uses(
-    'peer.net.ResolveException',
-    'peer.net.Message',
-    'peer.net.ARecord',
-    'peer.net.CNAMERecord',
-    'peer.net.MXRecord',
-    'peer.net.NSRecord',
-    'peer.net.AAAARecord',
-    'peer.net.TXTRecord',
-    'peer.net.SRVRecord',
-    'peer.net.PTRRecord',
-    'peer.net.NAPTRRecord',
-    'peer.net.SOARecord'
+    'peer.net.dns.ResolveException',
+    'peer.net.dns.Message',
+    'peer.net.dns.ARecord',
+    'peer.net.dns.CNAMERecord',
+    'peer.net.dns.MXRecord',
+    'peer.net.dns.NSRecord',
+    'peer.net.dns.AAAARecord',
+    'peer.net.dns.TXTRecord',
+    'peer.net.dns.SRVRecord',
+    'peer.net.dns.PTRRecord',
+    'peer.net.dns.NAPTRRecord',
+    'peer.net.dns.SOARecord'
   );
 
   /**
    * Resolver
    *
    */
-  interface peer·net·Resolver {
+  interface peer·net·dns·Resolver {
     
     /**
      * Send query for resolution and return nameservers records
@@ -35,7 +35,7 @@
      * @throws  peer.net.ResolveException
      * @throws  lang.Throwable
      */
-    public function send(peer·net·Message $query);
+    public function send(peer·net·dns·Message $query);
 
     /**
      * Set domain

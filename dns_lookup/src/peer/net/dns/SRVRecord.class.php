@@ -4,14 +4,14 @@
  * $Id$ 
  */
 
-  uses('peer.net.Record');
+  uses('peer.net.dns.Record');
 
   /**
    * SRV
    *
    * @see   http://en.wikipedia.org/wiki/SRV_record
    */
-  class SRVRecord extends peer·net·Record {
+  class SRVRecord extends peer·net·dns·Record {
     protected $target, $priority, $weight;
     
     /**

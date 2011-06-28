@@ -4,34 +4,34 @@
  * $Id$ 
  */
 
-  uses('peer.net.Record');
+  uses('peer.net.dns.Record', 'peer.net.Inet6Address');
 
   /**
-   * TXT
+   * AAAA record
    *
    */
-  class TXTRecord extends peer·net·Record {
-    protected $text;
+  class AAAARecord extends peer·net·dns·Record {
+    protected $address = NULL;
    
     /**
-     * Creates a new TXT record
+     * Creates a new record
      *
      * @param   string name
      * @param   int ttl
-     * @param   string text
+     * @param   var address
      */
-    public function __construct($name, $ttl, $text) {
+    public function __construct($name, $ttl, $address) {
       parent::__construct($name, $ttl);
-      $this->text= $text;
+      $this->address= $address instanceof Inet6Address ? $address : new Inet6Address($address);
     }
 
     /**
-     * Returns text
+     * Gets an IPV6 address
      *
-     * @return  string
+     * @return  peer.net.Inet6Address
      */
-    public function getText() {
-      return $this->text;
+    public function getAddress() {
+      return $this->address;
     }
 
     /**
@@ -45,7 +45,7 @@
         $cmp instanceof self && 
         $this->name === $cmp->name && 
         $this->ttl === $cmp->ttl && 
-        $this->text === $cmp->text
+        $this->address->equals($cmp->address)
       );
     }
 
@@ -55,7 +55,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->name.' ttl '.$this->ttl.' "'.$this->text.'")';
+      return $this->getClassName().'('.$this->name.' ttl '.$this->ttl.' '.$this->address->toString().')';
     }
   }
 ?>

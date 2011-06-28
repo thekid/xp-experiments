@@ -4,13 +4,16 @@
  * $Id$ 
  */
 
-  uses('peer.net.Record');
+  uses('peer.net.dns.Record');
 
   /**
-   * CNAME
+   * PTR. Pointer to a canonical name. Unlike a CNAME, DNS processing 
+   * does NOT proceed, just the name is returned. The most common use 
+   * is for implementing reverse DNS lookups, but other uses include 
+   * such things as DNS-SD.
    *
    */
-  class CNAMERecord extends peer·net·Record {
+  class PTRRecord extends peer·net·dns·Record {
     protected $target;
     
     /**

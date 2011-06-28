@@ -32,7 +32,7 @@
      * Returns a QClass instance for a given numeric qclass
      *
      * @param   int qclass
-     * @return  peet.net.QClass
+     * @return  peet.net.dns.QClass
      * @throws  lang.IllegalArgumentException if this qclass is not known
      */
     public static function withId($qclass) {

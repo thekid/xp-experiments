@@ -6,13 +6,13 @@
 
   uses(
     'unittest.TestCase',
-    'peer.net.QType'
+    'peer.net.dns.QType'
   );
 
   /**
    * TestCase
    *
-   * @see   xp://peer.net.QType
+   * @see   xp://peer.net.dns.QType
    */
   class QTypeTest extends TestCase {
   

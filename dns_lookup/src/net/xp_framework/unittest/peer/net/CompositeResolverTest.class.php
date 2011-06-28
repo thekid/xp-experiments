@@ -7,15 +7,15 @@
   uses(
     'unittest.TestCase',
     'peer.ConnectException',
-    'peer.net.ARecord',
-    'peer.net.CompositeResolver',
+    'peer.net.dns.ARecord',
+    'peer.net.dns.CompositeResolver',
     'net.xp_framework.unittest.peer.net.FakeResolver'
   );
 
   /**
    * TestCase
    *
-   * @see      xp://peer.net.CompositeResolver
+   * @see      xp://peer.net.dns.CompositeResolver
    */
   class CompositeResolverTest extends TestCase {
     protected $fixture, $message, $record;
@@ -26,7 +26,7 @@
      */
     public function setUp() {
       $this->fixture= new CompositeResolver();
-      $this->message= new peer·net·Message();
+      $this->message= new peer·net·dns·Message();
       $this->record= new ARecord('example.com', 0, '192.0.43.10');
     }
 

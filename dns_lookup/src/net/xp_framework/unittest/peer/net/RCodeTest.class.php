@@ -6,13 +6,13 @@
 
   uses(
     'unittest.TestCase',
-    'peer.net.RCode'
+    'peer.net.dns.RCode'
   );
 
   /**
    * TestCase
    *
-   * @see   xp://peer.net.RCode
+   * @see   xp://peer.net.dns.RCode
    */
   class RCodeTest extends TestCase {
   

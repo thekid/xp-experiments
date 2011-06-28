@@ -4,14 +4,14 @@
  * $Id$ 
  */
 
-  uses('peer.net.Record');
+  uses('peer.net.dns.Record');
 
   /**
    * NAPTR record
    *
    * @see   http://en.wikipedia.org/wiki/NAPTR_record
    */
-  class NAPTRRecord extends peer·net·Record {
+  class NAPTRRecord extends peer·net·dns·Record {
     protected $target, $priority, $weight;
     
     /**

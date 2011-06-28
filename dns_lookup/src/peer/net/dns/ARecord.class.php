@@ -4,36 +4,36 @@
  * $Id$ 
  */
 
-  uses('peer.net.Record', 'peer.net.Inet6Address');
+  uses('peer.net.dns.Record', 'peer.net.Inet4Address');
 
   /**
-   * AAAA record
+   * A record
    *
    */
-  class AAAARecord extends peer·net·Record {
+  class ARecord extends peer·net·dns·Record {
     protected $address = NULL;
-   
+    
     /**
      * Creates a new record
      *
      * @param   string name
      * @param   int ttl
-     * @param   var address
+     * @param   string address
      */
     public function __construct($name, $ttl, $address) {
       parent::__construct($name, $ttl);
-      $this->address= $address instanceof Inet6Address ? $address : new Inet6Address($address);
+      $this->address= $address instanceof Inet4Address ? $address : new Inet4Address($address);
     }
-
+    
     /**
-     * Gets an IPV6 address
+     * Gets an IPV4 address
      *
-     * @return  peer.net.Inet6Address
+     * @return  peer.net.Inet4Address
      */
     public function getAddress() {
       return $this->address;
     }
-
+    
     /**
      * Returns whether a given object is equal to this record
      *

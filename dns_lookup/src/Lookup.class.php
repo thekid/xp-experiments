@@ -1,9 +1,9 @@
 <?php
   uses(
-    'peer.net.Resolvers', 
-    'peer.net.QType', 
-    'peer.net.Question',
-    'peer.net.Response',
+    'peer.net.dns.Resolvers', 
+    'peer.net.dns.QType', 
+    'peer.net.dns.Question',
+    'peer.net.dns.Response',
     'util.profiling.Timer'
   );
 
@@ -40,7 +40,7 @@
       $requests= array();
       foreach ($types as $type) {
         $response= $resolver->send(new Question($name, QType::named($type)));
-        $result= new peer·net·Response($response->getRcode(), $response->allRecords());
+        $result= new peer·net·dns·Response($response->getRcode(), $response->allRecords());
 
         Console::writeLine('<<< ', $result);
       }

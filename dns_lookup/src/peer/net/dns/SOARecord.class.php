@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  uses('peer.net.Record', 'util.TimeSpan');
+  uses('peer.net.dns.Record', 'util.TimeSpan');
 
   /**
    * SOA
    *
    */
-  class SOARecord extends peer·net·Record {
+  class SOARecord extends peer·net·dns·Record {
     protected $mname, $rname, $serial, $refresh, $retry, $expire, $minTtl;
     
     /**

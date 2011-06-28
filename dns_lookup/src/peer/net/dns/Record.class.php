@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  $package= 'peer.net';
+  $package= 'peer.net.dns';
 
   /**
    * Abstract base class for all records
    *
    */
-  abstract class peer·net·Record extends Object {
+  abstract class peer·net·dns·Record extends Object {
     protected $name= '';
     protected $ttl= 0;
 

@@ -8,14 +8,14 @@
 
   uses(
     'unittest.TestCase',
-    'peer.net.Response',
-    'peer.net.RCode'
+    'peer.net.dns.Response',
+    'peer.net.dns.RCode'
   );
 
   /**
    * TestCase
    *
-   * @see      xp://peer.net.Response
+   * @see      xp://peer.net.dns.Response
    */
   class net·xp_framework·unittest·peer·net·ResponseTest extends TestCase {
     protected $record;
@@ -25,7 +25,7 @@
      *
      */
     public function setUp() {
-      $this->record= newinstance('peer.net.Record', array('test', 0), '{}');
+      $this->record= newinstance('peer.net.dns.Record', array('test', 0), '{}');
     }
 
     /**
@@ -34,7 +34,7 @@
      */
     #[@test]
     public function resultCode() {
-      $this->assertEquals(RCode::$SUCCESS, create(new peer·net·Response(0, array()))->result());
+      $this->assertEquals(RCode::$SUCCESS, create(new peer·net·dns·Response(0, array()))->result());
     }
 
     /**
@@ -43,18 +43,18 @@
      */
     #[@test]
     public function resultRCodeInstance() {
-      $this->assertEquals(RCode::$NXDOMAIN, create(new peer·net·Response(RCode::$NXDOMAIN, array()))->result());
+      $this->assertEquals(RCode::$NXDOMAIN, create(new peer·net·dns·Response(RCode::$NXDOMAIN, array()))->result());
     }
     
     /**
      * Create a new response
      *
      * @param   int section
-     * @param   peer.net.Record[] records
-     * @return  peer.net.Response
+     * @param   peer.net.dns.Record[] records
+     * @return  peer.net.dns.Response
      */
     protected function newResponseWith($section, $records) {
-      return new peer·net·Response(RCode::$SUCCESS, array($section => $records));
+      return new peer·net·dns·Response(RCode::$SUCCESS, array($section => $records));
     }
 
     /**
