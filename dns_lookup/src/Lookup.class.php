@@ -1,4 +1,9 @@
 <?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
   uses(
     'peer.net.dns.Resolvers', 
     'peer.net.dns.QType', 
