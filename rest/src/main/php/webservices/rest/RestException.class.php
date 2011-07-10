@@ -5,7 +5,7 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Indicates a REST call failed
    *
    */
   class RestException extends XPException {

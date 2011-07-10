@@ -84,7 +84,12 @@
         throw new RestException('Cannot send request', $e);
       }
       
-      return new RestResponse($response->statusCode());
+      return new RestResponse(
+        $response->statusCode(), 
+        this($response->header('Content-Type'), 0),
+        $response->headers(), 
+        $response->getInputStream()
+      );
     }
   }
 ?>
