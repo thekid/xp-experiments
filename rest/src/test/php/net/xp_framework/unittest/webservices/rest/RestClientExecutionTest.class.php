@@ -130,6 +130,7 @@
       $this->assertEquals($class->newInstance(1, 'Found a bug'), $response->content());
     }
 
+
     /**
      * Test
      *
@@ -164,6 +165,22 @@
     #[@test]
     public function typedJsonContentWithSetter() {
       $this->assertTypedJsonContentWith('net.xp_framework.unittest.webservices.rest.IssueWithSetter');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function typedJsonContentNull() {
+      $fixture= $this->fixtureWith(
+        HttpConstants::STATUS_OK, 
+        '{ "issue_id" : 1, "title" : null }', 
+        array('Content-Type' => 'application/json')
+      );
+      $class= Type::forName('net.xp_framework.unittest.webservices.rest.IssueWithField');
+      $response= $fixture->execute($class, new RestRequest());
+      $this->assertEquals(new net·xp_framework·unittest·webservices·rest·IssueWithField(1, NULL), $response->content());
     }
 
     /**
