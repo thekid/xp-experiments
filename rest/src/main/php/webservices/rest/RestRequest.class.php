@@ -18,6 +18,7 @@
       RestParameters::REQUEST => array(),
       RestParameters::SEGMENT => array(),
     );
+    protected $headers= array();
 
     /**
      * Creates a new RestRequest instance
@@ -133,6 +134,28 @@
     }
 
     /**
+     * Adds a header
+     *
+     * @param   string name
+     * @param   string value
+     */
+    public function addHeader($name, $value) {
+      $this->headers[$name]= $value;
+    }
+
+    /**
+     * Adds a header
+     *
+     * @param   string name
+     * @param   string value
+     * @return  webservices.rest.RestRequest this
+     */
+    public function withHeader($name, $value) {
+      $this->headers[$name]= $value;
+      return $this;
+    }
+
+    /**
      * Returns a parameter specified by its name
      *
      * @param   string name
@@ -176,6 +199,29 @@
      */
     public function getSegments() {
       return $this->parameters[RestParameters::SEGMENT];
+    }
+
+    /**
+     * Returns a header specified by its name
+     *
+     * @param   string name
+     * @return  string value
+     * @throws  lang.ElementNotFoundException
+     */
+    public function getHeader($name) {
+      if (!isset($this->headers[$name])) {
+        raise('lang.ElementNotFoundException', 'No such header "'.$name.'"');
+      }
+      return $this->headers[$name];
+    }
+
+    /**
+     * Returns all headers
+     *
+     * @param   [:string]
+     */
+    public function getHeaders() {
+      return $this->headers;
     }
 
     /**

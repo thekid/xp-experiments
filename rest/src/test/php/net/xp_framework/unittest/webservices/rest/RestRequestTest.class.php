@@ -223,5 +223,44 @@
       $fixture->addSegment('id', 1);
       $this->assertEquals('/repos/thekid/xp-framework/issues/1', $fixture->getTarget());
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function noHeaders() {
+      $fixture= new RestRequest();
+      $this->assertEquals(array(), $fixture->getHeaders());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function oneHeader() {
+      $fixture= new RestRequest();
+      $fixture->addHeader('Accept', 'text/xml');
+      $this->assertEquals(
+        array('Accept' => 'text/xml'), 
+        $fixture->getHeaders()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function twoHeaders() {
+      $fixture= new RestRequest('/issues');
+      $fixture->addHeader('Accept', 'text/xml');
+      $fixture->addHeader('Referer', 'http://localhost');
+      $this->assertEquals(
+        array('Accept' => 'text/xml', 'Referer' => 'http://localhost'), 
+        $fixture->getHeaders()
+      );
+    }
   }
 ?>

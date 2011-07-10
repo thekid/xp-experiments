@@ -87,6 +87,7 @@
 
       $request= $args[$offset];
       $send= $this->connection->create(new HttpRequest());
+      $send->addHeaders($request->getHeaders());
       $send->setMethod($request->getMethod());
       $send->setTarget($request->getTarget());
       $send->setParameters($request->getParameters());

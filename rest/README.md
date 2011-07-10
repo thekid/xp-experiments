@@ -25,6 +25,9 @@ The `RestClient` class forms the entry point:
   $request= new RestRequest('/issues');
   $request->addParameter('filter', 'assigned');
 
+  // Add HTTP headers
+  $request->addHeader('Accept-Language', 'de, en;q=0.7');
+
   // Untyped response
   $data= $client->execute($request);
   
