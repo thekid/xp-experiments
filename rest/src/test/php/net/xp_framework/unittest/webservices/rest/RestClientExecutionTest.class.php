@@ -110,5 +110,38 @@
       $response= $fixture->execute(new RestRequest());
       $this->assertEquals(array('title' => 'Found a bug'), $response->content());
     }
+    
+    /**
+     * Helper method
+     *
+     * @param   string type
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertTypedJsonContentWith($type) {
+      $fixture= $this->fixtureWith(HttpConstants::STATUS_OK, '{ "title" : "Found a bug" }', array(
+        'Content-Type' => 'application/json'
+      ));
+      $class= XPClass::forName($type);
+      $response= $fixture->execute($class, new RestRequest());
+      $this->assertEquals($class->newInstance('Found a bug'), $response->content());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function typedJsonContentWithField() {
+      $this->assertTypedJsonContentWith('net.xp_framework.unittest.webservices.rest.IssueWithField');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function typedJsonContentWithSetter() {
+      $this->assertTypedJsonContentWith('net.xp_framework.unittest.webservices.rest.IssueWithSetter');
+    }
   }
 ?>

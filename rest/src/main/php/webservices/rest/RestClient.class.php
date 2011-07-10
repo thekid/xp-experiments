@@ -15,7 +15,7 @@
    * REST client
    *
    * @test    xp://net.xp_framework.unittest.webservices.rest.RestClientTest
-   * @test    net.xp_framework.unittest.webservices.rest.RestClientExecutionTest
+   * @test    xp://net.xp_framework.unittest.webservices.rest.RestClientExecutionTest
    */
   class RestClient extends Object {
     protected $connection= NULL;
@@ -70,10 +70,22 @@
     /**
      * Execute a request
      *
-     * @param   webservices.rest.RestRequest request
      * @return  webservices.rest.RestResponse
      */
-    public function execute(RestRequest $request) {
+    public function execute() {
+      $args= func_get_args();
+      if (is_string($args[0])) {
+        $type= Type::forName($args[0]);
+        $offset= 1;
+      } else if ($args[0] instanceof Type) {
+        $type= $args[0];
+        $offset= 1;
+      } else {
+        $type= NULL;
+        $offset= 0;
+      }
+
+      $request= $args[$offset];
       $send= $this->connection->create(new HttpRequest());
       $send->setMethod($request->getMethod());
       $send->setTarget($request->getTarget());
@@ -89,6 +101,7 @@
         $response->statusCode(), 
         this($response->header('Content-Type'), 0),
         $response->headers(), 
+        $type,
         $response->getInputStream()
       );
     }
