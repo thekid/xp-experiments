@@ -28,8 +28,8 @@ The `RestClient` class forms the entry point:
   // Untyped response
   $data= $client->execute($request);
   
-  // Typed response
-  $data= $client->execute('com.github.Issue[]', $request);
+  // Typed response, an array of Issue instances
+  $data= $client->execute('com.github.api.v3.Issue[]', $request);
 ?>
 ```
 
