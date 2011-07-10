@@ -17,10 +17,10 @@
    * @test    net.xp_framework.unittest.webservices.rest.RestClientExecutionTest
    */
   class RestClient extends Object {
-    protected $client= NULL;
+    protected $connection= NULL;
     
     /**
-     * Creates a new RestClient instance
+     * Creates a new Restconnection instance
      *
      * @param   var base default NULL
      */
@@ -38,10 +38,10 @@
     }
     
     /**
-     * Sets base and returns this client
+     * Sets base and returns this connection
      *
      * @param   var base either a peer.URL or a string
-     * @return  webservices.rest.RestClient
+     * @return  webservices.rest.Restconnection
      */
     public function withBase($base) {
       $this->setBase($base);
@@ -54,7 +54,7 @@
      * @return  peer.URL
      */
     public function getBase() {
-      return $this->client ? $this->client->getURL() : NULL;
+      return $this->connection ? $this->connection->getURL() : NULL;
     }
     
     /**
@@ -62,8 +62,8 @@
      *
      * @param   peer.http.HttpConnection connection
      */
-    public function setConnection($connection) {
-      $this->client= $connection;
+    public function setConnection(HttpConnection $connection) {
+      $this->connection= $connection;
     }
 
     /**
@@ -73,13 +73,13 @@
      * @return  webservices.rest.RestResponse
      */
     public function execute(RestRequest $request) {
-      $send= $this->client->create(new HttpRequest());
+      $send= $this->connection->create(new HttpRequest());
       $send->setMethod($request->getMethod());
       $send->setTarget($request->getTarget());
       $send->setParameters($request->getParameters());
       
       try {
-        $response= $this->client->send($send);
+        $response= $this->connection->send($send);
       } catch (IOException $e) {
         throw new RestException('Cannot send request', $e);
       }
