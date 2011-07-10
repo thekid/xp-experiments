@@ -81,5 +81,16 @@
       $this->assertEquals($fixture, $fixture->withBase(self::BASE_URL));
       $this->assertEquals(new URL(self::BASE_URL), $fixture->getBase());
     }
+
+    /**
+     * Test setConnection()
+     *
+     */
+    #[@test]
+    public function setConnection() {
+      $fixture= $this->newFixture();
+      $fixture->setConnection(new HttpConnection(self::BASE_URL));
+      $this->assertEquals(new URL(self::BASE_URL), $fixture->getBase());
+    }
   }
 ?>
