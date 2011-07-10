@@ -88,7 +88,7 @@
      */
     #[@test]
     public function execute() {
-      $response= $this->newFixture()->execute(new RestRequest());
+      $response= $this->newFixture(self::BASE_URL)->execute(new RestRequest());
       $this->assertInstanceOf('webservices.rest.RestResponse', $response);
     }
   }

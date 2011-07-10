@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.http.HttpConstants');
+  uses('peer.http.HttpConstants', 'webservices.rest.RestParameters');
 
   /**
    * A REST request
@@ -14,6 +14,10 @@
   class RestRequest extends Object {
     protected $resource= '';
     protected $method= '';
+    protected $parameters= array(
+      RestParameters::REQUEST => array(),
+      RestParameters::SEGMENT => array(),
+    );
 
     /**
      * Creates a new RestRequest instance
@@ -82,6 +86,63 @@
      */
     public function getMethod() {
       return $this->method;
+    }
+
+    /**
+     * Adds a parameter
+     *
+     * @param   string name
+     * @param   string value
+     * @param   string type default RestParameters::REQUEST
+     */
+    public function addParameter($name, $value, $type= RestParameters::REQUEST) {
+      $this->parameters[$type][$name]= $value;
+    }
+
+    /**
+     * Returns a parameter specified by its name
+     *
+     * @param   string name
+     * @param   string type default RestParameters::REQUEST
+     * @return  string value
+     * @throws  lang.ElementNotFoundException
+     */
+    public function getParameter($name, $type= RestParameters::REQUEST) {
+      if (!isset($this->parameters[$type][$name])) {
+        raise('lang.ElementNotFoundException', 'No such parameter "'.$name.'"');
+      }
+      return $this->parameters[$type][$name];
+    }
+
+    /**
+     * Returns all request parameters
+     *
+     * @param   [:string]
+     */
+    public function requestParameters() {
+      return $this->parameters[RestParameters::REQUEST];
+    }
+
+    /**
+     * Gets query
+     *
+     * @return  string query
+     */
+    public function getTarget() {
+      $resource= $this->resource;
+      $l= strlen($resource);
+      $target= '';
+      $offset= 0;
+      do {
+        $b= strcspn($resource, '{', $offset);
+        $target.= substr($resource, $offset, $b);
+        $offset+= $b;
+        if ($offset >= $l) break;
+        $e= strcspn($resource, '}', $offset);
+        $target.= $this->getParameter(substr($resource, $offset+ 1, $e- 1), RestParameters::SEGMENT);
+        $offset+= $e+ 1;
+      } while ($offset < $l);
+      return $target;
     }
   }
 ?>
