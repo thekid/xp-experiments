@@ -14,6 +14,7 @@
    * REST client
    *
    * @test    xp://net.xp_framework.unittest.webservices.rest.RestClientTest
+   * @test    net.xp_framework.unittest.webservices.rest.RestClientExecutionTest
    */
   class RestClient extends Object {
     protected $client= NULL;
@@ -33,9 +34,9 @@
      * @param   var base either a peer.URL or a string
      */
     public function setBase($base) {
-      $this->client= new HttpConnection($base);
+      $this->setConnection(new HttpConnection($base));
     }
-
+    
     /**
      * Sets base and returns this client
      *
@@ -57,6 +58,15 @@
     }
     
     /**
+     * Sets HTTP connection
+     *
+     * @param   peer.http.HttpConnection connection
+     */
+    public function setConnection($connection) {
+      $this->client= $connection;
+    }
+
+    /**
      * Execute a request
      *
      * @param   webservices.rest.RestRequest request
@@ -68,9 +78,13 @@
       $send->setTarget($request->getTarget());
       $send->setParameters($request->getParameters());
       
-      // DEBUG Console::writeLine($send->getRequestString());
+      try {
+        $response= $this->client->send($send);
+      } catch (IOException $e) {
+        throw new RestException('Cannot send request', $e);
+      }
       
-      return new RestResponse();
+      return new RestResponse($response->statusCode());
     }
   }
 ?>
