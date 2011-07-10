@@ -7,7 +7,7 @@
   $package= 'net.xp_framework.unittest.webservices.rest';
 
   /**
-   * Isuse
+   * Issue
    *
    */
   class net·xp_framework·unittest·webservices·rest·IssueWithField extends Object {
