@@ -4,7 +4,13 @@
  * $Id$ 
  */
 
-  uses('io.streams.Streams', 'webservices.json.JsonFactory');
+  uses(
+    'io.streams.Streams', 
+    'webservices.json.JsonFactory',
+    'xml.parser.XMLParser',
+    'xml.parser.StreamInputSource',
+    'webservices.rest.RestXmlMap'
+  );
 
   /**
    * A REST response
@@ -145,9 +151,14 @@
       switch ($this->content) {
         case 'application/json':
           return $this->convert($this->type, JsonFactory::create()->decode(Streams::readAll($this->input)));
+        
+        case 'text/xml':
+          $map= new RestXmlMap();
+          create(new XMLParser())->withCallback($map)->parse(new StreamInputSource($this->input));
+          return $this->convert($this->type, $map);
 
         default:
-          throw new IllegalArgumentException('Unknown content type "'.$this->type.'"');
+          throw new IllegalArgumentException('Unknown content type "'.$this->content.'"');
       }
     }
   }

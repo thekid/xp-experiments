@@ -18,6 +18,7 @@
    */
   class RestResponseTest extends TestCase {
     const JSON = 'application/json';
+    const XML = 'text/xml';
   
     /**
      * Creates a new fixture
@@ -58,6 +59,19 @@
       $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : null }');
       $this->assertEquals(
         array('issue_id' => 1, 'title' => NULL), 
+        $fixture->data()
+      );
+    }
+
+    /**
+     * Test data()
+     *
+     */
+    #[@test]
+    public function xmlAsMap() {
+      $fixture= $this->newFixture(self::XML, '<issue><issue_id>1</issue_id><title/></issue>');
+      $this->assertEquals(
+        array('issue_id' => '1', 'title' => ''), 
         $fixture->data()
       );
     }
