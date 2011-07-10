@@ -44,7 +44,7 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Calculate variants of a given name
      *
      * @param   string name
      * @return  string[] names
@@ -52,7 +52,7 @@
     protected function variantsOf($name) {
       $variants= array($name);
       $chunks= explode('_', $name);
-      if (sizeof($chunks) > 1) {
+      if (sizeof($chunks) > 1) {      // product_id => productId
         $variants[]= array_shift($chunks).implode(array_map('ucfirst', $chunks));
       }
       return $variants;
