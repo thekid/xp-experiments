@@ -26,19 +26,28 @@
     #[@beforeClass]
     public static function dummyConnectionClass() {
       self::$conn= ClassLoader::defineClass('RestClientExecutionTest_Connection', 'peer.http.HttpConnection', array(), '{
-        protected $result;
+        protected $result= NULL;
+        protected $exception= NULL;
 
         public function __construct($status, $body, $headers) {
           parent::__construct("http://test");
-          $this->result= "HTTP/1.1 ".$status."\r\n";
-          foreach ($headers as $name => $value) {
-            $this->result.= $name.": ".$value."\r\n";
+          if ($status instanceof Throwable) {
+            $this->exception= $status;
+          } else {
+            $this->result= "HTTP/1.1 ".$status."\r\n";
+            foreach ($headers as $name => $value) {
+              $this->result.= $name.": ".$value."\r\n";
+            }
+            $this->result.= "\r\n".$body;
           }
-          $this->result.= "\r\n".$body;
         }
         
         public function send(HttpRequest $request) {
-          return new HttpResponse(new MemoryInputStream($this->result));
+          if ($this->exception) {
+            throw $this->exception;
+          } else {
+            return new HttpResponse(new MemoryInputStream($this->result));
+          }
         }
       }');
     }
@@ -46,12 +55,12 @@
     /**
      * Creates a new fixture
      *
-     * @param   int status
-     * @param   string body
+     * @param   var status either an int with a status code or an exception object
+     * @param   string body default NULL
      * @param   [:string] headers default [:]
      * @return  webservices.rest.RestClient
      */
-    public function fixtureWithResult($status, $body, $headers= array()) {
+    public function fixtureWith($status, $body= NULL, $headers= array()) {
       $fixture= new RestClient();
       $fixture->setConnection(self::$conn->newInstance($status, $body, $headers));
       return $fixture;
@@ -63,7 +72,7 @@
      */
     #[@test]
     public function okStatus() {
-      $fixture= $this->fixtureWithResult(HttpConstants::STATUS_OK, '');
+      $fixture= $this->fixtureWith(HttpConstants::STATUS_OK, '');
       $response= $fixture->execute(new RestRequest());
       $this->assertEquals(HttpConstants::STATUS_OK, $response->status());
     }
@@ -74,7 +83,7 @@
      */
     #[@test]
     public function notFoundStatus() {
-      $fixture= $this->fixtureWithResult(HttpConstants::STATUS_NOT_FOUND, '');
+      $fixture= $this->fixtureWith(HttpConstants::STATUS_NOT_FOUND, '');
       $response= $fixture->execute(new RestRequest());
       $this->assertEquals(HttpConstants::STATUS_NOT_FOUND, $response->status());
     }
@@ -83,9 +92,19 @@
      * Test
      *
      */
+    #[@test, @expect('webservices.rest.RestException')]
+    public function exception() {
+      $fixture= $this->fixtureWith(new ConnectException('Cannot connect'));
+      $fixture->execute(new RestRequest());
+    }
+    
+    /**
+     * Test
+     *
+     */
     #[@test]
     public function jsonContent() {
-      $fixture= $this->fixtureWithResult(HttpConstants::STATUS_OK, '{ "title" : "Found a bug" }', array(
+      $fixture= $this->fixtureWith(HttpConstants::STATUS_OK, '{ "title" : "Found a bug" }', array(
         'Content-Type' => 'application/json'
       ));
       $response= $fixture->execute(new RestRequest());

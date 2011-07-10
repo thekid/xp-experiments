@@ -7,7 +7,8 @@
   uses(
     'peer.http.HttpConnection',
     'webservices.rest.RestRequest',
-    'webservices.rest.RestResponse'
+    'webservices.rest.RestResponse',
+    'webservices.rest.RestException'
   );
 
   /**
