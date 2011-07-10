@@ -31,5 +31,33 @@
     public $createdAt;
     #[@type('cmd.github.GitHubUser')]
     public $creator;
+
+    /**
+     * Creates a string representation of this issue
+     *
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        "%s(#%d, %s: %s)@{\n".
+        " [description  ] %s\n".
+        " [dueOn        ] %s\n".
+        " [closedIssues ] %s\n".
+        " [openIssues   ] %s\n".
+        " [createdAt    ] %s\n".
+        " [creator      ] %s\n".
+        "}",
+        $this->getClassName(),
+        $this->number, 
+        $this->state,
+        $this->title,
+        $this->description,
+        $this->dueOn,
+        $this->closedIssues,
+        $this->openIssues,
+        xp::stringOf($this->createdAt),
+        str_replace("\n", "\n  ", xp::stringOf($this->creator))
+      );
+    }
   }
 ?>

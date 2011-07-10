@@ -15,5 +15,14 @@
     public $color;
     #[@type('string')]
     public $url;
+
+    /**
+     * Creates a string representation of this issue
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'(#'.$this->color.': '.$this->name.')';
+    }
   }
 ?>

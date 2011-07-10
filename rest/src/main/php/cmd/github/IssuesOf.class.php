@@ -17,6 +17,7 @@
    */
   class IssuesOf extends Command {
     protected $request= NULL;
+    protected $verbose= FALSE;
     
     /**
      * Create request
@@ -47,6 +48,15 @@
     }
 
     /**
+     * Sets whether to be verbose
+     *
+     */
+    #[@arg]
+    public function setVerbose() {
+      $this->verbose= TRUE;
+    }
+
+    /**
      * Main runner method
      *
      */
@@ -54,7 +64,15 @@
       $client= new RestClient('https://api.github.com');
       $response= $client->execute('GitHubIssue[]', $this->request);
 
-      $this->out->writeLine($response->status(), ': ', $response->content());
+      if ($this->verbose) {
+        $this->out->writeLine('Issue list, status ', $response->status());
+        $this->out->writeLine($response->content());
+      } else {
+        foreach ($response->content() as $issue) {
+          $this->out->writeLine('- #', $issue->number, ', ', $issue->state, ': "', $issue->title, '"');
+          $this->out->writeLine('  ', $issue->user->login, ' @ ', $issue->createdAt, ' (+', $issue->comments, ')');
+        }
+      }
     }
   }
 ?>

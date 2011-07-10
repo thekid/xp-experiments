@@ -17,5 +17,14 @@
     public $url;
     #[@type('string')]
     public $avatarUrl;
+
+    /**
+     * Creates a string representation of this issue
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'(#'.$this->id.': '.$this->login.')';
+    }
   }
 ?>
