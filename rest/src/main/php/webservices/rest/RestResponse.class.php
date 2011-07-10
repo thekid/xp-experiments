@@ -44,6 +44,21 @@
     }
     
     /**
+     * (Insert method's description here)
+     *
+     * @param   string name
+     * @return  string[] names
+     */
+    protected function variantsOf($name) {
+      $variants= array($name);
+      $chunks= explode('_', $name);
+      if (sizeof($chunks) > 1) {
+        $variants[]= array_shift($chunks).implode(array_map('ucfirst', $chunks));
+      }
+      return $variants;
+    }
+    
+    /**
      * Convert data based on type
      *
      * @param   [:var] data
@@ -55,18 +70,20 @@
       } else if ($this->type instanceof XPClass) {    // Conversion to a class
         $return= $this->type->newInstance();
         foreach ($data as $name => $value) {
-          if ($this->type->hasField($name)) {
-            $field= $this->type->getField($name);
-            if ($field->getModifiers() & MODIFIER_PUBLIC) {
-              $field->set($return, $value);
-              continue;
+          foreach ($this->variantsOf($name) as $variant) {
+            if ($this->type->hasField($variant)) {
+              $field= $this->type->getField($variant);
+              if ($field->getModifiers() & MODIFIER_PUBLIC) {
+                $field->set($return, $value);
+                continue 2;
+              }
             }
-          }
-          if ($this->type->hasMethod('set'.$name)) {
-            $method= $this->type->getMethod('set'.$name);
-            if ($method->getModifiers() & MODIFIER_PUBLIC) {
-              $method->invoke($return, array($value));
-              continue;
+            if ($this->type->hasMethod('set'.$variant)) {
+              $method= $this->type->getMethod('set'.$variant);
+              if ($method->getModifiers() & MODIFIER_PUBLIC) {
+                $method->invoke($return, array($value));
+                continue 2;
+              }
             }
           }
         }

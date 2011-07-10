@@ -1,30 +1,30 @@
 <?php
 /* This class is part of the XP framework
  *
- * $issueId$ 
+ * $issue_id$ 
  */
 
   $package= 'net.xp_framework.unittest.webservices.rest';
 
   /**
-   * Isuse
+   * Issue
    *
    */
-  class net·xp_framework·unittest·webservices·rest·IssueWithField extends Object {
-    public $issueId= 0;
+  class net·xp_framework·unittest·webservices·rest·IssueWithUnderscoreField extends Object {
+    public $issue_id= 0;
     public $title= NULL;
     
     /**
      * Constructor
      *
-     * @param   int issueId
+     * @param   int issue_id
      * @param   string title
      */
-    public function __construct($issueId= 0, $title= NULL) {
-      $this->issueId= $issueId;
+    public function __construct($issue_id= 0, $title= NULL) {
+      $this->issue_id= $issue_id;
       $this->title= $title;
     }
-    
+
     /**
      * Checks whether another object is equal to this issue
      *
@@ -32,7 +32,7 @@
      * @return  bool
      */
     public function equals($cmp) {
-      return $cmp instanceof self && $cmp->issueId === $this->issueId && $cmp->title === $this->title;
+      return $cmp instanceof self && $cmp->issue_id === $this->issue_id && $cmp->title === $this->title;
     }
   }
 ?>

@@ -131,8 +131,26 @@
      *
      */
     #[@test]
+    public function typedJsonContentWithUnderscoreField() {
+      $this->assertTypedJsonContentWith('net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreField');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function typedJsonContentWithField() {
       $this->assertTypedJsonContentWith('net.xp_framework.unittest.webservices.rest.IssueWithField');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function typedJsonContentWithUnderscoreSetter() {
+      $this->assertTypedJsonContentWith('net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreSetter');
     }
 
     /**

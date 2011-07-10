@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $issueId$ 
+ * $issue_id$ 
  */
 
   $package= 'net.xp_framework.unittest.webservices.rest';
@@ -10,18 +10,18 @@
    * Isuse
    *
    */
-  class net·xp_framework·unittest·webservices·rest·IssueWithSetter extends Object {
-    protected $issueId= 0;
+  class net·xp_framework·unittest·webservices·rest·IssueWithUnderscoreSetter extends Object {
+    protected $issue_id= 0;
     protected $title= NULL;
     
     /**
      * Constructor
      *
-     * @param   int issueId
+     * @param   int issue_id
      * @param   string title
      */
-    public function __construct($issueId= 0, $title= NULL) {
-      $this->issueId= $issueId;
+    public function __construct($issue_id= 0, $title= NULL) {
+      $this->issue_id= $issue_id;
       $this->title= $title;
     }
 
@@ -35,12 +35,12 @@
     }
 
     /**
-     * Set issueId
+     * Set issue_id
      *
-     * @param   int issueId
+     * @param   int issue_id
      */
-    public function setissueId($issueId) {
-      $this->issueId= $issueId;
+    public function setIssue_id($issue_id) {
+      $this->issue_id= $issue_id;
     }
     
     /**
@@ -50,7 +50,7 @@
      * @return  bool
      */
     public function equals($cmp) {
-      return $cmp instanceof self && $cmp->issueId === $this->issueId && $cmp->title === $this->title;
+      return $cmp instanceof self && $cmp->issue_id === $this->issue_id && $cmp->title === $this->title;
     }
   }
 ?>
