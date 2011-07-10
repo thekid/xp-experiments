@@ -81,15 +81,5 @@
       $this->assertEquals($fixture, $fixture->withBase(self::BASE_URL));
       $this->assertEquals(new URL(self::BASE_URL), $fixture->getBase());
     }
-
-    /**
-     * Test
-     *
-     */
-    #[@test]
-    public function execute() {
-      $response= $this->newFixture(self::BASE_URL)->execute(new RestRequest());
-      $this->assertInstanceOf('webservices.rest.RestResponse', $response);
-    }
   }
 ?>
