@@ -5,7 +5,7 @@
  */
 
   uses(
-    'peer.URL',
+    'peer.http.HttpConnection',
     'webservices.rest.RestRequest',
     'webservices.rest.RestResponse'
   );
@@ -16,7 +16,7 @@
    * @test    xp://net.xp_framework.unittest.webservices.rest.RestClientTest
    */
   class RestClient extends Object {
-    protected $base= NULL;
+    protected $client= NULL;
     
     /**
      * Creates a new RestClient instance
@@ -33,11 +33,7 @@
      * @param   var base either a peer.URL or a string
      */
     public function setBase($base) {
-      if ($base instanceof URL) {
-        $this->base= $base;
-      } else {
-        $this->base= new URL($base);
-      }
+      $this->client= new HttpConnection($base);
     }
 
     /**
@@ -57,16 +53,23 @@
      * @return  peer.URL
      */
     public function getBase() {
-      return $this->base;
+      return $this->client ? $this->client->getURL() : NULL;
     }
     
     /**
      * Execute a request
      *
-     * @param   webservices.rest.RestRequest
+     * @param   webservices.rest.RestRequest request
      * @return  webservices.rest.RestResponse
      */
     public function execute(RestRequest $request) {
+      $send= $this->client->create(new HttpRequest());
+      $send->setMethod($request->getMethod());
+      $send->setTarget($request->getTarget());
+      $send->setParameters($request->requestParameters());
+      
+      // DEBUG Console::writeLine($send->getRequestString());
+      
       return new RestResponse();
     }
   }
