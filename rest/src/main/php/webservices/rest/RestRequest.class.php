@@ -9,6 +9,7 @@
   /**
    * A REST request
    *
+   * @test    xp://net.xp_framework.unittest.webservices.rest.RestRequestTest
    */
   class RestRequest extends Object {
     protected $resource= '';
