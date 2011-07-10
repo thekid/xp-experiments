@@ -12,7 +12,6 @@
   /**
    * TestCase
    *
-   * @test  
    * @see   xp://webservices.rest.RestClient
    */
   class RestClientTest extends TestCase {

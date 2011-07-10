@@ -11,8 +11,9 @@
   );
 
   /**
-   * (Insert class' description here)
+   * REST client
    *
+   * @test    xp://net.xp_framework.unittest.webservices.rest.RestClientTest
    */
   class RestClient extends Object {
     protected $base= NULL;
