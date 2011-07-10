@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.http.HttpConstants', 'webservices.rest.RestParameters');
+  uses('peer.http.HttpConstants');
 
   /**
    * A REST request
@@ -14,10 +14,8 @@
   class RestRequest extends Object {
     protected $resource= '/';
     protected $method= '';
-    protected $parameters= array(
-      RestParameters::REQUEST => array(),
-      RestParameters::SEGMENT => array(),
-    );
+    protected $parameters= array();
+    protected $segments= array();
     protected $headers= array();
 
     /**
@@ -96,7 +94,7 @@
      * @param   string value
      */
     public function addParameter($name, $value) {
-      $this->parameters[RestParameters::REQUEST][$name]= $value;
+      $this->parameters[$name]= $value;
     }
 
     /**
@@ -107,7 +105,7 @@
      * @return  webservices.rest.RestRequest this
      */
     public function withParameter($name, $value) {
-      $this->parameters[RestParameters::REQUEST][$name]= $value;
+      $this->parameters[$name]= $value;
       return $this;
     }
 
@@ -118,7 +116,7 @@
      * @param   string value
      */
     public function addSegment($name, $value) {
-      $this->parameters[RestParameters::SEGMENT][$name]= $value;
+      $this->segments[$name]= $value;
     }
 
     /**
@@ -129,7 +127,7 @@
      * @return  webservices.rest.RestRequest this
      */
     public function withSegment($name, $value) {
-      $this->parameters[RestParameters::SEGMENT][$name]= $value;
+      $this->segments[$name]= $value;
       return $this;
     }
 
@@ -163,10 +161,10 @@
      * @throws  lang.ElementNotFoundException
      */
     public function getParameter($name) {
-      if (!isset($this->parameters[RestParameters::REQUEST][$name])) {
+      if (!isset($this->parameters[$name])) {
         raise('lang.ElementNotFoundException', 'No such parameter "'.$name.'"');
       }
-      return $this->parameters[RestParameters::REQUEST][$name];
+      return $this->parameters[$name];
     }
 
     /**
@@ -175,7 +173,7 @@
      * @param   [:string]
      */
     public function getParameters() {
-      return $this->parameters[RestParameters::REQUEST];
+      return $this->parameters;
     }
 
     /**
@@ -186,10 +184,10 @@
      * @throws  lang.ElementNotFoundException
      */
     public function getSegment($name) {
-      if (!isset($this->parameters[RestParameters::SEGMENT][$name])) {
+      if (!isset($this->segments[$name])) {
         raise('lang.ElementNotFoundException', 'No such segment "'.$name.'"');
       }
-      return $this->parameters[RestParameters::SEGMENT][$name];
+      return $this->segments[$name];
     }
 
     /**
@@ -198,7 +196,7 @@
      * @param   [:string]
      */
     public function getSegments() {
-      return $this->parameters[RestParameters::SEGMENT];
+      return $this->segments;
     }
 
     /**
