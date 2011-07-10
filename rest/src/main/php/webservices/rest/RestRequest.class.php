@@ -12,7 +12,7 @@
    * @test    xp://net.xp_framework.unittest.webservices.rest.RestRequestTest
    */
   class RestRequest extends Object {
-    protected $resource= '';
+    protected $resource= '/';
     protected $method= '';
     protected $parameters= array(
       RestParameters::REQUEST => array(),
