@@ -136,9 +136,9 @@
     #[@test]
     public function oneSegment() {
       $fixture= new RestRequest();
-      $fixture->addsegment('filter', 'assigned');
+      $fixture->addSegment('user', 'thekid');
       $this->assertEquals(
-        array('filter' => 'assigned'), 
+        array('user' => 'thekid'), 
         $fixture->getSegments()
       );
     }
@@ -150,10 +150,10 @@
     #[@test]
     public function twoSegments() {
       $fixture= new RestRequest('/issues');
-      $fixture->addSegment('filter', 'assigned');
-      $fixture->addSegment('state', 'open');
+      $fixture->addSegment('user', 'thekid');
+      $fixture->addSegment('repo', 'xp-framework');
       $this->assertEquals(
-        array('filter' => 'assigned', 'state' => 'open'), 
+        array('user' => 'thekid', 'repo' => 'xp-framework'), 
         $fixture->getSegments()
       );
     }
