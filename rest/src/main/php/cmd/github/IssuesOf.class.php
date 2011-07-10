@@ -6,7 +6,8 @@
 
   uses(
     'util.cmd.Command',
-    'webservices.rest.RestClient'
+    'webservices.rest.RestClient',
+    'cmd.github.GitHubIssue'
   );
 
   /**
@@ -51,7 +52,7 @@
      */
     public function run() {
       $client= new RestClient('https://api.github.com');
-      $response= $client->execute($this->request);
+      $response= $client->execute('GitHubIssue[]', $this->request);
 
       $this->out->writeLine($response->status(), ': ', $response->content());
     }

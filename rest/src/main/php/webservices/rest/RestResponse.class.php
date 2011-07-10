@@ -61,31 +61,38 @@
     /**
      * Convert data based on type
      *
+     * @param   lang.Type type
      * @param   [:var] data
      * @return  var
      */
-    public function convert($data) {
-      if (NULL === $this->type) {                     // No conversion
+    public function convert($type, $data) {
+      if (NULL === $type) {                     // No conversion
         return $data;
-      } else if ($this->type instanceof XPClass) {    // Conversion to a class
-        $return= $this->type->newInstance();
+      } else if ($type instanceof XPClass) {    // Conversion to a class
+        $return= $type->newInstance();
         foreach ($data as $name => $value) {
           foreach ($this->variantsOf($name) as $variant) {
-            if ($this->type->hasField($variant)) {
-              $field= $this->type->getField($variant);
+            if ($type->hasField($variant)) {
+              $field= $type->getField($variant);
               if ($field->getModifiers() & MODIFIER_PUBLIC) {
                 $field->set($return, $value);
                 continue 2;
               }
             }
-            if ($this->type->hasMethod('set'.$variant)) {
-              $method= $this->type->getMethod('set'.$variant);
+            if ($type->hasMethod('set'.$variant)) {
+              $method= $type->getMethod('set'.$variant);
               if ($method->getModifiers() & MODIFIER_PUBLIC) {
                 $method->invoke($return, array($value));
                 continue 2;
               }
             }
           }
+        }
+        return $return;
+      } else if ($type instanceof ArrayType) {
+        $return= array();
+        foreach ($data as $element) {
+          $return[]= $this->convert($type->componentType(), $element);
         }
         return $return;
       } else {
@@ -101,7 +108,7 @@
     public function content() {
       switch ($this->content) {
         case 'application/json':
-          return $this->convert(JsonFactory::create()->decode(Streams::readAll($this->input)));
+          return $this->convert($this->type, JsonFactory::create()->decode(Streams::readAll($this->input)));
 
         default:
           throw new IllegalArgumentException('Unknown content type "'.$this->type.'"');

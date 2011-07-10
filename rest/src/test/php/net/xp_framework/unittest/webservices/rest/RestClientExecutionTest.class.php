@@ -161,5 +161,23 @@
     public function typedJsonContentWithSetter() {
       $this->assertTypedJsonContentWith('net.xp_framework.unittest.webservices.rest.IssueWithSetter');
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function typedArrayJsonContent() {
+      $fixture= $this->fixtureWith(
+        HttpConstants::STATUS_OK, 
+        '[ { "issue_id" : 1, "title" : "Found a bug" }, { "issue_id" : 2, "title" : "Another" } ]', 
+        array('Content-Type' => 'application/json')
+      );
+      $class= Type::forName('net.xp_framework.unittest.webservices.rest.IssueWithField[]');
+      $response= $fixture->execute($class, new RestRequest());
+      $list= $response->content();
+      $this->assertEquals($class->newInstance(1, 'Found a bug'), $list[0]);
+      $this->assertEquals($class->newInstance(2, 'Another'), $list[1]);
+    }
   }
 ?>
