@@ -118,12 +118,12 @@
      * @throws  unittest.AssertionFailedError
      */
     protected function assertTypedJsonContentWith($type) {
-      $fixture= $this->fixtureWith(HttpConstants::STATUS_OK, '{ "title" : "Found a bug" }', array(
+      $fixture= $this->fixtureWith(HttpConstants::STATUS_OK, '{ "issue_id" : 1, "title" : "Found a bug" }', array(
         'Content-Type' => 'application/json'
       ));
       $class= XPClass::forName($type);
       $response= $fixture->execute($class, new RestRequest());
-      $this->assertEquals($class->newInstance('Found a bug'), $response->content());
+      $this->assertEquals($class->newInstance(1, 'Found a bug'), $response->content());
     }
 
     /**
