@@ -35,7 +35,7 @@ The `RestClient` class forms the entry point:
 
 Demo
 ----
-To try out the (GitHub API)[http://developer.github.com/] to retrieve issues
+To try out the [GitHub API](http://developer.github.com/) to retrieve issues
 for a given user's project, execute:
 
 ```
