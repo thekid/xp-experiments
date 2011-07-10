@@ -28,11 +28,14 @@ The `RestClient` class forms the entry point:
   // Add HTTP headers
   $request->addHeader('Accept-Language', 'de, en;q=0.7');
 
-  // Untyped response
-  $data= $client->execute($request);
+  // Untyped response, string content can be accessed via content()
+  // and the manually deserialized
+  $response= $client->execute($request);
+  $status= $response->status();
+  $content= $response->content();
   
   // Typed response, an array of Issue instances
-  $data= $client->execute('com.github.api.v3.Issue[]', $request);
+  $data= $client->execute('com.github.api.v3.Issue[]', $request)->data();
 ?>
 ```
 

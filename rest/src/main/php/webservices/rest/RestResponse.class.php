@@ -125,13 +125,22 @@
         throw new FormatException('Cannot convert to '.xp::stringOf($type));
       }
     }
-    
+
     /**
-     * Get content
+     * Get data
      *
      * @return  var
      */
     public function content() {
+      return Streams::readAll($this->input);
+    }
+    
+    /**
+     * Get data
+     *
+     * @return  var
+     */
+    public function data() {
       switch ($this->content) {
         case 'application/json':
           return $this->convert($this->type, JsonFactory::create()->decode(Streams::readAll($this->input)));

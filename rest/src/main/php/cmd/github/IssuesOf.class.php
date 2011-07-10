@@ -66,9 +66,9 @@
 
       if ($this->verbose) {
         $this->out->writeLine('Issue list, status ', $response->status());
-        $this->out->writeLine($response->content());
+        $this->out->writeLine($response->data());
       } else {
-        foreach ($response->content() as $issue) {
+        foreach ($response->data() as $issue) {
           $this->out->writeLine('- #', $issue->number, ', ', $issue->state, ': "', $issue->title, '"');
           $this->out->writeLine('  ', $issue->user->login, ' @ ', $issue->createdAt, ' (+', $issue->comments, ')');
         }

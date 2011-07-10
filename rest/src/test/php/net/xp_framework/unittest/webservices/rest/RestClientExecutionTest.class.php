@@ -75,7 +75,7 @@
      *
      */
     #[@test]
-    public function okStatus() {
+    public function status() {
       $fixture= $this->fixtureWith(HttpConstants::STATUS_OK, '');
       $response= $fixture->execute(new RestRequest());
       $this->assertEquals(HttpConstants::STATUS_OK, $response->status());
@@ -86,10 +86,10 @@
      *
      */
     #[@test]
-    public function notFoundStatus() {
-      $fixture= $this->fixtureWith(HttpConstants::STATUS_NOT_FOUND, '');
+    public function content() {
+      $fixture= $this->fixtureWith(HttpConstants::STATUS_NOT_FOUND, 'Error');
       $response= $fixture->execute(new RestRequest());
-      $this->assertEquals(HttpConstants::STATUS_NOT_FOUND, $response->status());
+      $this->assertEquals('Error', $response->content());
     }
 
     /**
@@ -112,7 +112,7 @@
         'Content-Type' => 'application/json'
       ));
       $response= $fixture->execute(new RestRequest());
-      $this->assertEquals(array('title' => 'Found a bug'), $response->content());
+      $this->assertEquals(array('title' => 'Found a bug'), $response->data());
     }
     
     /**
@@ -127,7 +127,7 @@
       ));
       $class= XPClass::forName($type);
       $response= $fixture->execute($class, new RestRequest());
-      $this->assertEquals($class->newInstance(1, 'Found a bug'), $response->content());
+      $this->assertEquals($class->newInstance(1, 'Found a bug'), $response->data());
     }
 
 
@@ -180,7 +180,7 @@
       );
       $class= Type::forName('net.xp_framework.unittest.webservices.rest.IssueWithField');
       $response= $fixture->execute($class, new RestRequest());
-      $this->assertEquals(new net·xp_framework·unittest·webservices·rest·IssueWithField(1, NULL), $response->content());
+      $this->assertEquals(new net·xp_framework·unittest·webservices·rest·IssueWithField(1, NULL), $response->data());
     }
 
     /**
@@ -196,7 +196,7 @@
       );
       $class= Type::forName('net.xp_framework.unittest.webservices.rest.IssueWithField[]');
       $response= $fixture->execute($class, new RestRequest());
-      $list= $response->content();
+      $list= $response->data();
       $this->assertEquals(new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'), $list[0]);
       $this->assertEquals(new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another'), $list[1]);
     }
