@@ -93,34 +93,65 @@
      *
      * @param   string name
      * @param   string value
-     * @param   string type default RestParameters::REQUEST
      */
-    public function addParameter($name, $value, $type= RestParameters::REQUEST) {
-      $this->parameters[$type][$name]= $value;
+    public function addParameter($name, $value) {
+      $this->parameters[RestParameters::REQUEST][$name]= $value;
+    }
+
+    /**
+     * Adds a segment
+     *
+     * @param   string name
+     * @param   string value
+     */
+    public function addSegment($name, $value) {
+      $this->parameters[RestParameters::SEGMENT][$name]= $value;
     }
 
     /**
      * Returns a parameter specified by its name
      *
      * @param   string name
-     * @param   string type default RestParameters::REQUEST
      * @return  string value
      * @throws  lang.ElementNotFoundException
      */
-    public function getParameter($name, $type= RestParameters::REQUEST) {
-      if (!isset($this->parameters[$type][$name])) {
+    public function getParameter($name) {
+      if (!isset($this->parameters[RestParameters::REQUEST][$name])) {
         raise('lang.ElementNotFoundException', 'No such parameter "'.$name.'"');
       }
-      return $this->parameters[$type][$name];
+      return $this->parameters[RestParameters::REQUEST][$name];
     }
 
     /**
-     * Returns all request parameters
+     * Returns all parameters
      *
      * @param   [:string]
      */
-    public function requestParameters() {
+    public function getParameters() {
       return $this->parameters[RestParameters::REQUEST];
+    }
+
+    /**
+     * Returns a segment specified by its name
+     *
+     * @param   string name
+     * @return  string value
+     * @throws  lang.ElementNotFoundException
+     */
+    public function getSegment($name) {
+      if (!isset($this->parameters[RestParameters::SEGMENT][$name])) {
+        raise('lang.ElementNotFoundException', 'No such segment "'.$name.'"');
+      }
+      return $this->parameters[RestParameters::SEGMENT][$name];
+    }
+
+    /**
+     * Returns all segments
+     *
+     * @param   [:string]
+     */
+    public function getSegments() {
+      return $this->parameters[RestParameters::SEGMENT];
     }
 
     /**
@@ -139,7 +170,7 @@
         $offset+= $b;
         if ($offset >= $l) break;
         $e= strcspn($resource, '}', $offset);
-        $target.= $this->getParameter(substr($resource, $offset+ 1, $e- 1), RestParameters::SEGMENT);
+        $target.= $this->getSegment(substr($resource, $offset+ 1, $e- 1));
         $offset+= $e+ 1;
       } while ($offset < $l);
       return $target;

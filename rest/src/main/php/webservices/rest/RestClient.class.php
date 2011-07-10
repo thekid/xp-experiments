@@ -66,7 +66,7 @@
       $send= $this->client->create(new HttpRequest());
       $send->setMethod($request->getMethod());
       $send->setTarget($request->getTarget());
-      $send->setParameters($request->requestParameters());
+      $send->setParameters($request->getParameters());
       
       // DEBUG Console::writeLine($send->getRequestString());
       

@@ -87,7 +87,7 @@
     #[@test]
     public function noParameters() {
       $fixture= new RestRequest();
-      $this->assertEquals(array(), $fixture->requestParameters());
+      $this->assertEquals(array(), $fixture->getParameters());
     }
 
     /**
@@ -100,7 +100,7 @@
       $fixture->addParameter('filter', 'assigned');
       $this->assertEquals(
         array('filter' => 'assigned'), 
-        $fixture->requestParameters()
+        $fixture->getParameters()
       );
     }
 
@@ -115,7 +115,46 @@
       $fixture->addParameter('state', 'open');
       $this->assertEquals(
         array('filter' => 'assigned', 'state' => 'open'), 
-        $fixture->requestParameters()
+        $fixture->getParameters()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function noSegments() {
+      $fixture= new RestRequest();
+      $this->assertEquals(array(), $fixture->getSegments());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function oneSegment() {
+      $fixture= new RestRequest();
+      $fixture->addsegment('filter', 'assigned');
+      $this->assertEquals(
+        array('filter' => 'assigned'), 
+        $fixture->getSegments()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function twoSegments() {
+      $fixture= new RestRequest('/issues');
+      $fixture->addSegment('filter', 'assigned');
+      $fixture->addSegment('state', 'open');
+      $this->assertEquals(
+        array('filter' => 'assigned', 'state' => 'open'), 
+        $fixture->getSegments()
       );
     }
 
@@ -136,7 +175,7 @@
     #[@test]
     public function targetWithSegmentParameter() {
       $fixture= new RestRequest('/users/{user}');
-      $fixture->addParameter('user', 'thekid', RestParameters::SEGMENT);
+      $fixture->addSegment('user', 'thekid');
       $this->assertEquals('/users/thekid', $fixture->getTarget());
     }
 
@@ -147,8 +186,8 @@
     #[@test]
     public function targetWithTwoSegmentParameters() {
       $fixture= new RestRequest('/repos/{user}/{repo}');
-      $fixture->addParameter('user', 'thekid', RestParameters::SEGMENT);
-      $fixture->addParameter('repo', 'xp-framework', RestParameters::SEGMENT);
+      $fixture->addSegment('user', 'thekid');
+      $fixture->addSegment('repo', 'xp-framework');
       $this->assertEquals('/repos/thekid/xp-framework', $fixture->getTarget());
     }
 
@@ -159,9 +198,9 @@
     #[@test]
     public function targetWithSegmentParametersAndConstantsMixed() {
       $fixture= new RestRequest('/repos/{user}/{repo}/issues/{id}');
-      $fixture->addParameter('user', 'thekid', RestParameters::SEGMENT);
-      $fixture->addParameter('repo', 'xp-framework', RestParameters::SEGMENT);
-      $fixture->addParameter('id', 1, RestParameters::SEGMENT);
+      $fixture->addSegment('user', 'thekid');
+      $fixture->addSegment('repo', 'xp-framework');
+      $fixture->addSegment('id', 1);
       $this->assertEquals('/repos/thekid/xp-framework/issues/1', $fixture->getTarget());
     }
   }
