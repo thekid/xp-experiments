@@ -28,8 +28,7 @@ The `RestClient` class forms the entry point:
   // Add HTTP headers
   $request->addHeader('Accept-Language', 'de, en;q=0.7');
 
-  // Untyped response, string content can be accessed via content()
-  // and the manually deserialized
+  // Manual deserialization of response's string content
   $response= $client->execute($request);
   $status= $response->status();
   $content= $response->content();

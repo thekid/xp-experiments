@@ -9,6 +9,7 @@
   /**
    * A REST response
    *
+   * @test    xp://net.xp_framework.unittest.webservices.rest.RestResponseTest
    */
   class RestResponse extends Object {
     protected $status= -1;
