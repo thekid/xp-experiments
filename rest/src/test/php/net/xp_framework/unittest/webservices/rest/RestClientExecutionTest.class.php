@@ -7,7 +7,11 @@
   uses(
     'unittest.TestCase',
     'webservices.rest.RestClient',
-    'io.streams.MemoryInputStream'
+    'io.streams.MemoryInputStream',
+    'net.xp_framework.unittest.webservices.rest.IssueWithField',
+    'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreField',
+    'net.xp_framework.unittest.webservices.rest.IssueWithSetter',
+    'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreSetter'
   );
 
   /**
@@ -176,8 +180,8 @@
       $class= Type::forName('net.xp_framework.unittest.webservices.rest.IssueWithField[]');
       $response= $fixture->execute($class, new RestRequest());
       $list= $response->content();
-      $this->assertEquals($class->newInstance(1, 'Found a bug'), $list[0]);
-      $this->assertEquals($class->newInstance(2, 'Another'), $list[1]);
+      $this->assertEquals(new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'), $list[0]);
+      $this->assertEquals(new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another'), $list[1]);
     }
   }
 ?>
