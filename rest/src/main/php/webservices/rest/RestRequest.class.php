@@ -99,6 +99,18 @@
     }
 
     /**
+     * Adds a parameter
+     *
+     * @param   string name
+     * @param   string value
+     * @return  webservices.rest.RestRequest this
+     */
+    public function withParameter($name, $value) {
+      $this->parameters[RestParameters::REQUEST][$name]= $value;
+      return $this;
+    }
+
+    /**
      * Adds a segment
      *
      * @param   string name
@@ -106,6 +118,18 @@
      */
     public function addSegment($name, $value) {
       $this->parameters[RestParameters::SEGMENT][$name]= $value;
+    }
+
+    /**
+     * Adds a segment
+     *
+     * @param   string name
+     * @param   string value
+     * @return  webservices.rest.RestRequest this
+     */
+    public function withSegment($name, $value) {
+      $this->parameters[RestParameters::SEGMENT][$name]= $value;
+      return $this;
     }
 
     /**

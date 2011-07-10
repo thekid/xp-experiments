@@ -163,6 +163,26 @@
      *
      */
     #[@test]
+    public function withSegmentReturnsThis() {
+      $fixture= new RestRequest('/users/{user}');
+      $this->assertEquals($fixture, $fixture->withSegment('user', 'thekid'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function withParameterReturnsThis() {
+      $fixture= new RestRequest('/issues');
+      $this->assertEquals($fixture, $fixture->withParameter('filter', 'assigned'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function targetWithoutParameters() {
       $fixture= new RestRequest('/issues');
       $this->assertEquals('/issues', $fixture->getTarget());
