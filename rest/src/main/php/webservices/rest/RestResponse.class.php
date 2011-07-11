@@ -149,7 +149,8 @@
      * @return  var
      */
     public function data() {
-      switch ($this->content) {
+      $header= substr($this->content, 0, strcspn($this->content, ';'));
+      switch ($header) {
         case 'application/json':
           return $this->convert($this->type, JsonFactory::create()->decode(Streams::readAll($this->input)));
         
@@ -159,7 +160,7 @@
           return $this->convert($this->type, new RestXmlMap($tree->root));
 
         default:
-          throw new IllegalArgumentException('Unknown content type "'.$this->content.'"');
+          throw new IllegalArgumentException('Unknown content type "'.$header.'"');
       }
     }
   }

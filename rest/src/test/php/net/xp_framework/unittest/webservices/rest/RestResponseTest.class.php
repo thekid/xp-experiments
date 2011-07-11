@@ -68,6 +68,19 @@
      *
      */
     #[@test]
+    public function dataWithCharsetAsMap() {
+      $fixture= $this->newFixture(self::JSON.'; charset=utf-8', '{ "issue_id" : 1, "title" : null }');
+      $this->assertEquals(
+        array('issue_id' => 1, 'title' => NULL), 
+        $fixture->data()
+      );
+    }
+
+    /**
+     * Test data()
+     *
+     */
+    #[@test]
     public function xmlAsMap() {
       $fixture= $this->newFixture(self::XML, '<issue><issue_id>1</issue_id><title/></issue>');
       $this->assertEquals(
