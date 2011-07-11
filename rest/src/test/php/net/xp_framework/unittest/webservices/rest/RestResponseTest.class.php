@@ -75,5 +75,18 @@
         $fixture->data()
       );
     }
+
+    /**
+     * Test data()
+     *
+     */
+    #[@test]
+    public function nestedXmlAsMap() {
+      $fixture= $this->newFixture(self::XML, '<book><author><id>1549</id><name>Timm</name></author></book>');
+      $this->assertEquals(
+        array('author' => array('id' => '1549', 'name' => 'Timm')),
+        $fixture->data()
+      );
+    }
   }
 ?>

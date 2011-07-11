@@ -7,6 +7,7 @@
   uses(
     'io.streams.Streams', 
     'webservices.json.JsonFactory',
+    'xml.Tree',
     'xml.parser.XMLParser',
     'xml.parser.StreamInputSource',
     'webservices.rest.RestXmlMap'
@@ -153,9 +154,9 @@
           return $this->convert($this->type, JsonFactory::create()->decode(Streams::readAll($this->input)));
         
         case 'text/xml':
-          $map= new RestXmlMap();
-          create(new XMLParser())->withCallback($map)->parse(new StreamInputSource($this->input));
-          return $this->convert($this->type, $map);
+          $tree= new Tree();
+          create(new XMLParser())->withCallback($tree)->parse(new StreamInputSource($this->input));
+          return $this->convert($this->type, new RestXmlMap($tree->root));
 
         default:
           throw new IllegalArgumentException('Unknown content type "'.$this->content.'"');

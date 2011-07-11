@@ -4,25 +4,44 @@
  * $Id$ 
  */
 
-  uses('xml.Tree');
+  uses('xml.Node');
 
   /**
-   * Wraps an xml.Tree into an array-acessible form
+   * Wraps an xml.Node into an array-acessible form
    *
    */
-  class RestXmlMap extends Tree implements IteratorAggregate, ArrayAccess {
+  class RestXmlMap extends Object implements IteratorAggregate, ArrayAccess {
+    protected $node= NULL;
+
     protected static $iterate= NULL;
 
     static function __static() {
       self::$iterate= newinstance('Iterator', array(), '{
         private $i= 0, $c;
+        private function value($n) {
+          if (empty($n->children)) return $n->getContent();
+          $result= array();
+          foreach ($n->children as $c) {
+            $result[$c->name]= $this->value($c);
+          }
+          return $result;
+        }
         public function on($c) { $self= new self(); $self->c= $c; return $self; }
-        public function current() { return $this->c[$this->i]->getContent(); }
+        public function current() { return $this->value($this->c[$this->i]); }
         public function key() { return $this->c[$this->i]->name; }
         public function next() { $this->i++; }
         public function rewind() { $this->i= 0; }
         public function valid() { return $this->i < sizeof($this->c); }
       }');
+    }
+    
+    /**
+     * Creates a new RestXmlMap instance
+     *
+     * @param   xml.Node node
+     */
+    public function __construct(Node $node) {
+      $this->node= $node;
     }
     
     /**
@@ -32,7 +51,7 @@
      * @return  php.Iterator
      */
     public function getIterator() {
-      return self::$iterate->on($this->root->children);
+      return self::$iterate->on($this->node->children);
     }
 
     /**
@@ -42,7 +61,7 @@
      * @return  var
      */
     public function offsetGet($offset) {
-      foreach ($this->root->children as $child) {
+      foreach ($this->node->children as $child) {
         if ($child->name === $offset) return $child->getContent();
       }
       return NULL;
@@ -65,7 +84,7 @@
      * @return  bool
      */
     public function offsetExists($offset) {
-      foreach ($this->root->children as $child) {
+      foreach ($this->node->children as $child) {
         if ($child->name === $offset) return TRUE;
       }
       return FALSE;
