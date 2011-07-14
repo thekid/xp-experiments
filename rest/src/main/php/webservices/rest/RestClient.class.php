@@ -90,7 +90,12 @@
       $send->addHeaders($request->getHeaders());
       $send->setMethod($request->getMethod());
       $send->setTarget($request->getTarget());
-      $send->setParameters($request->getParameters());
+      
+      if ($request->hasBody()) {
+        $send->setParameters(new RequestData($request->getBody()));
+      } else {
+        $send->setParameters($request->getParameters());
+      }
       
       try {
         $response= $this->connection->send($send);

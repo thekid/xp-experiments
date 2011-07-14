@@ -17,7 +17,7 @@
     protected $parameters= array();
     protected $segments= array();
     protected $headers= array();
-    protected $body= '';
+    protected $body= NULL;
 
     /**
      * Creates a new RestRequest instance
@@ -115,6 +115,15 @@
      */
     public function getBody() {
       return $this->body;
+    }
+
+    /**
+     * Gets whether a body is set
+     *
+     * @return  bool
+     */
+    public function hasBody() {
+      return NULL !== $this->body;
     }
 
     /**

@@ -107,6 +107,27 @@
      *
      */
     #[@test]
+    public function hasNoBody() {
+      $fixture= new RestRequest();
+      $this->assertFalse($fixture->hasBody());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function hasBody() {
+      $fixture= new RestRequest();
+      $fixture->setBody('{ "title" : "New issue" }');
+      $this->assertTrue($fixture->hasBody());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function noParameters() {
       $fixture= new RestRequest();
       $this->assertEquals(array(), $fixture->getParameters());
