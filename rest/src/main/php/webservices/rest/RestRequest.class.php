@@ -17,6 +17,7 @@
     protected $parameters= array();
     protected $segments= array();
     protected $headers= array();
+    protected $body= '';
 
     /**
      * Creates a new RestRequest instance
@@ -85,6 +86,35 @@
      */
     public function getMethod() {
       return $this->method;
+    }
+
+    /**
+     * Sets body
+     *
+     * @param   string body
+     */
+    public function setBody($body) {
+      $this->body= $body;
+    }
+
+    /**
+     * Sets body
+     *
+     * @param   string body
+     * @return  webservices.rest.RestRequest
+     */
+    public function withBody($body) {
+      $this->body= $body;
+      return $this;
+    }
+
+    /**
+     * Gets body
+     *
+     * @return  string body
+     */
+    public function getBody() {
+      return $this->body;
     }
 
     /**

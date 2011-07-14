@@ -85,6 +85,28 @@
      *
      */
     #[@test]
+    public function setBody() {
+      $fixture= new RestRequest();
+      $fixture->setBody('{ "title" : "New issue" }');
+      $this->assertEquals('{ "title" : "New issue" }', $fixture->getBody());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function withBody() {
+      $fixture= new RestRequest();
+      $this->assertEquals($fixture, $fixture->withBody('{ "title" : "New issue" }'));
+      $this->assertEquals('{ "title" : "New issue" }', $fixture->getBody());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function noParameters() {
       $fixture= new RestRequest();
       $this->assertEquals(array(), $fixture->getParameters());
