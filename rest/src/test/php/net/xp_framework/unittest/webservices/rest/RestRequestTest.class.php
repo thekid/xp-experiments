@@ -86,9 +86,10 @@
      */
     #[@test]
     public function setBody() {
+      $request= new RequestData('{ "title" : "New issue" }');
       $fixture= new RestRequest();
-      $fixture->setBody('{ "title" : "New issue" }');
-      $this->assertEquals('{ "title" : "New issue" }', $fixture->getBody());
+      $fixture->setBody($request);
+      $this->assertEquals($request, $fixture->getBody());
     }
 
     /**
@@ -97,9 +98,10 @@
      */
     #[@test]
     public function withBody() {
+      $request= new RequestData('{ "title" : "New issue" }');
       $fixture= new RestRequest();
-      $this->assertEquals($fixture, $fixture->withBody('{ "title" : "New issue" }'));
-      $this->assertEquals('{ "title" : "New issue" }', $fixture->getBody());
+      $this->assertEquals($fixture, $fixture->withBody($request));
+      $this->assertEquals($request, $fixture->getBody());
     }
 
     /**
@@ -119,7 +121,7 @@
     #[@test]
     public function hasBody() {
       $fixture= new RestRequest();
-      $fixture->setBody('{ "title" : "New issue" }');
+      $fixture->setBody(new RequestData('{ "title" : "New issue" }'));
       $this->assertTrue($fixture->hasBody());
     }
 

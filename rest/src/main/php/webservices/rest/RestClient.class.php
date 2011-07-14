@@ -15,6 +15,7 @@
    * REST client
    *
    * @test    xp://net.xp_framework.unittest.webservices.rest.RestClientTest
+   * @test    xp://net.xp_framework.unittest.webservices.rest.RestClientSendTest
    * @test    xp://net.xp_framework.unittest.webservices.rest.RestClientExecutionTest
    */
   class RestClient extends Object {
@@ -92,7 +93,7 @@
       $send->setTarget($request->getTarget());
       
       if ($request->hasBody()) {
-        $send->setParameters(new RequestData($request->getBody()));
+        $send->setParameters($request->getBody());
       } else {
         $send->setParameters($request->getParameters());
       }

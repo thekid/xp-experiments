@@ -91,19 +91,19 @@
     /**
      * Sets body
      *
-     * @param   string body
+     * @param   peer.http.RequestData body
      */
-    public function setBody($body) {
+    public function setBody(RequestData $body) {
       $this->body= $body;
     }
 
     /**
      * Sets body
      *
-     * @param   string body
+     * @param   peer.http.RequestData body
      * @return  webservices.rest.RestRequest
      */
-    public function withBody($body) {
+    public function withBody(RequestData $body) {
       $this->body= $body;
       return $this;
     }
@@ -111,7 +111,7 @@
     /**
      * Gets body
      *
-     * @return  string body
+     * @return  peer.http.RequestData body
      */
     public function getBody() {
       return $this->body;
