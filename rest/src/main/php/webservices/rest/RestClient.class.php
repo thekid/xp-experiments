@@ -9,8 +9,7 @@
     'peer.http.HttpConnection',
     'webservices.rest.RestRequest',
     'webservices.rest.RestResponse',
-    'webservices.rest.RestException',
-    'io.streams.MemoryInputStream'
+    'webservices.rest.RestException'
   );
 
   /**

@@ -6,6 +6,7 @@
 
   uses(
     'io.streams.Streams', 
+    'io.streams.MemoryInputStream',
     'webservices.json.JsonFactory',
     'xml.Tree',
     'xml.parser.XMLParser',
