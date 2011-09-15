@@ -35,9 +35,9 @@
     /**
      * Set trace
      *
-     * @param   util.log.LogCategory $cat default NULL
+     * @param   util.log.LogCategory cat
      */
-    public function setTrace($cat= NULL) {
+    public function setTrace($cat) {
       $this->cat= $cat;
     }
 
