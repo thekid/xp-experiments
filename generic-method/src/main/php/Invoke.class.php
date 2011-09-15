@@ -1,10 +1,9 @@
 <?php
   // TODO: Move invoke() to lang.base.php
-  function invoke($spec) {
-    $args= func_get_args();
+  function invoke($instance, $spec, $args) {
     $p= strpos($spec, '<');
-    $args[0]= Type::forName(substr($spec, $p+ 1, -1));
-    return call_user_func_array(substr($spec, 0, $p).'··T', $args);
+    array_unshift($args, Type::forName(substr($spec, $p+ 1, -1)));
+    return call_user_func_array(array($instance, substr($spec, 0, $p).'··T'), $args);
   }
 
   class Invoke extends Object {
@@ -32,11 +31,11 @@
     }
   
     public static function main(array $args) {
-      Console::writeLine(invoke('Invoke::execute<int>', 'i:1;'));
-      Console::writeLine(invoke('Invoke::execute<int>', NULL));
+      Console::writeLine(invoke('Invoke', 'execute<int>', array('i:1;')));
+      Console::writeLine(invoke('Invoke', 'execute<int>', array(NULL)));
 
-      Console::writeLine(invoke('Invoke::execute<lang.types.Integer>', 'i:1;'));
-      Console::writeLine(invoke('Invoke::execute<lang.types.Integer>', NULL));
+      Console::writeLine(invoke('Invoke', 'execute<lang.types.Integer>', array('i:1;')));
+      Console::writeLine(invoke('Invoke', 'execute<lang.types.Integer>', array(NULL)));
     }
   }
 ?>
