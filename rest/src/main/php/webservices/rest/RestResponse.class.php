@@ -144,6 +144,20 @@
     }
     
     /**
+     * Copy data
+     *
+     * @return  var
+     */
+    public function contentCopy() {
+      $data= $this->content();
+
+      // Reassign input, so code relying on the stream delivering bytes
+      // can still read them.
+      $this->input= new MemoryInputStream($data);
+      return $data;
+    }
+
+    /**
      * Get data
      *
      * @return  var
