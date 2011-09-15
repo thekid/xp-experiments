@@ -9,7 +9,8 @@
     'peer.http.HttpConnection',
     'webservices.rest.RestRequest',
     'webservices.rest.RestResponse',
-    'webservices.rest.RestException'
+    'webservices.rest.RestException',
+    'io.streams.MemoryInputStream'
   );
 
   /**
@@ -112,18 +113,20 @@
       try {
         $this->cat && $this->cat->debug('>>>', $send->getRequestString());
         $response= $this->connection->send($send);
-        $this->cat && $this->cat->debug('<<<', $response->toString());
       } catch (IOException $e) {
         throw new RestException('Cannot send request', $e);
       }
       
-      return new RestResponse(
+      $rr= new RestResponse(
         $response->statusCode(), 
         this($response->header('Content-Type'), 0),
         $response->headers(), 
         $type,
         $response->getInputStream()
       );
+
+      $this->cat && $this->cat->debug('<<<', $response->toString(), $rr->contentCopy());
+      return $rr;
     }
   }
 ?>
