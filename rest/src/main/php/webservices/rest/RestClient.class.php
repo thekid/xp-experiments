@@ -5,6 +5,7 @@
  */
 
   uses(
+    'util.log.Traceable',
     'peer.http.HttpConnection',
     'webservices.rest.RestRequest',
     'webservices.rest.RestResponse',
@@ -18,8 +19,9 @@
    * @test    xp://net.xp_framework.unittest.webservices.rest.RestClientSendTest
    * @test    xp://net.xp_framework.unittest.webservices.rest.RestClientExecutionTest
    */
-  class RestClient extends Object {
+  class RestClient extends Object implements Traceable {
     protected $connection= NULL;
+    protected $cat= NULL;
     
     /**
      * Creates a new Restconnection instance
@@ -28,6 +30,15 @@
      */
     public function __construct($base= NULL) {
       if (NULL !== $base) $this->setBase($base);
+    }
+
+    /**
+     * Set trace
+     *
+     * @param   util.log.LogCategory $cat default NULL
+     */
+    public function setTrace($cat= NULL) {
+      $this->cat= $cat;
     }
 
     /**
@@ -99,7 +110,9 @@
       }
       
       try {
+        $this->cat && $this->cat->debug('>>>', $send->getRequestString());
         $response= $this->connection->send($send);
+        $this->cat && $this->cat->debug('<<<', $response->toString());
       } catch (IOException $e) {
         throw new RestException('Cannot send request', $e);
       }
