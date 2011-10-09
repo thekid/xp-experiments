@@ -7,11 +7,13 @@ package de.thekid.rfc2github;
 
 import peer.http.*;
 import peer.URL;
+import peer.Header;
 import io.File;
 import lang.types.String;
 
 import native standard.sscanf;
 import native standard.strtok;
+import native standard.str_replace;
 import native standard.explode;
 import native standard.trim;
 import native standard.ltrim;
@@ -20,6 +22,7 @@ import native standard.substr;
 import native standard.max;
 import native standard.sprintf;
 import native standard.array_diff;
+import native standard.array_merge;
 
 import native pcre.preg_replace;
 
@@ -34,45 +37,74 @@ import native core.strlen;
  */
 public class Rfc2GitHubIssue extends util.cmd.Command {
   protected File $origin;
-  protected HttpConnection $conn= new HttpConnection('http://github.com');
-  protected [:string] $identity;
-  protected string $target;
-  
+  protected HttpConnection $conn= new HttpConnection('https://api.github.com/');
+  protected Header $identity;
+  protected [:string] $parameters;
+  protected bool $verbose = false;
+
   /**
    * Sets origin filename
    *
    */
   [@arg(position= 0)]
+  public void setCredentials(string $credentials) {
+    $user= $pass= null;
+    sscanf($credentials, "%[^:]:%[^\r]", $user, $pass);
+    $this.identity= new BasicAuthorization($user, $pass);
+  }
+  
+  /**
+   * Sets origin filename
+   *
+   */
+  [@arg(position= 1)]
   public void setOriginFile(string $file) {
     $this.origin= new File($file);
   }
 
   /**
-   * Sets target (user:token@owner/repo)
+   * Sets target (owner/repo)
    *
    */
-  [@arg(position= 1)]
+  [@arg(position= 2)]
   public void setTarget(string $target) {
-    $user= $token= $owner= $repo= null;
-    sscanf($target, "%[^:]:%[^@]@%[^/]/%[^\r]", $user, $token, $owner, $repo);
-    
-    $this.identity= [login : $user, token : $token];
-    $this.target= $owner ~ '/' ~ $repo;
+    $owner= $repo= null;
+    sscanf($target, "%[^/]/%[^\r]", $owner, $repo);
+    $this.parameters= [ user: $owner, repo: $repo ];
   }
+
+  /**
+   * Sets whether to be verbose
+   *
+   */
+  [@arg]
+  public void setVerbose() {
+    $this.verbose= true;
+  }
+  
+  protected static var $segments= new text.regex.Pattern(':([a-z_]+)');
   
   /**
    * Creates a new API request
    *
+   * @param   method One of the HttpConstants constants
+   * @param   string resource in the form /path/part/:segment/
+   * @param   parameters parameters which will be used as segments and request parameters
    */
-  protected HttpRequest newApiRequest(string $method, string $area, [:string] $parameters= [:]) {
+  protected HttpRequest newApiRequest(string $method, string $resource, [:string] $parameters= [:]) {
+    $parameters= array_merge($this.parameters, $parameters) as [:var];
+    foreach ($group in self::$segments.match($resource).groups()) {
+      $resource= str_replace($group[0], $parameters[$group[1]], $resource);
+      unset($parameters[$group[1]]);
+    }
+
     $request= $this.conn.create(new HttpRequest());
     $request.setMethod($method);
-    $target= '/api/v2/json/' ~ $area ~ '/' ~ $this.target;
-    foreach ($value in $parameters) {
-      $target ~= '/' ~ urlencode($value);
-    }
-    $request.setTarget($target);
-    $request.setParameters($this.identity);
+    $request.setTarget($resource);
+    $request.setParameters($parameters);
+    $request.setHeader('Authorization', $this.identity);
+    
+    $this.verbose && $this.err.writeLine('>>> ', $request.getRequestString());
     return $request;
   }
 
@@ -81,10 +113,13 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
    *
    */
   protected ApiResponse sendApiRequest(HttpRequest $request) {
-    return new ApiResponse($this.conn.send($request));
+    $response= $this.conn.send($request);
+
+    $this.verbose && $this.err.writeLine('<<< ', $response);
+    return new ApiResponse($response);
   }
   
-  protected static [:string] $state = [
+  protected static var $state = [
     draft :       'open',
     discussion :  'open',
     rejected :    'closed',
@@ -92,39 +127,7 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     implemented:  'closed',
   ];
   
-  /**
-   * Synchronize meta information
-   *
-   */
-  protected void syncMeta([:var] $issue, [:var] $fields) {
-  
-    // 1: Labels
-    $labels= ['rfc', $fields['status.id']];
-    foreach ($label in array_diff($labels, $issue['labels']) as var[]) {
-      $this.out.writeLine('Adding label ', $label);
-      $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
-        label  : $label, 
-        number : $issue['number']
-      ]));
-    }
-    foreach ($label in array_diff($issue['labels'], $labels) as var[]) {
-      $this.out.writeLine('Removing label ', $label);
-      $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/remove', [
-        label  : $label, 
-        number : $issue['number']
-      ]));
-    }
-    
-    // 2: Status
-    $state= self::$state[$fields['status.id']];
-    if ('closed' == $state && 'open' == $issue['state']) {
-      $this.out.writeLine('Closing issue');
-      $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/close', [number: $issue['number']]));
-    } else if ('open' == $state && 'closed' == $issue['state']) {
-      $this.out.writeLine('Reopening issue');
-      $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/reopen', [number: $issue['number']]));
-    }
-  }
+  protected static var $json = webservices.json.JsonFactory::create();
 
   /**
    * Creates an issue
@@ -149,18 +152,21 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
    *
    */
   protected [:var] updateIssue(int $id, string $title, string $content, [:var] $fields) {
-    $update= $this.newApiRequest(HttpConstants::POST, 'issues/edit', [number: $id]);
-    $update.setParameter('title', new String($title).getBytes('utf-8'));
-    $update.setParameter('body', new String($content).getBytes('utf-8'));
+    $update= $this.newApiRequest(HttpConstants::PATCH, '/repos/:user/:repo/issues/:id', [ id: $id ]);
+    $update.setParameters(new RequestData(self::$json.encode([
+      title  : new String($title),
+      body   : new String($content),
+      state  : self::$state[$fields['status.id']],
+      labels : ['rfc', $fields['status.id']]
+    ])));
+    $update.setHeader('Content-Type', 'application/vnd.github-issue.raw+json');
+
     $response= $this.sendApiRequest($update);
     if (200 != $response.status()) {
       throw new IllegalArgumentException($response.toString());
     }
 
-    $updated= $response.result()['issue'] as [:var];
-    
-    $this.syncMeta($updated, $fields);
-    return $updated;
+    return $response.result() as [:var];
   }
   
   /**
@@ -236,9 +242,9 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     // $this.out.writeLine($content);
     
     // Check GH for corresponding issue
-    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, 'issues/show', [number: $id]));
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id', [ id : $id ]));
     if (200 == $response.status()) {
-      $issue= $response.result()['issue'] as [:var];
+      $issue= $response.result() as [:var];
       
       // Found it, update and exit
       $this.out.writeLine('Found existing issue #', $issue['number']);
@@ -246,6 +252,8 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       $this.out.writeLine('Updated issue #', $issue['number']);
       return 0;
     }
+
+    return 55;
     
     // Search for largest issue
     $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::HEAD, 'issues/list', [
