@@ -138,7 +138,7 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       title  : new String($title),
       body   : new String($content),
       state  : self::$state[$fields['status.id']],
-      labels : ['rfc', $fields['status.id']]
+      labels : [ $fields['status.id'] ]
     ])));
     $request.setHeader('Content-Type', 'application/vnd.github-issue.raw+json');
 
@@ -263,17 +263,19 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     }
 
     // Check back until we find an issue, creating placeholders along the way
+    // This way, we ensure the created RFC has the correct number!
     $last= $id;
     while (--$last) {
       $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::HEAD, '/repos/:user/:repo/issues/:id', [ id : $last ]));
       if (200 == $response.status()) break;
       
-      $this.out.writeLine('Creating place holder RFC for ', $last);
-      $this.createIssue(sprintf('RFC %04d: ...', $last), '', [:]);
+      $this.out.write('Creating place holder RFC for ', $last);
+      $placeholder= $this.createIssue('(Placeholder)', '', [:]);
+      $this.out.writeLine('Created issue #', $placeholder['number']);
     }
     
     // Now create the real issue
-    $this.out.writeLine('Nothing found, creating new issue');
+    $this.out.write('Nothing found, creating new issue');
     $issue= $this.createIssue($title, $content, $fields);
     $this.out.writeLine('Created issue #', $issue['number']);
     return 0;
