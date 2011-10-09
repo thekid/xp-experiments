@@ -128,23 +128,40 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
   ];
   
   protected static var $json = webservices.json.JsonFactory::create();
+  
+  /**
+   * Modify an issue
+   *
+   */
+  protected [:var] modifyIssue(HttpRequest $request, int $expect, string $title, string $content, [:var] $fields) {
+    $request.setParameters(new RequestData(self::$json.encode([
+      title  : new String($title),
+      body   : new String($content),
+      state  : self::$state[$fields['status.id']],
+      labels : ['rfc', $fields['status.id']]
+    ])));
+    $request.setHeader('Content-Type', 'application/vnd.github-issue.raw+json');
+
+    $response= $this.sendApiRequest($request);
+    if ($expect != $response.status()) {
+      throw new IllegalArgumentException($response.toString());
+    }
+
+    return $response.result() as [:var];
+  }
 
   /**
    * Creates an issue
    *
    */
   protected [:var] createIssue(string $title, string $content, [:var] $fields) {
-    $create= $this.newApiRequest(HttpConstants::POST, 'issues/open');
-    $create.setParameter('title', $title);
-    $create.setParameter('body', $content);
-    $response= $this.sendApiRequest($create);
-    if (201 != $response.status()) {
-      throw new IllegalArgumentException($response.toString());
-    }
-    $created= $response.result()['issue'] as [:var];
-    
-    $this.syncMeta($created, $fields);
-    return $created;
+    return $this.modifyIssue(
+      $this.newApiRequest(HttpConstants::POST, '/repos/:user/:repo/issues'), 
+      201, 
+      $title, 
+      $content, 
+      $fields
+    );
   }
 
   /**
@@ -152,21 +169,13 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
    *
    */
   protected [:var] updateIssue(int $id, string $title, string $content, [:var] $fields) {
-    $update= $this.newApiRequest(HttpConstants::PATCH, '/repos/:user/:repo/issues/:id', [ id: $id ]);
-    $update.setParameters(new RequestData(self::$json.encode([
-      title  : new String($title),
-      body   : new String($content),
-      state  : self::$state[$fields['status.id']],
-      labels : ['rfc', $fields['status.id']]
-    ])));
-    $update.setHeader('Content-Type', 'application/vnd.github-issue.raw+json');
-
-    $response= $this.sendApiRequest($update);
-    if (200 != $response.status()) {
-      throw new IllegalArgumentException($response.toString());
-    }
-
-    return $response.result() as [:var];
+    return $this.modifyIssue(
+      $this.newApiRequest(HttpConstants::PATCH, '/repos/:user/:repo/issues/:id', [ id: $id ]),
+      200, 
+      $title, 
+      $content, 
+      $fields
+    );
   }
   
   /**
@@ -247,37 +256,18 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       $issue= $response.result() as [:var];
       
       // Found it, update and exit
-      $this.out.writeLine('Found existing issue #', $issue['number']);
+      $this.out.write('Found existing issue #', $issue['number']);
       $this.updateIssue($issue['number'], $title, $content, $fields);
-      $this.out.writeLine('Updated issue #', $issue['number']);
+      $this.out.writeLine(': Updated');
       return 0;
     }
 
-    return 55;
-    
-    // Search for largest issue
-    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::HEAD, 'issues/list', [
-      by    : 'label',
-      label : 'rfc'
-    ]));
-    if ($last= $response.header('X-Last')[0]) {
-      $response= $this.sendApiRequest(new HttpRequest(new URL($last)));
-    }
-
-    if (200 != $response.status()) {
-      $this.err.writeLine('*** ', $response);
-      return 1;
-    }
-    
-    $issues= $response.result()['issues'] as [:var][];
-    $last= 0;
-    foreach ($issue in $issues) {
-      $last= max($issue['number'], $last);
-    }
-    
-    // Not found, create placeholders
-    $i= ltrim($id, '0') as int;
-    while (++$last < $i) {
+    // Check back until we find an issue, creating placeholders along the way
+    $last= $id;
+    while (--$last) {
+      $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::HEAD, '/repos/:user/:repo/issues/:id', [ id : $last ]));
+      if (200 == $response.status()) break;
+      
       $this.out.writeLine('Creating place holder RFC for ', $last);
       $this.createIssue(sprintf('RFC %04d: ...', $last), '', [:]);
     }
