@@ -7,16 +7,23 @@ package de.thekid.rfc2github;
 
 import peer.http.*;
 import io.File;
+import lang.types.String;
 
 import native standard.sscanf;
-import native standard.strtok;
 import native standard.strtok;
 import native standard.explode;
 import native standard.trim;
 import native standard.ltrim;
 import native standard.urlencode;
+import native standard.substr;
+import native standard.max;
+import native standard.sprintf;
+import native standard.array_diff;
+
+import native pcre.preg_replace;
 
 import native core.strncmp;
+import native core.strlen;
 
 /**
  * Imports XP Framework RFCs to Github issues
@@ -76,16 +83,83 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     return new ApiResponse($this.conn.send($request));
   }
   
+  protected static [:string] $state = [
+    draft :       'open',
+    discussion :  'open',
+    rejected :    'closed',
+    obsoleted :   'closed',
+    implemented:  'closed',
+  ];
+  
   /**
-   * Locates an RFC
+   * Synchronize meta information
    *
    */
-  protected [:var] locateRfc(var[] $results, string $title) {
-    foreach ($result in $results) {
-      $issue= $result as [:var];
-      if ('open' === $issue['state'] && $title === $issue['title']) return $issue;
+  protected void syncMeta([:var] $issue, [:var] $fields) {
+  
+    // 1: Labels
+    $labels= ['rfc', $fields['status.id']];
+    foreach ($label in array_diff($labels, $issue['labels']) as var[]) {
+      $this.out.writeLine('Adding label ', $label);
+      $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
+        label  : $label, 
+        number : $issue['number']
+      ]));
     }
-    return null;
+    foreach ($label in array_diff($issue['labels'], $labels) as var[]) {
+      $this.out.writeLine('Removing label ', $label);
+      $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/remove', [
+        label  : $label, 
+        number : $issue['number']
+      ]));
+    }
+    
+    // 2: Status
+    $state= self::$state[$fields['status.id']];
+    if ('closed' == $state && 'open' == $issue['state']) {
+      $this.out.writeLine('Closing issue');
+      $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/close', [number: $issue['number']]));
+    } else if ('open' == $state && 'closed' == $issue['state']) {
+      $this.out.writeLine('Reopening issue');
+      $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/reopen', [number: $issue['number']]));
+    }
+  }
+
+  /**
+   * Creates an issue
+   *
+   */
+  protected [:var] createIssue(string $title, string $content, [:var] $fields) {
+    $create= $this.newApiRequest(HttpConstants::POST, 'issues/open');
+    $create.setParameter('title', $title);
+    $create.setParameter('body', $content);
+    $response= $this.sendApiRequest($create);
+    if (201 != $response.status()) {
+      throw new IllegalArgumentException($response.toString());
+    }
+    $created= $response.result()['issue'] as [:var];
+    
+    $this.syncMeta($created, $fields);
+    return $created;
+  }
+
+  /**
+   * Updates an existing issue
+   *
+   */
+  protected [:var] updateIssue(int $id, string $title, string $content, [:var] $fields) {
+    $update= $this.newApiRequest(HttpConstants::POST, 'issues/edit', [number: $id]);
+    $update.setParameter('title', new String($title).getBytes('utf-8'));
+    $update.setParameter('body', new String($content).getBytes('utf-8'));
+    $response= $this.sendApiRequest($update);
+    if (200 != $response.status()) {
+      throw new IllegalArgumentException($response.toString());
+    }
+
+    $updated= $response.result()['issue'] as [:var];
+    
+    $this.syncMeta($updated, $fields);
+    return $updated;
   }
   
   /**
@@ -96,7 +170,7 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
   
     // Parse RFC into caption, fields and body text
     $fields= [:];
-    with ($st= new text.StreamTokenizer($this.origin.getInputStream(), "\n")) {
+    with ($st= new text.StreamTokenizer($this.origin.getInputStream(), "\r\n")) {
       $title= $st.nextToken();
       $id= $caption= null;
       sscanf($title, "RFC %4s: %[^\r]", $id, $caption);
@@ -135,74 +209,60 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       // Rest of text (use a token that is not very likely to appear so
       // scanning will happen in large chunks).
       $content= '';
-      while ($st.hasMoreTokens("\0")) {
-        $content ~= $st.nextToken("\0");
+      while ($st.hasMoreTokens()) {
+        $line= $st.nextToken();
+        if (0 === strncmp('---', $line, 3)) {
+          $line= '====';
+        } else if (0 === strncmp('~~~', $line, 3)) {
+          $line= '----';
+        } else if ('<code>' === $line) {
+          $line= "\n```php\n<?php";
+        } else if ('</code>' === $line) {
+          $line= "?>\n```";
+        } else if ('<pre>' === $line || '</pre>' === $line) {
+          $line= "\n```";
+        }
+
+        $content ~= preg_replace(
+          [ '#<tt>#', '#</tt>#', '/RFC #([0-9]+)/e'],
+          [ '`', '`', '"xp-framework/rfc #".ltrim("\1", "0")'],
+          $line
+        ) ~ "\n";
       }
-      $content= trim($content);
-      
-      // TODO: Convert to markdown
-      // http://daringfireball.net/projects/markdown/syntax
-      
     }
     
     $this.out.writeLine('#', $id, ': ', $caption, ' ', $fields);
+    // $this.out.writeLine($content);
     
-    // Check if we already know the issue
+    // Check GH for corresponding issue
     $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, 'issues/list', [
       by    : 'label',
       label : 'rfc'
     ]));
-    $results= $response.result()['issues'] as var[];
-    $issue= $this.locateRfc($results, $title);
-
-    if (null === $issue) {
-      $this.out.writeLine('Nothing found, creating new issue');
-
-      $create= $this.newApiRequest(HttpConstants::POST, 'issues/open');
-      $create.setParameter('title', $title);
-      $create.setParameter('body', $content);
-      $response= $this.sendApiRequest($create);
-      if (201 != $response.status()) {
-        $this.err.writeLine('*** ', $response);
-        return 1;
-      }
-
-      $issue= $response.result()['issue'] as [:var];
-      $this.out.writeLine('Created issue #', $issue['number']);
-    } else {
+    $issues= $response.result()['issues'] as [:var][];
+    $last= 0;
+    foreach ($issue in $issues) {
+      $last= max($issue['number'], $last);
+      if ($id != $issue['number']) continue;
+      
+      // Found it, update and exit
       $this.out.writeLine('Found existing issue #', $issue['number']);
-
-      $update= $this.newApiRequest(HttpConstants::POST, 'issues/edit', [number: $issue['number']]);
-      $update.setParameter('title', $title);
-      $update.setParameter('body', $content);
-      $response= $this.sendApiRequest($update);
-      if (200 != $response.status()) {
-        $this.err.writeLine('*** ', $response);
-        return 1;
-      }
-
+      $this.updateIssue($issue['number'], $title, $content, $fields);
       $this.out.writeLine('Updated issue #', $issue['number']);
+      return 0;
     }
     
-    // Attach "rfc" label
-    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
-      label  : 'rfc', 
-      number : $issue['number']]
-    ));
-    $this.out.writeLine('Labeled it an RFC: ', $response.status());
+    // Not found, create placeholders
+    $i= ltrim($id, '0') as int;
+    $this.out.writeLine('Creating place holder RFCs for ', $last, ' .. ', $i);
+    while (++$last < $i) {
+      $this.createIssue(sprintf('RFC %04d: ...', $last), '.', [ status : 'placeholder' ]);
+    }
     
-    // Add status label 
-    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
-      label  : $fields['status.id'], 
-      number : $issue['number']]
-    ));
-    $this.out.writeLine('Labeled it ', $fields['status.id'], ': ', $response.status());
-
-    // Add label for category
-    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
-      label  : $fields['category'], 
-      number : $issue['number']]
-    ));
-    $this.out.writeLine('Labeled it ', $fields['category'], ': ', $response.status());
+    // Now create the real issue
+    $this.out.writeLine('Nothing found, creating new issue');
+    $issue= $this.createIssue($title, $content, $fields);
+    $this.out.writeLine('Created issue #', $issue['number']);
+    return 0;
   }
 }
