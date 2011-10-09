@@ -6,6 +6,7 @@
 package de.thekid.rfc2github;
 
 import peer.http.*;
+import peer.URL;
 import io.File;
 import lang.types.String;
 
@@ -235,15 +236,9 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     // $this.out.writeLine($content);
     
     // Check GH for corresponding issue
-    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, 'issues/list', [
-      by    : 'label',
-      label : 'rfc'
-    ]));
-    $issues= $response.result()['issues'] as [:var][];
-    $last= 0;
-    foreach ($issue in $issues) {
-      $last= max($issue['number'], $last);
-      if ($id != $issue['number']) continue;
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, 'issues/show', [number: $id]));
+    if (200 == $response.status()) {
+      $issue= $response.result()['issue'] as [:var];
       
       // Found it, update and exit
       $this.out.writeLine('Found existing issue #', $issue['number']);
@@ -252,11 +247,31 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       return 0;
     }
     
+    // Search for largest issue
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::HEAD, 'issues/list', [
+      by    : 'label',
+      label : 'rfc'
+    ]));
+    if ($last= $response.header('X-Last')[0]) {
+      $response= $this.sendApiRequest(new HttpRequest(new URL($last)));
+    }
+
+    if (200 != $response.status()) {
+      $this.err.writeLine('*** ', $response);
+      return 1;
+    }
+    
+    $issues= $response.result()['issues'] as [:var][];
+    $last= 0;
+    foreach ($issue in $issues) {
+      $last= max($issue['number'], $last);
+    }
+    
     // Not found, create placeholders
     $i= ltrim($id, '0') as int;
-    $this.out.writeLine('Creating place holder RFCs for ', $last, ' .. ', $i);
     while (++$last < $i) {
-      $this.createIssue(sprintf('RFC %04d: ...', $last), '.', [ status : 'placeholder' ]);
+      $this.out.writeLine('Creating place holder RFC for ', $last);
+      $this.createIssue(sprintf('RFC %04d: ...', $last), '', [:]);
     }
     
     // Now create the real issue
