@@ -237,6 +237,8 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
           $line= "?>\n```";
         } else if ('<pre>' === $line || '</pre>' === $line) {
           $line= "\n```";
+        } else if ('Comments' === $line) {
+          break;
         }
 
         $content ~= preg_replace(
@@ -259,25 +261,33 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       $this.out.write('Found existing issue #', $issue['number']);
       $this.updateIssue($issue['number'], $title, $content, $fields);
       $this.out.writeLine(': Updated');
-      return 0;
-    }
+    } else {
 
-    // Check back until we find an issue, creating placeholders along the way
-    // This way, we ensure the created RFC has the correct number!
-    $last= $id;
-    while (--$last) {
-      $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::HEAD, '/repos/:user/:repo/issues/:id', [ id : $last ]));
-      if (200 == $response.status()) break;
-      
-      $this.out.write('Creating place holder RFC for ', $last);
-      $placeholder= $this.createIssue('(Placeholder)', '', [:]);
-      $this.out.writeLine('Created issue #', $placeholder['number']);
+      // Check back until we find an issue, creating placeholders along the way
+      // This way, we ensure the created RFC has the correct number!
+      $last= $id;
+      while (--$last) {
+        $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::HEAD, '/repos/:user/:repo/issues/:id', [ id : $last ]));
+        if (200 == $response.status()) break;
+
+        $this.out.write('Creating place holder RFC for ', $last);
+        $placeholder= $this.createIssue('(Placeholder)', '', [:]);
+        $this.out.writeLine('Created issue #', $placeholder['number']);
+      }
+
+      // Now create the real issue
+      $this.out.write('Nothing found, creating new issue');
+      $issue= $this.createIssue($title, $content, $fields);
+      $this.out.writeLine('Created issue #', $issue['number']);
     }
     
-    // Now create the real issue
-    $this.out.write('Nothing found, creating new issue');
-    $issue= $this.createIssue($title, $content, $fields);
-    $this.out.writeLine('Created issue #', $issue['number']);
+    // Commments
+    $st.nextToken();
+    while ($st.hasMoreTokens()) {
+      $line= $st.nextToken();
+      $this.out.writeLine('Comment <', $line, '>');
+    }
+    
     return 0;
   }
 }
