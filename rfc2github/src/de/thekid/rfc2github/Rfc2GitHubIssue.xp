@@ -24,12 +24,11 @@ import native standard.max;
 import native standard.sprintf;
 import native standard.array_diff;
 import native standard.array_merge;
-import native standard.array_keys;
-import native standard.array_search;
 
 import native pcre.preg_replace;
 
 import native core.strncmp;
+import native core.strcasecmp;
 import native core.strlen;
 
 /**
@@ -205,20 +204,49 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     ) ~ "\n";
   }
   
+  protected var $labels = [
+    implemented : 'e102d8',
+    discussion  : 'e10c02',
+    draft       : '02d7e1',
+    rejected    : 'd7e102',
+    obsoleted   : 'dddddd'
+  ];
+  
   /**
    * Entry point method
    *
    */
   public void run() {
   
-    // Fetch labels and milestones
+    // Synchronize labels
     $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/labels'));
-    $result= $response.result() as [:var];
-    $this.labels= [:];
+    $result= $response.result() as [:var][];
     foreach ($label in $result) {
-      $this.labels[$label['name']]= $label['color'];
+      $key= $label['name'] as string;
+      if (isset($this.labels[$key])) {
+        $color= $this.labels[$key];
+        if (0 !== strcasecmp($color, $label['color'])) {
+          $this.sendApiRequest($this.newApiRequest(HttpConstants::PATCH, '/repos/:user/:repo/labels', [
+            name  : $name,
+            color : $color
+          ]));
+          $this.out.writeLine('~Labels[', $label, ']: ', $label['color'], ' => ', $color);
+        }
+        unset($this.labels[$key]);
+      } else {
+        $this.sendApiRequest($this.newApiRequest(HttpConstants::DELETE, '/repos/:user/:repo/labels/:name', [
+          name  : $name
+        ]));
+        $this.out.writeLine('-Labels[', $label, ']');
+      }
     }
-    $this.out.writeLine('Labels: ', $this.labels);
+    foreach ($name, $color in $this.labels) {
+      $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, '/repos/:user/:repo/labels', [
+        name  : $name,
+        color : $color
+      ]));
+      $this.out.writeLine('+Labels[', $name, ']: (null) => ', $color);
+    }
   
     // Parse RFC into caption, fields and body text
     $fields= [:];
