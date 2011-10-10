@@ -20,6 +20,7 @@ import native standard.explode;
 import native standard.trim;
 import native standard.ltrim;
 import native standard.substr;
+import native standard.strstr;
 import native standard.max;
 import native standard.sprintf;
 import native standard.array_diff;
@@ -136,11 +137,29 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
    *
    */
   protected [:var] modifyIssue(HttpRequest $request, int $expect, string $title, string $content, [:var] $fields) {
+    $labels= [ $fields['status.id'] ];
+
+    // Map category to labels
+    if (strstr($fields['category'], '<core>')) {
+      $labels[]= 'framework';
+    } else if (strstr($fields['category'], '<language>')) {
+      $labels[]= 'language';
+    } else if (strstr($fields['category'], '<infrastructure>')) {
+      $labels[]= 'technology';
+    } else if (strstr($fields['category'], '<strategy>')) {
+      // Nothing
+    } else if (strstr($fields['category'], '<ports>')) {
+      $labels[]= 'contrib';
+    } else {
+      $labels[]= 'framework';
+    }
+
+    // Create request
     $request.setParameters(new RequestData(self::$json.encode([
       title  : new String($title),
       body   : new String($content),
       state  : self::$state[$fields['status.id']],
-      labels : [ $fields['status.id'] ]
+      labels : $labels
     ])));
     $request.setHeader('Content-Type', 'application/vnd.github-issue.raw+json');
 
@@ -205,11 +224,19 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
   }
   
   protected var $labels = [
+  
+    // Status
     discussion  : '327230',
     draft       : '7890d4',
     implemented : '807370',
     rejected    : '807370',
-    obsoleted   : '807370'
+    obsoleted   : '807370',
+    
+    // Category
+    contrib     : '981d1d',
+    framework   : '118f5b',
+    language    : '893ea2',
+    technology  : 'e79800'
   ];
   
   /**
@@ -237,11 +264,13 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       unset($this.labels[$key]);
     }
     foreach ($name, $color in $this.labels) {
-      $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, '/repos/:user/:repo/labels', [
+      $create= $this.newApiRequest(HttpConstants::POST, '/repos/:user/:repo/labels');
+      $create.setParameters(new RequestData(self::$json.encode([
         name  : $name,
         color : $color
-      ]));
-      $this.out.writeLine('+Labels[', $name, ']: (null) => ', $color);
+      ])));
+      $r= $this.sendApiRequest($create);
+      $this.out.writeLine('+Labels[', $name, ']: (null) => ', $color, ': ', $r.status());
     }
   
     // Parse RFC into caption, fields and body text
@@ -357,7 +386,7 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
         if (null === $comment) continue;
         $comment['content']~= $this.rewrite(trim($line));
       }
-      $comments[$comment['id']]= $comment['content'];
+      $comment && $comments[$comment['id']]= $comment['content'];
 
       // Get existing comments
       $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id/comments', [ id : $id ]));
