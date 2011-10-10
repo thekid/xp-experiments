@@ -223,22 +223,16 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     $result= $response.result() as [:var][];
     foreach ($label in $result) {
       $key= $label['name'] as string;
-      if (isset($this.labels[$key])) {
-        $color= $this.labels[$key];
-        if (0 !== strcasecmp($color, $label['color'])) {
-          $this.sendApiRequest($this.newApiRequest(HttpConstants::PATCH, '/repos/:user/:repo/labels', [
-            name  : $name,
-            color : $color
-          ]));
-          $this.out.writeLine('~Labels[', $label, ']: ', $label['color'], ' => ', $color);
-        }
-        unset($this.labels[$key]);
-      } else {
-        $this.sendApiRequest($this.newApiRequest(HttpConstants::DELETE, '/repos/:user/:repo/labels/:name', [
-          name  : $name
+      if (!isset($this.labels[$key])) continue;
+      $color= $this.labels[$key];
+      if (0 !== strcasecmp($color, $label['color'])) {
+        $this.sendApiRequest($this.newApiRequest(HttpConstants::PATCH, '/repos/:user/:repo/labels', [
+          name  : $name,
+          color : $color
         ]));
-        $this.out.writeLine('-Labels[', $label, ']');
+        $this.out.writeLine('~Labels[', $label, ']: ', $label['color'], ' => ', $color);
       }
+      unset($this.labels[$key]);
     }
     foreach ($name, $color in $this.labels) {
       $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, '/repos/:user/:repo/labels', [
