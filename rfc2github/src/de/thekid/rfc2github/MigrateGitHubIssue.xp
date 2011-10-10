@@ -1,0 +1,196 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package de.thekid.rfc2github;
+
+import peer.http.*;
+import peer.Header;
+import text.regex.Pattern;
+import text.regex.MatchResult;
+import lang.types.String;
+
+import native standard.sscanf;
+import native standard.sprintf;
+import native standard.str_replace;
+import native standard.array_merge;
+
+/**
+ * Migrates Github issues
+ *
+ * @see      http://develop.github.com/p/issues.html
+ * @see      https://github.com/thekid/experiments/issues
+ */
+public class MigrateGitHubIssue extends util.cmd.Command {
+  protected HttpConnection $conn= new HttpConnection('https://api.github.com/');
+  protected Header $identity;
+  protected [:[:var]] $parameters;
+  protected bool $verbose = false;
+
+  /**
+   * Sets credentials (user:password)
+   *
+   */
+  [@arg(position= 0)]
+  public void setCredentials(string $credentials) {
+    $user= $pass= null;
+    sscanf($credentials, "%[^:]:%[^\r]", $user, $pass);
+    $this.identity= new BasicAuthorization($user, $pass);
+  }
+  
+  /**
+   * Sets origin (owner/repo#issue)
+   *
+   */
+  [@arg(position= 1)]
+  public void setOrigin(string $origin) {
+    $owner= $repo= $id= null;
+    sscanf($origin, "%[^/]/%[^#]#%d", $owner, $repo, $id);
+    $this.parameters['origin']= [ user: $owner, repo: $repo, id : $id ];
+  }
+
+  /**
+   * Sets target (owner/repo)
+   *
+   */
+  [@arg(position= 2)]
+  public void setTarget(string $target) {
+    $owner= $repo= $id= null;
+    sscanf($target, "%[^/]/%[^#]#%d", $owner, $repo, $id);
+    $this.parameters['target']= [ user: $owner, repo: $repo, id : $id ];
+  }
+
+  /**
+   * Sets whether to be verbose
+   *
+   */
+  [@arg]
+  public void setVerbose() {
+    $this.verbose= true;
+  }
+
+  protected static var $segments= new Pattern(':([a-z_]+)');
+  
+  /**
+   * Creates a new API request
+   *
+   * @param   method One of the HttpConstants constants
+   * @param   string resource in the form /path/part/:segment/
+   * @param   parameters parameters which will be used as segments and request parameters
+   */
+  protected HttpRequest newApiRequest(string $method, string $id, string $resource, [:string] $parameters= [:]) {
+    $parameters= array_merge($this.parameters[$id], $parameters) as [:var];
+    foreach ($group in self::$segments.match($resource).groups()) {
+      $resource= str_replace($group[0], $parameters[$group[1]], $resource);
+      unset($parameters[$group[1]]);
+    }
+
+    $request= $this.conn.create(new HttpRequest());
+    $request.setMethod($method);
+    $request.setTarget($resource);
+    $request.setParameters($parameters);
+    $request.setHeader('Authorization', $this.identity);
+    
+    $this.verbose && $this.err.writeLine('>>> ', $request.getRequestString());
+    return $request;
+  }
+
+  /**
+   * Creates a new API request
+   *
+   */
+  protected ApiResponse sendApiRequest(HttpRequest $request) {
+    $response= $this.conn.send($request);
+
+    $this.verbose && $this.err.writeLine('<<< ', $response);
+    return new ApiResponse($response);
+  }
+  
+  protected static var $json = webservices.json.JsonFactory::create();
+  
+  /**
+   * Modify an issue
+   *
+   */
+  protected [:var] modifyIssue(HttpRequest $request, int $expect, [:var] $issue) {
+    $request.setParameters(new RequestData(self::$json.encode($issue)));
+    $request.setHeader('Content-Type', 'application/vnd.github-issue.raw+json');
+
+    $response= $this.sendApiRequest($request);
+    if ($expect != $response.status()) {
+      throw new IllegalArgumentException($response.toString());
+    }
+
+    return $response.result() as [:var];
+  }
+
+  /**
+   * Creates an issue
+   *
+   */
+  protected [:var] createIssue(string $id, [:var] $issue) {
+    return $this.modifyIssue(
+      $this.newApiRequest(HttpConstants::POST, $id, '/repos/:user/:repo/issues'), 
+      201, 
+      $issue
+    );
+  }
+
+  /**
+   * Updates an existing issue
+   *
+   */
+  protected [:var] updateIssue(string $id, int $number, [:var] $issue) {
+    return $this.modifyIssue(
+      $this.newApiRequest(HttpConstants::PATCH, $id, '/repos/:user/:repo/issues/:id', [ id: $number ]),
+      200, 
+      $issue
+    );
+  }
+  
+  /**
+   * Entry point method
+   *
+   */
+  public void run() {
+
+    // Fetch origin issue
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, 'origin', '/repos/:user/:repo/issues/:id'));
+    if (200 != $response.status()) {
+      $this.err.writeLine('*** Cannot find issue ', $this.parameters['origin']);
+      return 1;
+    }
+    $origin= $response.result() as [:var];
+
+    $this.out.writef(
+      'Migrating %s/%s#%d (%s) -> %s/%s',
+      $this.parameters['origin']['user'],
+      $this.parameters['origin']['repo'],
+      $this.parameters['origin']['id'],
+      $origin['title'],
+      $this.parameters['target']['user'],
+      $this.parameters['target']['repo']
+    );
+    
+    // Fetch target issue (or create)
+    $target= null;
+    if (null !== $this.parameters['target']['id']) {
+      $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, 'target', '/repos/:user/:repo/issues/:id'));
+      if (200 == $response.status()) {
+        $target= $response.result() as [:var];
+      }
+    }
+
+    if (null === $target) {
+      $this.out.write('!');
+      $target= $this.createIssue('target', [ title : '(Placeholder)', body : '' ]);
+      $this.out.writeLine($target['number']);
+    }
+    
+    $origin['title']= sprintf('RFC %04d: %s', $target['number'], $origin['title']);
+    $this.out.writeLine('#', $target['number']);
+    $this.updateIssue('target', $target['number'], $origin);
+    return 0;
+  }
+}
