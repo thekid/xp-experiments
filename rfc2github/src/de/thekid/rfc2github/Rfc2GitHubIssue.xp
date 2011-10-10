@@ -19,12 +19,13 @@ import native standard.str_replace;
 import native standard.explode;
 import native standard.trim;
 import native standard.ltrim;
-import native standard.urlencode;
 import native standard.substr;
 import native standard.max;
 import native standard.sprintf;
 import native standard.array_diff;
 import native standard.array_merge;
+import native standard.array_keys;
+import native standard.array_search;
 
 import native pcre.preg_replace;
 
@@ -291,21 +292,20 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       $this.out.writeLine('Created issue #', $issue['number']);
     }
     
-    // Commments
+    // Parse Commments
     $st.nextToken();
     $comment= $last= null;
-    $comments= [];
-    with ($separator= new Pattern('^([a-z]+), ([a-zA-Z0-9: ]+)$')) {
+    $comments= [:];
+    with ($separator= new Pattern('([a-z]+), ([a-zA-Z0-9:,+ ]+)$')) {
       while ($st.hasMoreTokens()) {
         $last= $line;
         $line= $st.nextToken();
 
         // Old format: "- <USER>, <DATE>\n<LINE1>\n<LINE2>...\n"
         if (0 === strncmp('- ', $line, 2) && !MatchResult::$EMPTY.equals($match= $separator.match(substr($line, 2)))) {
-          $comment && $comments[]= $comment;
+          $comment && $comments[$comment['id']]= $comment['content'];
           $comment= [
-            user    : $match.group(0)[1],
-            date    : new util.Date($match.group(0)[2]),
+            id      : $match.group(0)[1] ~ ', ' ~ new util.Date($match.group(0)[2]).toString('r'),
             content : ''
           ];
           continue;
@@ -313,13 +313,9 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
 
         // New format: "<USER>, <DATE>\n~~~~...\n<LINE1>\n<LINE2>...\n"
         if (0 === strncmp('~~~', $line, 3) && !MatchResult::$EMPTY.equals($match= $separator.match($last))) {
-          if ($comment) {
-            $comment['content']= substr($comment['content'], 0, -strlen($last)- 1);
-            $comments[]= $comment;
-          }
+          $comment && $comments[$comment['id']]= substr($comment['content'], 0, -strlen($last)- 1);
           $comment= [
-            user    : $match.group(0)[1],
-            date    : new util.Date($match.group(0)[2]),
+            id      : $match.group(0)[1] ~ ', ' ~ new util.Date($match.group(0)[2]).toString('r'),
             content : ''
           ];
           continue;
@@ -328,9 +324,36 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
         if (null === $comment) continue;
         $comment['content']~= $this.rewrite(trim($line));
       }
+      $comments[$comment['id']]= $comment['content'];
+
+      // Get existing comments
+      $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id/comments', [ id : $id ]));
+      $list= $response.result() as [:var][];
+      $existing= [:];
+      foreach ($i, $item in $list) {
+        if (MatchResult::$EMPTY.equals($match= $separator.match($item['body']))) continue;
+
+        $key= $match.group(0)[1] ~ ', ' ~ new util.Date($match.group(0)[2]).toString('r');
+        if (isset($comments[$key])) {
+          unset($comments[$key]);
+        } else {
+          $this.out.write('Comments -= ', $key);
+          $delete= $this.newApiRequest(HttpConstants::DELETE, '/repos/:user/:repo/issues/comments/:id', [ id : $item['id'] ]);
+          $this.out.writeLine($this.sendApiRequest($delete).status());
+        }
+      }
+
+      // Add comments from origin RFC
+      foreach ($key, $add in $comments) {
+        $this.out.write('Comments += ', $key, ': ');
+        $create= $this.newApiRequest(HttpConstants::POST, '/repos/:user/:repo/issues/:id/comments', [ id : $id ]);
+        $create.setParameters(new RequestData(self::$json.encode([
+          body : new String($add).concat("\n").concat($key)
+        ])));
+        $create.setHeader('Content-Type', 'application/vnd.github-issuecomment.raw+json');
+        $this.out.writeLine($this.sendApiRequest($create).status());
+      }
     }
-    $comments[]= $comment;
-    $this.out.writeLine('Comments: ', $comments);
     return 0;
   }
 }
