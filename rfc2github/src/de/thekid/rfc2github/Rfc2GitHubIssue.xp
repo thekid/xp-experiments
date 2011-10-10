@@ -9,6 +9,8 @@ import peer.http.*;
 import peer.URL;
 import peer.Header;
 import io.File;
+import text.regex.Pattern;
+import text.regex.MatchResult;
 import lang.types.String;
 
 import native standard.sscanf;
@@ -43,7 +45,7 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
   protected bool $verbose = false;
 
   /**
-   * Sets origin filename
+   * Sets credentials (user:password)
    *
    */
   [@arg(position= 0)]
@@ -82,7 +84,7 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     $this.verbose= true;
   }
   
-  protected static var $segments= new text.regex.Pattern(':([a-z_]+)');
+  protected static var $segments= new Pattern(':([a-z_]+)');
   
   /**
    * Creates a new API request
@@ -179,6 +181,30 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
   }
   
   /**
+   * Syntactic rewrite: XP markup -> Github syntax
+   *
+   */
+  protected string rewrite(string $line) {
+    if (0 === strncmp('---', $line, 3)) {
+      $line= '====';
+    } else if (0 === strncmp('~~~', $line, 3)) {
+      $line= '----';
+    } else if ('<code>' === $line) {
+      $line= "\n```php\n<?php";
+    } else if ('</code>' === $line) {
+      $line= "?>\n```";
+    } else if ('<pre>' === $line || '</pre>' === $line) {
+      $line= "\n```";
+    }
+
+    return preg_replace(
+      [ '#<tt>#', '#</tt>#', '/RFC #([0-9]+)/e'],
+      [ '`', '`', '"xp-framework/rfc #".ltrim("\1", "0")'],
+      $line
+    ) ~ "\n";
+  }
+  
+  /**
    * Entry point method
    *
    */
@@ -227,25 +253,9 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       $content= '';
       while ($st.hasMoreTokens()) {
         $line= $st.nextToken();
-        if (0 === strncmp('---', $line, 3)) {
-          $line= '====';
-        } else if (0 === strncmp('~~~', $line, 3)) {
-          $line= '----';
-        } else if ('<code>' === $line) {
-          $line= "\n```php\n<?php";
-        } else if ('</code>' === $line) {
-          $line= "?>\n```";
-        } else if ('<pre>' === $line || '</pre>' === $line) {
-          $line= "\n```";
-        } else if ('Comments' === $line) {
-          break;
-        }
+        if ('Comments' === $line) break;
 
-        $content ~= preg_replace(
-          [ '#<tt>#', '#</tt>#', '/RFC #([0-9]+)/e'],
-          [ '`', '`', '"xp-framework/rfc #".ltrim("\1", "0")'],
-          $line
-        ) ~ "\n";
+        $content ~= $this.rewrite($line);
       }
     }
     
@@ -283,11 +293,44 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     
     // Commments
     $st.nextToken();
-    while ($st.hasMoreTokens()) {
-      $line= $st.nextToken();
-      $this.out.writeLine('Comment <', $line, '>');
+    $comment= $last= null;
+    $comments= [];
+    with ($separator= new Pattern('^([a-z]+), ([a-zA-Z0-9: ]+)$')) {
+      while ($st.hasMoreTokens()) {
+        $last= $line;
+        $line= $st.nextToken();
+
+        // Old format: "- <USER>, <DATE>\n<LINE1>\n<LINE2>...\n"
+        if (0 === strncmp('- ', $line, 2) && !MatchResult::$EMPTY.equals($match= $separator.match(substr($line, 2)))) {
+          $comment && $comments[]= $comment;
+          $comment= [
+            user    : $match.group(0)[1],
+            date    : new util.Date($match.group(0)[2]),
+            content : ''
+          ];
+          continue;
+        }
+
+        // New format: "<USER>, <DATE>\n~~~~...\n<LINE1>\n<LINE2>...\n"
+        if (0 === strncmp('~~~', $line, 3) && !MatchResult::$EMPTY.equals($match= $separator.match($last))) {
+          if ($comment) {
+            $comment['content']= substr($comment['content'], 0, -strlen($last)- 1);
+            $comments[]= $comment;
+          }
+          $comment= [
+            user    : $match.group(0)[1],
+            date    : new util.Date($match.group(0)[2]),
+            content : ''
+          ];
+          continue;
+        }
+
+        if (null === $comment) continue;
+        $comment['content']~= $this.rewrite(trim($line));
+      }
     }
-    
+    $comments[]= $comment;
+    $this.out.writeLine('Comments: ', $comments);
     return 0;
   }
 }
