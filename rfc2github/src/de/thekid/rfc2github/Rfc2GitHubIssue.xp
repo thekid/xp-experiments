@@ -205,11 +205,11 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
   }
   
   protected var $labels = [
-    implemented : '327230',
-    discussion  : '9ba61d',
+    discussion  : '327230',
     draft       : '7890d4',
-    rejected    : '720d0d',
-    obsoleted   : '988d8d'
+    implemented : '807370',
+    rejected    : '807370',
+    obsoleted   : '807370'
   ];
   
   /**
