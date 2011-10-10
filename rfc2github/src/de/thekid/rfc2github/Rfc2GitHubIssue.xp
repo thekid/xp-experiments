@@ -211,6 +211,15 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
    */
   public void run() {
   
+    // Fetch labels and milestones
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/labels'));
+    $result= $response.result() as [:var];
+    $this.labels= [:];
+    foreach ($label in $result) {
+      $this.labels[$label['name']]= $label['color'];
+    }
+    $this.out.writeLine('Labels: ', $this.labels);
+  
     // Parse RFC into caption, fields and body text
     $fields= [:];
     with ($st= new text.StreamTokenizer($this.origin.getInputStream(), "\r\n")) {
