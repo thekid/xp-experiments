@@ -205,11 +205,11 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
   }
   
   protected var $labels = [
-    implemented : 'e102d8',
-    discussion  : 'e10c02',
-    draft       : '02d7e1',
-    rejected    : 'd7e102',
-    obsoleted   : 'dddddd'
+    implemented : '327230',
+    discussion  : '9ba61d',
+    draft       : '7890d4',
+    rejected    : '720d0d',
+    obsoleted   : '988d8d'
   ];
   
   /**
@@ -226,11 +226,13 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       if (!isset($this.labels[$key])) continue;
       $color= $this.labels[$key];
       if (0 !== strcasecmp($color, $label['color'])) {
-        $this.sendApiRequest($this.newApiRequest(HttpConstants::PATCH, '/repos/:user/:repo/labels', [
-          name  : $name,
+        $update= $this.newApiRequest(HttpConstants::PATCH, '/repos/:user/:repo/labels/:id', [ id : $key ]);
+        $update.setParameters(new RequestData(self::$json.encode([
+          name  : $key,
           color : $color
-        ]));
-        $this.out.writeLine('~Labels[', $label, ']: ', $label['color'], ' => ', $color);
+        ])));
+        $r= $this.sendApiRequest($update);
+        $this.out.writeLine('~Labels[', $key, ']: ', $label['color'], ' => ', $color, ': ', $r.status());
       }
       unset($this.labels[$key]);
     }
@@ -370,7 +372,8 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
         } else {
           $this.out.write('Comments -= ', $key);
           $delete= $this.newApiRequest(HttpConstants::DELETE, '/repos/:user/:repo/issues/comments/:id', [ id : $item['id'] ]);
-          $this.out.writeLine($this.sendApiRequest($delete).status());
+          $r= $this.sendApiRequest($delete);
+          $this.out.writeLine($r.status());
         }
       }
 
@@ -382,7 +385,8 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
           body : new String($add).concat("\n").concat($key)
         ])));
         $create.setHeader('Content-Type', 'application/vnd.github-issuecomment.raw+json');
-        $this.out.writeLine($this.sendApiRequest($create).status());
+        $r= $this.sendApiRequest($create);
+        $this.out.writeLine($r.status());
       }
     }
     return 0;
