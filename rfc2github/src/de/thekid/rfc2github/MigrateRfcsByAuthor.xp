@@ -29,6 +29,7 @@ import native standard.ksort;
  */
 public class MigrateRfcsByAuthor extends GitHubApiCommand {
   protected string $author;
+  protected string $start;
   protected IOCollectionIterator $origin;
   protected [:var] $milestones;
   
@@ -64,6 +65,14 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
     $this.parameters= [ user: $owner, repo: $repo ];
   }
 
+  /**
+   * Sets start
+   *
+   */
+  [@arg]
+  public void setStart(string $start= '0001') {
+    $this.start = $start;
+  }
 
   /**
    * Syntactic rewrite: XP markup -> Github syntax
@@ -328,6 +337,7 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
     foreach ($file in $this.origin) {
       $rfc= $this.parseRfc($file.getInputStream());
       if ($this.author !== $rfc['fields']['authors'][0]) continue;
+      if ($rfc['id'] < $this.start) continue;
     
       $rfcs[$rfc['id']]= $rfc;
     }
