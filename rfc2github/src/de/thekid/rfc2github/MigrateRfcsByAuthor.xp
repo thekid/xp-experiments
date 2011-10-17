@@ -22,13 +22,14 @@ import native core.strncmp;
 import native core.strlen;
 import native standard.strstr;
 import native standard.ksort;
+import native standard.in_array;
 
 /**
  * Migrates RFCs by a given author
  *
  */
 public class MigrateRfcsByAuthor extends GitHubApiCommand {
-  protected string $author;
+  protected string[] $authors;
   protected string $start;
   protected IOCollectionIterator $origin;
   protected [:var] $milestones;
@@ -46,12 +47,12 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
   }
   
   /**
-   * Sets author
+   * Sets authors' names
    *
    */
   [@arg(position= 2)]
-  public void setAuthor(string $name) {
-    $this.author= $name;
+  public void setAuthors(string $names) {
+    $this.authors= explode(',', $names);
   }
 
   /**
@@ -336,7 +337,7 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
     $rfcs= [:];
     foreach ($file in $this.origin) {
       $rfc= $this.parseRfc($file.getInputStream());
-      if ($this.author !== $rfc['fields']['authors'][0]) continue;
+      if (!in_array($rfc['fields']['authors'][0], $this.authors)) continue;
       if ($rfc['id'] < $this.start) continue;
     
       $rfcs[$rfc['id']]= $rfc;
