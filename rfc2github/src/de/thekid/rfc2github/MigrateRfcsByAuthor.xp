@@ -272,20 +272,35 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
       if ($this.author !== $rfc['fields']['authors'][0]) continue;
       
       $this.out.writeLine('---> ', $rfc['id'], ': ', $rfc['caption'], ' (', $rfc['fields']['status.id'], ')');
+      $id= ltrim($rfc['id'], '0') as int;
       
       // Check GH for corresponding issue
-      $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id', [ id : $rfc['id'] ]));
+      $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id', [ id : $id ]));
+      
+      // If we cannot find it, see if it would be the next
       if (200 != $response.status()) {
-        $this.err.writeLine('     >> Not found');
-        break;
+        $prev= $id- 1;
+        if ($prev > 0) {
+          $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id', [ id : $prev ]));
+          if (200 != $response.status()) {
+            $this.err.writeLine('     >> Cannot create new RFC, others need to go first');
+            break;
+          }
+        }
+
+        // Now create the real issue
+        $this.out.write('     >> Nothing found, creating new issue');
+        $issue= $this.createIssue($rfc['caption'], $rfc['content'], $rfc['fields']);
+        $this.out.writeLine(': Created issue #', $issue['number']);
+      } else {
+
+        // Found it, update
+        $issue= $response.result() as [:var];
+
+        $this.out.write('     >> Found existing issue #', $issue['number']);
+        $this.updateIssue($issue['number'], $rfc['caption'], $rfc['content'], $rfc['fields']);
+        $this.out.writeLine(': Updated');
       }
-
-      // Found it, update
-      $issue= $response.result() as [:var];
-
-      $this.out.write('     >> Found existing issue #', $issue['number']);
-      $this.updateIssue($issue['number'], $rfc['caption'], $rfc['content'], $rfc['fields']);
-      $this.out.writeLine(': Updated');
 
       // Get existing comments
       $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id/comments', [ id : $issue['number'] ]));
