@@ -6,8 +6,10 @@
 package de.thekid.rfc2github;
 
 import peer.http.*;
+import io.File;
 
 import native standard.sscanf;
+import native standard.trim;
 import native core.strcasecmp;
 
 /**
@@ -35,6 +37,7 @@ public class ConfigureRfcRepository extends GitHubApiCommand {
     language    : '893ea2',
     technology  : 'e79800'
   ];
+  protected var $versions= [];
   
   /**
    * Sets target (owner/repo)
@@ -48,10 +51,32 @@ public class ConfigureRfcRepository extends GitHubApiCommand {
   }
 
   /**
-   * Entry point method
+   * Sets ChangeLog file
    *
    */
-  public void run() {
+  [@arg(position= 2)]
+  public void setChangeLog(string $file) {
+    $f= new File($file);
+    $f.open(FILE_MODE_READ);
+
+    while (($line= $f.readLine()) !== FALSE) {
+      $maj= $min= $mic= NULL;
+      if (4 !== sscanf($line, 'Version %d.%d.%d, %s', $maj, $min, $mic, $rest)) {
+        continue;
+      }
+
+      $version= $maj ~ '.' ~ $min ~ '.' ~ $mic;
+      $this.versions[$version]= trim($line);
+    }
+
+    $f.close();
+  }
+
+  /**
+   * Sync labels
+   *
+   */
+  private void syncLabels() {
     $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/labels'));
     $result= $response.result() as [:var][];
     foreach ($label in $result) {
@@ -78,5 +103,38 @@ public class ConfigureRfcRepository extends GitHubApiCommand {
       $r= $this.sendApiRequest($create);
       $this.out.writeLine('+Labels[', $name, ']: (null) => ', $color, ': ', $r.status());
     }
+  }
+
+  /**
+   * Sync versions as milestones
+   *
+   */
+  private void syncVersions() {
+    foreach ($version, $line in $this.versions) {
+      $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/milestones/:id'));
+      if (200 == $response.status()) {
+        continue;
+      }
+
+      $create= $this.newApiRequest(HttpConstants::POST, '/repos/:user/:repo/milestones');
+      $create.setParameters(new RequestData(self::$json.encode([
+        title : $version ~ '-RELEASE',
+        state : 'closed',
+        description : $line,
+      ])));
+      $r= $this.sendApiRequest($create);
+      $this.out.writeLine('+Version[', $version, ']: (null) => ', $r.status());
+
+      unset($this.versions[$version]);
+    }
+  }
+
+  /**
+   * Entry point method
+   *
+   */
+  public void run() {
+    $this.syncLabels();
+    $this.syncVersions();
   }
 }
