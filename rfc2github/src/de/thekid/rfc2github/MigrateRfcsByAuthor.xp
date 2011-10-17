@@ -286,7 +286,7 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
 
         // Check back until we find an issue, creating placeholders along the way
         // This way, we ensure the created RFC has the correct number!
-        $last= $id;
+        $last= $rfc['id'];
         while (--$last) {
           $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::HEAD, '/repos/:user/:repo/issues/:id', [ id : $last ]));
           if (200 == $response.status()) break;
