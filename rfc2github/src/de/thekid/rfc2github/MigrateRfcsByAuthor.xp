@@ -314,8 +314,8 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
         if (MatchResult::$EMPTY.equals($match= $separator.match($item['body']))) continue;
 
         $key= $match.group(0)[1] ~ ', ' ~ new util.Date($match.group(0)[2]).toString('r');
-        if (isset($comments[$key])) {
-          unset($comments[$key]);
+        if (isset($rfc['comments'][$key])) {
+          unset($rfc['comments'][$key]);
         } else {
           $this.out.write('     >> Comments -= ', $key);
           $delete= $this.newApiRequest(HttpConstants::DELETE, '/repos/:user/:repo/issues/comments/:id', [ id : $item['id'] ]);
@@ -325,7 +325,7 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
       }
 
       // Add comments from origin RFC
-      foreach ($key, $add in $comments) {
+      foreach ($key, $add in $rfc['comments']) {
         $this.out.write('     >> Comments += ', $key, ': ');
         $create= $this.newApiRequest(HttpConstants::POST, '/repos/:user/:repo/issues/:id/comments', [ id : $issue['number'] ]);
         $create.setParameters(new RequestData(self::$json.encode([
@@ -338,17 +338,18 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
       
       // Finally, associate with correct milestone
       if (isset($rfc['fields']['target'])) {
-        $milestone= $rfc['fields']['target'] ~ '-RELEASE';
-        $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/milestones/:id', $milestone));
+        if (3 == strlen($rfc['fields']['target'])) {
+          $milestone= $rfc['fields']['target'] ~ '-SERIES';
+        } else {
+          $milestone= $rfc['fields']['target'] ~ '-RELEASE';
+        }
+        $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/milestones/:id', [ id : $milestone ]));
         if (200 == $response.status()) {
           $this.err.write('     >> Cannot find milestone ', $milestone);
         } else {
           $this.err.write('     >> Milestone = ', $response.result());
         }
       }
-      
-      if ($id > 1)
-      break;
     }
   }
 }
