@@ -333,7 +333,7 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
     $this.fetchMilestones('closed');
     
     // Actually import RFCs
-    $this.out.writeLine('===> RFCs by ', $this.author, ' in ', $this.origin);
+    $this.out.writeLine('===> RFCs by ', $this.authors, ' in ', $this.origin);
     $rfcs= [:];
     foreach ($file in $this.origin) {
       $rfc= $this.parseRfc($file.getInputStream());
