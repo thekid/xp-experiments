@@ -1,0 +1,188 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package de.thekid.rfc2github;
+
+import peer.http.*;
+import io.collections.FileCollection;
+import io.collections.iterate.*;
+import text.regex.*;
+
+import native standard.strtok;
+import native standard.trim;
+import native standard.ltrim;
+import native standard.explode;
+import native standard.sscanf;
+import native standard.substr;
+import native pcre.preg_replace;
+import native core.strncmp;
+import native core.strlen;
+
+/**
+ * Migrates RFCs by a given author
+ *
+ */
+public class MigrateRfcsByAuthor extends GitHubApiCommand {
+  protected string $author;
+  protected IOCollectionIterator $origin;
+  
+  /**
+   * Sets origin filename
+   *
+   */
+  [@arg(position= 1)]
+  public void setOriginFolder(string $name) {
+    $this.origin= new FilteredIOCollectionIterator(
+      new FileCollection($name), 
+      new NameMatchesFilter('/[0-9]+.rfc.txt/')
+    );
+  }
+  
+  /**
+   * Sets author
+   *
+   */
+  [@arg(position= 2)]
+  public void setAuthor(string $name) {
+    $this.author= $name;
+  }
+
+  /**
+   * Syntactic rewrite: XP markup -> Github syntax
+   *
+   */
+  protected string rewrite(string $line) {
+    if (0 === strncmp('---', $line, 3)) {
+      $line= '====';
+    } else if (0 === strncmp('~~~', $line, 3)) {
+      $line= '----';
+    } else if ('<code>' === $line) {
+      $line= "\n```php\n<?php";
+    } else if ('</code>' === $line) {
+      $line= "?>\n```";
+    } else if ('<pre>' === $line || '</pre>' === $line) {
+      $line= "\n```";
+    } else if ('<EOF>' === $line) {
+      $line= '';
+    }
+
+    return preg_replace(
+      [ '#<tt>#', '#</tt>#', '/RFC #([0-9]+)/e'],
+      [ '`', '`', '"xp-framework/rfc #".ltrim("\1", "0")'],
+      $line
+    ) ~ "\n";
+  }
+  
+  /**
+   * Parse an RFC
+   *
+   */
+  protected [:var] parseRfc(io.streams.InputStream $in) {
+    $fields= [:];
+    $id= $caption= null;
+    with ($st= new text.StreamTokenizer($in, "\r\n")) {
+      $title= $st.nextToken();
+      sscanf($title, "RFC %4s: %[^\r]", $id, $caption);
+      $st.nextToken('@');
+      
+      while ($st.hasMoreTokens()) {
+        if ('' === ($t= ltrim($st.nextToken(), '@'))) break;   // End of attributes
+
+        $key= $value= null;
+        sscanf($t, "%[^:]: %[^\r]", $key, $value);
+
+        switch ($key) {
+          case 'status':
+            $fields['status.id']= strtok($value, ',( ');
+            $fields['status.text']= trim(strtok("\0"));
+            break;
+
+          case 'authors':
+            $fields['authors']= explode(', ', $value);
+            break;
+
+          case 'created':
+            $fields['created']= util.Date::fromString($value);
+            break;
+
+          case 'category':
+            $fields['category']= trim($value, '<>');
+            break;
+            
+          default:
+            $fields[$key]= $value;
+            break;
+        }
+      }
+
+      // Rest of text (use a token that is not very likely to appear so
+      // scanning will happen in large chunks).
+      $content= '';
+      while ($st.hasMoreTokens()) {
+        $line= $st.nextToken();
+        if ('Comments' === $line) break;
+
+        $content ~= $this.rewrite($line);
+      }
+
+      // Parse Commments
+      $st.nextToken();
+      $comment= $last= null;
+      $comments= [:];
+      with ($separator= new Pattern('([a-z]+), ([a-zA-Z0-9:,+ ]+ [0-9]{4})(.*)')) {
+        while ($st.hasMoreTokens()) {
+          $last= $line;
+          $line= $st.nextToken();
+
+          // Old format: "- <USER>, <DATE>\n<LINE1>\n<LINE2>...\n"
+          if (0 === strncmp('- ', $line, 2) && !MatchResult::$EMPTY.equals($match= $separator.match(substr($line, 2)))) {
+            $comment && $comments[$comment['id']]= $comment['content'];
+            $comment= [
+              id      : $match.group(0)[1] ~ ', ' ~ new util.Date($match.group(0)[2]).toString('r'),
+              content : $match.group(0)[3]
+            ];
+            continue;
+          }
+
+          // New format: "<USER>, <DATE>\n~~~~...\n<LINE1>\n<LINE2>...\n"
+          if (0 === strncmp('~~~', $line, 3) && !MatchResult::$EMPTY.equals($match= $separator.match($last))) {
+            $comment && $comments[$comment['id']]= substr($comment['content'], 0, -strlen($last)- 1);
+            $comment= [
+              id      : $match.group(0)[1] ~ ', ' ~ new util.Date($match.group(0)[2]).toString('r'),
+              content : ''
+            ];
+            continue;
+          }
+
+          if (null === $comment) continue;
+          $comment['content']~= $this.rewrite(trim($line));
+        }
+        $comment && $comments[$comment['id']]= $comment['content'];
+      }
+    }
+    
+    return [ 
+      id       : $id, 
+      caption  : $caption, 
+      fields   : $fields, 
+      content  : $content, 
+      comments : $comments 
+    ];
+  }
+
+  /**
+   * Entry point method
+   *
+   */
+  public void run() {
+    $this.out.writeLine('===> RFCs by ', $this.author, ' in ', $this.origin);
+    foreach ($file in $this.origin) {
+      $rfc= $this.parseRfc($file.getInputStream());
+      if ($this.author !== $rfc['fields']['authors'][0]) continue;
+      
+      $this.out.writeLine('---> ', $rfc['id'], ': ', $rfc['caption'], ' (', $rfc['fields']['status.id'], ')');
+    }
+  }
+}
