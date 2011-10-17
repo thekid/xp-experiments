@@ -188,7 +188,6 @@ public class MigrateGitHubIssue extends util.cmd.Command {
       $this.out.writeLine($target['number']);
     }
     
-    $origin['title']= sprintf('RFC %04d: %s', $target['number'], $origin['title']);
     $this.out.writeLine('#', $target['number']);
     $this.updateIssue('target', $target['number'], $origin);
     return 0;
