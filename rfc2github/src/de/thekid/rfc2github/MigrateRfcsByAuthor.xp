@@ -117,6 +117,10 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
             $fields['authors']= explode(', ', $value);
             break;
 
+          case 'target':
+            $fields['target']= $value;
+            break;
+
           case 'created':
             $fields['created']= util.Date::fromString($value);
             break;
@@ -290,17 +294,17 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
 
         // Now create the real issue
         $this.out.write('     >> Nothing found, creating new issue');
-        $issue= $this.createIssue($rfc['caption'], $rfc['content'], $rfc['fields']);
-        $this.out.writeLine(': Created issue #', $issue['number']);
+        $issue= $this.createIssue($rfc['id'], '', [:]);
+        $this.out.write(': created #', $issue['number']);
       } else {
 
         // Found it, update
         $issue= $response.result() as [:var];
-
         $this.out.write('     >> Found existing issue #', $issue['number']);
-        $this.updateIssue($issue['number'], $rfc['caption'], $rfc['content'], $rfc['fields']);
-        $this.out.writeLine(': Updated');
       }
+
+      $this.updateIssue($issue['number'], $rfc['caption'], $rfc['content'], $rfc['fields']);
+      $this.out.writeLine(': Updated');
 
       // Get existing comments
       $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id/comments', [ id : $issue['number'] ]));
@@ -331,6 +335,20 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
         $r= $this.sendApiRequest($create);
         $this.out.writeLine($r.status());
       }
+      
+      // Finally, associate with correct milestone
+      if (isset($rfc['fields']['target'])) {
+        $milestone= $rfc['fields']['target'] ~ '-RELEASE';
+        $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/milestones/:id', $milestone));
+        if (200 == $response.status()) {
+          $this.err.write('     >> Cannot find milestone ', $milestone);
+        } else {
+          $this.err.write('     >> Milestone = ', $response.result());
+        }
+      }
+      
+      if ($id > 1)
+      break;
     }
   }
 }
