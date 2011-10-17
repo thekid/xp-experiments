@@ -16,7 +16,6 @@ import native standard.ltrim;
 import native standard.explode;
 import native standard.sscanf;
 import native standard.substr;
-import native standard.strstr;
 import native pcre.preg_replace;
 import native core.strncmp;
 import native core.strlen;
@@ -48,17 +47,6 @@ public class ExtractRfcsByAuthor extends util.cmd.Command {
   [@arg(position= 1)]
   public void setAuthor(string $name) {
     $this.author= $name;
-  }
-
-  /**
-   * Sets target (owner/repo)
-   *
-   */
-  [@arg(position= 2)]
-  public void setTarget(string $target) {
-    $owner= $repo= null;
-    sscanf($target, "%[^/]/%[^\r]", $owner, $repo);
-    $this.parameters= [ user: $owner, repo: $repo ];
   }
 
   /**
@@ -184,81 +172,6 @@ public class ExtractRfcsByAuthor extends util.cmd.Command {
     ];
   }
 
-  protected static var $state = [
-    draft :       'open',
-    discussion :  'open',
-    rejected :    'closed',
-    obsoleted :   'closed',
-    implemented:  'closed',
-  ];
-
-  /**
-   * Modify an issue
-   *
-   */
-  protected [:var] modifyIssue(HttpRequest $request, int $expect, string $title, string $content, [:var] $fields) {
-    $labels= [ $fields['status.id'] ];
-
-    // Map category to labels
-    if (strstr($fields['category'], '<core>')) {
-      $labels[]= 'framework';
-    } else if (strstr($fields['category'], '<language>')) {
-      $labels[]= 'language';
-    } else if (strstr($fields['category'], '<infrastructure>')) {
-      $labels[]= 'technology';
-    } else if (strstr($fields['category'], '<strategy>')) {
-      // Nothing
-    } else if (strstr($fields['category'], '<ports>')) {
-      $labels[]= 'contrib';
-    } else {
-      $labels[]= 'framework';
-    }
-
-    // Create request
-    $request.setParameters(new RequestData(self::$json.encode([
-      title  : new String($title),
-      body   : new String($content),
-      state  : self::$state[$fields['status.id']],
-      labels : $labels
-    ])));
-    $request.setHeader('Content-Type', 'application/vnd.github-issue.raw+json');
-
-    $response= $this.sendApiRequest($request);
-    if ($expect != $response.status()) {
-      throw new IllegalArgumentException($response.toString());
-    }
-
-    return $response.result() as [:var];
-  }
-
-  /**
-   * Creates an issue
-   *
-   */
-  protected [:var] createIssue(string $title, string $content, [:var] $fields) {
-    return $this.modifyIssue(
-      $this.newApiRequest(HttpConstants::POST, '/repos/:user/:repo/issues'), 
-      201, 
-      $title, 
-      $content, 
-      $fields
-    );
-  }
-
-  /**
-   * Updates an existing issue
-   *
-   */
-  protected [:var] updateIssue(int $id, string $title, string $content, [:var] $fields) {
-    return $this.modifyIssue(
-      $this.newApiRequest(HttpConstants::PATCH, '/repos/:user/:repo/issues/:id', [ id: $id ]),
-      200, 
-      $title, 
-      $content, 
-      $fields
-    );
-  }
-
   /**
    * Entry point method
    *
@@ -270,37 +183,6 @@ public class ExtractRfcsByAuthor extends util.cmd.Command {
       if ($this.author !== $rfc['fields']['authors'][0]) continue;
       
       $this.out.writeLine('---> ', $rfc['id'], ': ', $rfc['caption'], ' (', $rfc['fields']['status.id'], ')');
-
-      // Check GH for corresponding issue
-      $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id', [ id : $rfc['id'] ]));
-      if (200 == $response.status()) {
-        $issue= $response.result() as [:var];
-
-        // Found it, update and exit
-        $this.out.write('Found existing issue #', $issue['number']);
-        $this.updateIssue($issue['number'], $rfc['caption'], $rfc['content'], $rfc['fields']);
-        $this.out.writeLine(': Updated');
-      } else {
-
-        // Check back until we find an issue, creating placeholders along the way
-        // This way, we ensure the created RFC has the correct number!
-        $last= $id;
-        while (--$last) {
-          $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::HEAD, '/repos/:user/:repo/issues/:id', [ id : $last ]));
-          if (200 == $response.status()) break;
-
-          $this.out.write('Creating place holder RFC for ', $last);
-          $placeholder= $this.createIssue('(Placeholder)', '', [:]);
-          $this.out.writeLine('Created issue #', $placeholder['number']);
-        }
-
-        // Now create the real issue
-        $this.out.write('Nothing found, creating new issue');
-        $issue= $this.createIssue($rfc['caption'], $rfc['content'], $rfc['fields']);
-        $this.out.writeLine('Created issue #', $issue['number']);
-      }
-      
-      
     }
   }
 }
