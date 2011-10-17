@@ -29,6 +29,7 @@ import native standard.strstr;
 public class MigrateRfcsByAuthor extends GitHubApiCommand {
   protected string $author;
   protected IOCollectionIterator $origin;
+  protected [:var] $milestones;
   
   /**
    * Sets origin filename
@@ -220,12 +221,26 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
       $labels[]= 'framework';
     }
 
+    // Finally, associate with correct milestone
+    if (isset($fields['target'])) {
+      if (3 == strlen($fields['target'])) {
+        $milestone= $fields['target'] ~ '-Series';
+      } else {
+        $milestone= $fields['target'] ~ '-RELEASE';
+      }
+
+      if (!isset($this.milestones[$milestone])) {
+        throw new IllegalStateException('No such milestone ' ~ $milestone);
+      }
+    }
+
     // Create request
     $request.setParameters(new RequestData(self::$json.encode([
-      title  : new String($title),
-      body   : new String($content),
-      state  : self::$state[$fields['status.id']],
-      labels : $labels
+      title     : new String($title),
+      body      : new String($content),
+      state     : self::$state[$fields['status.id']],
+      milestone : $this.milestones[$milestone]['number'],
+      labels    : $labels
     ])));
     $request.setHeader('Content-Type', 'application/vnd.github-issue.raw+json');
 
@@ -264,12 +279,49 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
       $fields
     );
   }
+  
+  protected static var $link= new Pattern('<([^>]+)>; rel="next"');
+  
+  /**
+   * Fetch milestones
+   *
+   */
+  protected void fetchMilestones(string $state) {
+    $request= $this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/milestones', [ state : $state ]);
+    do {
+      $response= $this.sendApiRequest($request);
+      if (200 != $response.status()) {
+        throw new IllegalStateException('Unexpected response ' ~ $response.status());
+      }
+      $list= $response.result() as [:var][];
+      foreach ($item in $list) {
+        $this.milestones[$item['title'] as string]= $item;
+      }
+
+      if (MatchResult::$EMPTY.equals($match= self::$link.match($response.header('Link')[0]))) break;
+
+      $next= new peer.URL($match.group(0)[1]);
+      $request= $this.conn.create(new HttpRequest());
+      $request.setTarget($next.getPath());
+      $request.setParameters($next.getParams());
+      $request.setMethod(HttpConstants::GET);
+      $request.setHeader('Authorization', $this.identity);
+
+      $this.verbose && $this.err.writeLine('>>> ', $request.getRequestString());
+    } while ($next);
+  }
 
   /**
    * Entry point method
    *
    */
   public void run() {
+  
+    // Fetch milestones
+    $this.fetchMilestones('open');
+    $this.fetchMilestones('closed');
+    
+    // Actually import RFCs
     $this.out.writeLine('===> RFCs by ', $this.author, ' in ', $this.origin);
     foreach ($file in $this.origin) {
       $rfc= $this.parseRfc($file.getInputStream());
@@ -310,6 +362,7 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
       $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id/comments', [ id : $issue['number'] ]));
       $list= $response.result() as [:var][];
       $existing= [:];
+      $separator= new Pattern('([a-z]+), ([a-zA-Z0-9:,+ ]+)$');
       foreach ($i, $item in $list) {
         if (MatchResult::$EMPTY.equals($match= $separator.match($item['body']))) continue;
 
@@ -334,21 +387,6 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
         $create.setHeader('Content-Type', 'application/vnd.github-issuecomment.raw+json');
         $r= $this.sendApiRequest($create);
         $this.out.writeLine($r.status());
-      }
-      
-      // Finally, associate with correct milestone
-      if (isset($rfc['fields']['target'])) {
-        if (3 == strlen($rfc['fields']['target'])) {
-          $milestone= $rfc['fields']['target'] ~ '-SERIES';
-        } else {
-          $milestone= $rfc['fields']['target'] ~ '-RELEASE';
-        }
-        $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/milestones/:id', [ id : $milestone ]));
-        if (200 == $response.status()) {
-          $this.err.write('     >> Cannot find milestone ', $milestone);
-        } else {
-          $this.err.write('     >> Milestone = ', $response.result());
-        }
       }
     }
   }
