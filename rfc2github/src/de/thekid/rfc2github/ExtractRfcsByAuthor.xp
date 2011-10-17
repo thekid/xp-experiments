@@ -182,7 +182,7 @@ public class ExtractRfcsByAuthor extends util.cmd.Command {
       $rfc= $this.parseRfc($file.getInputStream());
       if ($this.author !== $rfc['fields']['authors'][0]) continue;
       
-      $this.out.writeLine('---> ', $rfc['id'], ': ', $rfc['caption']);
+      $this.out.writeLine('---> ', $rfc['id'], ': ', $rfc['caption'], ' (', $rfc['fields']['status.id'], ')');
     }
   }
 }
