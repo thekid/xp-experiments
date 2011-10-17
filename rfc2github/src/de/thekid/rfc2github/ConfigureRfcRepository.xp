@@ -1,0 +1,82 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package de.thekid.rfc2github;
+
+import peer.http.*;
+
+import native standard.sscanf;
+import native core.strcasecmp;
+
+/**
+ * Prepares RFC repository.
+ * <ul>
+ *   <li>Synchronizes labels</li>
+ *   <li>Synchronizes milestones</li>
+ * </ul>
+ *
+ * @see      https://github.com/thekid/experiments/issues
+ */
+public class ConfigureRfcRepository extends GitHubApiCommand {
+  protected var $labels= [
+  
+    // Status
+    discussion  : '327230',
+    draft       : '7890d4',
+    implemented : '807370',
+    rejected    : '807370',
+    obsoleted   : '807370',
+    
+    // Category
+    contrib     : '981d1d',
+    framework   : '118f5b',
+    language    : '893ea2',
+    technology  : 'e79800'
+  ];
+  
+  /**
+   * Sets target (owner/repo)
+   *
+   */
+  [@arg(position= 1)]
+  public void setTarget(string $target) {
+    $owner= $repo= null;
+    sscanf($target, "%[^/]/%[^\r]", $owner, $repo);
+    $this.parameters= [ user: $owner, repo: $repo ];
+  }
+
+  /**
+   * Entry point method
+   *
+   */
+  public void run() {
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/labels'));
+    $result= $response.result() as [:var][];
+    foreach ($label in $result) {
+      $key= $label['name'] as string;
+      if (!isset($this.labels[$key])) continue;
+      $color= $this.labels[$key];
+      if (0 !== strcasecmp($color, $label['color'])) {
+        $update= $this.newApiRequest(HttpConstants::PATCH, '/repos/:user/:repo/labels/:id', [ id : $key ]);
+        $update.setParameters(new RequestData(self::$json.encode([
+          name  : $key,
+          color : $color
+        ])));
+        $r= $this.sendApiRequest($update);
+        $this.out.writeLine('~Labels[', $key, ']: ', $label['color'], ' => ', $color, ': ', $r.status());
+      }
+      unset($this.labels[$key]);
+    }
+    foreach ($name, $color in $this.labels) {
+      $create= $this.newApiRequest(HttpConstants::POST, '/repos/:user/:repo/labels');
+      $create.setParameters(new RequestData(self::$json.encode([
+        name  : $name,
+        color : $color
+      ])));
+      $r= $this.sendApiRequest($create);
+      $this.out.writeLine('+Labels[', $name, ']: (null) => ', $color, ': ', $r.status());
+    }
+  }
+}

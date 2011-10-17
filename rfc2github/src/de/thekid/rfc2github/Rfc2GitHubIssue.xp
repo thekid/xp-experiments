@@ -13,6 +13,7 @@ import text.regex.Pattern;
 import text.regex.MatchResult;
 import lang.types.String;
 
+
 import native standard.sscanf;
 import native standard.strtok;
 import native standard.str_replace;
@@ -223,55 +224,11 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     ) ~ "\n";
   }
   
-  protected var $labels = [
-  
-    // Status
-    discussion  : '327230',
-    draft       : '7890d4',
-    implemented : '807370',
-    rejected    : '807370',
-    obsoleted   : '807370',
-    
-    // Category
-    contrib     : '981d1d',
-    framework   : '118f5b',
-    language    : '893ea2',
-    technology  : 'e79800'
-  ];
-  
   /**
    * Entry point method
    *
    */
   public void run() {
-  
-    // Synchronize labels
-    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/labels'));
-    $result= $response.result() as [:var][];
-    foreach ($label in $result) {
-      $key= $label['name'] as string;
-      if (!isset($this.labels[$key])) continue;
-      $color= $this.labels[$key];
-      if (0 !== strcasecmp($color, $label['color'])) {
-        $update= $this.newApiRequest(HttpConstants::PATCH, '/repos/:user/:repo/labels/:id', [ id : $key ]);
-        $update.setParameters(new RequestData(self::$json.encode([
-          name  : $key,
-          color : $color
-        ])));
-        $r= $this.sendApiRequest($update);
-        $this.out.writeLine('~Labels[', $key, ']: ', $label['color'], ' => ', $color, ': ', $r.status());
-      }
-      unset($this.labels[$key]);
-    }
-    foreach ($name, $color in $this.labels) {
-      $create= $this.newApiRequest(HttpConstants::POST, '/repos/:user/:repo/labels');
-      $create.setParameters(new RequestData(self::$json.encode([
-        name  : $name,
-        color : $color
-      ])));
-      $r= $this.sendApiRequest($create);
-      $this.out.writeLine('+Labels[', $name, ']: (null) => ', $color, ': ', $r.status());
-    }
   
     // Parse RFC into caption, fields and body text
     $fields= [:];

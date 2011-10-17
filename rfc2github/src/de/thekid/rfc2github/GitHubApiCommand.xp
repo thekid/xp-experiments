@@ -1,0 +1,85 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package de.thekid.rfc2github;
+
+import peer.http.*;
+import text.regex.*;
+import webservices.json.*;
+import peer.Header;
+import lang.types.String;
+
+import native standard.sscanf;
+import native standard.array_merge;
+import native standard.str_replace;
+
+/**
+ * Prep
+ *
+ */
+abstract package class GitHubApiCommand extends util.cmd.Command {
+  protected HttpConnection $conn= new HttpConnection('https://api.github.com/');
+  protected Header $identity;
+  protected bool $verbose= false;
+  protected [:string] $parameters;
+
+  protected static var $segments= new Pattern(':([a-z_]+)');
+  protected static var $json= JsonFactory::create();
+
+  /**
+   * Sets credentials (user:password)
+   *
+   */
+  [@arg(position= 0)]
+  public void setCredentials(string $credentials) {
+    $user= $pass= null;
+    sscanf($credentials, "%[^:]:%[^\r]", $user, $pass);
+    $this.identity= new BasicAuthorization($user, $pass);
+  }
+
+  /**
+   * Sets whether to be verbose
+   *
+   */
+  [@arg]
+  public void setVerbose() {
+    $this.verbose= true;
+  }
+
+  /**
+   * Creates a new API request
+   *
+   * @param   method One of the HttpConstants constants
+   * @param   string resource in the form /path/part/:segment/
+   * @param   parameters parameters which will be used as segments and request parameters
+   */
+  protected HttpRequest newApiRequest(string $method, string $resource, [:string] $parameters= [:]) {
+    $parameters= array_merge($this.parameters, $parameters) as [:var];
+    foreach ($group in self::$segments.match($resource).groups()) {
+      $resource= str_replace($group[0], $parameters[$group[1]], $resource);
+      unset($parameters[$group[1]]);
+    }
+
+    $request= $this.conn.create(new HttpRequest());
+    $request.setMethod($method);
+    $request.setTarget($resource);
+    $request.setParameters($parameters);
+    $request.setHeader('Authorization', $this.identity);
+    
+    $this.verbose && $this.err.writeLine('>>> ', $request.getRequestString());
+    return $request;
+  }
+
+  /**
+   * Creates a new API request
+   *
+   */
+  protected ApiResponse sendApiRequest(HttpRequest $request) {
+    $response= $this.conn.send($request);
+
+    $this.verbose && $this.err.writeLine('<<< ', $response);
+    return new ApiResponse($response);
+  }
+}
