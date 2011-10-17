@@ -275,32 +275,17 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
       
       // Check GH for corresponding issue
       $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id', [ id : $rfc['id'] ]));
-      if (200 == $response.status()) {
-        $issue= $response.result() as [:var];
-
-        // Found it, update and exit
-        $this.out.write('     >> Found existing issue #', $issue['number']);
-        $this.updateIssue($issue['number'], $rfc['caption'], $rfc['content'], $rfc['fields']);
-        $this.out.writeLine(': Updated');
-      } else {
-
-        // Check back until we find an issue, creating placeholders along the way
-        // This way, we ensure the created RFC has the correct number!
-        $last= $rfc['id'];
-        while (--$last) {
-          $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::HEAD, '/repos/:user/:repo/issues/:id', [ id : $last ]));
-          if (200 == $response.status()) break;
-
-          $this.out.write('     >> Creating place holder RFC for ', $last);
-          $placeholder= $this.createIssue('(Placeholder)', '', [:]);
-          $this.out.writeLine('Created issue #', $placeholder['number']);
-        }
-
-        // Now create the real issue
-        $this.out.write('     >> Nothing found, creating new issue');
-        $issue= $this.createIssue($rfc['caption'], $rfc['content'], $rfc['fields']);
-        $this.out.writeLine('Created issue #', $issue['number']);
+      if (200 != $response.status()) {
+        $this.err.writeLine('     >> Not found');
+        break;
       }
+
+      // Found it, update
+      $issue= $response.result() as [:var];
+
+      $this.out.write('     >> Found existing issue #', $issue['number']);
+      $this.updateIssue($issue['number'], $rfc['caption'], $rfc['content'], $rfc['fields']);
+      $this.out.writeLine(': Updated');
 
       // Get existing comments
       $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id/comments', [ id : $issue['number'] ]));
