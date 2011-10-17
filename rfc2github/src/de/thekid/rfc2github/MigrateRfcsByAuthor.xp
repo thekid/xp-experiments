@@ -21,6 +21,7 @@ import native pcre.preg_replace;
 import native core.strncmp;
 import native core.strlen;
 import native standard.strstr;
+import native standard.ksort;
 
 /**
  * Migrates RFCs by a given author
@@ -323,10 +324,16 @@ public class MigrateRfcsByAuthor extends GitHubApiCommand {
     
     // Actually import RFCs
     $this.out.writeLine('===> RFCs by ', $this.author, ' in ', $this.origin);
+    $rfcs= [:];
     foreach ($file in $this.origin) {
       $rfc= $this.parseRfc($file.getInputStream());
       if ($this.author !== $rfc['fields']['authors'][0]) continue;
-      
+    
+      $rfcs[$rfc['id']]= $rfc;
+    }
+    ksort($rfcs);
+    
+    foreach ($rfc in $rfcs) {
       $this.out.writeLine('---> ', $rfc['id'], ': ', $rfc['caption'], ' (', $rfc['fields']['status.id'], ')');
       $id= ltrim($rfc['id'], '0') as int;
       
