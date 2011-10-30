@@ -13,7 +13,8 @@
   abstract class HtmlEscaping extends Enum implements Profileable {
     public static
       $htmlspecialchars,
-      $strtr;
+      $strtr,
+      $str_replace;
     
     static function __static() {
       self::$htmlspecialchars= newinstance(__CLASS__, array(0, 'htmlspecialchars'), '{
@@ -34,6 +35,18 @@
           $r= array("&" => "&amp;", "\"" => "&quot;", "<" => "&lt;", ">" => "&gt;");
           for ($i= 0; $i < $times; $i++) {
             strtr($in, $r);
+          }
+        }
+      }');
+      self::$str_replace= newinstance(__CLASS__, array(2, 'str_replace'), '{
+        static function __static() { }
+
+        public function run($times) {
+          $in= "<He said: \"Hello & World\">";
+          $s= array("&",     "\"",     "<",    ">");
+          $r= array("&amp;", "&quot;", "&lt;", "&gt;");
+          for ($i= 0; $i < $times; $i++) {
+            str_replace($s, $r, $in);
           }
         }
       }');
