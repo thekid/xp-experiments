@@ -25,7 +25,7 @@
         public function run($times) {
           $in= "<He said: \"Hello & World\">";
           for ($i= 0; $i < $times; $i++) {
-            htmlspecialchars($in);
+            htmlspecialchars($in, ENT_COMPAT, "iso-8859-1");
           }
         }
       }');
