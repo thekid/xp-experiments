@@ -14,7 +14,8 @@
     public static
       $htmlspecialchars,
       $strtr,
-      $str_replace;
+      $str_replace,
+      $iteration;
     
     static function __static() {
       self::$htmlspecialchars= newinstance(__CLASS__, array(0, 'htmlspecialchars'), '{
@@ -47,6 +48,21 @@
           $r= array("&amp;", "&quot;", "&lt;", "&gt;");
           for ($i= 0; $i < $times; $i++) {
             str_replace($s, $r, $in);
+          }
+        }
+      }');
+      self::$iteration= newinstance(__CLASS__, array(3, 'iteration'), '{
+        static function __static() { }
+
+        public function run($times) {
+          $in= " <He said: \"Hello & World\">";
+          $r= array("&" => "&amp;", "\"" => "&quot;", "<" => "&lt;", ">" => "&gt;");
+          for ($i= 0; $i < $times; $i++) {
+            $out= "";
+            for ($p= 0, $s= strlen($in); $p < $s; $p++) {
+              $c= $in{$p};
+              if (isset($r[$c])) $out.= $r[$c]; else $out.= $c;
+            }
           }
         }
       }');
