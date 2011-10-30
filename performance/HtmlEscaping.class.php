@@ -18,12 +18,14 @@
       $iteration,
       $spanning;
     
+    protected $in= '<He said: "Hello & World">';
+
     static function __static() {
       self::$htmlspecialchars= newinstance(__CLASS__, array(0, 'htmlspecialchars'), '{
         static function __static() { }
 
         public function run($times) {
-          $in= "<He said: \"Hello & World\">";
+          $in= $this->in;
           for ($i= 0; $i < $times; $i++) {
             htmlspecialchars($in, ENT_COMPAT, "iso-8859-1");
           }
@@ -33,7 +35,7 @@
         static function __static() { }
 
         public function run($times) {
-          $in= "<He said: \"Hello & World\">";
+          $in= $this->in;
           $r= array("&" => "&amp;", "\"" => "&quot;", "<" => "&lt;", ">" => "&gt;");
           for ($i= 0; $i < $times; $i++) {
             strtr($in, $r);
@@ -44,7 +46,7 @@
         static function __static() { }
 
         public function run($times) {
-          $in= "<He said: \"Hello & World\">";
+          $in= $this->in;
           $s= array("&",     "\"",     "<",    ">");
           $r= array("&amp;", "&quot;", "&lt;", "&gt;");
           for ($i= 0; $i < $times; $i++) {
@@ -56,7 +58,7 @@
         static function __static() { }
 
         public function run($times) {
-          $in= "<He said: \"Hello & World\">";
+          $in= $this->in;
           $r= array("&" => "&amp;", "\"" => "&quot;", "<" => "&lt;", ">" => "&gt;");
           for ($i= 0; $i < $times; $i++) {
             $out= "";
@@ -71,7 +73,7 @@
         static function __static() { }
 
         public function run($times) {
-          $in= "<He said: \"Hello & World\">";
+          $in= $this->in;
           $r= array("&" => "&amp;", "\"" => "&quot;", "<" => "&lt;", ">" => "&gt;");
           for ($i= 0; $i < $times; $i++) {
             $out= "";
