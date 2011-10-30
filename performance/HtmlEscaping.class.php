@@ -16,7 +16,8 @@
       $strtr,
       $str_replace,
       $iteration,
-      $spanning;
+      $spanning,
+      $preg_replace;
     
     protected $in= '<He said: "Hello & World">';
 
@@ -84,6 +85,17 @@
               $out.= substr($in, $p, $s).$r[$in{$p+ $s}];
               $p+= $s+ 1;
             } while ($p < $l);
+          }
+        }
+      }');
+      self::$preg_replace= newinstance(__CLASS__, array(5, 'preg_replace'), '{
+        static function __static() { }
+
+        public function run($times) {
+          $in= $this->in;
+          $r= array("&" => "&amp;", "\"" => "&quot;", "<" => "&lt;", ">" => "&gt;");
+          for ($i= 0; $i < $times; $i++) {
+            preg_replace("/[&\"\<\>]/e", "\$r[\"\$0\"]", $in);
           }
         }
       }');
