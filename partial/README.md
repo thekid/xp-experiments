@@ -4,6 +4,7 @@ Implemented with PHP 5.4 traits the following forms a class named
 `de.thekid.db.News`:
 
 src/main/php/de/thekid/db/News0.partial.php
+
 ```php
 <?php
   trait News0 {
@@ -21,6 +22,7 @@ src/main/php/de/thekid/db/News0.partial.php
 ```
 
 src/main/php/de/thekid/db/News1.partial.php
+
 ```php
 <?php
 
