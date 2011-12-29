@@ -105,7 +105,6 @@
 
       // Create output file
       $target= new File($this->target, substr($e->getURI(), $base));
-      Console::writeLine($target->getFilename());
       $out= $target->getOutputStream();
       
       // Initialize
