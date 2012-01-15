@@ -78,9 +78,22 @@
      * @param   var value
      * @return  var
      */
-    public function newInstance($value) {
+    public function newInstance($value= NULL) {
       if (!$this->isInstance($value)) {
         raise('lang.IllegalArgumentException', 'Cannot create instances of the '.$this->name.' type from '.xp::typeOf($value));
+      }
+      return $value;
+    }
+
+    /**
+     * Returns a new instance of this object
+     *
+     * @param   var value
+     * @return  var
+     */
+    public function cast($value) {
+      if (!$this->isInstance($value)) {
+        raise('lang.ClassCastException', 'Cannot cast '.xp::typeOf($value).' to the '.$this->name.' type');
       }
       return $value;
     }

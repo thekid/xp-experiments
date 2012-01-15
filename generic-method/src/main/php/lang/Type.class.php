@@ -44,11 +44,24 @@
      * @param   var value
      * @return  var
      */
-    public function newInstance($value) {
+    public function newInstance($value= NULL) {
       if (self::$VAR === $this) return $value;
 
       // Default implementation
       raise('lang.IllegalArgumentException', 'Cannot create instances of the '.$this->name.' type');
+    }
+
+    /**
+     * Returns a new instance of this object
+     *
+     * @param   var value
+     * @return  var
+     */
+    public function cast($value) {
+      if (self::$VAR === $this) return $value;
+
+      // Default implementation
+      raise('lang.ClassCastException', 'Cannot cast to the '.$this->name.' type');
     }
 
     /**
