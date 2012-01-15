@@ -48,6 +48,44 @@
      *
      */
     #[@test]
+    public function valueOfName() {
+      $this->assertEquals('valueOf<T>', $this->fixture->getMethod('valueOf')->getName());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function valueOfsTypeParameterIsHidden() {
+      $this->assertEquals('input', $this->fixture->getMethod('valueOf')->getParameter(0)->getName());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function valueOfsTypeParameterIsHiddenFromNumParameters() {
+      $this->assertEquals(1, $this->fixture->getMethod('valueOf')->numParameters());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function valueOfsTypeParameterIsHiddenFromNumParameterList() {
+      $list= $this->fixture->getMethod('valueOf')->getParameters();
+      $this->assertEquals(1, sizeof($list));
+      $this->assertEquals('input', $list[0]->getName());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function valueOfGenericComponents() {
       $this->assertEquals(array('T'), $this->fixture->getMethod('valueOf')->genericComponents());
     }

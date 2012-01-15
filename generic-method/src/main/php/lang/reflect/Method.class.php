@@ -15,7 +15,7 @@
    * @test  xp://net.xp_framework.unittest.reflection.ReflectionTest
    */
   class Method extends Routine {
-    protected $generic= FALSE;
+    protected $generic= NULL;
   
     /**
      * Creates a new method instance
@@ -25,7 +25,9 @@
      */
     public function __construct($name, $reflect) {
       parent::__construct($name, $reflect);
-      $this->generic= '«»' === substr($this->_reflect->name, -2);
+      if ('«»' === substr($this->_reflect->name, -2)) {
+        $this->generic= $this->getAnnotation('generic', 'self');
+      }
     }
   
     /**
@@ -34,7 +36,19 @@
      * @return  bool
      */
     public function isGeneric() {
-      return $this->generic;
+      return NULL !== $this->generic;
+    }
+    
+    /**
+     * Returns this method's name
+     *
+     * @return  string
+     */
+    public function getName() {
+      return $this->generic
+        ? substr($this->_reflect->name, 0, -2).'<'.$this->generic.'>'
+        : $this->_reflect->name
+      ;
     }
 
     /**
@@ -47,10 +61,44 @@
         throw new IllegalStateException('Method '.$this->_reflect->name.' is not generic');
       }
       $components= array();
-      foreach (explode(',', $this->getAnnotation('generic', 'self')) as $name) {
+      foreach (explode(',', $this->generic) as $name) {
         $components[]= ltrim($name);
       }
       return $components;
+    }
+
+    /**
+     * Returns this method's parameters
+     *
+     * @return  lang.reflect.Parameter[]
+     */
+    public function getParameters() {
+      $parameters= parent::getParameters();
+      if (NULL === $this->generic) {
+        return $parameters;
+      } else {
+        return array_slice($parameters, 1 + substr_count($this->generic, ','));
+      }
+    }
+
+    /**
+     * Retrieve one of this method's parameters by its offset
+     *
+     * @param   int offset
+     * @return  lang.reflect.Parameter or NULL if it does not exist
+     */
+    public function getParameter($offset) {
+      return parent::getParameter($offset + (NULL === $this->generic ? 0 : 1 + substr_count($this->generic, ',')));
+    }
+    
+    /**
+     * Retrieve how many parameters this method declares (including optional 
+     * ones)
+     *
+     * @return  int
+     */
+    public function numParameters() {
+      return parent::numParameters() - (NULL === $this->generic ? 0 : 1 + substr_count($this->generic, ','));
     }
 
     /**
