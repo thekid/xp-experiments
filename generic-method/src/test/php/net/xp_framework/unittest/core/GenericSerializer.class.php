@@ -16,7 +16,7 @@
      * @param   string input
      * @return  T result
      */
-    #[@generic(self= array('T'), return= 'T')]
+    #[@generic(self= 'T', return= 'T')]
     public function valueOf«»($T, $input) {
       return 'N;' === $input 
         ? $T->default 
