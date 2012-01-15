@@ -13,6 +13,7 @@
     /**
      * Return value of a given type
      *
+     * @param   T T
      * @param   string input
      * @return  T result
      */
