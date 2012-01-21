@@ -1,9 +1,9 @@
 #!/bin/sh
 
 #-grb remove: Remove a branch
-  BRANCH=$1
+  GRB_BRANCH=$1
 shift 1 || exit 2
 
-$EXEC git push origin :refs/heads/$BRANCH
+$EXEC git push origin :refs/heads/$GRB_BRANCH
 $EXEC git checkout master
-$EXEC git branch -d $BRANCH
+$EXEC git branch -d $GRB_BRANCH
