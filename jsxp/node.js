@@ -6,7 +6,7 @@ argv.shift(); // node.js
 
 global.out= {
   write : function(data) {
-    process.stdout.write(data);    
+    process.stdout.write(data + "");
   },
   writeLine : function(data) {
     process.stdout.write(data + "\n");
