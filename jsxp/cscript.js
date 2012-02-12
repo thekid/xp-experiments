@@ -1,5 +1,5 @@
 // {{{ Platform 
-var $xp = this;
+var global = this;
 var fso = new ActiveXObject('Scripting.FileSystemObject');
 
 var argv = new Array();
@@ -11,7 +11,7 @@ var include = function(filename) {
   return fso.OpenTextFile(filename, 1).ReadAll();
 }
 
-$xp.out= {
+global.out= {
   write : function(data) {
     WScript.StdOut.Write(data);
   },
@@ -25,7 +25,7 @@ $xp.out= {
 };
 // }}}
 
-$xp.stringOf= function(object) {
+global.stringOf= function(object) {
   var indent = arguments.length == 1 ? '  ' : arguments[1];
   switch (typeof(object)) {
     case 'string': return '"' + object + '"';
@@ -50,17 +50,17 @@ $xp.stringOf= function(object) {
 
 function uses() {
   for (var i= 0; i < arguments.length; i++) {
-    if (typeof($xp[arguments[i]]) === 'function') continue;
+    if (typeof(global[arguments[i]]) === 'function') continue;
 
     var names = arguments[i].split('.');
-    var it = $xp;
+    var it = global;
     for (var n= 0; n < names.length - 1; n++) {
       if (typeof(it[names[n]]) === 'undefined') it[names[n]]= {};
       it = it[names[n]];
     }
     
     eval(include(arguments[i].replace(/\./g, '/') + '.js'));
-    $xp[arguments[i]]= it[names[n]]= eval(arguments[i]);
+    global[arguments[i]]= it[names[n]]= eval(arguments[i]);
   }
 }
 

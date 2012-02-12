@@ -5,7 +5,7 @@ lang.XPClass = function(name) {
   {
     this.__class = 'lang.XPClass';
     this.name = name;
-    this.reflect = $xp[name];
+    this.reflect = global[name];
   }
 }
 

@@ -7,15 +7,15 @@ util.cmd.Console = function() {
 
 util.cmd.Console.write = function() {
   for (var i= 0; i < arguments.length; i++) {
-    $xp.out.write(arguments[i]);
+    global.out.write(arguments[i]);
   }
 }
 
 util.cmd.Console.writeLine = function() {
   for (var i= 0; i < arguments.length; i++) {
-    $xp.out.write(arguments[i]);
+    global.out.write(arguments[i]);
   }
-  $xp.out.writeLines(1);
+  global.out.writeLines(1);
 }
 
 util.cmd.Console.prototype= new Object();
