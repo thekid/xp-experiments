@@ -81,5 +81,4 @@ try {
   lang.XPClass.forName(clazz).getMethod('main').invoke(null, [argv]);
 } catch (e) {
   util.cmd.Console.writeLine('*** Uncaught exception ', e.toString());
-  console.trace(e);
 }
