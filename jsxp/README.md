@@ -27,6 +27,7 @@ NodeJS
 Node.JS is the V8-based JavaScript engine which is becoming increasingly
 popular. Even with its pre-1.0 status, sites such as GitHub use it in 
 production.
+See http://nodejs.org/
 
 **Getting started**
 
