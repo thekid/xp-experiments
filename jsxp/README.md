@@ -1,5 +1,11 @@
 XP to JS compiler / JS mini-XP-runtime
 ======================================
+This experiment tries to see whether the XP Framework could be based on
+JavaScript runtimes in the future. Paired with the XP compiler, its PHP
+language parser and a yet-to-be-created generator to emit JavaScript, and
+maybe together with porting some of PHP's string and array functions, we
+would be able to exchange the PHP platform we currently depend on for
+something else.
 
 Demo class
 ----------
