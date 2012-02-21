@@ -227,12 +227,11 @@
             }
             break;
 
-          case self::ST_BODY.T_NEW:
+          case self::ST_BODY.T_NEW: case self::ST_BODY.T_INSTANCEOF:
+            $out->write($tokens[$i][1]);
             if (T_STRING === $tokens[$i+ 2][0]) {
-              $out->write('new '.$this->nameOf($namespace, $imports, $tokens[$i+ 2][1], $context));
+              $out->write(' '.$this->nameOf($namespace, $imports, $tokens[$i+ 2][1], $context));
               $i+= 2; // Skip over whitespace and class name
-            } else {
-              $out->write('new');
             }
             break;
           
