@@ -140,6 +140,7 @@
       $imports= array();
       $namespace= strtr($relative, DIRECTORY_SEPARATOR, '\\');
       $tokens= token_get_all(Streams::readAll($e->getInputStream()));
+      $declared= FALSE;
       $state= self::ST_INITIAL;
       $cl= ClassLoader::getDefault();
 
@@ -150,6 +151,7 @@
             if ('uses' === $tokens[$i][1]) {
               $state= self::ST_USES;
               $namespace && $out->write('namespace '.$namespace.";\n  ");
+              $declared= TRUE;
               $out->write('use');
             } else {
               $out->write($tokens[$i][1]);
@@ -179,8 +181,20 @@
             $out->write(strtr($name, '.', '\\'));
             break;
           
+          case self::ST_INITIAL.T_DOC_COMMENT:
+            if (!$declared) {
+              $namespace && $out->write('namespace '.$namespace.";\n\n  ");
+              $declared= TRUE;
+            }
+            $out->write($tokens[$i][1]);
+            break;
+
           case self::ST_INITIAL.T_CLASS:
           case self::ST_INITIAL.T_INTERFACE:
+            if (!$declared) {
+              $namespace && $out->write('namespace '.$namespace.";\n\n  ");
+              $declared= TRUE;
+            }
             $out->write($tokens[$i][1].' ');
             $local= $tokens[$i+ 2][1];
             if (FALSE !== ($p= strrpos($local, '·'))) { // Unqualify RFC#37- qualified class names
