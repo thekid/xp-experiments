@@ -24,7 +24,7 @@
     protected $base= NULL;
     protected $target= NULL;
     protected $self= NULL;
-    protected $imports= array();
+    protected $mapped= array();
     
     const ST_INITIAL = 0;
     const ST_USES    = 1;
@@ -53,6 +53,23 @@
     }
     
     /**
+     * Add known fully qualified names
+     *
+     * @param   string
+     */
+    #[@args(select= '[2..]')]
+    public function addNames($names) {
+      foreach ($names as $name) {
+        if (FALSE === ($p= strrpos($name, '.'))) {
+          throw new IllegalArgumentException('Name must be fully qualified');
+        }
+        $local= substr($name, $p+ 1);
+        $this->mapped[$local]= strtr($name, '.', '\\');
+      }
+      $this->out->writeLine('Known names: ', $this->mapped);
+    }
+
+    /**
      * Create name literal
      *
      * @param   string namespace current namespace
@@ -69,7 +86,9 @@
 
       // Fully-qualify name. For RFC#37-style names, it's clear, for 
       // other cases, we use 
-      if (FALSE !== ($p= strrpos($local, '·'))) {
+      if (isset($this->mapped[$local])) {
+        $qualified= $this->mapped[$local];
+      } else if (FALSE !== ($p= strrpos($local, '·'))) {
         $qualified= strtr($local, '·', '\\');
         $local= substr($local, $p+ 1);
       } else {
