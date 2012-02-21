@@ -79,9 +79,10 @@
      * @return  string qualified name
      */
     protected function nameOf($namespace, $imports, $local, $context) {
-      static $special= array('self', 'parent', 'static', 'xp');
+      static $special= array('self', 'parent', 'static');
 
-      // Leave special class names 
+      // Leave special class names
+      if ('xp' === $local) return '\\xp';
       if (in_array($local, $special)) return $local;
 
       // Fully-qualify name. For RFC#37-style names, it's clear, for 
