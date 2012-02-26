@@ -1,0 +1,28 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+/**
+ * Say
+ *
+ */
+public class Say {
+  protected string $greeting = 'Hello';
+
+  /**
+   * Greet
+   *
+   */
+  public void hello(string? $name) {
+    util.cmd.Console::writeLine($this.greeting, ' ', $name);
+  }
+
+  /**
+   * Entry point
+   *
+   */
+  public static void main(string[] $args) {
+    new self().hello($args[0]);
+  }
+}
