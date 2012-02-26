@@ -23,7 +23,8 @@
   class ConvertToNamespaces extends Command {
     protected $base= NULL;
     protected $target= NULL;
-    protected $imports= array();
+    protected $self= NULL;
+    protected $mapped= array();
     
     const ST_INITIAL = 0;
     const ST_USES    = 1;
@@ -52,22 +53,43 @@
     }
     
     /**
+     * Add known fully qualified names
+     *
+     * @param   string
+     */
+    #[@args(select= '[2..]')]
+    public function addNames($names) {
+      foreach ($names as $name) {
+        if (FALSE === ($p= strrpos($name, '.'))) {
+          throw new IllegalArgumentException('Name must be fully qualified');
+        }
+        $local= substr($name, $p+ 1);
+        $this->mapped[$local]= strtr($name, '.', '\\');
+      }
+      $this->out->writeLine('Known names: ', $this->mapped);
+    }
+
+    /**
      * Create name literal
      *
      * @param   string namespace current namespace
      * @param   [:lang.XPClass] imports import lookup table
      * @param   string local local, unqualified name
+     * @param   string context file
      * @return  string qualified name
      */
-    protected function nameOf($namespace, $imports, $local) {
-      static $special= array('self', 'parent', 'static', 'xp');
+    protected function nameOf($namespace, $imports, $local, $context) {
+      static $special= array('self', 'parent', 'static');
 
-      // Leave special class names 
+      // Leave special class names
+      if ('xp' === $local) return '\\xp';
       if (in_array($local, $special)) return $local;
 
       // Fully-qualify name. For RFC#37-style names, it's clear, for 
       // other cases, we use 
-      if (FALSE !== ($p= strrpos($local, '·'))) {
+      if (isset($this->mapped[$local])) {
+        $qualified= $this->mapped[$local];
+      } else if (FALSE !== ($p= strrpos($local, '·'))) {
         $qualified= strtr($local, '·', '\\');
         $local= substr($local, $p+ 1);
       } else {
@@ -80,7 +102,13 @@
       // PHP classes are global
       if (0 === strncmp($qualified, 'php\\', 4)) {
         if (!class_exists($local, FALSE) && !interface_exists($local, FALSE)) {
-          throw new IllegalStateException('Cannot resolve name "'.$local.'"');
+          throw new IllegalStateException(sprintf(
+            'In %s: Cannot resolve name "%s" namespace "%s", imports= %s',
+            $context,
+            $local,
+            $namespace,
+            xp::stringOf($imports)
+          ));
         }
         return '\\'.$local;
       }
@@ -108,9 +136,11 @@
       $out= $target->getOutputStream();
       
       // Initialize
+      $context= $e->getURI();
       $imports= array();
       $namespace= strtr($relative, DIRECTORY_SEPARATOR, '\\');
       $tokens= token_get_all(Streams::readAll($e->getInputStream()));
+      $declared= FALSE;
       $state= self::ST_INITIAL;
       $cl= ClassLoader::getDefault();
 
@@ -121,6 +151,7 @@
             if ('uses' === $tokens[$i][1]) {
               $state= self::ST_USES;
               $namespace && $out->write('namespace '.$namespace.";\n  ");
+              $declared= TRUE;
               $out->write('use');
             } else {
               $out->write($tokens[$i][1]);
@@ -150,8 +181,20 @@
             $out->write(strtr($name, '.', '\\'));
             break;
           
+          case self::ST_INITIAL.T_DOC_COMMENT:
+            if (!$declared) {
+              $namespace && $out->write('namespace '.$namespace.";\n\n  ");
+              $declared= TRUE;
+            }
+            $out->write($tokens[$i][1]);
+            break;
+
           case self::ST_INITIAL.T_CLASS:
           case self::ST_INITIAL.T_INTERFACE:
+            if (!$declared) {
+              $namespace && $out->write('namespace '.$namespace.";\n\n  ");
+              $declared= TRUE;
+            }
             $out->write($tokens[$i][1].' ');
             $local= $tokens[$i+ 2][1];
             if (FALSE !== ($p= strrpos($local, '·'))) { // Unqualify RFC#37- qualified class names
@@ -159,13 +202,14 @@
             } else {
               $out->write($local);
             }
+            $imports[$local]= $this->self;
 
             $i+= 2; // Skip over whitespace and class name
             $state= self::ST_DECL;
             break;
           
           case self::ST_DECL.T_STRING:
-            $out->write($this->nameOf($namespace, $imports, $tokens[$i][1]));
+            $out->write($this->nameOf($namespace, $imports, $tokens[$i][1], $context));
             break;
 
           case self::ST_DECL.'{':
@@ -175,17 +219,20 @@
           
           case self::ST_BODY.T_STRING:
             if (T_DOUBLE_COLON === $tokens[$i+ 1][0]) {
-              $out->write($this->nameOf($namespace, $imports, $tokens[$i][1]));   // Static method calls
+              $out->write($this->nameOf($namespace, $imports, $tokens[$i][1], $context));   // Static method calls
             } else if (T_WHITESPACE === $tokens[$i+ 1][0] && T_VARIABLE === $tokens[$i+ 2][0]) {
-              $out->write($this->nameOf($namespace, $imports, $tokens[$i][1]));   // Typehint
+              $out->write($this->nameOf($namespace, $imports, $tokens[$i][1], $context));   // Typehint
             } else {
               $out->write($tokens[$i][1]);
             }
             break;
 
-          case self::ST_BODY.T_NEW:
-            $out->write('new '.$this->nameOf($namespace, $imports, $tokens[$i+ 2][1]));
-            $i+= 2; // Skip over whitespace and class name
+          case self::ST_BODY.T_NEW: case self::ST_BODY.T_INSTANCEOF:
+            $out->write($tokens[$i][1]);
+            if (T_STRING === $tokens[$i+ 2][0]) {
+              $out->write(' '.$this->nameOf($namespace, $imports, $tokens[$i+ 2][1], $context));
+              $i+= 2; // Skip over whitespace and class name
+            }
             break;
           
           default:
@@ -201,6 +248,11 @@
      *
      */
     public function run() {
+      $this->self= newinstance('lang.XPClass', array(), '{ 
+        public function __construct() {
+          Type::__construct("self");
+        }
+      }');
       $files= new FilteredIOCollectionIterator(
         $this->base, 
         new ExtensionEqualsFilter(xp::CLASS_FILE_EXT),

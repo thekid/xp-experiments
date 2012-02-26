@@ -1,8 +1,8 @@
 #!/bin/sh
 
 #-grb track: Track a remote branch
-  BRANCH=$1
+  GRB_BRANCH=$1
 shift 1 || exit 2
 
-$EXEC git branch --track $BRANCH origin/$BRANCH
-$EXEC git checkout $BRANCH
+$EXEC git branch --track $GRB_BRANCH origin/$GRB_BRANCH
+$EXEC git checkout $GRB_BRANCH
