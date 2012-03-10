@@ -61,12 +61,6 @@ function uses() {
 }
 global.uses= uses;
 
-Object.prototype.getClass = function() {
-  return new lang.XPClass(this.__class);
-}
-Object.prototype.getClassName = function() {
-  return this.__class;
-}
 Error.prototype.toString = function() {
   return 'Error<' + this.name + ': ' + this.message + '>';
 }
@@ -74,7 +68,7 @@ Error.prototype.toString = function() {
 Modifiers = function() { }
 Modifiers.STATIC = 1;
 
-uses('lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
+uses('lang.Object', 'lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
 
 try {
   clazz = argv.shift();

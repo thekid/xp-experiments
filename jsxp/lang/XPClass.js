@@ -14,7 +14,7 @@ lang.XPClass.forName = function(name) {
   return new lang.XPClass(name);
 }
 
-lang.XPClass.prototype= new Object();
+lang.XPClass.prototype= new lang.Object();
 
 lang.XPClass.prototype.toString = function() {
   return this.getClassName() + '<' + this.name + '>';

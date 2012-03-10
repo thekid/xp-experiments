@@ -64,15 +64,6 @@ function uses() {
   }
 }
 
-Object.prototype.getClass = function() {
-  return new lang.XPClass(this.__class);
-}
-Object.prototype.getClassName = function() {
-  return this.__class;
-}
-Object.prototype.equals = function(cmp) {
-  return this == cmp;
-}
 Error.prototype.toString = function() {
   return 'Error<' + this.name + ': ' + this.message + '>';
 }

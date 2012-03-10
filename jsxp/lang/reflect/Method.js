@@ -8,7 +8,7 @@ lang.reflect.Method = function(clazz, name, modifiers) {
   }
 }
 
-lang.reflect.Method.prototype= new Object();
+lang.reflect.Method.prototype= new lang.Object();
 
 lang.reflect.Method.prototype.name = '';
 

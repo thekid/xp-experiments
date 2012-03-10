@@ -5,7 +5,7 @@ Hello = function() {
   }
 }
 
-Hello.prototype = new Object();
+Hello.prototype = new lang.Object();
 
 Hello.main = function(args) {
   if (args.length < 1) {

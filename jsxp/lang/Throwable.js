@@ -9,6 +9,18 @@ lang.Throwable = function(message) {
 
 lang.Throwable.prototype= new Error();
 
+// root-trait
+lang.Throwable.prototype.getClass = function() {
+  return new lang.XPClass(this.__class);
+}
+lang.Throwable.prototype.getClassName = function() {
+  return this.__class;
+}
+lang.Throwable.prototype.equals = function(cmp) {
+  return this == cmp;
+}
+// root-trait
+
 lang.Throwable.prototype.message = '';
 lang.Throwable.prototype.stacktrace = new Array();
 

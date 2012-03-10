@@ -6,7 +6,7 @@ unittest.TestSuccess = function(test) {
   }
 }
 
-unittest.TestSuccess.prototype= new Object();
+unittest.TestSuccess.prototype= new lang.Object();
 
 unittest.TestSuccess.prototype.test = null;
 unittest.TestSuccess.prototype.throwable = null;

@@ -8,7 +8,7 @@ unittest.TestCase = function(name) {
   }
 }
 
-unittest.TestCase.prototype= new Object();
+unittest.TestCase.prototype= new lang.Object();
 
 unittest.TestCase.prototype.name = '';
 
