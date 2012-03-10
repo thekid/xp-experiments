@@ -57,6 +57,9 @@ function uses() {
     
     require('./' + arguments[i].replace(/\./g, '/') + '.js');
     global[arguments[i]]= it[names[n]]= eval(arguments[i]);
+    if (typeof(it[names[n]]['__static']) === 'function') {
+      it[names[n]].__static();
+    }
   }
 }
 global.uses= uses;
