@@ -65,7 +65,7 @@ Error.prototype.toString = function() {
 Modifiers = function() { }
 Modifiers.STATIC = 1;
 
-uses('lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
+uses('lang.Object', 'lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
 
 try {
   clazz = argv.shift();

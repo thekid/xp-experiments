@@ -58,7 +58,7 @@ function uses() {
       if (typeof(it[names[n]]) === 'undefined') it[names[n]]= {};
       it = it[names[n]];
     }
-    
+
     eval(include(arguments[i].replace(/\./g, '/') + '.js'));
     global[arguments[i]]= it[names[n]]= eval(arguments[i]);
   }
@@ -71,7 +71,7 @@ Error.prototype.toString = function() {
 Modifiers = function() { }
 Modifiers.STATIC = 1;
 
-uses('lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
+uses('lang.Object', 'lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
 
 try {
   clazz = argv.shift();
