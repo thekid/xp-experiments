@@ -13,8 +13,10 @@ tests.DemoTest.prototype= new unittest.TestCase();
 tests.DemoTest.prototype.testSucceeds = function() {
   this.assertEquals(1, 1);
 }
+tests.DemoTest.prototype.testSucceeds['@']= { test : null };
 
 tests.DemoTest.prototype.testFails = function() {
   this.assertEquals(1, 0);
 }
+tests.DemoTest.prototype.testFails['@']= { test : null };
 // }}}

@@ -24,7 +24,7 @@ unittest.TestSuite.prototype.run = function() {
     var methods = this.tests[i].getMethods();
 
     for (var m= 0; m < methods.length; m++) {
-      if ('test' !== methods[m].getName().substring(0, 4)) continue;
+      if (!methods[m].hasAnnotation('test')) continue;
       var instance = this.tests[i].newInstance(methods[m].getName());
       
       instance.setUp();

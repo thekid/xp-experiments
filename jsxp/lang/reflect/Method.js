@@ -28,4 +28,23 @@ lang.reflect.Method.prototype.invoke = function(obj, args) {
     return handle[this.name].apply(obj, args);
   }
 }
+
+lang.reflect.Method.prototype.hasAnnotations = function(name) {
+  var handle = this.clazz.reflect;
+  if (typeof(handle.prototype[this.name]) !== 'undefined') {
+    return typeof(handle.prototype[this.name]['@']) !== 'undefined';
+  } else {
+    return typeof(handle[this.name]['@']) !== 'undefined';
+  }
+}
+
+lang.reflect.Method.prototype.hasAnnotation = function(name) {
+  if (!this.hasAnnotations()) return false;
+  var handle = this.clazz.reflect;
+  if (typeof(handle.prototype[this.name]) !== 'undefined') {
+    return typeof(handle.prototype[this.name]['@'][name]) !== 'undefined';
+  } else {
+    return typeof(handle[this.name]['@'][name]) !== 'undefined';
+  }
+}
 // }}}
