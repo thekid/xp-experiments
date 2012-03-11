@@ -54,6 +54,16 @@ tests.XPClassTest.prototype.hasThisMethod = function() {
 }
 tests.XPClassTest.prototype.hasThisMethod['@']= { test : null };
 
+tests.XPClassTest.prototype.thisIsInstanceofSelf = function() {
+  this.assertEquals(true, this.getClass().isInstance(this));
+}
+tests.XPClassTest.prototype.thisIsInstanceofSelf['@']= { test : null };
+
+tests.XPClassTest.prototype.thisIsInstanceofParentClass = function() {
+  this.assertEquals(true, lang.XPClass.forName('unittest.TestCase').isInstance(this));
+}
+tests.XPClassTest.prototype.thisIsInstanceofParentClass['@']= { test : null };
+
 tests.XPClassTest.prototype.objectClassHasAnnotations = function() {
   this.assertEquals(false, lang.XPClass.forName('lang.Object').hasAnnotations());
 }
@@ -63,6 +73,11 @@ tests.XPClassTest.prototype.objectClassHasAnnotation = function() {
   this.assertEquals(false, lang.XPClass.forName('lang.Object').hasAnnotation('webservice'));
 }
 tests.XPClassTest.prototype.objectClassHasAnnotation['@']= { test : null };
+
+tests.XPClassTest.prototype.objectClassAnnotation = function() {
+  lang.XPClass.forName('lang.Object').getAnnotation('webservice');
+}
+tests.XPClassTest.prototype.objectClassAnnotation['@']= { test : { expect : 'lang.ElementNotFoundException' } };
 
 tests.XPClassTest.prototype.annotatedClassHasAnnotations = function() {
   this.assertEquals(true, lang.XPClass.forName('tests.AnnotatedClass').hasAnnotations());
@@ -78,6 +93,11 @@ tests.XPClassTest.prototype.annotatedClassChildHasAnnotations = function() {
   this.assertEquals(true, lang.XPClass.forName('tests.AnnotatedClassChild').hasAnnotations());
 }
 tests.XPClassTest.prototype.annotatedClassChildHasAnnotations['@']= { test : null };
+
+tests.XPClassTest.prototype.annotatedClassAnnotation = function() {
+  this.assertEquals(null, lang.XPClass.forName('tests.AnnotatedClass').getAnnotation('webservice'));
+}
+tests.XPClassTest.prototype.annotatedClassAnnotation['@']= { test : null };
 
 tests.XPClassTest.prototype.annotatedClassChildHasAnnotation = function() {
   this.assertEquals(true, lang.XPClass.forName('tests.AnnotatedClassChild').hasAnnotation('webservice'));
