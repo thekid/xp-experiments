@@ -47,4 +47,14 @@ lang.reflect.Method.prototype.hasAnnotation = function(name) {
     return typeof(handle[this.name]['@'][name]) !== 'undefined';
   }
 }
+
+lang.reflect.Method.prototype.getAnnotation = function(name) {
+  if (!this.hasAnnotation(name)) return false;
+  var handle = this.clazz.reflect;
+  if (typeof(handle.prototype[this.name]) !== 'undefined') {
+    return handle.prototype[this.name]['@'][name];
+  } else {
+    return handle[this.name]['@'][name];
+  }
+}
 // }}}
