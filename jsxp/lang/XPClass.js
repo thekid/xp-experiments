@@ -1,4 +1,4 @@
-uses('lang.reflect.Field', 'lang.reflect.Method');
+uses('lang.reflect.Field', 'lang.reflect.Method', 'lang.ElementNotFoundException');
 
 // {{{ XPClass
 lang.XPClass = function(name) {
@@ -84,11 +84,22 @@ lang.XPClass.prototype.equals = function(cmp) {
   return this.name === cmp.name;
 }
 
+lang.XPClass.prototype.isInstance = function(instance) {
+  return instance instanceof this.reflect;
+}
+
 lang.XPClass.prototype.hasAnnotations = function(name) {
   return typeof(this.reflect['@']) !== 'undefined';
 }
 
 lang.XPClass.prototype.hasAnnotation = function(name) {
   return this.hasAnnotations() && typeof(this.reflect['@'][name]) !== 'undefined';
+}
+
+lang.XPClass.prototype.getAnnotation = function(name) {
+  if (!this.hasAnnotation(name)) {
+    throw new lang.ElementNotFoundException('No such annotation "' + name + '"');
+  }
+  return this.reflect['@'][name];
 }
 // }}}
