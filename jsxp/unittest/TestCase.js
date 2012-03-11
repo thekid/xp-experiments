@@ -25,7 +25,7 @@ unittest.TestCase.prototype.tearDown = function() {
 }
 
 unittest.TestCase.prototype.assertEquals = function(a, b) {
-  if (typeof(a) === 'object') {
+  if (null !== a && typeof(a) === 'object') {
     r= a.equals(b);
   } else {
     r= a === b;
