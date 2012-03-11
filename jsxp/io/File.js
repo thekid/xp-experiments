@@ -1,3 +1,5 @@
+uses('io.FileNotFoundException');
+
 var fs = require('fs');
 
 // {{{ File
@@ -12,7 +14,15 @@ io.File = function(uri) {
 io.File.prototype= new lang.Object();
 
 io.File.prototype.open = function(mode) {
-  this.fd = fs.openSync(this.uri, mode);
+  try {
+    this.fd = fs.openSync(this.uri, mode);
+  } catch (e) {
+    if ('ENOENT' === e.code) {
+      throw new io.FileNotFoundException(e.path);
+    } else {
+      throw new io.IOException('Cannot open, mode "' + mode + '"', e);
+    }
+  }
 }
 
 io.File.prototype.isOpen = function() {
@@ -26,6 +36,8 @@ io.File.prototype.read = function(max) {
 }
 
 io.File.prototype.close = function() {
+  if (null === this.fd) return;
+
   fs.closeSync(this.fd);
   this.fd = null;
 }
