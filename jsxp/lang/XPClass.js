@@ -83,4 +83,12 @@ lang.XPClass.prototype.getFields = function() {
 lang.XPClass.prototype.equals = function(cmp) {
   return this.name === cmp.name;
 }
+
+lang.XPClass.prototype.hasAnnotations = function(name) {
+  return typeof(this.reflect['@']) !== 'undefined';
+}
+
+lang.XPClass.prototype.hasAnnotation = function(name) {
+  return this.hasAnnotations() && typeof(this.reflect['@'][name]) !== 'undefined';
+}
 // }}}

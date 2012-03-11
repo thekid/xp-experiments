@@ -1,4 +1,4 @@
-uses('unittest.TestCase');
+uses('unittest.TestCase', 'tests.AnnotatedClass', 'tests.AnnotatedClassChild');
 
 // {{{ XPClassTest
 tests.XPClassTest = function(name) {
@@ -46,5 +46,29 @@ tests.XPClassTest.prototype.testGetMethods = function() {
 tests.XPClassTest.prototype.testHasThisMethod = function() {
   var method= this.getClass().getMethod(this.name);
   this.assertInstanceOf('lang.reflect.Method', method);
+}
+
+tests.XPClassTest.prototype.testObjectClassHasAnnotations = function() {
+  this.assertEquals(false, lang.XPClass.forName('lang.Object').hasAnnotations());
+}
+
+tests.XPClassTest.prototype.testObjectClassHasAnnotation = function() {
+  this.assertEquals(false, lang.XPClass.forName('lang.Object').hasAnnotation('webservice'));
+}
+
+tests.XPClassTest.prototype.testAnnotatedClassHasAnnotations = function() {
+  this.assertEquals(true, lang.XPClass.forName('tests.AnnotatedClass').hasAnnotations());
+}
+
+tests.XPClassTest.prototype.testAnnotatedClassHasAnnotation = function() {
+  this.assertEquals(true, lang.XPClass.forName('tests.AnnotatedClass').hasAnnotation('webservice'));
+}
+
+tests.XPClassTest.prototype.testAnnotatedClassChildHasAnnotations = function() {
+  this.assertEquals(true, lang.XPClass.forName('tests.AnnotatedClassChild').hasAnnotations());
+}
+
+tests.XPClassTest.prototype.testAnnotatedClassChildHasAnnotation = function() {
+  this.assertEquals(true, lang.XPClass.forName('tests.AnnotatedClassChild').hasAnnotation('webservice'));
 }
 // }}}
