@@ -32,7 +32,7 @@ io.File.prototype.isOpen = function() {
 io.File.prototype.read = function(max) {
   var b = new Buffer(max);
   var r = fs.readSync(this.fd, b, 0, max, null);
-  return 0 === r ? null : b.slice(0, r);
+  return 0 === r ? false : b.slice(0, r);
 }
 
 io.File.prototype.close = function() {

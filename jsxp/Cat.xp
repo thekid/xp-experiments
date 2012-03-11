@@ -3,7 +3,7 @@ public class Cat {
   public static void main(string[] $args) {
     $f= new io.File($args[0]);
     $f.open('r');
-    while (null !== ($b= $f.read(8192))) {
+    while (false !== ($b= $f.read(8192))) {
       util.cmd.Console::write($b);
     }
     $f.close();
