@@ -26,6 +26,7 @@ unittest.TestSuite.prototype.run = function() {
     for (var m= 0; m < methods.length; m++) {
       if (!methods[m].hasAnnotation('test')) continue;
       var instance = this.tests[i].newInstance(methods[m].getName());
+      var annotation = methods[m].getAnnotation('test');
       
       instance.setUp();
       try {
@@ -33,8 +34,13 @@ unittest.TestSuite.prototype.run = function() {
         util.cmd.Console.write('.');
         this.outcome.push(new unittest.TestSuccess(instance));
       } catch (e) {
-        util.cmd.Console.write('E');
-        this.outcome.push(new unittest.TestFailure(instance, e));
+        if (annotation && typeof(annotation.expect) !== 'undefined' && lang.XPClass.forName(annotation.expect).isInstance(e)) {
+          util.cmd.Console.write('.');
+          this.outcome.push(new unittest.TestSuccess(instance));
+        } else {
+          util.cmd.Console.write('E');
+          this.outcome.push(new unittest.TestFailure(instance, e));
+        }
       }
       instance.tearDown();
     }
