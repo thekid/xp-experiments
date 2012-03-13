@@ -1,12 +1,12 @@
 // {{{ XPClassTest
 tests.AnnotatedClass = function() {
   {
-    this.__class = 'tests.AnnotatedClass';
+    if (typeof(this.__class) === 'undefined') this.__class = 'tests.AnnotatedClass';
   }
 }
 
 tests.AnnotatedClass['@'] = {
   webservice : null
 };
-tests.AnnotatedClass.prototype= new lang.Object();
+tests.AnnotatedClass.prototype= Object.create(lang.Object.prototype);
 // }}}

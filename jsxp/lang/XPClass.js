@@ -3,7 +3,7 @@ uses('lang.reflect.Field', 'lang.reflect.Method', 'lang.ElementNotFoundException
 // {{{ XPClass
 lang.XPClass = function(name) {
   {
-    this.__class = 'lang.XPClass';
+    if (typeof(this.__class) === 'undefined') this.__class = 'lang.XPClass';
     this.name = name;
     this.reflect = global[name];
   }
@@ -14,7 +14,7 @@ lang.XPClass.forName = function(name) {
   return new lang.XPClass(name);
 }
 
-lang.XPClass.prototype= new lang.Object();
+lang.XPClass.prototype= Object.create(lang.Object.prototype);
 
 lang.XPClass.prototype.toString = function() {
   return this.getClassName() + '<' + this.name + '>';

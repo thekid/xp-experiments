@@ -5,13 +5,13 @@ var fs = require('fs');
 // {{{ File
 io.File = function(uri) {
   {
-    this.__class = 'io.File';
+    if (typeof(this.__class) === 'undefined') this.__class = 'io.File';
     this.uri = uri;
     this.fd = null;
   }
 }
 
-io.File.prototype= new lang.Object();
+io.File.prototype= Object.create(lang.Object.prototype);
 
 io.File.prototype.open = function(mode) {
   try {

@@ -3,10 +3,10 @@ uses('tests.AnnotatedClass');
 // {{{ AnnotatedClassChild
 tests.AnnotatedClassChild = function() {
   {
-    this.__class = 'tests.AnnotatedClassChild';
+    if (typeof(this.__class) === 'undefined') this.__class = 'tests.AnnotatedClassChild';
   }
 }
 
 tests.AnnotatedClassChild['@']= tests.AnnotatedClass['@'];
-tests.AnnotatedClassChild.prototype= new tests.AnnotatedClass();
+tests.AnnotatedClassChild.prototype= Object.create(tests.AnnotatedClass.prototype);
 // }}}

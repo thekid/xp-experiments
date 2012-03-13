@@ -3,7 +3,7 @@ uses('lang.ElementNotFoundException');
 // {{{ Method
 lang.reflect.Method = function(clazz, name, modifiers) {
   {
-    this.__class = 'lang.reflect.Method';
+    if (typeof(this.__class) === 'undefined') this.__class = 'lang.reflect.Method';
     this.clazz = clazz;
     if (typeof(clazz.reflect.prototype[name]) !== 'undefined') {
       this.reflect = clazz.reflect.prototype[name];
@@ -15,7 +15,7 @@ lang.reflect.Method = function(clazz, name, modifiers) {
   }
 }
 
-lang.reflect.Method.prototype= new lang.Object();
+lang.reflect.Method.prototype= Object.create(lang.Object.prototype);
 
 lang.reflect.Method.prototype.name = '';
 

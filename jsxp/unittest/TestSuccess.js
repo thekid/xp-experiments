@@ -1,12 +1,12 @@
 // {{{ TestSuccess
 unittest.TestSuccess = function(test) {
   {
-    this.__class = 'unittest.TestSuccess';
+    if (typeof(this.__class) === 'undefined') this.__class = 'unittest.TestSuccess';
     this.test = test;
   }
 }
 
-unittest.TestSuccess.prototype= new lang.Object();
+unittest.TestSuccess.prototype= Object.create(lang.Object.prototype);
 
 unittest.TestSuccess.prototype.test = null;
 unittest.TestSuccess.prototype.throwable = null;

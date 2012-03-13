@@ -3,7 +3,7 @@ uses('io.File');
 // {{{ FileInputStream
 io.streams.FileInputStream = function(origin) {
   {
-    this.__class = 'io.streams.FileInputStream';
+    if (typeof(this.__class) === 'undefined') this.__class = 'io.streams.FileInputStream';
     if (origin instanceof io.File) {
       this.file = origin;
       this.file.isOpen() || this.file.open('r');
@@ -14,7 +14,7 @@ io.streams.FileInputStream = function(origin) {
   }
 }
 
-io.streams.FileInputStream.prototype= new lang.Object();
+io.streams.FileInputStream.prototype= Object.create(lang.Object.prototype);
 
 io.streams.FileInputStream.prototype.read = function(max) {
   var b = this.file.read(max);

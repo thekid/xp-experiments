@@ -1,7 +1,7 @@
 // {{{ Object
 lang.Object = function() {
   {
-    this.__class = 'lang.Object';
+    if (typeof(this.__class) === 'undefined') this.__class = 'lang.Object';
   }  
 }
 

@@ -3,12 +3,12 @@ uses('unittest.TestCase');
 // {{{ DemoTest
 tests.DemoTest = function(name) {
   {
+    if (typeof(this.__class) === 'undefined') this.__class = 'tests.DemoTest';
     unittest.TestCase.call(this, name);
-    this.__class = 'tests.DemoTest';
   }
 }
 
-tests.DemoTest.prototype= new unittest.TestCase();
+tests.DemoTest.prototype= Object.create(unittest.TestCase.prototype);
 
 tests.DemoTest.prototype.testSucceeds = function() {
   this.assertEquals(1, 1);

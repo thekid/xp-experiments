@@ -3,11 +3,11 @@ uses('unittest.AssertionFailedError', 'unittest.TestFailure', 'unittest.TestSucc
 // {{{ TestSuite
 unittest.TestSuite = function() {
   {
-    this.__class = 'unittest.TestSuite';
+    if (typeof(this.__class) === 'undefined') this.__class = 'unittest.TestSuite';
   }
 }
 
-unittest.TestSuite.prototype= new lang.Object();
+unittest.TestSuite.prototype= Object.create(lang.Object.prototype);
 
 unittest.TestSuite.prototype.tests = new Array();
 unittest.TestSuite.prototype.outcome = new Array();

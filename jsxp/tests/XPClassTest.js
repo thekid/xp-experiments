@@ -3,12 +3,12 @@ uses('unittest.TestCase', 'tests.AnnotatedClass', 'tests.AnnotatedClassChild');
 // {{{ XPClassTest
 tests.XPClassTest = function(name) {
   {
+    if (typeof(this.__class) === 'undefined') this.__class = 'tests.XPClassTest';
     unittest.TestCase.call(this, name);
-    this.__class = 'tests.XPClassTest';
   }
 }
 
-tests.XPClassTest.prototype= new unittest.TestCase();
+tests.XPClassTest.prototype = Object.create(unittest.TestCase.prototype);
 
 tests.XPClassTest.prototype.getName = function() {
   this.assertEquals('tests.XPClassTest', this.getClass().getName());

@@ -3,10 +3,10 @@ uses('lang.Throwable');
 // {{{ IllegalArgumentException
 lang.IllegalArgumentException = function(message) {
   {
+    if (typeof(this.__class) === 'undefined') this.__class = 'lang.IllegalArgumentException';
     lang.Throwable.call(this, message);
-    this.__class = 'lang.IllegalArgumentException';
   }
 }
 
-lang.IllegalArgumentException.prototype= new lang.Throwable();
+lang.IllegalArgumentException.prototype= Object.create(lang.Throwable.prototype);
 // }}}

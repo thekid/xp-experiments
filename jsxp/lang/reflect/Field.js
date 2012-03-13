@@ -1,14 +1,14 @@
 // {{{ Field
 lang.reflect.Field = function(clazz, name, modifiers) {
   {
-    this.__class = 'lang.reflect.Field';
+    if (typeof(this.__class) === 'undefined') this.__class = 'lang.reflect.Field';
     this.clazz = clazz;
     this.name = name;
     this.modifiers = modifiers;
   }
 }
 
-lang.reflect.Field.prototype= new lang.Object();
+lang.reflect.Field.prototype= Object.create(lang.Object.prototype);
 
 lang.reflect.Field.prototype.getName = function() {
   return this.name;
