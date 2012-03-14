@@ -11,7 +11,7 @@ io.File = function(uri) {
   }
 }
 
-io.File.prototype= Object.create(lang.Object.prototype);
+extend(io.File, lang.Object);
 
 io.File.prototype.open = function(mode) {
   try {

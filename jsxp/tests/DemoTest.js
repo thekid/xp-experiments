@@ -8,7 +8,7 @@ tests.DemoTest = function(name) {
   }
 }
 
-tests.DemoTest.prototype= Object.create(unittest.TestCase.prototype);
+extend(tests.DemoTest, unittest.TestCase);
 
 tests.DemoTest.prototype.testSucceeds = function() {
   this.assertEquals(1, 1);

@@ -8,7 +8,7 @@ lang.reflect.Field = function(clazz, name, modifiers) {
   }
 }
 
-lang.reflect.Field.prototype= Object.create(lang.Object.prototype);
+extend(lang.reflect.Field, lang.Object);
 
 lang.reflect.Field.prototype.getName = function() {
   return this.name;

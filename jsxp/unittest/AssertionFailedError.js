@@ -8,5 +8,5 @@ unittest.AssertionFailedError = function(message) {
   }
 }
 
-unittest.AssertionFailedError.prototype= Object.create(lang.Throwable.prototype);
+extend(unittest.AssertionFailedError, lang.Throwable);
 // }}}

@@ -7,7 +7,7 @@ unittest.TestFailure = function(test, throwable) {
   }
 }
 
-unittest.TestFailure.prototype= Object.create(lang.Object.prototype);
+extend(unittest.TestFailure, lang.Object);
 
 unittest.TestFailure.prototype.test = null;
 unittest.TestFailure.prototype.throwable = null;

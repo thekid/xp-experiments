@@ -8,5 +8,5 @@ tests.AnnotatedClass = function() {
 tests.AnnotatedClass['@'] = {
   webservice : null
 };
-tests.AnnotatedClass.prototype= Object.create(lang.Object.prototype);
+extend(tests.AnnotatedClass, lang.Object);
 // }}}

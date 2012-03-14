@@ -9,12 +9,12 @@ lang.XPClass = function(name) {
   }
 }
 
+extend(lang.XPClass, lang.Object);
+
 lang.XPClass.forName = function(name) {
   uses(name);
   return new lang.XPClass(name);
 }
-
-lang.XPClass.prototype= Object.create(lang.Object.prototype);
 
 lang.XPClass.prototype.toString = function() {
   return this.getClassName() + '<' + this.name + '>';

@@ -8,5 +8,5 @@ tests.AnnotatedClassChild = function() {
 }
 
 tests.AnnotatedClassChild['@']= tests.AnnotatedClass['@'];
-tests.AnnotatedClassChild.prototype= Object.create(tests.AnnotatedClass.prototype);
+extend(tests.AnnotatedClassChild, tests.AnnotatedClass);
 // }}}

@@ -15,7 +15,7 @@ lang.reflect.Method = function(clazz, name, modifiers) {
   }
 }
 
-lang.reflect.Method.prototype= Object.create(lang.Object.prototype);
+extend(lang.reflect.Method, lang.Object);
 
 lang.reflect.Method.prototype.name = '';
 

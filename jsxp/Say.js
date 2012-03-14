@@ -9,7 +9,7 @@ Say.main = function(args) {
   new Say().hello(args[0]);
 }
 
-Say.prototype= Object.create(lang.Object.prototype);
+extend(Say, lang.Object);
 
 Say.prototype.greeting = 'Hello';
 

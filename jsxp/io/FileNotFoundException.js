@@ -8,5 +8,5 @@ io.FileNotFoundException = function(message) {
   }
 }
 
-io.FileNotFoundException.prototype= Object.create(io.IOException.prototype);
+extend(io.FileNotFoundException, io.IOException);
 // }}}

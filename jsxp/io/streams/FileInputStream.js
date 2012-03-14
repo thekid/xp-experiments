@@ -14,7 +14,7 @@ io.streams.FileInputStream = function(origin) {
   }
 }
 
-io.streams.FileInputStream.prototype= Object.create(lang.Object.prototype);
+extend(io.streams.FileInputStream, lang.Object);
 
 io.streams.FileInputStream.prototype.read = function(max) {
   var b = this.file.read(max);

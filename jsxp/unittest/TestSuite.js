@@ -7,7 +7,7 @@ unittest.TestSuite = function() {
   }
 }
 
-unittest.TestSuite.prototype= Object.create(lang.Object.prototype);
+extend(unittest.TestSuite, lang.Object);
 
 unittest.TestSuite.prototype.tests = new Array();
 unittest.TestSuite.prototype.outcome = new Array();

@@ -8,5 +8,5 @@ lang.IllegalArgumentException = function(message) {
   }
 }
 
-lang.IllegalArgumentException.prototype= Object.create(lang.Throwable.prototype);
+extend(lang.IllegalArgumentException, lang.Throwable);
 // }}}

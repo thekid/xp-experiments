@@ -8,7 +8,7 @@ unittest.TestCase = function(name) {
   }
 }
 
-unittest.TestCase.prototype= Object.create(lang.Object.prototype);
+extend(unittest.TestCase, lang.Object);
 
 unittest.TestCase.prototype.name = '';
 

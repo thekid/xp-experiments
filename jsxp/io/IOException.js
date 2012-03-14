@@ -8,6 +8,6 @@ io.IOException = function(message) {
   }
 }
 
-io.IOException.prototype= Object.create(lang.Throwable.prototype);
+extend(io.IOException, lang.Throwable);
 // }}}
 

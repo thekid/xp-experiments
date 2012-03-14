@@ -64,6 +64,14 @@ function uses() {
 }
 global.uses= uses;
 
+function extend(self, parent) {
+  var helper = new Function;
+  helper.prototype = parent.prototype;
+  var proto = new helper;
+  self.prototype = proto;
+}
+global.extend= extend;
+
 Error.prototype.toString = function() {
   return 'Error<' + this.name + ': ' + this.message + '>';
 }

@@ -8,5 +8,5 @@ lang.ElementNotFoundException = function(message) {
   }
 }
 
-lang.ElementNotFoundException.prototype= Object.create(lang.Throwable.prototype);
+extend(lang.ElementNotFoundException, lang.Throwable);
 // }}}
