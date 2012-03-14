@@ -8,7 +8,7 @@ tests.XPClassTest = function(name) {
   }
 }
 
-tests.XPClassTest.prototype = Object.create(unittest.TestCase.prototype);
+extend(tests.XPClassTest, unittest.TestCase);
 
 tests.XPClassTest.prototype.getName = function() {
   this.assertEquals('tests.XPClassTest', this.getClass().getName());
