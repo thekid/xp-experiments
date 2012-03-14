@@ -3,6 +3,8 @@
  * $Id$ 
  */
 
+import static util.cmd.Console.*;
+
 /**
  * Say
  *
@@ -15,7 +17,7 @@ public class Say {
    *
    */
   public void hello(string? $name) {
-    util.cmd.Console::writeLine($this.greeting, ' ', $name);
+    writeLine($this.greeting, ' ', $name);
   }
 
   /**
