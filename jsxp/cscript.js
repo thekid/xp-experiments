@@ -74,6 +74,26 @@ function extend(self, parent) {
   self.prototype = proto;
 }
 
+function cast(value, type) {
+  if ('int' === type) {
+    return parseInt(value);
+  } else if ('double' === type) {
+    return parseFloat(value);
+  } else if ('string' === type) {
+    return String(value);
+  } else if ('bool' === type) {
+    return !!value;
+  } else if (type.endsWith('[]')) {
+    return typeof(value) === 'Array' ? value : [value];
+  } else if (type.startsWith('[')) {
+    if (typeof(value) === 'Function') return value;
+    throw new Error('Cannot cast ' + value + ' to ' + type);
+  } else {
+    if (value instanceof type) return value;
+    throw new Error('Cannot cast ' + value + ' to ' + type);
+  }
+}
+
 Error.prototype.toString = function() {
   return 'Error<' + this.name + ': ' + this.message + '>';
 }
