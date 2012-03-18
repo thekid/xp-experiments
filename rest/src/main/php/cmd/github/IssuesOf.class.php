@@ -77,6 +77,11 @@
       $this->request->addAccept('application/vnd.github.v3.text+json');
       $response= $this->client->execute('GitHubIssue[]', $this->request);
 
+      if (200 !== $response->status()) {
+        $this->err->writeLine('*** ', $response->status(), ': ', $response->content());
+        return;
+      }
+
       if ($this->verbose) {
         $this->out->writeLine('Issue list, status ', $response->status());
         $this->out->writeLine($response->data());
