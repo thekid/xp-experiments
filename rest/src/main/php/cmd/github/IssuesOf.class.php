@@ -7,6 +7,8 @@
   uses(
     'util.cmd.Command',
     'webservices.rest.RestClient',
+    'util.log.LogCategory',
+    'util.log.StreamAppender',
     'cmd.github.GitHubIssue'
   );
 
@@ -56,6 +58,15 @@
     #[@arg]
     public function setVerbose() {
       $this->verbose= TRUE;
+    }
+
+    /**
+     * Sets whether to be verbose
+     *
+     */
+    #[@arg]
+    public function setDebug() {
+      $this->client->setTrace(create(new LogCategory('trace'))->withAppender(new StreamAppender($this->err->getStream())));
     }
 
     /**
