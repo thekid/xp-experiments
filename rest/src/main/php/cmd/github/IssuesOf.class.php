@@ -74,6 +74,7 @@
      *
      */
     public function run() {
+      $this->request->addAccept('application/vnd.github.v3.text+json');
       $response= $this->client->execute('GitHubIssue[]', $this->request);
 
       if ($this->verbose) {
