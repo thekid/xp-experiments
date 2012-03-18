@@ -17,6 +17,7 @@
    */
   class IssuesOf extends Command {
     protected $request= NULL;
+    protected $client= NULL;
     protected $verbose= FALSE;
     
     /**
@@ -25,6 +26,7 @@
      */
     public function __construct() {
       $this->request= new RestRequest('/repos/{user}/{repo}/issues');
+      $this->client= new RestClient('https://api.github.com');
     }
   
     /**
@@ -61,8 +63,7 @@
      *
      */
     public function run() {
-      $client= new RestClient('https://api.github.com');
-      $response= $client->execute('GitHubIssue[]', $this->request);
+      $response= $this->client->execute('GitHubIssue[]', $this->request);
 
       if ($this->verbose) {
         $this->out->writeLine('Issue list, status ', $response->status());
