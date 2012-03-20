@@ -27,7 +27,7 @@ unittest.TestSuite.prototype.run = function() {
       if (!methods[m].hasAnnotation('test')) continue;
       var instance = this.tests[i].newInstance(methods[m].getName());
       var annotation = methods[m].getAnnotation('test');
-      
+
       instance.setUp();
       try {
         methods[m].invoke(instance, []);
@@ -37,8 +37,8 @@ unittest.TestSuite.prototype.run = function() {
         if (e instanceof unittest.AssertionFailedError) {
           util.cmd.Console.write('E');
           this.outcome.push(new unittest.TestFailure(instance, e));
-        } else if (annotation && typeof(annotation.expect) !== 'undefined') {
-          if (lang.XPClass.forName(annotation.expect).isInstance(e)) {
+        } else if (methods[m].hasAnnotation('expect')) {
+          if (lang.XPClass.forName(methods[m].getAnnotation('expect')).isInstance(e)) {
             util.cmd.Console.write('.');
             this.outcome.push(new unittest.TestSuccess(instance));
           } else {
