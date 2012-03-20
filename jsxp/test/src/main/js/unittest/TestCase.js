@@ -38,6 +38,12 @@ unittest.TestCase.prototype.assertEquals = function(a, b) {
   }
 }
 
+unittest.TestCase.prototype.assertNotEquals = function(a, b) {
+  if (this._equals(a, b)) {
+    throw new unittest.AssertionFailedError('Expected an object unequal to ' + a);
+  }
+}
+
 unittest.TestCase.prototype.assertTrue = function(val) {
   this.assertEquals(true, val);
 }
