@@ -73,23 +73,3 @@ $ cscript /nologo tools/cscript.js Hello
   at function(obj, args)
   at <main>
 ```
-
-Rhino
------
-Rhino is an open-source implementation of JavaScript written entirely in 
-Java. Rhino is available for any platform Java is available for.
-See http://www.mozilla.org/rhino/
-
-**Getting started**
-
-```sh
-$ rhino rhino.js Hello World
-Hello World
-```
-
-```sh
-$ rhino rhino.js Hello 
-*** Uncaught exception IllegalArgumentException(Argument required)
-  at <main>
-```
-
