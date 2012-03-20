@@ -105,9 +105,6 @@ if (typeof(Object.defineProperty) === 'undefined') {
   }
 }
 
-Modifiers = function() { }
-Modifiers.STATIC = 1;
-
 uses('lang.Object', 'lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
 
 try {

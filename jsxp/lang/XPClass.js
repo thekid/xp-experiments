@@ -1,4 +1,4 @@
-uses('lang.reflect.Field', 'lang.reflect.Method', 'lang.ElementNotFoundException');
+uses('lang.reflect.Modifiers', 'lang.reflect.Field', 'lang.reflect.Method', 'lang.ElementNotFoundException');
 
 // {{{ XPClass
 lang.XPClass = function(name) {
@@ -53,7 +53,7 @@ lang.XPClass.prototype.getMethods = function() {
     }
   };
 
-  gather(this, this.reflect, false, Modifiers.STATIC);
+  gather(this, this.reflect, false, lang.reflect.Modifiers.STATIC);
   gather(this, this.reflect.prototype, true, 0);
   return methods;
 }
@@ -75,7 +75,7 @@ lang.XPClass.prototype.getFields = function() {
     }
   };
 
-  gather(this, this.reflect, false, Modifiers.STATIC);
+  gather(this, this.reflect, false, lang.reflect.Modifiers.STATIC);
   gather(this, this.reflect.prototype, true, 0);
   return fields;
 }

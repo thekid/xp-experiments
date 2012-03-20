@@ -97,9 +97,6 @@ Error.prototype.toString = function() {
   return 'Error<' + this.name + ': ' + this.message + '>';
 }
 
-Modifiers = function() { }
-Modifiers.STATIC = 1;
-
 uses('lang.Object', 'lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
 
 try {
