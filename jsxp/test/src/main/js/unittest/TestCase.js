@@ -35,6 +35,18 @@ unittest.TestCase.prototype.assertEquals = function(a, b) {
   }
 }
 
+unittest.TestCase.prototype.assertTrue = function(val) {
+  this.assertEquals(true, val);
+}
+
+unittest.TestCase.prototype.assertFalse = function(val) {
+  this.assertEquals(false, val);
+}
+
+unittest.TestCase.prototype.assertNull = function(val) {
+  this.assertEquals(null, val);
+}
+
 unittest.TestCase.prototype.assertInstanceOf = function(type, value) {
   var actual = typeof(value);
   if (actual === 'object') {
