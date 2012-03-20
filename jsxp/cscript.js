@@ -98,6 +98,13 @@ Error.prototype.toString = function() {
   return 'Error<' + this.name + ': ' + this.message + '>';
 }
 
+// Mimick (in an unsafe way Object.defineProperty())
+if (typeof(Object.defineProperty) === 'undefined') {
+  Object.defineProperty= function(object, propertyname, descriptor) {
+    object[propertyname]= descriptor.value;
+  }
+}
+
 Modifiers = function() { }
 Modifiers.STATIC = 1;
 
