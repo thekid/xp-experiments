@@ -1,4 +1,4 @@
-uses('lang.reflect.Modifiers', 'lang.reflect.Field', 'lang.reflect.Method', 'lang.ElementNotFoundException');
+uses('lang.reflect.Modifiers', 'lang.reflect.Field', 'lang.reflect.Method', 'lang.ElementNotFoundException', 'lang.ClassNotFoundException');
 
 // {{{ XPClass
 lang.XPClass = function(name) {
@@ -13,6 +13,9 @@ extend(lang.XPClass, lang.Object);
 
 lang.XPClass.forName = function(name) {
   uses(name);
+  if (global[name] === undefined) {
+    throw new lang.ClassNotFoundException('Cannot find class "' + name + '"');
+  }
   return new lang.XPClass(name);
 }
 
