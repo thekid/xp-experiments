@@ -7,7 +7,7 @@ Unittest = function() {
   }
 }
 
-Unittest.prototype = new lang.Object();
+extend(Unittest, lang.Object);
 
 Unittest.main = function(args) {
   var suite = new unittest.TestSuite();
