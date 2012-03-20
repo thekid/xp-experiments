@@ -1,9 +1,9 @@
 // {{{ Reflect
-Reflect = function() {
-  {
-    this.__class = 'Reflect';
-  }
-}
+Reflect = define('Reflect', 'lang.Object', function() { });
+
+Reflect.prototype.toString = function() {
+  return "Reflect instance";
+};
 
 Reflect.main = function(args) {
   clazz= lang.XPClass.forName(args[0]);
