@@ -1,13 +1,10 @@
 // {{{ Throwable
-lang.Throwable = function(message) {
-  {
-    if (typeof(this.__class) === 'undefined') this.__class = 'lang.Throwable';
-    this.message = message;
-    // this.fillInStacktrace(arguments.callee.caller);
-  }  
-}
+lang.Throwable = define('lang.Throwable', null, function (message) { 
+  this.message = message;
+  this.fillInStacktrace();
+});
 
-lang.Throwable.prototype= new Error();
+lang.Throwable.prototype= Error.prototype;
 
 // root-trait
 lang.Throwable.prototype.getClass = function() {
@@ -28,15 +25,40 @@ lang.Throwable.prototype.getMessage = function() {
   return this.message;
 }
 
-lang.Throwable.prototype.fillInStacktrace = function (f) {
-  var representation;
-  while (f) {
-    representation = f.toString();
-    this.stacktrace.push(representation.substring(
-      0, 
-      representation.indexOf(' {')
-    ));
-    f = f.caller;
+lang.Throwable.prototype.stringOf = function(arg) {
+  switch (typeof(arg)) {
+    case 'number': return arg;
+    case 'boolean': return arg ? 'true' : 'false';
+    case 'string': {
+      var cut = arg.indexOf("\n");
+      cut = cut < 0 ? 0x40 : Math.min(cut, 0x40);
+      return '"' + (arg.length > cut ? arg.substring(0, cut) + '...' : arg) + '"';
+    }
+    case 'object': {
+      if (null === arg) {
+        return 'null';
+      } else if (arg instanceof Array) {
+        return 'array[' + arg.length + ']';
+      } else if (arg.__class === undefined) {
+        return Object.prototype.toString.call(arg);
+      } else {
+        return arg.__class + '{}';
+      }
+    }
+  }
+  return typeof(arg);
+}
+
+lang.Throwable.prototype.fillInStacktrace = function () {
+  var current= arguments.callee.caller;
+  while (current && current !== global.__main) {
+    var f= current.toString();
+    var a= '';
+    for (var i= 0; i < current.arguments.length; i++) {
+      a += ', ' + this.stringOf(current.arguments[i]);
+    }
+    this.stacktrace.push((f.substring(0, f.indexOf('{')) || '<anonymous>') + '(' + a.substring(2) + ')');
+    current = current.caller;
   }
 }
 

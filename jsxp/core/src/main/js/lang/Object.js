@@ -1,11 +1,5 @@
 // {{{ Object
-lang.Object = function() {
-  {
-    if (typeof(this.__class) === 'undefined') this.__class = 'lang.Object';
-  }  
-}
-
-lang.Object.prototype= new Object();
+lang.Object = define('lang.Object', null, function() { });
 
 // root-trait
 lang.Object.prototype.getClass = function() {
