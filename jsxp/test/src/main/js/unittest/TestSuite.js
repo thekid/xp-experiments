@@ -1,13 +1,7 @@
 uses('unittest.AssertionFailedError', 'unittest.TestFailure', 'unittest.TestSuccess');
 
 // {{{ TestSuite
-unittest.TestSuite = function() {
-  {
-    if (typeof(this.__class) === 'undefined') this.__class = 'unittest.TestSuite';
-  }
-}
-
-extend(unittest.TestSuite, lang.Object);
+unittest.TestSuite = define('unittest.TestSuite', 'lang.Object', function() { });
 
 unittest.TestSuite.prototype.tests = new Array();
 unittest.TestSuite.prototype.outcome = new Array();

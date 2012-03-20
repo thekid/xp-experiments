@@ -1,15 +1,10 @@
 uses('lang.reflect.Modifiers', 'lang.reflect.Field', 'lang.reflect.Method', 'lang.ElementNotFoundException', 'lang.ClassNotFoundException');
 
 // {{{ XPClass
-lang.XPClass = function(name) {
-  {
-    if (typeof(this.__class) === 'undefined') this.__class = 'lang.XPClass';
-    this.name = name;
-    this.reflect = global[name];
-  }
-}
-
-extend(lang.XPClass, lang.Object);
+lang.XPClass = define('lang.XPClass', 'lang.Object', function(name) {
+  this.name = name;
+  this.reflect = global[name];
+});
 
 lang.XPClass.forName = function(name) {
   uses(name);
@@ -35,6 +30,10 @@ lang.XPClass.prototype.newInstance = function() {
   instance.constructor = this.reflect;
   this.reflect.apply(instance, arguments);
   return instance;
+}
+
+lang.XPClass.prototype.getParentclass = function() {
+  return new lang.XPClass(this.reflect.prototype.__super.__class);
 }
 
 lang.XPClass.prototype.hasMethod = function(name) {

@@ -1,14 +1,9 @@
 uses('unittest.TestCase');
 
 // {{{ DemoTest
-tests.DemoTest = function(name) {
-  {
-    if (typeof(this.__class) === 'undefined') this.__class = 'tests.DemoTest';
-    unittest.TestCase.call(this, name);
-  }
-}
-
-extend(tests.DemoTest, unittest.TestCase);
+tests.DemoTest = define('tests.DemoTest', 'unittest.TestCase', function(name) {
+  unittest.TestCase.apply(this, arguments);
+});
 
 tests.DemoTest.prototype.testSucceeds = function() {
   this.assertEquals(1, 1);

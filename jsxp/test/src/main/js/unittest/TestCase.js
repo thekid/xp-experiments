@@ -1,14 +1,9 @@
 uses('unittest.AssertionFailedError');
 
 // {{{ TestCase
-unittest.TestCase = function(name) {
-  {
-    if (typeof(this.__class) === 'undefined') this.__class = 'unittest.TestCase';
-    this.name = name;
-  }
-}
-
-extend(unittest.TestCase, lang.Object);
+unittest.TestCase = define('unittest.TestCase', 'lang.Object', function(name) {
+  this.name = name;
+});
 
 unittest.TestCase.prototype.name = '';
 

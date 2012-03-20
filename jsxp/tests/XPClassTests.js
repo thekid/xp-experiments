@@ -11,7 +11,7 @@ uses('unittest.TestCase');
 
 
 
-tests.XPClassTests= function(){if (typeof(this.__class) === 'undefined') this.__class= 'tests.XPClassTests';unittest.TestCase.apply(this, arguments);};extend(tests.XPClassTests,unittest.TestCase);
+tests.XPClassTests= define('tests.XPClassTests','unittest.TestCase',function(){unittest.TestCase.apply(this, arguments);});
 
 
 
@@ -249,3 +249,12 @@ this.assertEquals([],this.getClass().getAnnotations());};tests.XPClassTests.prot
 
 tests.XPClassTests.prototype.thisClassWebserviceAnnotation= function(){
 this.getClass().getAnnotation('webservice');};tests.XPClassTests.prototype.thisClassWebserviceAnnotation['@']= {test:null,expect:'lang.ElementNotFoundException'};
+
+
+
+
+
+
+
+tests.XPClassTests.prototype.thisClassParent= function(){
+this.assertEquals(lang.XPClass.forName('unittest.TestCase'),this.getClass().getParentclass());};tests.XPClassTests.prototype.thisClassParent['@']= {test:null};

@@ -1,12 +1,7 @@
 uses('lang.Throwable');
 
 // {{{ AssertionFailedError
-unittest.AssertionFailedError = function(message) {
-  {
-    if (typeof(this.__class) === 'undefined') this.__class = 'unittest.AssertionFailedError';
-    lang.Throwable.call(this, message);
-  }
-}
-
-extend(unittest.AssertionFailedError, lang.Throwable);
+unittest.AssertionFailedError = define('unittest.AssertionFailedError', 'lang.Throwable', function(message) {
+  lang.Throwable.call(this, message);
+});
 // }}}

@@ -250,4 +250,13 @@ public class XPClassTests extends TestCase {
   public void thisClassWebserviceAnnotation() {
     $this.getClass().getAnnotation('webservice');
   }
+
+  /**
+   * Tests getParentclass()
+   *
+   */
+  [@test]
+  public void thisClassParent() {
+    $this.assertEquals(unittest.TestCase::class, $this.getClass().getParentclass());
+  }
 }

@@ -1,13 +1,8 @@
 // {{{ TestFailure
-unittest.TestFailure = function(test, throwable) {
-  {
-    if (typeof(this.__class) === 'undefined') this.__class = 'unittest.TestFailure';
-    this.test = test;
-    this.throwable = throwable;
-  }
-}
-
-extend(unittest.TestFailure, lang.Object);
+unittest.TestFailure = define('unittest.TestFailure', 'lang.Object', function(test, throwable) { 
+  this.test = test;
+  this.throwable = throwable;
+});
 
 unittest.TestFailure.prototype.test = null;
 unittest.TestFailure.prototype.throwable = null;

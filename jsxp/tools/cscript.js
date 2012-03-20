@@ -126,6 +126,14 @@ global.uses= function uses() {
     }
   }
 }
+global.define= function define(name, parent, construct) {
+  global[name] = construct || new Function;
+  global[name].__class = name;
+  extend(global[name], global[parent]);
+  global[name].prototype.__class = name;
+  global[name].prototype.__super = global[parent];
+  return global[name];
+}
 global.extend= function extend(self, parent) {
   var helper = new Function;
   helper.prototype = parent.prototype;

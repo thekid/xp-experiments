@@ -3,15 +3,10 @@ uses('io.FileNotFoundException');
 var fs = require('fs');
 
 // {{{ File
-io.File = function(uri) {
-  {
-    if (typeof(this.__class) === 'undefined') this.__class = 'io.File';
-    this.uri = uri;
-    this.fd = null;
-  }
-}
-
-extend(io.File, lang.Object);
+io.File = define('io.File', 'lang.Object', function(uri) {
+  this.uri = uri;
+  this.fd = null;
+});
 
 io.File.prototype.open = function(mode) {
   try {
