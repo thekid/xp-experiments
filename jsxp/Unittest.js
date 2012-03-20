@@ -3,7 +3,7 @@ uses('unittest.TestSuite');
 // {{{ Unittest
 Unittest = define('Unittest', 'lang.Object', function Unittest() { });
 
-Unittest.main = function main(args) {
+Unittest.main = function Unittest$main(args) {
   var suite = new unittest.TestSuite();
   for (var i= 0; i < args.length; i++) {
     suite.addTestClass(lang.XPClass.forName(args[i]));

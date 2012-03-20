@@ -7,13 +7,13 @@ lang.Throwable = define('lang.Throwable', null, function Throwable(message) {
 lang.Throwable.prototype= Error.prototype;
 
 // root-trait
-lang.Throwable.prototype.getClass = function getClass() {
+lang.Throwable.prototype.getClass = function Throwable$getClass() {
   return new lang.XPClass(this.__class);
 }
-lang.Throwable.prototype.getClassName = function getClassName() {
+lang.Throwable.prototype.getClassName = function Throwable$getClassName() {
   return this.__class;
 }
-lang.Throwable.prototype.equals = function equals(cmp) {
+lang.Throwable.prototype.equals = function Throwable$equals(cmp) {
   return this == cmp;
 }
 // root-trait
@@ -21,11 +21,11 @@ lang.Throwable.prototype.equals = function equals(cmp) {
 lang.Throwable.prototype.message = '';
 lang.Throwable.prototype.stacktrace = new Array();
 
-lang.Throwable.prototype.getMessage = function getMessage() {
+lang.Throwable.prototype.getMessage = function Throwable$getMessage() {
   return this.message;
 }
 
-lang.Throwable.prototype.stringOf = function stringOf(arg) {
+lang.Throwable.prototype.stringOf = function Throwable$stringOf(arg) {
   switch (typeof(arg)) {
     case 'number': return arg;
     case 'boolean': return arg ? 'true' : 'false';
@@ -49,7 +49,7 @@ lang.Throwable.prototype.stringOf = function stringOf(arg) {
   return typeof(arg);
 }
 
-lang.Throwable.prototype.fillInStacktrace = function fillInStacktrace() {
+lang.Throwable.prototype.fillInStacktrace = function Throwable$fillInStacktrace() {
   var current= arguments.callee.caller;
   var seen= [];
   while (current && current !== global.__main) {
@@ -65,7 +65,7 @@ lang.Throwable.prototype.fillInStacktrace = function fillInStacktrace() {
   }
 }
 
-lang.Throwable.prototype.toString = function toString() {
+lang.Throwable.prototype.toString = function Throwable$toString() {
   var r = this.__class + '(' + this.message + ")\n";
   for (var i= 0; i < this.stacktrace.length; i++) {
     r += '  at ' + this.stacktrace[i] + "\n";

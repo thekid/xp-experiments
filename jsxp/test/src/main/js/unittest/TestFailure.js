@@ -7,7 +7,7 @@ unittest.TestFailure = define('unittest.TestFailure', 'lang.Object', function Te
 unittest.TestFailure.prototype.test = null;
 unittest.TestFailure.prototype.throwable = null;
 
-unittest.TestFailure.prototype.toString = function toString() {
+unittest.TestFailure.prototype.toString = function TestFailure$toString() {
   return this.getClassName() + 
     '(test= ' + this.test.getClassName() + '::' + this.test.getName() + ") {\n  " + 
     this.throwable.toString() +

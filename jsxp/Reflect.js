@@ -1,11 +1,11 @@
 // {{{ Reflect
 Reflect = define('Reflect', 'lang.Object', function Reflect() { });
 
-Reflect.prototype.toString = function toString() {
+Reflect.prototype.toString = function Reflect$toString() {
   return "Reflect instance";
 };
 
-Reflect.main = function main(args) {
+Reflect.main = function Reflect$main(args) {
   clazz= lang.XPClass.forName(args[0]);
 
   util.cmd.Console.writeLine(clazz);

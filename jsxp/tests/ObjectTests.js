@@ -18,7 +18,7 @@ tests.ObjectTests= define('tests.ObjectTests','unittest.TestCase',function Objec
 
 
 
-tests.ObjectTests.prototype.className= function className(){
+tests.ObjectTests.prototype.className= function ObjectTests$className(){
 this.assertEquals('lang.Object',new lang.Object().getClass().getName());};tests.ObjectTests.prototype.className['@']= {test:null};
 
 
@@ -27,7 +27,7 @@ this.assertEquals('lang.Object',new lang.Object().getClass().getName());};tests.
 
 
 
-tests.ObjectTests.prototype.classNameShortCut= function classNameShortCut(){
+tests.ObjectTests.prototype.classNameShortCut= function ObjectTests$classNameShortCut(){
 this.assertEquals('lang.Object',new lang.Object().getClassName());};tests.ObjectTests.prototype.classNameShortCut['@']= {test:null};
 
 
@@ -36,7 +36,7 @@ this.assertEquals('lang.Object',new lang.Object().getClassName());};tests.Object
 
 
 
-tests.ObjectTests.prototype.equalToItSelf= function equalToItSelf(){
+tests.ObjectTests.prototype.equalToItSelf= function ObjectTests$equalToItSelf(){
 o=new lang.Object();
 this.assertEquals(o,o);};tests.ObjectTests.prototype.equalToItSelf['@']= {test:null};
 
@@ -46,5 +46,5 @@ this.assertEquals(o,o);};tests.ObjectTests.prototype.equalToItSelf['@']= {test:n
 
 
 
-tests.ObjectTests.prototype.notEqualToAnotherInstance= function notEqualToAnotherInstance(){
+tests.ObjectTests.prototype.notEqualToAnotherInstance= function ObjectTests$notEqualToAnotherInstance(){
 this.assertNotEquals(new lang.Object(),new lang.Object());};tests.ObjectTests.prototype.notEqualToAnotherInstance['@']= {test:null};

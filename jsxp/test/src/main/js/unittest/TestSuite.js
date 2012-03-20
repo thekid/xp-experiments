@@ -6,11 +6,11 @@ unittest.TestSuite = define('unittest.TestSuite', 'lang.Object', function TestSu
 unittest.TestSuite.prototype.tests = new Array();
 unittest.TestSuite.prototype.outcome = new Array();
 
-unittest.TestSuite.prototype.addTestClass = function addTestClass(clazz) {
+unittest.TestSuite.prototype.addTestClass = function TestSuite$addTestClass(clazz) {
   this.tests.push(clazz);
 }
 
-unittest.TestSuite.prototype.run = function run() {
+unittest.TestSuite.prototype.run = function TestSuite$run() {
 
   // Run tests
   util.cmd.Console.write('[');

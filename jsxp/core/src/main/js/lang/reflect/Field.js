@@ -5,11 +5,11 @@ lang.reflect.Field = define('lang.reflect.Field', 'lang.Object', function Field(
   this.modifiers = modifiers;
 });
 
-lang.reflect.Field.prototype.getName = function getName() {
+lang.reflect.Field.prototype.getName = function Field$getName() {
   return this.name;
 }
 
-lang.reflect.Field.prototype.toString = function toString() {
+lang.reflect.Field.prototype.toString = function Field$toString() {
   return this.getClassName() + '<' + (this.modifiers & 1 ? 'static ' : '') + this.clazz.name + '::' + this.name + '>';
 }
 // }}}
