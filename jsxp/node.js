@@ -4,6 +4,50 @@ var argv= process.argv;
 argv.shift(); // node.exe
 argv.shift(); // node.js
 
+var fs = require('fs');
+fs.file = function(uri) {
+  return fs.readFileSync(uri).toString().split("\n");
+}
+
+var path= require('path');
+fs.exists = function(uri) {
+  return path.existsSync(uri);
+}
+
+// Setup classpath
+function scanpath(paths, home) {
+  var inc= [];
+  for (p= 0; p < paths.length; p++) {
+    var lines= fs.file(path.join(paths[p], 'class.pth'));
+    for (i= 0; i < lines.length; i++) {
+      line= lines[i];
+      if ('' === line || '#' === line[0]) {
+        continue;
+      } else if ('!' === line[0]) {
+        pre= true;
+        line= line.substring(1);
+      } else {
+        pre= false;
+      }
+      
+      if ('~' === line[0]) {
+        line= line.substring(1);
+        base= home;
+      } else if ('/' === line[0] || ':' === line[1] && '\\' === line[2]) {
+        base= null;
+      } else {
+        base= paths[p];
+      }
+      qn= path.join(base, line);
+      pre ? inc.unshift(qn) : inc.push(qn);
+    }
+  }
+  return inc;
+}
+
+global.classpath= scanpath([process.cwd()], process.env.HOME);
+global.classpath.push(process.cwd());
+
 global.out= {
   write : function(data) {
     process.stdout.write(data + "");
@@ -54,11 +98,16 @@ function uses() {
       if (typeof(it[names[n]]) === 'undefined') it[names[n]]= {};
       it = it[names[n]];
     }
-    
-    require('./' + arguments[i].replace(/\./g, '/') + '.js');
-    global[arguments[i]]= it[names[n]]= eval(arguments[i]);
-    if (typeof(it[names[n]]['__static']) === 'function') {
-      it[names[n]].__static();
+
+    for (var c= 0; c < global.classpath.length; c++) {
+      var fn = path.join(global.classpath[c], arguments[i].replace(/\./g, '/') + '.js');
+      if (!fs.exists(fn)) continue;
+
+      require(fn);
+      global[arguments[i]]= it[names[n]]= eval(arguments[i]);
+      if (typeof(it[names[n]]['__static']) === 'function') {
+        it[names[n]].__static();
+      }
     }
   }
 }
