@@ -94,8 +94,12 @@ lang.XPClass.prototype.isInstance = function(instance) {
   return instance instanceof this.reflect;
 }
 
-lang.XPClass.prototype.hasAnnotations = function(name) {
+lang.XPClass.prototype.hasAnnotations = function() {
   return typeof(this.reflect['@']) !== 'undefined';
+}
+
+lang.XPClass.prototype.getAnnotations = function() {
+  return this.hasAnnotations() ? this.reflect['@'] : [];
 }
 
 lang.XPClass.prototype.hasAnnotation = function(name) {
