@@ -1,7 +1,7 @@
 // {{{ Throwable
 lang.Throwable = function(message) {
   {
-    this.__class = 'lang.Throwable';
+    if (typeof(this.__class) === 'undefined') this.__class = 'lang.Throwable';
     this.message = message;
     // this.fillInStacktrace(arguments.callee.caller);
   }  
