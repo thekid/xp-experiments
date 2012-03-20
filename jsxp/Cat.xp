@@ -1,8 +1,9 @@
 public class Cat {
+  const int CHUNKSIZE = 8192;
 
   public static void main(string[] $args) {
     try ($f= new io.streams.FileInputStream($args[0])) {
-      while ('' !== ($b= $f.read(8192))) {
+      while ('' !== ($b= $f.read(self::CHUNKSIZE))) {
         util.cmd.Console::write($b);
       }
     }
