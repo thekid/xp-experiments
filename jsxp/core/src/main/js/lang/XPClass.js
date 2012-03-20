@@ -38,14 +38,14 @@ lang.XPClass.prototype.newInstance = function() {
 }
 
 lang.XPClass.prototype.hasMethod = function(name) {
-  return this.reflect.hasOwnProperty(name);
+  return (name in this.reflect || name in this.reflect.prototype);
 }
 
 lang.XPClass.prototype.getMethod = function(name) {
-  if (!this.reflect.hasOwnProperty(name)) {
-    throw new lang.ElementNotFoundException('No such method ' + this.name + '::' + name);
+  if (name in this.reflect || name in this.reflect.prototype) {
+    return new lang.reflect.Method(this, name);
   }
-  return new lang.reflect.Method(this, name);
+  throw new lang.ElementNotFoundException('No such method ' + this.name + '::' + name);
 }
 
 lang.XPClass.prototype.getMethods = function() {
@@ -64,14 +64,14 @@ lang.XPClass.prototype.getMethods = function() {
 }
 
 lang.XPClass.prototype.hasField = function(name) {
-  return this.reflect.hasOwnProperty(name);
+  return (name in this.reflect || name in this.reflect.prototype);
 }
 
 lang.XPClass.prototype.getField = function(name) {
-  if (!this.reflect.hasOwnProperty(name)) {
-    throw new lang.ElementNotFoundException('No such field ' + this.name + '::' + name);
+  if (name in this.reflect || name in this.reflect.prototype) {
+    return new lang.reflect.Field(this, name);
   }
-  return new lang.reflect.Field(this, name);
+  throw new lang.ElementNotFoundException('No such field ' + this.name + '::' + name);
 }
 
 lang.XPClass.prototype.getFields = function() {
