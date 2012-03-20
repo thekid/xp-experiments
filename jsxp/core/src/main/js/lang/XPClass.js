@@ -35,19 +35,12 @@ lang.XPClass.prototype.newInstance = function() {
 }
 
 lang.XPClass.prototype.hasMethod = function(name) {
-  if (typeof(this.reflect[name]) !== 'function') {
-    if (typeof(this.reflect.prototype[name]) !== 'function') {
-      return false;
-    }
-  }
-  return true;
+  return this.reflect.hasOwnProperty(name);
 }
 
 lang.XPClass.prototype.getMethod = function(name) {
-  if (typeof(this.reflect[name]) !== 'function') {
-    if (typeof(this.reflect.prototype[name]) !== 'function') {
-      throw new lang.ElementNotFoundException('No such method ' + this.name + '::' + name);
-    }
+  if (!this.reflect.hasOwnProperty(name)) {
+    throw new lang.ElementNotFoundException('No such method ' + this.name + '::' + name);
   }
   return new lang.reflect.Method(this, name);
 }
@@ -68,14 +61,11 @@ lang.XPClass.prototype.getMethods = function() {
 }
 
 lang.XPClass.prototype.hasField = function(name) {
-  if (typeof(this.reflect[name]) === 'function') {
-    return false;
-  }
-  return true;
+  return this.reflect.hasOwnProperty(name);
 }
 
 lang.XPClass.prototype.getField = function(name) {
-  if (typeof(this.reflect[name]) === 'function') {
+  if (!this.reflect.hasOwnProperty(name)) {
     throw new lang.ElementNotFoundException('No such field ' + this.name + '::' + name);
   }
   return new lang.reflect.Field(this, name);
