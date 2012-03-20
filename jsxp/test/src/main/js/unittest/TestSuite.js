@@ -34,11 +34,21 @@ unittest.TestSuite.prototype.run = function() {
         util.cmd.Console.write('.');
         this.outcome.push(new unittest.TestSuccess(instance));
       } catch (e) {
-        if (annotation && typeof(annotation.expect) !== 'undefined' && lang.XPClass.forName(annotation.expect).isInstance(e)) {
-          util.cmd.Console.write('.');
-          this.outcome.push(new unittest.TestSuccess(instance));
-        } else {
+        if (e instanceof unittest.AssertionFailedError) {
           util.cmd.Console.write('E');
+          this.outcome.push(new unittest.TestFailure(instance, e));
+        } else if (annotation && typeof(annotation.expect) !== 'undefined') {
+          if (lang.XPClass.forName(annotation.expect).isInstance(e)) {
+            util.cmd.Console.write('.');
+            this.outcome.push(new unittest.TestSuccess(instance));
+          } else {
+            util.cmd.Console.write('F');
+            this.outcome.push(new unittest.TestFailure(instance, new unittest.AssertionFailedError(
+              'Expected ' + annotation.expect + ' but have ' + instance.getClass()
+            )));
+          }
+        } else {
+          util.cmd.Console.write('F');
           this.outcome.push(new unittest.TestFailure(instance, e));
         }
       }
