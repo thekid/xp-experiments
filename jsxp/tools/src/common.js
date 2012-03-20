@@ -1,3 +1,5 @@
+global.version= XPJS_VERSION();
+
 // Setup classpath
 function scanpath(paths, home) {
   var inc= [];
