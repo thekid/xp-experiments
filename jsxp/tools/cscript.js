@@ -108,17 +108,19 @@ global.stringOf= function(object) {
       return r + '}';
     }
     case 'object': {
-      if (object.__class === undefined) {
+      if (null === object) {
+        return 'null';
+      } else if (object.__class === undefined) {
         r= "object {\n";
         for (var member in object) {
-          r+= indent + member + ' : ' + object[member] + "\n";
+          r+= indent + member + ' : ' + stringOf(object[member], indent + '  ') + "\n";
         }
         return r + '}';
       } else {
         r= object.__class + " {\n";
         for (var member in object) {
           if (typeof(object[member]) !== 'function') {
-            r+= indent + member + ' : ' + object[member] + "\n";
+            r+= indent + member + ' : ' + stringOf(object[member], indent + '  ') + "\n";
           }
         }
         return r + '}';
@@ -150,9 +152,10 @@ global.uses= function uses() {
 global.define= function define(name, parent, construct) {
   global[name] = construct || new Function;
   global[name].__class = name;
-  extend(global[name], global[parent]);
+  if (null !== parent) {
+    extend(global[name], global[parent]);
+  }
   global[name].prototype.__class = name;
-  global[name].prototype.__super = global[parent];
   return global[name];
 }
 global.extend= function extend(self, parent) {
@@ -160,6 +163,7 @@ global.extend= function extend(self, parent) {
   helper.prototype = parent.prototype;
   var proto = new helper;
   self.prototype = proto;
+  self.prototype.__super = parent;
 }
 global.cast= function cast(value, type) {
   if ('int' === type) {
