@@ -1,6 +1,6 @@
 // {{{ Platform 
 var global = this;
-var fso = new ActiveXObject('Scripting.FileSystemObject');
+var fso = WScript.CreateObject('Scripting.FileSystemObject');
 var wsh = WScript.CreateObject('WScript.Shell');
 
 var argv = new Array();
