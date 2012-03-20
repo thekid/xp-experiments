@@ -27,24 +27,32 @@ unittest.TestSuite.prototype.run = function() {
       if (!methods[m].hasAnnotation('test')) continue;
       var instance = this.tests[i].newInstance(methods[m].getName());
       var annotation = methods[m].getAnnotation('test');
+      var expect = methods[m].hasAnnotation('expect');
 
       instance.setUp();
       try {
         methods[m].invoke(instance, []);
-        util.cmd.Console.write('.');
-        this.outcome.push(new unittest.TestSuccess(instance));
+        if (expect) {
+          util.cmd.Console.write('F');
+          this.outcome.push(new unittest.TestFailure(instance, new unittest.AssertionFailedError(
+            'Expected ' + methods[m].getAnnotation('expect') + ' but no exception was raised'
+          )));
+        } else {
+          util.cmd.Console.write('.');
+          this.outcome.push(new unittest.TestSuccess(instance));
+        }
       } catch (e) {
         if (e instanceof unittest.AssertionFailedError) {
           util.cmd.Console.write('E');
           this.outcome.push(new unittest.TestFailure(instance, e));
-        } else if (methods[m].hasAnnotation('expect')) {
+        } else if (expect) {
           if (lang.XPClass.forName(methods[m].getAnnotation('expect')).isInstance(e)) {
             util.cmd.Console.write('.');
             this.outcome.push(new unittest.TestSuccess(instance));
           } else {
             util.cmd.Console.write('F');
             this.outcome.push(new unittest.TestFailure(instance, new unittest.AssertionFailedError(
-              'Expected ' + annotation.expect + ' but have ' + instance.getClass()
+              'Expected ' + methods[m].getAnnotation('expect') + ' but have ' + instance.getClass()
             )));
           }
         } else {
