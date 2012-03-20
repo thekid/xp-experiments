@@ -1,12 +1,12 @@
 uses('lang.reflect.Modifiers', 'lang.reflect.Field', 'lang.reflect.Method', 'lang.ElementNotFoundException', 'lang.ClassNotFoundException');
 
 // {{{ XPClass
-lang.XPClass = define('lang.XPClass', 'lang.Object', function(name) {
+lang.XPClass = define('lang.XPClass', 'lang.Object', function XPClass(name) {
   this.name = name;
   this.reflect = global[name];
 });
 
-lang.XPClass.forName = function(name) {
+lang.XPClass.forName = function forName(name) {
   uses(name);
   if (global[name] === undefined) {
     throw new lang.ClassNotFoundException('Cannot find class "' + name + '"');
@@ -14,15 +14,15 @@ lang.XPClass.forName = function(name) {
   return new lang.XPClass(name);
 }
 
-lang.XPClass.prototype.toString = function() {
+lang.XPClass.prototype.toString = function toString() {
   return this.getClassName() + '<' + this.name + '>';
 }
 
-lang.XPClass.prototype.getName = function() {
+lang.XPClass.prototype.getName = function getName() {
   return this.name;
 }
 
-lang.XPClass.prototype.newInstance = function() {
+lang.XPClass.prototype.newInstance = function newInstance() {
   function Instance() { }
   Instance.prototype = this.reflect.prototype;
 
@@ -32,22 +32,22 @@ lang.XPClass.prototype.newInstance = function() {
   return instance;
 }
 
-lang.XPClass.prototype.getParentclass = function() {
+lang.XPClass.prototype.getParentclass = function getParentclass() {
   return new lang.XPClass(this.reflect.prototype.__super.__class);
 }
 
-lang.XPClass.prototype.hasMethod = function(name) {
+lang.XPClass.prototype.hasMethod = function hasMethod(name) {
   return (name in this.reflect || name in this.reflect.prototype);
 }
 
-lang.XPClass.prototype.getMethod = function(name) {
+lang.XPClass.prototype.getMethod = function getMethod(name) {
   if (name in this.reflect || name in this.reflect.prototype) {
     return new lang.reflect.Method(this, name);
   }
   throw new lang.ElementNotFoundException('No such method ' + this.name + '::' + name);
 }
 
-lang.XPClass.prototype.getMethods = function() {
+lang.XPClass.prototype.getMethods = function getMethods() {
   var methods = new Array();
   var gather = function(self, object, parent, modifiers) {
     for (var member in object) {
@@ -62,18 +62,18 @@ lang.XPClass.prototype.getMethods = function() {
   return methods;
 }
 
-lang.XPClass.prototype.hasField = function(name) {
+lang.XPClass.prototype.hasField = function hasField(name) {
   return (name in this.reflect || name in this.reflect.prototype);
 }
 
-lang.XPClass.prototype.getField = function(name) {
+lang.XPClass.prototype.getField = function getField(name) {
   if (name in this.reflect || name in this.reflect.prototype) {
     return new lang.reflect.Field(this, name);
   }
   throw new lang.ElementNotFoundException('No such field ' + this.name + '::' + name);
 }
 
-lang.XPClass.prototype.getFields = function() {
+lang.XPClass.prototype.getFields = function getFields() {
   var fields = new Array();
   var gather = function(self, object, parent, modifiers) {
     for (var member in object) {
@@ -88,27 +88,27 @@ lang.XPClass.prototype.getFields = function() {
   return fields;
 }
 
-lang.XPClass.prototype.equals = function(cmp) {
+lang.XPClass.prototype.equals = function equals(cmp) {
   return this.name === cmp.name;
 }
 
-lang.XPClass.prototype.isInstance = function(instance) {
+lang.XPClass.prototype.isInstance = function isInstance(instance) {
   return instance instanceof this.reflect;
 }
 
-lang.XPClass.prototype.hasAnnotations = function() {
+lang.XPClass.prototype.hasAnnotations = function hasAnnotations() {
   return typeof(this.reflect['@']) !== 'undefined';
 }
 
-lang.XPClass.prototype.getAnnotations = function() {
+lang.XPClass.prototype.getAnnotations = function getAnnotations() {
   return this.hasAnnotations() ? this.reflect['@'] : [];
 }
 
-lang.XPClass.prototype.hasAnnotation = function(name) {
+lang.XPClass.prototype.hasAnnotation = function hasAnnotation(name) {
   return this.hasAnnotations() && typeof(this.reflect['@'][name]) !== 'undefined';
 }
 
-lang.XPClass.prototype.getAnnotation = function(name) {
+lang.XPClass.prototype.getAnnotation = function getAnnotation(name) {
   if (!this.hasAnnotation(name)) {
     throw new lang.ElementNotFoundException('No such annotation "' + name + '"');
   }

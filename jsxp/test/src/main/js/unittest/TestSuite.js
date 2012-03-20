@@ -1,16 +1,16 @@
 uses('unittest.AssertionFailedError', 'unittest.TestFailure', 'unittest.TestSuccess');
 
 // {{{ TestSuite
-unittest.TestSuite = define('unittest.TestSuite', 'lang.Object', function() { });
+unittest.TestSuite = define('unittest.TestSuite', 'lang.Object', function TestSuite() { });
 
 unittest.TestSuite.prototype.tests = new Array();
 unittest.TestSuite.prototype.outcome = new Array();
 
-unittest.TestSuite.prototype.addTestClass = function(clazz) {
+unittest.TestSuite.prototype.addTestClass = function addTestClass(clazz) {
   this.tests.push(clazz);
 }
 
-unittest.TestSuite.prototype.run = function() {
+unittest.TestSuite.prototype.run = function run() {
 
   // Run tests
   util.cmd.Console.write('[');

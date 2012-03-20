@@ -86,4 +86,12 @@ if (typeof(Object.defineProperty) === 'undefined') {
   }
 }
 
+if (typeof(Array.prototype.indexOf) === 'undefined') {
+  Array.prototype.indexOf= function(val) {
+    for (var i in this) {
+      if (this[i] === val) return i;
+    }
+    return -1;
+  }
+}
 #include "common.js"

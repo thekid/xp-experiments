@@ -1,9 +1,9 @@
 uses('unittest.TestSuite');
 
 // {{{ Unittest
-Unittest = define('Unittest', 'lang.Object', function() { });
+Unittest = define('Unittest', 'lang.Object', function Unittest() { });
 
-Unittest.main = function(args) {
+Unittest.main = function main(args) {
   var suite = new unittest.TestSuite();
   for (var i= 0; i < args.length; i++) {
     suite.addTestClass(lang.XPClass.forName(args[i]));

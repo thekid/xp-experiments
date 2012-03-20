@@ -25,7 +25,7 @@ process.os = function() {
   return os.type() + ' ' + os.release() + ' (' + os.arch() + ')';
 }
 include = require;
-global.version= "0.4.12";
+global.version= "0.5.12";
 function scanpath(paths, home) {
   var inc= [];
   for (p= 0; p < paths.length; p++) {

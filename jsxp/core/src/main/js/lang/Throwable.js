@@ -1,5 +1,5 @@
 // {{{ Throwable
-lang.Throwable = define('lang.Throwable', null, function (message) { 
+lang.Throwable = define('lang.Throwable', null, function Throwable(message) { 
   this.message = message;
   this.fillInStacktrace();
 });
@@ -7,13 +7,13 @@ lang.Throwable = define('lang.Throwable', null, function (message) {
 lang.Throwable.prototype= Error.prototype;
 
 // root-trait
-lang.Throwable.prototype.getClass = function() {
+lang.Throwable.prototype.getClass = function getClass() {
   return new lang.XPClass(this.__class);
 }
-lang.Throwable.prototype.getClassName = function() {
+lang.Throwable.prototype.getClassName = function getClassName() {
   return this.__class;
 }
-lang.Throwable.prototype.equals = function(cmp) {
+lang.Throwable.prototype.equals = function equals(cmp) {
   return this == cmp;
 }
 // root-trait
@@ -21,11 +21,11 @@ lang.Throwable.prototype.equals = function(cmp) {
 lang.Throwable.prototype.message = '';
 lang.Throwable.prototype.stacktrace = new Array();
 
-lang.Throwable.prototype.getMessage = function() {
+lang.Throwable.prototype.getMessage = function getMessage() {
   return this.message;
 }
 
-lang.Throwable.prototype.stringOf = function(arg) {
+lang.Throwable.prototype.stringOf = function stringOf(arg) {
   switch (typeof(arg)) {
     case 'number': return arg;
     case 'boolean': return arg ? 'true' : 'false';
@@ -49,8 +49,9 @@ lang.Throwable.prototype.stringOf = function(arg) {
   return typeof(arg);
 }
 
-lang.Throwable.prototype.fillInStacktrace = function () {
+lang.Throwable.prototype.fillInStacktrace = function fillInStacktrace() {
   var current= arguments.callee.caller;
+  var seen= [];
   while (current && current !== global.__main) {
     var f= current.toString();
     var a= '';
@@ -58,11 +59,13 @@ lang.Throwable.prototype.fillInStacktrace = function () {
       a += ', ' + this.stringOf(current.arguments[i]);
     }
     this.stacktrace.push((f.substring(0, f.indexOf('{')) || '<anonymous>') + '(' + a.substring(2) + ')');
+    seen.push(current);
     current = current.caller;
+    if (seen.indexOf(current)) break;   // Prevent endless loop
   }
 }
 
-lang.Throwable.prototype.toString = function() {
+lang.Throwable.prototype.toString = function toString() {
   var r = this.__class + '(' + this.message + ")\n";
   for (var i= 0; i < this.stacktrace.length; i++) {
     r += '  at ' + this.stacktrace[i] + "\n";
