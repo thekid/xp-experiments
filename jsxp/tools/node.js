@@ -1,20 +1,23 @@
-// {{{ Platform
-// var global= global;
-var argv= process.argv; 
-argv.shift(); // node.exe
-argv.shift(); // node.js
-
 var fs = require('fs');
+var path= require('path');
+var argv= process.argv;
+argv.shift();
+argv.shift();
 fs.file = function(uri) {
   return fs.readFileSync(uri).toString().split("\n");
 }
-
-var path= require('path');
 fs.exists = function(uri) {
   return path.existsSync(uri);
 }
-
-// Setup classpath
+global.out= {
+  write : function(data) {
+    process.stdout.write(data + "");
+  },
+  writeLine : function(data) {
+    process.stdout.write(data === undefined ? "\n" : data + "\n");
+  },
+};
+include = require;
 function scanpath(paths, home) {
   var inc= [];
   for (p= 0; p < paths.length; p++) {
@@ -29,7 +32,6 @@ function scanpath(paths, home) {
       } else {
         pre= false;
       }
-      
       if ('~' === line[0]) {
         line= line.substring(1);
         base= home;
@@ -44,26 +46,8 @@ function scanpath(paths, home) {
   }
   return inc;
 }
-
-global.classpath= scanpath([process.cwd()], process.env.HOME);
+global.classpath= scanpath([process.cwd()], process.env['HOME']);
 global.classpath.push(process.cwd());
-
-global.out= {
-  write : function(data) {
-    process.stdout.write(data + "");
-  },
-  writeLine : function(data) {
-    process.stdout.write(data + "\n");
-  },
-  writeLines : function(n) {
-    for (var i = 0; i < n; i++) {
-      process.stdout.write("\n"); 
-    }
-  }
-};
-
-// }}}
-
 global.stringOf= function(object) {
   var indent = arguments.length == 1 ? '  ' : arguments[1];
   switch (typeof(object)) {
@@ -83,27 +67,22 @@ global.stringOf= function(object) {
       }
       return r + '}';
     }
-    default: throw new IllegalArgumentException('Unknown type ' + typeof(object));
+    default: throw new lang.IllegalArgumentException('Unknown type ' + typeof(object));
   }
 }
-
-
-function uses() {
+global.uses= function uses() {
   for (var i= 0; i < arguments.length; i++) {
     if (typeof(global[arguments[i]]) === 'function') continue;
-
     var names = arguments[i].split('.');
     var it = global;
     for (var n= 0; n < names.length - 1; n++) {
       if (typeof(it[names[n]]) === 'undefined') it[names[n]]= {};
       it = it[names[n]];
     }
-
     for (var c= 0; c < global.classpath.length; c++) {
       var fn = path.join(global.classpath[c], arguments[i].replace(/\./g, '/') + '.js');
       if (!fs.exists(fn)) continue;
-
-      require(fn);
+      include(fn);
       global[arguments[i]]= it[names[n]]= eval(arguments[i]);
       if (typeof(it[names[n]]['__static']) === 'function') {
         it[names[n]].__static();
@@ -111,17 +90,13 @@ function uses() {
     }
   }
 }
-global.uses= uses;
-
-function extend(self, parent) {
+global.extend= function extend(self, parent) {
   var helper = new Function;
   helper.prototype = parent.prototype;
   var proto = new helper;
   self.prototype = proto;
 }
-global.extend= extend;
-
-function cast(value, type) {
+global.cast= function cast(value, type) {
   if ('int' === type) {
     return parseInt(value);
   } else if ('double' === type) {
@@ -140,14 +115,10 @@ function cast(value, type) {
     throw new Error('Cannot cast ' + value + ' to ' + type);
   }
 }
-global.cast= cast;
-
 Error.prototype.toString = function() {
   return 'Error<' + this.name + ': ' + this.message + '>';
 }
-
 uses('lang.Object', 'lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
-
 try {
   clazz = argv.shift();
   lang.XPClass.forName(clazz).getMethod('main').invoke(null, [argv]);

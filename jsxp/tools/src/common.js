@@ -1,51 +1,4 @@
-var global = this;
-var fso = WScript.CreateObject('Scripting.FileSystemObject');
-var wsh = WScript.CreateObject('WScript.Shell');
-var argv = new Array();
-for (var i = 0; i < WScript.Arguments.Count(); i++) {
-  argv.push(WScript.Arguments.Item(i));
-}
-var fs = { };
-fs.file = function(uri) {
-  return fso.OpenTextFile(uri, 1).ReadAll().split("\n");
-}
-fs.exists = function(uri) {
-  return fso.FileExists(uri);
-}
-var path = { };
-path.join = function() {
-  var path = '';
-  for (var i = 0; i < arguments.length; i++) {
-    if (typeof(arguments[i]) === 'string') path+= '\\' + arguments[i];
-  }
-  return path.substring(1);
-}
-var process = { };
-process.cwd = function() {
-  return wsh.CurrentDirectory;
-}
-process.env = wsh.Environment;
-global.out= {
-  write : function(data) {
-    WScript.StdOut.Write(data);
-  },
-  writeLine : function(data) {
-    WScript.StdOut.Write(data);
-    WScript.StdOut.WriteBlankLines(1);
-  }
-};
-var include = function(filename) {
-  try {
-    eval(fso.OpenTextFile(filename, 1).ReadAll());
-  } catch (e) {
-    throw new Error(filename + ': ' + e.message);
-  }
-}
-if (typeof(Object.defineProperty) === 'undefined') {
-  Object.defineProperty= function(object, propertyname, descriptor) {
-    object[propertyname]= descriptor.value;
-  }
-}
+// Setup classpath
 function scanpath(paths, home) {
   var inc= [];
   for (p= 0; p < paths.length; p++) {
@@ -60,6 +13,7 @@ function scanpath(paths, home) {
       } else {
         pre= false;
       }
+      
       if ('~' === line[0]) {
         line= line.substring(1);
         base= home;
@@ -74,8 +28,10 @@ function scanpath(paths, home) {
   }
   return inc;
 }
+
 global.classpath= scanpath([process.cwd()], process.env['HOME']);
 global.classpath.push(process.cwd());
+
 global.stringOf= function(object) {
   var indent = arguments.length == 1 ? '  ' : arguments[1];
   switch (typeof(object)) {
@@ -98,18 +54,23 @@ global.stringOf= function(object) {
     default: throw new lang.IllegalArgumentException('Unknown type ' + typeof(object));
   }
 }
+
+
 global.uses= function uses() {
   for (var i= 0; i < arguments.length; i++) {
     if (typeof(global[arguments[i]]) === 'function') continue;
+
     var names = arguments[i].split('.');
     var it = global;
     for (var n= 0; n < names.length - 1; n++) {
       if (typeof(it[names[n]]) === 'undefined') it[names[n]]= {};
       it = it[names[n]];
     }
+
     for (var c= 0; c < global.classpath.length; c++) {
       var fn = path.join(global.classpath[c], arguments[i].replace(/\./g, '/') + '.js');
       if (!fs.exists(fn)) continue;
+
       include(fn);
       global[arguments[i]]= it[names[n]]= eval(arguments[i]);
       if (typeof(it[names[n]]['__static']) === 'function') {
@@ -118,12 +79,14 @@ global.uses= function uses() {
     }
   }
 }
+
 global.extend= function extend(self, parent) {
   var helper = new Function;
   helper.prototype = parent.prototype;
   var proto = new helper;
   self.prototype = proto;
 }
+
 global.cast= function cast(value, type) {
   if ('int' === type) {
     return parseInt(value);
@@ -143,10 +106,13 @@ global.cast= function cast(value, type) {
     throw new Error('Cannot cast ' + value + ' to ' + type);
   }
 }
+
 Error.prototype.toString = function() {
   return 'Error<' + this.name + ': ' + this.message + '>';
 }
+
 uses('lang.Object', 'lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
+
 try {
   clazz = argv.shift();
   lang.XPClass.forName(clazz).getMethod('main').invoke(null, [argv]);

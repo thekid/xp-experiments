@@ -15,7 +15,7 @@ util.cmd.Console.writeLine = function() {
   for (var i= 0; i < arguments.length; i++) {
     global.out.write(arguments[i]);
   }
-  global.out.writeLines(1);
+  global.out.writeLine();
 }
 
 util.cmd.Console.prototype= new Object();
