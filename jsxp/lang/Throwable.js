@@ -24,6 +24,10 @@ lang.Throwable.prototype.equals = function(cmp) {
 lang.Throwable.prototype.message = '';
 lang.Throwable.prototype.stacktrace = new Array();
 
+lang.Throwable.prototype.getMessage = function() {
+  return this.message;
+}
+
 lang.Throwable.prototype.fillInStacktrace = function (f) {
   var representation;
   while (f) {
