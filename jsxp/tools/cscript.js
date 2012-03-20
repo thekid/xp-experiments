@@ -108,11 +108,21 @@ global.stringOf= function(object) {
       return r + '}';
     }
     case 'object': {
-      r= "object {\n";
-      for (var member in object) {
-        r+= indent + member + ' : ' + object[member] + "\n";
+      if (object.__class === undefined) {
+        r= "object {\n";
+        for (var member in object) {
+          r+= indent + member + ' : ' + object[member] + "\n";
+        }
+        return r + '}';
+      } else {
+        r= object.__class + " {\n";
+        for (var member in object) {
+          if (typeof(object[member]) !== 'function') {
+            r+= indent + member + ' : ' + object[member] + "\n";
+          }
+        }
+        return r + '}';
       }
-      return r + '}';
     }
     default: throw new lang.IllegalArgumentException('Unknown type ' + typeof(object));
   }
