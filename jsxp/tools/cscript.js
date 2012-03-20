@@ -24,6 +24,13 @@ var process = { };
 process.cwd = function() {
   return wsh.CurrentDirectory;
 }
+process.runtime = function() {
+  return 'WScript ' + WScript.Version + '.' + WScript.BuildVersion;
+}
+process.os = function() {
+  var os = new Enumerator(GetObject('winmgmts://./root/cimv2').InstancesOf('Win32_OperatingSystem')).item();
+  return os.Caption + os.Version + ' (' + os.OSArchitecture + ')';
+}
 process.env = wsh.Environment;
 global.out= {
   write : function(data) {
@@ -148,7 +155,7 @@ Error.prototype.toString = function() {
 }
 uses('lang.Object', 'lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
 try {
-  clazz = argv.shift();
+  clazz = argv.shift() || 'xp.runtime.Version';
   lang.XPClass.forName(clazz).getMethod('main').invoke(null, [argv]);
 } catch (e) {
   util.cmd.Console.writeLine('*** Uncaught exception ', e.toString());

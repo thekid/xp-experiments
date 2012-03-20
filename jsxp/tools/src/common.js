@@ -114,7 +114,7 @@ Error.prototype.toString = function() {
 uses('lang.Object', 'lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
 
 try {
-  clazz = argv.shift();
+  clazz = argv.shift() || 'xp.runtime.Version';
   lang.XPClass.forName(clazz).getMethod('main').invoke(null, [argv]);
 } catch (e) {
   util.cmd.Console.writeLine('*** Uncaught exception ', e.toString());

@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path= require('path');
+var os= require('os');
 var argv= process.argv;
 argv.shift();
 argv.shift();
@@ -17,6 +18,12 @@ global.out= {
     process.stdout.write(data === undefined ? "\n" : data + "\n");
   },
 };
+process.runtime = function() {
+  return 'Node ' + process.versions.node + ' & V8 ' + process.versions.v8;
+}
+process.os = function() {
+  return os.type() + ' ' + os.release() + ' (' + os.arch() + ')';
+}
 include = require;
 function scanpath(paths, home) {
   var inc= [];
@@ -120,7 +127,7 @@ Error.prototype.toString = function() {
 }
 uses('lang.Object', 'lang.XPClass', 'util.cmd.Console', 'lang.IllegalArgumentException');
 try {
-  clazz = argv.shift();
+  clazz = argv.shift() || 'xp.runtime.Version';
   lang.XPClass.forName(clazz).getMethod('main').invoke(null, [argv]);
 } catch (e) {
   util.cmd.Console.writeLine('*** Uncaught exception ', e.toString());

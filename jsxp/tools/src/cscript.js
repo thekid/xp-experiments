@@ -37,9 +37,16 @@ var process = { };
 process.cwd = function() {
   return wsh.CurrentDirectory;
 }
+process.runtime = function() {
+  return 'WScript ' + WScript.Version + '.' + WScript.BuildVersion;
+}
+process.os = function() {
+  var os = new Enumerator(GetObject('winmgmts://./root/cimv2').InstancesOf('Win32_OperatingSystem')).item();
+  return os.Caption + os.Version + ' (' + os.OSArchitecture + ')';
+}
 
 process.env = wsh.Environment;
-
+  
 // STDIO
 global.out= {
   write : function(data) {

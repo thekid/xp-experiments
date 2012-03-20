@@ -6,6 +6,7 @@
 
 var fs = require('fs');
 var path= require('path');
+var os= require('os');
 
 // Command line arguments
 var argv= process.argv; 
@@ -29,6 +30,14 @@ global.out= {
     process.stdout.write(data === undefined ? "\n" : data + "\n");
   },
 };
+
+// Process
+process.runtime = function() {
+  return 'Node ' + process.versions.node + ' & V8 ' + process.versions.v8;
+}
+process.os = function() {
+  return os.type() + ' ' + os.release() + ' (' + os.arch() + ')';
+}
 
 // Loading
 include = require;
