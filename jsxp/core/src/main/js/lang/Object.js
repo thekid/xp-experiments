@@ -19,4 +19,7 @@ lang.Object.prototype.equals = function(cmp) {
 }
 // root-trait
 
+lang.Object.prototype.toString = function() {
+  return stringOf(this);
+}
 // }}}
