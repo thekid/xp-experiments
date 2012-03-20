@@ -58,10 +58,10 @@ lang.Throwable.prototype.fillInStacktrace = function Throwable$fillInStacktrace(
     for (var i= 0; i < current.arguments.length; i++) {
       a += ', ' + this.stringOf(current.arguments[i]);
     }
-    this.stacktrace.push((f.substring(0, f.indexOf('{')) || '<anonymous>') + '(' + a.substring(2) + ')');
+    this.stacktrace.push((f.substring(9, f.indexOf('{')) || '<anonymous>').replace('$', '.') + '(' + a.substring(2) + ')');
+    if (seen.indexOf(current) >= 0) break;   // Prevent endless loop
     seen.push(current);
     current = current.caller;
-    if (seen.indexOf(current)) break;   // Prevent endless loop
   }
 }
 
