@@ -17,7 +17,7 @@ Hello = function() {
   }
 }
 
-Hello.prototype = new Object();
+extend(Hello, lang.Object);
 
 Hello.main = function(args) {
   if (args.length < 1) {
@@ -38,12 +38,12 @@ See http://nodejs.org/
 **Getting started**
 
 ```sh
-$ node node.js Hello "World"
+$ node tools/node.js Hello "World"
 Hello World
 ```
 
 ```sh
-$ node node.js Hello
+$ node tools/node.js Hello
 *** Uncaught exception lang.IllegalArgumentException(Argument required)
   at <main>
 
@@ -61,12 +61,12 @@ See http://msdn.microsoft.com/en-us/library/ec0wcxh3(v=vs.85).aspx
 **Getting started**
 
 ```sh
-$ cscript /nologo cscript.js Hello World
+$ cscript /nologo tools/cscript.js Hello World
 Hello World
 ```
 
 ```sh
-$ cscript /nologo cscript.js Hello 
+$ cscript /nologo tools/cscript.js Hello 
 *** Uncaught exception IllegalArgumentException(Argument required)
   at function IllegalArgumentException(message)
   at function(args)
