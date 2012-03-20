@@ -53,7 +53,7 @@ if (typeof(Object.defineProperty) === 'undefined') {
     object[propertyname]= descriptor.value;
   }
 }
-global.version= "0.3.12";
+global.version= "0.4.12";
 function scanpath(paths, home) {
   var inc= [];
   for (p= 0; p < paths.length; p++) {
