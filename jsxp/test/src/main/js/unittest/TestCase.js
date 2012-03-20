@@ -24,13 +24,21 @@ unittest.TestCase.prototype.tearDown = function() {
   // Empty
 }
 
-unittest.TestCase.prototype.assertEquals = function(a, b) {
-  if (null !== a && typeof(a) === 'object') {
-    r= a.equals(b);
-  } else {
-    r= a === b;
+unittest.TestCase.prototype._equals = function(a, b) {
+  if (null !== a && undefined !== a.__class) {
+    return a.equals(b);
+  } else if (typeof(a) === 'object') {
+    for (var k in a) {
+      if (this._equals(a[k], b[k])) continue;
+      return false;
+    }
+    return true;
   }
-  if (!r) {
+  return a === b;
+}
+
+unittest.TestCase.prototype.assertEquals = function(a, b) {
+  if (!this._equals(a, b)) {
     throw new unittest.AssertionFailedError('Expected ' + a + ' but have ' + b);
   }
 }
