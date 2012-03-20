@@ -1,6 +1,7 @@
 // {{{ Platform 
 var global = this;
 var fso = new ActiveXObject('Scripting.FileSystemObject');
+var wsh = WScript.CreateObject('WScript.Shell');
 
 var argv = new Array();
 for (var i = 0; i < WScript.Arguments.Count(); i++) {
@@ -10,6 +11,57 @@ for (var i = 0; i < WScript.Arguments.Count(); i++) {
 var include = function(filename) {
   return fso.OpenTextFile(filename, 1).ReadAll();
 }
+
+var fs = { };
+fs.file = function(uri) {
+  return fso.OpenTextFile(uri, 1).ReadAll().split("\n");
+}
+fs.exists = function(uri) {
+  return fso.FileExists(uri);
+}
+
+var path = { };
+path.join = function() {
+  var path = '';
+  for (var i = 0; i < arguments.length; i++) {
+    if (typeof(arguments[i]) === 'string') path+= '\\' + arguments[i];
+  }
+  return path.substring(1);
+}
+
+// Setup classpath
+function scanpath(paths, home) {
+  var inc= [];
+  for (p= 0; p < paths.length; p++) {
+    var lines= fs.file(path.join(paths[p], 'class.pth'));
+    for (i= 0; i < lines.length; i++) {
+      line= lines[i];
+      if ('' === line || '#' === line[0]) {
+        continue;
+      } else if ('!' === line[0]) {
+        pre= true;
+        line= line.substring(1);
+      } else {
+        pre= false;
+      }
+
+      if ('~' === line[0]) {
+        line= line.substring(1);
+        base= home;
+      } else if ('/' === line[0] || ':' === line[1] && '\\' === line[2]) {
+        base= null;
+      } else {
+        base= paths[p];
+      }
+      qn= path.join(base, line);
+      pre ? inc.unshift(qn) : inc.push(qn);
+    }
+  }
+  return inc;
+}
+
+global.classpath= scanpath([wsh.CurrentDirectory], wsh.Environment['HOME']);
+global.classpath.push(wsh.CurrentDirectory);
 
 global.out= {
   write : function(data) {
@@ -59,10 +111,15 @@ function uses() {
       it = it[names[n]];
     }
 
-    eval(include(arguments[i].replace(/\./g, '/') + '.js'));
-    global[arguments[i]]= it[names[n]]= eval(arguments[i]);
-    if (typeof(it[names[n]]['__static']) === 'function') {
-      it[names[n]].__static();
+    for (var c= 0; c < global.classpath.length; c++) {
+      var fn = path.join(global.classpath[c], arguments[i].replace(/\./g, '/') + '.js');
+      if (!fs.exists(fn)) continue;
+
+      eval(include(fn));
+      global[arguments[i]]= it[names[n]]= eval(arguments[i]);
+      if (typeof(it[names[n]]['__static']) === 'function') {
+        it[names[n]].__static();
+      }
     }
   }
 }
