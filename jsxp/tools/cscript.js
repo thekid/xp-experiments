@@ -88,7 +88,7 @@ if (typeof(Array.prototype.indexOf) === 'undefined') {
     return -1;
   }
 }
-global.version= "0.5.12";
+global.version= "0.5.13";
 function scanpath(paths, home) {
   var inc= [];
   for (p= 0; p < paths.length; p++) {
