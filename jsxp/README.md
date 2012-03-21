@@ -75,3 +75,42 @@ $ cscript /nologo tools/cscript.js Hello
   at Method.invoke(obj, args) (null, array[1])
   at <main>
 ```
+
+
+Setting up the compiler
+-----------------------
+You need the branch "node" of my xp-language for checked out:
+
+```sh
+$ git clone -b node git://github.com/thekid/xp-language.git xp.node
+Cloning into xp.node...
+[...]
+```
+
+Then, you need to add this to the `use` line in your **xp.ini** file. *This
+file will usually be in ~/.xp/xp.ini or ~/bin/xp.ini.* Add the path to the
+"compiler" subdirectory of the "xp.node" directory from above to the end
+of this line, prefixed by the platform's path separator character. For 
+example, this will work on Un*x platforms (in Windows, use semicolons):
+
+```diff
+-use=~/devel/xp/core:~/devel/xp/tools
++use=~/devel/xp/core:~/devel/xp/tools:~/devel/xp.node/compiler
+```
+
+You're all set to go.
+
+
+Compiling
+---------
+To compile classes from XP language to XP JS, simply invoke the **xcc** 
+command as follows:
+
+```sh
+$ xcc -e node Hello.xp
+[.]
+Done: 1/1 compiled, 0 failed
+```
+
+Then, run it as seen above.
+
