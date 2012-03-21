@@ -11,20 +11,17 @@ Demo class
 ----------
 
 ```javascript
-Hello = function() {
-  {
-    this.__class = 'Hello';
-  }
-}
+// {{{ Hello
+Hello = define('Hello', 'lang.Object', function Hello () { });
 
-extend(Hello, lang.Object);
-
-Hello.main = function(args) {
+Hello.main = function Hello$main(args) {
   if (args.length < 1) {
     throw new lang.IllegalArgumentException('Argument required');
   }
   util.cmd.Console.writeLine('Hello ', args[0]);
 }
+// }}}
+
 ```
 
 
@@ -45,6 +42,10 @@ Hello World
 ```sh
 $ node tools/node.js Hello
 *** Uncaught exception lang.IllegalArgumentException(Argument required)
+  at Throwable(message) ("Argument required")
+  at IllegalArgumentException(message) ("Argument required")
+  at Hello.main(args) (array[0])
+  at Method.invoke(obj, args) (null, array[1])
   at <main>
 
 ```
@@ -61,15 +62,16 @@ See http://msdn.microsoft.com/en-us/library/ec0wcxh3(v=vs.85).aspx
 **Getting started**
 
 ```sh
-$ cscript /nologo tools/cscript.js Hello World
+$ cscript /nologo tools/cscript.js Hello "World"
 Hello World
 ```
 
 ```sh
 $ cscript /nologo tools/cscript.js Hello 
-*** Uncaught exception IllegalArgumentException(Argument required)
-  at function IllegalArgumentException(message)
-  at function(args)
-  at function(obj, args)
+*** Uncaught exception lang.IllegalArgumentException(Argument required)
+  at Throwable(message) ("Argument required")
+  at IllegalArgumentException(message) ("Argument required")
+  at Hello.main(args) (array[0])
+  at Method.invoke(obj, args) (null, array[1])
   at <main>
 ```
