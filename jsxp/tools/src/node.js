@@ -14,12 +14,30 @@ argv.shift(); // node.exe
 argv.shift(); // node.js
 
 // Filesystem
-fs.file = function(uri) {
-  return fs.readFileSync(uri).toString().split("\n");
-}
-fs.exists = function(uri) {
-  return path.existsSync(uri);
-}
+global.fs = {
+  DIRECTORY_SEPARATOR : path.normalize('/'),
+
+  file : function(uri) {
+    return fs.readFileSync(uri).toString().split("\n");
+  },
+
+  exists : function(uri) {
+    return path.existsSync(uri);
+  },
+
+  glob : function(uri, pattern) {
+    var filtered = [];
+    if (path.existsSync(uri)) {
+      var files = fs.readdirSync(uri);
+      for (var i = 0; i < files.length; i++) {
+        if (pattern.test(files[i])) {
+          filtered.push(files[i].substring(files[i].lastIndexOf(global.fs.DIRECTORY_SEPARATOR)));
+        }
+      }
+    }
+    return filtered;
+  }
+};
 
 // STDIO
 global.out= {

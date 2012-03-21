@@ -4,7 +4,7 @@ global.version= XPJS_VERSION();
 function scanpath(paths, home) {
   var inc= [];
   for (p= 0; p < paths.length; p++) {
-    var lines= fs.file(path.join(paths[p], 'class.pth'));
+    var lines= global.fs.file(path.join(paths[p], 'class.pth'));
     for (i= 0; i < lines.length; i++) {
       line= lines[i];
       if ('' === line || '#' === line[0]) {
@@ -82,7 +82,7 @@ global.uses= function uses() {
 
     for (var c= 0; c < global.classpath.length; c++) {
       var fn = path.join(global.classpath[c], arguments[i].replace(/\./g, '/') + '.js');
-      if (!fs.exists(fn)) continue;
+      if (!global.fs.exists(fn)) continue;
 
       include(fn);
       global[arguments[i]]= it[names[n]]= eval(arguments[i]);

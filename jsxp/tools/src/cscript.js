@@ -24,19 +24,38 @@ for (var i = 0; i < WScript.Arguments.Count(); i++) {
 }
 
 // Filesystem
-var fs = { };
-fs.file = function(uri) {
-  return fso.OpenTextFile(uri, 1).ReadAll().split("\n");
-}
-fs.exists = function(uri) {
-  return fso.FileExists(uri);
-}
+global.fs = {
+  DIRECTORY_SEPARATOR : '\\',
+
+  file : function(uri) {
+    return fso.OpenTextFile(uri, 1).ReadAll().split("\n");
+  },
+
+  exists : function(uri) {
+    return fso.FileExists(uri);
+  },
+
+  glob : function(uri, pattern) {
+    var filtered= [];
+    if (fso.FolderExists(uri)) {
+      var files = new Enumerator(fso.GetFolder(uri).Files);
+      while (!files.atEnd()) {
+        var file = files.item();
+        if (pattern.test(file.Name)) {
+          filtered.push(file.Name);
+        }
+        files.moveNext();
+      }
+    }
+    return filtered;
+  }
+};
 
 var path = { };
 path.join = function() {
   var path = '';
   for (var i = 0; i < arguments.length; i++) {
-    if (typeof(arguments[i]) === 'string') path+= '\\' + arguments[i];
+    if (typeof(arguments[i]) === 'string') path+= '\\' + arguments[i].replace(/(\/)/g, '\\');
   }
   return path.substring(1);
 }

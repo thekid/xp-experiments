@@ -13,18 +13,34 @@ var argv = new Array();
 for (var i = 0; i < WScript.Arguments.Count(); i++) {
   argv.push(WScript.Arguments.Item(i));
 }
-var fs = { };
-fs.file = function(uri) {
-  return fso.OpenTextFile(uri, 1).ReadAll().split("\n");
-}
-fs.exists = function(uri) {
-  return fso.FileExists(uri);
-}
+global.fs = {
+  DIRECTORY_SEPARATOR : '\\',
+  file : function(uri) {
+    return fso.OpenTextFile(uri, 1).ReadAll().split("\n");
+  },
+  exists : function(uri) {
+    return fso.FileExists(uri);
+  },
+  glob : function(uri, pattern) {
+    var filtered= [];
+    if (fso.FolderExists(uri)) {
+      var files = new Enumerator(fso.GetFolder(uri).Files);
+      while (!files.atEnd()) {
+        var file = files.item();
+        if (pattern.test(file.Name)) {
+          filtered.push(file.Name);
+        }
+        files.moveNext();
+      }
+    }
+    return filtered;
+  }
+};
 var path = { };
 path.join = function() {
   var path = '';
   for (var i = 0; i < arguments.length; i++) {
-    if (typeof(arguments[i]) === 'string') path+= '\\' + arguments[i];
+    if (typeof(arguments[i]) === 'string') path+= '\\' + arguments[i].replace(/(\/)/g, '\\');
   }
   return path.substring(1);
 }
@@ -76,7 +92,7 @@ global.version= "0.5.12";
 function scanpath(paths, home) {
   var inc= [];
   for (p= 0; p < paths.length; p++) {
-    var lines= fs.file(path.join(paths[p], 'class.pth'));
+    var lines= global.fs.file(path.join(paths[p], 'class.pth'));
     for (i= 0; i < lines.length; i++) {
       line= lines[i];
       if ('' === line || '#' === line[0]) {
@@ -148,7 +164,7 @@ global.uses= function uses() {
     }
     for (var c= 0; c < global.classpath.length; c++) {
       var fn = path.join(global.classpath[c], arguments[i].replace(/\./g, '/') + '.js');
-      if (!fs.exists(fn)) continue;
+      if (!global.fs.exists(fn)) continue;
       include(fn);
       global[arguments[i]]= it[names[n]]= eval(arguments[i]);
       if (typeof(it[names[n]]['__static']) === 'function') {

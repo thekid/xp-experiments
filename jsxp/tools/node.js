@@ -4,12 +4,27 @@ var os= require('os');
 var argv= process.argv;
 argv.shift();
 argv.shift();
-fs.file = function(uri) {
-  return fs.readFileSync(uri).toString().split("\n");
-}
-fs.exists = function(uri) {
-  return path.existsSync(uri);
-}
+global.fs = {
+  DIRECTORY_SEPARATOR : path.normalize('/'),
+  file : function(uri) {
+    return fs.readFileSync(uri).toString().split("\n");
+  },
+  exists : function(uri) {
+    return path.existsSync(uri);
+  },
+  glob : function(uri, pattern) {
+    var filtered = [];
+    if (path.existsSync(uri)) {
+      var files = fs.readdirSync(uri);
+      for (var i = 0; i < files.length; i++) {
+        if (pattern.test(files[i])) {
+          filtered.push(files[i].substring(files[i].lastIndexOf(global.fs.DIRECTORY_SEPARATOR)));
+        }
+      }
+    }
+    return filtered;
+  }
+};
 global.out= {
   write : function(data) {
     process.stdout.write(data + "");
@@ -29,7 +44,7 @@ global.version= "0.5.12";
 function scanpath(paths, home) {
   var inc= [];
   for (p= 0; p < paths.length; p++) {
-    var lines= fs.file(path.join(paths[p], 'class.pth'));
+    var lines= global.fs.file(path.join(paths[p], 'class.pth'));
     for (i= 0; i < lines.length; i++) {
       line= lines[i];
       if ('' === line || '#' === line[0]) {
@@ -101,7 +116,7 @@ global.uses= function uses() {
     }
     for (var c= 0; c < global.classpath.length; c++) {
       var fn = path.join(global.classpath[c], arguments[i].replace(/\./g, '/') + '.js');
-      if (!fs.exists(fn)) continue;
+      if (!global.fs.exists(fn)) continue;
       include(fn);
       global[arguments[i]]= it[names[n]]= eval(arguments[i]);
       if (typeof(it[names[n]]['__static']) === 'function') {
