@@ -258,3 +258,12 @@ this.getClass().getAnnotation('webservice');};unittests.XPClassTests.prototype.t
 
 unittests.XPClassTests.prototype.thisClassParent= function XPClassTests$thisClassParent(){
 this.assertEquals(lang.XPClass.forName('unittest.TestCase'),this.getClass().getParentclass());};unittests.XPClassTests.prototype.thisClassParent['@']= {test:null};
+
+
+
+
+
+
+
+unittests.XPClassTests.prototype.objectsClassParent= function XPClassTests$objectsClassParent(){
+this.assertNull(lang.XPClass.forName('lang.Object').getParentclass());};unittests.XPClassTests.prototype.objectsClassParent['@']= {test:null};

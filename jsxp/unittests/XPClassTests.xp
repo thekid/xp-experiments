@@ -259,4 +259,13 @@ public class XPClassTests extends TestCase {
   public void thisClassParent() {
     $this.assertEquals(unittest.TestCase::class, $this.getClass().getParentclass());
   }
+
+  /**
+   * Tests getParentclass()
+   *
+   */
+  [@test]
+  public void objectsClassParent() {
+    $this.assertNull(Object::class.getParentclass());
+  }
 }

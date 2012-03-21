@@ -33,7 +33,10 @@ lang.XPClass.prototype.newInstance = function XPClass$newInstance() {
 }
 
 lang.XPClass.prototype.getParentclass = function XPClass$getParentclass() {
-  return new lang.XPClass(this.reflect.prototype.__super.__class);
+  return this.reflect.prototype.__super === undefined
+    ? null
+    : new lang.XPClass(this.reflect.prototype.__super.__class)
+  ;
 }
 
 lang.XPClass.prototype.hasMethod = function XPClass$hasMethod(name) {
