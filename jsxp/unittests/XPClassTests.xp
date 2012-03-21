@@ -3,7 +3,7 @@
  * $Id$ 
  */
 
-package tests;
+package unittests;
 
 import unittest.TestCase;
 
@@ -19,7 +19,7 @@ public class XPClassTests extends TestCase {
    */
   [@test]
   public void className() {
-    $this.assertEquals('tests.XPClassTests', $this.getClass().getName());
+    $this.assertEquals('unittests.XPClassTests', $this.getClass().getName());
   }
 
   /**
@@ -28,7 +28,7 @@ public class XPClassTests extends TestCase {
    */
   [@test]
   public void classNameShortCut() {
-    $this.assertEquals('tests.XPClassTests', $this.getClassName());
+    $this.assertEquals('unittests.XPClassTests', $this.getClassName());
   }
 
   /**
@@ -37,7 +37,7 @@ public class XPClassTests extends TestCase {
    */
   [@test]
   public void forName() {
-    $this.assertEquals($this.getClass(), XPClass::forName('tests.XPClassTests'));
+    $this.assertEquals($this.getClass(), XPClass::forName('unittests.XPClassTests'));
   }
 
   /**
@@ -176,7 +176,7 @@ public class XPClassTests extends TestCase {
    */
   [@test]
   public void annotatedClassHasAnnotations() {
-    $this.assertTrue(XPClass::forName('tests.AnnotatedClass').hasAnnotations());
+    $this.assertTrue(XPClass::forName('unittests.AnnotatedClass').hasAnnotations());
   }
 
   /**
@@ -185,7 +185,7 @@ public class XPClassTests extends TestCase {
    */
   [@test]
   public void annotatedClassHasWebserviceAnnotation() {
-    $this.assertTrue(XPClass::forName('tests.AnnotatedClass').hasAnnotation('webservice'));
+    $this.assertTrue(XPClass::forName('unittests.AnnotatedClass').hasAnnotation('webservice'));
   }
 
   /**
@@ -194,7 +194,7 @@ public class XPClassTests extends TestCase {
    */
   [@test]
   public void annotatedClassDoesNotHaveTestAnnotation() {
-    $this.assertFalse(XPClass::forName('tests.AnnotatedClass').hasAnnotation('test'));
+    $this.assertFalse(XPClass::forName('unittests.AnnotatedClass').hasAnnotation('test'));
   }
 
   /**
@@ -203,7 +203,7 @@ public class XPClassTests extends TestCase {
    */
   [@test]
   public void annotatedClassAnnotations() {
-    $this.assertEquals([ webservice : null ], XPClass::forName('tests.AnnotatedClass').getAnnotations());
+    $this.assertEquals([ webservice : null ], XPClass::forName('unittests.AnnotatedClass').getAnnotations());
   }
 
   /**
@@ -212,7 +212,7 @@ public class XPClassTests extends TestCase {
    */
   [@test]
   public void annotatedClassChildAnnotations() {
-    $this.assertEquals([ webservice : null ], XPClass::forName('tests.AnnotatedClassChild').getAnnotations());
+    $this.assertEquals([ webservice : null ], XPClass::forName('unittests.AnnotatedClassChild').getAnnotations());
   }
 
   /**
@@ -221,7 +221,7 @@ public class XPClassTests extends TestCase {
    */
   [@test]
   public void annotatedClassWebserviceAnnotations() {
-    $this.assertNull(XPClass::forName('tests.AnnotatedClass').getAnnotation('webservice'));
+    $this.assertNull(XPClass::forName('unittests.AnnotatedClass').getAnnotation('webservice'));
   }
 
   /**

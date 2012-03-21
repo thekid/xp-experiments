@@ -3,7 +3,7 @@
  * $Id$ 
  */
 
-package tests;
+package unittests;
 
 import unittest.TestCase;
 
