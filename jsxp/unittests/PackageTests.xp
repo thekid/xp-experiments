@@ -31,4 +31,27 @@ public class PackageTests extends TestCase {
   public void stringRepresentation() {
     $this.assertEquals('lang.reflect.Package<unittests>', $this.getClass().getPackage().toString());
   }
-}
+
+  /**
+   * Tests getClassNames()
+   *
+   */
+  [@test]
+  public void getClassNames() {
+    $this.assertEquals(
+      ['unittests.classes.A', 'unittests.classes.B', 'unittests.classes.C'], 
+      Package::forName('unittests.classes').getClassNames()
+    );
+  }
+
+  /**
+   * Tests getClasses()
+   *
+   */
+  [@test]
+  public void getClasses() {
+    $this.assertEquals(
+      [XPClass::forName('unittests.classes.A'), XPClass::forName('unittests.classes.B'), XPClass::forName('unittests.classes.C')], 
+      Package::forName('unittests.classes').getClasses()
+    );
+  }}
