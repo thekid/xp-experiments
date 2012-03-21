@@ -1,4 +1,4 @@
-uses('unittest.TestSuite');
+uses('unittest.TestSuite', 'lang.reflect.Package');
 
 // {{{ Unittest
 Unittest = define('Unittest', 'lang.Object', function Unittest() { });
@@ -6,7 +6,14 @@ Unittest = define('Unittest', 'lang.Object', function Unittest() { });
 Unittest.main = function Unittest$main(args) {
   var suite = new unittest.TestSuite();
   for (var i= 0; i < args.length; i++) {
-    suite.addTestClass(lang.XPClass.forName(args[i]));
+    if (-1 !== (p= args[i].indexOf('.*'))) {
+      var classes = lang.reflect.Package.forName(args[i].substring(0, p)).getClasses();
+      for (var c in classes) {
+        suite.addTestClass(classes[c]);
+      }
+    } else {
+      suite.addTestClass(lang.XPClass.forName(args[i]));
+    }
   }
   var start = new Date();
   suite.run();
