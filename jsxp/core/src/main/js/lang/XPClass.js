@@ -1,4 +1,4 @@
-uses('lang.reflect.Modifiers', 'lang.reflect.Field', 'lang.reflect.Method', 'lang.ElementNotFoundException', 'lang.ClassNotFoundException');
+uses('lang.reflect.Modifiers', 'lang.reflect.Field', 'lang.reflect.Method', 'lang.reflect.Package', 'lang.ElementNotFoundException', 'lang.ClassNotFoundException');
 
 // {{{ XPClass
 lang.XPClass = define('lang.XPClass', 'lang.Object', function XPClass(name) {
@@ -20,6 +20,11 @@ lang.XPClass.prototype.toString = function XPClass$toString() {
 
 lang.XPClass.prototype.getName = function XPClass$getName() {
   return this.name;
+}
+
+lang.XPClass.prototype.getPackage = function XPClass$getPackage() {
+  if (-1 === (p= this.name.lastIndexOf('.'))) return null;
+  return new lang.reflect.Package(this.name.substring(0, p));
 }
 
 lang.XPClass.prototype.newInstance = function XPClass$newInstance() {

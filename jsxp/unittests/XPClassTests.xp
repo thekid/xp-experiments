@@ -268,4 +268,13 @@ public class XPClassTests extends TestCase {
   public void objectsClassParent() {
     $this.assertNull(Object::class.getParentclass());
   }
+
+  /**
+   * Tests getPackage()
+   *
+   */
+  [@test]
+  public void thisClassPackage() {
+    $this.assertEquals(new lang.reflect.Package('unittests'), $this.getClass().getPackage());
+  }
 }

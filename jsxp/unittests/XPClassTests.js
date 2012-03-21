@@ -267,3 +267,12 @@ this.assertEquals(lang.XPClass.forName('unittest.TestCase'),this.getClass().getP
 
 unittests.XPClassTests.prototype.objectsClassParent= function XPClassTests$objectsClassParent(){
 this.assertNull(lang.XPClass.forName('lang.Object').getParentclass());};unittests.XPClassTests.prototype.objectsClassParent['@']= {test:null};
+
+
+
+
+
+
+
+unittests.XPClassTests.prototype.thisClassPackage= function XPClassTests$thisClassPackage(){
+this.assertEquals(new lang.reflect.Package('unittests'),this.getClass().getPackage());};unittests.XPClassTests.prototype.thisClassPackage['@']= {test:null};
