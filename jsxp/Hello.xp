@@ -1,9 +1,0 @@
-public class Hello {
-
-  public static void main(string[] $args) {
-    if ($args.length < 1) {
-      throw new IllegalArgumentException('Argument required');
-    }
-    util.cmd.Console::writeLine('Hello ', $args[0]);
-  }
-}
