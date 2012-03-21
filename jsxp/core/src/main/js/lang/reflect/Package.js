@@ -20,14 +20,14 @@ lang.reflect.Package.prototype.equals = function Package$equals(cmp) {
   return cmp instanceof lang.reflect.Package && cmp.name === this.name;
 }
 
-lang.reflect.Package.prototype.contentsOf = function Package$contentsOf(package, pattern, func) {
+lang.reflect.Package.prototype.contentsOf = function Package$contentsOf(package, pattern, result) {
   var contents= [];
   var dir= package.replace(/\./g, global.fs.DIRECTORY_SEPARATOR);
 
   for (var i= 0; i < global.classpath.length; i++) {
-    var files = global.fs.glob(global.classpath[i] + global.fs.DIRECTORY_SEPARATOR + dir, /\.js/);
+    var files = global.fs.glob(global.classpath[i] + global.fs.DIRECTORY_SEPARATOR + dir, pattern);
     for (var j= 0; j < files.length; j++) {
-      contents.push(func(package, dir, files[j]));
+      contents.push(result(package, dir, files[j]));
     }
   }
 
