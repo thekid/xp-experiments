@@ -23,7 +23,7 @@
         public function run($times) {
           $arg= "19.19";
           for ($i= 0; $i < $times; $i++) {
-            is_numeric($arg) && (int)$a == $a;
+            is_numeric($arg) && (int)$arg == $arg;
           }
         }
       }');
@@ -33,7 +33,7 @@
         public function run($times) {
           $arg= "19.19";
           for ($i= 0; $i < $times; $i++) {
-            strspn($arg) === strlen($arg);
+            strspn($arg, "0123456789") === strlen($arg);
           }
         }
       }');
