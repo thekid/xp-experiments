@@ -14,7 +14,9 @@
   abstract class IsInteger extends Enum implements Profileable {
     public static
       $is_numeric,
-      $strspn;
+      $strspn,
+      $regexp,
+      $casting;
     
     static function __static() {
       self::$is_numeric= newinstance(__CLASS__, array(0, 'is_numeric'), '{
@@ -34,6 +36,26 @@
           $arg= "19.19";
           for ($i= 0; $i < $times; $i++) {
             strspn($arg, "0123456789") === strlen($arg);
+          }
+        }
+      }');
+      self::$regexp= newinstance(__CLASS__, array(2, 'regexp'), '{
+        static function __static() { }
+
+        public function run($times) {
+          $arg= "19.19";
+          for ($i= 0; $i < $times; $i++) {
+            preg_match("/^\-?[0-9]+$/", $arg);
+          }
+        }
+      }');
+      self::$casting= newinstance(__CLASS__, array(3, 'casting'), '{
+        static function __static() { }
+
+        public function run($times) {
+          $arg= "19.19";
+          for ($i= 0; $i < $times; $i++) {
+            (string)(int)$arg === (string)$arg;
           }
         }
       }');
