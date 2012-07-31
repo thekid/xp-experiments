@@ -14,7 +14,7 @@
   abstract class EndsWithInsensitive extends Enum implements Profileable {
     public static
       $substr_strtolower,
-      $substr_strncmp,
+      $substr_strncasecmp,
       $strripos,
       $substr_compare;
     
@@ -29,13 +29,13 @@
           }
         }
       }');
-      self::$substr_strncmp= newinstance(__CLASS__, array(1, 'substr_strncmp'), '{
+      self::$substr_strncasecmp= newinstance(__CLASS__, array(1, 'substr_strncasecmp'), '{
         static function __static() { }
 
         public function run($times) {
           $arg= "/path/to/archive.xar";
           for ($i= 0; $i < $times; $i++) {
-            (strncmp(substr("/path/to/archive.xar", -4), ".xar", 4) === 0);
+            (strncasecmp(substr("/path/to/archive.xar", -4), ".xar", 4) === 0);
           }
         }
       }');
