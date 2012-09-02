@@ -15,11 +15,16 @@
      * Greet
      *
      * @param   string whom
+     * @param   string case
      * @return  string
      */
-    #[@webmethod(verb = 'GET', path = '/greet/{whom}')]
-    public function sayHello($whom) {
-      return 'Hello '.$whom;
+    #[@webmethod(verb = 'GET', path = '/greet/{whom}?in={case}')]
+    public function sayHello($whom, $case= NULL) {
+      switch ($case) {
+        case 'upper': return 'HELLO '.strtoupper($whom);
+        case 'lower': return 'hello '.strtolower($whom);
+        default: return 'Hello '.$whom;
+      }
     }
   }
 ?>
