@@ -10,7 +10,7 @@
    */
   #[@webservice]
   class HelloWorldHandler extends Object {
-    
+
     /**
      * Greet
      *
@@ -25,6 +25,17 @@
         case 'lower': return 'hello '.strtolower($whom);
         default: return 'Hello '.$whom;
       }
+    }
+
+    /**
+     * Greet
+     *
+     * @param   string whom
+     * @return  string
+     */
+    #[@webmethod(verb = 'POST', path = '/greet', inject= array('payload'))]
+    public function postHello($whom) {
+      return 'Hello '.$whom;
     }
   }
 ?>
