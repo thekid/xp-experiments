@@ -42,8 +42,10 @@ Implementation
 --------------
 The implementation consists of three parts:
 
-1. The `create()` core functionality is changed to parse input without 
-   `<` and `>`, using the complete input after `new ` for the type name.
+1. The `create()` core functionality is changed to use `Type::forName()`
+   which already supports the complete variety if types. The main reason
+   this was duplicated for, the BC functionality with old `$__generic`-
+   style generics, is now built into the `forName()` method.
 2. The `lang.Type` hierarchy gets a new method `newInstance()` - *it 
    already exists inside `lang.XPClass`*.
 3. The generic type creation inside `lang.XPClass` introduces static
@@ -68,3 +70,14 @@ diff -u /home/friebe/devel/xp.public/core/src/main/php/lang/XPClass.class.php la
                }
 
 ```
+
+Running the tests
+-----------------
+```sh
+$ unittest .
+[..............]
+
+OK: 14/14 run (0 skipped), 14 succeeded, 0 failed
+Memory used: 2258.79 kB (2588.18 kB peak)
+Time taken: 0.002 seconds
+``` 
