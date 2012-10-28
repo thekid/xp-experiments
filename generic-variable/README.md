@@ -45,10 +45,10 @@ The implementation consists of three
 1. The `create()` core functionality is changed to parse input without 
    `<` and `>`, using the complete input after `new ` for the type name.
 2. The `lang.Type` hierarchy gets two new methods: `hasConstructor()` 
-   and `newInstance()` (*the latter already exists inside `lang.XPClass`*).
+   and `newInstance()` - *the latter already exists inside `lang.XPClass`*.
 3. The generic type creation inside `lang.XPClass` introduces static
    variables with the names of the placeholders into any method annotated 
-   with `@generic` and initializes them to the type string (*see below*).
+   with `@generic` and initializes them to the type string (see below).
 
 ```diff
 diff -u /home/friebe/devel/xp.public/core/src/main/php/lang/XPClass.class.php lang/XPClass.class.php
