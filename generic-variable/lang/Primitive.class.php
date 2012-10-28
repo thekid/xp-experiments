@@ -154,23 +154,14 @@
     }
 
     /**
-     * Returns whether this type has a constructor
-     *
-     * @return  bool
-     */
-    public function hasConstructor() {
-      return FALSE;
-    }
-
-    /**
      * Creates a new array instance
      *
      * <code>
      *   $i= Type::forName('int')->newInstance(1);
      * </code>
      *
-     * @param  [:var] var
-     * @param  [:var]
+     * @param  var var
+     * @return var
      */
     public function newInstance($var= NULL) {
       if (NULL === $var) {

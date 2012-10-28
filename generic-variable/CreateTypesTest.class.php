@@ -75,7 +75,7 @@
       );
     }
   
-    #[@test, @ignore('For the moment')]
+    #[@test]
     public function generic_type_array() {
       $a= create('new Preference<ContentType>[]', array(
         create('new Preference<ContentType>', 'text/html'),

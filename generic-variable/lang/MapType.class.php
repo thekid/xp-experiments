@@ -64,15 +64,6 @@
     }
 
     /**
-     * Returns whether this type has a constructor
-     *
-     * @return  bool
-     */
-    public function hasConstructor() {
-      return FALSE;
-    }
-
-    /**
      * Creates a new array instance
      *
      * <code>
@@ -80,7 +71,7 @@
      * </code>
      *
      * @param  [:var] args
-     * @param  [:var]
+     * @return [:var]
      */
     public function newInstance($map= array()) {
       if (!$this->isInstance($map)) {

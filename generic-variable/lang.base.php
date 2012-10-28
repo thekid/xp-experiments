@@ -606,7 +606,7 @@
 
     // Instantiate
     $args= func_get_args();
-    if ($type->hasConstructor()) {
+    if ($type instanceof XPClass && $type->hasConstructor()) {
       try {
         return $type->getConstructor()->newInstance(array_slice($args, 1));
       } catch (TargetInvocationException $e) {
