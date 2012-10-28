@@ -40,7 +40,7 @@ This way, we can write `$r[]= create("new $T", $value);` in the above example.
 
 Implementation
 --------------
-The implementation consists of three 
+The implementation consists of three parts:
 
 1. The `create()` core functionality is changed to parse input without 
    `<` and `>`, using the complete input after `new ` for the type name.

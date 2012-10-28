@@ -5,9 +5,9 @@
 
     #[@test]
     public function generic_type() {
-      $this->assertInstanceOf(
-        'Preference<ContentType>', 
-        create('new Preference<ContentType>', 'text/html,text/xml')
+      $this->assertEquals(
+        array(new ContentType('text/html'), new ContentType('text/xml')),
+        create('new Preference<ContentType>', 'text/html,text/xml')->all()
       );
     }
 
@@ -72,6 +72,19 @@
       $this->assertEquals(
         '', 
         create('new string')
+      );
+    }
+  
+    #[@test, @ignore('For the moment')]
+    public function generic_type_array() {
+      $a= create('new Preference<ContentType>[]', array(
+        create('new Preference<ContentType>', 'text/html'),
+        create('new Preference<ContentType>', 'text/xml,application/xml')
+      ));
+      $this->assertTrue(is_array($a) && 2 === sizeof($a), 'is an array of size 2? '.xp::stringOf($a));
+      $this->assertEquals(
+        array(new ContentType('text/html')),
+        $a[0]->all()
       );
     }
   }
