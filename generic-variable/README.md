@@ -25,11 +25,12 @@ of the following should work:
 
 ```php
 <?php
-  create('new Preference<ContentType>', ...);   // Generic Preference<T>
-  create('new ContentType', ...);               // ContentType instance
-  create('new int[]', ...);                     // int-array
-  create('new [:int]', ...);                    // string => int-map
-  create('new int', ...);                       // int primitive
+  create('new Preference<ContentType>', ...);     // Generic Preference<T>
+  create('new ContentType', ...);                 // ContentType instance
+  create('new int[]', ...);                       // int-array
+  create('new Preference<ContentType>[]', ...);   // Array of generic Preference<T>
+  create('new [:int]', ...);                      // string => int-map
+  create('new int', ...);                         // int primitive
 ?>
 ```
 
