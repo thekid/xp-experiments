@@ -19,7 +19,24 @@ General idea
 ?>
 ```
 
-This of course requires `$T` to represent something instantiable via `new`.
+This of course requires `$T` to represent something instantiable via `new`. 
+If we want to support other types, we would need to resort to `create`. All
+of the following should work:
+
+```php
+<?php
+  create('new Preference<ContentType>', ...);   // Generic Preference<T>
+  create('new ContentType', ...);               // ContentType instance
+  create('new int[]', ...);                     // int-array
+  create('new [:int]', ...);                    // string => int-map
+  create('new int', ...);                       // int primitive
+?>
+```
+
+This way, we can write `$r[]= create("new $T", $value);` in the above example.
+
+(See also http://msdn.microsoft.com/en-us/library/fa0ab757.aspx)
+
 
 Implementation
 --------------
