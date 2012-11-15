@@ -13,6 +13,7 @@
   abstract class GenericsCreation extends Enum implements Profileable {
     public static
       $vector,
+      $vector_reflection,
       $vector_of_string,
       $vector_of_object;
     
@@ -26,7 +27,16 @@
           }
         }
       }');
-      self::$vector_of_string= newinstance(__CLASS__, array(1, 'vector_of_string'), '{
+      self::$vector_reflection= newinstance(__CLASS__, array(1, 'vector_reflection'), '{
+        static function __static() { }
+
+        public function run($times) {
+          for ($i= 0; $i < $times; $i++) {
+            $v= XPClass::forName("util.collections.Vector")->newInstance();
+          }
+        }
+      }');
+      self::$vector_of_string= newinstance(__CLASS__, array(2, 'vector_of_string'), '{
         static function __static() { }
 
         public function run($times) {
@@ -35,7 +45,7 @@
           }
         }
       }');
-      self::$vector_of_object= newinstance(__CLASS__, array(2, 'vector_of_object'), '{
+      self::$vector_of_object= newinstance(__CLASS__, array(3, 'vector_of_object'), '{
         static function __static() { }
 
         public function run($times) {
