@@ -15,6 +15,8 @@
       $vector,
       $vector_reflection,
       $vector_of_string,
+      $vector_of_string_reflection,
+      $vector_of_string_type,
       $vector_of_object;
     
     static function __static() {
@@ -32,7 +34,7 @@
 
         public function run($times) {
           for ($i= 0; $i < $times; $i++) {
-            $v= XPClass::forName("util.collections.Vector")->newInstance();
+            $v= XPClass::forName("util.collections.Vector")->newinstance();
           }
         }
       }');
@@ -45,7 +47,25 @@
           }
         }
       }');
-      self::$vector_of_object= newinstance(__CLASS__, array(3, 'vector_of_object'), '{
+      self::$vector_of_string_reflection= newinstance(__CLASS__, array(3, 'vector_of_string_reflection'), '{
+        static function __static() { }
+
+        public function run($times) {
+          for ($i= 0; $i < $times; $i++) {
+            $v= XPClass::forName("util.collections.Vector")->newGenericType(array(Primitive::$STRING))->newInstance();
+          }
+        }
+      }');
+      self::$vector_of_string_type= newinstance(__CLASS__, array(4, 'vector_of_string_type'), '{
+        static function __static() { }
+
+        public function run($times) {
+          for ($i= 0; $i < $times; $i++) {
+            $v= Type::forName("util.collections.Vector<string>")->newInstance();
+          }
+        }
+      }');
+      self::$vector_of_object= newinstance(__CLASS__, array(5, 'vector_of_object'), '{
         static function __static() { }
 
         public function run($times) {
