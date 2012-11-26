@@ -1,0 +1,78 @@
+package de.thekid.proxy;
+
+import peer.http.*;
+import scriptlet.*;
+import util.log.*;
+
+public class ReverseProxy extends HttpScriptlet {
+  protected HttpConnection $conn;
+  protected LogCategory $cat;
+
+  public __construct(string $base) {
+    $this.conn= new HttpConnection($base);
+    $this.setTrace(Logger::getInstance().getCategory().withAppender(new ColoredConsoleAppender()));
+  }
+
+  public string handleMethod(Request? $req) {
+    return 'doRequest';
+  }
+
+  public void setTrace(LogCategory? $cat) {
+    $this.cat= $cat;
+  }
+
+  protected string transformURI(string? $uri) {
+    with ($url= new peer.URL($uri)) {
+      if ($this.conn.getUrl().getHost() === $url.getHost()) {
+        $url.setHost('localhost');
+        $url.setPort(8080);
+      }
+      return $url.getURL();
+    }
+  }
+
+  public bool doRequest(Request? $req, Response? $res) {
+    $proxied= $this.conn.create(new HttpRequest());
+
+    // Copy request
+    $proxied.setTarget($req.getURL().getPath());
+    $proxied.setMethod($req.getMethod());
+    $proxied.addHeaders($req.getHeaders());
+    $proxied.setParameters($req.getQueryString());
+
+    // Calculate host
+    $host= $this.conn.getUrl().getHost();
+    if (null !== ($port= $this.conn.getUrl().getPort())) {
+      $host ~= ':' ~ $port;
+    }
+    $proxied.setHeader('Host', $host);
+    $proxied.setHeader('Connection', 'close');
+
+    // Send
+    $this.cat && $this.cat.info('>>>', $proxied.getRequestString());
+    try {
+      $answer= $this.conn.send($proxied);
+    } catch (Throwable $t) {
+      $this.cat && $this.cat.warn('***', $t);
+      $res.setStatus(HttpConstants::STATUS_BAD_GATEWAY);
+      $res.setContent('<h1>Proxy error</h1><pre>' ~ $t.compoundMessage() ~ '</pre>');
+      return;
+    }
+
+    // Change
+    $this.cat && $this.cat.info('<<<', $answer);
+    $res.setStatus($answer.statusCode());
+    foreach ($header, $value in $answer.headers()) {
+      if ('Location' === $header) {
+        $res.setHeader($this.transformURI($value[0]));
+      } else {
+        $res.setHeader($header, $value[0]);
+      }
+    }
+    do {
+      $bytes= $answer.readData();
+      $this.cat && $this.cat.info('<<<', new lang.types.Bytes($bytes as string));
+      $res.write($bytes);
+    } while ($bytes);
+  }
+}
