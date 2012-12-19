@@ -1,5 +1,5 @@
 <?php
-  abstract class Methods extends \lang\Enum {
+  abstract class Performance extends \lang\Enum {
     public static $GENERATOR, $ARRAY;
 
     static function __static() {
