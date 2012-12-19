@@ -1,9 +1,6 @@
 <?php
   class Methods extends Object {
-
-    static function __static() {
-      xp::extensions(__CLASS__, $scope= __CLASS__);
-    }
+    use LocalExtensions;
 
     protected static function methodsWith(XPClass $self, $annotation) {
       $name= substr($annotation, 1);
