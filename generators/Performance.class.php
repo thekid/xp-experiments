@@ -25,7 +25,7 @@
       }');
     }
 
-  	public static function main(array $args) {
+    public static function main(array $args) {
       $instance= \lang\Enum::valueOf(new XPClass(__CLASS__), $args[0]);
       $class= XPClass::forName($args[1]);
 
