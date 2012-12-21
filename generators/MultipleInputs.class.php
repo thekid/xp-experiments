@@ -29,7 +29,7 @@
       } while ($generators);
     }
 
-  	public static function main(array $args) {
+    public static function main(array $args) {
       foreach (self::all(self::even(10), self::odd(10)) as $number) {
         Console::writeLine($number); 
       }
