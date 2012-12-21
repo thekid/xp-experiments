@@ -37,5 +37,16 @@
     public function postHello($whom) {
       return 'Hello '.$whom;
     }
+
+    /**
+     * Greet
+     *
+     * @param   [:string] identity
+     * @return  string
+     */
+    #[@webmethod(verb = 'POST', path = '/greet', accepts= array('text/json'))]
+    public function postHelloCustom($identity) {
+      return 'Hello custom '.$identity['name'];
+    }
   }
 ?>
