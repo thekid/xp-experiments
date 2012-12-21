@@ -4,18 +4,18 @@
    */
   class MultipleInputs extends Object {
 
-    protected static function numbers($start, $max) {
-      for ($i= $start; $i < $max; $i+= 2) {
+    protected static function range($start, $end, $step= 1) {
+      for ($i= $start; $i < $end; $i+= $step) {
         yield $i;
       }
     }
 
     protected static function odd($max) {
-      return self::numbers(1, $max);
+      return self::range(1, $max, 2);
     }
 
     protected static function even($max) {
-      return self::numbers(0, $max);
+      return self::range(0, $max, 2);
     }
 
     protected static function all() {
