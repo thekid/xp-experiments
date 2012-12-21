@@ -58,6 +58,14 @@ $ xp Performance GENERATOR net.xp_framework.unittest.core.ObjectTest
 We can see that both implementations perform comparably in most cases.
 You can find a small micro benchmark at https://gist.github.com/2975796
 
+The third experiment shows how processing multiple input sources at
+once can be done: Each input is represented by a generator and pulled
+together with another generator, one item at a time per iterator.
+
+```sh
+$ xp MultipleInputs
+```
+
 Real-life code simplifications
 ------------------------------
 This shows how we could simplify the XP Framework's sourcecode in the 
