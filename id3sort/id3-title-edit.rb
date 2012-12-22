@@ -7,6 +7,7 @@ if ARGV.size < 2
   puts "* %y     - Year"
   puts "* %A     - Album"
   puts "* %T     - Track"
+  puts "* %f     - Filename without extension"
   puts "* %XXXX  - Tag with name 'XXXX'"
   exit 1
 end
@@ -23,6 +24,7 @@ ARGV.each do |file|
       gsub("%t", mp3info.tag.title || "").
       gsub("%a", mp3info.tag.artist || "").
       gsub("%A", mp3info.tag.album || "").
+      gsub("%f", File.basename(file).gsub(/\.[a-zA-Z0-9]+$/, "")).
       gsub("%y", mp3info.tag.year.nil? ? "" : mp3info.tag.year.to_s).
       gsub("%T", mp3info.tag.tracknum.nil? ? "" : mp3info.tag.tracknum.to_s).
       gsub(/%[A-Z0-9]{4}/) { |tag| mp3info.tag[tag] }
