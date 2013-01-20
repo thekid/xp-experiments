@@ -1,0 +1,18 @@
+package test;
+import peer.Socket;
+import util.cmd.Console;
+
+public class LegacyProtocol implements test.Protocol {
+
+  public void connect(Socket $s) {
+    Console::writeLine('Connected');
+  }
+  
+  public void data(Socket $s) {
+    Console::writeLine('Data');
+  }
+
+  public void close(Socket $s) {
+    Console::writeLine('Closed');
+  }
+}

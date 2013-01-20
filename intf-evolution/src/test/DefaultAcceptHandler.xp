@@ -1,0 +1,9 @@
+package test;
+import peer.Socket;
+
+public class DefaultAcceptHandler {
+
+  public void accept(Socket $s) {
+    throw new MethodNotImplementedException('Protocol::accept');
+  }
+}
