@@ -75,7 +75,7 @@ interface Queue {
 }
 
 trait __QueueDefaults {
-  function clear() default {
+  public function clear() {
     while (NULL !== $this->get()) { }
   }
 }
