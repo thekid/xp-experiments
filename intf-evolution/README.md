@@ -100,7 +100,7 @@ we don't have to think about this, but then again forgetting to do so will
 only have an impact later on. And programmers are usually not that disciplined.
 
 ### Replace
-We defines traits instead of interfaces:
+We define traits instead of interfaces:
 
 ```php
 trait Queue {
