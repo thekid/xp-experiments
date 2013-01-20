@@ -126,4 +126,5 @@ by the trait is then used).
 
 Downside: This is not `instanceof` compatible. While we could trick
 around this in XP's `is()`, `cast()` and `newinstance()` core functionality
-as well as inside reflection, we can't "trick" `instanceof`.
+as well as inside reflection, and even for argument passing, we can't 
+"trick" `instanceof`.
