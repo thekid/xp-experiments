@@ -129,3 +129,10 @@ around this in XP's `is()`, `cast()` and `newinstance()` core functionality
 as well as inside reflection, and even for argument passing, we can't 
 "trick" `instanceof`. Just kike the early XP Framework interfaces 
 [implementation via implements()](https://github.com/thekid/xp-experiments/tree/master/interfaces)
+
+Further reading
+---------------
+* http://www.ibm.com/developerworks/java/library/j-scala04298/index.html - The busy Java developer's guide to Scala: Of traits and behaviors
+* http://en.wikibooks.org/wiki/Scala/Traits - Scala/Traits (*and how traits can replace interfaces*)
+* http://php.net/manual/en/language.oop5.traits.php - PHP Manual / Language Reference: Traits
+* https://wiki.php.net/rfc/traitsmodifications - Proposed Modifications To Traits (overriding would require a `{ self::foo insteadof T::foo; }` in order to work)
