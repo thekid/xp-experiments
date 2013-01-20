@@ -65,6 +65,7 @@ new `clear()` method, we could simply copy&paste the default implementation
 to any implementing class (using a combination of `find`, `grep` and `sed`
 for example). Or we let ourselves be assisted by PHP!
 
+### Defaults
 For each interface, we define its default methods inside a trait:
 
 ```php
@@ -97,3 +98,32 @@ If we always keep in mind interface may need to be extended at some point
 in the future and always add the traits as well as the `use` statement,
 we don't have to think about this, but then again forgetting to do so will
 only have an impact later on. And programmers are usually not that disciplined.
+
+### Replace
+We defines traits instead of interfaces:
+
+```php
+trait Queue {
+  public abstract function get();
+
+  public function clear() {
+    while (NULL !== $this->get()) { }
+  }
+}
+
+class MemoryQueue extends Object {
+  use Queue; 
+
+  // ...
+}
+```
+
+Now this does exactly what we want: First of all, it is esured any 
+implementing class will actually have a `get()` method; failure to do
+so will result in a compile-time error. Second, the `clear()` method
+may be implement, but third: doesn't have to (the default as defined 
+by the trait is then used).
+
+Downside: This is not `instanceof` compatible. While we could trick
+around this in XP's `is()`, `cast()` and `newinstance()` core functionality
+as well as inside reflection, we can't "trick" `instanceof`.
