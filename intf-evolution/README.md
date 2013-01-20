@@ -7,7 +7,7 @@ interface Queue {
   function get();
 }
 
-class MemoryQueue implements Queue {
+class MemoryQueue extends Object implements Queue {
   protected $messages= [];
 
   public function __construct($messages) { 
@@ -30,7 +30,7 @@ interface Queue {
   function clear();
 }
 
-class MemoryQueue implements Queue { ... }    // Fatal: MemoryQueue does not implement clear()!
+class MemoryQueue extends Object implements Queue { ... }    // Fatal: MemoryQueue does not implement clear()!
 ```
 
 An implementation of this method could be provided by the interface itself 
