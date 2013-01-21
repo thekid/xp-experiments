@@ -136,3 +136,5 @@ Further reading
 * http://en.wikibooks.org/wiki/Scala/Traits - Scala/Traits (*and how traits can replace interfaces*)
 * http://php.net/manual/en/language.oop5.traits.php - PHP Manual / Language Reference: Traits
 * https://wiki.php.net/rfc/traitsmodifications - Proposed Modifications To Traits (overriding would require a `{ self::foo insteadof T::foo; }` in order to work)
+* http://cr.openjdk.java.net/~briangoetz/lambda/Defender%20Methods%20v4.pdf - Interface evolution via virtual extension methods
+* http://medianetwork.oracle.com/video/player/1113272518001 - Virtual Extension Methods (video)
