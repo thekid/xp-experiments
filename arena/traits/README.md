@@ -26,6 +26,13 @@ $list= newinstance('lang.types.ArrayList with experiment.Enumerable', array(1, 2
 $list->map(...);
 ```
 
+In XP Language, this could be written as:
+
+```groovy
+$list= new lang.types.ArrayList(1, 2, 3) with experiment.Enumerable;
+$list->map(...);
+```
+
 Type safety
 -----------
 Because we'd also be check via `instanceof` on a trait type name, we go a step farther and create a companion interface for each trait. 
@@ -42,9 +49,9 @@ This way, the instance really *is an* Enumerable.
 
 Inner workings
 --------------
-What the above `newinstance` call translates to:
+What the above `newinstance()` call translates to:
 
 ```php
-class ArrayList·383ce71a extends ArrayList implements Enumerable { use __Enumerable }
-$list= new ArrayList·383ce71a(1, 2, 3);
+class ArrayList·d383ce71a extends ArrayList implements Enumerable { use __Enumerable; }
+$list= new ArrayList·d383ce71a(1, 2, 3);
 ```
