@@ -64,7 +64,7 @@ This raises the idea of decorating any expression with `with`, e.g.:
 foreach ($method in (self::class.getMethods() with Annotations).annotatedWith('test')) {
   Console::writeLine('Test method ', $method)
 }
-```groovy
+```
 
 The `Annotations` trait would be something like:
 
