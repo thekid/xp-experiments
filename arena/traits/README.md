@@ -79,3 +79,8 @@ trait Annotations<T> {
   }
 }
 ```
+
+See also
+--------
+* http://docs.scala-lang.org/tutorials/tour/mixin-class-composition.html
+* http://docs.scala-lang.org/tutorials/tour/traits.html
