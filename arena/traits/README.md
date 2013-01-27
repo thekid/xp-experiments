@@ -30,7 +30,7 @@ In XP Language, this could be written as:
 
 ```groovy
 $list= new lang.types.ArrayList(1, 2, 3) with experiment.Enumerable;
-$list->map(...);
+$list.map(...);
 ```
 
 Type safety
