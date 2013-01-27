@@ -1,8 +1,7 @@
 <?php
   namespace experiment;
-  
-  interface Enumerable { }
-  trait __Enumerable {
+
+  interface Enumerable {} trait __Enumerable {
     public function map($block) {
       $r= array();
       foreach ($this as $value) {
