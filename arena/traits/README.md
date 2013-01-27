@@ -39,3 +39,12 @@ interface Enumerable {} trait __Enumerable {
 ```
 
 This way, the instance really *is an* Enumerable.
+
+Inner workings
+--------------
+What the above `newinstance` call translates to:
+
+```php
+class ArrayList·383ce71a extends ArrayList implements Enumerable { use __Enumerable }
+$list= new ArrayList·383ce71a(1, 2, 3);
+```
