@@ -1,0 +1,9 @@
+RFC #0195: Type-dispatch methods
+========================================================================
+
+Testing
+-------
+To run all overloading-related tests, use the following:
+<pre>
+  $ unittest net.xp_framework.unittest.core.overloading.**
+</pre>

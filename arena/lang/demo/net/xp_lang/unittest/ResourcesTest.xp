@@ -1,0 +1,106 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+package net.xp_lang.unittest;
+
+import unittest.TestCase;
+import lang.archive.Archive;
+import lang.archive.ArchiveClassLoader;
+import io.File;
+
+import native standard.trim;
+import native standard.dirname;
+
+/**
+ * TestCase for resource loading
+ *
+ * @see      xp://lang.ClassLoader
+ */
+public class ResourcesTest extends TestCase {
+  protected static ClassLoader $cl= NULL;
+  
+  /**
+   * Registers classloader with three-and-four.xar
+   *
+   */
+  [@beforeClass]
+  public static void registerLoader() {
+    self::$cl= ClassLoader::registerLoader(new ArchiveClassLoader(new Archive(
+      self::class.getPackage().getPackage('lib').getResourceAsStream('three-and-four.xar')
+    )));
+  }
+  
+  /**
+   * Removes class loader
+   *
+   */
+  [@afterClass]
+  public static void removeLoader() {
+    ClassLoader::removeLoader(self::$cl);
+  }
+
+  /**
+   * Helper method for getResource() and getResourceAsStream()
+   *
+   */
+  protected void assertManifestFile(string $contents) {
+    $this.assertEquals(
+      "[runnable]\nmain-class=\"remote.server.impl.ApplicationServer\"",
+      trim($contents)
+    );
+  }
+
+  /**
+   * Tests findResource() method
+   *
+   */
+  [@test]
+  public void findResource() {
+    $this.assertEquals(self::$cl, ClassLoader::getDefault().findResource('META-INF/manifest.ini'));
+  }
+
+  /**
+   * Tests getResource() method
+   *
+   */
+  [@test]
+  public void getResource() {
+    $this.assertManifestFile(ClassLoader::getDefault().getResource('META-INF/manifest.ini'));
+  }
+
+  /**
+   * Tests getResourceAsStream() method
+   *
+   */
+  [@test]
+  public void getResourceAsStream() {
+    $stream= ClassLoader::getDefault().getResourceAsStream('META-INF/manifest.ini');
+    $this.assertSubClass($stream, 'io.Stream');
+    $stream.open(STREAM_MODE_READ);
+    try {
+      $this.assertManifestFile($stream.read($stream.size()));
+    } finally {
+      $stream.close();
+    }
+  }
+
+  /**
+   * Tests getResource() method
+   *
+   */
+  [@test, @expect('lang.ElementNotFoundException')]
+  public void nonExistantResource() {
+    ClassLoader::getDefault().getResource('::DOES-NOT-EXIST::');
+  }
+
+  /**
+   * Tests getResourceAsStream() method
+   *
+   */
+  [@test, @expect('lang.ElementNotFoundException')]
+  public void nonExistantResourceStream() {
+    ClassLoader::getDefault().getResourceAsStream('::DOES-NOT-EXIST::');
+  }
+}
+

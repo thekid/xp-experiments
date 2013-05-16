@@ -1,0 +1,223 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+package net.xp_lang.unittest;
+
+import unittest.TestCase;
+
+import native standard.fopen;
+import native standard.fclose;
+import native pcre.preg_match;
+
+/**
+ * Tests the xp::stringOf() core utility
+ *
+ * @purpose  Testcase
+ */
+public class StringOfTest extends TestCase {
+
+  /**
+   * Returns a class with a toString() method that always returns the following:
+   * <pre>
+   *   TestString(6) { String }
+   * </pre>
+   *
+   */
+  protected Object testStringInstance() {
+    return new Object() {
+      public string toString() {
+        return "TestString(6) { String }";
+      }
+    };
+  }
+
+  /**
+   * Tests string argument
+   *
+   */
+  [@test]
+  public void stringArgument() {
+    $this.assertEquals('"Hello"', xp::stringOf('Hello'));
+  }
+
+  /**
+   * Tests boolean argument
+   *
+   */
+  [@test]
+  public void booleanArgument() {
+    $this.assertEquals('true', xp::stringOf(true));
+    $this.assertEquals('false', xp::stringOf(false));
+  }
+
+  /**
+   * Tests null argument
+   *
+   */
+  [@test]
+  public void nullArgument() {
+    $this.assertEquals('null', xp::stringOf(null));
+  }
+
+  /**
+   * Tests xp::null() argument
+   *
+   * @see     xp://net.xp_framework.unittest.core.NullTest
+   */
+  [@test]
+  public void xpNullArgument() {
+    $this.assertEquals('<null>', xp::stringOf(xp::null()));
+  }
+
+  /**
+   * Tests numbers
+   *
+   */
+  [@test]
+  public void numericArgument() {
+    $this.assertEquals('1', xp::stringOf($int= 1));
+    $this.assertEquals('-1', xp::stringOf($negativeInt= -1));
+    $this.assertEquals('1.5', xp::stringOf($float= 1.5));
+    $this.assertEquals('-1.5', xp::stringOf($negativeFloat= -1.5));
+  }
+
+  /**
+   * Tests an object argument
+   *
+   */
+  [@test]
+  public void objectArgument() {
+    $this.assertEquals('TestString(6) { String }', xp::stringOf($this.testStringInstance()));
+  }
+
+  /**
+   * Tests simple array
+   *
+   */
+  [@test]
+  public void simpleArrayArgument() {
+    $this.assertEquals(
+      "[\n  0 => 1\n  1 => 2\n  2 => 3\n]", 
+      xp::stringOf([1, 2, 3])
+    );
+  }
+
+  /**
+   * Tests array of arrays
+   *
+   */
+  [@test]
+  public void arrayOfArraysArgument() {
+    $this.assertEquals(
+      "[\n  0 => [\n    0 => 1\n    1 => 2\n    2 => 3\n  ]\n]", 
+      xp::stringOf([[1, 2, 3]])
+    );
+  }
+
+  /**
+   * Tests simple array
+   *
+   */
+  [@test]
+  public void hashmapArgument() {
+    $this.assertEquals(
+      "[\n  foo => \"bar\"\n  bar => 2\n  baz => TestString(6) { String }\n]", 
+      xp::stringOf([
+        'foo' : 'bar', 
+        'bar' : 2, 
+        'baz' : $this.testStringInstance()
+      ])
+    );
+  }
+
+  /**
+   * Tests resource
+   *
+   */
+  [@test]
+  public void resourceArgument() {
+    $fd= fopen('php://stdin', 'r');
+    $this.assertTrue(preg_match('/resource\(type= stream, id= [0-9]+\)/', xp::stringOf($fd)) as bool);
+    fclose($fd);
+  }
+
+  /**
+   * Tests a situation where no recursion exists
+   *
+   */
+  [@test]
+  public void noRecursion() {
+    $this.assertEquals(
+      "[\n  a => TestString(6) { String }\n  b => TestString(6) { String }\n]", 
+      xp::stringOf([
+        'a' : $this.testStringInstance(),
+        'b' : $this.testStringInstance()
+      ])
+    );
+  }
+
+  /**
+   * Tests objects with very large hashcodes don't produce problems
+   * in the recursion detection algorithm.
+   *
+   */
+  [@test]
+  public void noRecursionWithLargeNumbers() {
+    $test= new Object() {
+      public var hashCode() {
+        return 9000000000000000000000000000000000000000000000000;
+      }
+
+      public string toString() {
+        return 'Test';
+      }
+    };
+    $this.assertEquals(
+      "[\n  a => Test\n  b => Test\n]", 
+      xp::stringOf([
+        'a' : $test,
+        'b' : $test
+      ])
+    );
+  }
+
+  /**
+   * Tests toString() isn't invoked recursively by sourcecode such as:
+   * <code>
+   *   class MaliciousRecursionGenerator extends Object {
+   *     void toString() {
+   *       return xp::stringOf($this);
+   *     }
+   *   }
+   *
+   *   echo xp::stringOf(new MaliciousRecursionGenerator());
+   * </code>
+   *
+   */
+  [@test]
+  public void toStringRecursion() {
+    $test= new Object() {
+      public string toString() {
+        return xp::stringOf($this);
+      }
+    };
+    $this.assertEquals(
+      $test.getClassName() ~ " {\n  __id => \"" ~ $test.hashCode() ~ "\"\n}",
+      xp::stringOf($test)
+    );
+  }
+
+  /**
+   * Test repeated xp::stringOf invokations on the same object
+   *
+   */
+  [@test]
+  public void repeatedCalls() {
+    $object= new Object();
+    $stringRep= $object.toString();
+
+    $this.assertEquals($stringRep, xp::stringOf($object), 'first');
+    $this.assertEquals($stringRep, xp::stringOf($object), 'second');
+  }
+}

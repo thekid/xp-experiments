@@ -1,0 +1,7 @@
+#!/bin/sh
+
+DIRNAME=`dirname $0` 
+if [ "$OS" == "Windows_NT" ]; then
+        DIRNAME=`cygpath -w "$DIRNAME"`
+fi
+/cygdrive/d/Programme/Java/jdk1.6.0_10/bin/java.exe -cp '.;'$DIRNAME/jcli.jar net.xp_framework.cmd.Runner "$@"

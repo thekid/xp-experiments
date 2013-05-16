@@ -6,17 +6,31 @@
 package de.thekid.rfc2github;
 
 import peer.http.*;
+import peer.URL;
+import peer.Header;
 import io.File;
+import text.regex.Pattern;
+import text.regex.MatchResult;
+import lang.types.String;
 
 import native standard.sscanf;
 import native standard.strtok;
-import native standard.strtok;
+import native standard.str_replace;
 import native standard.explode;
 import native standard.trim;
 import native standard.ltrim;
-import native standard.urlencode;
+import native standard.substr;
+import native standard.strstr;
+import native standard.max;
+import native standard.sprintf;
+import native standard.array_diff;
+import native standard.array_merge;
+
+import native pcre.preg_replace;
 
 import native core.strncmp;
+import native core.strcasecmp;
+import native core.strlen;
 
 /**
  * Imports XP Framework RFCs to Github issues
@@ -26,19 +40,22 @@ import native core.strncmp;
  */
 public class Rfc2GitHubIssue extends util.cmd.Command {
   protected File $origin;
-  protected HttpConnection $conn= new HttpConnection('http://github.com');
-  protected [:string] $identity;
-  protected string $target;
-  
+  protected HttpConnection $conn= new HttpConnection('https://api.github.com/');
+  protected Header $identity;
+  protected [:string] $parameters;
+  protected bool $verbose = false;
+
   /**
-   * Sets origin filename
+   * Sets credentials (user:password)
    *
    */
   [@arg(position= 0)]
-  public void setOriginFile(string $file) {
-    $this.origin= new File($file);
+  public void setCredentials(string $credentials) {
+    $user= $pass= null;
+    sscanf($credentials, "%[^:]:%[^\r]", $user, $pass);
+    $this.identity= new BasicAuthorization($user, $pass);
   }
-
+  
   /**
    * Sets target (user:token@owner/repo)
    *
@@ -51,20 +68,51 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
     $this.identity= [login : $user, token : $token];
     $this.target= $owner ~ '/' ~ $repo;
   }
+
+  /**
+   * Sets target (owner/repo)
+   *
+   */
+  [@arg(position= 2)]
+  public void setTarget(string $target) {
+    $owner= $repo= null;
+    sscanf($target, "%[^/]/%[^\r]", $owner, $repo);
+    $this.parameters= [ user: $owner, repo: $repo ];
+  }
+
+  /**
+   * Sets whether to be verbose
+   *
+   */
+  [@arg]
+  public void setVerbose() {
+    $this.verbose= true;
+  }
+  
+  protected static var $segments= new Pattern(':([a-z_]+)');
+>>>>>>> e1bbed5a16a7d7f478899505b862f7cdb949e288
   
   /**
    * Creates a new API request
    *
+   * @param   method One of the HttpConstants constants
+   * @param   string resource in the form /path/part/:segment/
+   * @param   parameters parameters which will be used as segments and request parameters
    */
-  protected HttpRequest newApiRequest(string $method, string $area, [:string] $parameters= [:]) {
+  protected HttpRequest newApiRequest(string $method, string $resource, [:string] $parameters= [:]) {
+    $parameters= array_merge($this.parameters, $parameters) as [:var];
+    foreach ($group in self::$segments.match($resource).groups()) {
+      $resource= str_replace($group[0], $parameters[$group[1]], $resource);
+      unset($parameters[$group[1]]);
+    }
+
     $request= $this.conn.create(new HttpRequest());
     $request.setMethod($method);
-    $target= '/api/v2/json/' ~ $area ~ '/' ~ $this.target;
-    foreach ($value in $parameters) {
-      $target ~= '/' ~ urlencode($value);
-    }
-    $request.setTarget($target);
-    $request.setParameters($this.identity);
+    $request.setTarget($resource);
+    $request.setParameters($parameters);
+    $request.setHeader('Authorization', $this.identity);
+    
+    $this.verbose && $this.err.writeLine('>>> ', $request.getRequestString());
     return $request;
   }
 
@@ -85,7 +133,112 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       $issue= $result as [:var];
       if ('open' === $issue['state'] && $title === $issue['title']) return $issue;
     }
-    return null;
+    $response= $this.conn.send($request);
+
+    $this.verbose && $this.err.writeLine('<<< ', $response);
+    return new ApiResponse($response);
+  }
+  
+  protected static var $state = [
+    draft :       'open',
+    discussion :  'open',
+    rejected :    'closed',
+    obsoleted :   'closed',
+    implemented:  'closed',
+  ];
+  
+  protected static var $json = webservices.json.JsonFactory::create();
+  
+  /**
+   * Modify an issue
+   *
+   */
+  protected [:var] modifyIssue(HttpRequest $request, int $expect, string $title, string $content, [:var] $fields) {
+    $labels= [ $fields['status.id'] ];
+
+    // Map category to labels
+    if (strstr($fields['category'], '<core>')) {
+      $labels[]= 'framework';
+    } else if (strstr($fields['category'], '<language>')) {
+      $labels[]= 'language';
+    } else if (strstr($fields['category'], '<infrastructure>')) {
+      $labels[]= 'technology';
+    } else if (strstr($fields['category'], '<strategy>')) {
+      // Nothing
+    } else if (strstr($fields['category'], '<ports>')) {
+      $labels[]= 'contrib';
+    } else {
+      $labels[]= 'framework';
+    }
+
+    // Create request
+    $request.setParameters(new RequestData(self::$json.encode([
+      title  : new String($title),
+      body   : new String($content),
+      state  : self::$state[$fields['status.id']],
+      labels : $labels
+    ])));
+    $request.setHeader('Content-Type', 'application/vnd.github-issue.raw+json');
+
+    $response= $this.sendApiRequest($request);
+    if ($expect != $response.status()) {
+      throw new IllegalArgumentException($response.toString());
+    }
+
+    return $response.result() as [:var];
+  }
+
+  /**
+   * Creates an issue
+   *
+   */
+  protected [:var] createIssue(string $title, string $content, [:var] $fields) {
+    return $this.modifyIssue(
+      $this.newApiRequest(HttpConstants::POST, '/repos/:user/:repo/issues'), 
+      201, 
+      $title, 
+      $content, 
+      $fields
+    );
+  }
+
+  /**
+   * Updates an existing issue
+   *
+   */
+  protected [:var] updateIssue(int $id, string $title, string $content, [:var] $fields) {
+    return $this.modifyIssue(
+      $this.newApiRequest(HttpConstants::PATCH, '/repos/:user/:repo/issues/:id', [ id: $id ]),
+      200, 
+      $title, 
+      $content, 
+      $fields
+    );
+  }
+  
+  /**
+   * Syntactic rewrite: XP markup -> Github syntax
+   *
+   */
+  protected string rewrite(string $line) {
+    if (0 === strncmp('---', $line, 3)) {
+      $line= '====';
+    } else if (0 === strncmp('~~~', $line, 3)) {
+      $line= '----';
+    } else if ('<code>' === $line) {
+      $line= "\n```php\n<?php";
+    } else if ('</code>' === $line) {
+      $line= "?>\n```";
+    } else if ('<pre>' === $line || '</pre>' === $line) {
+      $line= "\n```";
+    }
+
+    return preg_replace(
+      [ '#<tt>#', '#</tt>#', '/RFC #([0-9]+)/e'],
+      [ '`', '`', '"xp-framework/rfc #".ltrim("\1", "0")'],
+      $line
+    ) ~ "\n";
+>>>>>>> e1bbed5a16a7d7f478899505b862f7cdb949e288
   }
   
   /**
@@ -96,7 +249,7 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
   
     // Parse RFC into caption, fields and body text
     $fields= [:];
-    with ($st= new text.StreamTokenizer($this.origin.getInputStream(), "\n")) {
+    with ($st= new text.StreamTokenizer($this.origin.getInputStream(), "\r\n")) {
       $title= $st.nextToken();
       $id= $caption= null;
       sscanf($title, "RFC %4s: %[^\r]", $id, $caption);
@@ -204,5 +357,103 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       number : $issue['number']]
     ));
     $this.out.writeLine('Labeled it ', $fields['category'], ': ', $response.status());
+
+    $this.out.writeLine('#', $id, ': ', $caption, ' ', $fields);
+    // $this.out.writeLine($content);
+    
+    // Check GH for corresponding issue
+    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id', [ id : $id ]));
+    if (200 == $response.status()) {
+      $issue= $response.result() as [:var];
+      
+      // Found it, update and exit
+      $this.out.write('Found existing issue #', $issue['number']);
+      $this.updateIssue($issue['number'], $title, $content, $fields);
+      $this.out.writeLine(': Updated');
+    } else {
+
+      // Check back until we find an issue, creating placeholders along the way
+      // This way, we ensure the created RFC has the correct number!
+      $last= $id;
+      while (--$last) {
+        $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::HEAD, '/repos/:user/:repo/issues/:id', [ id : $last ]));
+        if (200 == $response.status()) break;
+
+        $this.out.write('Creating place holder RFC for ', $last);
+        $placeholder= $this.createIssue('(Placeholder)', '', [:]);
+        $this.out.writeLine('Created issue #', $placeholder['number']);
+      }
+
+      // Now create the real issue
+      $this.out.write('Nothing found, creating new issue');
+      $issue= $this.createIssue($title, $content, $fields);
+      $this.out.writeLine('Created issue #', $issue['number']);
+    }
+    
+    // Parse Commments
+    $st.nextToken();
+    $comment= $last= null;
+    $comments= [:];
+    with ($separator= new Pattern('([a-z]+), ([a-zA-Z0-9:,+ ]+)$')) {
+      while ($st.hasMoreTokens()) {
+        $last= $line;
+        $line= $st.nextToken();
+
+        // Old format: "- <USER>, <DATE>\n<LINE1>\n<LINE2>...\n"
+        if (0 === strncmp('- ', $line, 2) && !MatchResult::$EMPTY.equals($match= $separator.match(substr($line, 2)))) {
+          $comment && $comments[$comment['id']]= $comment['content'];
+          $comment= [
+            id      : $match.group(0)[1] ~ ', ' ~ new util.Date($match.group(0)[2]).toString('r'),
+            content : ''
+          ];
+          continue;
+        }
+
+        // New format: "<USER>, <DATE>\n~~~~...\n<LINE1>\n<LINE2>...\n"
+        if (0 === strncmp('~~~', $line, 3) && !MatchResult::$EMPTY.equals($match= $separator.match($last))) {
+          $comment && $comments[$comment['id']]= substr($comment['content'], 0, -strlen($last)- 1);
+          $comment= [
+            id      : $match.group(0)[1] ~ ', ' ~ new util.Date($match.group(0)[2]).toString('r'),
+            content : ''
+          ];
+          continue;
+        }
+
+        if (null === $comment) continue;
+        $comment['content']~= $this.rewrite(trim($line));
+      }
+      $comment && $comments[$comment['id']]= $comment['content'];
+
+      // Get existing comments
+      $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, '/repos/:user/:repo/issues/:id/comments', [ id : $id ]));
+      $list= $response.result() as [:var][];
+      $existing= [:];
+      foreach ($i, $item in $list) {
+        if (MatchResult::$EMPTY.equals($match= $separator.match($item['body']))) continue;
+
+        $key= $match.group(0)[1] ~ ', ' ~ new util.Date($match.group(0)[2]).toString('r');
+        if (isset($comments[$key])) {
+          unset($comments[$key]);
+        } else {
+          $this.out.write('Comments -= ', $key);
+          $delete= $this.newApiRequest(HttpConstants::DELETE, '/repos/:user/:repo/issues/comments/:id', [ id : $item['id'] ]);
+          $r= $this.sendApiRequest($delete);
+          $this.out.writeLine($r.status());
+        }
+      }
+
+      // Add comments from origin RFC
+      foreach ($key, $add in $comments) {
+        $this.out.write('Comments += ', $key, ': ');
+        $create= $this.newApiRequest(HttpConstants::POST, '/repos/:user/:repo/issues/:id/comments', [ id : $id ]);
+        $create.setParameters(new RequestData(self::$json.encode([
+          body : new String($add).concat("\n").concat($key)
+        ])));
+        $create.setHeader('Content-Type', 'application/vnd.github-issuecomment.raw+json');
+        $r= $this.sendApiRequest($create);
+        $this.out.writeLine($r.status());
+      }
+    }
+    return 0;
   }
 }

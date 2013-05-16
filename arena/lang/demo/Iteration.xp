@@ -1,0 +1,64 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package demo;
+
+/**
+ * (Insert class' description here)
+ *
+ * @see     php://language.oop5.iterations
+ */
+public class Iteration implements php.core.Iterator {
+  protected int $position;
+  public string[] $elements;
+  
+  /*
+  public string foreach[int $position] {
+    get     { return new ArrayListIterator($this); }
+  }
+  
+  public string foreach[int $position] {
+    current { return $this.elements[$position]; }
+    next    { $position++; }
+    reset   { $position= 0; }
+    valid   { return $position < $this.elements.length; }
+  }
+  */
+
+  public string current() {
+    return $this.elements[$this.position];
+  }
+  
+  public int key() {
+    return $this.position;
+  }
+  
+  public void next() {
+    $this.position++;
+  }
+  
+  public void rewind() {
+    $this.position= 0;
+  }
+  
+  public bool valid() {
+    return $this.position < $this.elements.length;
+  }
+  
+  /**
+   * (Insert method's description here) 
+   *
+   */
+  public static void main(string[] $args) {
+    $it= new self();
+    $it.elements[]= 'PHP';
+    $it.elements[]= 'Java';
+    $it.elements[]= 'C#';
+    $it.elements[]= 'XP';
+    foreach ($key, $value in $it) {
+      util.cmd.Console::writeLine($key, ' => ', $value);
+    }
+  }
+}

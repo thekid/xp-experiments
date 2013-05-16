@@ -1,0 +1,99 @@
+XP Language experiment
+========================================================================
+This is the XP language - a compiled programming language built on top 
+of the XP Framework and written using it; inspired and still close to PHP 
+but also with elements from the Java and C# worlds. At the same time, this
+experiment also proves how PHP can be used as a platform, with different
+possible input syntaxes generating intermediate code to run inside it, and 
+be able to re-use code written in other syntaxes but also plain old PHP,
+but sharing the XP Framework's foundation classes as a common SDK.
+
+Overview
+--------
+Here's a list of the subdirectories inside this one and what you will 
+find inside:
+<pre>
+  - tests   : Unittests
+  - cmd     : Utility xpclis
+  - demo    : Examples
+  - grammar : Grammars
+  - xp      : Implementation
+</pre>
+
+Motivation
+----------
+Designing the XP programming language we had the following goals in mind:
+
+* Get rid of the oddities in PHP - alternative syntaxes like if / endif 
+  for example or "__"-magic.
+* Overcome limitations in the PHP grammar that do not allow chaining at
+  all points like method calls after new() and array access after method
+  calls.
+* Support syntactically what the XP framework has built ontop of PHP:
+  annotations, type-safe enums, return types, thrown exceptions, finallly,
+  with() blocks.
+* Integrate with the XP Framework's foundation classes.
+* Keep the "change and run" spirit and the ability for rapid development.
+
+Generally speaking, we've tried to follow the "less is more" principle and
+tried making the syntax more concise as to what it's doing.
+
+
+Prerequisites
+-------------
+This experiment requires XP Framework version 5.8.0-dev plus the classes
+from this directory. Replace the "use" line in your <tt>xp.ini</tt> with
+the following:
+
+<pre>
+  use=~/devel/xp/branches/xp5_8;~/devel/xp.forge/trunk/experiments/arena/lang
+</pre>
+
+Getting started
+---------------
+Like in the XP framework, the entry point is always a class. In their most
+simple form, these classes have a static <tt>main()</tt> method. An example:
+
+<code>
+  public class HelloWorld {
+    public static void main(string[] $args) {
+      util.cmd.Console::writeLine('Hello World from ', self::$class.getName(), '!');
+    }
+  }
+</code>
+
+Now you will already start noticing things:
+* Classes may also have modifiers.
+* The "extends Object" is optional and added by the compiler if omitted.
+* The keyword "function" is gone and replaced by the return type. Because
+  the main() method does not return anything, we use "void".
+* An array type is written as component[]
+* Variables still have dollar signs. This makes it easy to spot them,
+  that's why we've decided to keep this!
+* Fully qualified classnames are written with dots.
+* The object operator is also a dot (at the same time, the string 
+  concatenation operator is now the tilde, ~).
+
+This is not everything though, to get an impression on the language's
+"look and feel" have a look at the examples in the <tt>demo</tt> 
+subdirectory.
+
+Try it!
+-------
+Compile:
+<pre>
+  $ xcc demo/HelloWorld.xp 
+</pre>
+
+Run:
+<pre>
+  $ xp HelloWorld
+</pre>
+
+
+Hacking
+-------
+When changing the grammar file you need to regenerate the parser:
+<pre>
+  $ make grammar
+</pre>

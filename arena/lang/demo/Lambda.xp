@@ -1,0 +1,64 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package demo;
+
+import native standard.call_user_func;
+import native standard.strstr;
+
+/**
+ * Demonstrates lambdas by outputting all elements containing an "a":
+ *
+ * Example:
+ * <pre>
+ *   $ xp Lambda alpha beta production
+ *   alpha
+ *   beta
+ * </pre>
+ *
+ */
+public class Lambda {
+  protected string[] $elements;
+
+  /**
+   * Constructor
+   *
+   */
+  public __construct(string[] $args) {
+    $this.elements= $args;
+  }
+  
+  /**
+   * Calls block for each element
+   *
+   */
+  public void each(var $block) {
+    foreach ($element in $this.elements) {
+      call_user_func($block, $element);   // FIXME: $bock() raises a parse error
+    }
+  }
+  
+  /**
+   * Selects elements matching a given block
+   *
+   */
+  public self where(var $block) {
+    $r= new self([]);
+    foreach ($element in $this.elements) {
+      if (call_user_func($block, $element)) $r.elements[]= $element;
+    }
+    return $r;
+  }
+
+  /**
+   * Entry point method
+   *
+   */
+  public static void main(string[] $args) {
+    new self($args).where({$e => strstr($e, 'a')}).each({$e => {
+      util.cmd.Console::writeLine($e);
+    }});
+  }
+}

@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# GRB: Main
+MYSELF=$(realpath "$0")
+DIRNAME=$(dirname "$MYSELF")/grb-cmd
+EXEC=
+
+# Display usage if no args have been given
+if [ $# -eq 0 ]; then
+  ls -1 "$DIRNAME"/cmd.*.sh | while read cmd ; do
+    grep -A 1 '^#-grb' "$cmd" | sed -e 's/#-grb/* grb/g'
+    echo
+  done 
+  exit 1;
+fi
+
+# Check if the working directory is a git repo
+git st >/dev/null
+if [ $? != 0 ] ; then
+  exit 2;
+fi
+
+# Argument handling
+COMMAND=$1
+shift 1 2>/dev/null;
+
+# Execute
+if [ -f "$DIRNAME"/cmd.${COMMAND}.sh ]; then
+  . "$DIRNAME"/cmd.${COMMAND}.sh "$@"
+  exit $RETCODE
+else 
+  echo "*** Unknown command '$COMMAND'"
+  exit 1
+fi

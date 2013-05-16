@@ -1,0 +1,118 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+package demo;
+
+import unittest.AssertionFailedError;
+import lang.types.Integer;
+import util.cmd.Console;
+
+/**
+ * Unittest demo. Shows off:
+ * 
+ * <ul>
+ *   <li>class literal</li>
+ *   <li>new foreach</li>
+ *   <li>Annotations</li>
+ * </ul>
+ */
+public class Unittest {
+  protected string $name;
+  
+  /**
+   * Constructor
+   *
+   */
+  public __construct(string $name) {
+    $this.name= $name;
+  }
+  
+  /**
+   * Assert that two arguments passed are equal. Throws an AssertionFailedError
+   * in case they are not.
+   *
+   */
+  public void assertEquals(var $a, var $b) throws AssertionFailedError {
+    if ($a instanceof Generic) {
+      $eq= ($a as Generic).equals($b);
+    } else {
+      $eq= $a == $b;
+    }
+    if (!$eq) throw new AssertionFailedError('Not equal', $a, $b);
+  }
+  
+  /**
+   * Test addition of two numbers
+   *
+   */
+  [@test] void addition() {
+    $this.assertEquals(3, 1 + 2);
+  }
+
+  /**
+   * Test subtraction of two numbers
+   *
+   */
+  [@test] void subtract() {
+    $this.assertEquals(0, 1 - 1);
+  }
+
+  /**
+   * Test multiplication of two numbers
+   *
+   */
+  [@test] void multiply() {
+    $this.assertEquals(7, 1 * 7);
+  }
+
+  /**
+   * Test that always fails
+   *
+   */
+  [@test] void broken() {
+    $this.assertEquals(-1, 1 + 1);
+  }
+
+  /**
+   * Test equality of two objects
+   *
+   */
+  [@test] void equality() {
+    $this.assertEquals(new Integer(1), new Integer(1));
+  }
+
+  /**
+   * Test expecting a thrown exception
+   *
+   */
+  [@test, @expect('lang.IllegalArgumentException')] void expect() {
+    throw new lang.IllegalArgumentException($this.name);
+  }
+
+  /**
+   * Entry point method
+   *
+   */
+  public static void main(string[] $args) {
+    Console::write('Running class ', self::class, ' [');
+    foreach ($method in self::class.getMethods()) {
+      if (!$method.hasAnnotation('test')) continue;
+      
+      try {
+        $method.invoke(new self($method.getName()));
+        Console::write('.');
+      } catch (lang.reflect.TargetInvocationException $t) {
+        if ($method.hasAnnotation('expect')) {
+          if (lang.XPClass::forName($method.getAnnotation('expect')).isInstance($t.getCause())) {
+            Console::write('E');
+            continue;
+          }
+        }
+        Console::write('F');
+      }
+    }
+    Console::writeLine(']');
+  }
+}

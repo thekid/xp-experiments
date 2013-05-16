@@ -1,0 +1,57 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+package demo;
+
+import demo.lang.Delegate;
+
+/**
+ * Array class demo. Shows off:
+ *
+ * <ul>
+ *   <li>Generic syntax</li>
+ *   <li>Anonymous instance creation</li>
+ *   <li>Varargs syntax</li>
+ *   <li>New foreach</li>
+ * </ul>
+ */
+package class Array<T> {
+  protected T[] $elements;
+  
+  /**
+   * Constructor. Accepts varargs
+   * 
+   */
+  public __construct(T... $elements) {
+    $this.elements= $elements;
+  }
+  
+  /**
+   * Calls a delegate for each element in this array
+   * 
+   */
+  public void each(Delegate $block) {
+    foreach ($e in $this.elements) {
+      $block.apply($e);
+    }
+  }
+
+  /**
+   * Prints out the following
+   * 
+   * <pre>
+   *   - One
+   *   - Two
+   * </pre>
+   */
+  public static void main(string[] $args) {
+    $a= new Array<string>('One', 'Two');
+    $a.each(new Delegate() {
+      public void apply(string $e) {
+        util.cmd.Console::writeLine('- ', $e);
+      }
+    });
+  }
+}

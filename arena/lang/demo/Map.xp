@@ -1,0 +1,31 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+package demo;
+
+import static util.cmd.Console.*;
+
+/**
+ * Map demo. Shows off
+ *
+ * <ul>
+ *   <li>Map syntax</li>
+ *   <li>New foreach</li>
+ *   <li>Static import on demand</li>
+ * </ul>
+ */
+public class Map {
+
+  /**
+   * Entry point
+   *
+   */
+  public static void main(string[] $args) {
+    $a= [ three : 3 ];
+    foreach ($key, $value in $a) {
+      writeLine($key, ' => ', $value);
+    }
+  }
+}

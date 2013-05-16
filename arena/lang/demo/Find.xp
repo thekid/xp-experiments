@@ -1,0 +1,51 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+package demo;
+
+import io.collections.IOCollection;
+import io.collections.FileCollection;
+import io.collections.iterate.*;
+import native standard.strtr;
+
+/**
+ * Finds files
+ *
+ */
+public class Find extends util.cmd.Command {
+  protected IOCollection $collection;
+  protected IterationFilter $filter;
+
+  /**
+   * Set path to find files in. Pass "." to begin searching in current
+   * directory.
+   *
+   */
+  [@arg(position= 0)]
+  public void setPath(string $path) {
+    $this.collection= new FileCollection($path);
+  }
+
+  /**
+   * Set filename to search for. Uses patterns.
+   *
+   */
+  [@arg(position= 1)]
+  public void setFile(string $file) {
+    $this.filter= new NameMatchesFilter(
+      '#^' ~ strtr($file, [ '*' : '.*', '?' : '.', '.' : '\.' ]) ~ '$#'
+    );
+  }
+
+  /**
+   * Entry point method
+   *
+   */
+  public void run() {
+    foreach ($e in new FilteredIOCollectionIterator($this.collection, $this.filter, true)) {
+      $this.out.writeLine($e);
+    }
+  }
+}

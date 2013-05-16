@@ -1,0 +1,53 @@
+#!/bin/sh
+
+# Include xprt
+DIRNAME=$(dirname "$(realpath "$0")") #"
+. "$DIRNAME"/xprt
+
+# Initialize
+OPTIND=0
+INCLUDE=""
+INCLUDE_PATH="" 
+RUNNER="xp"
+
+# Parse arguments
+for arg in "$@" ; do
+  if [ ! -z "$INCLUDE_ARG" ] ; then
+    INCLUDE="$arg$INCLUDE_ARG$INCLUDE" ; INCLUDE_ARG=""
+    OPTIND=`expr $OPTIND + 2`
+    continue
+  fi
+
+  case $arg in
+    -v)               # Display version
+      RUNNER="xpv"
+      OPTIND=$(expr $OPTIND + 1)
+      ;;
+    -cp)              # Add class path
+      INCLUDE_ARG=${PATHSEP}
+      ;;
+    -e)               # Run source passed via command line
+      RUNNER="xpe"
+      OPTIND=$(expr $OPTIND + 1)
+      ;;
+    -xar)             # Run a xar
+      RUNNER="xar"
+      OPTIND=$(expr $OPTIND + 1)
+      ;;
+    -*)               # Any other arg
+      echo "*** Invalid argument $arg"
+      echo ${USAGE}
+      exit
+      ;;
+    *)                # First arg we find that does not begin with a "-"
+      break
+      ;;
+  esac
+done
+
+# Execute
+shift $OPTIND
+cmd=$(execute "$DIRNAME" "$RUNNER" "$INCLUDE")
+#DEBUG echo "### $cmd ## $@ ###"
+IFS="|"
+$cmd "$@"

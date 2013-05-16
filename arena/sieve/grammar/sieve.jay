@@ -1,0 +1,273 @@
+%{
+  uses(
+    'peer.sieve.SyntaxTree',
+    'peer.sieve.CommandSet',
+    'peer.sieve.Rule',
+    'peer.sieve.AddressPart',
+    'peer.sieve.action.ActionFactory',
+    'peer.sieve.condition.AllOfCondition',
+    'peer.sieve.condition.NegationOfCondition',
+    'peer.sieve.condition.AnyOfCondition',
+    'peer.sieve.condition.HeaderCondition',
+    'peer.sieve.condition.ExistsCondition',
+    'peer.sieve.condition.SizeCondition',
+    'peer.sieve.condition.AddressCondition',
+    'peer.sieve.condition.EnvelopeCondition',
+    'peer.sieve.condition.BooleanCondition',
+    'peer.sieve.match.MatchType',
+    'peer.sieve.match.ValueMatch',
+    'peer.sieve.match.CountMatch'
+  );
+%}
+
+%token T_WORD 260
+%token T_STRING 261
+%token T_NUMBER 263
+
+%token T_REQUIRE 270
+
+%token T_IF 280
+%token T_ELSE 281
+%token T_ELSEIF 282
+
+%token T_ALLOF 290
+%token T_ANYOF 291
+%token T_NOT 292
+
+%token T_HEADER 300
+%token T_SIZE 301
+%token T_ADDRESS 302
+%token T_TRUE 303
+%token T_FALSE 304
+%token T_COMPARATOR 305
+%token T_ENVELOPE 306
+%token T_EXISTS 307
+
+%token T_IS 400
+%token T_CONTAINS 401
+%token T_MATCHES 402
+%token T_REGEX 403
+%token T_VALUE 404
+%token T_COUNT 405
+
+%token T_ALL 500
+%token T_DOMAIN 501
+%token T_LOCALPART 502
+%token T_USER 503
+%token T_DETAIL 504
+
+%%
+
+start:
+    requires_opt commands_opt {
+      $$= new peer新ieve惹yntaxTree();
+      $$->required= $1;
+      $$->commandset= new peer新ieve嵩ommandSet();
+      $$->commandset->list= $2;
+    }
+;
+
+// {{{ Required items
+requires_opt:
+    /* empty */ { $$= NULL; }
+  | requires 
+;
+
+requires:
+    require { $$= $1; }
+  | require requires { $$= array_merge(array($1), $2); }
+;
+
+require:
+    T_REQUIRE T_STRING ';' { $$= array($2); }
+  | T_REQUIRE '[' stringlist ']' ';' { $$= $3; }
+;
+// }}}
+
+// {{{ Rules
+commands_opt:
+    /* empty */ { $$= NULL; }
+  | commands 
+;
+
+commands:
+    command { $$= array($1); }
+  | command commands { $$= array_merge(array($1), $2); }
+;
+
+command:
+    T_IF { $1= new peer新ieve愛ule(); } test '{' commands_opt '}' else_opt {
+      $1->condition= $3;
+      $1->commands= $5;
+      $1->otherwise= $7;
+      if ($7 && !$7->condition) {    // dangling else
+        $7->condition= new NegationOfCondition();
+        $7->condition->negated= $3;
+      }
+    }
+  | action
+      
+;
+
+else_opt:
+    /* empty */ { $$= NULL; }
+  | T_ELSE { $1= new peer新ieve愛ule(); } '{' commands_opt '}' {
+      $1->condition= NULL;
+      $1->actions= $4;
+    }
+  | T_ELSEIF { $1= new peer新ieve愛ule(); } test '{' commands_opt '}' else_opt {
+      $1->condition= $3;
+      $1->commands= $5;
+      $1->otherwise= $7;
+      if ($7 && !$7->condition) {    // dangling else
+        $7->condition= new NegationOfCondition();
+        $7->condition->negated= $3;
+      }
+    }
+;
+// }}}
+
+action:
+    T_WORD { $1= ActionFactory::newAction($1); } taglist_opt arguments_opt ';' {
+      try {
+        $1->pass($3, $4);
+      } catch (IllegalArgumentException $e) { 
+        $this->error(E_ERROR, $e->getMessage().' at '.$yyLex->fileName.', line '.$yyLex->position[0]); 
+        $1= NULL;
+      }
+    }
+;
+
+// {{{ Tests
+test:
+    // allof <tests: test-list>
+    T_ALLOF { $1= new AllOfCondition(); } '(' testlist ')' {
+      $1->conditions= $4;
+    }
+    // anyof <tests: test-list>
+  | T_ANYOF { $1= new AnyOfCondition(); } '(' testlist ')' {
+      $1->conditions= $4;
+    }
+    // not <test1: test>
+  | T_NOT { $1= new NegationOfCondition(); } test {
+      $1->negated= $3;
+    }
+    // header [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>
+  | T_HEADER { $1= new HeaderCondition(); } taglist_opt argument argument { 
+      isset($3['comparator']) && $1->comparator= $3['comparator'];
+      isset($3['matchtype']) && $1->matchtype= $3['matchtype'];
+      $1->names= (array)$4;
+      $1->keys= (array)$5;
+    }
+    // exists <header-names: string-list>
+  | T_EXISTS { $1= new ExistsCondition(); } argument {
+      $1->names= (array)$3;
+    }
+    // size <":over" / ":under"> <limit: number>
+  | T_SIZE ':' T_WORD { 
+      try { 
+        $1= SizeCondition::forName($3); 
+      } catch (IllegalArgumentException $e) { 
+        $this->error(E_ERROR, $e->getMessage().' at '.$yyLex->fileName.', line '.$yyLex->position[0]); 
+        $1= NULL;
+      }
+    } T_NUMBER {
+      $1 && $1->value= intval($5);
+    }
+    // envelope [COMPARATOR] [ADDRESS-PART] [MATCH-TYPE] <envelope-part: string-list> <key-list: string-list>
+  | T_ENVELOPE { $1= new EnvelopeCondition(); } taglist_opt argument argument {
+      isset($3['addresspart']) && $1->addresspart= $3['addresspart'];
+      isset($3['comparator']) && $1->comparator= $3['comparator'];
+      isset($3['matchtype']) && $1->matchtype= $3['matchtype'];
+      $1->headers= (array)$4;
+      $1->keys= (array)$5;
+    }
+    // address [COMPARATOR] [ADDRESS-PART] [MATCH-TYPE] <header-list: string-list> <key-list: string-list>
+  | T_ADDRESS { $1= new AddressCondition(); } taglist_opt argument argument {
+      isset($3['addresspart']) && $1->addresspart= $3['addresspart'];
+      isset($3['comparator']) && $1->comparator= $3['comparator'];
+      isset($3['matchtype']) && $1->matchtype= $3['matchtype'];
+      $1->headers= (array)$4;
+      $1->keys= (array)$5;
+    }
+    // true
+  | T_TRUE { 
+      $$= new BooleanCondition(TRUE);
+    }
+    // false
+  | T_FALSE { 
+      $$= new BooleanCondition(FALSE);
+    }
+;
+// }}}
+
+taglist_opt:
+    /* Empty */ { $$= NULL; }
+  | taglist
+;
+
+taglist:
+    tag { $$= $1; }
+  | tag taglist { $$= array_merge($1, $2); }
+;
+
+tag:
+    ':' matchtype { $$= array('matchtype' => $2); }
+  | ':' addresspart { $$= array('addresspart' => $2); }
+  | ':' T_WORD argument { $$= array($2 => $3); }
+  | ':' comparator { $$= array('comparator' => $2); }
+;
+
+testlist:
+    test { $$= array($1); }
+  | test ',' testlist { $$= array_merge(array($1), $3); }
+;
+
+arguments_opt:
+    /* Empty */ { $$= NULL; }
+  | arguments
+;
+
+arguments:
+    argument { $$= array($1); }
+  | argument arguments { $$= array_merge(array($1), $2); }
+;
+
+argument:
+    T_STRING
+  | T_NUMBER
+  | '[' stringlist ']' { $$= $2; }
+;
+
+// }}}
+
+
+// {{{ Reusable
+comparator:
+    T_COMPARATOR T_STRING { $$= $2; }
+;
+
+addresspart:
+    T_ALL { $$= AddressPart::$all; }
+  | T_DOMAIN { $$= AddressPart::$domain; }
+  | T_LOCALPART { $$= AddressPart::$localpart; }
+  | T_USER { $$= AddressPart::$user; }
+  | T_DETAIL { $$= AddressPart::$detail; }
+;
+
+matchtype:
+    T_IS { $$= MatchType::is(); }
+  | T_CONTAINS { $$= MatchType::contains(); }
+  | T_MATCHES { $$= MatchType::matches(); }
+  | T_REGEX { $$= MatchType::regex(); }
+  | T_VALUE T_STRING { $$= new ValueMatch($2); }
+  | T_COUNT T_STRING { $$= new CountMatch($2); }
+;
+
+stringlist:
+    T_STRING { $$= array($1); }
+  | T_STRING ',' stringlist  { $$= array_merge(array($1), $3); }
+;
+
+// }}}
+%%

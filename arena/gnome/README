@@ -1,0 +1,38 @@
+Gnome API redesign
+========================================================================
+The XP Framework's GUI apis date back to the PHP4 / GTK1 days and have 
+not been touched since then. In desparate need of an overhaul, and 
+following the PHP-GTK2 releases and the stability provided by its PHP5 
+backing, I began an experiment to redesign the API from scratch.
+
+Prerequisites
+-------------
+The GUI api is based on the so-called "Gimp Tool Kit", better known as 
+"Gtk" these days. Language bindings exist for many languages, PHP's is
+called PHP-GTK.
+
+Resources can be found at http://gtk.php.net/ and http://php-gtk.eu/
+
+Setting it up (Windows)
+~~~~~~~~~~~~~~~~~~~~~~~
+Getting PHP-GTK is as easy as:
+
+* Go to http://gtk.php.net/download.php
+* Download php-gtk-2.0.1 Windows binary pack and php-gtk-2.0.1 Windows binary extensions pack
+* Unpack their contents into, say, f:\Programme\php-gtk2
+* You need php-gtk.extensions = php_gtk_libglade2.dll in php-cli.ini
+
+Setting it up (Un*x)
+~~~~~~~~~~~~~~~~~~~~
+See here http://php-gtk.eu/de/resources/installing and here
+http://gtk.php.net/manual/en/tutorials.installation.php
+
+
+Testing it
+----------
+To run the sample applications in this directory, use the following
+shell commands:
+<pre>
+  $ XP_RT=/path/to/php-gtk2/php xp ButtonClick
+  $ XP_RT=/path/to/php-gtk2/php xp GladeApp
+</pre>

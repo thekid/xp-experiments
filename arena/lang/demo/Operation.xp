@@ -1,0 +1,48 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+package demo;
+
+/**
+ * Operation demo. Shows off
+ *
+ * <ul>
+ *   <li>Abstract enums</li>
+ *   <li>Ternary shortcut (?:)</li>
+ * </ul>
+ */
+public abstract enum Operation {
+  plus {
+    public int evaluate(int $x, int $y) { return $x + $y; }
+  },
+  minus {
+    public int evaluate(int $x, int $y) { return $x - $y; }
+  },
+  times {
+    public int evaluate(int $x, int $y) { return $x * $y; }
+  },
+  divided_by {
+    public int evaluate(int $x, int $y) { return $x / $y; }
+  };
+
+  /**
+   * Evaluate an operation.
+   *
+   */
+  public abstract int evaluate(int $x, int $y);
+  
+  /**
+   * Entry point
+   *
+   */
+  public static void main(string[] $args) {
+    $a= $args[0] ?: 1;
+    $b= $args[1] ?: 2;
+
+    foreach ($op in self::values()) {
+      util.cmd.Console::writeLine($a, ' ', $op, ' ', $b, ' = ', $op.evaluate($a, $b));
+    }
+  } 
+}

@@ -34,6 +34,15 @@ public class ApiResponse {
   public int status() {
     return $this.response.statusCode();
   }
+
+  /**
+   * Accessor for header
+   *
+   * @param   name
+   */
+  public string[] header(string? $name) {
+    return $this.response.header($name);
+  }
   
   /**
    * Returns payload

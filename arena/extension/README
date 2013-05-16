@@ -1,0 +1,229 @@
+Extension methods
+========================================================================
+This experiment evaluates the possibility to add extension methods to 
+the XP Framework's core.
+
+Motivation
+----------
+The following calls a method called "sorted" on an instance of the
+lang.types.ArrayList class. The ArrayList class doesn't have such a
+method, and we'll thus get a nice "call to undefined method" error
+shortly before our program is terminated.
+
+<code>
+  $array= new ArrayList(3, 1, 2);
+  $sorted= $array->sorted();
+</code>
+
+We could add this method to the class, but the next request would be to 
+have <tt>filter(), map(), join(), collect(), partition()</tt>, and
+whatever else methods in this class, which would turn it into the 
+"swiss army knife" anti-pattern. Of course adding functionality can 
+also be accomplished by subclassing or by creating an adapter which 
+delegates all calls to the ArrayList class but the ones it wants to
+implement on top. 
+
+The subclass
+~~~~~~~~~~~~
+<code>
+  class SortableArrayList extends ArrayList {
+    public static function from(ArrayList $in) {
+      $s= new self();
+      $s->values= $in->values;
+      $s->size= $in->size;
+      return $s;
+    }
+    public function sorted() { ... }
+  }
+  
+  $array= new ArrayList(3, 1, 2);
+  $sorted= SortableArrayList::from($array)->sorted(); 
+</code>
+
+The delegate
+~~~~~~~~~~~~  
+<code>
+  class SortableArrayList extends Object {
+    public function __construct(ArrayList $delegate) {
+      $this->delegate= $delegate;
+    }
+    public function __call($name, $args) {
+      return call_user_func_array(array($this->delegate, $name), $args);
+    }
+    public function sorted() { ... } 
+  }
+  
+  $array= new ArrayList(3, 1, 2);
+  $sorted= create(new SortableArrayList($array))->sorted();  
+</code>
+
+Following the "one class, one responsibility" we could also refactor
+the code out into an ArrayHelper class with all kinds of static helper 
+functions or into an ArraySorter, an ArrayFilterer, and so on. We
+wouldn't really be adding functionality in these cases, but let's have
+a look at them nevertheless:
+
+The helper class
+~~~~~~~~~~~~~~~~
+<code>
+  class Arrays extends Object {
+    public static function sort(ArrayList $in) { ... } 
+  }
+  
+  $array= new ArrayList(3, 1, 2);
+  $sorted= Arrays::sort($array);
+</code>
+
+The sorter
+~~~~~~~~~~
+<code>
+  class ArraySorter extends Object {
+    public function sort(ArrayList $in) { ... } 
+  }
+  
+  $array= new ArrayList(3, 1, 2);
+  $sorted= create(new ArraySorter())->sort($array);
+</code>
+
+In any of these situations though, we have to write more sourcecode. 
+More sourcecode not only for the extension itself but also when using it. 
+
+Fact
+----
+Programmers can be safely said to be of the type of person who are lazy 
+(or else we'd be shifting the bytes ourselves and not letting a 
+programming language do the job, right?). Writing less code to solve a 
+problem is not only fundamental to a programmer's motivation: It also
+circumvents possible bugs.
+
+<summary>
+In this spirit, we'd like to accomplish the following:
+
+* add functionality to an existing type without modifying it,
+* import this functionality on demand to prevent bloat,
+* write shortest amount of code when using the extension.
+</summary>
+
+Anatomy
+-------
+Extension methods let you "add" methods to existing types without having
+to change the respective type itself. They are declared in a regular 
+class as static methods, albeit being called as if they were instance 
+methods on objects of the type they extend. Seen from the outside, using 
+extension methods does not differ from calling methods actually defined 
+inside that type.
+
+Declaration
+~~~~~~~~~~~
+Given this, to implement an extension method "sorted" for the ArrayList
+class so that it can be used as in the example from the beginning, we 
+declare the following:
+
+<code>
+  class ArraySortingExtension extends Object {
+  
+    static function __static() {
+      xp::extensions('lang.types.ArrayList', __CLASS__);
+    }
+    
+    public static function sorted(ArrayList $self) {
+      // Implementation here
+    }
+  }
+</code>
+
+There are two essential parts in this declaration: First of all, the
+static initializer, which registers this class as a provider for extension
+methods for the lang.types.ArrayList class. Second, the extension method
+itself, which is declared <tt>public static</tt> and receives the ArrayList
+instance to work on as its first parameter.
+
+Using it
+~~~~~~~~
+Although extension methods are defined static, they are called using 
+instance method syntax. However, extension methods are only available
+if they're explicitly imported! This can be done by adding the extension
+method class to the <tt>uses()</tt> list:
+
+<code>
+  uses('com.example.extensions.ArraySortingExtension');
+</code>
+
+Once this is achieved our example will work and the <tt>sorted()</tt>
+call will yield an ArrayList containing the sorted values <tt>1, 2, 3</tt>.
+
+Restrictions
+~~~~~~~~~~~~
+Because of the way they're implemented, extension methods can only operate
+on a type's public API. Extension methods are really only syntactic sugar,
+backed by static method calls to an extension class. Thus, the following
+two calls are equivalent from a protection level point of view.
+
+<code>
+  $sorted= $array->sorted();
+  $sorted= ArraySortingExtension::sorted($array);
+</code>
+
+If you look at the second it becomes clear why only public methods can 
+be called!
+
+Furthermore, extension methods can only add functionality. Extension 
+methods cannot overwrite existing methods. Thus, the following extension 
+method will never be executed because the <tt>XPClass</tt> class already
+has a <tt>getName()</tt> method:
+
+<code>
+  class XPClassExtensions extends Object {
+    public static function getName(XPClass $self) { ... }
+  }
+</code>
+
+The same applies for the methods defined in <tt>lang.Object</tt> itself,
+every other object inherits these: <tt>hashCode()</tt>, <tt>equals()</tt>,
+<tt>getClassName()</tt>, <tt>getClass()</tt> and <tt>toString()</tt>.
+
+
+How it works
+------------
+Because almost everything happens at runtime in PHP, so do method call
+lookups. When the PHP runtime encounters a method call, it looks at the
+object and the method name, trying to find a method called equivalent
+in the object's type declaration. If it fails to find a method by the
+given name, PHP falls back to calling a special method by name 
+[http://de3.php.net/__call __call] (a so-called "magic" method).
+
+We make use of this facility in the <tt>Object</tt> base class and then
+check <tt>xp::$registry</tt> for a matching extension class providing 
+methods to <tt>$this</tt>' class. If found, the method is invoked, an
+error is raised otherwise.
+
+<code>
+  public function __call($name, $args) {
+    if (isset(xp::$registry[$m= get_class($this).'::'.$name])) {
+      return xp::$registry[$m]->invokeArgs(NULL, array_merge(array($this), $args));
+    }
+    throw new Error('Call to undefined method '.$m);
+  }
+</code>
+
+This poses a considerable performance impact on extension methods (the 
+factor is about 8), though its effects are not really noticeable inside 
+a regular business application working with databases, web service calls 
+and the local file system.
+
+XP Language
+~~~~~~~~~~~
+In the XP language, this performance problem is solved by compile time 
+resolution.
+
+
+See also
+--------
+* http://msdn.microsoft.com/en-us/library/bb383977.aspx
+* http://groovy.codehaus.org/Pimp+my+Library+Pattern
+* http://www.oreillynet.com/onjava/blog/2007/12/extension_methods_proposals.html
+* http://weblogs.java.net/blog/forax/archive/2007/11/java_7_extensio.html
+* http://journal.stuffwithstuff.com/2008/02/09/c-extension-methods-not-just-for-breakfast/
+* http://www.codeproject.com/KB/cs/ExtensionUnitTests.aspx
+* http://blog.getpaint.net/2008/07/03/c-extension-methods-portability-aid/
+* http://www.zorched.net/2008/01/03/implementing-mixins-with-c-extension-methods/

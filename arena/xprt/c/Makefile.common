@@ -1,0 +1,18 @@
+BINARIES=xp$(EXE_EXT) xpcli$(EXE_EXT) xar$(EXE_EXT) unittest$(EXE_EXT)
+
+all: xp xpcli xar unittest
+    
+clean:
+	-$(RM) $(BINARIES) *.obj
+
+xp:
+	$(CC) xp.c xprt.c hash.c -o xp$(EXE_EXT)
+
+xpcli:
+	$(CC) xpcli.c xprt.c hash.c -o xpcli$(EXE_EXT)
+
+xar:
+	$(CC) xar.c xprt.c hash.c -o xar$(EXE_EXT)
+
+unittest:
+	$(CC) unittest.c xprt.c hash.c -o unittest$(EXE_EXT)

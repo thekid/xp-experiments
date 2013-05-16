@@ -1,0 +1,5 @@
+CC=cl /I.
+EXE_EXT=.exe
+RM=del
+
+include Makefile.common

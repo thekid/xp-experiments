@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Include xprt
+DIRNAME=$(dirname "$(realpath "$0")") #"
+. "$DIRNAME"/xprt
+cmd=$(execute "$DIRNAME" "xp" "")
+IFS="|"
+$cmd util.cmd.Runner "$@"

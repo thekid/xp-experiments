@@ -1,0 +1,39 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+package demo;
+
+import util.cmd.Console;
+
+/**
+ * Each demo. Shows off:
+ *
+ * <ul>
+ *   <li>Generics syntax</li>
+ *   <li>Chaining after new</li>
+ *   <li>New foreach</li>
+ * </ul>
+ */
+public class Each<T> {
+  public T[] $values;
+
+  /**
+   * Constructor
+   *
+   */
+  public __construct(T[] $values) {
+    $this.values= $values;
+  }
+  
+  /**
+   * Entry point
+   *
+   */
+  public static void main(string[] $args) {
+    foreach ($value in new self<string>($args).values) {
+      Console::writeLine('- ', $value);
+    }
+  }  
+}

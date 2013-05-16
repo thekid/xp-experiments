@@ -1,0 +1,4 @@
+EXE_EXT=
+RM=rm
+
+include Makefile.common

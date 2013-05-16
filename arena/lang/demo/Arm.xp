@@ -1,0 +1,48 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+package demo;
+
+import io.streams.TextReader;
+import io.streams.FileInputStream;
+import util.cmd.Console;
+
+/**
+ * Automatic resource management block
+ * 
+ * @see   http://mail.openjdk.java.net/pipermail/coin-dev/2009-February/000011.html
+ */
+public class Arm {
+ 
+  /**
+   * Entry point
+   *
+   */
+  public static void main(string[] $args) {
+    $is= new FileInputStream(__FILE__) {
+      protected bool $fail= false;
+      
+      public string read(int $bytes= 8192) {
+        if ($this.fail) {
+          throw new io.IOException('Failed reading ' ~ $bytes);
+        }
+        $this.fail= true;
+        return parent::read(20);
+      }
+      
+      public void close() {
+        Console::writeLine('+ Closing stream');
+        parent::close();
+      }
+    };
+
+    try ($r= new TextReader($is)) {
+      while (null !== ($line= $r.readLine())) {
+        Console::writeLine('R ', $line);
+      }
+    }
+    Console::writeLine('+ After ARM block');
+  } 
+}

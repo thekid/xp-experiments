@@ -1,0 +1,45 @@
+--- convert/patches/lang.ClassLoader.orig	2008-11-10 15:26:07.034000000 +0100
++++ convert/patches/lang.ClassLoader	2008-11-10 15:28:50.125000000 +0100
+@@ -159,12 +159,19 @@
+           }
+         }
+ 
++        $p= strrpos($name, '\\');
++        $ns= '';
++        if (FALSE !== $p) {
++          $ns= 'namespace '.substr($name, 0, $p).'; ';
++          $name= substr($name, $p+ 1);
++        }
+         \with ($dyn= DynamicClassLoader::instanceFor(__METHOD__)); {
+           $dyn->setClassBytes($class, sprintf(
+-            'class %s extends %s%s %s',
++            '%sclass %s extends \\%s%s %s',
++            $ns,
+             $name,
+             $super,
+-            $interfaces ? ' implements '.implode(', ', $if) : '',
++            $interfaces ? ' implements \\'.implode(', \\', $if) : '',
+             $bytes
+           ));
+           
+@@ -196,11 +203,18 @@
+           }
+         }
+ 
++        $p= strrpos($name, '\\');
++        $ns= '';
++        if (FALSE !== $p) {
++          $ns= 'namespace '.substr($name, 0, $p).'; ';
++          $name= substr($name, $p+ 1);
++        }
+         \with ($dyn= DynamicClassLoader::instanceFor(__METHOD__)); {
+           $dyn->setClassBytes($class, sprintf(
+-            'interface %s%s %s',
++            '%sinterface %s%s %s',
++            $ns,
+             $name,
+-            sizeof($if) ? ' extends '.implode(', ', $if) : '',
++            sizeof($if) ? ' extends \\'.implode(', \\', $if) : '',
+             $bytes
+           ));
+           

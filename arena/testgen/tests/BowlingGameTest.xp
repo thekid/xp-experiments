@@ -1,0 +1,35 @@
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+import unittest.TestCase;
+
+/**
+ * TestCase
+ *
+ */
+public class BowlingGameTest extends TestCase {
+  
+  /**
+   * Test
+   *
+   */
+  [@test]
+  public void roll() {
+    $game= new BowlingGame();
+    $game.roll(0);
+    $this.assertEquals(0, $game.score());
+  }
+
+  /**
+   * Test
+   *
+   */
+  [@test]
+  public void rollAll() {
+    $game= new BowlingGame();
+    $game.rollAll(0);
+    $this.assertEquals(TRUE, $game.done || !$game.isDone());
+  }
+}

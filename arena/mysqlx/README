@@ -1,0 +1,24 @@
+MySQL userland driver
+========================================================================
+$Id$
+
+This experiment tests the feasibility of writing a MySQL driver in pure
+PHP code.
+
+<summary>
+  This is part of SVN head and will be inside 5.8.1!
+</summary>
+
+Example
+-------
+<pre>
+  $ xpcli cmd.Query 'mysqlx://user:pass@host' 'select @@version'
+</pre>
+
+
+See also
+--------
+* PHP's mysqlnd extension
+* http://forge.mysql.com/wiki/MySQL_Internals_ClientServer_Protocol
+
+<EOF>

@@ -1,0 +1,33 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+package demo;
+
+import util.cmd.Console;
+import util.*;
+
+/**
+ * Hello world demo. Shows off:
+ *
+ * <ul>
+ *   <li>Chaining after new</li>
+ *   <li>Type import on demand</li>
+ * </ul>
+ */
+public class HelloWorld {
+
+  /**
+   * Entry point
+   *
+   */
+  public static void main(string[] $args) {
+    $now= new Date().toString('Y-m-d');
+    if ($args[0]) {
+      Console::writeLine('Hello ', $args[0], ' @ ', $now);
+    } else {
+      Console::writeLine('Hello World @ ', $now);
+    }
+  }
+}

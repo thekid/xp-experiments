@@ -1,0 +1,105 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+package demo;
+
+import native iconv.*;
+import native standard.implode;
+import native standard.str_split;
+import native standard.var_dump;
+import static util.cmd.Console.writeLine;
+
+/**
+ * StringBuffer demo. Shows off:
+ *
+ * <ul>
+ *   <li>Properties</li>
+ *   <li>Array access overloading ("this" property)</li>
+ * </ul>
+ */
+public class StringBuffer {
+  protected string $buffer;
+  protected int $_length;
+
+  /**
+   * Constructor.
+   *
+   */
+  public __construct(string $initial= '') {
+    $this.buffer= $initial;
+    $this._length= iconv_strlen($initial, 'utf-8');
+  }
+  
+  /**
+   * Append a string and return this stringbuffer
+   *
+   * <code>
+   *   $s= new StringBuffer().append('Hello').append(' ').append('World');
+   * </code>
+   *
+   */
+  public self append(string $str) {
+    $this.buffer~= $str;
+    $this._length+= iconv_strlen($str, 'utf-8');
+    return $this;
+  }
+  
+  /**
+   * Create a stringbuffer from an array of string
+   *
+   */
+  public static self valueOf(string[] $in) {
+    return new self(implode(' ', $in));
+  }
+  
+  public string this[int $offset] {
+    get {
+      return iconv_substr($this.buffer, $offset, 1, 'utf-8');
+    }
+    set {
+      throw new lang.IllegalAccessException('Cannot write to string offsets');
+    }
+    unset {
+      throw new lang.IllegalAccessException('Cannot remove string offsets');
+    }
+    isset {
+      return $offset >= 0 && $offset < $this._length;
+    }
+  }
+  
+  public int length {
+    get { return $this._length; }
+    set { throw new lang.IllegalAccessException('Cannot set string length'); }
+  }
+
+  public string[] chars {
+    get { return str_split($this.buffer); }
+  }
+
+  /**
+   * Creates a string representation of this stringbuffer
+   *
+   */
+  public string toString() {
+    return $this.buffer;
+  }
+  
+  /**
+   * Entry point method
+   *
+   */
+  public static void main(string[] $args) {
+    $s= self::valueOf($args).append('!');
+    writeLine('String= "', $s, '" (length= ', $s.length, ') [0]= "', $s[0], '"');
+    
+    try {
+      $s.length= 10;
+    } catch (lang.IllegalAccessException $e) {
+      writeLine('Caught expected ', $e.compoundMessage());
+    }
+
+    writeLine('chars= ', $s.chars);
+  }  
+}

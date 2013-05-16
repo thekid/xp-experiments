@@ -1,0 +1,39 @@
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
+
+package demo;
+
+import lang.types.ArrayList;
+import util.cmd.Console;
+
+/**
+ * Member initialization demo.
+ *
+ * <ul>
+ *   <li>Initializing members to expressions</li>
+ *   <li>Initializing members to constants</li>
+ * </ul>
+ */
+public class Init {
+  protected static XPClass $arrayClass = ArrayList::class;
+  protected ArrayList $elements = self::$arrayClass.newInstance(1, 2, 3);
+  protected string $name = null;
+  
+  /**
+   * Prints out the following
+   * 
+   * <pre>
+   *   - 1
+   *   - 2
+   *   - 3
+   * </pre>
+   */
+  public static void main(string[] $args) {
+    Console::writeLine('Using ', self::$arrayClass);
+    foreach ($n in new self().elements) {
+      Console::writeLine('- ', $n);
+    }
+  }
+}

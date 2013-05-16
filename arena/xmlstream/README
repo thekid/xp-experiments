@@ -1,0 +1,15 @@
+XML Streams experiments: Reader and Writers
+========================================================================
+
+Links: Writer
+~~~~~~~~~~~~~
+* http://dom4j.org/dom4j-1.6.1/apidocs/org/dom4j/io/XMLWriter.html
+* http://search.cpan.org/~josephw/XML-Writer-0.606/Writer.pm
+* http://www.java2s.com/Code/Java/JDK-6/XMLStreamWriterDemo.htm
+* http://www.php.net/manual/de/ref.xmlwriter.php
+
+Links: Reader
+~~~~~~~~~~~~~
+* http://msdn.microsoft.com/en-us/library/cc189056(VS.95).aspx
+* http://www.xml.com/pub/a/2003/09/17/stax.html
+* http://java.sun.com/webservices/docs/2.0/tutorial/doc/StAX6.html

@@ -1,0 +1,51 @@
+PHP 5.3 Experiments
+===================
+This directory is intended to hold experiments with the new PHP version.
+
+
+Namespaces
+----------
+The "namespaces" directory contains a preview of what namespaced code
+will look like in XP6.
+
+<code>
+  namespace util;
+  
+  use lang::IllegalArgumentException;
+  
+  class Date extends lang::Object {
+  
+    // ...
+    
+  }
+</code>
+
+Lambda
+------
+This directory explores what is possible with the new lambda/closure
+support added in 5.3.
+
+For example, a using statement could be added which closes objects
+automatically when leaving its scope:
+
+<code>
+  using(new FileReader($fi), new FileWriter($fo), function($in, $out) {
+    $out->write($in->read());
+  });
+</code>
+
+Late static binding
+-------------------
+The so-called "late static binding" features allows for inheritance of
+static methods and members.
+
+One use of this is:
+<code>
+  class Logger extends Singleton {
+    public function log($arg) { 
+      // ...
+    }
+  }
+  
+  Logger::getInstance()->log('Hello');
+</code>

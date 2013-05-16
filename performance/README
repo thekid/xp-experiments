@@ -1,0 +1,79 @@
+Performance comparison experiment
+========================================================================
+$Id$
+
+
+Comparison chart
+----------------
+Comparing C# (v3.5), Java (1.6.0), PHP (5.3) and PHP (5.3-with-fc-cache)
+
+Method calls
+~~~~~~~~~~~~
+<pre>
+  $ java Profile MethodCalls
+  PUBLIC: 0,013 seconds for 10000000 runs (769230769 / second)
+  PROTECTED: 0,014 seconds for 10000000 runs (714285714 / second)
+  PRIVATE: 0,015 seconds for 10000000 runs (666666667 / second)
+
+  $ ./Profile.exe MethodCalls
+  PUBLIC: 0,040 seconds for 10000000 runs (251244287 / second)
+  PRIVATE: 0,081 seconds for 10000000 runs (124027931 / second)
+  PROTECTED: 0,115 seconds for 10000000 runs (86964008 / second)
+
+  $ xpcli Profile MethodCalls
+  public: 0.142 seconds for 100000 calls (703348 / second)
+  private: 0.145 seconds for 100000 calls (688986 / second)
+  protected: 0.155 seconds for 100000 calls (644296 / second)
+
+  $ XP_RT='php-with-fc-cache\php' xpcli Profile MethodCalls
+  public: 0.083 seconds for 100000 calls (1202502 / second)
+  private: 0.083 seconds for 100000 calls (1208385 / second)
+  protected: 0.086 seconds for 100000 calls (1167722 / second)
+</pre>
+
+Table 1: Comparing PHP:
+<pre>
+  Type      PHP   PHPFC C#    Java
+  --------- ----- ----- ----- -----
+  public    1     1.7   357   1094
+  private   1     1.8   180   968
+  protected 1     1.8   135   1109
+</pre>
+
+Table 2: Comparing PHP with Function Call Cache:
+<pre>
+  Type      PHPFC PHP   C#    Java
+  --------- ----- ----- ----- -----
+  public    1     0.6   209   640
+  private   1     0.6   102   552
+  protected 1     0.6   75    612
+</pre>
+
+Increment
+~~~~~~~~~
+POST = <tt>a++</tt>, PRE = <tt>++a</tt>, BINARY = <tt>a= a+ 1</tt>
+<pre>
+  $ java Profile Increment
+  POST: 0,013 seconds for 10000000 runs (769230769 / second)
+  PRE: 0,014 seconds for 10000000 runs (714285714 / second)
+  BINARY: 0,014 seconds for 10000000 runs (714285714 / second)
+
+  $ ./Profile.exe Increment
+  POST: 0,013 seconds for 10000000 runs (743505480 / second)
+  PRE: 0,028 seconds for 10000000 runs (361650573 / second)
+  BINARY: 0,042 seconds for 10000000 runs (240051659 / second)
+
+  $ xpcli Profile Increment
+  post: 0.020 seconds for 100000 calls (4978580 / second)
+  pre: 0.018 seconds for 100000 calls (5461760 / second)
+  binary: 0.022 seconds for 100000 calls (4531639 / second)
+</pre>
+
+Table 1: Comparing PHP:
+<pre>
+  Type      PHP   C#    Java
+  --------- ----- ----- -----
+  post      1     149   154
+  pre       1     66    131
+  binary    1     53    158
+</pre>

@@ -1,0 +1,5 @@
+package lang;
+
+public interface Delegate {
+  public void apply(var $e);
+}

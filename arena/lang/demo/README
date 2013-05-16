@@ -1,0 +1,630 @@
+XP Language experiment - Demo
+========================================================================
+
+Features
+--------
+Alongside with the afforementioned goals here's a an overview of what
+the XP language supports.
+
+Chaining
+~~~~~~~~
+It is now syntactically possible to continue writing after <tt>new</tt>
+and to use array offsets on method return values:
+
+<code>
+  new Date().toString();
+  XPClass::forName($name).getMethods()[0];
+</code>
+
+<summary>
+See also:
+* Features in PHP trunk: Array dereferencing
+  http://schlueters.de/blog/archives/138-.html
+</summary>
+
+Array and map syntax
+~~~~~~~~~~~~~~~~~~~~
+The <tt>array</tt> keyword from the PHP language has been replaced by
+the shorter form with square brackets. By means of an extension array
+length can be determined by using the <tt>length</tt> pseudo-member.
+
+<code>
+  $a= [1, 2, 3];           // same as $a= array(1, 2, 3);
+  $i= $a.length;           // same as $i= sizeof($a);
+  
+  $m= [ 'key' : 'value' ]; // same as $a= array('key' => 'value');
+  $m= [ : ];               // empty map
+</code>
+
+Arrays can also have types:
+<code>
+  // Instantiation
+  $a= new string[] { 'Hello', 'World' };
+  
+  // Type
+  public static void main(string[] $args) { ... }
+
+  /// Instantiation  
+  $m= new [:string] { 'key' : 'value' };
+  
+  // Type
+  public static void main([:string] $args) { ... }
+</code>
+
+Varargs syntax
+~~~~~~~~~~~~~~
+To create functions that accept a variable amount of arguments - 
+<tt>printf</tt> is probably the most famous one of them, you have to
+resort to <tt>func_get_args()</tt> in PHP userland. The XP language
+supports this feature by adding <tt>...</tt> to the parameter's type:
+
+<code>
+  public class Format {
+  
+    public static string printf(string $format, var... $values) {
+      // Implementation here
+    }
+    
+    public static void main(string[] $args) {
+      self::printf('%d args passed to %s', $args.length, self::class.getName());
+    }
+  }
+</code>
+
+This will make the <tt>format</tt> variable contain the format string and 
+<tt>values</tt> consist of an array with two values (the length and the 
+class name).
+
+Changed foreach
+~~~~~~~~~~~~~~~
+The <tt>foreach</tt> loop has changed from the form you know it in PHP
+to one inspired by C#.
+
+<code>
+  foreach ($method in $class.getMethods()) {
+    Console::writeLine('- ', $method);
+  }
+</code>
+
+Class literal
+~~~~~~~~~~~~~
+Every class has a static member called <tt>$class</tt> which will 
+retrieve the <tt>lang.XPClass</tt> object associated with it.
+
+<code>
+  // same as $c= XPClass::forName(xp::nameOf(__CLASS__));
+  $c= self::class;
+  
+  // same as $c= XPClass::forName('lang.types.String');
+  $c= lang.types.String::$class;
+</code>
+
+Finally: Finally
+~~~~~~~~~~~~~~~~
+Especially for cleaning up - and yes, even in 2009 with the amount of
+memory and computing power we have available - it is still necessary to
+ensure, for example, file handles are properly closed:
+
+<code>
+  $f= new File($name);
+  try {
+    $f.open(FileMode::READ);
+    return $f.read(0xFF);
+  } finally {
+    $f.close();
+  }
+</code>
+
+Imports
+~~~~~~~
+Importing is a compile-time feature to enable to use short versions
+of names but actually mean the longer ones. The "Hello World" example
+from above could be rewritten as follows:
+
+<code>
+  import util.cmd.Console;
+  
+  public class HelloWorld {
+    public static void main(string[] $args) {
+      Console::writeLine(...);
+    }
+  }
+</code>
+
+Also available are static imports which makes writing a line to the
+console even shorter to write:
+<code>
+  import static util.cmd.Console.writeLine;
+  
+  public class HelloWorld {
+    public static void main(string[] $args) {
+      writeLine(...);
+    }
+  }
+</code>
+
+At the same time, to avoid name clashes with PHP's native functions,
+these also need to be imported:
+<code>
+  import native standard.substr;
+  import native mysql.mysql_connect;
+</code>
+
+To enable rapid prototyping, type import on demand can be used:
+<code>
+  import util.*;
+  import static util.cmd.Console.*;
+  import native sybase_ct.*;
+</code>
+
+Enumerations
+~~~~~~~~~~~~
+The XP framework already offers type-safe enumerations. These were
+originally introduced in RFC #0132 and are now supported with an easier-
+to-type syntax:
+
+<code>
+  public enum Weekday {
+    Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+  }
+</code>
+
+Enumerations may also have methods:
+<code>
+  public enum Coin {
+    penny(1), nickel(2), dime(10), quarter(25);
+    
+    public string color() {
+      switch ($this) {
+        case self::$penny: return 'copper';
+        case self::$nickel: return 'nickel';
+        case self::$dime: case self::$quarter: return 'silver';
+      }
+    }
+  }
+</code>
+
+Members can have methods attached, too:
+<code>
+  public abstract enum Operation {
+    plus {
+      public int evaluate(int $x, int $y) { return $x + $y; }
+    },
+    minus {
+      public int evaluate(int $x, int $y) { return $x - $y; }
+    };
+    
+    public abstract int evaluate(int $x, int $y);
+  }
+</code>
+
+Annotations
+~~~~~~~~~~~
+Also supported for quite a while in the XP Framework are annotations.
+They use "#" one-line comments and are parsed from the class' source when 
+accessed inside the reflection API (see also RFC #0016). The XP language 
+can do without this workaround, of course!
+
+<code>
+  public class ArrayListTest extends unittest.TestCase {
+  
+    [@test] public void emptyList() {
+      $this.assertEquals([], new ArrayList().values);
+    }
+  }
+</code>
+
+Anonymous instance creation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To generate "throw-away" instances the XP framework provides the 
+<tt>newinstance()</tt> functionality, originally described in RFC #0080.
+With the downside of having to declare the class body inside a string
+and the added overhead of runtime evaluation, this feature is now not
+only more elegant to write but classes created this way will also be 
+declared at compile time:
+
+<code>
+  $emptyFiles= new io.collections.iterate.IterationFilter() {
+    public bool accept(io.collections.IOElement $e) {
+      return 0 == $e.size;
+    }
+  };
+</code>
+
+Properties
+~~~~~~~~~~
+Properties are special member variables that instead of directly
+accessing a class field may have methods attached. This way, we can
+create short syntax but still stay flexible if we need to change
+the underlying implementation.
+
+<code>
+  import native standard.strlen;
+  
+  public class String {
+    protected string $buffer;
+    
+    public __construct(string $initial= '') {
+      $this.buffer= $initial;
+    }
+  
+    public string length {
+      get { return strlen($this.buffer); }
+      set { throw new IllegalAccessException('Cannot set string length!'); }
+    }
+    
+    public static void main(string[] $args) {
+      $s= new String('Hello');
+      $l= $s.length;   // 5
+      $s.length= 1;    // *** IllegalAccessException
+    }
+  }
+</code>
+
+Internally, this is implemented by compiling <tt>__get()</tt> and 
+<tt>__set()</tt> interceptors.
+
+Indexers
+~~~~~~~~
+The PHP language allows for userland overloading of array operations
+via the <tt>ArrayAccess</tt> interface and its <tt>offset*</tt> methods.
+This is kind of different from the usual PHP approach with <tt>__</tt>
+"magic" methods - in the XP language, it's the property syntax again:
+
+<code>
+  public class ArrayList<T> {
+    protected T[] $elements;
+  
+    public __construct(T... $initial) {
+      $this.elements= $initial;
+    }
+    
+    public this[int $offset] {
+      get   { return $this.elements[$offset]; }
+      set   { $this.elements[$offset]= $value; }
+      isset { return $offset >= 0 && $offset < $this.elements.length; }
+      unset { throw new IllegalAccessException('Immutable'); }
+    }
+    
+    public static void main(string[] $args) {
+      $a= new ArrayList<string>('One', 'Two', 'Three');
+      $one= $a[0];      // 'One'
+      $a[2]= 'Drei';    // Now: One, Two, Drei
+    }
+  }
+</code>
+
+Automatic resource management statement
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Auto-close shorthand:
+<code>
+  try ($file= new File('...')) {
+    $file->write('...');
+  }
+  
+  // Equivalent of
+  $file= new File('...');
+  try {
+    $file->write('...');
+    try { $file->close(); } catch (Exception $ignored) { }
+  } catch (Exception $e) {
+    try { $file->close(); } catch (Exception $ignored) { }
+    throw $e;
+  }
+</code>
+
+
+
+Ideas
+-----
+Some of the language features are still under discussion. Here's an 
+overview:
+
+isset/unset
+~~~~~~~~~~~
+In the phase of getting rid of syntax that looks like function calls, 
+e.g. <tt>array</tt>, these two constructs could be "syntaxified" as 
+follows:
+
+<code>
+  $args[0?];                // PHP: array_key_exists($args[0])
+  $lookup['count'?];        // PHP: array_key_exists($lookup['count'])
+  
+  delete $lookup['count'];  // PHP: unset($lookup['count'])
+  delete $args[0];          // PHP: unset($args[0])
+</code>
+
+[] in indexers
+~~~~~~~~~~~~~~
+The <tt>[]</tt> operator is an "add" operation, e.g. 
+<tt>$vector[]= new String('Hello');</tt>. 
+
+<code>
+  // Variant a: In indexer property {{{
+  public this[int $offset] {
+    get   { return $this.elements[$offset]; }
+    set   { $this.elements[$offset]= $value; }
+    add   { $this.elements[]= $value; }
+    isset { return $offset >= 0 && $offset < $this.elements.length; }
+    unset { throw new IllegalAccessException('Immutable'); }
+  }
+  // }}}
+  
+  // Variant b: Special property {{{
+  public this[] {
+    set   { $this.elements[]= $value; }
+  }
+  
+  public this[int $offset] {
+    // ...
+  }
+  // }}}
+</code>
+
+NULL-safe object operator
+~~~~~~~~~~~~~~~~~~~~~~~~~
+To prevent the dreaded "Fatal error: Call to a member-function on a non-
+object", an idea would be to have a variant of the <tt>"."</tt> operator
+which would be NULL-safe:
+
+<code>
+  $person?.getId();   // PHP: NULL === $person ? NULL : $person->getId();
+</code>
+
+Primitives extension
+~~~~~~~~~~~~~~~~~~~~
+Besides an idea to wrap all primitives in wrapper classes and compile 
+<tt>$s= 'Hello';</tt> to <tt>$s= new String('Hello');</tt> and then adding
+a primitive-cast / auto-(un-)boxing mechansim, we could simply stay with
+them and add a possibility to "objectify" them:
+
+Example:
+<code>
+  $s= 'Hello';
+  $s.length();            // 5, PHP: strlen($a);
+  $s.replace('e', 'a');   // Hallo
+</code>
+
+The definition could be done in a manner similar to C#'s extension methods:
+<code>
+  import native standard.strlen;
+  import native standard.str_replace;
+  
+  public class StringExtension {
+    public static string length(this string $in) {
+      return strlen($in);
+    }
+    
+    public static string replace(this string $in, string $search, string $replace) {
+      return str_replace($search, $replace, $in);
+    }
+  }
+</code>
+
+This would make, at compile time, the above the eqivalent of:
+<code>
+  $s= 'Hello';
+  StringExtension::length($s);
+  StringExtension::replace($s, 'e', 'a');
+</code>
+
+Together with inlining capabilities, this would not even mean a performance
+impact.
+
+Still to be discussed would be how to create extension properties, like 
+<tt>$list.length</tt>.
+
+Scoped import
+~~~~~~~~~~~~~
+<code>
+  import (rdbms.Restrictions) {
+    $criteria.add(not(equals('bz_id', 20000)));
+  }
+</code>
+
+Closures
+~~~~~~~~
+PHP 5.3 offers closures by using a block after the <tt>function</tt> keyword,
+before that, one was able to create a function at runtime by calling
+<tt>create_function()</tt> and passing in the function body in a string.
+
+<code>
+  $a= [1, 2, 3];
+  
+  // Usage variants {{{
+  $a.each(void($e) { Console::writeLine('- ', $e); });
+  $a.each(function($e) { Console::writeLine('- ', $e); });
+  $a.each(void{ $e => Console::writeLine('- ', $e); });
+  $a.each({ $e -> Console::writeLine('- ', $e); });
+  $a.each({ $e => Console::writeLine('- ', $e); });
+  // }}}
+  
+  // Declaration variants {{{
+  public void each(void(var){} $closure) { ... }
+  public void each(void{} $closure) { ... }
+  public void each({var} $closure) { ... }
+  public void each(function(var) $closure) { ... }
+  public void each(Closure $closure) { ... }
+  // }}}
+  
+  // Invocation variants {{{
+  $a($e);
+  $a.invoke([$e]);
+  }}}
+</code>
+
+See also:
+* http://groovy.codehaus.org/Closures
+* http://wiki.php.net/rfc/closures
+* http://www.javac.info/
+* http://gafter.blogspot.com/2006/09/closures-for-java-version-01.html
+
+Statement creation
+~~~~~~~~~~~~~~~~~~
+Together with closure syntax, userland statements could be created:
+
+Using statement:
+<code>
+  // Usage:
+  using (new FileInputStream($fi), new FileOutputStream($fo)) { $in, $out =>
+    $out.write($in.read());
+  }
+  
+  // Declaration
+  void using(Closeable... $args) use (void(var...){} $block) {
+    try {
+      $block.invoke($args);
+    } finally {
+      foreach ($closeable in $args) {
+        $closeable.close();
+      }
+    }
+  }
+</code>
+
+See also:
+* http://gafter.blogspot.com/2008/03/closures-control-abstraction-method.html
+* http://www.python.org/dev/peps/pep-0343/
+* http://experiments.xp-forge.net/xml/browse?arena,five3,lambda
+
+Type unions
+~~~~~~~~~~~
+Discussed in the Java world for Java 7 is a feature that improves exception
+handling.
+
+<code>
+  try {
+    $this.importFileToDatabase();
+  } catch (SQLException | IOException $e) {
+    $cat.error('During import: ', $e);
+    throw $e;
+  }
+</code>
+
+See http://docs.google.com/Doc?id=ddb3zt39_76dtz7bsg2&hl=en
+
+The idea here would be to use this "type union" feature in parameter type
+declaration also:
+
+<code>
+  public void dump(Object | String $arg) {
+    // ...
+  }
+</code>
+
+See also http://wiki.ecmascript.org/doku.php?id=clarification:type_system#union_types
+
+Granted, there are not many use-cases I can think of that this would be 
+useful in.
+
+Design patterns as syntax
+~~~~~~~~~~~~~~~~~~~~~~~~~
+At the moment, there are three different class types: <tt>class</tt>, 
+<tt>interface</tt> and <tt>enum</tt>. In other languages, we can also
+find <tt>struct</tt> (C#) and <tt>aspect</tt> (AspectJ and others).
+
+Why isn't there:
+<code>
+  // Singleton design pattern
+  singleton Logger { }
+  
+  // Observer pattern
+  observer Log {
+    public void update(Observable $obj, Object $arg) {
+      // ...
+    }
+  }
+
+  // Template method pattern  
+  public static template void doGet(Request $r, Response $r);
+</code>
+
+...and couldn't there also be:
+<code>
+  gtk.application FileManager { }
+  scriptlet.state Home { }
+  unittest FileTest { }
+</code>
+
+See also:
+* http://en.wikipedia.org/wiki/Design_pattern_(computer_science)
+* http://groovy.codehaus.org/Compile-time+Metaprogramming+-+AST+Transformations
+
+Annotation definition
+~~~~~~~~~~~~~~~~~~~~~
+With the same aspect in mind, shouldn't annotation definitions be written as:
+
+<code>
+  annotation Test {
+  
+  }
+</code>
+...instead of extending <tt>lang.Annotation</tt>?
+
+Attributes
+~~~~~~~~~~
+Instead of using annotations, should certain attributes be integrated 
+into the compiler?
+
+<code>
+  public deprecated string changeDir(string $name) { ... }
+  public override bool equal(Generic $cmp) { ... }
+</code>
+
+In and ranges
+~~~~~~~~~~~~~
+As <tt>in</tt> already is a keyword (used in <tt>foreach</tt>), we might 
+as well reuse it for other purposes:
+
+<code>
+  if ($a in [1, 2, 3]) { ... }    // PHP: if (in_array($a, array(1, 2, 3)))
+</code>
+
+This was suggested in RFC #0001 (back in 2003!) but declined. As syntax,
+however, this does look kind of nice.
+
+Completing the above would be ranges:
+
+<code>
+  $a= [1..10];                    // PHP: $a= range(1, 10);
+  $b= $a[2..5];                   // PHP: $b= array_slice($a, 2, 5);
+  $c[1..5]= 'Hello';              // PHP: $c= array_fill(1, 5, 'Hello');
+</code>
+
+Yield statement
+~~~~~~~~~~~~~~~
+To work easily with iterators and instead of copying arrays around all 
+the time, the <tt>yield</tt> statement could help:
+
+<code>
+  public class Numbers {
+    protected int[] $list = [ 1, 2, 3, 4 ];
+    
+    public Enumerable<int> even() {
+      foreach ($i in $this.list) {
+        if ($i % 2 == 0) yield return $i;
+      }
+    }
+  }
+  
+  $n= new Numbers();
+  foreach ($i in $n.even()) {
+    Console::writeLine($i);
+  }
+</code>
+
+See also:
+* http://blogs.msdn.com/jfoscoding/archive/2006/03/31/565559.aspx
+* http://docs.python.org/reference/simple_stmts.html#the-yield-statement
+
+
+Brainstorming
+-------------
+Inspirational material:
+
+* http://www.digitalmars.com/d/2.0/version.html - Conditional compilation
+* http://www.digitalmars.com/d/2.0/dbc.html - Contracts
+* http://groovy.codehaus.org/Regular+Expressions - Regex literals
+* http://www.ecmascript.org/es4/spec/overview.pdf - ECMAScript 4
+* http://code.msdn.microsoft.com/csharpfuture - C# 4.0
+
