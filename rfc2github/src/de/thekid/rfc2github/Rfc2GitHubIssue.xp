@@ -13,6 +13,7 @@ import text.regex.Pattern;
 import text.regex.MatchResult;
 import lang.types.String;
 
+
 import native standard.sscanf;
 import native standard.strtok;
 import native standard.str_replace;
@@ -57,16 +58,12 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
   }
   
   /**
-   * Sets target (user:token@owner/repo)
+   * Sets origin filename
    *
    */
   [@arg(position= 1)]
-  public void setTarget(string $target) {
-    $user= $token= $owner= $repo= null;
-    sscanf($target, "%[^:]:%[^@]@%[^/]/%[^\r]", $user, $token, $owner, $repo);
-    
-    $this.identity= [login : $user, token : $token];
-    $this.target= $owner ~ '/' ~ $repo;
+  public void setOriginFile(string $file) {
+    $this.origin= new File($file);
   }
 
   /**
@@ -90,7 +87,6 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
   }
   
   protected static var $segments= new Pattern(':([a-z_]+)');
->>>>>>> e1bbed5a16a7d7f478899505b862f7cdb949e288
   
   /**
    * Creates a new API request
@@ -121,18 +117,6 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
    *
    */
   protected ApiResponse sendApiRequest(HttpRequest $request) {
-    return new ApiResponse($this.conn.send($request));
-  }
-  
-  /**
-   * Locates an RFC
-   *
-   */
-  protected [:var] locateRfc(var[] $results, string $title) {
-    foreach ($result in $results) {
-      $issue= $result as [:var];
-      if ('open' === $issue['state'] && $title === $issue['title']) return $issue;
-    }
     $response= $this.conn.send($request);
 
     $this.verbose && $this.err.writeLine('<<< ', $response);
@@ -238,7 +222,6 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       [ '`', '`', '"xp-framework/rfc #".ltrim("\1", "0")'],
       $line
     ) ~ "\n";
->>>>>>> e1bbed5a16a7d7f478899505b862f7cdb949e288
   }
   
   /**
@@ -288,76 +271,14 @@ public class Rfc2GitHubIssue extends util.cmd.Command {
       // Rest of text (use a token that is not very likely to appear so
       // scanning will happen in large chunks).
       $content= '';
-      while ($st.hasMoreTokens("\0")) {
-        $content ~= $st.nextToken("\0");
+      while ($st.hasMoreTokens()) {
+        $line= $st.nextToken();
+        if ('Comments' === $line) break;
+
+        $content ~= $this.rewrite($line);
       }
-      $content= trim($content);
-      
-      // TODO: Convert to markdown
-      // http://daringfireball.net/projects/markdown/syntax
-      
     }
     
-    $this.out.writeLine('#', $id, ': ', $caption, ' ', $fields);
-    
-    // Check if we already know the issue
-    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::GET, 'issues/list', [
-      by    : 'label',
-      label : 'rfc'
-    ]));
-    $results= $response.result()['issues'] as var[];
-    $issue= $this.locateRfc($results, $title);
-
-    if (null === $issue) {
-      $this.out.writeLine('Nothing found, creating new issue');
-
-      $create= $this.newApiRequest(HttpConstants::POST, 'issues/open');
-      $create.setParameter('title', $title);
-      $create.setParameter('body', $content);
-      $response= $this.sendApiRequest($create);
-      if (201 != $response.status()) {
-        $this.err.writeLine('*** ', $response);
-        return 1;
-      }
-
-      $issue= $response.result()['issue'] as [:var];
-      $this.out.writeLine('Created issue #', $issue['number']);
-    } else {
-      $this.out.writeLine('Found existing issue #', $issue['number']);
-
-      $update= $this.newApiRequest(HttpConstants::POST, 'issues/edit', [number: $issue['number']]);
-      $update.setParameter('title', $title);
-      $update.setParameter('body', $content);
-      $response= $this.sendApiRequest($update);
-      if (200 != $response.status()) {
-        $this.err.writeLine('*** ', $response);
-        return 1;
-      }
-
-      $this.out.writeLine('Updated issue #', $issue['number']);
-    }
-    
-    // Attach "rfc" label
-    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
-      label  : 'rfc', 
-      number : $issue['number']]
-    ));
-    $this.out.writeLine('Labeled it an RFC: ', $response.status());
-    
-    // Add status label 
-    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
-      label  : $fields['status.id'], 
-      number : $issue['number']]
-    ));
-    $this.out.writeLine('Labeled it ', $fields['status.id'], ': ', $response.status());
-
-    // Add label for category
-    $response= $this.sendApiRequest($this.newApiRequest(HttpConstants::POST, 'issues/label/add', [
-      label  : $fields['category'], 
-      number : $issue['number']]
-    ));
-    $this.out.writeLine('Labeled it ', $fields['category'], ': ', $response.status());
-
     $this.out.writeLine('#', $id, ': ', $caption, ' ', $fields);
     // $this.out.writeLine($content);
     
