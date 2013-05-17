@@ -6,7 +6,7 @@ Redirects URLs of the form `/base/-/resource` to `/base/#/resource`. Can be usef
 
 ```ini
 [app]
-mappings="/base:web|/base/-:redirect"
+mappings="/base/-:redirect|/base/:web"
 
 [app::web]
 ; Here's your website using hash-URLs

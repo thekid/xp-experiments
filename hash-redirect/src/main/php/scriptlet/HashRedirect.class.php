@@ -10,10 +10,10 @@ class HashRedirect extends HttpScriptlet {
       <head><title>Redirecting...</title></head>
       <body>
         <script language="JavaScript">
-          document.location.href= "http://localhost:8080/base/#/resource/1549/sub";
+          document.location.href= "%1$s";
         </script>
         <noscript>
-          <a href="http://localhost:8080/base/#/resource/1549/sub">Continue</a>
+          <a href="%1$s">Continue</a>
         </noscript>
       </body>
     </html>
@@ -29,6 +29,6 @@ class HashRedirect extends HttpScriptlet {
     $uri= $request->getURL();
     $uri->setPath(strtr($uri->getPath(), array('/-' => '/#')));
 
-    $response->write(sprintf(strtr(self::TEMPLATE, array("\n    " => "\n"))), $uri->getURL());
+    $response->write(sprintf(strtr(self::TEMPLATE, array("\n    " => "\n")), $uri->getURL()));
   }
 }
