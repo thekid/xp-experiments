@@ -39,7 +39,6 @@
     #[@arg(position= 0)]
     public function setOrigin($dir) {
       $this->base= new FileCollection(new Folder($dir));
-      ClassLoader::getDefault()->registerPath($this->base->getURI());
     }
 
     /**
@@ -125,7 +124,8 @@
      */
     protected function process(IOElement $e) {
       $base= strlen($this->base->getURI());
-      $relative= substr($e->getOrigin()->getURI(), $base, -1);
+      $path= $e->getOrigin()->getURI();
+      $relative= substr($path, $base, -1);
 
       // Ensure output folder exists
       $folder= new Folder($this->target, $relative);
@@ -134,24 +134,35 @@
       // Create output file
       $target= new File($this->target, substr($e->getURI(), $base));
       $out= $target->getOutputStream();
-      
+
+      $namespace= NULL;
+      foreach (ClassLoader::getLoaders() as $delegate) {
+        $l= strlen($delegate->path);
+        if (0 === strncmp($path, $delegate->path, $l)) {
+          $namespace= rtrim(strtr(substr($path, $l), DIRECTORY_SEPARATOR, '\\'), '\\');
+          break;
+        }
+      }
+
       // Initialize
       $context= $e->getURI();
       $imports= array();
-      $namespace= strtr($relative, DIRECTORY_SEPARATOR, '\\');
       $tokens= token_get_all(Streams::readAll($e->getInputStream()));
-      $declared= FALSE;
       $state= self::ST_INITIAL;
       $cl= ClassLoader::getDefault();
 
       // Handle tokens
       for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
         switch ($state.$tokens[$i][0]) {
+          case self::ST_INITIAL.T_OPEN_TAG:
+            $out->write('<?php');
+            $namespace && $out->write(' namespace '.$namespace.';');
+            $out->write("\n");
+            break;
+
           case self::ST_INITIAL.T_STRING:
             if ('uses' === $tokens[$i][1]) {
               $state= self::ST_USES;
-              $namespace && $out->write('namespace '.$namespace.";\n  ");
-              $declared= TRUE;
               $out->write('use');
             } else {
               $out->write($tokens[$i][1]);
@@ -181,20 +192,8 @@
             $out->write(strtr($name, '.', '\\'));
             break;
           
-          case self::ST_INITIAL.T_DOC_COMMENT:
-            if (!$declared) {
-              $namespace && $out->write('namespace '.$namespace.";\n\n  ");
-              $declared= TRUE;
-            }
-            $out->write($tokens[$i][1]);
-            break;
-
           case self::ST_INITIAL.T_CLASS:
           case self::ST_INITIAL.T_INTERFACE:
-            if (!$declared) {
-              $namespace && $out->write('namespace '.$namespace.";\n\n  ");
-              $declared= TRUE;
-            }
             $out->write($tokens[$i][1].' ');
             $local= $tokens[$i+ 2][1];
             if (FALSE !== ($p= strrpos($local, '·'))) { // Unqualify RFC#37- qualified class names
