@@ -241,6 +241,10 @@
             }
             break;
 
+          case self::ST_BODY.T_CLOSE_TAG:
+            // Skip
+            break;
+
           default:
             if (is_array($tokens[$i])) {
               $out->write(str_replace("\n  ", "\n", $tokens[$i][1]));
