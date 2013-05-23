@@ -195,7 +195,10 @@
             $name= substr($tokens[$i][1], 1, -1);
             $local= substr($name, strrpos($name, '.')+ 1);
             $imports[$local]= $cl->loadClass($name);
-            $out->write('use '.strtr($name, '.', '\\').";\n");
+            $qname= strtr($name, '.', '\\');
+            if (0 !== strncmp($qname, $namespace, strlen($namespace))) {
+              $out->write('use '.$qname.";\n");
+            }
             break;
 
           case self::ST_INITIAL.T_CLASS:
