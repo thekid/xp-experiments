@@ -170,7 +170,6 @@
           case self::ST_INITIAL.T_STRING:
             if ('uses' === $tokens[$i][1]) {
               $state= self::ST_USES;
-              $out->write('use');
             } else {
               $out->write($tokens[$i][1]);
             }
@@ -184,11 +183,11 @@
             }
             break;
 
-          case self::ST_USES.'(': 
-            $out->write(' ');
+          case self::ST_USES.'(': case self::ST_USES.',': case self::ST_USES.')': case self::ST_USES.T_WHITESPACE:
+            // Skip
             break;
 
-          case self::ST_USES.')':
+          case self::ST_USES.';':
             $state= self::ST_INITIAL;
             break;
           
@@ -196,9 +195,9 @@
             $name= substr($tokens[$i][1], 1, -1);
             $local= substr($name, strrpos($name, '.')+ 1);
             $imports[$local]= $cl->loadClass($name);
-            $out->write(strtr($name, '.', '\\'));
+            $out->write('use '.strtr($name, '.', '\\').";\n");
             break;
-          
+
           case self::ST_INITIAL.T_CLASS:
           case self::ST_INITIAL.T_INTERFACE:
             $out->write($tokens[$i][1].' ');
