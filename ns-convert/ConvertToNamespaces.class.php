@@ -157,7 +157,14 @@
           case self::ST_INITIAL.T_OPEN_TAG:
             $out->write('<?php');
             $namespace && $out->write(' namespace '.$namespace.';');
-            $out->write("\n");
+            break;
+
+          case self::ST_INITIAL.T_COMMENT:
+            if (0 === strncmp('/* This class is part', $tokens[$i][1], 21)) {
+              // Skip comment
+            } else {
+              $out->write($tokens[$i][1]);
+            }
             break;
 
           case self::ST_INITIAL.T_STRING:
