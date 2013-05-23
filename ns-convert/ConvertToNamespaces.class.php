@@ -240,9 +240,13 @@
               $i+= 2; // Skip over whitespace and class name
             }
             break;
-          
+
           default:
-            $out->write(is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i]);
+            if (is_array($tokens[$i])) {
+              $out->write(str_replace("\n  ", "\n", $tokens[$i][1]));
+            } else {
+              $out->write($tokens[$i]);
+            }
         }
       }
       
