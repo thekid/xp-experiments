@@ -108,7 +108,7 @@
       $query= dns_get_record($records[0]->getName(), constant($type), $auth, $add);
       $results= is_array($query) ? $query : array();
 
-      $return= new peer·net·Message(-1);
+      $return= new peer·net·dns·Message(-1);
       $return->setOpcode(-1);
       $return->addRecord(Sections::QUESTION, $records[0]);
 
