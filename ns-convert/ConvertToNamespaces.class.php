@@ -47,8 +47,12 @@
      * @param   string
      */
     #[@arg(position= 1)]
-    public function setTarget($dir) {
-      $this->target= new Folder($dir);
+    public function setTarget($dir= null) {
+      if (null === $dir) {
+        $this->target= new Folder($this->base->getURI());
+      } else {
+        $this->target= new Folder($dir);
+      }
     }
     
     /**
@@ -165,7 +169,7 @@
             if (0 === strncmp('/* This class is part', $tokens[$i][1], 21)) {
               // Skip comment
             } else {
-              $out->write($tokens[$i][1]);
+              $out->write(str_replace("\n  ", "\n", $tokens[$i][1]));
             }
             break;
 
