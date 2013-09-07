@@ -105,20 +105,35 @@
       // PHP classes are global
       if (0 === strncmp($qualified, 'php\\', 4)) {
         if (!class_exists($local, FALSE) && !interface_exists($local, FALSE)) {
-          throw new IllegalStateException(sprintf(
-            'In %s: Cannot resolve name "%s" namespace "%s", imports= %s',
+          Console::$err->writeLinef(
+            'In %s: Cannot resolve name "%s", assuming namespace "%s" (imports= %s)',
             $context,
             $local,
             $namespace,
             xp::stringOf($imports)
-          ));
+          );
+          return $local;
         }
         return '\\'.$local;
       }
 
-      // If name is in current namespace, use local, else globally qualified version
-      if (0 === strncmp($qualified, $namespace, strlen($namespace))) return $local;
-      return '\\'.$qualified;
+      return $this->declarationOf($namespace, $qualified);
+    }
+
+    /**
+     * Returns declaration of a qualified name. If name is in current 
+     * namespace, use local, else globally qualified version
+     *
+     * @param  string $namespace
+     * @param  string $qualified
+     * @return string
+     */
+    protected function declarationOf($namespace, $qualified) {
+      if (0 === strncmp($qualified, $namespace, strlen($namespace))) {
+        return substr($qualified, strrpos($qualified, '\\'));
+      } else {
+        return '\\'.$qualified;
+      }
     }
     
     /**
@@ -132,7 +147,7 @@
       $base= strlen($this->base->getURI());
       $path= $e->getOrigin()->getURI();
       $relative= substr($path, $base, -1);
-      $tokens= token_get_all(Streams::readAll($e->getInputStream()));
+      $bytes= Streams::readAll($e->getInputStream());
 
       // Ensure output folder exists
       $folder= new Folder($this->target, $relative);
@@ -142,6 +157,16 @@
       $target= new File($this->target, substr($e->getURI(), $base));
       $out= $target->getOutputStream();
 
+      // Check the file is not already namespaced. Check the first 10 tokens
+      for ($i= 0, $s= min(10, sizeof($tokens)); $i < $s; $i++) {
+        if (T_NAMESPACE === $tokens[$i][0]) {
+          $out->write($bytes);
+          $out->close();
+          return FALSE;
+        }
+      }
+
+      // Calculate namespace
       $namespace= NULL;
       foreach (ClassLoader::getLoaders() as $delegate) {
         $l= strlen($delegate->path);
@@ -154,6 +179,7 @@
       // Initialize
       $context= $e->getURI();
       $imports= array();
+      $tokens= token_get_all($bytes);
       $state= self::ST_INITIAL;
       $cl= ClassLoader::getDefault();
 
@@ -263,6 +289,7 @@
       }
       
       $out->close();
+      return TRUE;
     }
 
     /**
@@ -285,8 +312,8 @@
       // Iterate
       $this->out->write('[');
       foreach ($files as $file) {
-        $this->process($file);
-        $this->out->write('.');
+        $processed= $this->process($file);
+        $this->out->write($processed ? '.' : 'S');
       }
       $this->out->writeLine(']');
     }
