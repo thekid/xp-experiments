@@ -123,9 +123,12 @@
      * @param   io.collections.IOElement e
      */
     protected function process(IOElement $e) {
+
+      // Read input file
       $base= strlen($this->base->getURI());
       $path= $e->getOrigin()->getURI();
       $relative= substr($path, $base, -1);
+      $tokens= token_get_all(Streams::readAll($e->getInputStream()));
 
       // Ensure output folder exists
       $folder= new Folder($this->target, $relative);
@@ -147,7 +150,6 @@
       // Initialize
       $context= $e->getURI();
       $imports= array();
-      $tokens= token_get_all(Streams::readAll($e->getInputStream()));
       $state= self::ST_INITIAL;
       $cl= ClassLoader::getDefault();
 
