@@ -157,13 +157,11 @@
       $target= new File($this->target, substr($e->getURI(), $base));
       $out= $target->getOutputStream();
 
-      // Check the file is not already namespaced. Check the first 10 tokens
-      for ($i= 0, $s= min(10, sizeof($tokens)); $i < $s; $i++) {
-        if (T_NAMESPACE === $tokens[$i][0]) {
-          $out->write($bytes);
-          $out->close();
-          return FALSE;
-        }
+      // Check the file is not already namespaced.
+      if (preg_match('/namespace [a-z0-9_\\\\]+;/', $bytes)) {
+        $out->write($bytes);
+        $out->close();
+        return FALSE;
       }
 
       // Calculate namespace
@@ -256,12 +254,19 @@
             $out->write('{');
             $state= self::ST_BODY;
             break;
-          
+
+          case self::ST_BODY.T_COMMENT:   // One-line comments swallow ending "\n"
+            $out->write(rtrim($tokens[$i][1], "\r\n"));
+            $tokens[$i+ 1][1]= "\n".$tokens[$i+ 1][1];
+            break;
+
           case self::ST_BODY.T_STRING:
             if (T_DOUBLE_COLON === $tokens[$i+ 1][0]) {
               $out->write($this->nameOf($namespace, $imports, $tokens[$i][1], $context));   // Static method calls
             } else if (T_WHITESPACE === $tokens[$i+ 1][0] && T_VARIABLE === $tokens[$i+ 2][0]) {
               $out->write($this->nameOf($namespace, $imports, $tokens[$i][1], $context));   // Typehint
+            } else if ('TRUE' === $tokens[$i][1] || 'FALSE' === $tokens[$i][1] || 'NULL' === $tokens[$i][1]) {
+              $out->write(strtolower($tokens[$i][1]));
             } else {
               $out->write($tokens[$i][1]);
             }
