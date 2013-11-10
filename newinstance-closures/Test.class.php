@@ -5,8 +5,17 @@ function newinstance_($intf, $args, $def) {
   $uniq++;
   $src= 'class NewInstance_'.$uniq.' implements '.\lang\XPClass::forName($intf)->literal().' { static $def; ';
   foreach ($def as $name => $function) {
-    $src.= 'function '.$name.'() {
-      return call_user_func(self::$def["'.$name.'"], func_get_args());
+
+    // Create pass
+    $r= new ReflectionFunction($function);
+    $pass= '';
+    foreach ($r->getParameters() as $param) {
+      $pass.= ', '.$param->getName();
+    }
+
+    // Create method
+    $src.= 'function '.$name.'('.substr($pass, 2).') {
+      return call_user_func(self::$def["'.$name.'"]'.('' === $pass ? '' : ', '.substr($pass, 2)).');
     }';
   }
   $src.= '}';
