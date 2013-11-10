@@ -15,11 +15,14 @@ function newinstance_($intf, $args, $def) {
 
     // Create method
     $src.= 'function '.$name.'('.substr($pass, 2).') {
-      return call_user_func(self::$def["'.$name.'"]'.('' === $pass ? '' : ', '.substr($pass, 2)).');
+      $f= self::$def["'.$name.'"];
+      return $f('.('' === $pass ? '' : ', '.substr($pass, 2)).');
     }';
   }
   $src.= '}';
   eval($src);
+
+  // Instantiate
   $c= new ReflectionClass('NewInstance_'.$uniq);
   $c->setStaticPropertyValue('def', $def);
   return $c->newInstanceArgs($args);
