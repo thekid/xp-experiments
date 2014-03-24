@@ -1,4 +1,4 @@
-How do I invoke Java 8 default methods refletively?
+How do I invoke Java 8 default methods reflectively?
 ==
 
 Given this simple "Hello World"ish Java 8 interface, how do I instantiate it and invoke its hello() method via reflection?
