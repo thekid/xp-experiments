@@ -1,4 +1,4 @@
-public class Inject {
+public class Injection {
 
     public static void main(String... args) {
         Injector inject = new Injector();
