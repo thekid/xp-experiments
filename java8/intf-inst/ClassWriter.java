@@ -117,26 +117,23 @@ public class ClassWriter {
             return (short)pool.size();
         }
 
-        private short getValue(Object key) {
+        private short get(Object key, java.util.function.Supplier<Entry> entry) {
             Short index = map.get(key);
             if (index != null) {
                 return index.shortValue();
             } else {
-                short i = addEntry(new ValueEntry(key));
+                short i = addEntry(entry.get());
                 map.put(key, new Short(i));
                 return i;
             }
         }
 
-        private short getIndirect(IndirectEntry e) {
-            Short index = map.get(e);
-            if (index != null) {
-                return index.shortValue();
-            } else {
-                short i = addEntry(e);
-                map.put(e, new Short(i));
-                return i;
-            }
+        private short getValue(final Object key) {
+            return get(key, () -> new ValueEntry(key));
+        }
+
+        private short getIndirect(final IndirectEntry e) {
+            return get(e, () -> e);
         }
 
         public short getUtf8(String s) {
