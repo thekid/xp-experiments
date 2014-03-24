@@ -3,7 +3,7 @@ How do I invoke Java 8 default methods refletively?
 
 Given this simple "Hello World"ish Java 8 interface, how do I instantiate it and invoke its hello() method via reflection?
 
-```
+```java
 public interface Hello {
     default String hello() {
         return "Hello";
