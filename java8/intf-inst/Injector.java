@@ -1,4 +1,7 @@
 import java.util.HashMap;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.InvocationTargetException;
 
 public class Injector {
     public HashMap<Class<?>, Class<?>> bindings = new HashMap<>();
@@ -17,14 +20,42 @@ public class Injector {
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> Class<T> get(Class<T> clazz) {
-        return (Class<T>)this.bindings.get(clazz);
+    public <T> Class<T> get(Class<T> clazz) {
+        Class<?> bound = this.bindings.get(clazz);
+        if (bound == null) {
+            return clazz;
+        } else {
+            return (Class<T>)bound;
+        }
+    }
+
+    protected <T> T newInstance(Class<T> clazz) throws InstantiationException, IllegalAccessException {
+        for (Constructor<?> ctor : clazz.getConstructors()) {
+            int params = ctor.getParameterCount();
+            try {
+                if (0 == params) {
+                    return clazz.cast(ctor.newInstance());
+                } else if (ctor.isAnnotationPresent(Inject.class)) {
+                    Object[] args = new Object[params];
+                    for (Parameter param : ctor.getParameters()) {
+                        args[args.length - 1] = this.getInstance(param.getType());
+                    }
+                    return clazz.cast(ctor.newInstance(args));
+                }
+            } catch (InvocationTargetException e) {
+                throw new InstantiationException(ctor.toString());
+            }
+        }
+        return clazz.newInstance();
     }
 
     public <T> T getInstance(Class<T> clazz) {
         try {
-            return this.get(clazz).newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            T instance = this.newInstance(this.get(clazz));
+
+            // TODO: Perform injection on members
+            return instance;
+        } catch (final Exception e) {
             throw new RuntimeException("Cannot instantiate", e);
         }
     }
