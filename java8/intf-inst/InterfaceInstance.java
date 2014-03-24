@@ -3,7 +3,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.io.ByteArrayOutputStream;
 
-public class InterfaceInstance extends ClassLoader {
+public class InterfaceInstance {
     private Class<?> base;
     private Loader loader = new Loader();
     private static final AtomicLong uniq = new AtomicLong();
