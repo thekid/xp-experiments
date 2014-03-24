@@ -3,11 +3,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.io.ByteArrayOutputStream;
 
-public class InterfaceInstance<T> extends ClassLoader {
-    private Class<T> base;
+public class InterfaceInstance extends ClassLoader {
+    private Class<?> base;
     private static final AtomicLong uniq = new AtomicLong();
 
-    public InterfaceInstance(Class<T> base) throws IllegalArgumentException {
+    public InterfaceInstance(Class<?> base) throws IllegalArgumentException {
         for (Method m : base.getMethods()) {
             if (Modifier.isStatic(m.getModifiers()) && !m.isDefault()) {
                 throw new IllegalArgumentException("Interface contains non-static method " + m.getName() + " without default");
@@ -41,8 +41,7 @@ public class InterfaceInstance<T> extends ClassLoader {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public Class<T> defineClass() throws ClassNotFoundException {
-        return (Class<T>)super.loadClass(this.base.getName() + "$Proxy$" + uniq.getAndIncrement());
+    public Class<?> defineClass() throws ClassNotFoundException {
+        return super.loadClass(this.base.getName() + "$Proxy$" + uniq.getAndIncrement());
     }
 }

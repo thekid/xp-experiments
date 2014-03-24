@@ -6,12 +6,13 @@ public class Injector {
     public <T> Injector bind(Class<T> intf, Class<T> impl) {
         if (impl.isInterface()) {
             try {
-                impl = new InterfaceInstance<T>(impl).defineClass();
+                this.bindings.put(intf, new InterfaceInstance(impl).defineClass());
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException("Cannot bind", e);
             }
+        } else {
+            this.bindings.put(intf, impl);
         }
-        this.bindings.put(intf, impl);
         return this;
     }
 
