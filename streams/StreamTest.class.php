@@ -47,4 +47,21 @@ class StreamTest extends \unittest\TestCase {
   public function sum($length, $values) {
     $this->assertEquals($length, Stream::of($values)->sum());
   }
+
+  #[@test]
+  public function first_returns_null_for_empty_input() {
+    $this->assertNull(Stream::of([])->first());
+  }
+
+  #[@test]
+  public function first_returns_first_array_element() {
+    $this->assertEquals(1, Stream::of([1, 2, 3])->first());
+  }
+
+  #[@test]
+  public function each() {
+    $collect= [];
+    Stream::of([1, 2, 3, 4])->each(function($e) use(&$collect) { $collect[]= $e; });
+    $this->assertEquals([1, 2, 3, 4], $collect);
+  }
 }

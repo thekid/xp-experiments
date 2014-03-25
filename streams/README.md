@@ -19,3 +19,8 @@ $return= Stream::of([1, 2, 3, 4])
 );
 // [2, 4, 6, 8]
 ```
+
+Further reading
+---------------
+
+* [JDK8: Stream style](http://de.slideshare.net/SergeyKuksenko/jdk8-stream-style) - by Sergey Kuksenko, Performance Engineering at Oracle on Dec 03, 2013 

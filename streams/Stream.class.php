@@ -14,6 +14,13 @@ class Stream extends \lang\Object {
     }
   }
 
+  public function first() {
+    foreach ($this->elements as $element) {
+      return $element;
+    }
+    return null;
+  }
+
   public function toArray() {
     $return= [];
     foreach ($this->elements as $element) {
@@ -38,12 +45,10 @@ class Stream extends \lang\Object {
     return $return;
   }
 
-  public function forEach() {
-    $return= [];
+  public function each($consumer) {
     foreach ($this->elements as $element) {
-      $return[]= $element;
+      $consumer($element);
     }
-    return $return;
   }
 
   public function filter($predicate) {
