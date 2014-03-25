@@ -6,10 +6,12 @@ class StreamTest extends \unittest\TestCase {
     $this->assertInstanceOf('Stream', Stream::of([1, 2, 3]));
   }
 
-  #[@test]
-  public function toArray_returns_elements_as_array() {
-    $input= [1, 2, 3];
-    $this->assertEquals($input, Stream::of($input)->toArray());
+  #[@test, @values([
+  #  [[1, 2, 3]],
+  #  [function() { yield 1; yield 2; yield 3; }]
+  #])]
+  public function toArray_returns_elements_as_array($input) {
+    $this->assertEquals([1, 2, 3], Stream::of($input)->toArray());
   }
 
   #[@test]

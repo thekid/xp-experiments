@@ -7,7 +7,11 @@ class Stream extends \lang\Object {
   }
 
   public static function of($elements) {
-    return new self($elements);
+    if ($elements instanceof \Closure) {
+      return new self($elements());
+    } else {
+      return new self($elements);
+    }
   }
 
   public function toArray() {
