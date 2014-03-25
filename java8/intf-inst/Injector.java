@@ -2,6 +2,7 @@ import java.util.HashMap;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.InvocationTargetException;
+import static java.util.Arrays.stream;
 
 public class Injector {
     public HashMap<Class<?>, Class<?>> bindings = new HashMap<>();
@@ -36,11 +37,10 @@ public class Injector {
                 if (0 == params) {
                     return clazz.cast(ctor.newInstance());
                 } else if (ctor.isAnnotationPresent(Inject.class)) {
-                    Object[] args = new Object[params];
-                    for (Parameter param : ctor.getParameters()) {
-                        args[args.length - 1] = this.getInstance(param.getType());
-                    }
-                    return clazz.cast(ctor.newInstance(args));
+                    return clazz.cast(ctor.newInstance(stream(ctor.getParameters())
+                        .map(param -> (Object)this.getInstance(param.getType()))
+                        .toArray()
+                    ));
                 }
             } catch (InvocationTargetException e) {
                 throw new InstantiationException(ctor.toString());
