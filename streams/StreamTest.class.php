@@ -6,6 +6,11 @@ class StreamTest extends \unittest\TestCase {
     $this->assertInstanceOf('Stream', Stream::of([1, 2, 3]));
   }
 
+  #[@test]
+  public function can_create_via_iterate() {
+    $this->assertInstanceOf('Stream', Stream::iterate(0, function($i) { return $i++; }));
+  }
+
   #[@test, @values([
   #  [[1, 2, 3]],
   #  [function() { yield 1; yield 2; yield 3; }]
@@ -63,5 +68,18 @@ class StreamTest extends \unittest\TestCase {
     $collect= [];
     Stream::of([1, 2, 3, 4])->each(function($e) use(&$collect) { $collect[]= $e; });
     $this->assertEquals([1, 2, 3, 4], $collect);
+  }
+
+  #[@test]
+  public function limit_stops_at_nth_array_element() {
+    $this->assertEquals([1, 2], Stream::of([1, 2, 3])->limit(2)->toArray());
+  }
+
+  #[@test]
+  public function limit_stops_at_nth_iterator_element() {
+    $this->assertEquals([1, 2], Stream::iterate(1, function($i) { return ++$i; })
+      ->limit(2)
+      ->toArray()
+    );
   }
 }

@@ -14,6 +14,16 @@ class Stream extends \lang\Object {
     }
   }
 
+  public static function iterate($seed, $op) {
+    $func= function() use($seed, $op) {
+      for ($i= $seed; ; $i= $op($i)) {
+        yield $i;
+      }
+      // Runs forever
+    };
+    return new self($func());
+  }
+
   public function first() {
     foreach ($this->elements as $element) {
       return $element;
@@ -49,6 +59,17 @@ class Stream extends \lang\Object {
     foreach ($this->elements as $element) {
       $consumer($element);
     }
+  }
+
+  public function limit($n) {
+    $func= function() use($n) {
+      $i= 0;
+      foreach ($this->elements as $element) {
+        yield $element;
+        if (++$i >= $n) break;
+      }
+    };
+    return new self($func());
   }
 
   public function filter($predicate) {
