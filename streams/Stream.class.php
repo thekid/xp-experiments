@@ -26,6 +26,18 @@ class Stream extends \lang\Object {
     return new self($func());
   }
 
+  public static function concat(self $a, self $b) {
+    $func= function() use($a, $b) {
+      foreach ($a->elements as $element) {
+        yield $element;
+      }
+      foreach ($b->elements as $element) {
+        yield $element;
+      }
+    };
+    return new self($func());
+  }
+
   public function first() {
     foreach ($this->elements as $element) {
       return $element;

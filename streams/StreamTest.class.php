@@ -129,4 +129,11 @@ class StreamTest extends \unittest\TestCase {
       ->toArray()
     );
   }
+
+  #[@test]
+  public function concat() {
+    $this->assertEquals([1, 2, 3, 4], Stream::concat(Stream::of([1, 2]), Stream::of([3, 4]))
+      ->toArray()
+    );
+  }
 }
