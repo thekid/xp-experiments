@@ -26,6 +26,16 @@ class Stream extends \lang\Object {
     return new self($func());
   }
 
+  public static function generate($supplier) {
+    $func= function() use($supplier) {
+      while (true) {
+        yield $supplier();
+      }
+      // Runs forever
+    };
+    return new self($func());
+  }
+
   public static function concat(self $a, self $b) {
     $func= function() use($a, $b) {
       foreach ($a->elements as $element) {

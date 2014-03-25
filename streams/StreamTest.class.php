@@ -11,6 +11,11 @@ class StreamTest extends \unittest\TestCase {
     $this->assertInstanceOf('Stream', Stream::iterate(0, function($i) { return $i++; }));
   }
 
+  #[@test]
+  public function can_create_via_generate() {
+    $this->assertInstanceOf('Stream', Stream::generate(0, function() { return rand(1, 1000); }));
+  }
+
   #[@test, @values([
   #  [[1, 2, 3]],
   #  [function() { yield 1; yield 2; yield 3; }]
@@ -125,6 +130,15 @@ class StreamTest extends \unittest\TestCase {
   #[@test]
   public function limit_stops_at_nth_iterator_element() {
     $this->assertEquals([1, 2], Stream::iterate(1, function($i) { return ++$i; })
+      ->limit(2)
+      ->toArray()
+    );
+  }
+
+  #[@test]
+  public function limit_stops_at_nth_generator_element() {
+    $i= 1;
+    $this->assertEquals([1, 2], Stream::generate(function() use(&$i) { return $i++; })
       ->limit(2)
       ->toArray()
     );
