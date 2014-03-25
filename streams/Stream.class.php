@@ -38,6 +38,14 @@ class Stream extends \lang\Object {
     return $return;
   }
 
+  public function forEach() {
+    $return= [];
+    foreach ($this->elements as $element) {
+      $return[]= $element;
+    }
+    return $return;
+  }
+
   public function filter($predicate) {
     $func= function() use($predicate) {
       foreach ($this->elements as $element) {
