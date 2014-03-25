@@ -79,6 +79,22 @@ class Stream extends \lang\Object {
     return $return;
   }
 
+  public function min() {
+    $return= null;
+    foreach ($this->elements as $element) {
+      if (null === $return || $element < $return) $return= $element;
+    }
+    return $return;
+  }
+
+  public function max() {
+    $return= null;
+    foreach ($this->elements as $element) {
+      if (null === $return || $element > $return) $return= $element;
+    }
+    return $return;
+  }
+
   public function reduce($identity, $accumulator) {
     $return= $identity;
     foreach ($this->elements as $element) {

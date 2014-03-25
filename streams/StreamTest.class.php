@@ -58,6 +58,24 @@ class StreamTest extends \unittest\TestCase {
     $this->assertEquals($length, Stream::of($values)->sum());
   }
 
+  #[@test, @values([
+  #  [null, []],
+  #  [1, [1]],
+  #  [2, [10, 7, 2]]
+  #])]
+  public function min($length, $values) {
+    $this->assertEquals($length, Stream::of($values)->min());
+  }
+
+  #[@test, @values([
+  #  [null, []],
+  #  [1, [1]],
+  #  [10, [2, 10, 7]]
+  #])]
+  public function max($length, $values) {
+    $this->assertEquals($length, Stream::of($values)->max());
+  }
+
   #[@test]
   public function reduce_returns_identity_for_empty_input() {
     $this->assertEquals(-1, Stream::of([])->reduce(-1, function($a, $b) {
