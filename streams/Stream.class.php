@@ -65,6 +65,15 @@ class Stream extends \lang\Object {
     return $return;
   }
 
+  public function collect($supplier, $accumulator) {
+    $return= $supplier();
+    $f= function($arg) use(&$return, $accumulator) { return $accumulator($return, $arg); };
+    foreach ($this->elements as $element) {
+      $f($element);
+    }
+    return $return;
+  }
+
   public function each($consumer) {
     foreach ($this->elements as $element) {
       $consumer($element);

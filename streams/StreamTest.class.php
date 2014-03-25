@@ -75,6 +75,16 @@ class StreamTest extends \unittest\TestCase {
   }
 
   #[@test]
+  public function collect() {
+    $result= Stream::of([1, 2, 3, 4])->collect(
+      function() { return ['total' => 0, 'sum' => 0]; },
+      function(&$result, $arg) { $result['total']++; $result['sum']+= $arg; }
+    );
+    $this->assertEquals(2.5, $result['sum'] / $result['total']);
+  }
+
+
+  #[@test]
   public function first_returns_null_for_empty_input() {
     $this->assertNull(Stream::of([])->first());
   }
