@@ -12,7 +12,7 @@ public class Injector {
             try {
                 this.bindings.put(intf, new InterfaceInstance(impl).defineClass());
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException("Cannot bind", e);
+                throw new IllegalArgumentException("Cannot bind", e);
             }
         } else {
             this.bindings.put(intf, impl);
