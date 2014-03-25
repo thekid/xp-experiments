@@ -68,6 +68,13 @@ class StreamTest extends \unittest\TestCase {
   }
 
   #[@test]
+  public function reduce_used_for_max() {
+    $this->assertEquals(10, Stream::of([7, 1, 10, 3])->reduce(0, function($a, $b) {
+      return max($a, $b);
+    }));
+  }
+
+  #[@test]
   public function reduce_used_for_concatenation() {
     $this->assertEquals('Hello World', Stream::of(['Hello', ' ', 'World'])->reduce('', function($a, $b) {
       return $a.$b;
