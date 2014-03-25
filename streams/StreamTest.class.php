@@ -90,6 +90,15 @@ class StreamTest extends \unittest\TestCase {
     $this->assertEquals(2.5, $result['sum'] / $result['total']);
   }
 
+  #[@test]
+  public function collect_used_for_joining() {
+    $result= Stream::of(['a', 'b', 'c'])->collect(
+      function() { return ''; },
+      function(&$result, $arg) { $result.= ', '.$arg; },
+      function($result) { return substr($result, 2); }
+    );
+    $this->assertEquals('a, b, c', $result);
+  }
 
   #[@test]
   public function first_returns_null_for_empty_input() {
