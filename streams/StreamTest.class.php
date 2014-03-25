@@ -54,6 +54,27 @@ class StreamTest extends \unittest\TestCase {
   }
 
   #[@test]
+  public function reduce_returns_identity_for_empty_input() {
+    $this->assertEquals(-1, Stream::of([])->reduce(-1, function($a, $b) {
+      $this->fail('Should not be called');
+    }));
+  }
+
+  #[@test]
+  public function reduce_used_for_summing() {
+    $this->assertEquals(10, Stream::of([1, 2, 3, 4])->reduce(0, function($a, $b) {
+      return $a + $b;
+    }));
+  }
+
+  #[@test]
+  public function reduce_used_for_concatenation() {
+    $this->assertEquals('Hello World', Stream::of(['Hello', ' ', 'World'])->reduce('', function($a, $b) {
+      return $a.$b;
+    }));
+  }
+
+  #[@test]
   public function first_returns_null_for_empty_input() {
     $this->assertNull(Stream::of([])->first());
   }

@@ -2,15 +2,17 @@
 class Stream extends \lang\Object {
   protected $elements;
 
-  protected function __construct($elements) {
+  protected function __construct(\Traversable $elements) {
     $this->elements= $elements;
   }
 
   public static function of($elements) {
-    if ($elements instanceof \Closure) {
+    if ($elements instanceof \Traversable) {
+      return new self($elements);
+    } else if ($elements instanceof \Closure) {
       return new self($elements());
     } else {
-      return new self($elements);
+      return new self(new \ArrayIterator($elements));
     }
   }
 
@@ -51,6 +53,14 @@ class Stream extends \lang\Object {
     $return= 0;
     foreach ($this->elements as $element) {
       $return+= $element;
+    }
+    return $return;
+  }
+
+  public function reduce($identity, $accumulator) {
+    $return= $identity;
+    foreach ($this->elements as $element) {
+      $return= $accumulator($return, $element);
     }
     return $return;
   }
