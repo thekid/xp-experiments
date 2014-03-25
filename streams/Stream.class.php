@@ -22,6 +22,22 @@ class Stream extends \lang\Object {
     return $return;
   }
 
+  public function count() {
+    $return= 0;
+    foreach ($this->elements as $element) {
+      $return++;
+    }
+    return $return;
+  }
+
+  public function sum() {
+    $return= 0;
+    foreach ($this->elements as $element) {
+      $return+= $element;
+    }
+    return $return;
+  }
+
   public function filter($predicate) {
     $func= function() use($predicate) {
       foreach ($this->elements as $element) {

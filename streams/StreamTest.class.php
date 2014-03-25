@@ -29,4 +29,22 @@ class StreamTest extends \unittest\TestCase {
       ->toArray()
     );
   }
+
+  #[@test, @values([
+  #  [0, []],
+  #  [1, [1]],
+  #  [4, [1, 2, 3, 4]]
+  #])]
+  public function count($length, $values) {
+    $this->assertEquals($length, Stream::of($values)->count());
+  }
+
+  #[@test, @values([
+  #  [0, []],
+  #  [1, [1]],
+  #  [10, [1, 2, 3, 4]]
+  #])]
+  public function sum($length, $values) {
+    $this->assertEquals($length, Stream::of($values)->sum());
+  }
 }
