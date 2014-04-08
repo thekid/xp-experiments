@@ -4,7 +4,15 @@
  * $Id$
  */
 
-  uses('xp.scriptlet.Runner', 'handlers.AbstractUrlHandler');
+  uses(
+    'xp.scriptlet.Runner',
+    'handlers.AbstractUrlHandler',
+    'peer.Socket',
+    'peer.URL',
+    'scriptlet.HttpScriptletRequest',
+    'scriptlet.HttpScriptletResponse',
+    'scriptlet.HttpScriptletException'
+  );
 
   /**
    * Scriptlet handler

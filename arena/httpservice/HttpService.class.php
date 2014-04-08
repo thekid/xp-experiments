@@ -6,6 +6,8 @@
 
   uses(
     'util.cmd.Command', 
+    'util.cmd.Console',
+    'lang.reflect.Package',
     'HttpProtocol', 
     'handlers.RewritingHandler', 
     'handlers.FileHandler', 
