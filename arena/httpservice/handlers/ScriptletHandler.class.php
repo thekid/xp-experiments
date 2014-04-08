@@ -68,6 +68,13 @@
       if ('https' === $url->getScheme()) { 
         $request->env['HTTPS']= 'on';
       }
+      if (isset($headers['Authorization'])) {
+        if (0 === strncmp('Basic', $headers['Authorization'], 5)) {
+          $credentials= explode(':', base64_decode(substr($headers['Authorization'], 6)));
+          $request->env['PHP_AUTH_USER']= $credentials[0];
+          $request->env['PHP_AUTH_PW']= $credentials[1];
+        }
+      }
       $request->setHeaders($headers);
       
       // Query string:
