@@ -1,4 +1,6 @@
 <?php
+use lang\types\String;
+
 class StreamTest extends \unittest\TestCase {
 
   #[@test]
@@ -167,6 +169,14 @@ class StreamTest extends \unittest\TestCase {
     $this->assertEquals([1, 2, 3, 4], Stream::concat(Stream::of([1, 2]), Stream::of([3, 4]))
       ->toArray()
     );
+  }
+
+  #[@test, @values([
+  #  [[1, 2, 3], [1, 2, 2, 3, 1, 3]],
+  #  [[new String("a"), new String("b")], [new String("a"), new String("a"), new String("b")]]
+  #])]
+  public function distinct($result, $input) {
+    $this->assertEquals($result, Stream::of($input)->distinct()->toArray());
   }
 
   #[@test]

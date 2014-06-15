@@ -1,4 +1,6 @@
 <?php
+use util\Objects;
+
 /**
  * Streams API for PHP
  *
@@ -142,5 +144,18 @@ class Stream extends \lang\Object implements \IteratorAggregate {
 
   public function map($function) {
     return new self(new Mapper($this->getIterator(), $function));
+  }
+
+  public function distinct() {
+    $set= [];
+    return new self(new \CallbackFilterIterator($this->getIterator(), function($e) use(&$set) {
+      $h= Objects::hashOf($e);
+      if (isset($set[$h])) {
+        return false;
+      } else {
+        $set[$h]= true;
+        return true;
+      }
+    }));
   }
 }
