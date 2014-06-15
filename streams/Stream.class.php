@@ -1,9 +1,26 @@
 <?php
-class Stream extends \lang\Object {
+class Stream extends \lang\Object implements \IteratorAggregate {
   protected $elements;
 
-  protected function __construct(\Traversable $elements) {
+  protected function __construct($elements) {
     $this->elements= $elements;
+  }
+
+  /**
+   * Gets an iterator on this stream. Optimizes the case that the underlying
+   * elements already is an Iterator, and handles both wrappers implementing
+   * the Traversable interfaces as well as primitive arrays.
+   *
+   * @return  php.Iterator
+   */
+  public function getIterator() {
+    if ($this->elements instanceof \Iterator) {
+      return $this->elements;
+    } else if ($this->elements instanceof \Traversable) {
+      return new \IteratorIterator($this->elements);
+    } else {
+      return new \ArrayIterator($this->elements);
+    }
   }
 
   public static function of($elements) {
@@ -12,7 +29,7 @@ class Stream extends \lang\Object {
     } else if ($elements instanceof \Closure) {
       return new self($elements());
     } else {
-      return new self(new \ArrayIterator($elements));
+      return new self($elements);
     }
   }
 

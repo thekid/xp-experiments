@@ -13,11 +13,12 @@ class StreamTest extends \unittest\TestCase {
 
   #[@test]
   public function can_create_via_generate() {
-    $this->assertInstanceOf('Stream', Stream::generate(0, function() { return rand(1, 1000); }));
+    $this->assertInstanceOf('Stream', Stream::generate(function() { return rand(1, 1000); }));
   }
 
   #[@test, @values([
   #  [[1, 2, 3]],
+  #  [new \lang\types\ArrayList(1, 2, 3)],
   #  [function() { yield 1; yield 2; yield 3; }]
   #])]
   public function toArray_returns_elements_as_array($input) {
@@ -54,8 +55,8 @@ class StreamTest extends \unittest\TestCase {
   #  [1, [1]],
   #  [10, [1, 2, 3, 4]]
   #])]
-  public function sum($length, $values) {
-    $this->assertEquals($length, Stream::of($values)->sum());
+  public function sum($result, $values) {
+    $this->assertEquals($result, Stream::of($values)->sum());
   }
 
   #[@test, @values([
@@ -63,8 +64,8 @@ class StreamTest extends \unittest\TestCase {
   #  [1, [1]],
   #  [2, [10, 7, 2]]
   #])]
-  public function min($length, $values) {
-    $this->assertEquals($length, Stream::of($values)->min());
+  public function min($result, $values) {
+    $this->assertEquals($result, Stream::of($values)->min());
   }
 
   #[@test, @values([
@@ -72,8 +73,8 @@ class StreamTest extends \unittest\TestCase {
   #  [1, [1]],
   #  [10, [2, 10, 7]]
   #])]
-  public function max($length, $values) {
-    $this->assertEquals($length, Stream::of($values)->max());
+  public function max($result, $values) {
+    $this->assertEquals($result, Stream::of($values)->max());
   }
 
   #[@test]
@@ -167,5 +168,14 @@ class StreamTest extends \unittest\TestCase {
     $this->assertEquals([1, 2, 3, 4], Stream::concat(Stream::of([1, 2]), Stream::of([3, 4]))
       ->toArray()
     );
+  }
+
+  #[@test]
+  public function is_useable_inside_foreach() {
+    $values= [];
+    foreach (Stream::of([1, 2, 3]) as $yielded) {
+      $values[]= $yielded;
+    }
+    $this->assertEquals([1, 2, 3], $values);
   }
 }
