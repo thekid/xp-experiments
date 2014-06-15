@@ -18,7 +18,8 @@ class StreamTest extends \unittest\TestCase {
 
   #[@test, @values([
   #  [[1, 2, 3]],
-  #  [new \lang\types\ArrayList(1, 2, 3)]
+  #  [new \lang\types\ArrayList(1, 2, 3)],
+  #  [function() { yield 1; yield 2; yield 3; }]
   #])]
   public function toArray_returns_elements_as_array($input) {
     $this->assertEquals([1, 2, 3], Stream::of($input)->toArray());

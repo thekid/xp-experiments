@@ -1,7 +1,8 @@
 <?php
 /**
- * Streams API for PHP
+ * Streams, PHP 5.5 implementation
  *
+ * @see  php://yield
  * @test xp://StreamTest
  */
 class Stream extends \lang\Object implements \IteratorAggregate {
@@ -38,28 +39,36 @@ class Stream extends \lang\Object implements \IteratorAggregate {
     }
   }
 
-  public static function iterate($seed, callable $op) {
-    $it= $seed;
-    return new self(new Yielder(
-      $seed,
-      function() use(&$it, $op) { $it= $op($it); return $it; },
-      true
-    ));
+  public static function iterate($seed, $op) {
+    $func= function() use($seed, $op) {
+      for ($i= $seed; ; $i= $op($i)) {
+        yield $i;
+      }
+      // Runs forever
+    };
+    return new self($func());
   }
 
-  public static function generate(callable $supplier) {
-    return new self(new Yielder(
-      $supplier,
-      $supplier,
-      true
-    ));
+  public static function generate($supplier) {
+    $func= function() use($supplier) {
+      while (true) {
+        yield $supplier();
+      }
+      // Runs forever
+    };
+    return new self($func());
   }
 
   public static function concat(self $a, self $b) {
-    $it= new \AppendIterator();
-    $it->append($a->getIterator());
-    $it->append($b->getIterator());
-    return new self($it);
+    $func= function() use($a, $b) {
+      foreach ($a->elements as $element) {
+        yield $element;
+      }
+      foreach ($b->elements as $element) {
+        yield $element;
+      }
+    };
+    return new self($func());
   }
 
   public function first() {
@@ -133,14 +142,31 @@ class Stream extends \lang\Object implements \IteratorAggregate {
   }
 
   public function limit($n) {
-    return new self(new \LimitIterator($this->getIterator(), 0, $n));
+    $func= function() use($n) {
+      $i= 0;
+      foreach ($this->elements as $element) {
+        yield $element;
+        if (++$i >= $n) break;
+      }
+    };
+    return new self($func());
   }
 
   public function filter($predicate) {
-    return new self(new \CallbackFilterIterator($this->getIterator(), $predicate));
+    $func= function() use($predicate) {
+      foreach ($this->elements as $element) {
+        if ($predicate($element)) yield $element;
+      }
+    };
+    return new self($func());
   }
 
   public function map($function) {
-    return new self(new Mapper($this->getIterator(), $function));
+    $func= function() use($function) {
+      foreach ($this->elements as $element) {
+        yield $function($element);
+      }
+    };
+    return new self($func());
   }
 }
