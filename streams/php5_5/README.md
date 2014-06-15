@@ -1,7 +1,7 @@
 JDK8 Streams in PHP
 ===================
 
-The [java.util.stream package](http://download.java.net/jdk8/docs/api/java/util/stream/package-summary.html) implemented with [PHP 5.5 iterators](http://php.net/manual/de/language.oop5.iterations.php).
+The [java.util.stream package](http://download.java.net/jdk8/docs/api/java/util/stream/package-summary.html) implemented with [PHP 5.5 generators](http://www.php.net/manual/en/class.generator.php).
 
 Examples
 --------
