@@ -170,6 +170,14 @@ class StreamTest extends \unittest\TestCase {
     );
   }
 
+  #[@test, @values([
+  #  [[1, 2, 3], [1, 2, 2, 3, 1, 3]],
+  #  [[new String("a"), new String("b")], [new String("a"), new String("a"), new String("b")]]
+  #])]
+  public function distinct($result, $input) {
+    $this->assertEquals($result, Stream::of($input)->distinct()->toArray());
+  }
+
   #[@test]
   public function is_useable_inside_foreach() {
     $values= [];

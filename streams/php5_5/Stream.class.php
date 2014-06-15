@@ -1,4 +1,7 @@
 <?php
+
+use util\Objects;
+
 /**
  * Streams, PHP 5.5 implementation
  *
@@ -165,6 +168,20 @@ class Stream extends \lang\Object implements \IteratorAggregate {
     $func= function() use($function) {
       foreach ($this->elements as $element) {
         yield $function($element);
+      }
+    };
+    return new self($func());
+  }
+
+  public function distinct() {
+    $func= function() {
+      $set= [];
+      foreach ($this->elements as $element) {
+        $h= Objects::hashOf($element);
+        if (!isset($set[$h])) {
+          $set[$h]= true;
+          yield $element;
+        }
       }
     };
     return new self($func());
