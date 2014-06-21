@@ -1,27 +1,6 @@
 JDK8 Streams in PHP
 ===================
 
-The [java.util.stream package](http://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html) implemented with [PHP iterators](http://php.net/manual/de/language.oop5.iterations.php).
+Now available as XP6 module ["xp-forge/sequence"](https://github.com/xp-forge/sequence).
 
-Examples
---------
-
-```php
-$return= Stream::of([1, 2, 3, 4])
-  ->filter(function($e) { return 0 === $e % 2; })
-  ->toArray()
-;
-// [2, 4]
-
-$return= Stream::of([1, 2, 3, 4])
-  ->map(function($e) { return $e * 2; })
-  ->toArray()
-);
-// [2, 4, 6, 8]
-```
-
-Further reading
----------------
-
-* [JDK8: Stream style](http://de.slideshare.net/SergeyKuksenko/jdk8-stream-style) - by Sergey Kuksenko, Performance Engineering at Oracle on Dec 03, 2013 
-* [Processing Data with Java SE 8 Streams, Part 1](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html)
+For a PHP 5.5 version with [PHP generators](http://www.php.net/manual/en/class.generator.php), see the `php5_5` subdirectory
