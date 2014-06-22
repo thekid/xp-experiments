@@ -3,12 +3,12 @@ use lang\Type;
 
 class FunctionType extends Type {
 
-  public function __construct(array $signature, Type $return) {
+  public function __construct(Signature $signature, Type $return) {
     $this->signature= $signature;
     $this->return= $return;
     parent::__construct(sprintf(
       'function(%s): %s',
-      implode(', ', array_map(function($e) { return $e->getName(); }, $this->signature)),
+      $this->signature->declaration(),
       $this->return->getName()
     ));
   }
@@ -17,17 +17,17 @@ class FunctionType extends Type {
     if ($arg instanceof \Closure) {
       $f= new \ReflectionFunction($arg);
       foreach ($f->getParameters() as $i => $param) {
-        if (Primitive::$VAR->equals($this->signature[$i])) {
+        if (Primitive::$VAR->equals($this->signature->types[$i])) {
           continue;
-        } else if ($this->signature[$i] instanceof \lang\Primitive) {
+        } else if ($this->signature->types[$i] instanceof \lang\Primitive) {
           continue;
-        } else if ($this->signature[$i] instanceof \lang\ArrayType) {
+        } else if ($this->signature->types[$i] instanceof \lang\ArrayType) {
           if (!$param->isArray()) return false;
-        } else if ($this->signature[$i] instanceof \lang\MapType) {
+        } else if ($this->signature->types[$i] instanceof \lang\MapType) {
           if (!$param->isArray()) return false;
-        } else if ($this->signature[$i] instanceof \lang\XPClass) {
+        } else if ($this->signature->types[$i] instanceof \lang\XPClass) {
           if (!$param->isClass()) return false;
-          if (!$this->signature[$i]->isAssignableFrom(new XPClass($param->getClass()))) return false;
+          if (!$this->signature->types[$i]->isAssignableFrom(new XPClass($param->getClass()))) return false;
         }
       }
       return true;

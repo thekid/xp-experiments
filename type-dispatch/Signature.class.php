@@ -2,7 +2,7 @@
 use lang\Type;
 
 class Signature extends \lang\Object {
-  protected $types= [];
+  public $types= [];
 
   public function __construct($types) {
     $this->types= $types;
@@ -10,7 +10,7 @@ class Signature extends \lang\Object {
 
   protected static function newType($name) {
     if (2 === sscanf($name, 'function(%[^)]): %s', $params, $return)) {
-      return new FunctionType(self::parse($params)->types, self::newType($return));
+      return new FunctionType(self::parse($params), self::newType($return));
     } else {
       return Type::forName($name);
     }
@@ -36,5 +36,13 @@ class Signature extends \lang\Object {
       if (!$type->isInstance($args[$i])) return false;
     }
     return true;
+  }
+
+  public function declaration() {
+    $decl= '';
+    foreach ($this->types as $type) {
+      $decl.= ', '.$type->getName();
+    }
+    return substr($decl, 2);
   }
 }
