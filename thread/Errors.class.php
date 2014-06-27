@@ -14,7 +14,7 @@ class ExecutorThread extends Thread {
     Console::initialize(true);
     register_shutdown_function(function() {
       $error= error_get_last();
-      if (E_ERROR === $error['type']) {
+      if (E_ERROR === $error['type'] || E_USER_ERROR === $error['type']) {
         Console::writeLinef(
           '*** Thread %lu exited abnormally: %s in %s on line %d',
           $this->getThreadId(),
