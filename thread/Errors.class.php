@@ -47,8 +47,8 @@ class Errors extends \lang\Object {
       $workers[$i]->start();
     }
 
-    foreach (range(1, $n) as $i) {
-      $workers[$i]->join();
+    foreach ($workers as $worker) {
+      $worker->join();
     }    
     Console::writeLine('Done');
   }

@@ -31,8 +31,8 @@ class Counters extends \lang\Object {
     }
 
     Console::writeLine(sizeof($workers), ' worker(s) started');
-    foreach (range(1, $n) as $i) {
-      $workers[$i]->join();
+    foreach ($workers as $worker) {
+      $worker->join();
     }    
     Console::writeLine('Done');
   }
