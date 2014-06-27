@@ -42,12 +42,11 @@ class Errors extends \lang\Object {
     Console::writeLine('Started');
 
     $workers= [];
-    foreach (range(false, true) as $i) {
+    foreach (range(true, false) as $i) {
       $workers[$i]= new ExecutorThread($i);
       $workers[$i]->start();
     }
 
-    Console::writeLine(sizeof($workers), ' worker(s) started');
     foreach (range(1, $n) as $i) {
       $workers[$i]->join();
     }    
