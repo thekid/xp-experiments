@@ -1,22 +1,15 @@
 <?php
-/* This class is part of the XP framework
- *
- * $Id$ 
+
+/**
+ * Denotes a class implementing this is profileable
  */
+interface Profileable  {
 
   /**
-   * Denotes a class implementing this is profileable
+   * Runs this test the specified number of times
    *
-   * @purpose  Profiling
+   * @param   int times
    */
-  interface Profileable  {
-
-    /**
-     * Runs this test the specified number of times
-     *
-     * @param   int times
-     */
-    public function run($times);
-    
-  }
-?>
+  public function run($times);
+  
+}
