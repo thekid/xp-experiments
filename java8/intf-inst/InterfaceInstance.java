@@ -10,7 +10,7 @@ public class InterfaceInstance {
 
     public InterfaceInstance(Class<?> base) throws IllegalArgumentException {
         for (Method m : base.getMethods()) {
-            if (Modifier.isStatic(m.getModifiers()) && !m.isDefault()) {
+            if (!Modifier.isStatic(m.getModifiers()) && !m.isDefault()) {
                 throw new IllegalArgumentException("Interface contains non-static method " + m.getName() + " without default");
             }
         }
