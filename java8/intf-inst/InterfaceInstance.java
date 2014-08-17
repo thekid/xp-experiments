@@ -9,9 +9,12 @@ public class InterfaceInstance {
     private static final AtomicLong uniq = new AtomicLong();
 
     public InterfaceInstance(Class<?> base) throws IllegalArgumentException {
+        if (!base.isInterface()) {
+            throw new IllegalArgumentException("Class " + base.getName() + " is not an interface");
+        }
         for (Method m : base.getMethods()) {
             if (!Modifier.isStatic(m.getModifiers()) && !m.isDefault()) {
-                throw new IllegalArgumentException("Interface contains non-static method " + m.getName() + " without default");
+                throw new IllegalArgumentException("Interface " + base.getName() + " contains non-static method " + m.getName() + " without default");
             }
         }
         this.base = base;
