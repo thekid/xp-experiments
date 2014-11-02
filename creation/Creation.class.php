@@ -13,7 +13,7 @@ abstract class Creation extends Object {
       $name= $parameter->getName();
       $setters.= 'protected $'.$name.';';
       $setters.= 'public function '.$name.'($value) { $this->'.$name.'= $value; return $this; }';
-      $args.= ', $this->'.$parameter->getName();
+      $args.= ', $this->'.$name;
     }
 
     return ClassLoader::defineClass($t->getName().'Creation', 'Creation', [], '{
