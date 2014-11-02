@@ -15,10 +15,10 @@ class EmployeeTest extends \unittest\TestCase {
 
   #[@test]
   public function creation() {
-    $created= Employee::create()
+    $created= Employee::with()
       ->id(6100)
       ->name('The dude')
-      ->instance()
+      ->create()
     ;
     $this->assertEquals([6100, 'The dude'], [$created->id(), $created->name()]);
   }

@@ -1,6 +1,6 @@
 <?php
 
-class Employee extends Object {
+class Employee extends Object { use CreateWith;
   protected $id, $name;
   public function __construct($id, $name) {
     $this->id= $id;
@@ -9,10 +9,5 @@ class Employee extends Object {
 
   public function id() { return $this->id; }
   public function name() { return $this->name; }
-
-  public static function create() {
-    return new Creation(function($prop) {
-      return new self($prop['id'], $prop['name']); }
-    );
-  }
+  public function toString() { return $this->getClassName().'(#'.$this->id.' "'.$this->name.'")'; }
 }
