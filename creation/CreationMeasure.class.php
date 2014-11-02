@@ -18,7 +18,7 @@ class CreationMeasure extends \util\profiling\Measurable {
 
   #[@measure]
   public function withfunction() {
-    return $this->test(CreationWithFunction::of(function($prop) {
+    return $this->test(new CreationWithFunction(function($prop) {
       return new Employee($prop['id'], $prop['name']);
     }));
   }

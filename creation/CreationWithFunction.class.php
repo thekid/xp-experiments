@@ -10,10 +10,6 @@ class CreationWithFunction extends Object {
     $this->new= $new;
   }
 
-  public static final function of($new) {
-    return new self($new);
-  }
-
   public function __call($name, $args) { $this->prop[$name]= $args[0]; return $this; }
 
   public function create() {
